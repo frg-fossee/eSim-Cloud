@@ -1,5 +1,21 @@
 version: '3'
 services:
+
+  eda-frontend:
+    build: ./eda-frontend/
+    command: npm start
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./eda-frontend:/code
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - django
+      - celery
+      - redis
+      - db
+
   django:
     build: ./esim-cloud-backend/
     command: "python3 manage.py runserver 0.0.0.0:8000"

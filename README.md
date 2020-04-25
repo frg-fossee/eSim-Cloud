@@ -11,9 +11,23 @@ EDA Tool and Arduino on Cloud
 #### Setting up docker containers
 * Install docker-ce and docker-compose for your OS
 
-* Build necessary containers using ```docker-compose -f docker-compose.dev.yml build```
+* To Build/ReBuild necessary containers using
 
-* Apply database migrations (only required for first run ) ```docker-compose -f docker-compose.dev.yml run --rm django ./manage.py migrate --noinput```
+ ```docker-compose -f docker-compose.dev.yml build```
 
-* Run Development environment ```docker-compose -f docker-compose.dev.yml up```
+
+##### For Setting up Backend containers only
+* Apply database migrations (only required for first run )
+
+ ```docker-compose -f docker-compose.dev.yml run --rm django ./manage.py migrate --noinput```
+
+* Run Development environment
+
+ ```docker-compose -f docker-compose.dev.yml up```
+
+##### For Frontend Containers and backend containers
+
+* To run eda-fronted along with all backend containers
+
+``` docker-compose -f docker-compose.dev.yml run eda-frontend ```
 
