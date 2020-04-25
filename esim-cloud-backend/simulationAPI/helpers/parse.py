@@ -38,6 +38,8 @@ def extractDataFromNgSpiceOutput(pathToFile):
     except IOError as e:
         return "Cannot open file."
 
-#for testing
+#for testing provide the filepath as command line argument
 if __name__ == "__main__":
-    print(extractDataFromNgSpiceOutput("./sample_files/plot_data_v.txt"))
+    import sys
+    filePath = sys.argv[1]
+    print(extractDataFromNgSpiceOutput(filePath))
