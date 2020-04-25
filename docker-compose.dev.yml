@@ -1,0 +1,72 @@
+version: '3'
+services:
+  django:
+    build: ./esim-cloud-backend/
+    command: "python3 manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./esim-cloud-backend:/code
+      - run_vol:/var/run
+      - cache_vol:/var/cache
+      - tmp_vol:/tmp
+    depends_on:
+        - redis
+        - db
+        - celery
+    env_file:
+      - .env.public
+
+    links:
+        - "redis:redis_cache"
+        - "db:mysql"
+
+  celery:
+    build: ./esim-cloud-backend/
+    command: celery -A esimCloud.celery worker -l info --concurrency=1
+    links:
+        - "redis:redis_cache"
+        - "db:postgres"
+    env_file:
+          - .env.public
+
+    volumes:
+      - ./esim-cloud-backend:/code
+      - run_vol:/var/run
+      - cache_vol:/var/cache
+      - tmp_vol:/tmp
+    depends_on:
+        - redis
+        - db
+
+
+
+  redis:
+      image: "redis:alpine"
+      environment:
+        - ALLOW_EMPTY_PASSWORD=yes
+        - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+      volumes:
+          - ./redis_data:/data
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env.public
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+volumes:
+  run_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  cache_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  tmp_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
