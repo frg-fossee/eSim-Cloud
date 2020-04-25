@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SimulatorComponent } from './simulator.component';
+import { ActivatedRoute, Data, Params } from '@angular/router';
 
 describe('SimulatorComponent', () => {
   let component: SimulatorComponent;
@@ -8,9 +9,21 @@ describe('SimulatorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SimulatorComponent ]
+      declarations: [SimulatorComponent],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParams: {
+              subscribe: (fn: (value: Params) => void) => fn({
+                id: 0,
+              }),
+            },
+          }
+        }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
