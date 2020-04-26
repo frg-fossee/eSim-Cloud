@@ -4,3 +4,4 @@ mysql_data/
 venv
 *.sqlite3
 .env.prod
+mongo_data/
