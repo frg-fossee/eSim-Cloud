@@ -15,7 +15,22 @@ services:
       - celery
       - redis
       - db
+  arduino-frontend:
+    build: ./ArduinoFrontend/
+    command: npm start "--host 0.0.0.0"
 
+    ports:
+      - "4200:4200"
+
+    volumes:
+      - ./ArduinoFrontend:/code
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - django
+      - celery
+      - redis
+      - db
   django:
     build: ./esim-cloud-backend/
     command: "python3 manage.py runserver 0.0.0.0:8000"
