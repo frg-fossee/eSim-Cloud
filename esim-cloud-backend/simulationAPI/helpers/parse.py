@@ -18,7 +18,7 @@ def extractDataFromNgSpiceOutput(pathToFile):
                 m = re.search('Index',line)
                 if(m):
                     headerContents = line.split()
-                    #subtract 2 to remove Time and Index from the total length of list
+                    # subtract 2 to remove Time and Index from the total length of list.  
                     totalNumberOfTables = len(headerContents) - 2
                     jsonData['totalNumberOfTables'] = totalNumberOfTables
                     jsonData["headers"] = headerContents
@@ -38,8 +38,4 @@ def extractDataFromNgSpiceOutput(pathToFile):
     except IOError as e:
         return "Cannot open file."
 
-#for testing provide the filepath as command line argument
-if __name__ == "__main__":
-    import sys
-    filePath = sys.argv[1]
-    print(extractDataFromNgSpiceOutput(filePath))
+
