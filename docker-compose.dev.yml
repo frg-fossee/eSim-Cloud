@@ -15,6 +15,8 @@ services:
       - celery
       - redis
       - db
+      - mongodb
+
   arduino-frontend:
     build: ./ArduinoFrontend/
     command: npm start "--host 0.0.0.0"
@@ -31,6 +33,8 @@ services:
       - celery
       - redis
       - db
+      - mongodb
+
 
   django:
     build: ./esim-cloud-backend/
@@ -46,6 +50,8 @@ services:
         - redis
         - db
         - celery
+        - mongodb
+
     env_file:
       - .env.public
 
@@ -70,8 +76,19 @@ services:
     depends_on:
         - redis
         - db
+        - mongodb
 
-
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/usr/data/db/
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./mongo_data:/usr/data/db
+    ports:
+      - 27017:27017
+    command: mongod
 
   redis:
       image: "redis:alpine"
