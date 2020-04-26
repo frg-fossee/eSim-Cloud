@@ -18,6 +18,26 @@ export class SimulatorComponent implements OnInit {
     window['selected'] = null;
     // True when a component is selected
     window['isSelected'] = false;
+    // Global Function to Show Properties of Circuit Component
+    window['showProperties'] = () => {
+
+    };
+    // Global Function to Hide Properties of Circuit Component
+    window['hideProperties'] = () => {
+
+    };
+    // Global Function to show Popup Bubble
+    window['showBubble'] = (label: string, x: number, y: number) => {
+
+    };
+    // Global Function to hide Popub Bubble
+    window['hideBubble'] = () => {
+
+    };
+    // Global Function to show Toast Message
+    window['showToast'] = (message: string) => {
+
+    };
   }
 
   ngOnInit() {
