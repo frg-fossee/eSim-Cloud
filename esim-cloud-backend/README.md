@@ -18,6 +18,6 @@
 
 To build and run **only** the django container use the following commands
 
-```docker build . -t esimcloud-django```
+```backend docker build . -t esimcloud-django```
 
 ``` docker run --rm -v $(pwd):/code esimcloud-django python manage.py runserver ```

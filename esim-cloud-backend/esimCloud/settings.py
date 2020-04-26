@@ -125,11 +125,3 @@ STATIC_URL = '/django_static/'
 # For Netlist handling netlist uploads ( Netlists are not stored here )
 MEDIA_URL = '/_files/'
 MEDIA_ROOT = os.path.join("/tmp", "esimCloud-temp")
-
-# celery
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_IMPORTS = ()
