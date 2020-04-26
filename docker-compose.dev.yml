@@ -31,6 +31,7 @@ services:
       - celery
       - redis
       - db
+
   django:
     build: ./esim-cloud-backend/
     command: "python3 manage.py runserver 0.0.0.0:8000"
