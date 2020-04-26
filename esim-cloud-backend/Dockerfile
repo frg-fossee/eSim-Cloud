@@ -6,6 +6,8 @@ ENV PYTHONDONTWRITEBYTECODE 1
 RUN mkdir /code
 WORKDIR /code
 
+COPY requirements.txt /code/
+
 ENV NGSPICE_VERSION 31
 
 RUN apk add --no-cache --virtual .build-deps \
@@ -31,9 +33,7 @@ RUN curl -fSL https://github.com/imr/ngspice/archive/ngspice-$NGSPICE_VERSION.ta
     && make install \
     && apk del .build-deps
 
-COPY requirements.txt /code/
-RUN apk add --no-cache mariadb-connector-c-dev ;\
-    apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev\
+RUN apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev\
     && pip install --upgrade pip\
     && pip install --trusted-host pypi.python.org -r requirements.txt \
     && apk del .build-deps
