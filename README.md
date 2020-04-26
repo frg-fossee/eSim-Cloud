@@ -26,8 +26,12 @@ EDA Tool and Arduino on Cloud
  ```docker-compose -f docker-compose.dev.yml up```
 
 ##### For Frontend Containers and backend containers
-
+( Please note these containers are only for dev environment, in production compiled files will be served by nginx)
 * To run eda-fronted along with all backend containers
 
 ``` docker-compose -f docker-compose.dev.yml run eda-frontend ```
+
+* To run eda-fronted along with all backend containers
+
+``` docker-compose -f docker-compose.dev.yml up arduino-frontend ```
 
