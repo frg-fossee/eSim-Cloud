@@ -1,0 +1,42 @@
+body{
+    margin: 0;
+    background-color: rgb(19, 16, 29);
+}
+.RightBox{
+    height: 95vh;
+    width: 300px;
+    background-color:rgb(27, 33, 34);
+    color:white;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 15px;
+}
+.LeftBox{
+    height: 95vh;
+    width: 300px;
+    background-color:rgb(255,255,255);
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 15px;
+}
+.Grid{
+    height: 95vh;
+    width: 1200px;
+    background-color: white;
+    position: absolute;
+    left:350px;
+    top:0;
+    margin: 15px;
+    background-color:#269;
+    background-image: linear-gradient(white 2px, transparent 2px),
+    linear-gradient(90deg, white 2px, transparent 2px),
+    linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+    background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+    background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px;
+}
+#res{
+    position: absolute;
+}
