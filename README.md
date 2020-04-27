@@ -6,6 +6,13 @@ EDA Tool and Arduino on Cloud
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
 
 
+### Configuring Production Environment
+* Install Docker and docker-compose for server OS
+* ``` git clone git@github.com:frg-fossee/eSim-Cloud.git && cd eSim-Cloud```
+* ``` cp .env .env.prod ```
+ **PLEASE CHANGE DEFAULT CREDENTIALS IN THE .env.prod FILE**
+* ``` docker-compose -f docker-compose.prod.yml --env-file .env.prod up --scale django=2 --scale celery=3 -d```
+
 ### Configuring Development Environment
 
 #### Setting up docker containers
