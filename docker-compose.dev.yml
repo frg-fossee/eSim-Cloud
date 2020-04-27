@@ -12,12 +12,14 @@ services:
       - ./eda-frontend:/code
     environment:
       - NODE_ENV=development
+    stdin_open: true
     depends_on:
       - django
       - celery
       - redis
       - db
       - mongodb
+
 
   arduino-frontend:
     build: ./ArduinoFrontend/
