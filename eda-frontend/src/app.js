@@ -11,7 +11,7 @@ const app = () => {
     React.createElement("h1", {}, "Adopt me!"),
     React.createElement("div", { className: "Grid" }),
     React.createElement("div", { className: "LeftBox" }, [
-      <img src={resistor} alt="Resistor" id="res" />,
+      <img src={resistor} alt="Resistor" id="res" class="drop" />,
     ]),
     React.createElement("div", { className: "RightBox" })
     

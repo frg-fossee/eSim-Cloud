@@ -6,13 +6,13 @@ window.jQuery = $;
 require("jquery-ui-bundle/jquery-ui.min.js");
 
 $(document).ready(function () {
-  $("#res").draggable({
-    grid: [25, 25], //Snapping to grid
+  $(".drop").draggable({
+    grid: [20, 20], //Snapping to grid
     helper: "clone",
-    snap: true,
+    snap: ".dropped",
   });
   $(".Grid").droppable({
-    accept: "#res",
+    accept: ".drop,.dropped",
     drop: function (event, ui) {
       var dropPositionX = event.pageX - $(this).offset().left;
       var dropPositionY = event.pageY - $(this).offset().top;
@@ -22,12 +22,20 @@ $(document).ready(function () {
       // Get position of dragged item relative to drop target:
       var dragItemPositionX = dropPositionX - dragItemOffsetX;
       var dragItemPositionY = dropPositionY - dragItemOffsetY;
-      //alert("DROPPED IT AT " + dragItemPositionX + ", " + dragItemPositionY);
-      var droppeditem = $(ui.draggable).clone().draggable();
-      //Setting position of dropped item inside div
-      var styles = { top: dragItemPositionY, left: dragItemPositionX };
-      droppeditem.css(styles);
-      $(".Grid").append(droppeditem);
+      if ($(ui.draggable).hasClass('drop')){
+        var droppeditem = $(ui.draggable).clone().draggable({
+          grid:[20,20],
+          snap:".dropped,.drop",
+          snapTolerance: 15
+        });
+        var styles = { top: dragItemPositionY, left: dragItemPositionX };
+        droppeditem.attr("class","dropped");
+        droppeditem.css(styles);
+        $(".Grid").append(droppeditem);
+      }
+      else{
+        //Need to write else part
+      }
     },
   });
 });
