@@ -1,14 +1,14 @@
 <!-- As a heading -->
-<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #b8b8b8;">
+<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #999;height: 60px;">
   <span class="navbar-brand mb-0 font-weight-bold text-dark h1">Simulator</span>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown text-white">
-        <a class="nav-link dropdown-toggle text-dark" href="#"  id="navbarDropdown" role="button"
-          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
           Project
         </a>
-        <div  class="dropdown-menu " style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
+        <div class="dropdown-menu " style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
           <a class="dropdown-item text-dark" href="#">New Project</a>
           <a class="dropdown-item text-dark" href="#">Clear Project</a>
           <a class="dropdown-item text-dark" href="#">Save</a>
@@ -16,14 +16,14 @@
 
         </div>
       </li>
-      <li class="nav-item dropdown ">
+      <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           Export
         </a>
-        <div class="dropdown-menu bg-dark" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item bg-dark text-light" href="#">.sch</a>
-          <a class="dropdown-item bg-dark text-light" href="#">.pdf</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #b8b8b8">
+          <a class="dropdown-item text-dark" href="#">Schematic File</a>
+          <a class="dropdown-item text-dark" href="#">Image</a>
         </div>
       </li>
     </ul>
@@ -42,78 +42,66 @@
 <div class="d-flex" id="wrapper">
 
   <!-- Sidebar -->
-  <div class="bg-light border-right" id="sidebar-wrapper">
+  <div class="border-right" id="sidebar-wrapper" style="background-color: #ddd;">
     <h4 class="text-center text-primary mt-2">Circuit Components</h4>
-    <!-- start of controller-->
-    <div class="card">
-      <div class="card-header bg-light border border-dark text-light font-weight-bold h3">
-        <a class="clicker text-dark" data-toggle="collapse" href="#controller-block" role="button" aria-expanded="false"
-          aria-selected="false" aria-controls="test-block " tabindex="-1">Controllers</a>
+
+    <div (click)="Collapse(itemsController)">
+
+      <div class="card-header border border-dark font-weight-bold text-dark">
+        Controllers
       </div>
-      <div id="controller-block" class="collapse">
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-      </div>
-    </div>
-    <!--end of controller-->
-    <!-- start of inputs-->
-    <div class="card">
-      <div class="card-header bg-light border border-dark text-light font-weight-bold h3">
-        <a class="clicker text-dark" data-toggle="collapse" href="#input-block" aria-expanded="true"
-          aria-controls="test-block">Inputs</a>
-      </div>
-      <div id="input-block" class="collapse">
+
+      <div id="controller-block" class="collapse-div" #itemsController>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
       </div>
     </div>
-    <!--end of inputs-->
-    <!-- start of outputs-->
-    <div class="card">
-      <div class="card-header bg-light border border-dark text-light font-weight-bold h3">
-        <a id="ouput" class="text-dark" data-toggle="collapse" href="#output-block" aria-expanded="true"
-          aria-controls="test-block">Outputs</a>
+
+    <div (click)="Collapse(outputDiv)">
+
+      <div class="card-header border border-dark font-weight-bold text-dark">
+        Output
       </div>
-      <div id="output-block" class="collapse">
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-      </div>
-    </div>
-    <!--end of outputs-->
-    <!-- start of Connectivity-->
-    <div class="card">
-      <div class="card-header bg-light border border-dark text-light font-weight-bold h3">
-        <a id="connectivity" class="text-dark" data-toggle="collapse" href="#connectivity-block" aria-expanded="false"
-          aria-controls="test-block tab-index=-1">Controllers</a>
-      </div>
-      <div id="connectivity-block" class="collapse">
+
+      <div id="controller-block" class="collapse-div" #outputDiv>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
       </div>
     </div>
-    <!--end of connectivity-->
-    <!-- start of powersupply-->
-    <div class="card">
-      <div class="card-header bg-light border border-dark text-light font-weight-bold h3">
-        <a id="power" class="text-dark" data-toggle="collapse" href="#power-block" aria-expanded="true"
-          aria-controls="test-block">power supplies</a>
+
+    <div (click)="Collapse(inputDiv)">
+
+      <div class="card-header border border-dark font-weight-bold text-dark">
+        Input
       </div>
-      <div id="power-block" class="collapse">
+
+      <div id="controller-block" class="collapse-div" #inputDiv>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
       </div>
     </div>
-    <!--end of power supply-->
+
+    <div (click)="Collapse(sourceDiv)">
+
+      <div class="card-header border border-dark font-weight-bold text-dark">
+        Sources
+      </div>
+
+      <div id="controller-block" class="collapse-div" #sourceDiv>
+        <div class="card-block">card block</div>
+        <div class="card-block">card block</div>
+        <div class="card-block">card block</div>
+        <div class="card-block">card block</div>
+      </div>
+    </div>
+
+
   </div>
 
   <!-- /#sidebar-wrapper -->
@@ -121,10 +109,8 @@
   <!-- Page Content -->
   <div id="page-content-wrapper">
 
+    <div id="holder" style="overflow: scroll;width: 100%;height: 100%;background-color: #eee;"></div>
 
-    <div class="container-fluid">
-      <h1 class="mt-4">Workspace</h1>
-    </div>
   </div>
 </div>
 <!-- /#page-content-wrapper -->

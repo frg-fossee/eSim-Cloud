@@ -1,10 +1,35 @@
-body {
-    overflow-x: hidden;
+* {
+    user-select: none;
+}
+
+.collapse-card {
+    background-color: transparent;
+}
+
+.card-header:hover {
+    background-color: #fff;
+}
+
+.collapse-div {
+    display: block;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height .5s ease-in-out;
+}
+
+.show-div {
+    max-height: 100vh;
+    transition: max-height .5s ease-in-out;
+}
+
+#holder{
+  cursor: pointer;
 }
 
 #sidebar-wrapper {
-    min-height: 100vh;
-    min-width: 50vh;
+    overflow-y: scroll;
+    height: calc(100vh - 60px);
+    width: 400px;
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
@@ -35,11 +60,13 @@ body {
     #sidebar-wrapper {
         margin-left: 0;
     }
+
     #page-content-wrapper {
         min-width: 0;
         width: 100%;
     }
+
     #wrapper.toggled #sidebar-wrapper {
         margin-left: -15rem;
     }
-}   
+}
