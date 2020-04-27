@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", 'kk5tq+=kyyicitl+1ki!wyx@*mz^vmei6_q25
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=True))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -77,11 +77,22 @@ WSGI_APPLICATION = 'esimCloud.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("SQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.environ.get("SQL_USER", "user"),
-        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "NAME": os.environ.get("MYSQL_DATABASE", os.path.join(BASE_DIR, "db.sqlite3")),
+        "USER": os.environ.get("MYSQL_USER", "user"),
+        "PASSWORD": os.environ.get("MYSQL_PASSWORD", "password"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
+    },
+    "mongodb":{
+        "ENGINE": 'djongo',
+        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
+        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
+        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
+        "HOST": "mongodb",
+        "PORT": 27017,
+        'AUTH_SOURCE': 'admin',
+        'AUTH_MECHANISM': 'SCRAM-SHA-1',
+
     }
 }
 
