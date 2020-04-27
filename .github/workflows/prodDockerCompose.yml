@@ -1,10 +1,8 @@
-name: All Containers Dev Branch
+name: Containers
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
+    branches: [ master ]
 
 jobs:
 
@@ -15,6 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the docker-compose stack
-      run: docker-compose -f docker-compose.dev.yml up -d
+      run: docker-compose -f docker-compose.prod.yml up -d
     - name: Check running containers
       run: docker ps -a
