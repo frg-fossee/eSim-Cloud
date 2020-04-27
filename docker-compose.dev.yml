@@ -3,13 +3,16 @@ services:
 
   eda-frontend:
     build: ./eda-frontend/
-    command: npm start
+    command: >
+      sh -c "npm install &&
+             npm start"
     ports:
       - "3000:3000"
     volumes:
       - ./eda-frontend:/code
     environment:
       - NODE_ENV=development
+    stdin_open: true
     depends_on:
       - django
       - celery
@@ -17,9 +20,12 @@ services:
       - db
       - mongodb
 
+
   arduino-frontend:
     build: ./ArduinoFrontend/
-    command: npm start "--host 0.0.0.0"
+    command: >
+      sh -c "npm install &&
+             npm start"
 
     ports:
       - "4200:4200"
