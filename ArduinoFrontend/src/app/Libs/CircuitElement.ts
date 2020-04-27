@@ -1,3 +1,5 @@
+import { Point } from './Point';
+
 /**
  * Abstract Class Circuit Elements
  * Inherited by Each Circuit Component
@@ -22,11 +24,11 @@ export abstract class CircuitElement {
   /**
    * Load Circuit Component
    */
-  abstract load(): void;
+  abstract load(data: any): void;
   /**
    * Returns the Circuit Node based on the x,y Position
    */
-  abstract getNode(x: number, y: number);
+  abstract getNode(x: number, y: number): Point;
   /**
    * Removes Component from Canvas and memory
    */
