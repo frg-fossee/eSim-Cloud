@@ -32,10 +32,10 @@ export default function Navbar() {
           EDA Cloud 
         </Typography>
         <nav>
-          <Link variant="button" color="textPrimary" href="#" className={classes.link}>
+          <Link variant="button" color="textPrimary" href="/" className={classes.link}>
             Home
             </Link>
-          <Link variant="button" color="textPrimary" href="#" className={classes.link}>
+          <Link variant="button" color="textPrimary" href="/editor" className={classes.link}>
             Editor
             </Link>
           <Link variant="button" color="textPrimary" href="#" className={classes.link}>

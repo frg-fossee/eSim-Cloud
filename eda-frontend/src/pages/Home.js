@@ -22,7 +22,7 @@ export default function Home() {
       <Typography variant="h5" align="center" color="textSecondary" component="p">
         Online Circuit Simulator
         <br></br><br></br>
-        <Button href="#" variant="contained" size="large" color="primary">
+        <Button href="/editor" variant="contained" size="large" color="primary">
           Schematic Editor
         </Button>
       </Typography>
