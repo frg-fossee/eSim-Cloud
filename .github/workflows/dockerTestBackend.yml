@@ -1,11 +1,11 @@
-name: Docker Build Backend
+name: Django Tests
 
 on:
   push:
-    branches: [ develop, master, devops ]
+    branches: [ develop, master ]
     paths: [ 'esim-cloud-backend/**' ]
   pull_request:
-    branches: [ develop, master, devops ]
+    branches: [ develop, master ]
     paths: [ 'esim-cloud-backend/**' ]
 
 
