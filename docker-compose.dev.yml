@@ -53,7 +53,7 @@ services:
         - mongodb
 
     env_file:
-      - .env.public
+      - .env
 
     links:
         - "redis:redis_cache"
@@ -66,7 +66,7 @@ services:
         - "redis:redis_cache"
         - "db:postgres"
     env_file:
-          - .env.public
+          - .env
 
     volumes:
       - ./esim-cloud-backend:/code
@@ -79,7 +79,7 @@ services:
         - mongodb
 
   mongodb:
-    image: mongo:latest
+    image: "mongo:${TAG_MONGO}"
     container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/usr/data/db/
@@ -91,7 +91,7 @@ services:
     command: mongod
 
   redis:
-      image: "redis:alpine"
+      image: "redis:${TAG_REDIS}"
       environment:
         - ALLOW_EMPTY_PASSWORD=yes
         - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
@@ -99,10 +99,10 @@ services:
           - ./redis_data:/data
 
   db:
-    image: mysql:8.0
+    image: "mysql:${TAG_MYSQL}"
     command: --default-authentication-plugin=mysql_native_password
     env_file:
-      - .env.public
+      - .env
     volumes:
       - ./mysql_data:/var/lib/mysql
 
