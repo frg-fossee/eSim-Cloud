@@ -1,0 +1,7 @@
+redis_data/
+mysql_data/
+.vscode
+venv
+*.sqlite3
+.env.prod
+mongo_data/
