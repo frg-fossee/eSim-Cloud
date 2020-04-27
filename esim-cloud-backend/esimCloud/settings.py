@@ -37,12 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
+    'corsheaders',
+    'simulationAPI'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -96,6 +99,9 @@ DATABASES = {
     }
 }
 
+
+DATABASE_ROUTERS = ('simulationAPI.dbrouters.to_mongo',)
+
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -126,6 +132,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+
+#Allow CORS for Public API
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Static files for django admin and DRF
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
