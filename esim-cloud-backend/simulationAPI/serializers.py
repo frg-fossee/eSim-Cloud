@@ -13,20 +13,19 @@ class FileSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
-    # User details for auth to be stored along with task.
     # user = serializers.ReadOnlyField(source='user.username')
-    files_set = FileSerializer( many=True, read_only=True)
+    file = FileSerializer( many=True, read_only=True)
 
     class Meta:
         model = Task
-        fields = ('task_id','task_time','files_set')
+        fields = ('task_id','task_time','file')
 
     def create(self, validated_data):
-        files_data = self.context.get('view').request.FILES.getlist("file")
-        logger.debug('Task Create', self.context.get('view').request.FILES)
+        # Takes file from request and stores it along with a taskid
+        files_data = list(self.context.get('view').request.FILES.getlist("file"))[0]
+        logger.info('File Upload')
         task = Task.objects.create()
-        print('task: ', task)
-        for file_data in files_data:
-            spiceFile.objects.create(task=task, file=file_data)
-            logger.info('Created Object for:', file_data.name)
+        logger.info('task: '+str(task))
+        spiceFile.objects.create(task=task, file=files_data)
+        logger.info('Created Object for:' + files_data.name)
         return task

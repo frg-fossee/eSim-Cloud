@@ -6,7 +6,7 @@ import uuid
 
 class Task(models.Model):
     class params:
-        use_db = 'mongodb'
+        use_db = 'default'
 
     # User details for auth to be stored along with task.
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -20,7 +20,7 @@ class Task(models.Model):
 
 class spiceFile(models.Model):
     class params:
-        use_db = 'mongodb'
+        use_db = 'default'
 
     file_id = models.UUIDField(primary_key = True, default=uuid.uuid4, editable=False)
     file = models.FileField(storage=FileSystemStorage(location=settings.MEDIA_ROOT))
@@ -29,4 +29,4 @@ class spiceFile(models.Model):
     # User details for auth to be stored along with task.
     # owner = models.ForeignKey('auth.User')
     task = models.ForeignKey(
-        Task, on_delete=models.CASCADE, related_name='files_set')
+        Task, on_delete=models.CASCADE, related_name='file')
