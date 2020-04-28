@@ -7,9 +7,9 @@ declare var window; // Declare window so that custom created function don't thro
  * Buzzer Class
  */
 export class Buzzer extends CircuitElement {
-  static type = 'Piezoelectric Buzzer';
   // Specification of Piezoelectric Buzzer (SI Unit)
   static specification = {
+    fullname: 'Piezoelectric Buzzer',
     voltage: {
       min: 4,
       max: 8
@@ -86,7 +86,7 @@ export class Buzzer extends CircuitElement {
       // select current breadboard
       window['isSelected'] = true;
       window['Selected'] = this;
-      // TODO: Show Properties
+      window.showProperty(() => this.properties);
     });
 
 
@@ -123,6 +123,7 @@ export class Buzzer extends CircuitElement {
     const body = document.createElement('div');
     body.innerHTML = '<h6>Buzzer</h6>';
     return {
+      title: 'Buzzer',
       keyName: this.keyName,
       id: this.id,
       body

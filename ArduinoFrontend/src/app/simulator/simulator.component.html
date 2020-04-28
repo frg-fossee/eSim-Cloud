@@ -35,7 +35,7 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
         <a href="#" class="nav-link">
-          <img src="login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
+          <img src="./assets/images/login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
         </a>
       </li>
 
@@ -146,23 +146,29 @@
   <!-- Page Content -->
   <div id="page-content-wrapper">
     <div id="holder"></div>
-    <div id="bubblebox">Positive</div>
-    <div id="propertybox" class="d-inline-block p-3" style="justify-content: space-between;">
-      <div>
-        <div style="display: flex;justify-content: space-between;">
-          <h6>LED </h6>
-          <span style="flex:1 1 auto;"></span><i class='fas fa-arrows-alt'></i>
-        </div>
-        <label>Color:</label><br>
-        <select>
-          <option>Red</option>
-          <option>Yellow</option>
-          <option>Blue</option>
-          <option>Green</option>
-        </select>
-      </div>
-    </div>
-  
   </div>
 </div>
 <!-- /#page-content-wrapper -->
+
+
+<div id="propertybox" style="top: 110px;left: calc(100vw - 230px);" (mousedown)="propertyMouseDown($event)">
+  <div style="display: flex;justify-content: space-between;">
+    <h6 class="title">Project Info</h6>
+    <span style="flex:1 1 auto;"></span>
+    <i class='fas fa-arrows-alt' (mousedown)="startPropertyDrag()" style="cursor: move;"></i>
+  </div>
+  <div class="body" style="display: flex;flex-direction: column;"></div>
+  <div *ngIf="showProperty">
+    <mat-form-field>
+      <mat-label>Project Title</mat-label>
+      <input matInput [(ngModel)]="projectTitle">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput></textarea>
+    </mat-form-field>
+  </div>
+</div>
+
+
+<div id="bubblebox"></div>

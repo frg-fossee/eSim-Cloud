@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Workspace } from '../Libs/Workspace';
-import { Buzzer } from '../Libs/Buzzer';
 
 declare var Raphael;
 
@@ -13,37 +12,10 @@ declare var Raphael;
 export class SimulatorComponent implements OnInit {
   canvas: any;
   projectTitle = 'Untitled';
+  showProperty = true;
 
   constructor(private aroute: ActivatedRoute) {
-    // Stores all the Circuit Information
-    window['scope'] = {
-    };
-    // True when simulation takes place
-    window['isSimulating'] = false;
-    // Stores the reference to the selected circuit component
-    window['selected'] = null;
-    // True when a component is selected
-    window['isSelected'] = false;
-    // Global Function to Show Properties of Circuit Component
-    window['showProperties'] = () => {
-
-    };
-    // Global Function to Hide Properties of Circuit Component
-    window['hideProperties'] = () => {
-
-    };
-    // Global Function to show Popup Bubble
-    window['showBubble'] = (label: string, x: number, y: number) => {
-
-    };
-    // Global Function to hide Popub Bubble
-    window['hideBubble'] = () => {
-
-    };
-    // Global Function to show Toast Message
-    window['showToast'] = (message: string) => {
-
-    };
+    Workspace.initializeGlobalFunctions();
   }
 
   ngOnInit() {
@@ -52,6 +24,8 @@ export class SimulatorComponent implements OnInit {
     });
 
     this.canvas = Raphael('holder', '100%', '100%');
+    Workspace.initalizeGlobalVariables();
+
     /**
      * Initialize Event Listeners -> Workspace.ts File Contains all the event listeners
      */
@@ -72,7 +46,30 @@ export class SimulatorComponent implements OnInit {
     holder.addEventListener('keyup', Workspace.keyUp, true);
     holder.addEventListener('wheel', Workspace.mouseWheel, true);
     holder.addEventListener('paste', Workspace.paste, true);
+    document.body.addEventListener('mousemove', Workspace.bodyMouseMove);
+    document.body.addEventListener('mouseup', Workspace.bodyMouseUp);
+
+    // Initialize Property Box
+    Workspace.initProperty(() => {
+      this.showProperty = !this.showProperty;
+    });
   }
+  /**
+   * Enable Move on Property Box
+   */
+  startPropertyDrag() {
+    window['property_box'].start = true;
+  }
+  /**
+   * Handle Mouse down on Property Box
+   * @param event Mouse Event
+   */
+  propertyMouseDown(event: MouseEvent) {
+    const bbox = (window['property_box'].element as HTMLElement).getBoundingClientRect();
+    window['property_box'].x = event.clientX - bbox.left;
+    window['property_box'].y = event.clientY - bbox.top;
+  }
+
   /**
    * Hide/Show Categories Component
    * @param block Clicked Element
