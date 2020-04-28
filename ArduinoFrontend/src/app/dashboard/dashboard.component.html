@@ -1,75 +1,155 @@
 <!-- As a heading -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <span class="navbar-brand mb-0 font-weigth-bold h1">Arduino Simulator</span>
-  <div class="collapse navbar-collapse">
-    <ul class="navbar-nav ml-auto">
+    <div class="collapse navbar-collapse">
+  <ul class="navbar-nav ml-auto">
+     <li class="nav-item">
+      <a href="#" class="nav-link h4">Help</a>
+     </li>
       <li class="nav-item">
-        <a href="#" class="nav-link h4">Help</a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link">
-          <img src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-top" alt="">
-        </a>
-      </li>
-    </ul>
-  </div>
+      <a href="#" class="nav-link">
+      <img src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+      </a>
+     </li>
+  </ul>
+    </div>
 </nav>
 
 <div class="container-fluid mt-3">
-  <div class="row ">
-    <div class="col">
-      <div class="card" style="width: 18rem;">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <img class="card-img-top" src="../assets/images/login.svg" width="60" height="60" alt="Card image cap">
-            <h3 class="text-center">Username</h3>
-          </li>
-          <li class="btn btn-outline-secondary mb-1">EDA Design</li>
-          <li class="btn btn-primary text-left">Arduino Circuits</li>
-        </ul>
-      </div>
-    </div>
-    <div class="col mt-auto">
-      <h5>Arduino Circuits</h5>
-      <a class="btn btn-primary mb-3" style="color: white;" [routerLink]="['/simulator']">+ New Circuit</a>
-      <div class="card" style="width: 15rem;">
-        <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Projectname</h5>
-          <p class="card-text">Test1</p>
-          <p class="card-text">2 hours</p>
+<div class="row ">
+    <div class="col-md-3">
+        <div class="card" style="width: 16rem">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <img class="card-img-top" src="../assets/images/login.svg" width="60" height="60" alt="Card image cap">
+                    <h3 class="text-center">Username</h3>
+                </li>
+                <li class="list-group-item">
+                    <form class="form-inline" action="#">
+                        <div class="form-group mb-1 mt-1">
+
+                                <input type="search" class="form-control form-control-md " id="search" placeholder="Search">
+
+                        </div>
+                    </form>
+                </li>
+                <li class="list-group-item  btn btn-outline-secondary mb-1 text-left
+                           ">EDA Design</li>
+                <li class="btn btn-primary text-left ">Arduino Circuits</li>
+            </ul>
         </div>
-      </div>
     </div>
-    <div class="col mt-auto ">
-      <div class="card" style="width: 15rem;">
-        <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Projectname</h5>
-          <p class="card-text">Test1</p>
-          <p class="card-text">2 hours</p>
+    <div class="col-md-9">
+        <div class="row ">
+            <!-- first card-->
+            <div class="col mt-auto">
+                <h5>Arduino Circuits</h5>
+                <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New Circuit</a>
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                    <h5 class="card-title">Project Name</h5>
+                    <p class="card-text">Test1</p>
+                    <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!--/end firstcard -->
+            <!--second card-->
+            <div class="col mt-auto ">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Project Name</h5>
+                            <p class="card-text">Test1</p>
+                            <p class="card-text">2 hours</p>
+                        </div>
+                </div>
+            </div>
+            <!--/ end second card -->
+            <!-- third card -->
+            <div class="col mt-auto">
+                <div class="card" style="width:15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!-- /end third card -->
+            <!-- fourth card -->
+            <div class="col mt-auto">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!--/end fourth card -->
         </div>
-      </div>
-    </div>
-    <div class="col mt-auto">
-      <div class="card" style="width:15rem;">
-        <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Projectname</h5>
-          <p class="card-text">Test1</p>
-          <p class="card-text">2 hours</p>
+        <!--end of row1 -->
+        <div style="height: 30px;"></div>
+        <!--start of row 2 -->
+        <div class="row">
+            <!-- first card-->
+            <div class="col mt-auto">
+
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                    <h5 class="card-title">Project Name</h5>
+                    <p class="card-text">Test1</p>
+                    <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!--/end firstcard -->
+            <!--second card-->
+            <div class="col mt-auto ">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Project Name</h5>
+                            <p class="card-text">Test1</p>
+                            <p class="card-text">2 hours</p>
+                        </div>
+                </div>
+            </div>
+            <!--/ end second card -->
+            <!-- third card -->
+            <div class="col mt-auto">
+                <div class="card" style="width:15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!-- /end third card -->
+            <!-- fourth card -->
+            <div class="col mt-auto">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!--/end fourth card -->
+
+
         </div>
-      </div>
+        <div style="height: 30px;"></div>
+
     </div>
-    <div class="col mt-auto">
-      <div class="card" style="width: 15rem;">
-        <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
-        <div class="card-body">
-          <h5 class="card-title">Projectname</h5>
-          <p class="card-text">Test1</p>
-          <p class="card-text">2 hours</p>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
 </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Workspace } from '../Libs/Workspace';
+import { Buzzer } from '../Libs/Buzzer';
 
 declare var Raphael;
 
@@ -11,6 +12,7 @@ declare var Raphael;
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
+  projectTitle = 'Untitled';
 
   constructor(private aroute: ActivatedRoute) {
     // Stores all the Circuit Information
@@ -71,7 +73,10 @@ export class SimulatorComponent implements OnInit {
     holder.addEventListener('wheel', Workspace.mouseWheel, true);
     holder.addEventListener('paste', Workspace.paste, true);
   }
-
+  /**
+   * Hide/Show Categories Component
+   * @param block Clicked Element
+   */
   Collapse(block: HTMLElement) {
     const collapsedDivs = Array.from(document.getElementsByClassName('show-div'));
 
@@ -84,4 +89,23 @@ export class SimulatorComponent implements OnInit {
     block.classList.toggle('show-div');
   }
 
+  /**
+   * Hide/Show (toggle) Code Editor
+   * @param elem Code Editor Parent Div
+   */
+  toggleCodeEditor(elem: HTMLElement) {
+    elem.classList.toggle('show-code-editor');
+  }
+
+  /**
+   * Project Title input focus out callback
+   * @param evt Event
+   */
+  onFocusOut(evt) {
+    // check if textbox is empty if it is change title back to Untitled
+    const el = evt.target;
+    if (el.value === '') {
+      el.value = 'Untitled';
+    }
+  }
 }

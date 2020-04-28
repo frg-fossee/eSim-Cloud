@@ -2,6 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SimulatorComponent } from './simulator.component';
 import { ActivatedRoute, Data, Params } from '@angular/router';
+import { CodeEditorComponent } from '../code-editor/code-editor.component';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+
 
 describe('SimulatorComponent', () => {
   let component: SimulatorComponent;
@@ -9,7 +12,7 @@ describe('SimulatorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SimulatorComponent],
+      declarations: [SimulatorComponent, CodeEditorComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -21,7 +24,8 @@ describe('SimulatorComponent', () => {
             },
           }
         }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));

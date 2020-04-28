@@ -26,20 +26,54 @@
     cursor: pointer;
     overflow: scroll;
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 101px);
     background-color: #eee;
     padding-left: 0.525px;
 }
 
 #sidebar-wrapper {
     overflow-y: scroll;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 101px);
     width: 400px;
     margin-left: -15rem;
     -webkit-transition: margin .25s ease-out;
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
+}
+
+.code-editor {
+    position: fixed;
+    top: 100px;
+    left: -600px;
+    width: 500px;
+    transition: left 0.5s ease-in-out;
+}
+
+.show-code-editor {
+    left: 0;
+}
+
+#project-title {
+    color: black !important;
+    background-color: transparent;
+    border: none;
+}
+
+#project-title:focus {
+    background-color: #fff !important;
+}
+
+#secondary-header {
+    display: flex;
+    background-color: whitesmoke;
+    justify-content: space-between;
+    max-height: 50px;
+}
+
+#secondary-header > button {
+    font-size: 20px;
+    background-color: #fff;
 }
 
 #sidebar-wrapper .sidebar-heading {

@@ -1,6 +1,10 @@
 <!-- As a heading -->
-<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #999;height: 60px;">
+<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #999;height: 50px;">
   <span class="navbar-brand mb-0 font-weight-bold text-dark h1">Simulator</span>
+  <form class="form-inline my-2 my-lg-0">
+    <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
+      id="project-title" (focusout)="onFocusOut($event)">
+  </form>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item dropdown text-white">
@@ -31,7 +35,7 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
         <a href="#" class="nav-link">
-          <img src="../assets/images/login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
+          <img src="login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
         </a>
       </li>
 
@@ -39,10 +43,43 @@
   </div>
 </nav>
 
-<div class="d-flex" id="wrapper">
 
+<!-- start of icon block -->
+<div id="secondary-header">
+  <button class="btn btn-light btn-xs ml-2 mb-1 mt-1 mr-1  bg-white" style='font-size: 20px'
+    (click)="toggleCodeEditor(codeDiv)"> <i class='far fa-file-code'> Code</i></button>
+
+  <button class="btn btn-light btn-sm mb-1 mt-1"><i class='fas fa-caret-right'></i>
+    Start Stimulation</button>
+
+  <span style="flex:1 1 auto;"></span>
+
+  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"><i class="fa fa-trash"></i></button>
+
+  <button class="btn btn-light btn-sm mb-1 mt-1"><i class="fa fa-search-plus"></i></button>
+
+  <button class="btn btn-light btn-sm mb-1 mt-1" style="margin-right: 30px;"><i class="fa fa-search-minus"></i></button>
+
+  <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
+
+  <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-share"></i></button>
+
+  <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-link fa-rotate-45"
+      style="font-size:20px"></i></button> -->
+
+</div>
+<!-- end of icon block -->
+
+
+<div class="code-editor" #codeDiv>
+  <app-code-editor width="500" height="100"></app-code-editor>
+</div>
+
+
+
+<div class="d-flex" id="wrapper">
   <!-- Sidebar -->
-  <div class="border-right" id="sidebar-wrapper" style="background-color: #ddd;">
+  <div class="border-right" id="sidebar-wrapper" style="background-color:#ddd;">
     <h4 class="text-center text-primary mt-2">Circuit Components</h4>
 
     <div (click)="Collapse(itemsController)">
