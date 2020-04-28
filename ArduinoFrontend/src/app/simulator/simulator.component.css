@@ -22,8 +22,13 @@
     transition: max-height .5s ease-in-out;
 }
 
-#holder{
-  cursor: pointer;
+#holder {
+    cursor: pointer;
+    overflow: scroll;
+    width: 100%;
+    height: 100%;
+    background-color: #eee;
+    padding-left: 0.525px;
 }
 
 #sidebar-wrapper {

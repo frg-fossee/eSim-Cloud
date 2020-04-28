@@ -71,8 +71,7 @@ export class Point {
 
     // Set mouse out popup
     this.body.mouseout(() => {
-      // Close the popup
-      this.canvas.hidePopup();
+      // TODO: Hide Label Bubble
     });
 
     // Set click listener

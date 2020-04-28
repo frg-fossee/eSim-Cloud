@@ -7,7 +7,7 @@ import { Point } from './Point';
 export abstract class CircuitElement {
   public keyName: string; // Circuit Component Name
   public id: number; // Stores the id of the Component
-  public nodes: [] = []; // Stores the Nodes of a Component
+  public nodes: Point[] = []; // Stores the Nodes of a Component
 
   /**
    * Creates Circuit Component
