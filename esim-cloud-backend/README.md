@@ -2,7 +2,7 @@
 
 
 
-### Configurable Environment Variables
+### Configurable Environment Variables for docker container
 |  Variable 	|   Description	| Default
 |---	    	|---            |---
 | SECRET_KEY  	|   Secret key to use for Django| Generated Key

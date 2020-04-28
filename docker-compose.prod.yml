@@ -1,52 +1,51 @@
 version: '3'
 services:
 
-  eda-frontend:
-    build: ./eda-frontend/
-    command: >
-      sh -c "npm install &&
-             npm start"
+  nginx:
+    image: nginx
     ports:
-      - "3000:3000"
+      - 80:80
     volumes:
-      - ./eda-frontend:/code
-    environment:
-      - NODE_ENV=development
-    stdin_open: true
+      - tmp_vol:/tmp
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./eda-frontend/build:/usr/share/nginx/eda
+      - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino
+      - ./esim-cloud-backend/static:/usr/share/nginx/django_static
     depends_on:
       - django
-      - celery
-      - redis
-      - db
-      - mongodb
+#       - eda-frontend
+      - arduino-frontend
+
+#   eda-frontend:
+#     build: ./eda-frontend/
+#     command: >
+#       sh -c "npm install &&
+#            npm run build"
+#     environment:
+#       - "PUBLIC_URL=${EDA_PUBLIC_URL}"
+#     volumes:
+#       - ./eda-frontend:/code
+
 
 
   arduino-frontend:
     build: ./ArduinoFrontend/
     command: >
       sh -c "npm install &&
-             npm start"
-
-    ports:
-      - "4200:4200"
-
+             npm run ng -- build --base-href ${ARDUINO_BASE_HREF}"
+    environment:
+      - NODE_ENV=production
     volumes:
       - ./ArduinoFrontend:/code
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - django
-      - celery
-      - redis
-      - db
-      - mongodb
+
 
 
   django:
     build: ./esim-cloud-backend/
-    command: "python3 manage.py runserver 0.0.0.0:8000"
-    ports:
-      - "8000:8000"
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate --noinput &&
+             gunicorn -w ${GUNICORN_WORKERS} --reload -b 0.0.0.0:8000 --log-level info esimCloud.wsgi"
     volumes:
       - ./esim-cloud-backend:/code
       - run_vol:/var/run
@@ -57,13 +56,15 @@ services:
         - db
         - celery
         - mongodb
-
     env_file:
-      - .env
-
+      - .env.prod
+    environment:
+      - DJANGO_DEBUG=False
     links:
-        - "redis:redis_cache"
-        - "db:mysql"
+      - "redis:redis"
+      - "db:db"
+      - "mongodb:mongodb"
+
 
   celery:
     build: ./esim-cloud-backend/
@@ -72,17 +73,25 @@ services:
         - "redis:redis_cache"
         - "db:postgres"
     env_file:
-          - .env
-
+          - .env.prod
+    environment:
+          - DJANGO_DEBUG=False
     volumes:
       - ./esim-cloud-backend:/code
       - run_vol:/var/run
       - cache_vol:/var/cache
       - tmp_vol:/tmp
     depends_on:
-        - redis
-        - db
-        - mongodb
+      - redis
+      - db
+      - mongodb
+    links:
+      - "redis:redis"
+      - "db:db"
+      - "mongodb:mongodb"
+
+    deploy:
+      replicas: 3
 
   mongodb:
     image: "mongo:${TAG_MONGO}"
@@ -92,8 +101,6 @@ services:
       - MONGO_LOG_DIR=/dev/null
     volumes:
       - ./mongo_data:/usr/data/db
-    ports:
-      - 27017:27017
     command: mongod
 
   redis:
