@@ -1,3 +1,44 @@
+#bubblebox {
+    top: 120px;
+	position: absolute;
+    background: #000;
+    padding: 10px;
+    color: #fff;
+    border-radius: .4em;
+    z-index: 100;
+    display:block;
+}
+
+#bubblebox:after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: 0;
+	height: 0;
+	border: 10px solid transparent;
+    border-bottom-color: #000;
+    border-top: 0;
+    margin-left: -10px;
+    margin-top: -10px;
+}
+
+
+#propertybox{
+    display:block;
+    position: fixed;
+    min-width: 150px;
+    min-height: 50px;
+    z-index: 100;
+    background: #fff;
+    right: calc(73vw - 1100px);
+    top: 120px;
+    box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
+    padding: 15px;
+    border-radius: 5px;
+}
+
+
 * {
     user-select: none;
 }
