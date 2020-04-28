@@ -12,5 +12,6 @@ from simulationAPI import views as simulationAPI_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('upload', simulationAPI_views.NetlistUploader.as_view(), name='netlistUploader'),
+    path('upload', simulationAPI_views.NetlistUploader.as_view(),
+         name='netlistUploader'),
 ]

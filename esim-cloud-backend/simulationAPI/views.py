@@ -1,8 +1,6 @@
 from simulationAPI.serializers import TaskSerializer
-from rest_framework import viewsets
 from rest_framework.permissions import AllowAny
-from rest_framework.parsers import JSONParser,MultiPartParser, FormParser
-from simulationAPI.models import Task
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status

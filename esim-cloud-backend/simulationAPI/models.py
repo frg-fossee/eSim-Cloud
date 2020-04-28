@@ -12,7 +12,8 @@ class Task(models.Model):
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     task_time = models.DateTimeField(auto_now=True, db_index=True)
-    task_id = models.UUIDField(primary_key = True, default=uuid.uuid4, editable=False)
+    task_id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False)
 
     def save(self, *args, **kwargs):
         super(Task, self).save(*args, **kwargs)
@@ -22,8 +23,10 @@ class spiceFile(models.Model):
     class params:
         use_db = 'default'
 
-    file_id = models.UUIDField(primary_key = True, default=uuid.uuid4, editable=False)
-    file = models.FileField(storage=FileSystemStorage(location=settings.MEDIA_ROOT))
+    file_id = models.UUIDField(
+        primary_key=True, default=uuid.uuid4, editable=False)
+    file = models.FileField(
+        storage=FileSystemStorage(location=settings.MEDIA_ROOT))
     upload_time = models.DateTimeField(auto_now=True, db_index=True)
 
     # User details for auth to be stored along with task.

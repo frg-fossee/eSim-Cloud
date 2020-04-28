@@ -1,5 +1,8 @@
 from simulationAPI import models
-allmodels = dict([(name.lower(), cls) for name, cls in models.__dict__.items() if isinstance(cls, type)])
+allmodels = dict([(name.lower(), cls)
+                  for name, cls in models.__dict__.items() if
+                  isinstance(cls, type)])
+
 
 class to_mongo(object):
     def db_for_read(self, model, **hints):
