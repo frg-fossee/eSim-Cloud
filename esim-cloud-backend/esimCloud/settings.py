@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", 'kk5tq+=kyyicitl+1ki!wyx@*mz^vmei6_q25
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=True))
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
 
 # Application definition
@@ -86,17 +86,17 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
-    "mongodb":{
-        "ENGINE": 'djongo',
-        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
-        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
-        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-        "HOST": "mongodb",
-        "PORT": 27017,
-        'AUTH_SOURCE': 'admin',
-        'AUTH_MECHANISM': 'SCRAM-SHA-1',
+    # "mongodb":{
+    #     "ENGINE": 'djongo',
+    #     "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
+    #     "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
+    #     "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
+    #     "HOST": "localhost",
+    #     "PORT": 27017,
+    #     'AUTH_SOURCE': 'admin',
+    #     'AUTH_MECHANISM': 'SCRAM-SHA-1',
 
-    }
+    # }
 }
 
 
@@ -153,3 +153,18 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = ()
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
