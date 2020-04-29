@@ -7,8 +7,9 @@
     justify-content: space-between;
     cursor: pointer;
 }
-.component-card:hover{
-  background-color: #eee;
+
+.component-card:hover {
+    background-color: #eee;
 }
 
 .component-card img {

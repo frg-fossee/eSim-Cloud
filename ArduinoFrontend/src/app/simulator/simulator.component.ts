@@ -2,7 +2,7 @@ import { Component, OnInit, wtfLeave } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Workspace } from '../Libs/Workspace';
 import { Buzzer } from '../Libs/Buzzer';
-
+import { Utils } from '../Libs/Utils';
 declare var Raphael;
 
 @Component({
@@ -14,6 +14,8 @@ export class SimulatorComponent implements OnInit {
   canvas: any;
   projectTitle = 'Untitled';
   showProperty = true;
+  componentsBox = Utils.componentBox;
+  components = Utils.components;
 
   constructor(private aroute: ActivatedRoute) {
     Workspace.initializeGlobalFunctions();
@@ -34,7 +36,7 @@ export class SimulatorComponent implements OnInit {
     this.canvas = Raphael('holder', '100%', '100%');
     document.querySelector('#holder > svg').appendChild(gtag);
     this.canvas.canvas = gtag;
-
+    window['canvas'] = this.canvas;
 
     Workspace.initalizeGlobalVariables();
 
@@ -62,8 +64,8 @@ export class SimulatorComponent implements OnInit {
     document.body.addEventListener('mouseup', Workspace.bodyMouseUp);
 
     // Initialize Property Box
-    Workspace.initProperty(() => {
-      this.showProperty = !this.showProperty;
+    Workspace.initProperty(v => {
+      this.showProperty = v;
     });
   }
   /**
@@ -118,7 +120,12 @@ export class SimulatorComponent implements OnInit {
     }
   }
 
-  componentdbClick() {
-    const x = new Buzzer(this.canvas, 10, 10);
+  componentdbClick(key: string) {
+    Workspace.addComponent(key, 100, 100, 0, 0);
+  }
+
+  dragStart(event: DragEvent, key: string) {
+    event.dataTransfer.dropEffect = 'copyMove';
+    event.dataTransfer.setData('text', key);
   }
 }

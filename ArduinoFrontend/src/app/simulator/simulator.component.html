@@ -96,17 +96,18 @@
       </div>
     </div>
 
-    <div (click)="Collapse(outputDiv)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark"  (click)="Collapse(outputDiv)">
         Output
       </div>
 
       <div class="collapse-div" #outputDiv>
-        <div class="component-row">
-          <div class="component-card" (dblclick)="componentdbClick()">
-            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
-            <label>Buzzer</label>
+        <div class="component-row" *ngFor="let row of componentsBox.output">
+          <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+            (dragstart)="dragStart($event,item)">
+            <img src={{components[item].image}} alt="{{components[item].name}}">
+            <label>{{components[item].name}}</label>
           </div>
           <!-- <div class="component-card">
             <img src="./assets/images/components/Buzzer.png" alt="Buzzer">

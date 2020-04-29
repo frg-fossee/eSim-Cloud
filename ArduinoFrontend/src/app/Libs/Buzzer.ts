@@ -86,7 +86,7 @@ export class Buzzer extends CircuitElement {
       // select current breadboard
       window['isSelected'] = true;
       window['Selected'] = this;
-      window.showProperty(() => this.properties);
+      window.showProperty(() => this.properties());
     });
 
 
@@ -121,7 +121,6 @@ export class Buzzer extends CircuitElement {
   // return propeties object
   properties() {
     const body = document.createElement('div');
-    body.innerHTML = '<h6>Buzzer</h6>';
     return {
       title: 'Buzzer',
       keyName: this.keyName,

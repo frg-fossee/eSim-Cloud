@@ -1,3 +1,4 @@
+import { Utils } from './Utils';
 
 export class Workspace {
   // TODO: Add Comments
@@ -16,6 +17,11 @@ export class Workspace {
     // Stores all the Circuit Information
     window['scope'] = {
     };
+    for (const key in Utils.components) {
+      if (window['scope'][key] === null || window['scope'][key] === undefined) {
+        window['scope'][key] = [];
+      }
+    }
     // True when simulation takes place
     window['isSimulating'] = false;
     // Stores the reference to the selected circuit component
@@ -28,6 +34,7 @@ export class Workspace {
       y: 0,
       element: document.getElementById('propertybox'),
       title: document.querySelector('#propertybox .title'),
+      body: document.querySelector('#propertybox .body'),
       mousedown: false
     };
   }
@@ -35,12 +42,16 @@ export class Workspace {
   static initProperty(toggle) {
     // Global Function to Show Properties of Circuit Component
     window['showProperty'] = (callback: any) => {
-      // TODO: Buisness Logic
-      toggle();
+      const data = callback();
+      window['property_box'].title.innerText = data.title;
+      window['property_box'].body.innerHTML = '';
+      window['property_box'].body.appendChild(data.body);
+      toggle(false);
     };
     // Global Function to Hide Properties of Circuit Component
     window['hideProperties'] = () => {
-      toggle();
+      window['property_box'].title.innerText = 'Project Info';
+      toggle(true);
     };
   }
 
@@ -82,7 +93,7 @@ export class Workspace {
   }
 
   static click(event: MouseEvent) {
-
+    window['hideProperties']();
   }
 
   static mouseMove(event: MouseEvent) {
@@ -128,15 +139,21 @@ export class Workspace {
   }
 
   static dragLeave(event: DragEvent) {
-
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   static dragOver(event: DragEvent) {
-
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   static drop(event: DragEvent) {
-
+    event.preventDefault();
+    event.stopPropagation();
+    const bbox = (event.target as HTMLElement).getBoundingClientRect();
+    const className = event.dataTransfer.getData('text'); // get the event data
+    Workspace.addComponent(className, event.clientX, event.clientY, bbox.left, bbox.top);
   }
 
   static keyDown(event: KeyboardEvent) {
@@ -153,5 +170,15 @@ export class Workspace {
   }
   static paste(event: ClipboardEvent) {
 
+  }
+
+  static addComponent(classString: string, x: number, y: number, offsetX: number, offsetY: number) {
+    const myClass = Utils.components[classString].className;
+    const obj = new myClass(
+      window['canvas'],
+      x - offsetX,
+      y - offsetY
+    );
+    window['scope'][classString].push(obj);
   }
 }
