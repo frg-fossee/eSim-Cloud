@@ -1,0 +1,12 @@
+{
+  "Buzzer": {
+    "name": "Piezoelectric Buzzer",
+    "desctiption": "a piezo buzzer is a type of electronic device that’s used to produce a tone, alarm or sound. It’s lightweight with a simple construction, and it’s typically a low-cost product. Yet at the same time, depending on the piezo ceramic buzzer specifications, it’s also reliable and can be constructed in a wide range of sizes that work across varying frequencies to produce different sound outputs.",
+    "properties": {
+      "Minimum Voltage": "4V",
+      "Maximum Voltage": "8V",
+      "Maximum Current": "0.03A",
+      "Frequency": "2300Hz"
+    }
+  }
+}
