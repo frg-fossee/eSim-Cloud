@@ -3,7 +3,7 @@
      width="1500" height="2500" viewBox="-750.0 -1250.0 1500 2500">
 <defs>
 </defs>
-<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="10" stroke="red" fill-opacity="0.3" />
+<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="10" stroke="black" fill-opacity="0.3" />
 <text x="-260" y="100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">~LE</text>
 <text x="-400.0" y="70" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
 <path d="M-500,100 L-300,100" stroke="black" stroke-width="5" />

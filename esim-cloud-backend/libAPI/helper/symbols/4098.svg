@@ -3,9 +3,9 @@
      width="1500" height="2500" viewBox="-750.0 -1250.0 1500 2500">
 <defs>
 </defs>
-<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="0" stroke="red" fill-opacity="0.3" />
-<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="0" stroke="red" fill-opacity="0.3" />
-<path d="M-200,-300 L200,-300 L200,300 L-200,300 L-200,-300" stroke-width="0" stroke="red" fill-opacity="0.3" />
+<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="0" stroke="black" fill-opacity="0.3" />
+<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="0" stroke="black" fill-opacity="0.3" />
+<path d="M-200,-300 L200,-300 L200,300 L-200,300 L-200,-300" stroke-width="0" stroke="black" fill-opacity="0.3" />
 <text x="-280" y="-300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Cx1</text>
 <text x="-350.0" y="-330" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
 <path d="M-400,-300 L-300,-300" stroke="black" stroke-width="5" />

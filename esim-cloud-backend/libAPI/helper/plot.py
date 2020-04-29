@@ -1,6 +1,9 @@
 import drawSvg as draw
 
-def drawCircle(d,x,y,r,fill="red",pen=2,stroke="black"):
+
+STROKE_COLOR = "black"
+
+def drawCircle(d,x,y,r,fill="red",pen=2,stroke=STROKE_COLOR):
 
     if(fill == 'f'):
         kwargs = {"fill_opacity" : 0.3}
@@ -9,12 +12,12 @@ def drawCircle(d,x,y,r,fill="red",pen=2,stroke="black"):
     else:
         kwargs = {}
     d.append(draw.Circle(x, y, r,
-             stroke_width=pen, stroke='red',**kwargs))
+             stroke_width=pen, stroke=STROKE_COLOR,**kwargs))
 
     return d
 
 
-def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke='black'):
+def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke=STROKE_COLOR):
 
     # 'f'->filled shape in background color
     # 'F' -> filled shape in pen color
@@ -32,13 +35,13 @@ def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke='black'):
     else:
         kwargs = {}
     d.append(draw.Lines(x1,y1,x2,y1,x2,y2,x1,y2,x1,y1,
-                        stroke_width=pen, stroke='red',
+                        stroke_width=pen, stroke=STROKE_COLOR,
                         **kwargs))
 
     return d
 
 
-def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',stroke="black",stroke_width=5):
+def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',stroke=STROKE_COLOR,stroke_width=5):
 
     x1 = int(x1)
     y1 = int(y1)
