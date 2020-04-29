@@ -189,6 +189,42 @@ function main(container)
                 v68.value='8';
                 v68.geometry.offset = new mxPoint(-v61.geometry.width, 143);
                 v6.insert(v68);
+				var v69 = v61.clone();
+				v69.value = '9';
+				v69.geometry.x = 1;
+				v69.style =	'shape=line;align=right;verticalAlign=middle;fontSize=10;routingCenterX=0.5;'+
+				'spacingRight=12;fontColor=' + fontColor + ';strokeColor=' + strokeColor;
+				v69.geometry.offset = new mxPoint(0, 3);
+				v6.insert(v69);
+				var v610 = v69.clone();
+				v610.value = '10';
+				v610.geometry.offset = new mxPoint(0, 23);
+				v6.insert(v610);
+				var v611 = v69.clone();
+				v611.value = '11';
+				v611.geometry.offset = new mxPoint(0, 43);
+				v6.insert(v611);
+				var v612 = v69.clone();
+				v612.value = '12';
+				v612.geometry.offset = new mxPoint(0, 63);
+				v6.insert(v612);
+				var v613 = v69.clone();
+				v613.value = '13';
+				v613.geometry.offset = new mxPoint(0, 83);
+				v6.insert(v613);
+				var v614 = v69.clone();
+				v614.value = '14';
+				v614.geometry.offset = new mxPoint(0, 103);
+				v6.insert(v614);
+				var v615 = v69.clone();
+				v615.value = '15';
+				v615.geometry.offset = new mxPoint(0, 123);
+				v6.insert(v615);
+				var v616 = v69.clone();
+				v616.value = '16';
+				v616.geometry.offset = new mxPoint(0, 143);
+				v6.insert(v616);
+				
                 
 
 				var v1 = graph.insertVertex(parent, null, 'J1', 90, 40, 40, 80,
