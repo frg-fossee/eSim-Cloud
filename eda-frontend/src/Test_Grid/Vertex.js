@@ -44,23 +44,6 @@ function main(container)
             // Adds rubberband selection - Understood
 			new mxRubberband(graph);
 
-            // Alternative solution for implementing connection points without child cells.
-			// This can be extended as shown in portrefs.html example to allow for per-port
-			// incoming/outgoing direction.
-			/*graph.getAllConnectionConstraints = function(terminal)
-			{
-			   var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null;
-
-			   if ((geo != null ? !geo.relative : false) &&
-				   this.getModel().isVertex(terminal.cell) &&
-				   this.getModel().getChildCount(terminal.cell) == 0)
-			   {
-					return [new mxConnectionConstraint(new mxPoint(0, 0.5), false),
-				    	new mxConnectionConstraint(new mxPoint(1, 0.5), false)];
-			    }
-
-				return null;
-            };*/
             // Makes sure non-relative cells can only be connected via constraints
 			graph.connectionHandler.isConnectableCell = function(cell) //understood
 			{
@@ -82,7 +65,7 @@ function main(container)
             // Adds a special tooltip for edges
 			graph.setTooltips(true);
 			
-            /*var getTooltipForCell = graph.getTooltipForCell;
+            var getTooltipForCell = graph.getTooltipForCell;
             graph.getTooltipForCell = function(cell)
 			{
 				var tip = '';
@@ -114,8 +97,8 @@ function main(container)
 				}
 
 				return tip;
-            };*/
-            // Switch for black background and bright styles
+            };
+            //Switch for black background and bright styles
             var invert = false;
             
             if (invert)
@@ -150,17 +133,15 @@ function main(container)
 			style['fontSize'] = '9';
 			style['movable'] = '0';
 			style['strokeWidth'] = strokeWidth;
-			//style['rounded'] = '1';
-			
-			// Sets join node size
+
 			style['startSize'] = joinNodeSize;
 			style['endSize'] = joinNodeSize;
 			
 			style = graph.getStylesheet().getDefaultVertexStyle();
 			style['gradientDirection'] = 'south';
-			//style['gradientColor'] = '#909090';
+			
 			style['strokeColor'] = strokeColor;
-			//style['fillColor'] = '#e0e0e0';
+			
 			style['fillColor'] = 'none';
 			style['fontColor'] = fontColor;
 			style['fontStyle'] = '1';
@@ -174,7 +155,7 @@ function main(container)
 			{
                 var v6 = graph.insertVertex(parent, null, 'J1', 400, 40, 70, 170,
 						'verticalLabelPosition=top;verticalAlign=bottom;shadow=1;fillColor=' + fillColor);
-                v6.setConnectable(false); //What is this?
+                v6.setConnectable(false); 
                 var v61 = graph.insertVertex(v6, null, '1', 0, 0, 10, 16,
 						'shape=line;align=left;verticalAlign=middle;fontSize=10;routingCenterX=-0.5;'+
                         'spacingLeft=12;fontColor=' + fontColor + ';strokeColor=' + strokeColor);
@@ -212,8 +193,7 @@ function main(container)
 
 				var v1 = graph.insertVertex(parent, null, 'J1', 90, 40, 40, 80,
 						'verticalLabelPosition=top;verticalAlign=bottom;shadow=1;fillColor=' + fillColor);
-				v1.setConnectable(false); //What is this?
-
+				v1.setConnectable(false); 
 				var v11 = graph.insertVertex(v1, null, '1', 0, 0, 10, 16,
 						'shape=line;align=left;verticalAlign=middle;fontSize=10;routingCenterX=-0.5;'+
 						'spacingLeft=12;fontColor=' + fontColor + ';strokeColor=' + strokeColor);
