@@ -36,3 +36,63 @@ def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke='black'):
                         **kwargs))
 
     return d
+
+
+def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',stroke="black",stroke_width=5):
+
+    x1 = int(x1)
+    y1 = int(y1)
+    text_size = 50
+    length = int(length)
+    pin_name_offset=int(pin_name_offset)
+    if(orientation=="R"):
+        x2 = x1+length
+        y2 = y1
+
+        #to position pin number properly 
+        x = x1 + (length/2)
+        y = y1 + 30
+        # x = x1
+        if pinName != "~":
+            d.append(draw.Text(pinName,text_size,x1+length+pin_name_offset,y1,center=0.6,fill='black'))
+        d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
+    elif(orientation=="L"):
+        x2 = x1-length
+        y2 = y1
+
+        #to position pin number properly 
+        x = x1 - (length/2)
+        y = y1 + 30
+        # x = x1
+
+        d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
+        if pinName != "~":
+            d.append(draw.Text(pinName,text_size,x1-length-pin_name_offset,y1,center=0.6,fill='black'))
+    elif(orientation=="U"):
+        x2 = x1
+        y2 = y1 + length
+
+        #to position pin number properly 
+        x = x1 - 40
+        y = y1 + (length/2)
+        # y = y1
+        d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
+        if pinName != "~":
+            d.append(draw.Text(pinName,text_size,x1,y1+length+pin_name_offset,center=0.6,fill='black'))
+
+    else:
+        x2 = x1
+        y2 = y1 - length
+        # y2 = y1
+        #to position pin number properly 
+        x = x1 - 40
+        y = y1 - (length/2)
+        d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
+        if pinName != "~":
+            d.append(draw.Text(pinName,text_size,x1,y1-length-pin_name_offset,center=0.6,fill='black'))
+
+    d.append(draw.Line(x1,y1,x2,y2,stroke=stroke, stroke_width=stroke_width))
+    
+    
+
+    return d
