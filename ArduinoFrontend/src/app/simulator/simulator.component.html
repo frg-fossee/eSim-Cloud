@@ -88,7 +88,7 @@
         Controllers
       </div>
 
-      <div id="controller-block" class="collapse-div" #itemsController>
+      <div class="collapse-div" #itemsController>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
@@ -102,11 +102,22 @@
         Output
       </div>
 
-      <div id="controller-block" class="collapse-div" #outputDiv>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+      <div class="collapse-div" #outputDiv>
+        <div class="component-row">
+          <div class="component-card" (dblclick)="componentdbClick()">
+            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
+            <label>Buzzer</label>
+          </div>
+          <!-- <div class="component-card">
+            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
+            <label>Buzzer</label>
+          </div>
+          <div class="component-card">
+            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
+            <label>Buzzer</label>
+          </div> -->
+        </div>
+
       </div>
     </div>
 
@@ -116,11 +127,7 @@
         Input
       </div>
 
-      <div id="controller-block" class="collapse-div" #inputDiv>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+      <div class="collapse-div" #inputDiv>
       </div>
     </div>
 
@@ -130,11 +137,7 @@
         Sources
       </div>
 
-      <div id="controller-block" class="collapse-div" #sourceDiv>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+      <div class="collapse-div" #sourceDiv>
       </div>
     </div>
 

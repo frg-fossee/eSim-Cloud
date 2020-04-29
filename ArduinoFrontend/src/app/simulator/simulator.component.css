@@ -1,3 +1,31 @@
+.component-card {
+    max-width: 32%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid darkgray;
+    padding: 10px;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.component-card:hover{
+  background-color: #eee;
+}
+
+.component-card img {
+    max-width: 100%;
+}
+
+.component-card label {
+    margin: 0 auto 0 auto;
+}
+
+.component-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 #bubblebox {
     top: 120px;
     position: absolute;
@@ -56,7 +84,7 @@
 }
 
 .show-div {
-    max-height: 100vh;
+    max-height: 1000vh;
     transition: max-height .5s ease-in-out;
 }
 

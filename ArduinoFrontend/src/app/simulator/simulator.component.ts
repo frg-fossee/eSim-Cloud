@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, wtfLeave } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Workspace } from '../Libs/Workspace';
+import { Buzzer } from '../Libs/Buzzer';
 
 declare var Raphael;
 
@@ -18,12 +19,23 @@ export class SimulatorComponent implements OnInit {
     Workspace.initializeGlobalFunctions();
   }
 
+  makeSVGg() {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    el.setAttribute('transform', 'scale(1,1)translate(0,0)');
+    return el;
+  }
+
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
       console.log(v);
     });
 
+    const gtag = this.makeSVGg();
     this.canvas = Raphael('holder', '100%', '100%');
+    document.querySelector('#holder > svg').appendChild(gtag);
+    this.canvas.canvas = gtag;
+
+
     Workspace.initalizeGlobalVariables();
 
     /**
@@ -104,5 +116,9 @@ export class SimulatorComponent implements OnInit {
     if (el.value === '') {
       el.value = 'Untitled';
     }
+  }
+
+  componentdbClick() {
+    const x = new Buzzer(this.canvas, 10, 10);
   }
 }

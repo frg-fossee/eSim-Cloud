@@ -110,8 +110,8 @@ export class Buzzer extends CircuitElement {
       tmpx = this.cx + dx;
       tmpy = this.cy + dy;
     }, () => {
-      tmpx = x;
-      tmpy = y;
+      tmpx = this.cx;
+      tmpy = this.cy;
     }, () => {
       // Get Changed position
       this.cx = tmpx;
