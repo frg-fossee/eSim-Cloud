@@ -664,6 +664,204 @@ export class CodeEditorComponent implements OnInit {
               insertText: 'stream.parseInt(lookahead, ignore);',
             },
             {
+              label: 'HIGH',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'HIGH',
+            },
+            {
+              label: 'LOW',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'LOW',
+            },
+            {
+              label: 'INPUT',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'INPUT',
+            },
+            {
+              label: 'OUTPUT',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'OUTPUT',
+            },
+            {
+              label: 'INPUT_PULLUP',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'INPUT_PULLUP',
+            },
+            {
+              label: 'LED_BUILTIN',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'LED_BUILTIN',
+            },
+            {
+              label: 'true',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'true',
+            },
+            {
+              label: 'false',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'false',
+            },
+            {
+              label: 'array',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'array',
+            },
+            {
+              label: 'bool',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'bool',
+            },
+            {
+              label: 'byte',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'byte',
+            },
+            {
+              label: 'char',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'char',
+            },
+            {
+              label: 'double',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'double',
+            },
+            {
+              label: 'float',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'float',
+            },
+            {
+              label: 'int',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'int',
+            },
+            {
+              label: 'long',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'long',
+            },
+            {
+              label: 'short',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'short',
+            },
+            {
+              label: 'size_t',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'size_t',
+            },
+            {
+              label: 'string',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'string',
+            },
+            {
+              label: 'String()',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'String()',
+            },
+            {
+              label: 'unsigned char',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'unsigned char',
+            },
+            {
+              label: 'unsigned long',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'unsigned long',
+            },
+            {
+              label: 'void',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'void',
+            },
+            {
+              label: 'word',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'word',
+            },
+            {
+              label: 'const',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'const',
+            },
+            {
+              label: 'scope',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'scope',
+            },
+            {
+              label: 'static',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'static',
+            },
+            {
+              label: 'volatile',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'volatile',
+            },
+            {
+              label: 'break',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'break',
+            },
+            {
+              label: 'continue',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'continue',
+            },
+            {
+              label: 'else',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'else',
+            },
+            {
+              label: 'goto',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'goto',
+            },
+            {
+              label: 'if',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: 'if',
+            },
+            {
+              label: 'dowhile',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: [
+                'do {',
+                '\t$0',
+                '} while(${1:condition});'
+              ].join('\n'),
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Do-while Statement',
+            },
+            {
+              label: 'while',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: [
+                'while(${1:condition}) {',
+                '\t$0',
+                '}'
+              ].join('\n'),
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'while Statement',
+            },
+            {
+              label: 'for',
+              kind: monaco.languages.CompletionItemKind.Keyword,
+              insertText: [
+                'for(${1:int} ${2:i};${3},${4}) {',
+                '\t$0',
+                '}'
+              ].join('\n'),
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'for Statement',
+            },
+            {
               label: 'ifelse',
               kind: monaco.languages.CompletionItemKind.Snippet,
               insertText: [
