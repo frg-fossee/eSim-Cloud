@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1500" height="2500" viewBox="-750.0 -1250.0 1500 2500">
+<defs>
+</defs>
+<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="0" stroke="red" fill-opacity="0.3" />
+<path d="M-300,-400 L300,-400 L300,400 L-300,400 L-300,-400" stroke-width="0" stroke="red" fill-opacity="0.3" />
+<path d="M-200,-300 L200,-300 L200,300 L-200,300 L-200,-300" stroke-width="0" stroke="red" fill-opacity="0.3" />
+<text x="-280" y="-300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Cx1</text>
+<text x="-350.0" y="-330" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
+<path d="M-400,-300 L-300,-300" stroke="black" stroke-width="5" />
+<text x="-280" y="-200" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Rx1_Cx1</text>
+<text x="-350.0" y="-230" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">2</text>
+<path d="M-400,-200 L-300,-200" stroke="black" stroke-width="5" />
+<text x="-280" y="0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">~Reset1</text>
+<text x="-350.0" y="-30" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">3</text>
+<path d="M-400,0 L-300,0" stroke="black" stroke-width="5" />
+<text x="-280" y="200" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">+TR1</text>
+<text x="-350.0" y="170" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">4</text>
+<path d="M-400,200 L-300,200" stroke="black" stroke-width="5" />
+<text x="-280" y="300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">-TR1</text>
+<text x="-350.0" y="270" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">5</text>
+<path d="M-400,300 L-300,300" stroke="black" stroke-width="5" />
+<text x="350.0" y="-130" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">6</text>
+<text x="280" y="-100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Q1</text>
+<path d="M400,-100 L300,-100" stroke="black" stroke-width="5" />
+<text x="350.0" y="70" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">7</text>
+<text x="280" y="100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">~Q1</text>
+<path d="M400,100 L300,100" stroke="black" stroke-width="5" />
+<text x="350.0" y="-130" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">10</text>
+<text x="280" y="-100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Q2</text>
+<path d="M400,-100 L300,-100" stroke="black" stroke-width="5" />
+<text x="-280" y="300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">-TR2</text>
+<text x="-350.0" y="270" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">11</text>
+<path d="M-400,300 L-300,300" stroke="black" stroke-width="5" />
+<text x="-280" y="200" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">+TR2</text>
+<text x="-350.0" y="170" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">12</text>
+<path d="M-400,200 L-300,200" stroke="black" stroke-width="5" />
+<text x="-280" y="0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">~Reset2</text>
+<text x="-350.0" y="-30" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">13</text>
+<path d="M-400,0 L-300,0" stroke="black" stroke-width="5" />
+<text x="-280" y="-200" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Rx2_Cx2</text>
+<text x="-350.0" y="-230" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">14</text>
+<path d="M-400,-200 L-300,-200" stroke="black" stroke-width="5" />
+<text x="-280" y="-300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Cx2</text>
+<text x="-350.0" y="-330" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">15</text>
+<path d="M-400,-300 L-300,-300" stroke="black" stroke-width="5" />
+<text x="350.0" y="70" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">9</text>
+<text x="280" y="100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">~Q2</text>
+<path d="M400,100 L300,100" stroke="black" stroke-width="5" />
+<text x="-40" y="-350.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">16</text>
+<text x="0" y="-280" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">VDD</text>
+<path d="M0,-400 L0,-300" stroke="black" stroke-width="5" />
+<text x="-40" y="350.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">8</text>
+<text x="0" y="280" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">VSS</text>
+<path d="M0,400 L0,300" stroke="black" stroke-width="5" />
+</svg>

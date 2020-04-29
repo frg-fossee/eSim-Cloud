@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1500" height="2500" viewBox="-750.0 -1250.0 1500 2500">
+<defs>
+</defs>
+<path d="M-350,-800 L350,-800 L350,800 L-350,800 L-350,-800" stroke-width="10" stroke="red" fill-opacity="0.3" />
+<text x="-140" y="-850.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
+<text x="-100" y="-780" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">VCC</text>
+<path d="M-100,-900 L-100,-800" stroke="black" stroke-width="5" />
+<text x="400.0" y="70" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">10</text>
+<text x="330" y="100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Dout</text>
+<path d="M450,100 L350,100" stroke="black" stroke-width="5" />
+<text x="-330" y="300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Ein</text>
+<text x="-400.0" y="270" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">11</text>
+<path d="M-450,300 L-350,300" stroke="black" stroke-width="5" />
+<text x="400.0" y="270" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">12</text>
+<text x="330" y="300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Eout</text>
+<path d="M450,300 L350,300" stroke="black" stroke-width="5" />
+<text x="-330" y="700" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Select</text>
+<text x="-400.0" y="670" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">13</text>
+<path d="M-450,700 L-350,700" stroke="black" stroke-width="5" />
+<text x="-330" y="500" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Fin</text>
+<text x="-400.0" y="470" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">14</text>
+<path d="M-450,500 L-350,500" stroke="black" stroke-width="5" />
+<text x="400.0" y="470" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">15</text>
+<text x="330" y="500" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Fout</text>
+<path d="M450,500 L350,500" stroke="black" stroke-width="5" />
+<text x="60" y="-850.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">16</text>
+<text x="100" y="-780" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">VDD</text>
+<path d="M100,-900 L100,-800" stroke="black" stroke-width="5" />
+<text x="400.0" y="-530" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">2</text>
+<text x="330" y="-500" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Aout</text>
+<path d="M450,-500 L350,-500" stroke="black" stroke-width="5" />
+<text x="-330" y="-500" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Ain</text>
+<text x="-400.0" y="-530" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">3</text>
+<path d="M-450,-500 L-350,-500" stroke="black" stroke-width="5" />
+<text x="400.0" y="-330" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">4</text>
+<text x="330" y="-300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Bout</text>
+<path d="M450,-300 L350,-300" stroke="black" stroke-width="5" />
+<text x="-330" y="-300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Bin</text>
+<text x="-400.0" y="-330" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">5</text>
+<path d="M-450,-300 L-350,-300" stroke="black" stroke-width="5" />
+<text x="400.0" y="-130" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">6</text>
+<text x="330" y="-100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Cout</text>
+<path d="M450,-100 L350,-100" stroke="black" stroke-width="5" />
+<text x="-330" y="-100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Cin</text>
+<text x="-400.0" y="-130" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">7</text>
+<path d="M-450,-100 L-350,-100" stroke="black" stroke-width="5" />
+<text x="-40" y="850.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">8</text>
+<text x="0" y="780" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">VSS</text>
+<path d="M0,900 L0,800" stroke="black" stroke-width="5" />
+<text x="-330" y="100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Din</text>
+<text x="-400.0" y="70" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">9</text>
+<path d="M-450,100 L-350,100" stroke="black" stroke-width="5" />
+</svg>
