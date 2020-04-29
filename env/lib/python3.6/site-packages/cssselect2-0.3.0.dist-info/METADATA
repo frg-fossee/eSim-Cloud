@@ -1,0 +1,69 @@
+Metadata-Version: 2.1
+Name: cssselect2
+Version: 0.3.0
+Summary: CSS selectors for Python ElementTree
+Home-page: https://cssselect2.readthedocs.io/
+Author: Simon Sapin
+Author-email: community@kozea.fr
+License: BSD
+Project-URL: Documentation, https://cssselect2.readthedocs.io/
+Project-URL: Code, https://github.com/Kozea/cssselect2/
+Project-URL: Issue tracker, https://github.com/Kozea/cssselect2/issues
+Project-URL: Donation, https://www.patreon.com/kozea
+Keywords: css,elementtree
+Platform: Linux
+Platform: macOS
+Platform: Windows
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Internet :: WWW/HTTP
+Requires-Python: >=3.5
+Description-Content-Type: text/x-rst
+Requires-Dist: setuptools (>=39.2.0)
+Requires-Dist: tinycss2
+Requires-Dist: webencodings
+Provides-Extra: doc
+Requires-Dist: sphinx ; extra == 'doc'
+Requires-Dist: sphinx-rtd-theme ; extra == 'doc'
+Provides-Extra: test
+Requires-Dist: pytest-runner ; extra == 'test'
+Requires-Dist: pytest-cov ; extra == 'test'
+Requires-Dist: pytest-flake8 ; extra == 'test'
+Requires-Dist: pytest-isort ; extra == 'test'
+
+cssselect2: CSS selectors for Python ElementTree
+################################################
+
+cssselect2 is a straightforward implementation of `CSS3 Selectors`_ for markup
+documents (HTML, XML, etc.) that can be read by `ElementTree`_-like parsers
+(including cElementTree, lxml_, html5lib_, etc.)
+
+Unlike cssselect_, it does not translate selectors to XPath_ and therefore does
+not have all the correctness corner cases that are hard or impossible to fix in
+cssselect.
+
+.. _ElementTree: http://docs.python.org/3/library/xml.etree.elementtree.html
+.. _CSS3 Selectors: http://www.w3.org/TR/2011/REC-css3-selectors-20110929/
+.. _lxml: http://lxml.de/
+.. _html5lib: https://github.com/html5lib/html5lib-python
+.. _cssselect: http://packages.python.org/cssselect/
+.. _XPath: http://www.w3.org/TR/xpath/
+
+
+Quick facts:
+
+* Free software: BSD licensed
+* Compatible with Python 3.5+
+* Latest documentation: http://cssselect2.readthedocs.io/
+* Source, issues and pull requests `on Github
+  <https://github.com/Kozea/cssselect2/>`_
+* Releases `on PyPI <http://pypi.python.org/pypi/cssselect2>`_
+* Install with ``pip install cssselect2``
+
+
