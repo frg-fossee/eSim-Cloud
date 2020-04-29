@@ -37,7 +37,7 @@ export abstract class CircuitElement {
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box
    */
-  abstract properties(): { keyName: string, id: number, body: HTMLElement };
+  abstract properties(): { keyName: string, id: number, body: HTMLElement, title: string };
   /**
    * Initialize variable required for simulation
    * Called before simulation

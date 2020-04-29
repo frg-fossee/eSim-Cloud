@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, wtfLeave } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Workspace } from '../Libs/Workspace';
 import { Buzzer } from '../Libs/Buzzer';
-
+import { Utils } from '../Libs/Utils';
 declare var Raphael;
 
 @Component({
@@ -13,37 +13,18 @@ declare var Raphael;
 export class SimulatorComponent implements OnInit {
   canvas: any;
   projectTitle = 'Untitled';
+  showProperty = true;
+  componentsBox = Utils.componentBox;
+  components = Utils.components;
 
   constructor(private aroute: ActivatedRoute) {
-    // Stores all the Circuit Information
-    window['scope'] = {
-    };
-    // True when simulation takes place
-    window['isSimulating'] = false;
-    // Stores the reference to the selected circuit component
-    window['selected'] = null;
-    // True when a component is selected
-    window['isSelected'] = false;
-    // Global Function to Show Properties of Circuit Component
-    window['showProperties'] = () => {
+    Workspace.initializeGlobalFunctions();
+  }
 
-    };
-    // Global Function to Hide Properties of Circuit Component
-    window['hideProperties'] = () => {
-
-    };
-    // Global Function to show Popup Bubble
-    window['showBubble'] = (label: string, x: number, y: number) => {
-
-    };
-    // Global Function to hide Popub Bubble
-    window['hideBubble'] = () => {
-
-    };
-    // Global Function to show Toast Message
-    window['showToast'] = (message: string) => {
-
-    };
+  makeSVGg() {
+    const el = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    el.setAttribute('transform', 'scale(1,1)translate(0,0)');
+    return el;
   }
 
   ngOnInit() {
@@ -51,7 +32,14 @@ export class SimulatorComponent implements OnInit {
       console.log(v);
     });
 
+    const gtag = this.makeSVGg();
     this.canvas = Raphael('holder', '100%', '100%');
+    document.querySelector('#holder > svg').appendChild(gtag);
+    this.canvas.canvas = gtag;
+    window['canvas'] = this.canvas;
+
+    Workspace.initalizeGlobalVariables();
+
     /**
      * Initialize Event Listeners -> Workspace.ts File Contains all the event listeners
      */
@@ -72,7 +60,30 @@ export class SimulatorComponent implements OnInit {
     holder.addEventListener('keyup', Workspace.keyUp, true);
     holder.addEventListener('wheel', Workspace.mouseWheel, true);
     holder.addEventListener('paste', Workspace.paste, true);
+    document.body.addEventListener('mousemove', Workspace.bodyMouseMove);
+    document.body.addEventListener('mouseup', Workspace.bodyMouseUp);
+
+    // Initialize Property Box
+    Workspace.initProperty(v => {
+      this.showProperty = v;
+    });
   }
+  /**
+   * Enable Move on Property Box
+   */
+  startPropertyDrag() {
+    window['property_box'].start = true;
+  }
+  /**
+   * Handle Mouse down on Property Box
+   * @param event Mouse Event
+   */
+  propertyMouseDown(event: MouseEvent) {
+    const bbox = (window['property_box'].element as HTMLElement).getBoundingClientRect();
+    window['property_box'].x = event.clientX - bbox.left;
+    window['property_box'].y = event.clientY - bbox.top;
+  }
+
   /**
    * Hide/Show Categories Component
    * @param block Clicked Element
@@ -107,5 +118,14 @@ export class SimulatorComponent implements OnInit {
     if (el.value === '') {
       el.value = 'Untitled';
     }
+  }
+
+  componentdbClick(key: string) {
+    Workspace.addComponent(key, 100, 100, 0, 0);
+  }
+
+  dragStart(event: DragEvent, key: string) {
+    event.dataTransfer.dropEffect = 'copyMove';
+    event.dataTransfer.setData('text', key);
   }
 }

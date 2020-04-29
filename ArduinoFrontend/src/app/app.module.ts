@@ -9,19 +9,25 @@ import { SimulatorComponent } from './simulator/simulator.component';
 
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule, MatInputModule, MatButtonModule } from '@angular/material';
 
 @NgModule({
   declarations: [
     AppComponent,
     DashboardComponent,
     SimulatorComponent,
-    CodeEditorComponent
+    CodeEditorComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule.forRoot(),
+    BrowserAnimationsModule,
+    MatDialogModule,
+    MatInputModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

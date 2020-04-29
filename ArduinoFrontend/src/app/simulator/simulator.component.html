@@ -35,7 +35,7 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
         <a href="#" class="nav-link">
-          <img src="login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
+          <img src="./assets/images/login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
         </a>
       </li>
 
@@ -88,7 +88,7 @@
         Controllers
       </div>
 
-      <div id="controller-block" class="collapse-div" #itemsController>
+      <div class="collapse-div" #itemsController>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
         <div class="card-block">card block</div>
@@ -96,17 +96,29 @@
       </div>
     </div>
 
-    <div (click)="Collapse(outputDiv)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark"  (click)="Collapse(outputDiv)">
         Output
       </div>
 
-      <div id="controller-block" class="collapse-div" #outputDiv>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+      <div class="collapse-div" #outputDiv>
+        <div class="component-row" *ngFor="let row of componentsBox.output">
+          <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+            (dragstart)="dragStart($event,item)">
+            <img src={{components[item].image}} alt="{{components[item].name}}">
+            <label>{{components[item].name}}</label>
+          </div>
+          <!-- <div class="component-card">
+            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
+            <label>Buzzer</label>
+          </div>
+          <div class="component-card">
+            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
+            <label>Buzzer</label>
+          </div> -->
+        </div>
+
       </div>
     </div>
 
@@ -116,11 +128,7 @@
         Input
       </div>
 
-      <div id="controller-block" class="collapse-div" #inputDiv>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+      <div class="collapse-div" #inputDiv>
       </div>
     </div>
 
@@ -130,11 +138,7 @@
         Sources
       </div>
 
-      <div id="controller-block" class="collapse-div" #sourceDiv>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+      <div class="collapse-div" #sourceDiv>
       </div>
     </div>
 
@@ -146,23 +150,29 @@
   <!-- Page Content -->
   <div id="page-content-wrapper">
     <div id="holder"></div>
-    <div id="bubblebox">Positive</div>
-    <div id="propertybox" class="d-inline-block p-3" style="justify-content: space-between;">
-      <div>
-        <div style="display: flex;justify-content: space-between;">
-          <h6>LED </h6>
-          <span style="flex:1 1 auto;"></span><i class='fas fa-arrows-alt'></i>
-        </div>
-        <label>Color:</label><br>
-        <select>
-          <option>Red</option>
-          <option>Yellow</option>
-          <option>Blue</option>
-          <option>Green</option>
-        </select>
-      </div>
-    </div>
-  
   </div>
 </div>
 <!-- /#page-content-wrapper -->
+
+
+<div id="propertybox" style="top: 110px;left: calc(100vw - 230px);" (mousedown)="propertyMouseDown($event)">
+  <div style="display: flex;justify-content: space-between;">
+    <h6 class="title">Project Info</h6>
+    <span style="flex:1 1 auto;"></span>
+    <i class='fas fa-arrows-alt' (mousedown)="startPropertyDrag()" style="cursor: move;"></i>
+  </div>
+  <div class="body" style="display: flex;flex-direction: column;"></div>
+  <div *ngIf="showProperty">
+    <mat-form-field>
+      <mat-label>Project Title</mat-label>
+      <input matInput [(ngModel)]="projectTitle">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput></textarea>
+    </mat-form-field>
+  </div>
+</div>
+
+
+<div id="bubblebox"></div>

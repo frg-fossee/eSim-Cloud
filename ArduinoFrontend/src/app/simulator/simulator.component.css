@@ -1,43 +1,69 @@
+.component-card {
+    max-width: 32%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid darkgray;
+    padding: 10px;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.component-card:hover {
+    background-color: #eee;
+}
+
+.component-card img {
+    max-width: 100%;
+}
+
+.component-card label {
+    margin: 0 auto 0 auto;
+}
+
+.component-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
 #bubblebox {
     top: 120px;
-	position: absolute;
+    position: absolute;
     background: #000;
     padding: 10px;
     color: #fff;
     border-radius: .4em;
     z-index: 100;
-    display:block;
+    display: none;
 }
 
 #bubblebox:after {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 50%;
-	width: 0;
-	height: 0;
-	border: 10px solid transparent;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
     border-bottom-color: #000;
     border-top: 0;
     margin-left: -10px;
     margin-top: -10px;
 }
 
-
-#propertybox{
-    display:block;
+#propertybox {
+    display: block;
     position: fixed;
-    min-width: 150px;
+    width: 220px;
     min-height: 50px;
     z-index: 100;
     background: #fff;
-    right: calc(73vw - 1100px);
     top: 120px;
     box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
     padding: 15px;
     border-radius: 5px;
 }
-
 
 * {
     user-select: none;
@@ -59,7 +85,7 @@
 }
 
 .show-div {
-    max-height: 100vh;
+    max-height: 1000vh;
     transition: max-height .5s ease-in-out;
 }
 
