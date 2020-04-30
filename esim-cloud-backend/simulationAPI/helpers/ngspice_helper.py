@@ -19,6 +19,7 @@ def ExecNetlist(filepath, file_id):
         current_dir = settings.MEDIA_ROOT+'/'+str(file_id)
         # Make Unique Directory for simulation to run
         Path(current_dir).mkdir(parents=True, exist_ok=True)
+        os.chdir(current_dir)
         logger.info('will run ngSpice command')
         proc = subprocess.Popen(['ngspice', '-ab', filepath],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
