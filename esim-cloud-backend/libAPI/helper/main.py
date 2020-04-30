@@ -8,38 +8,65 @@ def generate_svg_from_lib(file_path):
         svg from the .lib file.
     """
 
-
-
-
     data = extractDataFromLib(file_path)
-
 
     for i in range(len(data)):#loop through all the components in that library file.
 
-        name_of_symbol = data[i][0][1]
-        pin_name_offset = data[i][0][4]
-        show_pin_number = data[i][0][5]
-        show_pin_name  = data[i][0][6]
+    
+        # DEF is at position 0 of data[i]
+        DEF_LINE = data[i][0]
+        # F0 is at position 1 of data[i]
+        F0_LINE  = data[i][1]
+        # F1 is at position 2 of data[i]
+        F1_LINE = data[i][2]
+        # F2 is at position 3 of data[i]. footprint name
+        F2_LINE = data[i][3]
+        # F3 is at position 4 of data[i]. Relative path to datasheet
+        F3_LINE = data[i][4]
+
+        # DEF 14529 U 0 40 Y Y 1 L N
+        # ['DEF', '14529', 'U', '0', '40', 'Y', 'Y', '1', 'L', 'N']
+        name_of_symbol = DEF_LINE[1]
+        # symbol_prefix is 'U' for integrated circiut and 'R' for resister
+        symbol_prefix = DEF_LINE[2] 
+        # The third paramater is always 0
+        pin_name_offset = DEF_LINE[4]
+        show_pin_number = DEF_LINE[5]
+        show_pin_name  = DEF_LINE[6]
+        number_of_parts_in_symbol = DEF_LINE[7]
+
+        # ['F0', '"U"', '-300', '750', '50', 'H', 'V', 'C', 'CNN']
+        # if ref starts with a '#' then its a virtual symbol/
+        is_power_symbol = F0_LINE[1].startswith('#')
+        # position of text field in milli.
+        posx = F0_LINE[2]
+        posy = F0_LINE[3]
+        text_size = F0_LINE[4]
+        # orientation - 'H' horizontal, 'V' - vertical
+        orientation = F0_LINE[5]
+        isVisible = F0_LINE[6] == "V" 
+        hjustify = F0_LINE[7] 
+        vjustify = F0_LINE[8][0] 
+        italic   = F0_LINE[8][1] == "I";
+        bold     = F0_LINE[8][2] == "B";
 
         
-        number_of_parts_in_symbol = data[i][0][7]
 
-        if_power_symbol = data[i][1][0] # if ref starts with a '#' then its a virtual symbol/
 
         # initialize the drawing canvas.we need to initialize and save svg for each components.
         d = draw.Drawing(1500, 2500, origin='center', displayInline=False)
 
 
         # below are the draw instructions.
-        for x in range(9,len(data[i])-1):#did -1 to drop the last element which is['ENDDRAW']
-            """ some indexes are listed below"""
-            # data[i][0][1] -> name of the symbol
-            # data[i][x][0] -> first character of draw instructions that tells the shape of the drawing.
-            # from index 9 i.e data[9] to end of array there is drawing instructions.
+        start_index_for_DRAW = 9
+        
+        #did -1 to drop the last element which is['ENDDRAW']
+        for x in range(start_index_for_DRAW,len(data[i])-1):
+
+            """ some indexes are listed below. """
 
             current_instruction = data[i][x]
             shape = current_instruction[0]
-
 
             # (d,pinName,pinNumber,x1,y1,length=0,orientation='R',stroke="black",stroke_width=5)
             if shape == 'X':
@@ -71,5 +98,5 @@ def generate_svg_from_lib(file_path):
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    generate_svg_from_lib("./sample_lib/4xxx.lib")
+    generate_svg_from_lib("./sample_lib/14529.lib")
     print("done!!")
