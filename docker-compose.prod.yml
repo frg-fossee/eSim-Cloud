@@ -68,7 +68,7 @@ services:
 
   celery:
     build: ./esim-cloud-backend/
-    command: celery -A esimCloud.celery worker -l info --concurrency=1
+    command: "celery -A esimCloud.celery worker -l info --concurrency=${CELERY_WORKERS}"
     links:
         - "redis:redis_cache"
         - "db:postgres"
