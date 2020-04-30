@@ -16,12 +16,6 @@ def process_task(task_id):
 
         print("Processing ", file_path, file_id)
 
-        # run_simulation.apply_async(
-        #     kwargs={'file_path': file_path, 'file_id': file_id},
-        #     task_id=str(file_id))
-
-        # print("Processing File at: ", file_path)
-
         current_task.update_state(
             state='PROGRESS',
             meta={'current_process': 'Started Processing File'})
@@ -32,27 +26,6 @@ def process_task(task_id):
             meta={'current_process': 'Processed Netlist, Loading Output'})
         return output
 
-    except Exception as e:
-        current_task.update_state(state=states.FAILURE, meta={
-            'exc_type': type(e).__name__,
-            'exc_message': traceback.format_exc().split('\n')})
-        print('Exception Occured: ', type(e).__name__)
-        raise Ignore()
-
-
-@shared_task
-def run_simulation(file_path, file_id):
-    try:
-
-        print("Processing File at: ", file_path)
-        current_task.update_state(
-            state='PROGRESS',
-            meta={'current_process': 'Started Processing File'})
-        output = ngspice_helper.ExecNetlist(file_path, file_id)
-        current_task.update_state(
-            state='PROGRESS',
-            meta={'current_process': 'Processed Netlist, Loading Output'})
-        return output
     except Exception as e:
         current_task.update_state(state=states.FAILURE, meta={
             'exc_type': type(e).__name__,
