@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{data.name}}</h1>
+<div mat-dialog-content>
+  <img src={{data.desctiption}} alt={{data.name}}>
+</div>
+<div mat-dialog-actions>
+  <button mat-button>Cancel</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+</div>

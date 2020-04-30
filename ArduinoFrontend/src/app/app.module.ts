@@ -11,6 +11,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule, MatInputModule, MatButtonModule } from '@angular/material';
+import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { MatDialogModule, MatInputModule, MatButtonModule } from '@angular/mater
     DashboardComponent,
     SimulatorComponent,
     CodeEditorComponent,
+    ViewComponentInfoComponent,
   ],
   imports: [
     BrowserModule,

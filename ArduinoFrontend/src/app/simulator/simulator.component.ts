@@ -36,9 +36,8 @@ export class SimulatorComponent implements OnInit {
     this.canvas = Raphael('holder', '100%', '100%');
     document.querySelector('#holder > svg').appendChild(gtag);
     this.canvas.canvas = gtag;
-    window['canvas'] = this.canvas;
 
-    Workspace.initalizeGlobalVariables();
+    Workspace.initalizeGlobalVariables(this.canvas);
 
     /**
      * Initialize Event Listeners -> Workspace.ts File Contains all the event listeners

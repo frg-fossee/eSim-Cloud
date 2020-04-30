@@ -16,7 +16,6 @@
           <a class="dropdown-item text-dark" href="#">New Project</a>
           <a class="dropdown-item text-dark" href="#">Clear Project</a>
           <a class="dropdown-item text-dark" href="#">Save</a>
-          <a class="dropdown-item text-dark" href="#">Open</a>
 
         </div>
       </li>
@@ -98,7 +97,7 @@
 
     <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark"  (click)="Collapse(outputDiv)">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(outputDiv)">
         Output
       </div>
 
@@ -172,6 +171,8 @@
       <textarea matInput></textarea>
     </mat-form-field>
   </div>
+  <div *ngIf="!showProperty" style="display: flex;"><button mat-raised-button color="primary"
+      style="margin-left: auto;">View Info</button></div>
 </div>
 
 

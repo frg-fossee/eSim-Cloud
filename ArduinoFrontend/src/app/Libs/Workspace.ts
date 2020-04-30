@@ -1,5 +1,6 @@
 import { Utils } from './Utils';
-
+import { Wire } from './Wire';
+declare var window;
 export class Workspace {
   // TODO: Add Comments
 
@@ -13,9 +14,12 @@ export class Workspace {
     return value;
   }
 
-  static initalizeGlobalVariables() {
+  static initalizeGlobalVariables(canvas: any) {
+    window['canvas'] = canvas;
+    window['holder'] = document.getElementById('holder').getBoundingClientRect();
     // Stores all the Circuit Information
     window['scope'] = {
+      wires: []
     };
     for (const key in Utils.components) {
       if (window['scope'][key] === null || window['scope'][key] === undefined) {
@@ -25,7 +29,7 @@ export class Workspace {
     // True when simulation takes place
     window['isSimulating'] = false;
     // Stores the reference to the selected circuit component
-    window['selected'] = null;
+    window['Selected'] = null;
     // True when a component is selected
     window['isSelected'] = false;
     // Intialize a variable for Property Box
@@ -50,6 +54,9 @@ export class Workspace {
     };
     // Global Function to Hide Properties of Circuit Component
     window['hideProperties'] = () => {
+      window['Selected'] = null;
+      window['isSelected'] = false;
+      window['property_box'].body.innerHTML = '';
       window['property_box'].title.innerText = 'Project Info';
       toggle(true);
     };
@@ -58,11 +65,18 @@ export class Workspace {
   static initializeGlobalFunctions() {
     // Global Function to show Popup Bubble
     window['showBubble'] = (label: string, x: number, y: number) => {
-
+      // id label is empty don't show anything
+      if (label === '') { return; }
+      const ele = document.getElementById('bubblebox');
+      ele.innerText = label;
+      ele.style.display = 'block';
+      ele.style.top = `${y + 15}px`;
+      ele.style.left = `${(x - ele.clientWidth / 2)}px`;
     };
     // Global Function to hide Popub Bubble
     window['hideBubble'] = () => {
-
+      const ele = document.getElementById('bubblebox');
+      ele.style.display = 'none';
     };
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
@@ -89,15 +103,30 @@ export class Workspace {
   }
 
   static mouseDown(event: MouseEvent) {
-
+    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+      // if selected item is wire and it is not connected then add the point
+      if (window.Selected.end == null) {
+        window.Selected.add(event.clientX - window.holder.left, event.clientY - window.holder.top, 1); // TODO: Update Scale
+      }
+    }
   }
 
   static click(event: MouseEvent) {
-    window['hideProperties']();
+
   }
 
   static mouseMove(event: MouseEvent) {
-
+    event.preventDefault();
+    // if wire is selected then draw temporary lines
+    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+      window.Selected.draw(event.clientX - window.holder.left + 4, event.clientY - window.holder.top + 4, 1); // TODO: Update Scale
+    } else {
+      // deselect item
+      if (window.Selected && window.Selected.deselect) {
+        window.Selected.deselect();
+      }
+    }
+    Workspace.updateWires();
   }
 
   /*
@@ -135,7 +164,11 @@ export class Workspace {
   }
 
   static doubleClick(event: MouseEvent) {
-
+    // deselect item
+    if (window.Selected && window.Selected.deselect) {
+      window.Selected.deselect();
+    }
+    window.hideProperties();
   }
 
   static dragLeave(event: DragEvent) {
@@ -180,5 +213,11 @@ export class Workspace {
       y - offsetY
     );
     window['scope'][classString].push(obj);
+  }
+
+  static updateWires() {
+    for (const z of window['scope']['wires']) {
+      z.update();
+    }
   }
 }
