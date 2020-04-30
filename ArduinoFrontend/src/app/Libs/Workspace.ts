@@ -3,6 +3,33 @@ import { Wire } from './Wire';
 declare var window;
 export class Workspace {
   // TODO: Add Comments
+  static translateX = 0.0;
+  static translateY = 0.0;
+  static scaleX = 1.0;
+  static scaleY = 1.0;
+  static zooomIncrement = 0.01;
+
+  static zoomIn() {
+    Workspace.scaleX = Math.min(10, Workspace.scaleX + Workspace.zooomIncrement);
+    Workspace.scaleY = Math.min(10, Workspace.scaleY + Workspace.zooomIncrement);
+    const ele = (window['canvas'].canvas as HTMLElement);
+    ele.setAttribute('transform', `scale(
+      ${Workspace.scaleX},
+      ${Workspace.scaleY})
+      translate(${Workspace.translateX},
+      ${Workspace.translateY})`);
+  }
+
+  static zoomOut() {
+    Workspace.scaleX = Math.max(0, Workspace.scaleX - Workspace.zooomIncrement);
+    Workspace.scaleY = Math.max(0, Workspace.scaleY - Workspace.zooomIncrement);
+    const ele = (window['canvas'].canvas as HTMLElement);
+    ele.setAttribute('transform', `scale(
+      ${Workspace.scaleX},
+      ${Workspace.scaleY})
+      translate(${Workspace.translateX},
+      ${Workspace.translateY})`);
+  }
 
   static minMax(min: number, max: number, value: number) {
     if (value < min) {
@@ -16,6 +43,7 @@ export class Workspace {
 
   static initalizeGlobalVariables(canvas: any) {
     window['canvas'] = canvas;
+    window['test'] = Workspace.zoomIn;
     window['holder'] = document.getElementById('holder').getBoundingClientRect();
     // Stores all the Circuit Information
     window['scope'] = {
@@ -201,7 +229,12 @@ export class Workspace {
 
   }
   static mouseWheel(event: WheelEvent) {
-
+    event.preventDefault();
+    if (event.deltaY < 0) {
+      Workspace.zoomIn();
+    } else {
+      Workspace.zoomOut();
+    }
   }
   static paste(event: ClipboardEvent) {
 

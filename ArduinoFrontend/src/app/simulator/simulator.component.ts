@@ -127,4 +127,12 @@ export class SimulatorComponent implements OnInit {
     event.dataTransfer.dropEffect = 'copyMove';
     event.dataTransfer.setData('text', key);
   }
+
+  zoom(x: number) {
+    if (x === 0) {
+      Workspace.zoomIn();
+    } else {
+      Workspace.zoomOut();
+    }
+  }
 }
