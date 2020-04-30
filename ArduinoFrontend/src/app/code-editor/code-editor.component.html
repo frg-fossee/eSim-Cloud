@@ -1,3 +1,16 @@
 <div [style.width.px]=width [style.minHeight]="height+'vh'">
+  <div class="inline-block" style="display: flex; background-color:white ;justify-content: space-between;">
+    <span style="flex:1 1 auto;"></span>
+        <button class="btn btn-light btn-sm  mb-1 mt-2 mr-1 bg-white"  style="font-size: 16px; max-height:30px;"><i class="fa fa-download"></i></button>
+        <button  class="btn btn-light btn-sm mb-1 mt-2 mr-1 bg-white" style="font-size:16px; max-height:30px;"><i class="fas fa-box"></i></button>
+        <form>
+        <div class="form-group mt-2 " style="max-height: 20px; box-shadow: whitesmoke; ">
+          <select id="inputState" class="form-control form-control-sm">
+            <option selected>Arduino Uno R3</option>
+            <option>...</option>
+          </select>
+        </div>
+        </form>
+  </div>
   <ngx-monaco-editor style="height: 100vh" [options]="editorOptions" [(ngModel)]="code" (onInit)="onInit($event)"></ngx-monaco-editor>
 </div>
