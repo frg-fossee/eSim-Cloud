@@ -22,13 +22,12 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-from simulationAPI import views as simulationAPI_views
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('/api/simulation/', include(simulationURLs)),
+    # Simulation API Routes
+    path('api/simulation/', include(simulationURLs)),
 
 
 
