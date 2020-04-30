@@ -2,9 +2,10 @@
 EDA Tool and Arduino on Cloud
 
 [![CodeFactor](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud/badge)](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud)
-![Docker Build Backend](https://github.com/frg-fossee/eSim-Cloud/workflows/Docker%20Build%20Backend/badge.svg?branch=dev-backend)
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
 
+![Django Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Django%20Build%20and%20Tests/badge.svg?branch=develop)
+![Angular Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Angular%20Build%20and%20Tests/badge.svg?branch=ArduinoFrontend)
 
 ### Configuring Production Environment
 * Install Docker and docker-compose for server OS
