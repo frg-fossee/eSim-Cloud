@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=True))
 
-ALLOWED_HOSTS = ['0.0.0.0']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
 
 # Application definition
@@ -38,12 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
+    'corsheaders',
+    'simulationAPI'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -84,18 +87,22 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
-    "mongodb": {
-        "ENGINE": 'djongo',
-        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
-        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
-        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-        "HOST": "mongodb",
-        "PORT": 27017,
-        'AUTH_SOURCE': 'admin',
-        'AUTH_MECHANISM': 'SCRAM-SHA-1',
 
-    }
+    # "mongodb":{
+    #     "ENGINE": 'djongo',
+    #     "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
+    #     "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
+    #     "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
+    #     "HOST": "localhost",
+    #     "PORT": 27017,
+    #     'AUTH_SOURCE': 'admin',
+    #     'AUTH_MECHANISM': 'SCRAM-SHA-1',
+
+    # }
 }
+
+
+DATABASE_ROUTERS = ('simulationAPI.dbrouters.to_mongo',)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -128,6 +135,9 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Allow CORS for Public API
+CORS_ORIGIN_ALLOW_ALL = True
+
 # Static files for django admin and DRF
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -145,3 +155,18 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = ()
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
