@@ -89,6 +89,7 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
+
     # "mongodb":{
     #     "ENGINE": 'djongo',
     #     "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
@@ -159,6 +160,7 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = (
     'simulationAPI.tasks'
 )
+
 
 
 LOGGING = {
