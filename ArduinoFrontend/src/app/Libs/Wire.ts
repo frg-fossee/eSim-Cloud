@@ -29,17 +29,12 @@ export class Wire extends CircuitElement {
    *  Draws wire on the canvas
    * @param x x position of point
    * @param y y position of point
-   * @param scale Canvas scale
    */
-  draw(x: number, y: number, scale: number = 1) {
+  draw(x: number, y: number) {
     // remove the wire
     if (this.element) {
       this.element.remove();
     }
-    // change point respective to scale
-    x = x * scale;
-    y = y * scale;
-    // if points are more than 1 then draw a curve
     if (this.points.length > 1) {
       let inp = 'M' + this.points[0][0] + ',' + this.points[0][1] + ' ';
       for (let i = 1; i < this.points.length; ++i) {
@@ -57,10 +52,9 @@ export class Wire extends CircuitElement {
    * Add a point to wire
    * @param x x position
    * @param y y position
-   * @param scale scale of canvas
    */
-  add(x: number, y: number, scale: number = 1) {
-    this.points.push([x * scale, y * scale]);
+  add(x: number, y: number) {
+    this.points.push([x, y]);
   }
   // Click event callback
   handleClick() {
