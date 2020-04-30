@@ -79,7 +79,12 @@ export class Point {
 
     // Set click listener
     this.body.click(() => {
-      if (!window.isSelected) {
+      if ((window['Selected'] instanceof Wire)) {
+        // if selected item is wire then connect the wire with the node
+        this.connectedTo = window.Selected;
+        window['Selected'].connect(this, true);
+        window['isSelected'] = false; // deselect object
+      } else {
         // if nothing is selected create a new wire object
         window.isSelected = true;
         const tmp = new Wire(this.canvas, this);
@@ -87,13 +92,6 @@ export class Point {
         // select the wire and insert into the scope of circuit
         window.Selected = tmp;
         window['scope']['wires'].push(tmp);
-      } else {
-        if ((window['Selected'] instanceof Wire)) {
-          // if selected item is wire then connect the wire with the node
-          this.connectedTo = window.Selected;
-          window['Selected'].connect(this, true);
-          window['isSelected'] = false; // deselect object
-        }
       }
     });
 

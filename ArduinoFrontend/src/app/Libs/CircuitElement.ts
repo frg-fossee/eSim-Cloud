@@ -8,14 +8,68 @@ export abstract class CircuitElement {
   public keyName: string; // Circuit Component Name
   public id: number; // Stores the id of the Component
   public nodes: Point[] = []; // Stores the Nodes of a Component
+  public elements: any;
+  public tx = 0;
+  public ty = 0;
 
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
    */
-  constructor(keyName: string) {
+  constructor(keyName: string, public x: number, public y: number) {
     this.id = Date.now(); // Generate New id
     this.keyName = keyName; // Set key name
+    this.elements = window['canvas'].set();
+  }
+
+  setDragListeners() {
+    let tmpx = 0;
+    let tmpy = 0;
+    let fdx = 0;
+    let fdy = 0;
+
+    this.elements.drag((dx, dy) => {
+      this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
+      tmpx = this.tx + dx;
+      tmpy = this.ty + dy;
+      fdx = dx;
+      fdy = dy;
+    }, () => {
+      fdx = 0;
+      fdy = 0;
+      for (const node of this.nodes) {
+        node.hide();
+      }
+    }, () => {
+      for (const node of this.nodes) {
+        node.relativeMove(fdx, fdy);
+      }
+      this.tx = tmpx;
+      this.ty = tmpy;
+    });
+  }
+
+  setHoverListener() {
+    this.elements.hover(() => {
+      for (const node of this.nodes) {
+        node.show();
+      }
+    }, () => {
+      for (const node of this.nodes) {
+        node.hide();
+      }
+    });
+  }
+
+  setClickListener(callback: () => void) {
+    this.elements.click(() => {
+      window['isSelected'] = true;
+      window['Selected'] = this;
+      window['showProperty'](() => this.properties());
+      if (callback) {
+        callback();
+      }
+    });
   }
   /**
    * Save Circuit Component

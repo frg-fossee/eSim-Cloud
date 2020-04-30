@@ -81,17 +81,14 @@
   <div class="border-right" id="sidebar-wrapper" style="background-color:#ddd;">
     <h4 class="text-center text-primary mt-2">Circuit Components</h4>
 
-    <div (click)="Collapse(itemsController)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(itemsController)">
         Controllers
       </div>
 
       <div class="collapse-div" #itemsController>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+
       </div>
     </div>
 
@@ -121,9 +118,9 @@
       </div>
     </div>
 
-    <div (click)="Collapse(inputDiv)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(inputDiv)">
         Input
       </div>
 
@@ -131,9 +128,9 @@
       </div>
     </div>
 
-    <div (click)="Collapse(sourceDiv)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark"  (click)="Collapse(sourceDiv)">
         Sources
       </div>
 

@@ -34,7 +34,7 @@ export class Buzzer extends CircuitElement {
 
 
   constructor(private canvas: any, public x: number, public y: number) {
-    super('Buzzer');
+    super('Buzzer', x, y);
 
     // 30 => Buzzer Radius
     this.cx = this.x + 30;
@@ -72,51 +72,20 @@ export class Buzzer extends CircuitElement {
       )
     ];
 
-    this.outer.hover(() => {
-      this.nodes[0].show();
-      this.nodes[1].show();
-    }, () => {
-      this.nodes[0].hide();
-      this.nodes[1].hide();
-    });
-
 
     // Set click listener
-    this.outer.click(() => {
-      // select current breadboard
-      window['isSelected'] = true;
-      window['Selected'] = this;
-      window.showProperty(() => this.properties());
-    });
+    // this.outer.click(() => {
+    // });
 
-
-    let tmpx = x;
-    let tmpy = y;
-    // set drag listener
-    this.outer.drag((dx, dy) => {
-      // update position of inner and outer circle
-      this.outer.attr({ cx: this.cx + dx, cy: this.cy + dy });
-      this.inner.attr({ cx: this.cx + dx, cy: this.cy + dy });
-
-      // Update position of terminal line
-      this.legPlus.animate({ path: `M${this.cx + dx - 15},${this.cy + dy + 20} L${this.cx + dx - 15},${this.cy + dy + 50}Z` }, 1);
-      this.legNeg.animate({ path: `M${this.cx + dx + 15},${this.cy + dy + 20} L${this.cx + dx + 15},${this.cy + dy + 50}Z` }, 1);
-
-      // Update circuit node
-      this.nodes[0].move(this.cx - 15 + dx - Buzzer.pointHalf, this.cy + dy + 50 - Buzzer.pointHalf);
-      this.nodes[1].move(this.cx + 15 + dx - Buzzer.pointHalf, this.cy + dy + 50 - Buzzer.pointHalf);
-
-      // Update tempoary position
-      tmpx = this.cx + dx;
-      tmpy = this.cy + dy;
-    }, () => {
-      tmpx = this.cx;
-      tmpy = this.cy;
-    }, () => {
-      // Get Changed position
-      this.cx = tmpx;
-      this.cy = tmpy;
-    });
+    this.elements.push(
+      this.outer,
+      this.inner,
+      this.legNeg,
+      this.legPlus
+    );
+    this.setDragListeners();
+    this.setHoverListener();
+    this.setClickListener(null);
   }
   // return propeties object
   properties() {

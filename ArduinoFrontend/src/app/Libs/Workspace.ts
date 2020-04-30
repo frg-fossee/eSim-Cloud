@@ -54,6 +54,9 @@ export class Workspace {
     };
     // Global Function to Hide Properties of Circuit Component
     window['hideProperties'] = () => {
+      if (window.Selected && window.Selected.deselect) {
+        window.Selected.deselect();
+      }
       window['Selected'] = null;
       window['isSelected'] = false;
       window['property_box'].body.innerHTML = '';
@@ -112,7 +115,6 @@ export class Workspace {
   }
 
   static click(event: MouseEvent) {
-
   }
 
   static mouseMove(event: MouseEvent) {
@@ -164,10 +166,10 @@ export class Workspace {
   }
 
   static doubleClick(event: MouseEvent) {
-    // deselect item
-    if (window.Selected && window.Selected.deselect) {
-      window.Selected.deselect();
+    if ((event.target as HTMLElement).tagName !== 'svg') {
+      return;
     }
+    // deselect item
     window.hideProperties();
   }
 

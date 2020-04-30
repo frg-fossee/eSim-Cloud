@@ -21,7 +21,7 @@ export class Wire extends CircuitElement {
    * @param start Start circuit node of wire
    */
   constructor(public canvas, public start: Point) {
-    super('wire');
+    super('wire', -1, -1);
     // insert the position of start node in array
     this.points.push(start.position());
   }
@@ -185,10 +185,6 @@ export class Wire extends CircuitElement {
       if (this.glow) {
         this.glow.remove();
       }
-      this.element.mouseout(() => {
-        console.log('out');
-        // this.glow.remove();
-      });
       this.element.mouseover(() => {
         this.glow = this.element.glow({
           color: this.color
