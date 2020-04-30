@@ -1,10 +1,10 @@
-name: Angular Build and Tests
+name: React Build and Tests
 
 on:
   push:
-    paths: [ 'ArduinoFrontend/**' ]
+    paths: [ 'eda-frontend/**' ]
   pull_request:
-    paths: [ 'ArduinoFrontend/**' ]
+    paths: [ 'eda-frontend/**' ]
 
 jobs:
   build:
@@ -16,9 +16,8 @@ jobs:
       with:
         node-version: 10.5.0
     - name: Install packages,lint,build and Unit testing
-      working-directory: ./ArduinoFrontend
+      working-directory: ./eda-frontend
       run: |
         npm install
-        npm run lint
-        npm run build -- --prod
-        npm test -- --configuration=ci
+        CI=true npm run build
+        CI=true npm test
