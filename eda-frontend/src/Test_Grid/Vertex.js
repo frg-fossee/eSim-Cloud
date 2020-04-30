@@ -148,11 +148,20 @@ function main(container)
 			style['fontSize'] = '12';
 			style['resizable'] = '0';
 			style['rounded'] = '1';
-            style['strokeWidth'] = strokeWidth;
+			style['strokeWidth'] = strokeWidth;
+			configureStylesheet(graph);
             var parent = graph.getDefaultParent();
             graph.getModel().beginUpdate();
 			try
 			{
+				var v5 = graph.insertVertex(parent, null, '4001', 150, 70, 200, 400, 'image');
+				v5.setConnectable(false);
+				//var 51 = graph.insertVertex(v5, null, '1', 50,50,20,20);
+				var v51 = graph.insertVertex(v5, null, '', 0, 0, 10, 16,
+				'shape=line;align=left;verticalAlign=middle;fontSize=10;routingCenterX=-0.5;'+
+				'spacingLeft=12;fontColor=' + fontColor + ';strokeColor=' + strokeColor);
+				v51.geometry.relative = true;
+				v51.geometry.offset = new mxPoint(35, 132);
                 var v6 = graph.insertVertex(parent, null, 'J1', 400, 40, 70, 170,
 						'verticalLabelPosition=top;verticalAlign=bottom;shadow=1;fillColor=' + fillColor);
                 v6.setConnectable(false); 
@@ -289,7 +298,34 @@ function main(container)
 			finally
 			{
 				graph.getModel().endUpdate();
-            }
+			}
+			function configureStylesheet(graph)
+			{
+				var style = new Object();
+				style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_IMAGE;
+				style[mxConstants.STYLE_PERIMETER] = mxPerimeter.RectanglePerimeter;
+				style[mxConstants.STYLE_IMAGE] = 'test.svg';
+				style[mxConstants.STYLE_ALIGN] = mxConstants.ALIGN_CENTER;
+				style[mxConstants.STYLE_IMAGE_WIDTH] = '48';
+				style[mxConstants.STYLE_IMAGE_HEIGHT] = '48';
+				style[mxConstants.STYLE_SPACING_TOP] = '56';
+				style[mxConstants.STYLE_SPACING] = '8';
+				style[mxConstants.STYLE_FONTCOLOR] = '#FFFFFF';
+				graph.getStylesheet().putCellStyle('image', style);
+				/*style[mxConstants.STYLE_SHAPE] = mxConstants.SHAPE_LABEL;
+				style[mxConstants.STYLE_STROKECOLOR] = '#000000';
+				style[mxConstants.STYLE_ALIGN] = mxConstants.ALIGN_CENTER;
+				style[mxConstants.STYLE_VERTICAL_ALIGN] = mxConstants.ALIGN_TOP;
+				style[mxConstants.STYLE_IMAGE_ALIGN] = mxConstants.ALIGN_CENTER;
+				style[mxConstants.STYLE_IMAGE_VERTICAL_ALIGN] = mxConstants.ALIGN_TOP;
+				style[mxConstants.STYLE_IMAGE] = 'images/icons48/gear.png';
+				style[mxConstants.STYLE_IMAGE_WIDTH] = '48';
+				style[mxConstants.STYLE_IMAGE_HEIGHT] = '48';
+				style[mxConstants.STYLE_SPACING_TOP] = '56';
+				style[mxConstants.STYLE_SPACING] = '8';*/
+			
+			
+			};
 			
 			// Wire-mode
 			var checkbox = document.createElement('input');
@@ -331,7 +367,9 @@ function main(container)
 				
 				connectionHandlerMouseUp.apply(this, arguments);
 			};
-			
+			var img = new mxImage("test.svg",15,20);
+			console.log(img.src);
+			var imgshape = new mxImageShape(15,img.src,false,3,5);
 			// Grid
 			var checkbox2 = document.createElement('input');
 			checkbox2.setAttribute('type', 'checkbox');
