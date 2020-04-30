@@ -15,7 +15,10 @@ logger = logging.getLogger(__name__)
 
 class NetlistUploader(APIView):
     '''
-    Rest API for NetlistUpload
+    API for NetlistUpload
+
+    Requires a multipart/form-data  POST Request with netlist file in the
+    'file' parameter
     '''
     permission_classes = (AllowAny,)
     parser_classes = (MultiPartParser, FormParser,)
@@ -39,6 +42,13 @@ class NetlistUploader(APIView):
 
 
 class CeleryResultView(APIView):
+    """
+
+    Returns Simulation results for 'task_id' provided after
+    uploading the netlist
+    /api/task/<uuid>
+
+    """
     permission_classes = (AllowAny,)
     methods = ['GET']
 
