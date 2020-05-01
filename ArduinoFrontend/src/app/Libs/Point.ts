@@ -133,7 +133,9 @@ export class Point {
    * Hide Node
    */
   hide() {
-    this.body.attr(this.defaultAttr);
+    setTimeout(() => {
+      this.body.attr(this.defaultAttr);
+    }, 1000);
   }
 
   /**

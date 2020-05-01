@@ -1,9 +1,12 @@
 import { Buzzer } from './Buzzer';
 import { Battery9v } from './Battery';
+import { PushButton } from './PushButton';
 
 export class Utils {
   static componentBox = {
-    input: [],
+    input: [
+      ['PushButton']// Row
+    ],
     power: [
       ['Battery9v'] // Row
     ],
@@ -14,6 +17,11 @@ export class Utils {
   };
 
   static components = {
+    PushButton: {
+      name: 'Push Button',
+      image: './assets/images/components/PushButton.png',
+      className: PushButton
+    },
     Battery9v: {
       name: '9v Battery',
       image: './assets/images/components/Battery9v.png',

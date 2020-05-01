@@ -86,7 +86,12 @@ export abstract class CircuitElement {
   /**
    * Removes Component from Canvas and memory
    */
-  abstract remove(): void;
+  remove(): void {
+    this.elements.remove();
+    for (const n of this.nodes) {
+      n.remove();
+    }
+  }
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box

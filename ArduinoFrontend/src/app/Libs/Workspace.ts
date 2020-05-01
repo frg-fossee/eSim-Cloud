@@ -108,7 +108,7 @@ export class Workspace {
       const ele = document.getElementById('bubblebox');
       ele.innerText = label;
       ele.style.display = 'block';
-      ele.style.top = `${y + 15}px`;
+      ele.style.top = `${y + 25}px`;
       ele.style.left = `${(x - ele.clientWidth / 2)}px`;
     };
     // Global Function to hide Popub Bubble

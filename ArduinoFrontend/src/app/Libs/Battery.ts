@@ -23,8 +23,6 @@ export class Battery9v extends CircuitElement {
   getNode(x: number, y: number): Point {
     return null;
   }
-  remove(): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
