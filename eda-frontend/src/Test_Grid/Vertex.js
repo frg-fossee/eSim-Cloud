@@ -162,6 +162,38 @@ function main(container)
 				'spacingLeft=12;fontColor=' + fontColor + ';strokeColor=' + strokeColor);
 				v51.geometry.relative = true;
 				v51.geometry.offset = new mxPoint(35, 132);
+				var v52 = v51.clone();
+                v52.value='';
+                v52.geometry.offset = new mxPoint(35, 146);
+				v5.insert(v52);
+				var v53 = v51.clone();
+                v53.value='';
+                v53.geometry.offset = new mxPoint(35, 159);
+				v5.insert(v53);
+				var v54 = v51.clone();
+                v54.value='';
+                v54.geometry.offset = new mxPoint(35, 172);
+				v5.insert(v54);
+				var v55 = v51.clone();
+                v55.value='';
+                v55.geometry.offset = new mxPoint(35, 198);
+				v5.insert(v55);
+				var v56 = v51.clone();
+                v56.value='';
+                v56.geometry.offset = new mxPoint(35, 212);
+				v5.insert(v56);
+				var v57 = v51.clone();
+                v57.value='';
+                v57.geometry.offset = new mxPoint(35, 226);
+				v5.insert(v57);
+				var v58 = v51.clone();
+                v58.value='';
+                v58.geometry.offset = new mxPoint(35, 239);
+				v5.insert(v58);
+				/*var v58 = v51.clone();
+                v57.value='';
+                v57.geometry.offset = new mxPoint(35, 226);
+                v5.insert(v57);*/
                 var v6 = graph.insertVertex(parent, null, 'J1', 400, 40, 70, 170,
 						'verticalLabelPosition=top;verticalAlign=bottom;shadow=1;fillColor=' + fillColor);
                 v6.setConnectable(false); 
