@@ -1,3 +1,6 @@
+import { Wire } from './Wire';
+
+declare var window;
 
 /**
  * Class For Circuit Node ie. Point wires can connect with nodes
@@ -66,17 +69,30 @@ export class Point {
 
     // Set Mouse over event
     this.body.mouseover((evt: MouseEvent) => {
-      // TODO: Show Label bubble
+      window.showBubble(this.label, evt.clientX, evt.clientY);
     });
 
     // Set mouse out popup
     this.body.mouseout(() => {
-      // TODO: Hide Label Bubble
+      window.hideBubble();
     });
 
     // Set click listener
     this.body.click(() => {
-      // TODO: Connect With Wires
+      if ((window['Selected'] instanceof Wire)) {
+        // if selected item is wire then connect the wire with the node
+        this.connectedTo = window.Selected;
+        window['Selected'].connect(this, true);
+        window['isSelected'] = false; // deselect object
+      } else {
+        // if nothing is selected create a new wire object
+        window.isSelected = true;
+        const tmp = new Wire(this.canvas, this);
+        this.connectedTo = tmp;
+        // select the wire and insert into the scope of circuit
+        window.Selected = tmp;
+        window['scope']['wires'].push(tmp);
+      }
     });
 
   }
@@ -124,6 +140,7 @@ export class Point {
    * Show Node
    */
   show() {
+    if (this.connectedTo) { return; }
     this.body.attr(this.nodeAttr);
   }
 

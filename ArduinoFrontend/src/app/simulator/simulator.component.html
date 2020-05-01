@@ -16,7 +16,6 @@
           <a class="dropdown-item text-dark" href="#">New Project</a>
           <a class="dropdown-item text-dark" href="#">Clear Project</a>
           <a class="dropdown-item text-dark" href="#">Save</a>
-          <a class="dropdown-item text-dark" href="#">Open</a>
 
         </div>
       </li>
@@ -56,9 +55,10 @@
 
   <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"><i class="fa fa-trash"></i></button>
 
-  <button class="btn btn-light btn-sm mb-1 mt-1"><i class="fa fa-search-plus"></i></button>
+  <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
 
-  <button class="btn btn-light btn-sm mb-1 mt-1" style="margin-right: 30px;"><i class="fa fa-search-minus"></i></button>
+  <button class="btn btn-light btn-sm mb-1 mt-1" style="margin-right: 30px;" (click)="zoom(1)"><i
+      class="fa fa-search-minus"></i></button>
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
@@ -82,23 +82,20 @@
   <div class="border-right" id="sidebar-wrapper" style="background-color:#ddd;">
     <h4 class="text-center text-primary mt-2">Circuit Components</h4>
 
-    <div (click)="Collapse(itemsController)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(itemsController)">
         Controllers
       </div>
 
       <div class="collapse-div" #itemsController>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
-        <div class="card-block">card block</div>
+
       </div>
     </div>
 
     <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark"  (click)="Collapse(outputDiv)">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(outputDiv)">
         Output
       </div>
 
@@ -122,9 +119,9 @@
       </div>
     </div>
 
-    <div (click)="Collapse(inputDiv)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(inputDiv)">
         Input
       </div>
 
@@ -132,9 +129,9 @@
       </div>
     </div>
 
-    <div (click)="Collapse(sourceDiv)">
+    <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(sourceDiv)">
         Sources
       </div>
 
@@ -172,6 +169,8 @@
       <textarea matInput></textarea>
     </mat-form-field>
   </div>
+  <div *ngIf="!showProperty" style="display: flex;">
+    <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button></div>
 </div>
 
 

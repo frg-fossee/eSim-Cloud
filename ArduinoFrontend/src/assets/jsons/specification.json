@@ -1,9 +1,8 @@
-
 {
   "Buzzer": {
     "name": "Piezoelectric Buzzer",
-    "image" : "https://4.imimg.com/data4/II/UU/IMOB-18011522/3b2274a1-769f-406f-8da7-ec638bc9165e-500x500.jpeg",
-    "description": "a piezo buzzer is a type of electronic device that’s used to produce a tone, alarm or sound. It’s lightweight with a simple construction, and it’s typically a low-cost product. Yet at the same time, depending on the piezo ceramic buzzer specifications, it’s also reliable and can be constructed in a wide range of sizes that work across varying frequencies to produce different sound outputs.",
+    "image": "https://cdn.shopify.com/s/files/1/2640/3158/products/Squishy-Circuits_Piezzo-Buzzer.jpg?v=1525723149",
+    "description": "A piezo buzzer is a type of electronic device that’s used to produce a tone, alarm or sound. It’s lightweight with a simple construction, and it’s typically a low-cost product. Yet at the same time, depending on the piezo ceramic buzzer specifications, it’s also reliable and can be constructed in a wide range of sizes that work across varying frequencies to produce different sound outputs.",
     "properties": {
       "Minimum Voltage": "4V",
       "Maximum Voltage": "8V",
@@ -41,7 +40,7 @@
       " temperature": " -55°C to 150°C ",
       "Output voltage ": "10mV (0.01V)/1°C",
       "Accuracy": "±0.5°C ",
-      "Drain current": "60uA" 
+      "Drain current": "60uA"
     }
   },
   "UltrasonicSensor": {
@@ -53,7 +52,7 @@
       "Theoretical  Measuring Distance": "2cm to 450cm",
       "Practical Measuring Distance": "2cm to 80cm",
       "Accuracy": "3mm",
-     "Measuring angle covered": "<15°",
+      "Measuring angle covered": "<15°",
       "Operating Current": "<15mA",
       "Operating Frequency": "40Hz"
     }
@@ -67,7 +66,7 @@
       "Output Voltage": "3.3V TTL",
       "Modes": "Repeatable(H) and Non- Repeatable(H)",
       "Covers Distance": "120° and 7 meters",
-     "Measuring angle covered": "<15°",
+      "Measuring angle covered": "<15°",
       "power consumption ": "65mA",
       "Operating Temperature": "-20° to +80° Celsius"
     }
@@ -81,7 +80,7 @@
       "Analog output voltage": "0V to 5V",
       "Digital Output Voltage": "0V or 5V (TTL Logic)",
       "Preheat duration": "20 seconds",
-     "Measuring angle covered": "<15°",
+      "Measuring angle covered": "<15°",
       "power consumption ": "65mA",
       "Operating Temperature": "-20° to +80° Celsius"
     }
@@ -147,9 +146,7 @@
   "Wires": {
     "name": "Wires",
     "description": ".",
-    "properties": {
-      
-    }
+    "properties": {}
   },
   "MotorDriver": {
     "name": "L298N Dual H Bridge Motor Driver",
@@ -235,7 +232,7 @@
   "BluetoothModule": {
     "name": "HC-05 Bluetooth Module (Master/Slave)",
     "image": "https://5.imimg.com/data5/TR/VH/KF/SELLER-1097389/hc-05-5v-ttl-bluetooth-module-500x500.png",
-    "desctiption": " It is a class-2 bluetooth module with Serial Port Profile , which can configure as either Master or slave. a Drop-in replacement for wired serial connections, transparent usage. You can use it simply for a serial port replacement to establish connection between MCU, PC to your embedded project and etc.",
+    "description": " It is a class-2 bluetooth module with Serial Port Profile , which can configure as either Master or slave. a Drop-in replacement for wired serial connections, transparent usage. You can use it simply for a serial port replacement to establish connection between MCU, PC to your embedded project and etc.",
     "properties": {
       "Bluetooth protocal": "Bluetooth Specification v2.0+EDR",
       "Frequency": "2.4GHz ISM band",
@@ -249,7 +246,7 @@
   "Battery": {
     "name": "9V 6F 22",
     "image": "https://commons.wikimedia.org/wiki/File:Duracell_9_Volt_0849.jpg",
-    "desctiption": "It is an affordable, reliable, dedicated low-power solution to provide sufficient energy to your application. Ideally used in circuits with low power consumption so that it can work for longer durations.",
+    "description": "It is an affordable, reliable, dedicated low-power solution to provide sufficient energy to your application. Ideally used in circuits with low power consumption so that it can work for longer durations.",
     "properties": {
       "Nominal Voltage(V) ": "9V",
       "Discharge Resistance(Ω)": "620",
@@ -259,15 +256,10 @@
   "CoinBattery": {
     "name": "HC-05 Bluetooth Module (Master/Slave)",
     "image": "https://commons.wikimedia.org/wiki/File:Pile_bouton_au_lithium_3v_CR2025_-_2.jpg",
-    "desctiption": "Coin cell batteries like CR2032 are generally used for small portable electronics devices such as wrist watches, pocket calculators, automobile key less entry transmitter and hearing aids. Typically they are of compact size, 5-25mm in diameter and 1-6mm in height. The name defines the size of the battery like for CR2032, the first two digits stands for diameter and second for height or thickness in tenths of mm.",
+    "description": "Coin cell batteries like CR2032 are generally used for small portable electronics devices such as wrist watches, pocket calculators, automobile key less entry transmitter and hearing aids. Typically they are of compact size, 5-25mm in diameter and 1-6mm in height. The name defines the size of the battery like for CR2032, the first two digits stands for diameter and second for height or thickness in tenths of mm.",
     "properties": {
       "Voltage - Rated": "3V",
       "Capacity": "240mAh @ 190µA"
     }
   }
-} 
-
-  
-
-
-
+}
