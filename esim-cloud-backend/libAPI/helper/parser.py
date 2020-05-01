@@ -25,3 +25,4 @@ def extractDataFromLib(filename):
     return data
 
 
+#  Change the parser to not read ALIAS and FPLIST also counter Fn

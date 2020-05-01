@@ -10,7 +10,9 @@ def generate_svg_from_lib(file_path):
 
     data = extractDataFromLib(file_path)
 
-    for i in range(len(data)):#loop through all the components in that library file.
+    
+
+    for i in range(len(data)-1):#loop through all the components in that library file.
 
     
         # DEF is at position 0 of data[i]
@@ -78,19 +80,46 @@ def generate_svg_from_lib(file_path):
                             current_instruction[4],pin_name_offset,length=current_instruction[5],orientation=current_instruction[6])
             
             # (d,x1,y1,x2,y2,fill="f",pen='5',stroke='black')
-            if shape == 'S':
+            elif shape == 'S':
                 # its a rectangle
         
                 d = drawRec(d,current_instruction[1],current_instruction[2],
                             current_instruction[3],current_instruction[4],fill=current_instruction[8],pen=current_instruction[7])
         
              # d,x,y,r,fill="red",pen=2,stroke="black"
-            if shape == 'C':
-                #its a circle
+            elif shape == 'C':
+                # its a circle
                 d = drawCircle(d,current_instruction[1],current_instruction[2],current_instruction[3],pen=current_instruction[6],fill=current_instruction[7])
 
+            elif shape == 'A':
+                # its an arc
 
-            # more shapes will be added soon.
+                pass
+
+            elif shape == 'P':
+                # its a polygon
+                vertices_count = current_instruction[1]
+                pen = current_instruction[4]
+
+                vertices_list = []
+                fill = current_instruction[len(current_instruction)-1]
+
+                for i in range(5,len(current_instruction) - 1,2):
+                    point = (current_instruction[i],current_instruction[i+1])
+                    vertices_list.append(point)
+         
+
+            elif shape == 'T':
+                # its a text
+                pass
+
+            elif shape == 'B':
+                # its a bezier curve
+                pass
+
+            else:
+                pass
+       
 
         # saving to svg
         d.saveSvg(f'./symbols/{name_of_symbol}.svg')
@@ -98,5 +127,5 @@ def generate_svg_from_lib(file_path):
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    generate_svg_from_lib("./sample_lib/14529.lib")
+    generate_svg_from_lib("./sample_lib/4xxx.lib")
     print("done!!")

@@ -40,6 +40,14 @@ def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke=STROKE_COLOR):
 
     return d
 
+# A X Y radius start end part dmg pen fill Xstart Ystart Xend Yend
+def drawArc():
+    pass
+
+# P count part dmg pen X Y ... fill
+def drawPolygon():
+    pass
+
 
 def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',stroke=STROKE_COLOR,stroke_width=5):
 
