@@ -73,6 +73,9 @@ export class Wire extends CircuitElement {
   setColor(color: string) {
     this.color = color;
     this.element.attr({ stroke: color }); // set attribute
+    for (const joint of this.joints) {
+      joint.attr({ fill: color, stroke: color });
+    }
   }
   /**
    * Return properties of wire

@@ -76,6 +76,19 @@ export class Point {
     this.body.mouseout(() => {
       window.hideBubble();
     });
+    // TODO: Remove The following code After Development
+    // this.body.drag((dx, dy) => {
+    //   this.body.attr({
+    //     x: this.x + dx,
+    //     y: this.y + dy
+    //   });
+    // }, () => {
+    //   this.x = this.body.attr("x");
+    //   this.y = this.body.attr("y");
+    // }, () => { });
+    // this.body.dblclick(() => {
+    //   alert(this.x + "," + this.y + "   " + this.label);
+    // });
 
     // Set click listener
     this.body.click(() => {
