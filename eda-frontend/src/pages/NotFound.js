@@ -1,8 +1,8 @@
-import React from 'react'
+import React from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -18,9 +18,14 @@ export default function NotFound() {
       <Typography variant="h1" align="center" gutterBottom>
         404 Not Found
       </Typography>
-      <Typography variant="h4" align="center" color="textSecondary" gutterBottom>
+      <Typography
+        variant="h4"
+        align="center"
+        color="textSecondary"
+        gutterBottom
+      >
         Sorry, Requested page not found
       </Typography>
     </Container>
-  )
+  );
 }
