@@ -1,14 +1,25 @@
-import React from 'react'
+import React from "react";
 
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import Container from "@material-ui/core/Container";
+import Typography from "@material-ui/core/Typography";
+import Header from "../components/SchematicEditor/Header";
 
 export default function SchematiEditor() {
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h3" align="center" color="textSecondary" gutterBottom>
-        Schematic Editor
-      </Typography>
-    </Container>
-  )
+    <>
+      <Header />
+
+      <Container maxWidth="lg">
+        <Typography
+          variant="h3"
+          align="center"
+          color="textSecondary"
+          gutterBottom
+        >
+          <br></br>
+          Schematic Editor
+        </Typography>
+      </Container>
+    </>
+  );
 }
