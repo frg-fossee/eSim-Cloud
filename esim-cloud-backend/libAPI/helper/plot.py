@@ -45,11 +45,37 @@ def drawArc():
     pass
 
 # P count part dmg pen X Y ... fill
-def drawPolygon():
-    pass
+def drawPolygon(d,vertices_count,pen=5,vertices_list = [],fill='f'):
+    
+    pen = int(pen)
+    
+    for i in range(1,len(vertices_list)):
+        point_1 = vertices_list[i]
+        point_2 = vertices_list[i-1]
 
+        x1 = int(point_1[0])
+        y1 = int(point_1[1])
+        x2 = int(point_2[0])
+        y2 = int(point_2[1])
+        d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen))
+    
+    if fill == 'f':
+        # join the last vertex and the first vertex
+        point_1 = vertices_list[len(vertices_list)-1]
+        point_2 = vertices_list[0]
 
-def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',stroke=STROKE_COLOR,stroke_width=5):
+        x1 = int(point_1[0])
+        y1 = int(point_1[1])
+        x2 = int(point_2[0])
+        y2 = int(point_2[1])
+     
+        d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen))
+     
+    return d
+        
+    
+
+def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',stroke=STROKE_COLOR,pen=5):
 
     x1 = int(x1)
     y1 = int(y1)
@@ -102,7 +128,7 @@ def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',s
         if pinName != "~":
             d.append(draw.Text(pinName,text_size,x1,y1-length-pin_name_offset,center=0.6,fill='black'))
 
-    d.append(draw.Line(x1,y1,x2,y2,stroke=stroke, stroke_width=stroke_width))
+    d.append(draw.Line(x1,y1,x2,y2,stroke=stroke, stroke_width=pen))
     
     
 

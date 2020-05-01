@@ -12,9 +12,9 @@ def generate_svg_from_lib(file_path):
 
     
 
-    for i in range(len(data)-1):#loop through all the components in that library file.
+    for i in range(len(data)):#loop through all the components in that library file.
 
-    
+     
         # DEF is at position 0 of data[i]
         DEF_LINE = data[i][0]
         # F0 is at position 1 of data[i]
@@ -63,10 +63,12 @@ def generate_svg_from_lib(file_path):
         start_index_for_DRAW = 9
         
         #did -1 to drop the last element which is['ENDDRAW']
-        for x in range(start_index_for_DRAW,len(data[i])-1):
+        for x in range(9,len(data[i])-1):
 
             """ some indexes are listed below. """
-
+         
+            
+            # print(data[i][x])
             current_instruction = data[i][x]
             shape = current_instruction[0]
 
@@ -96,18 +98,25 @@ def generate_svg_from_lib(file_path):
 
                 pass
 
+
+            # (d,vertices_count,pen=5,vertices_list = [],fill='f')
             elif shape == 'P':
+
                 # its a polygon
+                # P 2 2 1 10 -150 -175 -25 -175 f
+
                 vertices_count = current_instruction[1]
                 pen = current_instruction[4]
 
-                vertices_list = []
                 fill = current_instruction[len(current_instruction)-1]
 
-                for i in range(5,len(current_instruction) - 1,2):
-                    point = (current_instruction[i],current_instruction[i+1])
+                vertices_list = []
+                for j in range(5,len(current_instruction)-1,2):
+                    point = (current_instruction[j],current_instruction[j+1])
                     vertices_list.append(point)
          
+                d = drawPolygon(d,vertices_count,pen,vertices_list,fill)
+                
 
             elif shape == 'T':
                 # its a text
@@ -127,5 +136,5 @@ def generate_svg_from_lib(file_path):
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    generate_svg_from_lib("./sample_lib/4xxx.lib")
+    generate_svg_from_lib("./sample_lib/4002.lib")
     print("done!!")
