@@ -81,6 +81,7 @@ export class Workspace {
     // Global Function to Show Properties of Circuit Component
     window['showProperty'] = (callback: any) => {
       const data = callback();
+      window['property_box'].element.setAttribute('key', data.keyName);
       window['property_box'].title.innerText = data.title;
       window['property_box'].body.innerHTML = '';
       window['property_box'].body.appendChild(data.body);
@@ -158,7 +159,7 @@ export class Workspace {
   }
 
   static mouseDown(event: MouseEvent) {
-    if (event.which === 3 && (event.target as HTMLElement).tagName === 'svg') {
+    if (event.button === 2 && (event.target as HTMLElement).tagName === 'svg') {
       Workspace.moveCanvas = {
         x: event.clientX,
         y: event.clientY,

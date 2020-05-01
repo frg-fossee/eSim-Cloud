@@ -1,8 +1,8 @@
-
 {
   "Buzzer": {
     "name": "Piezoelectric Buzzer",
-    "desctiption": "a piezo buzzer is a type of electronic device that’s used to produce a tone, alarm or sound. It’s lightweight with a simple construction, and it’s typically a low-cost product. Yet at the same time, depending on the piezo ceramic buzzer specifications, it’s also reliable and can be constructed in a wide range of sizes that work across varying frequencies to produce different sound outputs.",
+    "image": "https://cdn.shopify.com/s/files/1/2640/3158/products/Squishy-Circuits_Piezzo-Buzzer.jpg?v=1525723149",
+    "desctiption": "A piezo buzzer is a type of electronic device that’s used to produce a tone, alarm or sound. It’s lightweight with a simple construction, and it’s typically a low-cost product. Yet at the same time, depending on the piezo ceramic buzzer specifications, it’s also reliable and can be constructed in a wide range of sizes that work across varying frequencies to produce different sound outputs.",
     "properties": {
       "Minimum Voltage": "4V",
       "Maximum Voltage": "8V",
@@ -38,7 +38,7 @@
       " temperature": " -55°C to 150°C ",
       "Output voltage ": "10mV (0.01V)/1°C",
       "Accuracy": "±0.5°C ",
-      "Drain current": "60uA" 
+      "Drain current": "60uA"
     }
   },
   "UltrasonicSensor": {
@@ -49,7 +49,7 @@
       "Theoretical  Measuring Distance": "2cm to 450cm",
       "Practical Measuring Distance": "2cm to 80cm",
       "Accuracy": "3mm",
-     "Measuring angle covered": "<15°",
+      "Measuring angle covered": "<15°",
       "Operating Current": "<15mA",
       "Operating Frequency": "40Hz"
     }
@@ -62,7 +62,7 @@
       "Output Voltage": "3.3V TTL",
       "Modes": "Repeatable(H) and Non- Repeatable(H)",
       "Covers Distance": "120° and 7 meters",
-     "Measuring angle covered": "<15°",
+      "Measuring angle covered": "<15°",
       "power consumption ": "65mA",
       "Operating Temperature": "-20° to +80° Celsius"
     }
@@ -75,7 +75,7 @@
       "Analog output voltage": "0V to 5V",
       "Digital Output Voltage": "0V or 5V (TTL Logic)",
       "Preheat duration": "20 seconds",
-     "Measuring angle covered": "<15°",
+      "Measuring angle covered": "<15°",
       "power consumption ": "65mA",
       "Operating Temperature": "-20° to +80° Celsius"
     }
@@ -137,9 +137,7 @@
   "Wires": {
     "name": "Wires",
     "desctiption": ".",
-    "properties": {
-      
-    }
+    "properties": {}
   },
   "MotorDriver": {
     "name": "L298N Dual H Bridge Motor Driver",
@@ -235,9 +233,4 @@
       "Capacity": "240mAh @ 190µA"
     }
   }
-} 
-
-  
-
-
-
+}

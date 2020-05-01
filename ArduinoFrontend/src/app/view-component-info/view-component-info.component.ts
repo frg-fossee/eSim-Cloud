@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ApiService } from '../api.service';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-view-component-info',
@@ -6,14 +8,28 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./view-component-info.component.css']
 })
 export class ViewComponentInfoComponent implements OnInit {
-  data = {
-    name: '',
-    desctiption: ''
-  };
+  tableData = [];
+  data: any = {};
+  columns = ['Name', 'Value'];
 
-  constructor() { }
+  constructor(public dialogRef: MatDialogRef<ViewComponentInfoComponent>) { }
 
   ngOnInit() {
+    const key = document.getElementById('propertybox').getAttribute('key');
+    this.data = window['suggestion_json'][key];
+
+    for (const propName in this.data.properties) {
+      if (this.data.properties[propName]) {
+        this.tableData.push({
+          Name: propName,
+          Value: this.data.properties[propName]
+        });
+      }
+    }
   }
 
+
+  close() {
+    this.dialogRef.close();
+  }
 }

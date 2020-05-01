@@ -57,7 +57,8 @@
 
   <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
 
-  <button class="btn btn-light btn-sm mb-1 mt-1" style="margin-right: 30px;" (click)="zoom(1)"><i class="fa fa-search-minus"></i></button>
+  <button class="btn btn-light btn-sm mb-1 mt-1" style="margin-right: 30px;" (click)="zoom(1)"><i
+      class="fa fa-search-minus"></i></button>
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
@@ -130,7 +131,7 @@
 
     <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark"  (click)="Collapse(sourceDiv)">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(sourceDiv)">
         Sources
       </div>
 
@@ -168,8 +169,8 @@
       <textarea matInput></textarea>
     </mat-form-field>
   </div>
-  <div *ngIf="!showProperty" style="display: flex;"><button mat-raised-button color="primary"
-      style="margin-left: auto;">View Info</button></div>
+  <div *ngIf="!showProperty" style="display: flex;">
+    <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button></div>
 </div>
 
 

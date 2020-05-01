@@ -1,8 +1,20 @@
 <h1 mat-dialog-title>{{data.name}}</h1>
 <div mat-dialog-content>
-  <img src={{data.desctiption}} alt={{data.name}}>
+  <img src={{data.image}} alt={{data.name}} style="max-width: 100%;">
+  {{data.desctiption}}
+
+  <h5 style="margin-top: 30px;">Specification</h5>
+
+  <table mat-table [dataSource]="tableData" class="mat-elevation-z8" style="width: 100%;margin-top: 8px;margin-bottom: 30px;">
+    <ng-container [matColumnDef]="column" *ngFor="let column of columns">
+      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr mat-row *matRowDef="let row; columns: columns;"></tr>
+  </table>
+
 </div>
 <div mat-dialog-actions>
-  <button mat-button>Cancel</button>
-  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Ok</button>
+  <button mat-button cdkFocusInitial (click)="close()">Ok</button>
 </div>

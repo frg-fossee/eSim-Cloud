@@ -1,8 +1,10 @@
 import { Component, OnInit, wtfLeave } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Workspace } from '../Libs/Workspace';
-import { Buzzer } from '../Libs/Buzzer';
 import { Utils } from '../Libs/Utils';
+import { MatDialog } from '@angular/material';
+import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
+import { ApiService } from '../api.service';
 declare var Raphael;
 
 @Component({
@@ -17,7 +19,7 @@ export class SimulatorComponent implements OnInit {
   componentsBox = Utils.componentBox;
   components = Utils.components;
 
-  constructor(private aroute: ActivatedRoute) {
+  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
     Workspace.initializeGlobalFunctions();
   }
 
@@ -134,5 +136,27 @@ export class SimulatorComponent implements OnInit {
     } else {
       Workspace.zoomOut();
     }
+  }
+  openInfo() {
+    if (window['suggestion_json']) {
+      const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
+        width: '500px'
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        console.log(result);
+      });
+    } else {
+      this.api.fetchSuggestions().subscribe(v => {
+        window['suggestion_json'] = v;
+        const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
+          width: '500px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          console.log(result);
+        });
+      });
+    }
+
   }
 }
