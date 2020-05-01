@@ -245,7 +245,7 @@
   },
   "Battery9v": {
     "name": "9V 6F 22",
-    "image": "https://commons.wikimedia.org/wiki/File:Duracell_9_Volt_0849.jpg",
+    "image": "https://images-na.ssl-images-amazon.com/images/I/61XIfRrztZL._AC_SL1000_.jpg",
     "description": "It is an affordable, reliable, dedicated low-power solution to provide sufficient energy to your application. Ideally used in circuits with low power consumption so that it can work for longer durations.",
     "properties": {
       "Nominal Voltage(V) ": "9V",

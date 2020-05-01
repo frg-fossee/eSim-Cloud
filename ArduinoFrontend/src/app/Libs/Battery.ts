@@ -6,7 +6,7 @@ export class Battery9v extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('Battery9v', x, y);
     this.elements.push(
-      this.canvas.image("assets/images/components/9vBattery.svg", this.x, this.y, 179, 99)
+      this.canvas.image('assets/images/components/9vBattery.svg', this.x, this.y, 179, 99)
     );
     this.nodes = [
       new Point(canvas, x, y + 27, 'Positive', Battery9v.pointHalf, this),
