@@ -79,7 +79,7 @@ export class Point {
 
     // Set click listener
     this.body.click(() => {
-      if ((window['Selected'] instanceof Wire)) {
+      if ((window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
         // if selected item is wire then connect the wire with the node
         this.connectedTo = window.Selected;
         window['Selected'].connect(this, true);

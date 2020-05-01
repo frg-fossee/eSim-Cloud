@@ -243,7 +243,7 @@
       "Working temperature": "-20 ~ +75Centigrade"
     }
   },
-  "Battery": {
+  "Battery9v": {
     "name": "9V 6F 22",
     "image": "https://commons.wikimedia.org/wiki/File:Duracell_9_Volt_0849.jpg",
     "description": "It is an affordable, reliable, dedicated low-power solution to provide sufficient energy to your application. Ideally used in circuits with low power consumption so that it can work for longer durations.",

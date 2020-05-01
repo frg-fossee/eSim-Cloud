@@ -20,7 +20,7 @@ export class Buzzer extends CircuitElement {
     frequency: 2300
   };
 
-  static pointHalf = 3; // The Node half size
+  static pointHalf = 4; // The Node half size
 
   legPlus: any; // Positive terminal line
   legNeg: any; // Negative terminal line

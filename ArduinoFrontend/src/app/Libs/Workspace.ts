@@ -221,7 +221,7 @@ export class Workspace {
   }
 
   static copy(event: ClipboardEvent) {
-
+    console.log("ssss")
   }
 
   static cut(event: ClipboardEvent) {

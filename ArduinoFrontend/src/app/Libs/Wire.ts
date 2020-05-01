@@ -141,6 +141,10 @@ export class Wire extends CircuitElement {
     }
     this.update();
   }
+  // Returns true if both end od wire is connected
+  isConnected(){
+    return (this.start !== null && this.end !== null);
+  }
   /**
    * Update the wire position if the parent element is changed
    */
