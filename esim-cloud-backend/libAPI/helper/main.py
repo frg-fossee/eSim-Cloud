@@ -2,6 +2,22 @@ import plot
 import parser
 # import drawSvg as draw
 
+CANVAS_HEIGHT = 1500
+CANVAS_WIDTH = 2500
+
+PART_NUMBER = ['0','1']
+DMG_NUMBER = ['0','1']
+
+DEFAULT_PEN_WIDTH = '6'
+PIN_NAME_PADDING = 13 
+
+
+def match_part_dmg(part,dmg):
+    if part in PART_NUMBER and dmg in DMG_NUMBER:
+        return True
+
+    return False
+
 def generate_svg_from_lib(file_path):
 
     """ Takes .lib file as input and generates
@@ -49,15 +65,15 @@ def generate_svg_from_lib(file_path):
         isVisible = F0_LINE[6] == "V" 
         hjustify = F0_LINE[7] 
         vjustify = F0_LINE[8][0] 
-        italic   = F0_LINE[8][1] == "I";
-        bold     = F0_LINE[8][2] == "B";
+        italic   = F0_LINE[8][1] == "I"
+        bold     = F0_LINE[8][2] == "B"
 
         
 
 
         # initialize the drawing canvas.we need to initialize and save svg for each components.
-        d = plot.draw.Drawing(1500, 2500, origin='center', displayInline=False)
-
+       
+        d = plot.draw.Drawing(CANVAS_HEIGHT, CANVAS_WIDTH, origin='center', displayInline=False)
 
         # below are the draw instructions.
         start_index_for_DRAW = 9
@@ -83,8 +99,18 @@ def generate_svg_from_lib(file_path):
                 pin_length = current_instruction[5]
                 pin_orientation = current_instruction[6]
 
+                part = current_instruction[9] 
+                dmg = current_instruction[10]
+
+                if(not match_part_dmg(part,dmg)):
+                    continue
+
+             
+                pin_name_ofset = str(int(pin_name_offset) + len(pinName) * PIN_NAME_PADDING)
+           
+
                 d = plot.drawPin(d,pinName,pinNumber,x_pos,y_pos
-                            ,pin_name_offset,length=pin_length
+                            ,pin_name_ofset,length=pin_length
                             ,orientation=pin_orientation,text_size=text_size)
             
             # (d,x1,y1,x2,y2,fill="f",pen='5',stroke='black')
@@ -97,7 +123,16 @@ def generate_svg_from_lib(file_path):
                 fill_shape = current_instruction[8]
                 pen_width = current_instruction[7]
 
-                d = plot.drawRec(d,x1,y1,x2,y2,fill=fill_shape,pen=pen_width)
+                if(pen_width == '0'):
+                    pen_width = DEFAULT_PEN_WIDTH
+
+                part = current_instruction[5] 
+                dmg = current_instruction[6]
+
+                if(not match_part_dmg(part,dmg)):
+                    continue
+
+                d = plot.drawRec(d,x1,y1,x2,y2,fill_shape,pen_width)
         
              # d,x,y,r,fill="red",pen=2,stroke="black"
             elif shape == 'C':
@@ -107,6 +142,15 @@ def generate_svg_from_lib(file_path):
                 r = current_instruction[3]
                 pen_width = current_instruction[6]
                 fill_shape = current_instruction[7]
+
+                if(pen_width == '0'):
+                    pen_width = DEFAULT_PEN_WIDTH
+
+                part = current_instruction[4] 
+                dmg = current_instruction[5]
+
+                if(not match_part_dmg(part,dmg)):
+                    continue
 
                 d = plot.drawCircle(d,cx,cy,r,fill=fill_shape,pen=pen_width)
 
@@ -119,12 +163,18 @@ def generate_svg_from_lib(file_path):
                 start_deg = current_instruction[4]
                 end_deg   = current_instruction[5]
 
-                part = current_instruction[6]
-                dmg = current_instruction[7]
-                pen = current_instruction[8]
+                pen_width = current_instruction[8]
                 fill = current_instruction[9]
 
-                d = plot.drawArc(d,cx,cy,r,start_deg,end_deg,pen,fill)
+                if(pen_width == '0'):
+                    pen_width = DEFAULT_PEN_WIDTH
+
+                part = current_instruction[6]
+                dmg = current_instruction[7]
+
+                if(not match_part_dmg(part,dmg)):
+                    continue
+                d = plot.drawArc(d,cx,cy,r,start_deg,end_deg,pen_width,fill)
                 
 
 
@@ -135,7 +185,17 @@ def generate_svg_from_lib(file_path):
                 # P 2 2 1 10 -150 -175 -25 -175 f
 
                 vertices_count = current_instruction[1]
-                pen = current_instruction[4]
+                pen_width = current_instruction[4]
+
+                if(pen_width == '0'):
+                    pen_width = DEFAULT_PEN_WIDTH
+
+                part = current_instruction[2] 
+                dmg = current_instruction[3]
+
+                if(not match_part_dmg(part,dmg)):
+                    continue
+
 
                 fill = current_instruction[len(current_instruction)-1]
 
@@ -144,7 +204,7 @@ def generate_svg_from_lib(file_path):
                     point = (current_instruction[j],current_instruction[j+1])
                     vertices_list.append(point)
          
-                d = plot.drawPolygon(d,vertices_count,pen,vertices_list,fill)
+                d = plot.drawPolygon(d,vertices_count,pen_width,vertices_list,fill)
                 
 
             elif shape == 'T':
@@ -156,7 +216,7 @@ def generate_svg_from_lib(file_path):
                 pass
 
             else:
-                print("shape not found")
+                pass
        
 
         # saving to svg
@@ -165,5 +225,5 @@ def generate_svg_from_lib(file_path):
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    generate_svg_from_lib("./sample_lib/14529.lib")
+    generate_svg_from_lib("./sample_lib/4xxx.lib")
     print("done!!")

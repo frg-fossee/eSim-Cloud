@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1500" height="2500" viewBox="-750.0 -1250.0 1500 2500">
+<defs>
+</defs>
+<path d="M-300,-500 L300,-500 L300,600 L-300,600 L-300,-500" stroke-width="10" stroke="black" fill-opacity="0" />
+<text x="-400.0" y="360" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
+<text x="-234" y="400" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">PE</text>
+<path d="M-500,400 L-300,400" stroke="black" stroke-width="5" />
+<text x="-400.0" y="160" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">10</text>
+<text x="-221" y="200" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">U/D</text>
+<path d="M-500,200 L-300,200" stroke="black" stroke-width="5" />
+<text x="400.0" y="-340" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">11</text>
+<text x="234" y="-300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Q2</text>
+<path d="M500,-300 L300,-300" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-340" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">12</text>
+<text x="-234" y="-300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">A2</text>
+<path d="M-500,-300 L-300,-300" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-240" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">13</text>
+<text x="-234" y="-200" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">A3</text>
+<path d="M-500,-200 L-300,-200" stroke="black" stroke-width="5" />
+<text x="400.0" y="-240" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">14</text>
+<text x="234" y="-200" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Q3</text>
+<path d="M500,-200 L300,-200" stroke="black" stroke-width="5" />
+<text x="-400.0" y="260" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">15</text>
+<text x="-221" y="300" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">CLK</text>
+<path d="M-500,300 L-300,300" stroke="black" stroke-width="5" />
+<text x="-40" y="-600.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">16</text>
+<text x="0" y="-421" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">VDD</text>
+<path d="M0,-700 L0,-500" stroke="black" stroke-width="5" />
+<text x="400.0" y="-140" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">2</text>
+<text x="234" y="-100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Q4</text>
+<path d="M500,-100 L300,-100" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-140" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">3</text>
+<text x="-234" y="-100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">A4</text>
+<path d="M-500,-100 L-300,-100" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-440" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">4</text>
+<text x="-234" y="-400" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">A1</text>
+<path d="M-500,-400 L-300,-400" stroke="black" stroke-width="5" />
+<text x="-400.0" y="60" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">5</text>
+<text x="-234" y="100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">CI</text>
+<path d="M-500,100 L-300,100" stroke="black" stroke-width="5" />
+<text x="400.0" y="-440" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">6</text>
+<text x="234" y="-400" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">Q1</text>
+<path d="M500,-400 L300,-400" stroke="black" stroke-width="5" />
+<text x="400.0" y="60" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">7</text>
+<text x="234" y="100" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">CO</text>
+<path d="M500,100 L300,100" stroke="black" stroke-width="5" />
+<text x="-40" y="700.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">8</text>
+<text x="0" y="521" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">VSS</text>
+<path d="M0,800 L0,600" stroke="black" stroke-width="5" />
+<text x="-400.0" y="460" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">9</text>
+<text x="-221" y="500" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">RST</text>
+<path d="M-500,500 L-300,500" stroke="black" stroke-width="5" />
+</svg>

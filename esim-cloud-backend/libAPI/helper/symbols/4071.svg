@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1500" height="2500" viewBox="-750.0 -1250.0 1500 2500">
+<defs>
+</defs>
+<path d="M-149.697028702033,-149.45454246441113 A258,258,0,0,1,-149.697028702033,149.45454246441113" stroke="black" stroke-width="10" fill-opacity="0" />
+<path d="M150.04886856296994,-0.7990852009142344 A204,204,0,0,0,-24.614200537426747,-150.76803491285665" stroke="black" stroke-width="10" fill-opacity="0" />
+<path d="M-24.614200537426747,150.76803491285665 A204,204,0,0,0,150.04886856296994,0.7990852009142202" stroke="black" stroke-width="10" fill-opacity="0" />
+<path d="M-25,150 L-150,150" stroke="black" stroke-width="10" />
+<path d="M-25,-150 L-150,-150" stroke="black" stroke-width="10" />
+<path d="M-150,-150 L-25,-150" stroke="black" stroke-width="-1000" />
+<path d="M-150,-150 L-150,-150" stroke="black" stroke-width="-1000" />
+<path d="M-140,-134 L-150,-150" stroke="black" stroke-width="-1000" />
+<path d="M-119,-89 L-140,-134" stroke="black" stroke-width="-1000" />
+<path d="M-106,-41 L-119,-89" stroke="black" stroke-width="-1000" />
+<path d="M-103,10 L-106,-41" stroke="black" stroke-width="-1000" />
+<path d="M-109,59 L-103,10" stroke="black" stroke-width="-1000" />
+<path d="M-125,107 L-109,59" stroke="black" stroke-width="-1000" />
+<path d="M-150,150 L-125,107" stroke="black" stroke-width="-1000" />
+<path d="M-150,150 L-150,150" stroke="black" stroke-width="-1000" />
+<path d="M-25,150 L-150,150" stroke="black" stroke-width="-1000" />
+<text x="-215.0" y="-140" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
+<path d="M-300,-100 L-130,-100" stroke="black" stroke-width="5" />
+<text x="-215.0" y="60" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">2</text>
+<path d="M-300,100 L-130,100" stroke="black" stroke-width="5" />
+<text x="225.0" y="-40" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">3</text>
+<path d="M300,0 L150,0" stroke="black" stroke-width="5" />
+</svg>
