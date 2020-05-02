@@ -73,6 +73,9 @@ export class Wire extends CircuitElement {
   setColor(color: string) {
     this.color = color;
     this.element.attr({ stroke: color }); // set attribute
+    for (const joint of this.joints) {
+      joint.attr({ fill: color, stroke: color });
+    }
   }
   /**
    * Return properties of wire
@@ -140,6 +143,10 @@ export class Wire extends CircuitElement {
       }
     }
     this.update();
+  }
+  // Returns true if both end od wire is connected
+  isConnected() {
+    return (this.start !== null && this.end !== null);
   }
   /**
    * Update the wire position if the parent element is changed

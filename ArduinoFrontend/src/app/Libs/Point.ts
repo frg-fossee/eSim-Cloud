@@ -76,10 +76,23 @@ export class Point {
     this.body.mouseout(() => {
       window.hideBubble();
     });
+    // TODO: Remove The following code After Development
+    // this.body.drag((dx, dy) => {
+    //   this.body.attr({
+    //     x: this.x + dx,
+    //     y: this.y + dy
+    //   });
+    // }, () => {
+    //   this.x = this.body.attr("x");
+    //   this.y = this.body.attr("y");
+    // }, () => { });
+    // this.body.dblclick(() => {
+    //   alert(this.x + "," + this.y + "   " + this.label);
+    // });
 
     // Set click listener
     this.body.click(() => {
-      if ((window['Selected'] instanceof Wire)) {
+      if ((window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
         // if selected item is wire then connect the wire with the node
         this.connectedTo = window.Selected;
         window['Selected'].connect(this, true);
@@ -133,7 +146,9 @@ export class Point {
    * Hide Node
    */
   hide() {
-    this.body.attr(this.defaultAttr);
+    setTimeout(() => {
+      this.body.attr(this.defaultAttr);
+    }, 1000);
   }
 
   /**
