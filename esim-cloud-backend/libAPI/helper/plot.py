@@ -4,6 +4,13 @@ import drawSvg as draw
 STROKE_COLOR = "black"
 PIN_NUMBER_OFFSET = 40
 
+'''pen-parameter is the thickness of the pen,when
+zero the default pen width is used.
+The fill parameter is “f” for a filled shape in the 
+background colour, “F” for a filled shape in
+the pen colour, or “N” for an unfilled shape.
+'''
+
 def drawCircle(d,x,y,r,fill="red",pen=2):
 
     if(fill == 'f'):
@@ -94,6 +101,7 @@ def drawPolygon(d,vertices_count,pen=5,vertices_list = [],fill='f'):
         d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen,**kwargs))
     
     if fill == 'f':
+        # a filled polygon is implicitly closed.
         # join the last vertex and the first vertex
         point_1 = vertices_list[len(vertices_list)-1]
         point_2 = vertices_list[0]

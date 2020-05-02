@@ -1,6 +1,6 @@
-from plot import *
-from parser import *
-
+import plot
+import parser
+# import drawSvg as draw
 
 def generate_svg_from_lib(file_path):
 
@@ -8,7 +8,7 @@ def generate_svg_from_lib(file_path):
         svg from the .lib file.
     """
 
-    data = extractDataFromLib(file_path)
+    data = parser.extractDataFromLib(file_path)
 
     
 
@@ -56,7 +56,7 @@ def generate_svg_from_lib(file_path):
 
 
         # initialize the drawing canvas.we need to initialize and save svg for each components.
-        d = draw.Drawing(1500, 2500, origin='center', displayInline=False)
+        d = plot.draw.Drawing(1500, 2500, origin='center', displayInline=False)
 
 
         # below are the draw instructions.
@@ -77,21 +77,38 @@ def generate_svg_from_lib(file_path):
                 # its a pin 
                 # drawing using a line
                 pinName = current_instruction[1]
-            
-                d = drawPin(d,pinName,current_instruction[2],current_instruction[3],
-                            current_instruction[4],pin_name_offset,length=current_instruction[5],orientation=current_instruction[6],text_size=text_size)
+                pinNumber = current_instruction[2]
+                x_pos   = current_instruction[3]
+                y_pos = current_instruction[4]
+                pin_length = current_instruction[5]
+                pin_orientation = current_instruction[6]
+
+                d = plot.drawPin(d,pinName,pinNumber,x_pos,y_pos
+                            ,pin_name_offset,length=pin_length
+                            ,orientation=pin_orientation,text_size=text_size)
             
             # (d,x1,y1,x2,y2,fill="f",pen='5',stroke='black')
             elif shape == 'S':
                 # its a rectangle
-        
-                d = drawRec(d,current_instruction[1],current_instruction[2],
-                            current_instruction[3],current_instruction[4],fill=current_instruction[8],pen=current_instruction[7])
+                x1 = current_instruction[1]
+                y1 = current_instruction[2]
+                x2 = current_instruction[3]  
+                y2 = current_instruction[4]
+                fill_shape = current_instruction[8]
+                pen_width = current_instruction[7]
+
+                d = plot.drawRec(d,x1,y1,x2,y2,fill=fill_shape,pen=pen_width)
         
              # d,x,y,r,fill="red",pen=2,stroke="black"
             elif shape == 'C':
                 # its a circle
-                d = drawCircle(d,current_instruction[1],current_instruction[2],current_instruction[3],pen=current_instruction[6],fill=current_instruction[7])
+                cx = current_instruction[1]
+                cy = current_instruction[2]
+                r = current_instruction[3]
+                pen_width = current_instruction[6]
+                fill_shape = current_instruction[7]
+
+                d = plot.drawCircle(d,cx,cy,r,fill=fill_shape,pen=pen_width)
 
             # (d,cx,cy,r,start_deg,end_deg,pen = 5,fill='f')
             elif shape == 'A':
@@ -107,7 +124,7 @@ def generate_svg_from_lib(file_path):
                 pen = current_instruction[8]
                 fill = current_instruction[9]
 
-                d = drawArc(d,cx,cy,r,start_deg,end_deg,pen,fill)
+                d = plot.drawArc(d,cx,cy,r,start_deg,end_deg,pen,fill)
                 
 
 
@@ -127,7 +144,7 @@ def generate_svg_from_lib(file_path):
                     point = (current_instruction[j],current_instruction[j+1])
                     vertices_list.append(point)
          
-                d = drawPolygon(d,vertices_count,pen,vertices_list,fill)
+                d = plot.drawPolygon(d,vertices_count,pen,vertices_list,fill)
                 
 
             elif shape == 'T':

@@ -5,5 +5,5 @@ venv
 *.sqlite3
 .env.prod
 mongo_data/
-*.lib
-*.svg
+esim-cloud-backend/libAPI/sample_lib/
+esim-cloud-backend/libAPI/symbols/

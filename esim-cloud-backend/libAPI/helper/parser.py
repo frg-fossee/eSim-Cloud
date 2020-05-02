@@ -8,18 +8,20 @@ def extractDataFromLib(filename):
         data = []
         for line in file_contents:
             
-            if(line.find("DEF") == 0):
-                instruction = []
-                defFlag = True
-            
-            if(line.find("ENDDEF") == 0):
-                data.append(instruction)
-            
-                defFlag = False
+            # check for blank lines.
+            if line.strip() != '':
+                if(line.find("DEF") == 0):
+                    instruction = []
+                    defFlag = True
+                
+                if(line.find("ENDDEF") == 0):
+                    data.append(instruction)
+                
+                    defFlag = False
 
 
-            if(defFlag == True):
-                instruction.append(line.strip().split(" "))
+                if(defFlag == True):
+                    instruction.append(line.strip().split(" "))
 
     
     return data
