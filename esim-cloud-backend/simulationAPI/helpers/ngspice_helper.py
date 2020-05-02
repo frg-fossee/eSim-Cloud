@@ -6,6 +6,7 @@ from django.conf import settings
 from .parse import extract_data_from_ngspice_output
 logger = logging.getLogger(__name__)
 
+
 class CannotRunSpice(Exception):
     """Base class for exceptions in this module."""
     pass
