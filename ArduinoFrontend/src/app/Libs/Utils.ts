@@ -2,6 +2,7 @@ import { Buzzer } from './Buzzer';
 import { Battery9v } from './Battery';
 import { PushButton } from './PushButton';
 import { ArduinoUno } from './Arduino';
+import { LED } from './Led';
 
 export class Utils {
   static componentBox = {
@@ -15,11 +16,16 @@ export class Utils {
       ['ArduinoUno'] // Row
     ],
     output: [
-      ['Buzzer'], // Row
+      ['Buzzer', 'LED'], // Row
     ]
   };
 
   static components = {
+    LED: {
+      name: 'LED',
+      image: './assets/images/components/ArduinoUno.png',
+      className: LED
+    },
     ArduinoUno: {
       name: 'Arduino UNO',
       image: './assets/images/components/ArduinoUno.png',

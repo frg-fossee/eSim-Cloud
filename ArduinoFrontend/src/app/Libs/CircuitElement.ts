@@ -50,11 +50,12 @@ export abstract class CircuitElement {
   }
 
   setHoverListener() {
-    this.elements.hover(() => {
+    this.elements.mouseover(() => {
       for (const node of this.nodes) {
         node.show();
       }
-    }, () => {
+    });
+    this.elements.mouseout(() => {
       for (const node of this.nodes) {
         node.hide();
       }
