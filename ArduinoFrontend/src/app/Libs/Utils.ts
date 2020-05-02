@@ -1,6 +1,7 @@
 import { Buzzer } from './Buzzer';
 import { Battery9v } from './Battery';
 import { PushButton } from './PushButton';
+import { ArduinoUno } from './Arduino';
 
 export class Utils {
   static componentBox = {
@@ -10,13 +11,20 @@ export class Utils {
     power: [
       ['Battery9v'] // Row
     ],
-    controllers: [],
+    controllers: [
+      ['ArduinoUno'] // Row
+    ],
     output: [
       ['Buzzer'], // Row
     ]
   };
 
   static components = {
+    ArduinoUno: {
+      name: 'Arduino UNO',
+      image: './assets/images/components/ArduinoUno.png',
+      className: ArduinoUno
+    },
     PushButton: {
       name: 'Push Button',
       image: './assets/images/components/PushButton.png',
