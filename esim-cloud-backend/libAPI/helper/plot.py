@@ -2,22 +2,23 @@ import drawSvg as draw
 
 
 STROKE_COLOR = "black"
+PIN_NUMBER_OFFSET = 40
 
-def drawCircle(d,x,y,r,fill="red",pen=2,stroke=STROKE_COLOR):
+def drawCircle(d,x,y,r,fill="red",pen=2):
 
     if(fill == 'f'):
-        kwargs = {"fill_opacity" : 0.3}
+        kwargs = {"fill_opacity" : 0}
     elif(fill == 'F'):
-        kwargs = {'fill':stroke}
+        kwargs = {'fill':STROKE_COLOR}
     else:
-        kwargs = {}
+        kwargs = {"fill_opacity" : 0}
     d.append(draw.Circle(x, y, r,
              stroke_width=pen, stroke=STROKE_COLOR,**kwargs))
 
     return d
 
 
-def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke=STROKE_COLOR):
+def drawRec(d,x1,y1,x2,y2,fill="f",pen='5'):
 
     # 'f'->filled shape in background color
     # 'F' -> filled shape in pen color
@@ -29,11 +30,11 @@ def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke=STROKE_COLOR):
     x2 = int(x2)
     y2 = int(y2)
     if(fill == 'f'):
-        kwargs = {"fill_opacity" : 0.3}
+        kwargs = {"fill_opacity" : 0}
     elif(fill == 'F'):
-        kwargs = {'fill':stroke}
+        kwargs = {'fill':STROKE_COLOR}
     else:
-        kwargs = {}
+        kwargs = {"fill_opacity" : 0}
     d.append(draw.Lines(x1,y1,x2,y1,x2,y2,x1,y2,x1,y1,
                         stroke_width=pen, stroke=STROKE_COLOR,
                         **kwargs))
@@ -41,13 +42,45 @@ def drawRec(d,x1,y1,x2,y2,fill="f",pen='5',stroke=STROKE_COLOR):
     return d
 
 # A X Y radius start end part dmg pen fill Xstart Ystart Xend Yend
-def drawArc():
-    pass
+def drawArc(d,cx,cy,r,start_deg,end_deg,pen = 5,fill='f'):
+
+    cx = int(cx)
+    cy = int(cy)
+    r = int(r)
+
+    start_deg   = int(start_deg) * 0.1
+    end_deg     = int(end_deg)  * 0.1
+
+    difference = start_deg - end_deg
+    print(abs(difference))
+    if(abs(difference) > 180):
+        # swaping
+        temp = start_deg
+        start_deg = end_deg
+        end_deg = temp
+
+    if(fill == 'f'):
+        kwargs = {"fill_opacity" : 0}
+    elif(fill == 'F'):
+        kwargs = {'fill':STROKE_COLOR}
+    else:
+        kwargs = {"fill_opacity" : 0}
+
+    d.append(draw.Arc(cx,cy,r,start_deg,end_deg,cw=False,
+            stroke=STROKE_COLOR, stroke_width=pen,**kwargs))
+    return d
 
 # P count part dmg pen X Y ... fill
 def drawPolygon(d,vertices_count,pen=5,vertices_list = [],fill='f'):
     
     pen = int(pen)
+    if(fill == 'f'):
+        kwargs = {"fill_opacity" : 0}
+    elif(fill == 'F'):
+        kwargs = {'fill':STROKE_COLOR}
+    else:
+        kwargs = {"fill_opacity" : 0}
+    
     
     for i in range(1,len(vertices_list)):
         point_1 = vertices_list[i]
@@ -57,7 +90,8 @@ def drawPolygon(d,vertices_count,pen=5,vertices_list = [],fill='f'):
         y1 = int(point_1[1])
         x2 = int(point_2[0])
         y2 = int(point_2[1])
-        d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen))
+
+        d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen,**kwargs))
     
     if fill == 'f':
         # join the last vertex and the first vertex
@@ -69,48 +103,55 @@ def drawPolygon(d,vertices_count,pen=5,vertices_list = [],fill='f'):
         x2 = int(point_2[0])
         y2 = int(point_2[1])
      
-        d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen))
+        d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen,**kwargs))
+
+
      
     return d
         
     
 
-def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',stroke=STROKE_COLOR,pen=5):
+def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',pen=5,text_size=50):
 
     x1 = int(x1)
     y1 = int(y1)
-    text_size = 50
+    text_size = int(text_size)
     length = int(length)
     pin_name_offset=int(pin_name_offset)
+
     if(orientation=="R"):
         x2 = x1+length
         y2 = y1
 
         #to position pin number properly 
         x = x1 + (length/2)
-        y = y1 + 30
+        y = y1 + PIN_NUMBER_OFFSET
         # x = x1
         if pinName != "~":
             d.append(draw.Text(pinName,text_size,x1+length+pin_name_offset,y1,center=0.6,fill='black'))
         d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
+
     elif(orientation=="L"):
         x2 = x1-length
         y2 = y1
 
         #to position pin number properly 
         x = x1 - (length/2)
-        y = y1 + 30
+        # y = y1 + 30
+        y = y1 + PIN_NUMBER_OFFSET
         # x = x1
 
         d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
         if pinName != "~":
             d.append(draw.Text(pinName,text_size,x1-length-pin_name_offset,y1,center=0.6,fill='black'))
+
     elif(orientation=="U"):
         x2 = x1
         y2 = y1 + length
 
         #to position pin number properly 
         x = x1 - 40
+        x = x1 - PIN_NUMBER_OFFSET
         y = y1 + (length/2)
         # y = y1
         d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
@@ -122,13 +163,14 @@ def drawPin(d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',s
         y2 = y1 - length
         # y2 = y1
         #to position pin number properly 
-        x = x1 - 40
+        # x = x1 - 40
+        x = x1 - PIN_NUMBER_OFFSET
         y = y1 - (length/2)
         d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill='black'))
         if pinName != "~":
             d.append(draw.Text(pinName,text_size,x1,y1-length-pin_name_offset,center=0.6,fill='black'))
 
-    d.append(draw.Line(x1,y1,x2,y2,stroke=stroke, stroke_width=pen))
+    d.append(draw.Line(x1,y1,x2,y2,stroke=STROKE_COLOR, stroke_width=pen))
     
     
 

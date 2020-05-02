@@ -79,7 +79,7 @@ def generate_svg_from_lib(file_path):
                 pinName = current_instruction[1]
             
                 d = drawPin(d,pinName,current_instruction[2],current_instruction[3],
-                            current_instruction[4],pin_name_offset,length=current_instruction[5],orientation=current_instruction[6])
+                            current_instruction[4],pin_name_offset,length=current_instruction[5],orientation=current_instruction[6],text_size=text_size)
             
             # (d,x1,y1,x2,y2,fill="f",pen='5',stroke='black')
             elif shape == 'S':
@@ -93,10 +93,22 @@ def generate_svg_from_lib(file_path):
                 # its a circle
                 d = drawCircle(d,current_instruction[1],current_instruction[2],current_instruction[3],pen=current_instruction[6],fill=current_instruction[7])
 
+            # (d,cx,cy,r,start_deg,end_deg,pen = 5,fill='f')
             elif shape == 'A':
                 # its an arc
+                cx = current_instruction[1]
+                cy = current_instruction[2]
+                r  = current_instruction[3]
+                start_deg = current_instruction[4]
+                end_deg   = current_instruction[5]
 
-                pass
+                part = current_instruction[6]
+                dmg = current_instruction[7]
+                pen = current_instruction[8]
+                fill = current_instruction[9]
+
+                d = drawArc(d,cx,cy,r,start_deg,end_deg,pen,fill)
+                
 
 
             # (d,vertices_count,pen=5,vertices_list = [],fill='f')
@@ -127,7 +139,7 @@ def generate_svg_from_lib(file_path):
                 pass
 
             else:
-                pass
+                print("shape not found")
        
 
         # saving to svg
@@ -136,5 +148,5 @@ def generate_svg_from_lib(file_path):
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    generate_svg_from_lib("./sample_lib/4002.lib")
+    generate_svg_from_lib("./sample_lib/14529.lib")
     print("done!!")
