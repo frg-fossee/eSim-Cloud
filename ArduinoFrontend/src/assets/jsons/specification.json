@@ -59,7 +59,7 @@
   },
   "PIRSensor": {
     "name": "PIR Sensor HC-SR501",
-    "image" : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/PIR_Motion_Detector.jpg/320px-PIR_Motion_Detector.jpg",
+    "image" : "https://cdn-blog.adafruit.com/uploads/2014/01/pirsensor.jpg",
     "description": "The PIR sensor stands for Passive Infrared sensor. It is a low cost sensor which can detect the presence of Human beings or animals. This sensor has three output pins Vcc, Output and Ground as shown in the pin diagram above. Since the output pin is 3.3V TTL logic it can be used with any platforms like Arduino, Raspberry, PIC, ARM, 8051 etc..",
     "properties": {
       "Input voltage": "4.V to 12V (+5V recommended)",

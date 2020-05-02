@@ -7,7 +7,7 @@ export class Workspace {
   static translateY = 0.0;
   static scale = 1.0;
   static zooomIncrement = 0.01;
-  static translateRate = 0.2;
+  static translateRate = 0.25;
   static moveCanvas = {
     x: 0,
     y: 0,

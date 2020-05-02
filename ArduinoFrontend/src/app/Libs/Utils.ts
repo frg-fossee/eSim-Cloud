@@ -4,11 +4,12 @@ import { PushButton } from './PushButton';
 import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
 import { UltrasonicSensor } from './UltrasonicSensor';
+import { PIRSensor } from './PIRSensor';
 
 export class Utils {
   static componentBox = {
     input: [
-      ['PushButton', 'UltrasonicSensor']// Row
+      ['PushButton', 'UltrasonicSensor', 'PIRSensor']// Row
     ],
     power: [
       ['Battery9v'] // Row
@@ -22,6 +23,11 @@ export class Utils {
   };
 
   static components = {
+    PIRSensor: {
+      name: 'PIR Sensor',
+      image: './assets/images/components/PIRSensor.png',
+      className: PIRSensor
+    },
     UltrasonicSensor: {
       name: 'Ultrasonic Distance Sensor',
       image: './assets/images/components/UltrasonicSensor.png',
