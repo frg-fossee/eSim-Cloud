@@ -1,4 +1,5 @@
 import { Wire } from './Wire';
+import { CircuitElement } from './CircuitElement';
 
 declare var window;
 
@@ -43,7 +44,7 @@ export class Point {
     public y: number,
     public label: string,
     public half: number,
-    public parent: any
+    public parent: CircuitElement
   ) {
     // Create a rectangle of 4x4 and set default color and stroke
     this.body = this.canvas.rect(x, y, 2 * this.half, 2 * this.half);
@@ -87,8 +88,9 @@ export class Point {
     //   this.y = this.body.attr("y");
     // }, () => { });
     // this.body.dblclick(() => {
-    //   alert(this.x + "," + this.y + "   " + this.label);
+    //   alert((this.x - this.parent.x) + "," + (this.y - this.parent.y) + "   " + this.label);
     // });
+    // return;
 
     // Set click listener
     this.body.click(() => {

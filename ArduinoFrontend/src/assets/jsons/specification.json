@@ -44,8 +44,8 @@
     }
   },
   "UltrasonicSensor": {
-    "name": "UltraSonic Sensor HC-SR04",
-    "images": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/HC_SR04_Ultrasonic_sensor_1480319_20_21_HDR_Enhancer.jpg/320px-HC_SR04_Ultrasonic_sensor_1480319_20_21_HDR_Enhancer.jpg",
+    "name": "Ultrasonic Sensor HC-SR04",
+    "image": "https://d2t1xqejof9utc.cloudfront.net/screenshots/pics/3e2267edb9c1f128699c3a7e11bca876/large.png",
     "description": "HC-SR04 Ultrasonic (US) sensor is a 4 pin module, whose pin names are Vcc, Trigger, Echo and Ground respectively. This sensor is a very popular sensor used in many applications where measuring distance or sensing objects are required. The module has two eyes like projects in the front which forms the Ultrasonic transmitter and Receiver.",
     "properties": {
       "Operating voltage": "+5V",
@@ -178,7 +178,7 @@
   },
   "LED": {
     "name": "LED",
-    "image": "https://commons.wikimedia.org/wiki/File:LEDs.jpg",
+    "image": "https://static.rapidonline.com/catalogueimages/module/06/01/m060113p01wl.jpg",
     "description": "A light-emitting diode (LED) is a semiconductor light source that emits light when current flows through it.",
     "properties": {
       "Light Color": "White, Yellow, Red, Green & Blue",
