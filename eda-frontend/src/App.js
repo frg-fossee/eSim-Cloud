@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import SchematicEditor from "./pages/SchematiEditor";
+import Simulator from "./pages/Simulator";
 
 function App() {
   // Routes For SchematicEditor
@@ -22,6 +23,7 @@ function App() {
       <Navbar />
       <Switch>
         <Route exact path="/" component={Home} />
+        <Route path="/simulator" component={Simulator} />
         <Route component={NotFound} />
       </Switch>
     </>
