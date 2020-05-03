@@ -1,8 +1,8 @@
 import React from "react";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
+import { Container, Grid, Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Paper } from "@material-ui/core";
+
+import NetlistUpload from "../components/Simulator/NetlistUpload"
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -35,6 +35,7 @@ export default function () {
             <p>Upload Netlist to Simulate</p>
           </Paper>
         </Grid>
+        <NetlistUpload />
       </Grid>
     </Container>
   );

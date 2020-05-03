@@ -1,6 +1,4 @@
 import React from "react";
-
-import { makeStyles } from "@material-ui/core/styles";
 import {
   AppBar,
   Toolbar,
@@ -11,6 +9,7 @@ import {
 } from "@material-ui/core";
 import Description from "@material-ui/icons/Description";
 import ShareIcon from "@material-ui/icons/Share";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

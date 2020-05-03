@@ -1,10 +1,6 @@
 import React from "react";
 
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Link from "@material-ui/core/Link";
+import { AppBar, Button, Toolbar, Typography, Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
