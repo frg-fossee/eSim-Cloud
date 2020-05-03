@@ -35,7 +35,9 @@ export default function Navbar() {
           noWrap
           className={classes.toolbarTitle}
         >
-          EDA Cloud
+          <Link color="inherit" href="/">
+            EDA Cloud
+          </Link>
         </Typography>
         <nav>
           <Link
