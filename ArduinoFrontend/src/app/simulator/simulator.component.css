@@ -184,3 +184,34 @@
         margin-left: -15rem;
     }
 }
+/*context-menu*/
+
+html,body{
+    height:100%;
+    
+}
+.context-menu{
+    width:200px;
+    height:auto;
+    box-shadow: 0 0 20px 0 #ccc;
+    position: absolute;
+    display: none;
+        
+}
+.context-menu ul{
+    list-style: none; /*show no bullets*/
+    padding: 5px 0px 5px 0px;
+}
+
+.context-menu ul li{
+    padding: 10px 5px 10px 5px;
+    border-left: 4px solid transparent;
+    cursor: pointer;    
+}
+.context-menu ul li:hover{
+    background-color:rgb(245, 207, 161);
+    border-left: 4px solid #666;
+    
+}
+
+
