@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Grid, Button, Paper } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
+import Graph from "../Shared/Graph";
+
 const styles = (theme) => ({
   paper: {
     padding: theme.spacing(2),
@@ -28,6 +30,9 @@ class SimpleReactFileUpload extends Component {
     this.state = {
       file: null,
       filename: "Choose Netlist",
+      x_1: [],
+      y1_1: [],
+      y2_1: [],
     };
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -95,6 +100,17 @@ class SimpleReactFileUpload extends Component {
             </form>
             <br />
             {this.fileData()}
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={7}>
+          <Paper className={classes.paper}>
+            <h2>GRAPH OUTPUT</h2>
+            <br />
+            <Graph
+              x={this.state.x_1}
+              y1={this.state.y1_1}
+              y2={this.state.y2_1}
+            />
           </Paper>
         </Grid>
       </>
