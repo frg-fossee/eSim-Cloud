@@ -170,8 +170,8 @@ export class Workspace {
       if (window.Selected.end == null) {
         const pt = Workspace.svgPoint(event.clientX, event.clientY);
         window.Selected.add(pt.x, pt.y);
+        return;
       }
-      return;
     }
     if ((event.target as HTMLElement).tagName === 'svg') {
       Workspace.moveCanvas = {
@@ -224,10 +224,10 @@ export class Workspace {
 
   static contextMenu(event: MouseEvent) {
     event.preventDefault();
-    const element = document.getElementById('contextMenu');
-    element.style.display = 'block';
-    element.style.left = `${event.clientX}px`;
-    element.style.top = `${event.clientY}px`;
+    // const element = document.getElementById('contextMenu');
+    // element.style.display = 'block';
+    // element.style.left = `${event.clientX}px`;
+    // element.style.top = `${event.clientY}px`;
     return true;
   }
 
@@ -239,7 +239,7 @@ export class Workspace {
   }
 
   static doubleClick(event: MouseEvent) {
-    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+    if (window['isSelected'] && (window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
       return;
     }
     if ((event.target as HTMLElement).tagName !== 'svg') {
@@ -309,5 +309,9 @@ export class Workspace {
     pt.x = x;
     pt.y = y;
     return pt.matrixTransform(window.canvas.canvas.getScreenCTM().inverse());
+  }
+
+  static DeleteComponent() {
+
   }
 }
