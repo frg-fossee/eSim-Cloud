@@ -61,10 +61,18 @@ export default function Navbar() {
           <Link
             variant="button"
             color="textPrimary"
-            href="#"
+            href="/simulator"
             className={classes.link}
           >
-            About
+            Simulator
+          </Link>
+          <Link
+            variant="button"
+            color="textPrimary"
+            href="/dashboard"
+            className={classes.link}
+          >
+            Dashboard
           </Link>
         </nav>
         <Button
