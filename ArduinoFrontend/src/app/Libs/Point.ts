@@ -83,7 +83,10 @@ export class Point {
     // }, () => {
     //   this.x = this.body.attr("x");
     //   this.y = this.body.attr("y");
-    // }, () => { });
+    // }, () => {
+    //   this.x = this.body.attr("x");
+    //   this.y = this.body.attr("y");
+    // });
     // this.body.dblclick(() => {
     //   alert((this.x - this.parent.x) + "," + (this.y - this.parent.y) + "   " + this.label);
     // });

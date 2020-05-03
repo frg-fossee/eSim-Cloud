@@ -6,30 +6,31 @@ export class LED extends CircuitElement {
   color = '#f00'; // Color of LED
   constructor(public canvas: any, x: number, y: number) {
     super('LED', x, y);
-    let tmp = `M${this.x - 20},${this.y + 20}C${this.x - 20},${this.y},`;
-    tmp += `${this.x + 20},${this.y},${this.x + 20},${this.y + 20}L${this.x + 20},`;
-    tmp += `${this.y + 60}L${this.x + 28},${this.y + 60}L${this.x + 28},`;
-    tmp += `${this.y + 70}L${this.x - 28},${this.y + 70}L${this.x - 28},${this.y + 60}L${this.x - 20},${this.y + 60}`;
+    let tmp = `M${this.x - 10},${this.y + 10}C${this.x - 10},${this.y},`;
+    tmp += `${this.x + 10},${this.y},${this.x + 10},${this.y + 10}L${this.x + 10},`;
+    tmp += `${this.y + 30}L${this.x + 14},${this.y + 30}L${this.x + 14},`;
+    tmp += `${this.y + 35}L${this.x - 14},${this.y + 35}L${this.x - 14},${this.y + 30}L${this.x - 10},${this.y + 30}`;
 
-    let tmp2 = `M${this.x - 10},${this.y + 70}L${this.x - 10},`;
-    tmp2 += `${this.y + 80}L${this.x - 20},${this.y + 90}L${this.x - 20},${this.y + 140}`;
+    let tmp2 = `M${this.x - 5},${this.y + 35}L${this.x - 5},`;
+    tmp2 += `${this.y + 40}L${this.x - 10},${this.y + 45}L${this.x - 10},${this.y + 70}`;
 
     this.elements.push(
       this.canvas.path(tmp),
       this.canvas.path(tmp2),
       // Create negative terminal as line
-      this.canvas.path(`M${this.x + 10},${this.y + 70} L${this.x + 10},${this.y + 140}Z`)
+      this.canvas.path(`M${this.x + 5},${this.y + 35} L${this.x + 5},${this.y + 70}Z`)
     );
+    // this.elements.scale(0.5,0.5);
     this.nodes = [
       new Point(this.canvas,
-        this.x - 22,
-        this.y + 138,
+        this.x - 15,
+        this.y + 64,
         'POSITIVE',
         LED.pointHalf,
         this),
       new Point(this.canvas,
-        this.x + 8,
-        this.y + 138,
+        this.x + 1,
+        this.y + 64,
         'NEGATIVE',
         LED.pointHalf,
         this)
