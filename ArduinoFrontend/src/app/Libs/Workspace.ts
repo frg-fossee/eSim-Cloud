@@ -1,6 +1,8 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
 declare var window;
+declare var $; // For Jquery
+
 export class Workspace {
   // TODO: Add Comments
   static translateX = 0.0;
@@ -159,13 +161,9 @@ export class Workspace {
   }
 
   static mouseDown(event: MouseEvent) {
-    if (event.button === 2 && (event.target as HTMLElement).tagName === 'svg') {
-      Workspace.moveCanvas = {
-        x: event.clientX,
-        y: event.clientY,
-        start: true
-      };
-      document.getElementById('holder').classList.add('grabbing');
+    if (event.button === 2) {
+      const element = document.getElementById('contextMenu');
+      element.style.display = 'none';
     }
     if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
       // if selected item is wire and it is not connected then add the point
@@ -173,6 +171,15 @@ export class Workspace {
         const pt = Workspace.svgPoint(event.clientX, event.clientY);
         window.Selected.add(pt.x, pt.y);
       }
+      return;
+    }
+    if ((event.target as HTMLElement).tagName === 'svg') {
+      Workspace.moveCanvas = {
+        x: event.clientX,
+        y: event.clientY,
+        start: true
+      };
+      document.getElementById('holder').classList.add('grabbing');
     }
   }
 
@@ -217,7 +224,11 @@ export class Workspace {
 
   static contextMenu(event: MouseEvent) {
     event.preventDefault();
-    return false;
+    const element = document.getElementById('contextMenu');
+    element.style.display = 'block';
+    element.style.left = `${event.clientX}px`;
+    element.style.top = `${event.clientY}px`;
+    return true;
   }
 
   static copy(event: ClipboardEvent) {
