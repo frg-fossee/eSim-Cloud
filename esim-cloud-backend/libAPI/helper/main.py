@@ -2,8 +2,8 @@ import plot
 import parser
 # import drawSvg as draw
 
-CANVAS_HEIGHT = 1500
-CANVAS_WIDTH = 2500
+CANVAS_HEIGHT = 2000
+CANVAS_WIDTH = 1500
 
 PART_NUMBER = ['0','1']
 DMG_NUMBER = ['0','1']
@@ -11,6 +11,7 @@ DMG_NUMBER = ['0','1']
 DEFAULT_PEN_WIDTH = '6'
 PIN_NAME_PADDING = 13 
 
+SVG_SCALE = 0.1
 
 def match_part_dmg(part,dmg):
     if part in PART_NUMBER and dmg in DMG_NUMBER:
@@ -73,7 +74,9 @@ def generate_svg_from_lib(file_path):
 
         # initialize the drawing canvas.we need to initialize and save svg for each components.
        
-        d = plot.draw.Drawing(CANVAS_HEIGHT, CANVAS_WIDTH, origin='center', displayInline=False)
+        d = plot.draw.Drawing(CANVAS_WIDTH,CANVAS_HEIGHT, origin='center', displayInline=False)
+        
+        d.setPixelScale(s=SVG_SCALE)
 
         # below are the draw instructions.
         start_index_for_DRAW = 9
@@ -220,6 +223,7 @@ def generate_svg_from_lib(file_path):
        
 
         # saving to svg
+       
         d.saveSvg(f'./symbols/{name_of_symbol}.svg')
 
 
