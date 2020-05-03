@@ -1,0 +1,19 @@
+name: Django Build and Tests
+
+on:
+  push:
+    paths: [ 'esim-cloud-backend/**' ]
+  pull_request:
+    paths: [ 'esim-cloud-backend/**' ]
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run Django Test Suite
+      run: docker-compose -f docker-compose.dev.yml run django python manage.py test
