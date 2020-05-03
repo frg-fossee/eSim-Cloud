@@ -5,6 +5,7 @@ import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
 import { UltrasonicSensor } from './UltrasonicSensor';
 import { PIRSensor } from './PIRSensor';
+import { Motor } from './Motors';
 
 export class Utils {
   static componentBox = {
@@ -18,11 +19,16 @@ export class Utils {
       ['ArduinoUno'] // Row
     ],
     output: [
-      ['Buzzer', 'LED'], // Row
+      ['Buzzer', 'LED', 'Motor'], // Row
     ]
   };
 
   static components = {
+    Motor: {
+      name: 'Motor',
+      image: './assets/images/components/Motor.png',
+      className: Motor
+    },
     PIRSensor: {
       name: 'PIR Sensor',
       image: './assets/images/components/PIRSensor.png',
