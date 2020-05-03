@@ -31,7 +31,7 @@ export class SimulatorComponent implements OnInit {
 
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
-      console.log(v);
+      // console.log(v);
     });
 
     const gtag = this.makeSVGg();
@@ -143,7 +143,7 @@ export class SimulatorComponent implements OnInit {
         width: '500px'
       });
       dialogRef.afterClosed().subscribe(result => {
-        console.log(result);
+        // console.log(result);
       });
     } else {
       this.api.fetchSuggestions().subscribe(v => {
@@ -153,7 +153,7 @@ export class SimulatorComponent implements OnInit {
         });
 
         dialogRef.afterClosed().subscribe(result => {
-          console.log(result);
+          // console.log(result);
         });
       });
     }

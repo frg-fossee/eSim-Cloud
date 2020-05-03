@@ -27,39 +27,47 @@ export abstract class CircuitElement {
     let tmpy = 0;
     let fdx = 0;
     let fdy = 0;
-
+    let tmpar = [];
     this.elements.drag((dx, dy) => {
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
       tmpx = this.tx + dx;
       tmpy = this.ty + dy;
       fdx = dx;
       fdy = dy;
+      for (let i = 0; i < this.nodes.length; ++i) {
+        this.nodes[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
+      }
     }, () => {
       fdx = 0;
       fdy = 0;
+      tmpar = [];
       for (const node of this.nodes) {
-        node.hide();
+        // node.remainHidden();
+        tmpar.push(
+          [node.x, node.y]
+        );
       }
     }, () => {
-      for (const node of this.nodes) {
-        node.relativeMove(fdx, fdy);
-      }
+      // for (const node of this.nodes) {
+      //   node.relativeMove(fdx, fdy);
+      //   node.remainShow();
+      // }
       this.tx = tmpx;
       this.ty = tmpy;
     });
   }
 
   setHoverListener() {
-    this.elements.mouseover(() => {
-      for (const node of this.nodes) {
-        node.show();
-      }
-    });
-    this.elements.mouseout(() => {
-      for (const node of this.nodes) {
-        node.hide();
-      }
-    });
+    // this.elements.mouseover(() => {
+    //   for (const node of this.nodes) {
+    //     // node.show();
+    //   }
+    // });
+    // this.elements.mouseout(() => {
+    //   for (const node of this.nodes) {
+    //     // node.hide();
+    //   }
+    // });
   }
 
   setClickListener(callback: () => void) {

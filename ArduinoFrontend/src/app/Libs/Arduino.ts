@@ -2,7 +2,7 @@ import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
 
 export class ArduinoUno extends CircuitElement {
-  static pointHalf = 2;
+  static pointHalf = 4;
   /// Cordinate of Nodes with respect to the body
   NodesCordinates = [
     [91, 13], [99, 13], [106, 13], [113, 13], [120, 13], [127, 13],
@@ -24,15 +24,15 @@ export class ArduinoUno extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y);
     this.elements.push(
-      this.canvas.image('assets/images/components/ArduinoUno.svg', this.x, this.y, 228, 167)
+      this.canvas.image('assets/images/components/ArduinoUno.svg', this.x, this.y, 456, 334)
     );
 
     for (let i = 0; i < this.NodesCordinates.length; ++i) {
       const cord = this.NodesCordinates[i];
       this.nodes.push(new Point(
         this.canvas,
-        this.x + cord[0],
-        this.y + cord[1],
+        this.x + cord[0] * 2,
+        this.y + cord[1] * 2,
         this.pinLabels[i],
         ArduinoUno.pointHalf,
         this

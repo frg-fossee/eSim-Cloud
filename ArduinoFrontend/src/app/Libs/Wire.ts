@@ -58,6 +58,9 @@ export class Wire extends CircuitElement {
   }
   // Click event callback
   handleClick() {
+    for (const joint of this.joints) {
+      joint.show();
+    }
     // Select current instance
     window['isSelected'] = true;
     window['Selected'] = this;
@@ -166,6 +169,9 @@ export class Wire extends CircuitElement {
       if (this.points.length > 2) {
         let inp = `M${this.points[0][0]},${this.points[0][1]}`;
         for (let i = 1; i < this.points.length; ++i) {
+          if (i - 1 < this.joints.length) {
+            this.joints[i - 1].toFront();
+          }
           inp += ` L${this.points[i][0]},${this.points[i][1]}`;
         }
         this.element = this.canvas.path(inp);
@@ -175,14 +181,10 @@ export class Wire extends CircuitElement {
       }
       // set click listener
       this.element.click(() => {
-        for (const joint of this.joints) {
-          joint.show();
-        }
         this.handleClick();
       });
       // change attribute
       this.element.attr({ 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '4', stroke: this.color });
-      this.element.toBack();
       if (this.glow) {
         this.glow.remove();
       }

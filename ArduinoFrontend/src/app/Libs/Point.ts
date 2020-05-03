@@ -53,19 +53,17 @@ export class Point {
 
     // Set Hover callback
     this.body.hover(() => {
+      this.show();
       // Check if callback is present if it is then call it
       if (this.hoverCallback) {
         this.hoverCallback(this.x, this.y);
       }
-
-      this.body.attr(this.nodeAttr); // Change Stroke and fill of the Node
     }, () => {
+      this.hide();
       // Check if close callback is present if present call it
       if (this.hoverCloseCallback) {
         this.hoverCloseCallback(this.x, this.y);
       }
-
-      this.body.attr(this.defaultAttr); // Change Stroke and fill back to default
     });
 
     // Set Mouse over event
@@ -75,7 +73,6 @@ export class Point {
 
     // Set mouse out popup
     this.body.mouseout(() => {
-      window.hideBubble();
     });
     // TODO: Remove The following code After Development
     // this.body.drag((dx, dy) => {
@@ -150,9 +147,16 @@ export class Point {
    * Hide Node
    */
   hide() {
-    setTimeout(() => {
-      this.body.attr(this.defaultAttr);
-    }, 1000);
+    window.hideBubble();
+    this.body.attr(this.defaultAttr);
+  }
+
+  remainHidden() {
+    this.body.hide();
+  }
+
+  remainShow() {
+    this.body.show();
   }
 
   /**
@@ -176,11 +180,6 @@ export class Point {
       x: this.x,
       y: this.y
     });
-  }
-
-  // Change the scale of the body
-  scale(value: number) {
-    this.body.scale(value, value);
   }
 
   /**

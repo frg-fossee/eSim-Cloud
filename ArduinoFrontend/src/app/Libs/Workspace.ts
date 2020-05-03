@@ -228,6 +228,9 @@ export class Workspace {
   }
 
   static doubleClick(event: MouseEvent) {
+    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+      return;
+    }
     if ((event.target as HTMLElement).tagName !== 'svg') {
       return;
     }
