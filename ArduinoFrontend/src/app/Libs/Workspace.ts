@@ -1,5 +1,6 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
+import { OVERLAY_KEYBOARD_DISPATCHER_PROVIDER } from '@angular/cdk/overlay/typings/keyboard/overlay-keyboard-dispatcher';
 declare var window;
 declare var $; // For Jquery
 
@@ -120,7 +121,8 @@ export class Workspace {
     };
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
-
+      const toastele = document.getElementById('ToastMessage');
+      toastele.style.display = 'block';
     };
   }
   /**
@@ -161,10 +163,7 @@ export class Workspace {
   }
 
   static mouseDown(event: MouseEvent) {
-    if (event.button === 2) {
-      const element = document.getElementById('contextMenu');
-      element.style.display = 'none';
-    }
+    Workspace.hideContextMenu();
     if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
       // if selected item is wire and it is not connected then add the point
       if (window.Selected.end == null) {
@@ -230,7 +229,10 @@ export class Workspace {
     element.style.top = `${event.clientY}px`;
     return true;
   }
-
+  static hideContextMenu() {
+    const element = document.getElementById('contextMenu');
+    element.style.display = 'none';
+  }
   static copy(event: ClipboardEvent) {
   }
 
