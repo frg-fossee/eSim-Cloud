@@ -6,6 +6,7 @@ import { LED } from './Led';
 import { UltrasonicSensor } from './UltrasonicSensor';
 import { PIRSensor } from './PIRSensor';
 import { Motor, L298N } from './Motors';
+import { LCD16X2 } from './Display';
 
 export class Utils {
   static componentBox = {
@@ -20,6 +21,7 @@ export class Utils {
     ],
     output: [
       ['Buzzer', 'LED', 'Motor'], // Row
+      ['LCD16X2']
     ],
     drivers: [
       ['L298N']
@@ -27,9 +29,14 @@ export class Utils {
   };
 
   static components = {
+    LCD16X2: {
+      name: 'LCD 16x2',
+      image: './assets/images/components/LCD16X2.png',
+      className: LCD16X2
+    },
     L298N: {
       name: 'Motor Driver L298N',
-      image: './assets/images/components/Motor.png',
+      image: './assets/images/components/L298N.png',
       className: L298N
     },
     Motor: {

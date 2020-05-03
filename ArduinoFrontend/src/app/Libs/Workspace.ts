@@ -223,10 +223,10 @@ export class Workspace {
 
   static contextMenu(event: MouseEvent) {
     event.preventDefault();
-    // const element = document.getElementById('contextMenu');
-    // element.style.display = 'block';
-    // element.style.left = `${event.clientX}px`;
-    // element.style.top = `${event.clientY}px`;
+    const element = document.getElementById('contextMenu');
+    element.style.display = 'block';
+    element.style.left = `${event.clientX}px`;
+    element.style.top = `${event.clientY}px`;
     return true;
   }
   static hideContextMenu() {
