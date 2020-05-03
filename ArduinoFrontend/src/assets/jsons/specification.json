@@ -153,7 +153,7 @@
     "description": "",
     "properties": {}
   },
-  "MotorDriver": {
+  "L298N": {
     "name": "L298N Dual H Bridge Motor Driver",
     "image": "https://cdn.shopify.com/s/files/1/0014/4313/5560/products/1_bc581b8e-00ce-4f4a-b625-04273597fe3d_700x700.jpg?v=1577794110",
     "description": "L298N Dual H Bridge Motor Driver is a motor controller breakout board which is typically used for controlling speed and direction of motors. It can also be used to control the brightness of certain lighting projects such as high powered LED arrays.",

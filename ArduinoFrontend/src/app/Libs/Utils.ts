@@ -5,7 +5,7 @@ import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
 import { UltrasonicSensor } from './UltrasonicSensor';
 import { PIRSensor } from './PIRSensor';
-import { Motor } from './Motors';
+import { Motor, L298N } from './Motors';
 
 export class Utils {
   static componentBox = {
@@ -20,10 +20,18 @@ export class Utils {
     ],
     output: [
       ['Buzzer', 'LED', 'Motor'], // Row
+    ],
+    drivers: [
+      ['L298N']
     ]
   };
 
   static components = {
+    L298N: {
+      name: 'Motor Driver L298N',
+      image: './assets/images/components/Motor.png',
+      className: L298N
+    },
     Motor: {
       name: 'Motor',
       image: './assets/images/components/Motor.png',

@@ -148,9 +148,24 @@
       <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(sourceDiv)">
         Sources
       </div>
-
       <div class="collapse-div" #sourceDiv>
         <div class="component-row" *ngFor="let row of componentsBox.power">
+          <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+            (dragstart)="dragStart($event,item)">
+            <img src={{components[item].image}} alt="{{components[item].name}}">
+            <label>{{components[item].name}}</label>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(driverDiv)">
+        Drivers
+      </div>
+
+      <div class="collapse-div" #driverDiv>
+        <div class="component-row" *ngFor="let row of componentsBox.drivers">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
             <img src={{components[item].image}} alt="{{components[item].name}}">
@@ -202,10 +217,10 @@
 <div id="contextMenu" class="context-menu" style="display: none;position: fixed;">
   <ul>
     <li>
-        <h6><i class="fas fa-copy"></i> Copy</h6>
+      <h6><i class="fas fa-copy"></i> Copy</h6>
     </li>
     <li>
-        <h6><i class="fas fa-paste"></i> Paste</h6>
+      <h6><i class="fas fa-paste"></i> Paste</h6>
     </li>
     <li>
       <h6><i class="fas fa-trash-alt"></i> Delete</h6>
@@ -216,5 +231,3 @@
 
 
 <!--/context menu-->
-
-
