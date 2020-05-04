@@ -1,5 +1,5 @@
 import { Buzzer } from './Buzzer';
-import { Battery9v } from './Battery';
+import { Battery9v, CoinCell } from './Battery';
 import { PushButton, SlideSwitch } from './Buttons';
 import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
@@ -15,7 +15,7 @@ export class Utils {
       ['SlideSwitch']
     ],
     power: [
-      ['Battery9v'] // Row
+      ['Battery9v', 'CoinCell'] // Row
     ],
     controllers: [
       ['ArduinoUno'] // Row
@@ -30,6 +30,11 @@ export class Utils {
   };
 
   static components = {
+    CoinCell: {
+      name: 'Coin Cell 3V',
+      image: './assets/images/components/CoinCell.svg',
+      className: CoinCell
+    },
     SlideSwitch: {
       name: 'Slide Switch',
       image: './assets/images/components/SlideSwitch.png',
