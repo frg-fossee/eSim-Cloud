@@ -15,10 +15,15 @@ class SvgGenerator():
         self.DEFAULT_PEN_WIDTH = '6'
         self.PIN_NAME_PADDING = 13 
 
+        self.SHOW_TEXT = False
+
         self.SVG_SCALE = 0.1
 
+    
         self.plotter = SvgPlotter()
         self.parser = Parser()
+
+        
 
 
     def match_part_dmg(self,part,dmg):
@@ -63,7 +68,6 @@ class SvgGenerator():
             DEF_LINE = data[i]["def"]
      
             F0_LINE  = data[i]["fn"][0]
-         
         
             F1_LINE = data[i]["fn"][1]
            
@@ -84,20 +88,39 @@ class SvgGenerator():
 
             # ['F0', '"U"', '-300', '750', '50', 'H', 'V', 'C', 'CNN']
             # if ref starts with a '#' then its a virtual symbol/
-            is_power_symbol = F0_LINE[1].startswith('#')
+            # is_power_symbol = F0_LINE[1].startswith('#')
             # position of text field in milli.
-            posx = F0_LINE[2]
-            posy = F0_LINE[3]
-            text_size = F0_LINE[4]
+            # posx = F0_LINE[2]
+            # posy = F0_LINE[3]
+            # text_size = F0_LINE[4]
             # orientation - 'H' horizontal, 'V' - vertical
-            orientation = F0_LINE[5]
-            isVisible = F0_LINE[6] == "V" 
-            hjustify = F0_LINE[7] 
-            vjustify = F0_LINE[8][0] 
-            italic   = F0_LINE[8][1] == "I"
-            bold     = F0_LINE[8][2] == "B"
+            # orientation = F0_LINE[5]
+            # isVisible = F0_LINE[6] == "V" 
+            # hjustify = F0_LINE[7] 
+            # vjustify = F0_LINE[8][0] 
+            # isItalic   = F0_LINE[8][1] == "I"
+            # isBold     = F0_LINE[8][2] == "B"
 
     
+
+
+            fn_instructions = data[i]["fn"]
+            for z in range(len(fn_instructions)):
+                text =  fn_instructions[z][1]
+                x    = fn_instructions[z][2]
+                y    = fn_instructions[z][3]
+                text_size = fn_instructions[z][4]
+                orientation = fn_instructions[z][5]
+                isVisible = fn_instructions[z][6] == "V" 
+                hjustify =  fn_instructions[z][7] 
+                vjustify = fn_instructions[z][8][0] 
+                isItalic   = fn_instructions[z][8][1] == "I"
+                isBold     = fn_instructions[z][8][2] == "B"
+
+                if(isVisible and self.SHOW_TEXT):
+                    d = self.plotter.draw_text(d,text,x,y,text_size,orientation)
+
+
             draw_instructions = data[i]["draw"]
             for x in range(len(draw_instructions)):
             
@@ -242,5 +265,6 @@ class SvgGenerator():
 if __name__ == "__main__":
     print("plotting to svg..")
     svg_gen = SvgGenerator()
+    # svg_gen.SHOW_TEXT = True
     svg_gen.generate_svg_from_lib("./sample_lib/4xxx.lib")
     print("done!!")

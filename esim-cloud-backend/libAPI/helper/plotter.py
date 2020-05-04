@@ -27,6 +27,14 @@ class SvgPlotter():
     '''
 
 
+    def draw_text(self,d,text,x,y,text_size,orientation):
+        x = int(x)
+        y = int(y)
+        text_size = int(text_size)
+        text = text.strip('"')
+        d.append(draw.Text(text,text_size,x,y,center = True,text_anchor='left'))
+        return d
+
     def normalize_angle(self,angle):
         return 360 + angle
 

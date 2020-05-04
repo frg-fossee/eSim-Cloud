@@ -45,4 +45,4 @@ class Parser():
 if __name__ == "__main__":
     parser = Parser()
     data = parser.extract_data_from_lib("./sample_lib/4002.lib")
-    print(len(data))
+    print(data)
