@@ -175,11 +175,11 @@
 
       </div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(driverDiv)">
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(miscDiv)">
         Miscellaneous
       </div>
 
-      <div class="collapse-div" #driverDiv>
+      <div class="collapse-div" #miscDiv>
         <div class="component-row" *ngFor="let row of componentsBox.misc">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
