@@ -79,7 +79,7 @@ class NetlistUpload extends Component {
       .get(url)
       .then((res) => {
         if (res.data.state === "PROGRESS" || res.data.state === "PENDING") {
-          this.simulationResult(url);
+          setTimeout(this.simulationResult(url), 1000)
         } else {
           this.setState({
             x_1: res.data.details.data[0].x,
