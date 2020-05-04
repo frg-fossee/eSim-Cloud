@@ -3,6 +3,7 @@ import { Grid, Button, Paper } from "@material-ui/core";
 import { withStyles } from "@material-ui/core/styles";
 
 import Graph from "../Shared/Graph";
+import api from "../../utils/Api";
 
 const styles = (theme) => ({
   paper: {
@@ -24,7 +25,7 @@ const styles = (theme) => ({
   },
 });
 
-class SimpleReactFileUpload extends Component {
+class NetlistUpload extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,12 +37,7 @@ class SimpleReactFileUpload extends Component {
     };
     this.onFormSubmit = this.onFormSubmit.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.fileUpload = this.fileUpload.bind(this);
-  }
-
-  onFormSubmit(e) {
-    // Stop default form submit
-    e.preventDefault();
+    this.netlistUpload = this.netlistUpload.bind(this);
   }
 
   onChange(e) {
@@ -51,7 +47,47 @@ class SimpleReactFileUpload extends Component {
     });
   }
 
-  fileUpload(file) {}
+  onFormSubmit(e) {
+    // Stop default form submit
+    e.preventDefault();
+    this.netlistUpload(this.state.file)
+      .then((response) => {
+        let res = response.data;
+        const getUrl = "simulation/status/".concat(res.details.task_id);
+        this.simulationResult(getUrl);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  // Upload the nelist
+  netlistUpload(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data",
+      },
+    };
+    return api.post("simulation/upload", formData, config);
+  }
+
+  // Get the simulation result with task_Id
+  simulationResult(url) {
+    api
+      .get(url)
+      .then((res) => {
+        this.setState({
+          x_1: res.data.details.data[0].x,
+          y1_1: res.data.details.data[0].y[0],
+          y2_1: res.data.details.data[0].y[1],
+        });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
 
   fileData = () => {
     if (this.state.file) {
@@ -118,4 +154,4 @@ class SimpleReactFileUpload extends Component {
   }
 }
 
-export default withStyles(styles, { withTheme: true })(SimpleReactFileUpload);
+export default withStyles(styles, { withTheme: true })(NetlistUpload);
