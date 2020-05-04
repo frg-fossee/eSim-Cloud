@@ -8,11 +8,12 @@ import { PIRSensor } from './PIRSensor';
 import { Motor, L298N } from './Motors';
 import { LCD16X2 } from './Display';
 import { Label } from './Miscellaneous';
+import { PhotoResistor } from './PhotoResistor';
 export class Utils {
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
-      ['SlideSwitch']
+      ['SlideSwitch', 'PhotoResistor']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -33,6 +34,11 @@ export class Utils {
   };
 
   static components = {
+    PhotoResistor: {
+      name: 'Photo Resistor',
+      image: './assets/images/components/PhotoResistor.svg',
+      className: PhotoResistor
+    },
     Label: {
       name: 'Label',
       image: './assets/images/components/Text.png',
