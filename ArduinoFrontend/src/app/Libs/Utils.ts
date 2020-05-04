@@ -1,6 +1,6 @@
 import { Buzzer } from './Buzzer';
 import { Battery9v } from './Battery';
-import { PushButton } from './Buttons';
+import { PushButton, SlideSwitch } from './Buttons';
 import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
 import { UltrasonicSensor } from './UltrasonicSensor';
@@ -11,7 +11,8 @@ import { LCD16X2 } from './Display';
 export class Utils {
   static componentBox = {
     input: [
-      ['PushButton', 'UltrasonicSensor', 'PIRSensor']// Row
+      ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
+      ['SlideSwitch']
     ],
     power: [
       ['Battery9v'] // Row
@@ -29,6 +30,11 @@ export class Utils {
   };
 
   static components = {
+    SlideSwitch: {
+      name: 'Slide Switch',
+      image: './assets/images/components/SlideSwitch.png',
+      className: SlideSwitch
+    },
     LCD16X2: {
       name: 'LCD 16x2',
       image: './assets/images/components/LCD16X2.png',

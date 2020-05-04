@@ -1,6 +1,8 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
 
+declare var Raphael;
+
 export class PushButton extends CircuitElement {
   static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
@@ -53,6 +55,62 @@ export class PushButton extends CircuitElement {
       id: this.id,
       body,
       title: 'Push Button'
+    };
+  }
+  initSimulation(): void {
+  }
+  closeSimulation(): void {
+  }
+  simulate(): void {
+  }
+
+}
+
+
+export class SlideSwitch extends CircuitElement {
+  static pointHalf = 4;
+  private reverseAnim = true;
+
+  constructor(public canvas: any, x: number, y: number) {
+    super('SlideSwitch', x, y);
+    this.elements.push(
+      this.canvas.image('assets/images/components/SlideSwitch.svg', this.x, this.y, 50.4911, 27.0178),
+      this.canvas.rect(x + 9, y + 3, 17, 12)
+    );
+    this.elements[1].attr({ fill: '#8c8c8c' });
+    this.nodes = [
+      new Point(canvas, x + 3, y + 23, 'TERMINAL 1', SlideSwitch.pointHalf, this),
+      new Point(canvas, x + 21, y + 23, 'COMMON', SlideSwitch.pointHalf, this),
+      new Point(canvas, x + 38, y + 23, 'TERMINAL 2', SlideSwitch.pointHalf, this),
+    ];
+    this.setClickListener(null);
+    this.setDragListeners();
+    this.setHoverListener();
+  }
+  anim() {
+    let anim;
+    if (this.reverseAnim) {
+      anim = Raphael.animation({ transform: 't15,0' }, 500);
+    } else {
+      anim = Raphael.animation({ transform: 't0,0' }, 500);
+    }
+    this.elements[1].animate(anim);
+    this.reverseAnim = !this.reverseAnim;
+  }
+  save() {
+  }
+  load(data: any): void {
+  }
+  getNode(x: number, y: number): Point {
+    return null;
+  }
+  properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
+    const body = document.createElement('div');
+    return {
+      keyName: this.keyName,
+      id: this.id,
+      body,
+      title: 'Slide Switch'
     };
   }
   initSimulation(): void {
