@@ -7,7 +7,7 @@ import { UltrasonicSensor } from './UltrasonicSensor';
 import { PIRSensor } from './PIRSensor';
 import { Motor, L298N } from './Motors';
 import { LCD16X2 } from './Display';
-
+import { Label } from './Miscellaneous';
 export class Utils {
   static componentBox = {
     input: [
@@ -26,10 +26,18 @@ export class Utils {
     ],
     drivers: [
       ['L298N']
+    ],
+    misc: [
+      ['Label']
     ]
   };
 
   static components = {
+    Label: {
+      name: 'Label',
+      image: './assets/images/components/Text.png',
+      className: Label
+    },
     CoinCell: {
       name: 'Coin Cell 3V',
       image: './assets/images/components/CoinCell.svg',
