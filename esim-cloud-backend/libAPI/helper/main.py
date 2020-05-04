@@ -118,7 +118,7 @@ class SvgGenerator():
                 isBold     = fn_instructions[z][8][2] == "B"
 
                 if(isVisible and self.SHOW_TEXT):
-                    d = self.plotter.draw_text(d,text,x,y,text_size,orientation)
+                    d = self.plotter.draw_text(d,text,x,y,text_size)
 
 
             draw_instructions = data[i]["draw"]

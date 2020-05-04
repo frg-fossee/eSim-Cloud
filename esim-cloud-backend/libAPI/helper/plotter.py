@@ -12,12 +12,6 @@ class SvgPlotter():
         self.PIN_NUMBER_COLOR = 'black'
         self.PIN_NUMBER_OFFSET = 40
 
-    # self.STROKE_COLOR  = "black"
-    # self.PIN_NAME_COLOR = "black"
-    # self.PIN_NUMBER_COLOR = "black"
-
-    # self.PIN_NUMBER_OFFSET = 40
-
 
     '''pen-parameter is the thickness of the pen,when
     zero the default pen width is used.
@@ -27,12 +21,12 @@ class SvgPlotter():
     '''
 
 
-    def draw_text(self,d,text,x,y,text_size,orientation):
+    def draw_text(self,d,text,x,y,text_size,fill='black'):
         x = int(x)
         y = int(y)
         text_size = int(text_size)
         text = text.strip('"')
-        d.append(draw.Text(text,text_size,x,y,center = True,text_anchor='left'))
+        d.append(draw.Text(text,text_size,x,y,center = 0.6))
         return d
 
     def normalize_angle(self,angle):
@@ -144,26 +138,13 @@ class SvgPlotter():
             
             # d.append(draw.Line(x1,y1,x2,y2,stroke=self.STROKE_COLOR , stroke_width=pen,**kwargs))
             d.append(draw.Line(x1,y1,x2,y2,stroke=self.STROKE_COLOR , stroke_width=pen))
-        # if fill == 'f':
-        #     # a filled polygon is implicitly closed.
-        #     # join the last vertex and the first vertex
-        #     point_1 = vertices_list[len(vertices_list)-1]
-        #     point_2 = vertices_list[0]
-
-        #     x1 = int(point_1[0])
-        #     y1 = int(point_1[1])
-        #     x2 = int(point_2[0])
-        #     y2 = int(point_2[1])
-        
-        #     d.append(draw.Line(x1,y1,x2,y2,stroke=self.STROKE_COLOR , stroke_width=pen,**kwargs))
-
-
         
         return d
             
         
 
-    def drawPin(self,d,pinName,pinNumber,x1,y1,pin_name_offset,length=0,orientation='R',pen=5,text_size=50):
+    def drawPin(self,d,pinName,pinNumber,x1,y1,pin_name_offset
+                ,length=0,orientation='R',pen=5,text_size=50):
 
         x1 = int(x1)
         y1 = int(y1)
@@ -181,7 +162,10 @@ class SvgPlotter():
             # x = x1
             d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill=self.PIN_NUMBER_COLOR))
             if pinName != "~":
-                d.append(draw.Text(pinName,text_size,x1+length+pin_name_offset,y1,center=0.6,fill=self.PIN_NAME_COLOR))
+                d = self.draw_text(d,pinName,x1+length+pin_name_offset
+                                    ,y1,text_size,fill=self.PIN_NAME_COLOR)
+
+                # d.append(draw.Text(pinName,text_size,x1+length+pin_name_offset,y1,center=0.6,fill=self.PIN_NAME_COLOR))
 
         elif(orientation=="L"):
             x2 = x1-length
@@ -195,7 +179,10 @@ class SvgPlotter():
 
             d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill=self.PIN_NUMBER_COLOR))
             if pinName != "~":
-                d.append(draw.Text(pinName,text_size,x1-length-pin_name_offset,y1,center=0.6,fill=self.PIN_NAME_COLOR))
+                d = self.draw_text(d,pinName,x1-length-pin_name_offset
+                                    ,y1,text_size,fill=self.PIN_NAME_COLOR)
+
+                # d.append(draw.Text(pinName,text_size,x1-length-pin_name_offset,y1,center=0.6,fill=self.PIN_NAME_COLOR))
 
         elif(orientation=="U"):
             x2 = x1
@@ -208,7 +195,9 @@ class SvgPlotter():
             # y = y1
             d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill=self.PIN_NUMBER_COLOR))
             if pinName != "~":
-                d.append(draw.Text(pinName,text_size,x1,y1+length+pin_name_offset,center=0.6,fill=self.PIN_NAME_COLOR))
+               d =  self.draw_text(d,pinName,x1,y1+length+pin_name_offset
+                                    ,text_size,fill=self.PIN_NAME_COLOR)
+                # d.append(draw.Text(pinName,text_size,x1,y1+length+pin_name_offset,center=0.6,fill=self.PIN_NAME_COLOR))
 
         else:
             x2 = x1
@@ -220,7 +209,9 @@ class SvgPlotter():
             y = y1 - (length/2)
             d.append(draw.Text(pinNumber,text_size, x,y, center=0.6, fill=self.PIN_NUMBER_COLOR))
             if pinName != "~":
-                d.append(draw.Text(pinName,text_size,x1,y1-length-pin_name_offset,center=0.6,fill=self.PIN_NAME_COLOR))
+               d =  self.draw_text(d,pinName,x1,y1-length-pin_name_offset
+                                    ,text_size,fill=self.PIN_NAME_COLOR)
+                # d.append(draw.Text(pinName,text_size,x1,y1-length-pin_name_offset,center=0.6,fill=self.PIN_NAME_COLOR))
 
         d.append(draw.Line(x1,y1,x2,y2,stroke=self.STROKE_COLOR , stroke_width=pen))
         
