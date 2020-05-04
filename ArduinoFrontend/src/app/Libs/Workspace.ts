@@ -122,7 +122,9 @@ export class Workspace {
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
       const toastele = document.getElementById('ToastMessage');
-      toastele.style.display = 'block';
+      setTimeout(() => {
+
+      }, 6000);
     };
   }
   /**

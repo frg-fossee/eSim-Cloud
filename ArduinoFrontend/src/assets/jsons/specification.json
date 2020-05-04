@@ -260,11 +260,27 @@
   },
   "CoinBattery": {
     "name": "HC-05 Bluetooth Module (Master/Slave)",
-    "image": "https://commons.wikimedia.org/wiki/File:Pile_bouton_au_lithium_3v_CR2025_-_2.jpg",
+    "image": "https://components101.com/sites/default/files/components/CR2032-Lithium-Coin-Cell.jpg",
     "description": "Coin cell batteries like CR2032 are generally used for small portable electronics devices such as wrist watches, pocket calculators, automobile key less entry transmitter and hearing aids. Typically they are of compact size, 5-25mm in diameter and 1-6mm in height. The name defines the size of the battery like for CR2032, the first two digits stands for diameter and second for height or thickness in tenths of mm.",
     "properties": {
       "Voltage - Rated": "3V",
       "Capacity": "240mAh @ 190µA"
+    }
+  },
+  "DCMotor": {
+    "name": "Motor",
+    "image": "https://components101.com/sites/default/files/components/Toy-DC-Motor.jpg",
+    "description": "A normal DC motor would have only two terminals. Since these terminals are connected together only through a coil they have not polarity. Revering the connection will only reverse the direction of the motor.",
+    "properties": {
+      "Type": "DC Motor",
+      "Operating Voltage": "4.5V to 9V",
+      "Recommended/Rated Voltage": "6V",
+      "Current at No load": "70mA (max)",
+      "No-load Speed": " 9000 rpm",
+      "Loaded current": "250mA (approx)",
+      "Rated Load": "10g*cm",
+      "Motor Size": "27.5mm x 20mm x 15mm",
+      "Weight": "17 grams"
     }
   }
 }

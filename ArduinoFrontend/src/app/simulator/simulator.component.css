@@ -191,22 +191,26 @@ html,body{
     
 }
 .context-menu{
-    width:200px;
-    height:auto;
-    box-shadow: 0 0 20px 0 #ccc;
+    width:160px;
+    height:140px;
+    box-shadow: 0 0 5px 0 #ccc;
     position: absolute;
     display: none;
+    background-color: white;
         
 }
 .context-menu ul{
     list-style: none; /*show no bullets*/
     padding: 5px 0px 5px 0px;
+    
 }
 
 .context-menu ul li{
     padding: 10px 5px 10px 5px;
     border-left: 4px solid transparent;
-    cursor: pointer;    
+    cursor: pointer; 
+    z-index: 5000 !important;
+    overflow: visible !important;   
 }
 .context-menu ul li:hover{
     background-color:rgb(245, 207, 161);
@@ -214,4 +218,14 @@ html,body{
     
 }
 
+#ToastMessage {
+    top: 100px;
+    left: 500px;
+    z-index: 100;
+    position: absolute;
+    width: 300px;
+    height: 100px;
+    box-shadow: 0 0 20px 0 #ccc; 
+    display: none;   
+}
 

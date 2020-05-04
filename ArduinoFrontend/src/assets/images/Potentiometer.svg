@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg2633"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
+   sodipodi:docname="Potentiometer.svg">
+  <defs
+     id="defs2627" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.35"
+     inkscape:cx="-70"
+     inkscape:cy="560"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata2630">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       transform="matrix(0.14962345,0,0,0.15067228,73.979512,-23.246986)"
+       id="g2625">
+      <line
+         id="line1110"
+         y2="499"
+         x2="-268.68628"
+         y1="446.64282"
+         x1="-268.68628"
+         style="fill:none;stroke:#8c8c8c;stroke-width:13.04495907;stroke-linecap:round" />
+      <line
+         id="line1112"
+         y2="506.07108"
+         x2="-328.68628"
+         y1="453.7139"
+         x1="-328.68628"
+         style="fill:none;stroke:#8c8c8c;stroke-width:13.04495907;stroke-linecap:round" />
+      <line
+         id="line1114"
+         y2="497.01404"
+         x2="-388.68628"
+         y1="444.65686"
+         x1="-388.68628"
+         style="fill:none;stroke:#8c8c8c;stroke-width:13.04495907;stroke-linecap:round" />
+      <ellipse
+         ry="149.05956"
+         rx="164.39482"
+         id="circle1124"
+         cy="310.02002"
+         cx="-327.70987"
+         style="fill:#2c4656;stroke-width:6.52247953" />
+      <ellipse
+         ry="112.60207"
+         rx="124.18658"
+         id="circle1126"
+         cy="307.43927"
+         cx="-330.53827"
+         style="display:inline;fill:#000000;fill-opacity:0.3;stroke-width:6.52247953"
+         display="inline"
+         class="cgfx__shadow cgfx__orientation cgfx__north" />
+      <ellipse
+         ry="112.60207"
+         rx="124.18658"
+         id="circle1134"
+         cy="307.19159"
+         cx="-329.12408"
+         style="fill:#6a9cce;stroke-width:6.52247953" />
+      <g
+         transform="translate(-497.80317,2.8284271)"
+         id="g2020">
+        <ellipse
+           style="fill:#6a9cce;stroke-width:6.8896904"
+           cx="256.66724"
+           cy="404.38364"
+           id="circle1136"
+           rx="7.0552773"
+           ry="7.1377239" />
+        <ellipse
+           style="fill:#669bbf;stroke-width:6.8896904"
+           cx="307.41571"
+           cy="323.68735"
+           id="circle1138"
+           rx="7.0552773"
+           ry="7.1377239" />
+        <ellipse
+           style="fill:#6095b2;stroke-width:6.8896904"
+           cx="276.46622"
+           cy="233.09149"
+           id="circle1140"
+           rx="7.0552773"
+           ry="7.1377239" />
+        <ellipse
+           style="fill:#5886a5;stroke-width:6.8896904"
+           cx="167.26486"
+           cy="171.94965"
+           id="circle1142"
+           rx="7.0552773"
+           ry="7.1377239" />
+        <ellipse
+           style="fill:#527c99;stroke-width:6.8896904"
+           cx="58.063522"
+           cy="235.91992"
+           id="circle1144"
+           rx="7.0552773"
+           ry="7.1377239" />
+        <ellipse
+           style="fill:#4b728c;stroke-width:6.8896904"
+           cx="31.356707"
+           cy="319.44467"
+           id="circle1146"
+           rx="7.0552773"
+           ry="7.1377239" />
+        <ellipse
+           style="fill:#44677f;stroke-width:6.8896904"
+           cx="79.276718"
+           cy="403.29691"
+           id="circle1148"
+           rx="7.0552773"
+           ry="7.1377239" />
+      </g>
+    </g>
+  </g>
+</svg>
