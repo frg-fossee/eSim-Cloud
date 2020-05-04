@@ -46,23 +46,30 @@ class SvgGenerator():
             svg from the .lib file.
         """
 
-        data = self.parser.extractDataFromLib(file_path)
+        data = self.parser.extract_data_from_lib(file_path)
 
         
 
         for i in range(len(data)):#loop through all the components in that library file.
 
+
+            # initialize the drawing canvas.we need to initialize and save svg for each components.
         
-            # DEF is at position 0 of data[i]
-            DEF_LINE = data[i][0]
-            # F0 is at position 1 of data[i]
-            F0_LINE  = data[i][1]
-            # F1 is at position 2 of data[i]
-            F1_LINE = data[i][2]
-            # F2 is at position 3 of data[i]. footprint name
-            F2_LINE = data[i][3]
-            # F3 is at position 4 of data[i]. Relative path to datasheet
-            F3_LINE = data[i][4]
+            d = draw.Drawing(self.CANVAS_WIDTH,self.CANVAS_HEIGHT, origin='center', displayInline=False)
+            d.setPixelScale(s=self.SVG_SCALE)
+        
+         
+        
+            DEF_LINE = data[i]["def"]
+     
+            F0_LINE  = data[i]["fn"][0]
+         
+        
+            F1_LINE = data[i]["fn"][1]
+           
+            F2_LINE = data[i]["fn"][2]
+           
+            F3_LINE = data[i]["fn"][3]
 
             # DEF 14529 U 0 40 Y Y 1 L N
             # ['DEF', '14529', 'U', '0', '40', 'Y', 'Y', '1', 'L', 'N']
@@ -90,23 +97,12 @@ class SvgGenerator():
             italic   = F0_LINE[8][1] == "I"
             bold     = F0_LINE[8][2] == "B"
 
-            
-
-
-            # initialize the drawing canvas.we need to initialize and save svg for each components.
-        
-            d = draw.Drawing(self.CANVAS_WIDTH,self.CANVAS_HEIGHT, origin='center', displayInline=False)
-            
-            d.setPixelScale(s=self.SVG_SCALE)
-
-            # below are the draw instructions.
-            start_index_for_DRAW = 9
-            
-            #did -1 to drop the last element which is['ENDDRAW']
-            for x in range(9,len(data[i])-1):
+    
+            draw_instructions = data[i]["draw"]
+            for x in range(len(draw_instructions)):
             
                 # print(data[i][x])
-                current_instruction = data[i][x]
+                current_instruction = draw_instructions[x]
                 shape = current_instruction[0]
 
                 # (d,pinName,pinNumber,x1,y1,length=0,orientation='R',stroke="black",stroke_width=5)

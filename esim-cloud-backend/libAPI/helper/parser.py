@@ -1,11 +1,10 @@
-
+import re
 
 class Parser():
-    
-    def extractDataFromLib(self,filename):
-        
 
-        defFlag = False
+    def extract_data_from_lib(self,filename):
+
+        def_flag = False
         with open(filename) as file:
             file_contents = file.readlines()
             data = []
@@ -13,21 +12,37 @@ class Parser():
                 
                 # check for blank lines.
                 if line.strip() != '':
+
                     if(line.find("DEF") == 0):
-                        instruction = []
-                        defFlag = True
-                    
-                    if(line.find("ENDDEF") == 0):
+                        instruction = { "def" : []
+                                        ,"fn" : []
+                                        ,"draw" : []
+                                    }
+
+                        instruction["def"] = line.strip().split(" ")
+
+                        def_flag = True
+
+                    elif(line.find("ENDDEF") == 0):
                         data.append(instruction)
+                        def_flag = False 
                     
-                        defFlag = False
-
-
-                    if(defFlag == True):
-                        instruction.append(line.strip().split(" "))
+                    elif(re.match(r"F[0-9]+",line)):
+                        instruction["fn"].append(line.strip().split(" "))
+                    
+                    elif(line.startswith(('A','C','P','S','T','B','X'))):
+                        instruction["draw"].append(line.strip().split(" "))
+                
+                    else:
+                        pass
+                    
+                    
 
         
         return data
 
 
-#  Change the parser to not read ALIAS and FPLIST also counter Fn
+if __name__ == "__main__":
+    parser = Parser()
+    data = parser.extract_data_from_lib("./sample_lib/4002.lib")
+    print(len(data))
