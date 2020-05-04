@@ -9,11 +9,12 @@ import { Motor, L298N } from './Motors';
 import { LCD16X2 } from './Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './PhotoResistor';
+import { LM35 } from './TemperatureSensors';
 export class Utils {
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
-      ['SlideSwitch', 'PhotoResistor']
+      ['SlideSwitch', 'PhotoResistor', 'LM35']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -34,6 +35,11 @@ export class Utils {
   };
 
   static components = {
+    LM35: {
+      name: 'Temperature Sensor LM35',
+      image: './assets/images/components/LM35.svg',
+      className: LM35
+    },
     PhotoResistor: {
       name: 'Photo Resistor',
       image: './assets/images/components/PhotoResistor.svg',
