@@ -9,6 +9,7 @@ The project aims to provide a facility for a user to design different types of e
     :caption: Contents:
 
     schematic/index
+    arduino/index
 
 Indices and tables
 ==================

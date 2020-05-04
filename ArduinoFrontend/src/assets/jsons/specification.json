@@ -1,0 +1,265 @@
+{
+  "Buzzer": {
+    "name": "Piezoelectric Buzzer",
+    "image": "https://cdn.shopify.com/s/files/1/2640/3158/products/Squishy-Circuits_Piezzo-Buzzer.jpg?v=1525723149",
+    "description": "A piezo buzzer is a type of electronic device that’s used to produce a tone, alarm or sound. It’s lightweight with a simple construction, and it’s typically a low-cost product. Yet at the same time, depending on the piezo ceramic buzzer specifications, it’s also reliable and can be constructed in a wide range of sizes that work across varying frequencies to produce different sound outputs.",
+    "properties": {
+      "Minimum Voltage": "4V",
+      "Maximum Voltage": "8V",
+      "Maximum Current": "0.03A",
+      "Frequency": "2300Hz"
+    }
+  },
+  "ArduinoUno": {
+    "name": "Arduino UNO R3",
+    "image": "https://5.imimg.com/data5/RG/FF/LP/SELLER-43948449/arduino-uno-r3-board-500x500.jpg",
+    "description": "This is the Arduino Uno R3. In addition to all the features of the previous board, the Uno now uses an ATmega16U2 instead of the 8U2 found on the Uno (or the FTDI found on previous generations). This allows for faster transfer rates and more memory. No drivers needed for Linux or Mac (inf file for Windows is needed and included in the Arduino IDE), and the ability to have the Uno show up as a keyboard, mouse, joystick, etc.",
+    "properties": {
+      "Microcontroller": "ATMega328P",
+      "Operating Voltage": "5V",
+      "Input Voltage(limits)": "6-20V(limits)",
+      "Input Voltage(recommended)": "7V to 12V(recommended)",
+      "DC Current per I/O Pin": "40 mA",
+      "DC Current for 3.3V Pin": "50 mA",
+      "Digital Pins": "14(of which 6 provide PWM output)",
+      "Analog Pins": "6",
+      "Flash Memory": "32KB of which 0.5 KB used by bootloader",
+      "SRAM": "2KB(ATmega328)",
+      "Clock Speed": "16MHz",
+      "EEPROM": "1 KB (ATmega328)",
+      "LED": "Inbuilt"
+    }
+  },
+  "DigitalTemperatureSensor": {
+    "name": "Temperature sensor LM35",
+    "image": "https://commons.wikimedia.org/wiki/File:LM35_temperature_sensor_semiconductor_thermometer_1480374_5_6_HDR_enhancer.jpg",
+    "description": "The TMP102 Digital Temperature Sensor Breakout from Sparkfun is a breakout board for the incredibly small TMP102 digital temperature sensor. The TMP102 is a digital sensor (I2C a.k.a. TWI), has a resolution of 0.0625°C, and is accurate up to 0.5°C. The sensor requires very low-current, and is loaded with features.",
+    "properties": {
+      "MinimumVoltage": "35V",
+      "MaximumVoltage": "-2V",
+      " temperature": " -55°C to 150°C ",
+      "Output voltage ": "10mV (0.01V)/1°C",
+      "Accuracy": "±0.5°C ",
+      "Drain current": "60uA"
+    }
+  },
+  "UltrasonicSensor": {
+    "name": "Ultrasonic Sensor HC-SR04",
+    "image": "https://d2t1xqejof9utc.cloudfront.net/screenshots/pics/3e2267edb9c1f128699c3a7e11bca876/large.png",
+    "description": "HC-SR04 Ultrasonic (US) sensor is a 4 pin module, whose pin names are Vcc, Trigger, Echo and Ground respectively. This sensor is a very popular sensor used in many applications where measuring distance or sensing objects are required. The module has two eyes like projects in the front which forms the Ultrasonic transmitter and Receiver.",
+    "properties": {
+      "Operating voltage": "+5V",
+      "Theoretical  Measuring Distance": "2cm to 450cm",
+      "Practical Measuring Distance": "2cm to 80cm",
+      "Accuracy": "3mm",
+      "Measuring angle covered": "<15°",
+      "Operating Current": "<15mA",
+      "Operating Frequency": "40Hz"
+    }
+  },
+  "PIRSensor": {
+    "name": "PIR Sensor HC-SR501",
+    "image" : "https://cdn-blog.adafruit.com/uploads/2014/01/pirsensor.jpg",
+    "description": "The PIR sensor stands for Passive Infrared sensor. It is a low cost sensor which can detect the presence of Human beings or animals. This sensor has three output pins Vcc, Output and Ground as shown in the pin diagram above. Since the output pin is 3.3V TTL logic it can be used with any platforms like Arduino, Raspberry, PIC, ARM, 8051 etc..",
+    "properties": {
+      "Input voltage": "4.V to 12V (+5V recommended)",
+      "Output Voltage": "3.3V TTL",
+      "Modes": "Repeatable(H) and Non- Repeatable(H)",
+      "Covers Distance": "120° and 7 meters",
+      "Measuring angle covered": "<15°",
+      "power consumption ": "65mA",
+      "Operating Temperature": "-20° to +80° Celsius"
+    }
+  },
+  "GasSensor": {
+    "name": "Smoke/Gas Sensor MQ2",
+    "image": "https://5.imimg.com/data5/FL/NR/GJ/SELLER-3595257/mq2-gas-sensor-module-500x500.jpg",
+    "description": "The MQ-2 Gas sensor can detect or measure gasses like LPG, Alcohol, Propane, Hydrogen, CO and even methane. The module version of this sensor comes with a Digital Pin which makes this sensor to operate even without a microcontroller and that comes in handy when you are only trying to detect one particular gas. When it comes to measuring the gas in ppm the analog pin has to be used, the analog pin also TTL driven and works on 5V and hence can be used with most common microcontrollers.",
+    "properties": {
+      "Operating voltage": "+5V",
+      "Analog output voltage": "0V to 5V",
+      "Digital Output Voltage": "0V or 5V (TTL Logic)",
+      "Preheat duration": "20 seconds",
+      "Measuring angle covered": "<15°",
+      "power consumption ": "65mA",
+      "Operating Temperature": "-20° to +80° Celsius"
+    }
+  },
+  "PhotoResistor": {
+    "name": "PhotoResistor",
+    "image": "https://commons.wikimedia.org/wiki/File:Photoresistors_-_three_sizes_-_mm_scale.jpg",
+    "description": "Light dependent resistors, LDRs or photoresistors are often used in circuits where it is necessary to detect the presence or the level of light.",
+    "properties": {
+      "Max power dissipation": "200mW",
+      "Max voltage": "200V (@0lux)",
+      "Peak wavelength": "600nm",
+      "Min. resistance @ 10lux": "1.8kΩ(@ 10lux)",
+      "Max. resistance @ 10lux": "4.5kΩ(@ 10lux)",
+      "Typ. resistance @ 100lux": "0.7kΩ(@ 100lux)",
+      "Dark resistance after 1 sec ": "0.03MΩ",
+      "Dark resistance after 5 sec": "0.25MΩ"
+    }
+  },
+  "Pontientiometer": {
+    "name": "Pontientiometer",
+    "image": "https://commons.wikimedia.org/wiki/File:Electronic-Component-Potentiometer.jpg",
+    "description": "Potentiometers also known as POT, are nothing but variable resistors. They can provide a variable resistance by simply varying the knob on top of its head. It can be classified based on two main parameters. One is their Resistance (R-ohms) itself and the other is its Power (P-Watts) rating.",
+    "properties": {
+      "Type": "Rotary(Radio POT)",
+      "Resistance values": "500Ω, 1K, 2K, 5K, 10K, 22K, 47K, 50K, 100K, 220K, 470K, 500K, 1 M",
+      "Peak wavelength": "600nm",
+      "Power Rating": "0.3W",
+      "Maximum Input Voltage": "200Vdc",
+      "Rotational Life": " 2000K cycles"
+    }
+  },
+  "PushButton": {
+    "name": "Push Button Switch",
+    "image": "https://www.digibay.in/image/cache/data/se/158-a-tactile-dip-push-button-switch-600x600.jpg",
+    "description": "Push-Buttons are normally-open tactile switches. Push buttons allow us to power the circuit or make any particular connection only when we press the button. Simply, it makes the circuit connected when pressed and breaks when released. A push button is also used for triggering of the SCR by gate terminal. These are the most common buttons which we see in our daily life electronic equipment’s.",
+    "properties": {
+      "Mode of Operation": "Tactile feedback",
+      "Power Rating": "MAX 50mA 24V DC",
+      "Insulation Resistance": "100Mohm at 100v",
+      "Operating Force": "2.55±0.69 N",
+      "Contact Resistance": "MAX 100 mOhm",
+      "Operating Temperature Range": " -20 to +70 ℃",
+      "Storage Temperature Range": "-20 to +70 ℃"
+    }
+  },
+  "SlideSwitch": {
+    "name": "SlideSwitch",
+    "image" : "https://commons.wikimedia.org/wiki/File:Mountable_Slide_Switch_(35529389702).jpg",
+    "description": "Slide switches are mechanical switches using a slider that moves (slides) from the open (off) position to the closed (on) position. They allow control over current flow in a circuit without having to manually cut or splice wire. This type of switch is best used for controlling current flow in small projects.",
+    "properties": {
+      "Contact rating": "12 V DC, 200 mA",
+      "Contact resistance": "<50 mOhms",
+      "Insulation resistance": "> 100 MOhms at 500 V DC",
+      "Dielectric strength": "500 V, 50 Hz for the duration of 1 minute",
+      "Operating temperature": " -10 Degree Celsius to + 60 Degree Celsius",
+      "Mechanical life": " minimum 5000 operations",
+      "Contacts": "phosphor bronze, silver-plated",
+      "Terminals": "brass silver-plated",
+      "Contact timing": "non-shorting"
+    }
+  },
+  "Wires": {
+    "name": "Wires",
+    "description": ".",
+    "properties": {}
+  },
+  "MotorDriver": {
+    "name": "L298N Dual H Bridge Motor Driver",
+    "image": "https://cdn.shopify.com/s/files/1/0014/4313/5560/products/1_bc581b8e-00ce-4f4a-b625-04273597fe3d_700x700.jpg?v=1577794110",
+    "description": "L298N Dual H Bridge Motor Driver is a motor controller breakout board which is typically used for controlling speed and direction of motors. It can also be used to control the brightness of certain lighting projects such as high powered LED arrays.",
+    "properties": {
+      "Double H Bridge Drive Chip": "L298N",
+      "Logical Voltage": "5V",
+      "Drive Voltage": "5V-35V",
+      "Logical Current": "0-36mA",
+      "Drive current": "2A (MAX single bridge)",
+      "Max Power": "25W",
+      "Dimensions": "43 x 43 x 26mm",
+      "Weight": "26g"
+    }
+  },
+  "ServoMeter": {
+    "name": "SG90 9G Micro Servo Motor",
+    "image": "https://commons.wikimedia.org/wiki/File:Micro_servo.jpg",
+    "description": "The TowerPro SG90 mini servo is lightweight, high-quality and lightning-fast. The servo is designed to work with almost all radio control systems. The SG90 mini servo with accessories is perfect for R/C helicopter, plane, car, boat and truck use.",
+    "properties": {
+      "Type": "Micro Size Servo",
+      "Speed ": "0.10/4.8V(sec/60deg)",
+      "Torque ": "1.80/4.8V(Kg-cm)",
+      "Size ": "23.1mm x 12.2mm x 29mm",
+      "Pulse Width": "500-2400 µs",
+      "Rotation Angle": "180 degree"
+    }
+  },
+  "LED": {
+    "name": "LED",
+    "image": "https://static.rapidonline.com/catalogueimages/module/06/01/m060113p01wl.jpg",
+    "description": "A light-emitting diode (LED) is a semiconductor light source that emits light when current flows through it.",
+    "properties": {
+      "Light Color": "White, Yellow, Red, Green & Blue",
+      "Voltage ": "DC 3V - 5V"
+    }
+  },
+  "RGBLED": {
+    "name": "RGB LED",
+    "image": "https://commons.wikimedia.org/wiki/File:RGB_LED.jpg",
+    "description": "RGB LED contains all three colors Red, Green, Blue. These 5mm size LEDs have four pins - Cathode is the longest pin. One for each color and a common cathode. Use this one LED for three status indicators or pulse width modulate all three and get mixed colors. So any combination of color can be generated.",
+    "properties": {
+      "Size": "5mm LED RGB - Common Cathode",
+      "Lens Type": "Diffused",
+      "Emitting Color": "Red, Green and Blue",
+      "Voltage Rated": "3V-5V"
+    }
+  },
+  "LCD": {
+    "name": "LCD(16X8)",
+    "image": "https://commons.wikimedia.org/wiki/File:16x2_Character_LCD_Display.jpg",
+    "description": "LCD modules are very commonly used in most embedded projects, the reason being its cheap price, availability and programmer friendly. Most of us would have come across these displays in our day to day life, either at PCO’s or calculators. The appearance and the pinouts have already been visualized above now let us get a bit technical.",
+    "properties": {
+      "Operating Voltage": "4.7V to 5.3V",
+      "Current consumption": "1mA (without backlight)",
+      "Work Mode": " 8-bit and 4-bit mode",
+      "Voltage Rated": "3V-5V"
+    }
+  },
+  "SevenSegementModule": {
+    "name": "Seven Segment Module",
+    "image": "https://cdn-reichelt.de/bilder/web/artikel_ws/A500/LCD_4_0-13.jpg",
+    "description": "LCD modules are very commonly used in most embedded projects, the reason being its cheap price, availability and programmer friendly. Most of us would have come across these displays in our day to day life, either at PCO’s or calculators. The appearance and the pinouts have already been visualized above now let us get a bit technical.",
+    "properties": {
+      "sizes": "9.14mm,14.20mm,20.40mm,38.10mm,57.0mm and 100mm (Commonly used/available size is 14.20mm)",
+      "Current consumption": "30mA / segment",
+      "Peak current ": "70mA",
+      "Voltage Rated": "3V-5V"
+    }
+  },
+  "RelayModule": {
+    "name": "Relay Module 4-Channel",
+    "image": "https://potentiallabs.com/cart/image/cache/catalog/Arduino/4-channel relay Module-300x250.jpg",
+    "description": "The 4 Channel Relay Module is a convenient board which can be used to control high voltage, high current load such as motor, solenoid valves, lamps and AC load. It is designed to interface with microcontroller such as Arduino, PIC and etc. The relays terminal (COM, NO and NC) is being brought out with screw terminal. It also comes with a LED to indicate the status of relay.",
+    "properties": {
+      "channel": "4",
+      "Rated through-current": "10A (NO) 5A (NC)",
+      "Control signal": "TTL level",
+      "Max. switching current": "10A"
+    }
+  },
+  "BluetoothModule": {
+    "name": "HC-05 Bluetooth Module (Master/Slave)",
+    "image": "https://5.imimg.com/data5/TR/VH/KF/SELLER-1097389/hc-05-5v-ttl-bluetooth-module-500x500.png",
+    "description": " It is a class-2 bluetooth module with Serial Port Profile , which can configure as either Master or slave. a Drop-in replacement for wired serial connections, transparent usage. You can use it simply for a serial port replacement to establish connection between MCU, PC to your embedded project and etc.",
+    "properties": {
+      "Bluetooth protocal": "Bluetooth Specification v2.0+EDR",
+      "Frequency": "2.4GHz ISM band",
+      "Emission power": "≤4dBm, Class 2",
+      "Sensitivity": "≤-84dBm at 0.1% BER",
+      "Speed": "Asynchronous: 2.1Mbps(Max) / 160 kbps, Synchronous: 1Mbps/1Mbps",
+      "Power supply": "+3.3VDC 50mA",
+      "Working temperature": "-20 ~ +75Centigrade"
+    }
+  },
+  "Battery9v": {
+    "name": "9V 6F 22",
+    "image": "https://images-na.ssl-images-amazon.com/images/I/61XIfRrztZL._AC_SL1000_.jpg",
+    "description": "It is an affordable, reliable, dedicated low-power solution to provide sufficient energy to your application. Ideally used in circuits with low power consumption so that it can work for longer durations.",
+    "properties": {
+      "Nominal Voltage(V) ": "9V",
+      "Discharge Resistance(Ω)": "620",
+      "Cut-off Voltage(V)": "5.4"
+    }
+  },
+  "CoinBattery": {
+    "name": "HC-05 Bluetooth Module (Master/Slave)",
+    "image": "https://commons.wikimedia.org/wiki/File:Pile_bouton_au_lithium_3v_CR2025_-_2.jpg",
+    "description": "Coin cell batteries like CR2032 are generally used for small portable electronics devices such as wrist watches, pocket calculators, automobile key less entry transmitter and hearing aids. Typically they are of compact size, 5-25mm in diameter and 1-6mm in height. The name defines the size of the battery like for CR2032, the first two digits stands for diameter and second for height or thickness in tenths of mm.",
+    "properties": {
+      "Voltage - Rated": "3V",
+      "Capacity": "240mAh @ 190µA"
+    }
+  }
+}
