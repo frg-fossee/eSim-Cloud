@@ -43,7 +43,7 @@ export class LCD16X2 extends CircuitElement {
       keyName: this.keyName,
       id: this.id,
       body,
-      title: 'Motor Driver (L298N)'
+      title: 'LCD Display 16x2'
     };
   }
   initSimulation(): void {

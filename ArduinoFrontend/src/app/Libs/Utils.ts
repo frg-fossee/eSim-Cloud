@@ -1,6 +1,6 @@
 import { Buzzer } from './Buzzer';
 import { Battery9v } from './Battery';
-import { PushButton } from './PushButton';
+import { PushButton } from './Buttons';
 import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
 import { UltrasonicSensor } from './UltrasonicSensor';
