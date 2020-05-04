@@ -78,12 +78,17 @@ class NetlistUpload extends Component {
     api
       .get(url)
       .then((res) => {
-        this.setState({
-          x_1: res.data.details.data[0].x,
-          y1_1: res.data.details.data[0].y[0],
-          y2_1: res.data.details.data[0].y[1],
-        });
+        if (res.data.state === "PROGRESS" || res.data.state === "PENDING") {
+          this.simulationResult(url);
+        } else {
+          this.setState({
+            x_1: res.data.details.data[0].x,
+            y1_1: res.data.details.data[0].y[0],
+            y2_1: res.data.details.data[0].y[1],
+          });
+        }
       })
+      .then((res) => {})
       .catch(function (error) {
         console.log(error);
       });
