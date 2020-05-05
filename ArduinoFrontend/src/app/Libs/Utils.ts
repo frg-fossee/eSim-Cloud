@@ -11,6 +11,7 @@ import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
 import { LM35 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
+import { Relay } from './inputs/Relay';
 export class Utils {
   static componentBox = {
     input: [
@@ -32,11 +33,16 @@ export class Utils {
       ['L298N']
     ],
     misc: [
-      ['Label']
+      ['Label', 'RelayModule']
     ]
   };
 
   static components = {
+    RelayModule: {
+      name: 'Relay Module',
+      image: './assets/images/components/1ChannelRelay.svg',
+      className: Relay
+    },
     PotentioMeter: {
       name: 'Potentiometer',
       image: './assets/images/components/Potentiometer.png',
