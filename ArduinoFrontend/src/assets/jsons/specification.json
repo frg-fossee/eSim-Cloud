@@ -79,7 +79,7 @@
   "GasSensor": {
     "name": "Smoke/Gas Sensor MQ2",
     "image": "https://5.imimg.com/data5/FL/NR/GJ/SELLER-3595257/mq2-gas-sensor-module-500x500.jpg",
-    "Datasheet": "http://www.ti.com/lit/ug/snoa922/snoa922.pdf?ts=1588673464158",
+    "Datasheet": "https://www.pololu.com/file/0J309/MQ2.pdf",
     "description": "The MQ-2 Gas sensor can detect or measure gasses like LPG, Alcohol, Propane, Hydrogen, CO and even methane. The module version of this sensor comes with a Digital Pin which makes this sensor to operate even without a microcontroller and that comes in handy when you are only trying to detect one particular gas. When it comes to measuring the gas in ppm the analog pin has to be used, the analog pin also TTL driven and works on 5V and hence can be used with most common microcontrollers.",
     "properties": {
       "Operating voltage": "+5V",
