@@ -25,6 +25,8 @@ Development branch status
 
  ```docker-compose -f docker-compose.dev.yml build```
 
+* To run all containers
+``` docker-compose -f docker-compose.dev.yml --env-file .env up ```
 
 ##### For Setting up Backend containers only
 * Apply database migrations (only required for first run )
@@ -35,16 +37,16 @@ Development branch status
 
 * Run Development environment
 
- ```docker-compose -f docker-compose.dev.yml up django```
+ ```docker-compose -f docker-compose.dev.yml --env-file .env up django```
 
 ##### For Frontend Containers and backend containers
 ( Please note these containers are only for dev environment, in production compiled files will be served by nginx)
 * To run eda-fronted along with all backend containers
 
-``` docker-compose -f docker-compose.dev.yml up eda-frontend ```
+``` docker-compose -f docker-compose.dev.yml --env-file .env up eda-frontend ```
 
 * To run arduino-frontend along with all backend containers
 
-``` docker-compose -f docker-compose.dev.yml up arduino-frontend ```
+``` docker-compose -f docker-compose.dev.yml --env-file .env up arduino-frontend ```
 
 ![Docker Containers](docs/images/docker.png)
