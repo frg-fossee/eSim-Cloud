@@ -1,28 +1,31 @@
 import React from "react";
 import {
-  AppBar,
   Toolbar,
   Typography,
   IconButton,
   Button,
   Input,
+  Hidden,
+  Link,
 } from "@material-ui/core";
 import Description from "@material-ui/icons/Description";
 import ShareIcon from "@material-ui/icons/Share";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  appBar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
-  toolbar: {
-    flexWrap: "wrap",
-  },
   toolbarTitle: {
     marginRight: theme.spacing(2),
   },
   form: {
     flexGrow: 1,
+  },
+  input: {
+    marginLeft: theme.spacing(1),
+    flex: 1,
+    color: "#595959",
+  },
+  rightBlock: {
+    marginLeft: "auto",
   },
   button: {
     marginRight: theme.spacing(1),
@@ -33,33 +36,33 @@ function Header() {
   const classes = useStyles();
 
   return (
-    <AppBar
-      position="static"
-      color="default"
-      elevation={0}
-      className={classes.appBar}
-    >
-      <Toolbar variant="dense" color="default">
-        <IconButton edge="start" className={classes.button} color="inherit">
-          <Description />
-        </IconButton>
-        <Typography
-          variant="h6"
-          color="inherit"
-          noWrap
-          className={classes.toolbarTitle}
-        >
+    <Toolbar variant="dense" color="default">
+      <IconButton edge="start" className={classes.button} color="primary">
+        <Description />
+      </IconButton>
+      <Typography
+        variant="h6"
+        color="inherit"
+        noWrap
+        className={classes.toolbarTitle}
+      >
+        <Link color="inherit" target="_blank" href="/">
           EDA
-        </Typography>
+        </Link>
+      </Typography>
 
+      <Hidden smDown>
         <form className={classes.form} noValidate autoComplete="off">
           <Input
+            className={classes.input}
             defaultValue="Untitled_Schematic"
-            color="primary"
+            color="secondary"
             inputProps={{ "aria-label": "SchematicTitle" }}
           />
         </form>
+      </Hidden>
 
+      <div className={classes.rightBlock}>
         <Button
           size="small"
           variant="contained"
@@ -67,7 +70,7 @@ function Header() {
           className={classes.button}
           startIcon={<ShareIcon />}
         >
-          Share
+          <Hidden xsDown>Share</Hidden>
         </Button>
 
         <Button
@@ -79,8 +82,8 @@ function Header() {
         >
           Login
         </Button>
-      </Toolbar>
-    </AppBar>
+      </div>
+    </Toolbar>
   );
 }
 
