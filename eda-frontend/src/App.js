@@ -8,12 +8,20 @@ import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import SchematicEditor from "./pages/SchematiEditor";
 import Simulator from "./pages/Simulator";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   // Routes For SchematicEditor
   const SchematicRoute = () => (
     <>
       <Route exact path="/editor" component={SchematicEditor} />
+    </>
+  );
+
+  // Routes For User
+  const UserRoute = () => (
+    <>
+      <Route exact path="/dashboard" component={Dashboard} />
     </>
   );
 
@@ -32,8 +40,9 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/editor" component={SchematicRoute} />
         <Route path="/login" component={Login} />
+        <Route path="/editor" component={SchematicRoute} />
+        <Route path="/dashboard" component={UserRoute} />
         <Route component={DefaultRoute} />
       </Switch>
     </BrowserRouter>
