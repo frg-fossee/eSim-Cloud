@@ -193,8 +193,6 @@ export class Wire extends CircuitElement {
           color: this.color
         });
       });
-
-
     }
   }
   /**

@@ -40,3 +40,44 @@ export class Battery9v extends CircuitElement {
   }
 
 }
+
+
+export class CoinCell extends CircuitElement {
+  static pointHalf = 3;
+  constructor(public canvas: any, x: number, y: number) {
+    super('CoinCell', x, y);
+    this.elements.push(
+      this.canvas.image('assets/images/components/CoinCell.svg', this.x, this.y, 58, 74),
+    );
+    this.nodes = [
+      new Point(canvas, x + 25, y - 2, 'POSITIVE', CoinCell.pointHalf, this),
+      new Point(canvas, x + 25, y + 70, 'NEGATIVE', CoinCell.pointHalf, this),
+    ];
+    this.setClickListener(null);
+    this.setDragListeners();
+    this.setHoverListener();
+
+  }
+  save() {
+  }
+  load(data: any): void {
+  }
+  getNode(x: number, y: number): Point {
+    return null;
+  }
+  properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
+    const body = document.createElement('div');
+    return {
+      keyName: this.keyName,
+      id: this.id,
+      body,
+      title: 'Coin Cell'
+    };
+  }
+  initSimulation(): void {
+  }
+  closeSimulation(): void {
+  }
+  simulate(): void {
+  }
+}

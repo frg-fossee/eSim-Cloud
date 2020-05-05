@@ -1,21 +1,26 @@
 import { Buzzer } from './Buzzer';
-import { Battery9v } from './Battery';
-import { PushButton, SlideSwitch } from './Buttons';
+import { Battery9v, CoinCell } from './Battery';
+import { PushButton, SlideSwitch } from './inputs/Buttons';
 import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
-import { UltrasonicSensor } from './UltrasonicSensor';
-import { PIRSensor } from './PIRSensor';
+import { UltrasonicSensor } from './inputs/UltrasonicSensor';
+import { PIRSensor } from './inputs/PIRSensor';
 import { Motor, L298N } from './Motors';
 import { LCD16X2 } from './Display';
-
+import { Label } from './Miscellaneous';
+import { PhotoResistor } from './inputs/PhotoResistor';
+import { LM35 } from './inputs/TemperatureSensors';
+import { Potentiometer } from './inputs/Potentiometer';
+import { Relay } from './inputs/Relay';
 export class Utils {
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
-      ['SlideSwitch']
+      ['SlideSwitch', 'PhotoResistor', 'LM35'],
+      ['PotentioMeter']
     ],
     power: [
-      ['Battery9v'] // Row
+      ['Battery9v', 'CoinCell'] // Row
     ],
     controllers: [
       ['ArduinoUno'] // Row
@@ -26,10 +31,43 @@ export class Utils {
     ],
     drivers: [
       ['L298N']
+    ],
+    misc: [
+      ['Label', 'RelayModule']
     ]
   };
 
   static components = {
+    RelayModule: {
+      name: 'Relay Module',
+      image: './assets/images/components/1ChannelRelay.svg',
+      className: Relay
+    },
+    PotentioMeter: {
+      name: 'Potentiometer',
+      image: './assets/images/components/Potentiometer.png',
+      className: Potentiometer
+    },
+    LM35: {
+      name: 'Temperature Sensor LM35',
+      image: './assets/images/components/LM35.svg',
+      className: LM35
+    },
+    PhotoResistor: {
+      name: 'Photo Resistor',
+      image: './assets/images/components/PhotoResistor.svg',
+      className: PhotoResistor
+    },
+    Label: {
+      name: 'Label',
+      image: './assets/images/components/Text.png',
+      className: Label
+    },
+    CoinCell: {
+      name: 'Coin Cell 3V',
+      image: './assets/images/components/CoinCell.svg',
+      className: CoinCell
+    },
     SlideSwitch: {
       name: 'Slide Switch',
       image: './assets/images/components/SlideSwitch.png',
