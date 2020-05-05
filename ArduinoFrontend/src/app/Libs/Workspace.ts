@@ -123,7 +123,7 @@ export class Workspace {
     window['showToast'] = (message: string) => {
       const toastele = document.getElementById('ToastMessage');
       setTimeout(() => {
-
+        toastele.style.display = 'block';
       }, 6000);
     };
   }

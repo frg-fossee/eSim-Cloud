@@ -102,7 +102,7 @@
     overflow: scroll;
     width: 100%;
     height: calc(100vh - 101px);
-    background-color: #eee;
+    background-color:white;
     padding-left: 0.525px;
 }
 
@@ -222,10 +222,19 @@ html,body{
     top: 100px;
     left: 500px;
     z-index: 100;
-    position: absolute;
+    position: fixed;
     width: 300px;
     height: 100px;
     box-shadow: 0 0 20px 0 #ccc; 
-    display: none;   
+    display: block;
+    background-color: #eee;  
 }
+
+.toast  {
+    text-align: left;
+}
+
+
+
+
 
