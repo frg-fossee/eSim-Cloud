@@ -1,20 +1,22 @@
 import { Buzzer } from './Buzzer';
 import { Battery9v, CoinCell } from './Battery';
-import { PushButton, SlideSwitch } from './Buttons';
+import { PushButton, SlideSwitch } from './inputs/Buttons';
 import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
-import { UltrasonicSensor } from './UltrasonicSensor';
-import { PIRSensor } from './PIRSensor';
+import { UltrasonicSensor } from './inputs/UltrasonicSensor';
+import { PIRSensor } from './inputs/PIRSensor';
 import { Motor, L298N } from './Motors';
 import { LCD16X2 } from './Display';
 import { Label } from './Miscellaneous';
-import { PhotoResistor } from './PhotoResistor';
-import { LM35 } from './TemperatureSensors';
+import { PhotoResistor } from './inputs/PhotoResistor';
+import { LM35 } from './inputs/TemperatureSensors';
+import { Potentiometer } from './inputs/Potentiometer';
 export class Utils {
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
-      ['SlideSwitch', 'PhotoResistor', 'LM35']
+      ['SlideSwitch', 'PhotoResistor', 'LM35'],
+      ['PotentioMeter']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -35,6 +37,11 @@ export class Utils {
   };
 
   static components = {
+    PotentioMeter: {
+      name: 'Potentiometer',
+      image: './assets/images/components/Potentiometer.png',
+      className: Potentiometer
+    },
     LM35: {
       name: 'Temperature Sensor LM35',
       image: './assets/images/components/LM35.svg',

@@ -68,11 +68,13 @@ export class Point {
 
     // Set Mouse over event
     this.body.mouseover((evt: MouseEvent) => {
+      this.show();
       window.showBubble(this.label, evt.clientX, evt.clientY);
     });
 
     // Set mouse out popup
     this.body.mouseout(() => {
+      this.hide();
     });
     // TODO: Remove The following code After Development
     // this.body.drag((dx, dy) => {

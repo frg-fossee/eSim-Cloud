@@ -1,5 +1,5 @@
-import { CircuitElement } from './CircuitElement';
-import { Point } from './Point';
+import { CircuitElement } from '../CircuitElement';
+import { Point } from '../Point';
 
 export class UltrasonicSensor extends CircuitElement {
   static pointHalf = 4;

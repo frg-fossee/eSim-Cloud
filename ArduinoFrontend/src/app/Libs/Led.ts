@@ -3,7 +3,7 @@ import { Point } from './Point';
 
 export class LED extends CircuitElement {
   static pointHalf = 4;
-  color = '#f00'; // Color of LED
+  color = '#802020'; // Color of LED
   constructor(public canvas: any, x: number, y: number) {
     super('LED', x, y);
     let tmp = `M${this.x - 10},${this.y + 10}C${this.x - 10},${this.y},`;
@@ -18,7 +18,8 @@ export class LED extends CircuitElement {
       this.canvas.path(tmp),
       this.canvas.path(tmp2),
       // Create negative terminal as line
-      this.canvas.path(`M${this.x + 5},${this.y + 35} L${this.x + 5},${this.y + 70}Z`)
+      this.canvas.path(`M${this.x + 5},${this.y + 35} L${this.x + 5},${this.y + 70}Z`),
+      // this.canvas.circle(x, y + 5, 30)
     );
     // this.elements.scale(0.5,0.5);
     this.nodes = [
@@ -36,6 +37,12 @@ export class LED extends CircuitElement {
         this)
     ];
     this.elements[0].attr({ fill: this.color, stroke: this.color });
+    // this.elements[3].attr({ fill: 'r(0.5, 0.5)rgba(255,0,0,0.7)-rgba(255,0,0,0.2)', stroke: 'none' });
+    // this.elements[3].glow
+    //   ({
+    //     width: 50,
+    //     color: "#f00"
+    //   });
     this.setClickListener(null);
     this.setDragListeners();
     this.setHoverListener();

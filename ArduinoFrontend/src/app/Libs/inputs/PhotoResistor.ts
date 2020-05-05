@@ -1,17 +1,16 @@
-import { CircuitElement } from './CircuitElement';
-import { Point } from './Point';
+import { CircuitElement } from '../CircuitElement';
+import { Point } from '../Point';
 
-export class LM35 extends CircuitElement {
+export class PhotoResistor extends CircuitElement {
   static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
-    super('LM35', x, y);
+    super('PhotoResistor', x, y);
     this.elements.push(
-      this.canvas.image('assets/images/components/LM35.svg', this.x, this.y, 29, 73),
+      this.canvas.image('assets/images/components/PhotoResistor.svg', this.x, this.y, 44, 100),
     );
     this.nodes = [
-      new Point(canvas, x - 1, y + 64, 'Power', LM35.pointHalf, this),
-      new Point(canvas, x + 10, y + 64, 'Vout', LM35.pointHalf, this),
-      new Point(canvas, x + 22, y + 64, 'GND', LM35.pointHalf, this),
+      new Point(canvas, x + 9, y + 92, 'Terminal 1', PhotoResistor.pointHalf, this),
+      new Point(canvas, x + 27, y + 92, 'Terminal 2', PhotoResistor.pointHalf, this),
     ];
 
     this.setDragListeners();
@@ -40,4 +39,5 @@ export class LM35 extends CircuitElement {
   }
   simulate(): void {
   }
+
 }
