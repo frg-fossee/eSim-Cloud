@@ -3,6 +3,8 @@ import { AppBar, IconButton, Toolbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 
+import Sidebar from "./Sidebar";
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
@@ -48,6 +50,8 @@ function Layout(props) {
           {props.resToolbar}
         </Toolbar>
       </AppBar>
+
+      <Sidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle} />
     </>
   );
 }
