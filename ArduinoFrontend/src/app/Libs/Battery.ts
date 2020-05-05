@@ -43,7 +43,7 @@ export class Battery9v extends CircuitElement {
 
 
 export class CoinCell extends CircuitElement {
-  static pointHalf = 3;
+  static pointHalf = 5;
   constructor(public canvas: any, x: number, y: number) {
     super('CoinCell', x, y);
     this.elements.push(

@@ -5,7 +5,7 @@ import { ArduinoUno } from './Arduino';
 import { LED } from './Led';
 import { UltrasonicSensor } from './inputs/UltrasonicSensor';
 import { PIRSensor } from './inputs/PIRSensor';
-import { Motor, L298N } from './Motors';
+import { Motor, L298N, ServoMotor } from './Motors';
 import { LCD16X2 } from './Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
@@ -27,7 +27,7 @@ export class Utils {
     ],
     output: [
       ['Buzzer', 'LED', 'Motor'], // Row
-      ['LCD16X2']
+      ['LCD16X2', 'ServoMotor']
     ],
     drivers: [
       ['L298N']
@@ -38,6 +38,11 @@ export class Utils {
   };
 
   static components = {
+    ServoMotor: {
+      name: 'Servo Motor',
+      image: './assets/images/components/Servo.png',
+      className: ServoMotor
+    },
     RelayModule: {
       name: 'Relay Module',
       image: './assets/images/components/1ChannelRelay.svg',
