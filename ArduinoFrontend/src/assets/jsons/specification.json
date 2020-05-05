@@ -79,7 +79,7 @@
   "GasSensor": {
     "name": "Smoke/Gas Sensor MQ2",
     "image": "https://5.imimg.com/data5/FL/NR/GJ/SELLER-3595257/mq2-gas-sensor-module-500x500.jpg",
-    "Datasheet":"http://www.ti.com/lit/ug/snoa922/snoa922.pdf?ts=1588673464158",
+    "Datasheet": "http://www.ti.com/lit/ug/snoa922/snoa922.pdf?ts=1588673464158",
     "description": "The MQ-2 Gas sensor can detect or measure gasses like LPG, Alcohol, Propane, Hydrogen, CO and even methane. The module version of this sensor comes with a Digital Pin which makes this sensor to operate even without a microcontroller and that comes in handy when you are only trying to detect one particular gas. When it comes to measuring the gas in ppm the analog pin has to be used, the analog pin also TTL driven and works on 5V and hence can be used with most common microcontrollers.",
     "properties": {
       "Operating voltage": "+5V",
@@ -271,7 +271,7 @@
   "CoinBattery": {
     "name": "3V Coincell",
     "image": "https://components101.com/sites/default/files/components/CR2032-Lithium-Coin-Cell.jpg",
-    "Datasheet":"http://www.ti.com/lit/ds/symlink/bq29312.pdf?ts=1588678253793",
+    "Datasheet": "http://www.ti.com/lit/ds/symlink/bq29312.pdf?ts=1588678253793",
     "description": "Coin cell batteries like CR2032 are generally used for small portable electronics devices such as wrist watches, pocket calculators, automobile key less entry transmitter and hearing aids. Typically they are of compact size, 5-25mm in diameter and 1-6mm in height. The name defines the size of the battery like for CR2032, the first two digits stands for diameter and second for height or thickness in tenths of mm.",
     "properties": {
       "Voltage - Rated": "3V",
