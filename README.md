@@ -47,3 +47,4 @@ Development branch status
 
 ``` docker-compose -f docker-compose.dev.yml up arduino-frontend ```
 
+![Docker Containers](docs/images/docker.png)

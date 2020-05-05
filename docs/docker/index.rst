@@ -26,6 +26,8 @@ The production environment consist of the following docker containers:
 
 .. note:: These containers depend on **.env.prod** file, configuration details can be reffered from :doc:`env_variables`.
 
+.. image:: ../images/docker.png
+   :width: 600
 
 .. toctree::
     :maxdepth: 2
