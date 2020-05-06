@@ -2,7 +2,7 @@ import { Buzzer } from './Buzzer';
 import { Battery9v, CoinCell } from './Battery';
 import { PushButton, SlideSwitch } from './inputs/Buttons';
 import { ArduinoUno } from './Arduino';
-import { LED } from './Led';
+import { LED, RGBLED } from './Led';
 import { UltrasonicSensor } from './inputs/UltrasonicSensor';
 import { PIRSensor } from './inputs/PIRSensor';
 import { Motor, L298N, ServoMotor } from './Motors';
@@ -28,7 +28,8 @@ export class Utils {
     ],
     output: [
       ['Buzzer', 'LED', 'Motor'], // Row
-      ['LCD16X2', 'ServoMotor', 'SevenSegment']
+      ['LCD16X2', 'ServoMotor', 'SevenSegment'],
+      ['RGBLED']
     ],
     drivers: [
       ['L298N']
@@ -39,6 +40,11 @@ export class Utils {
   };
 
   static components = {
+    RGBLED: {
+      name: 'RGB LED',
+      image: './assets/images/components/RGBLED.png',
+      className: RGBLED
+    },
     SevenSegment: {
       name: 'Seven Segment Display',
       image: './assets/images/components/SevenSegment.png',
