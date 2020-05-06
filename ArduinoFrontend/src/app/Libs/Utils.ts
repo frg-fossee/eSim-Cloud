@@ -41,7 +41,7 @@ export class Utils {
   static components = {
     SevenSegment: {
       name: 'Seven Segment Display',
-      image: './assets/images/components/GasSensor.svg',
+      image: './assets/images/components/SevenSegment.png',
       className: SevenSegment
     },
     MQ2: {
