@@ -10,8 +10,8 @@ class SvgGenerator:
         self.CANVAS_HEIGHT = 2000
         self.CANVAS_WIDTH = 1500
 
-        self.PART_NUMBER = ["0", "1"]
-        self.DMG_NUMBER = ["0", "2"]
+        self.PART_NUMBER = "1"
+        self.DMG_NUMBER = "1"
 
         self.DEFAULT_PEN_WIDTH = "6"
         self.PIN_NAME_PADDING = 13
@@ -25,10 +25,12 @@ class SvgGenerator:
 
     def match_part_dmg(self, part, dmg):
 
-        """ Check if part and dmg matches or not
+        """ Check if part  matches or not
         """
-
-        if part in self.PART_NUMBER and dmg in self.DMG_NUMBER:
+        print(part, dmg)
+        if (part == "0" or part == self.PART_NUMBER) and (
+            dmg == "0" or dmg == self.DMG_NUMBER
+        ):
             return True
 
         return False
@@ -52,14 +54,6 @@ class SvgGenerator:
         ):  # loop through all the components in that library file.
 
             # initialize the drawing canvas.we need to initialize and save svg for each components.
-
-            d = draw.Drawing(
-                self.CANVAS_WIDTH,
-                self.CANVAS_HEIGHT,
-                origin="center",
-                displayInline=False,
-            )
-            d.setPixelScale(s=self.SVG_SCALE)
 
             DEF_LINE = data[i]["def"]
 
@@ -101,176 +95,193 @@ class SvgGenerator:
             # isItalic   = F0_LINE[8][1] == "I"
             # isBold     = F0_LINE[8][2] == "B"
 
-            fn_instructions = data[i]["fn"]
-            for z in range(len(fn_instructions)):
-                text = fn_instructions[z][1]
-                x = fn_instructions[z][2]
-                y = fn_instructions[z][3]
-                text_size = fn_instructions[z][4]
-                orientation = fn_instructions[z][5]
-                isVisible = fn_instructions[z][6] == "V"
-                hjustify = fn_instructions[z][7]
-                vjustify = fn_instructions[z][8][0]
-                isItalic = fn_instructions[z][8][1] == "I"
-                isBold = fn_instructions[z][8][2] == "B"
-
-                if isVisible and self.SHOW_TEXT:
-                    d = self.plotter.draw_text(d, text, x, y, text_size)
-
             draw_instructions = data[i]["draw"]
-            for x in range(len(draw_instructions)):
 
-                # print(data[i][x])
-                current_instruction = draw_instructions[x]
-                shape = current_instruction[0]
+            for z in range(1, int(number_of_parts_in_symbol) + 1):
+                d = draw.Drawing(
+                    self.CANVAS_WIDTH,
+                    self.CANVAS_HEIGHT,
+                    origin="center",
+                    displayInline=False,
+                )
+                d.setPixelScale(s=self.SVG_SCALE)
 
-                # (d,pinName,pinNumber,x1,y1,length=0,orientation='R',stroke="black",stroke_width=5)
-                if shape == "X":
-                    # its a pin
-                    # drawing using a line
-                    pinName = current_instruction[1]
-                    pinNumber = current_instruction[2]
-                    x_pos = current_instruction[3]
-                    y_pos = current_instruction[4]
-                    pin_length = current_instruction[5]
-                    pin_orientation = current_instruction[6]
+                self.PART_NUMBER = str(z)
+                self.DMG_NUMBER = "1"
+                print("current part number: ", self.PART_NUMBER)
+                print("current dmg number: ", self.DMG_NUMBER)
 
-                    part = current_instruction[9]
-                    dmg = current_instruction[10]
+                fn_instructions = data[i]["fn"]
+                for index in range(len(fn_instructions)):
+                    text = fn_instructions[index][1]
+                    x = fn_instructions[index][2]
+                    y = fn_instructions[index][3]
+                    text_size = fn_instructions[index][4]
+                    orientation = fn_instructions[index][5]
+                    isVisible = fn_instructions[index][6] == "V"
+                    hjustify = fn_instructions[index][7]
+                    vjustify = fn_instructions[index][8][0]
+                    isItalic = fn_instructions[index][8][1] == "I"
+                    isBold = fn_instructions[index][8][2] == "B"
 
-                    type_of_pin = current_instruction[11]
+                    if isVisible and self.SHOW_TEXT:
+                        d = self.plotter.draw_text(d, text, x, y, text_size)
 
-                    # The 12th index may or maynot be present in every
-                    # instruction.
-                    try:
-                        shape_of_pin = current_instruction[12]
-                    except IndexError:
-                        shape_of_pin = ""
+                for x in range(len(draw_instructions)):
 
-                    if not self.match_part_dmg(part, dmg):
-                        continue
+                    # print(data[i][x])
+                    current_instruction = draw_instructions[x]
+                    shape = current_instruction[0]
 
-                    pin_name_ofset = str(
-                        int(pin_name_offset) + len(pinName) * self.PIN_NAME_PADDING
-                    )
+                    # (d,pinName,pinNumber,x1,y1,length=0,orientation='R',stroke="black",stroke_width=5)
+                    if shape == "X":
+                        # its a pin
+                        # drawing using a line
+                        pinName = current_instruction[1]
+                        pinNumber = current_instruction[2]
+                        x_pos = current_instruction[3]
+                        y_pos = current_instruction[4]
+                        pin_length = current_instruction[5]
+                        pin_orientation = current_instruction[6]
 
-                    d = self.plotter.drawPin(
-                        d,
-                        pinName,
-                        pinNumber,
-                        x_pos,
-                        y_pos,
-                        pin_name_ofset,
-                        length=pin_length,
-                        orientation=pin_orientation,
-                        text_size=text_size,
-                        shape_of_pin=shape_of_pin,
-                    )
+                        part = current_instruction[9]
+                        dmg = current_instruction[10]
 
-                # (d,x1,y1,x2,y2,fill="f",pen='5',stroke='black')
-                elif shape == "S":
-                    # its a rectangle
-                    x1 = current_instruction[1]
-                    y1 = current_instruction[2]
-                    x2 = current_instruction[3]
-                    y2 = current_instruction[4]
-                    fill_shape = current_instruction[8]
-                    pen_width = current_instruction[7]
+                        type_of_pin = current_instruction[11]
 
-                    if pen_width == "0":
-                        pen_width = self.DEFAULT_PEN_WIDTH
+                        # The 12th index may or maynot be present in every
+                        # instruction.
+                        try:
+                            shape_of_pin = current_instruction[12]
+                        except IndexError:
+                            shape_of_pin = ""
 
-                    part = current_instruction[5]
-                    dmg = current_instruction[6]
+                        if not self.match_part_dmg(part, dmg):
+                            continue
 
-                    if not self.match_part_dmg(part, dmg):
-                        continue
+                        pin_name_ofset = str(
+                            int(pin_name_offset) + len(pinName) * self.PIN_NAME_PADDING
+                        )
 
-                    d = self.plotter.drawRec(d, x1, y1, x2, y2, fill_shape, pen_width)
+                        d = self.plotter.drawPin(
+                            d,
+                            pinName,
+                            pinNumber,
+                            x_pos,
+                            y_pos,
+                            pin_name_ofset,
+                            length=pin_length,
+                            orientation=pin_orientation,
+                            text_size=text_size,
+                            shape_of_pin=shape_of_pin,
+                        )
 
-                # d,x,y,r,fill="red",pen=2,stroke="black"
-                elif shape == "C":
-                    # its a circle
-                    cx = current_instruction[1]
-                    cy = current_instruction[2]
-                    r = current_instruction[3]
-                    pen_width = current_instruction[6]
-                    fill_shape = current_instruction[7]
+                    # (d,x1,y1,x2,y2,fill="f",pen='5',stroke='black')
+                    elif shape == "S":
+                        # its a rectangle
+                        x1 = current_instruction[1]
+                        y1 = current_instruction[2]
+                        x2 = current_instruction[3]
+                        y2 = current_instruction[4]
+                        fill_shape = current_instruction[8]
+                        pen_width = current_instruction[7]
 
-                    if pen_width == "0":
-                        pen_width = self.DEFAULT_PEN_WIDTH
+                        if pen_width == "0":
+                            pen_width = self.DEFAULT_PEN_WIDTH
 
-                    part = current_instruction[4]
-                    dmg = current_instruction[5]
+                        part = current_instruction[5]
+                        dmg = current_instruction[6]
 
-                    if not self.match_part_dmg(part, dmg):
-                        continue
+                        if not self.match_part_dmg(part, dmg):
+                            continue
 
-                    d = self.plotter.drawCircle(
-                        d, cx, cy, r, fill=fill_shape, pen=pen_width
-                    )
+                        d = self.plotter.drawRec(
+                            d, x1, y1, x2, y2, fill_shape, pen_width
+                        )
 
-                # (d,cx,cy,r,start_deg,end_deg,pen = 5,fill='f')
-                elif shape == "A":
-                    # its an arc
-                    cx = current_instruction[1]
-                    cy = current_instruction[2]
-                    r = current_instruction[3]
-                    start_deg = current_instruction[4]
-                    end_deg = current_instruction[5]
+                    # d,x,y,r,fill="red",pen=2,stroke="black"
+                    elif shape == "C":
+                        # its a circle
+                        cx = current_instruction[1]
+                        cy = current_instruction[2]
+                        r = current_instruction[3]
+                        pen_width = current_instruction[6]
+                        fill_shape = current_instruction[7]
 
-                    pen_width = current_instruction[8]
-                    fill = current_instruction[9]
+                        if pen_width == "0":
+                            pen_width = self.DEFAULT_PEN_WIDTH
 
-                    if pen_width == "0":
-                        pen_width = self.DEFAULT_PEN_WIDTH
+                        part = current_instruction[4]
+                        dmg = current_instruction[5]
 
-                    part = current_instruction[6]
-                    dmg = current_instruction[7]
+                        if not self.match_part_dmg(part, dmg):
+                            continue
 
-                    if not self.match_part_dmg(part, dmg):
-                        continue
-                    d = self.plotter.drawArc(
-                        d, cx, cy, r, start_deg, end_deg, pen_width, fill
-                    )
+                        d = self.plotter.drawCircle(
+                            d, cx, cy, r, fill=fill_shape, pen=pen_width
+                        )
 
-                # (d,vertices_count,pen=5,vertices_list = [],fill='f')
-                elif shape == "P":
+                    # (d,cx,cy,r,start_deg,end_deg,pen = 5,fill='f')
+                    elif shape == "A":
+                        # its an arc
+                        cx = current_instruction[1]
+                        cy = current_instruction[2]
+                        r = current_instruction[3]
+                        start_deg = current_instruction[4]
+                        end_deg = current_instruction[5]
 
-                    # its a polygon
-                    # P 2 2 1 10 -150 -175 -25 -175 f
+                        pen_width = current_instruction[8]
+                        fill = current_instruction[9]
 
-                    vertices_count = current_instruction[1]
-                    pen_width = current_instruction[4]
+                        if pen_width == "0":
+                            pen_width = self.DEFAULT_PEN_WIDTH
 
-                    if pen_width == "0":
-                        pen_width = self.DEFAULT_PEN_WIDTH
+                        part = current_instruction[6]
+                        dmg = current_instruction[7]
 
-                    part = current_instruction[2]
-                    dmg = current_instruction[3]
+                        if not self.match_part_dmg(part, dmg):
+                            continue
+                        d = self.plotter.drawArc(
+                            d, cx, cy, r, start_deg, end_deg, pen_width, fill
+                        )
 
-                    if not self.match_part_dmg(part, dmg):
-                        continue
+                    # (d,vertices_count,pen=5,vertices_list = [],fill='f')
+                    elif shape == "P":
 
-                    fill = current_instruction[len(current_instruction) - 1]
+                        # its a polygon
+                        # P 2 2 1 10 -150 -175 -25 -175 f
 
-                    vertices_list = []
-                    for j in range(5, len(current_instruction) - 1, 2):
-                        point = (current_instruction[j], current_instruction[j + 1])
-                        vertices_list.append(point)
+                        vertices_count = current_instruction[1]
+                        pen_width = current_instruction[4]
 
-                    d = self.plotter.drawPolygon(
-                        d, vertices_count, pen_width, vertices_list, fill
-                    )
+                        if pen_width == "0":
+                            pen_width = self.DEFAULT_PEN_WIDTH
 
-                elif shape == "T":
-                    # its a text
-                    pass
+                        part = current_instruction[2]
+                        dmg = current_instruction[3]
 
-                else:
-                    pass
+                        if not self.match_part_dmg(part, dmg):
+                            continue
 
-            self.save_svg(d, name_of_symbol)
+                        fill = current_instruction[len(current_instruction) - 1]
+
+                        vertices_list = []
+                        for j in range(5, len(current_instruction) - 1, 2):
+                            point = (current_instruction[j], current_instruction[j + 1])
+                            vertices_list.append(point)
+
+                        d = self.plotter.drawPolygon(
+                            d, vertices_count, pen_width, vertices_list, fill
+                        )
+
+                    elif shape == "T":
+                        # its a text
+                        pass
+
+                    else:
+                        pass
+
+                self.save_svg(d, f"{name_of_symbol}-{z}")
 
 
 if __name__ == "__main__":

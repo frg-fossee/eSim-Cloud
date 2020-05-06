@@ -264,6 +264,12 @@ class SvgPlotter:
             # draw pin shape
             d = self.draw_pin_shape(d, x2, y2, orientation, shape_of_pin)
 
+            # draw pin shape
+            # subtracted 12 just to make the pin look better
+            shape_x = x2
+            shape_y = y2 - self.RADIUS_OF_NOT_GATE
+            d = self.draw_pin_shape(d, shape_x, shape_y, orientation, shape_of_pin)
+
             # to position pin number properly
             x = x1 - 40
             x = x1 - self.PIN_NUMBER_OFFSET
@@ -291,6 +297,12 @@ class SvgPlotter:
 
             # draw pin shape
             d = self.draw_pin_shape(d, x2, y2, orientation, shape_of_pin)
+
+            # draw pin shape
+            # subtracted 12 just to make the pin look better
+            shape_x = x2
+            shape_y = y2 + self.RADIUS_OF_NOT_GATE
+            d = self.draw_pin_shape(d, shape_x, shape_y, orientation, shape_of_pin)
 
             # y2 = y1
             # to position pin number properly
