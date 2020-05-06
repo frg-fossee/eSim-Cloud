@@ -7,6 +7,7 @@ esimCloud URL Configuration
 from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
+from authAPI.views import UserActivationView
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -29,8 +30,11 @@ urlpatterns = [
     # Simulation API Routes
     path('api/simulation/', include(simulationURLs)),
 
-
-
+    # Auth API Routes
+    url(r'^api/auth/', include('djoser.urls')),
+    url(r'^api/auth/', include('djoser.urls.authtoken')),
+    url(r'^api/auth/users/activate/(?P<uid>[\w-]+)/(?P<token>[\w-]+)/$',
+        UserActivationView.as_view()),
     # For API Documentation
     url(r'^api/docs(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(
