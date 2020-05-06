@@ -136,7 +136,9 @@ class SvgGenerator:
 
                         if fn_instructions[index][0] == "F0":
                             text = text.strip('"')
-                            text = f"{text}{dm}:{z}"
+                            # convert to alphabet equivalent of number
+                            # ascii 65 -> A
+                            text = f"{text}{dm}:{chr(64+z)}"
 
                         if isVisible and self.SHOW_TEXT:
 
@@ -314,7 +316,7 @@ class SvgGenerator:
                         else:
                             pass
 
-                        self.save_svg(d, f"{name_of_symbol}-{dm}:{z}")
+                        self.save_svg(d, f"{name_of_symbol}-{dm}:{chr(64+z)}")
 
 
 if __name__ == "__main__":

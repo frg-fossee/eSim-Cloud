@@ -3,7 +3,7 @@
      width="150.0" height="200.0" viewBox="-750.0 -1000.0 1500 2000">
 <defs>
 </defs>
-<text x="0" y="-50" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">U2:3</text>
+<text x="0" y="-50" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">U2:C</text>
 <text x="0" y="50" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">4002</text>
 <text x="-40" y="-400.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">14</text>
 <text x="0" y="-221" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">VDD</text>
