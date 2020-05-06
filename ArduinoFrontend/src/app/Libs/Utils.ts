@@ -6,7 +6,7 @@ import { LED } from './Led';
 import { UltrasonicSensor } from './inputs/UltrasonicSensor';
 import { PIRSensor } from './inputs/PIRSensor';
 import { Motor, L298N, ServoMotor } from './Motors';
-import { LCD16X2 } from './Display';
+import { LCD16X2, SevenSegment } from './Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
 import { LM35 } from './inputs/TemperatureSensors';
@@ -28,7 +28,7 @@ export class Utils {
     ],
     output: [
       ['Buzzer', 'LED', 'Motor'], // Row
-      ['LCD16X2', 'ServoMotor']
+      ['LCD16X2', 'ServoMotor', 'SevenSegment']
     ],
     drivers: [
       ['L298N']
@@ -39,6 +39,11 @@ export class Utils {
   };
 
   static components = {
+    SevenSegment: {
+      name: 'Seven Segment Display',
+      image: './assets/images/components/GasSensor.svg',
+      className: SevenSegment
+    },
     MQ2: {
       name: 'Gas Sensor MQ2',
       image: './assets/images/components/GasSensor.svg',
