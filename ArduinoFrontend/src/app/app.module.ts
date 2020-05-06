@@ -10,9 +10,10 @@ import { SimulatorComponent } from './simulator/simulator.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogModule, MatInputModule, MatButtonModule, MatTableModule } from '@angular/material';
+import { MatDialogModule, MatInputModule, MatButtonModule, MatTableModule, MatRadioModule, MatDividerModule } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ExportfileComponent } from './exportfile/exportfile.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
     SimulatorComponent,
     CodeEditorComponent,
     ViewComponentInfoComponent,
+    ExportfileComponent,
   ],
   imports: [
     BrowserModule,
@@ -29,6 +31,8 @@ import { HttpClientModule } from '@angular/common/http';
     MonacoEditorModule.forRoot(),
     BrowserAnimationsModule,
     MatDialogModule,
+    MatRadioModule,
+    MatDividerModule,
     MatInputModule,
     MatButtonModule,
     MatTableModule,
@@ -36,6 +40,6 @@ import { HttpClientModule } from '@angular/common/http';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent]
+  entryComponents: [ViewComponentInfoComponent, ExportfileComponent]
 })
 export class AppModule { }

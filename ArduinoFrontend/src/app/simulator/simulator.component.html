@@ -12,22 +12,17 @@
           aria-haspopup="true" aria-expanded="false">
           Project
         </a>
-        <div class="dropdown-menu " style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
+        <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
           <a class="dropdown-item text-dark" href="#">New Project</a>
           <a class="dropdown-item text-dark" href="#">Clear Project</a>
           <a class="dropdown-item text-dark" href="#">Save</a>
-
+          
         </div>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
+      <li class="nav-item">
+        <button mat-button class="text-dark m-auto" (click)="openDailog()">
           Export
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #b8b8b8">
-          <a class="dropdown-item text-dark" href="#">Schematic File</a>
-          <a class="dropdown-item text-dark" href="#">Image</a>
-        </div>
+        </button>
       </li>
     </ul>
 
@@ -232,10 +227,10 @@
 <div id="contextMenu" class="context-menu">
   <ul>
     <li>
-        <h6><i class="fas fa-copy mr-2"></i>  Copy</h6>
+      <h6><i class="fas fa-copy mr-2"></i> Copy</h6>
     </li>
     <li>
-        <h6><i class="fas fa-paste mr-2"></i> Paste</h6>
+      <h6><i class="fas fa-paste mr-2"></i> Paste</h6>
     </li>
     <li>
       <h6><i class="fas fa-trash-alt mr-2"></i> Delete</h6>
@@ -247,7 +242,7 @@
 
 <!--/context menu-->
 <!--toast message-->
- <!--<div id="ToastMessage" class="toast" style="margin-left: auto; background-color: white;">
+<!--<div id="ToastMessage" class="toast" style="margin-left: auto; background-color: white;">
   <div class="toast-header">
       <strong class="mr-auto text-primary">Toast Header</strong>
       <small class="text-muted mr-auto">5 mins ago</small>
@@ -258,6 +253,3 @@
   </div>
  </div>-->
 <!--/toast message-->
-
-
-
