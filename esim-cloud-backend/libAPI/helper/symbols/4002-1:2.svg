@@ -28,7 +28,7 @@
 <path d="M-300,50 L-110,50" stroke="black" stroke-width="5" />
 <text x="-225.0" y="110" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">12</text>
 <path d="M-300,150 L-150,150" stroke="black" stroke-width="5" />
-<circle cx="165" cy="0" r="15" stroke-width="5" stroke="black" fill="black" />
+<circle cx="170" cy="0" r="20" stroke-width="5" stroke="black" fill="black" />
 <text x="225.0" y="-40" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">13</text>
 <path d="M300,0 L150,0" stroke="black" stroke-width="5" />
 <text x="-225.0" y="-190" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">9</text>

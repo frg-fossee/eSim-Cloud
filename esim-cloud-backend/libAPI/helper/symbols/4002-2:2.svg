@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="150.0" height="200.0" viewBox="-750.0 -1000.0 1500 2000">
+<defs>
+</defs>
+<text x="0" y="-50" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">U</text>
+<text x="0" y="50" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">4002</text>
+<path d="M-24.694567535967803,-174.99973345982534 A175,175,0,0,1,-24.694567535967693,174.99973345982534" stroke="black" stroke-width="10" fill-opacity="0" />
+<path d="M-150,-175 L-25,-175" stroke="black" stroke-width="10" />
+<path d="M-150,175 L-150,-175" stroke="black" stroke-width="10" />
+<path d="M-25,175 L-150,175" stroke="black" stroke-width="10" />
+<circle cx="-170" cy="-50" r="20" stroke-width="5" stroke="black" fill="black" />
+<text x="-225.0" y="-90" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">10</text>
+<path d="M-300,-50 L-150,-50" stroke="black" stroke-width="5" />
+<circle cx="-170" cy="50" r="20" stroke-width="5" stroke="black" fill="black" />
+<text x="-225.0" y="10" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">11</text>
+<path d="M-300,50 L-150,50" stroke="black" stroke-width="5" />
+<circle cx="-170" cy="150" r="20" stroke-width="5" stroke="black" fill="black" />
+<text x="-225.0" y="110" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">12</text>
+<path d="M-300,150 L-150,150" stroke="black" stroke-width="5" />
+<text x="225.0" y="-40" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">13</text>
+<path d="M300,0 L150,0" stroke="black" stroke-width="5" />
+<circle cx="-170" cy="-150" r="20" stroke-width="5" stroke="black" fill="black" />
+<text x="-225.0" y="-190" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">9</text>
+<path d="M-300,-150 L-150,-150" stroke="black" stroke-width="5" />
+</svg>

@@ -7,7 +7,7 @@ class SvgPlotter:
         self.PIN_NAME_COLOR = "black"
         self.PIN_NUMBER_COLOR = "black"
         self.PIN_NUMBER_OFFSET = 40
-        self.RADIUS_OF_NOT_GATE = 15
+        self.RADIUS_OF_NOT_GATE = 20
 
     """pen-parameter is the thickness of the pen,when
     zero the default pen width is used.
