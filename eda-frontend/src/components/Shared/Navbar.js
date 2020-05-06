@@ -28,7 +28,7 @@ export default function Navbar() {
       elevation={0}
       className={classes.appBar}
     >
-      <Toolbar className={classes.toolbar}>
+      <Toolbar variant="dense" color="default" className={classes.toolbar}>
         <Typography
           variant="h6"
           color="inherit"
@@ -74,6 +74,7 @@ export default function Navbar() {
           </Link>
         </nav>
         <Button
+          size="small"
           href="/login"
           color="primary"
           variant="outlined"

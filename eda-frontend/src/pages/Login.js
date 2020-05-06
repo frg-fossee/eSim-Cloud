@@ -68,7 +68,7 @@ export default function SignIn() {
             label="Remember me"
           />
           <Button
-            href="/editor"
+            href="/dashboard"
             type="submit"
             fullWidth
             variant="contained"
