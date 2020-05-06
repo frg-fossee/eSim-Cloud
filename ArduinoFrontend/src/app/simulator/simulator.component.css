@@ -9,9 +9,7 @@
     max-width: 32%;
     display: flex;
     flex-direction: column;
-    border: 1px solid darkgray;
     padding: 10px;
-    justify-content: space-between;
     cursor: pointer;
     text-align: center;
 }
@@ -192,7 +190,7 @@
 
 html,body{
     height:100%;
-    
+
 }
 .context-menu{
     width:160px;
@@ -201,25 +199,25 @@ html,body{
     position: absolute;
     display: none;
     background-color: white;
-        
+
 }
 .context-menu ul{
     list-style: none; /*show no bullets*/
     padding: 5px 0px 5px 0px;
-    
+
 }
 
 .context-menu ul li{
     padding: 10px 5px 10px 5px;
     border-left: 4px solid transparent;
-    cursor: pointer; 
+    cursor: pointer;
     z-index: 5000 !important;
-    overflow: visible !important;   
+    overflow: visible !important;
 }
 .context-menu ul li:hover{
     background-color:rgb(245, 207, 161);
     border-left: 4px solid #666;
-    
+
 }
 
 #ToastMessage {
@@ -229,9 +227,9 @@ html,body{
     position: fixed;
     width: 300px;
     height: 100px;
-    box-shadow: 0 0 20px 0 #ccc; 
+    box-shadow: 0 0 20px 0 #ccc;
     display: block;
-    background-color: #eee;  
+    background-color: #eee;
 }
 
 .toast  {
