@@ -12,12 +12,13 @@ import { PhotoResistor } from './inputs/PhotoResistor';
 import { LM35 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
+import { MQ2 } from './inputs/GasSensor';
 export class Utils {
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
       ['SlideSwitch', 'PhotoResistor', 'LM35'],
-      ['PotentioMeter']
+      ['PotentioMeter', 'MQ2']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -38,6 +39,11 @@ export class Utils {
   };
 
   static components = {
+    MQ2: {
+      name: 'Gas Sensor MQ2',
+      image: './assets/images/components/GasSensor.svg',
+      className: MQ2
+    },
     ServoMotor: {
       name: 'Servo Motor',
       image: './assets/images/components/Servo.png',
