@@ -120,10 +120,8 @@ class SvgGenerator:
 
                     self.PART_NUMBER = str(z)
 
-                    print("current part number: ", self.PART_NUMBER)
-                    print("current dmg number: ", self.DMG_NUMBER)
-
                     fn_instructions = data[i]["fn"]
+                    print(fn_instructions)
                     for index in range(len(fn_instructions)):
                         text = fn_instructions[index][1]
                         x = fn_instructions[index][2]
@@ -136,7 +134,12 @@ class SvgGenerator:
                         isItalic = fn_instructions[index][8][1] == "I"
                         isBold = fn_instructions[index][8][2] == "B"
 
+                        if fn_instructions[index][0] == "F0":
+                            text = text.strip('"')
+                            text = f"{text}{dm}:{z}"
+
                         if isVisible and self.SHOW_TEXT:
+
                             d = self.plotter.draw_text(d, text, x, y, text_size)
 
                     for x in range(len(draw_instructions)):
