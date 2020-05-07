@@ -92,6 +92,12 @@ export class RGBLED extends CircuitElement {
           'stroke-width': '1'
         })
     );
+    this.nodes = [
+      new Point(canvas, x - 3, y + 95, 'RED', RGBLED.pointHalf, this),
+      new Point(canvas, x + 12, y + 95, 'CATHODE', RGBLED.pointHalf, this),
+      new Point(canvas, x + 29, y + 95, 'BLUE', RGBLED.pointHalf, this),
+      new Point(canvas, x + 46, y + 95, 'GREEN', RGBLED.pointHalf, this),
+    ];
     this.setDragListeners();
     this.setClickListener(null);
     this.setHoverListener();
