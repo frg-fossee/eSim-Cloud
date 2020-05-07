@@ -2,8 +2,9 @@ redis_data/
 mysql_data/
 .vscode
 venv
+env
 *.sqlite3
 .env.prod
 mongo_data/
-esim-cloud-backend/libAPI/sample_lib/
-esim-cloud-backend/libAPI/symbols/
+sample_lib/
+symbols/
