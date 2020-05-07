@@ -1,5 +1,6 @@
 from plotter import SvgPlotter
 from parser import Parser
+import os
 
 # import drawSvg as draw
 import drawSvg as draw
@@ -16,7 +17,7 @@ class SvgGenerator:
         self.DEFAULT_PEN_WIDTH = "6"
         self.PIN_NAME_PADDING = 13
 
-        self.SHOW_TEXT = False
+        self.SHOW_TEXT = True
 
         self.SVG_SCALE = 0.1
 
@@ -42,21 +43,23 @@ class SvgGenerator:
 
         return False
 
-    def save_svg(self, d, name_of_symbol):
+    def save_svg(self, d, name_of_symbol, save_path):
 
         """ save svg"""
 
-        d.saveSvg(f"./symbols/{name_of_symbol}.svg")
+        # check if symbols directory is present or not.
 
-    def generate_svg_from_lib(self, file_path):
+        d.saveSvg(f"{save_path}/{name_of_symbol}.svg")
+
+    def generate_svg_from_lib(self, file_path, output_path):
 
         """ Takes .lib file as input and generates
             svg from the .lib file.
         """
 
         data = self.parser.extract_data_from_lib(file_path)
-        filename = data[0].split('/')[-1].split(".")[0]
-        data = data[1] 
+        folder_name = file_path.split('/')[-1].split(".")[0]
+        # print(folder_name)
 
     
         for i in range(
@@ -319,12 +322,40 @@ class SvgGenerator:
                         else:
                             pass
 
-                        self.save_svg(d, f"{name_of_symbol}-{dm}:{chr(64+z)}")
+
+                        # check if user inputed path exists or not
+
+                        if not os.path.exists(output_path):
+                            try:
+                                os.mkdir(output_path)
+                            except OSError as error:
+                                print(error)
+                                
+
+
+                        # create a folder with the name of the input file if not already exist.
+                        save_path = f"{output_path}/{folder_name}"
+                        if not os.path.exists(save_path):
+                            try: 
+                                os.mkdir(save_path) 
+                            except OSError as error: 
+                                print(error) 
+
+
+                        self.save_svg(d, f"{name_of_symbol}-{dm}:{chr(64+z)}", save_path)
+
+
+
+
+
+def generate_svg_and_save_to_folder(input_file, output_folder):
+    svg_gen = SvgGenerator()
+    svg_gen.generate_svg_from_lib(input_file, output_folder)
 
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    svg_gen = SvgGenerator()
-    svg_gen.SHOW_TEXT = True
-    svg_gen.generate_svg_from_lib("./sample_lib/4002.lib")
+    
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib","./symbols/")
+
     print("done!!")
