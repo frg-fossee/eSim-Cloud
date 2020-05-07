@@ -7,7 +7,7 @@ esimCloud URL Configuration
 from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
-from authAPI.views import UserActivationView
+from authAPI.views import UserActivationView, GoogleOAuth2
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -33,8 +33,11 @@ urlpatterns = [
     # Auth API Routes
     url(r'^api/auth/', include('djoser.urls')),
     url(r'^api/auth/', include('djoser.urls.authtoken')),
+    url(r'^api/auth/', include("djoser.social.urls")),
+    url(r'^api/auth/google-callback', GoogleOAuth2.as_view()),
     url(r'^api/auth/users/activate/(?P<uid>[\w-]+)/(?P<token>[\w-]+)/$',
         UserActivationView.as_view()),
+
     # For API Documentation
     url(r'^api/docs(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(
