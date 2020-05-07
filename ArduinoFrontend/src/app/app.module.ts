@@ -14,6 +14,7 @@ import { MatDialogModule, MatInputModule, MatButtonModule, MatTableModule, MatRa
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
+import { ComponentlistComponent } from './componentlist/componentlist.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { ExportfileComponent } from './exportfile/exportfile.component';
     CodeEditorComponent,
     ViewComponentInfoComponent,
     ExportfileComponent,
+    ComponentlistComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,6 +42,6 @@ import { ExportfileComponent } from './exportfile/exportfile.component';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent]
+  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent]
 })
 export class AppModule { }

@@ -5,6 +5,7 @@ import { Utils } from '../Libs/Utils';
 import { MatDialog, MatRadioModule } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
+import { ComponentlistComponent } from '../componentlist/componentlist.component';
 import { ApiService } from '../api.service';
 declare var Raphael;
 
@@ -163,6 +164,13 @@ export class SimulatorComponent implements OnInit {
   openDailog() {
     const exportref = this.dialog.open(ExportfileComponent);
     exportref.afterClosed().subscribe(result => {
+
+      console.log(`Dialog result: ${result}`);
+    });
+  }
+  openview() {
+    const viewref = this.dialog.open(ComponentlistComponent);
+    viewref.afterClosed().subscribe(result => {
 
       console.log(`Dialog result: ${result}`);
     });
