@@ -33,7 +33,8 @@ class SvgGenerator:
 
         """ Check if part  matches or not
         """
-        print(part, dmg)
+     
+    
         if (part == "0" or part == self.PART_NUMBER) and (
             dmg == "0" or dmg == self.DMG_NUMBER
         ):
@@ -54,7 +55,10 @@ class SvgGenerator:
         """
 
         data = self.parser.extract_data_from_lib(file_path)
+        filename = data[0].split('/')[-1].split(".")[0]
+        data = data[1] 
 
+    
         for i in range(
             len(data)
         ):  # loop through all the components in that library file.
@@ -121,7 +125,6 @@ class SvgGenerator:
                     self.PART_NUMBER = str(z)
 
                     fn_instructions = data[i]["fn"]
-                    print(fn_instructions)
                     for index in range(len(fn_instructions)):
                         text = fn_instructions[index][1]
                         x = fn_instructions[index][2]

@@ -33,7 +33,7 @@ class Parser:
                     else:
                         pass
 
-        return data
+        return (filename, data)
 
 
 if __name__ == "__main__":

@@ -162,7 +162,7 @@ class SvgPlotter:
     def draw_pin_shape(self, d, x, y, pin_orientation, shape_of_pin):
 
         # inverted pin draw a circle of radius 10 at the end of the pin.
-        print(shape_of_pin)
+       
         if shape_of_pin == "I":
 
             d = self.drawCircle(d, x, y, self.RADIUS_OF_NOT_GATE, fill="F")
