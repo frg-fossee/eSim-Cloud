@@ -31,7 +31,7 @@ export class LM35 extends CircuitElement {
       keyName: this.keyName,
       id: this.id,
       body,
-      title: 'Photo Resistor'
+      title: 'Temperatur Sensor'
     };
   }
   initSimulation(): void {
