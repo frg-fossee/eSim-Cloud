@@ -7,4 +7,5 @@ env
 .env.prod
 mongo_data/
 sample_lib/
-symbols/
+symbols/*
+.DS_Store
