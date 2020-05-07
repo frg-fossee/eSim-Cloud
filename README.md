@@ -23,19 +23,13 @@ Development branch status
 #### Setting up docker containers
 * Install docker-ce and docker-compose for your OS
 
-* To Build/ReBuild necessary containers using
-
- ```docker-compose -f docker-compose.dev.yml build```
+* Build/ReBuild necessary containers using
 
 * To run all containers
+``` /bin/bash first_run.dev.sh ``` ( for the first time only )
 ``` docker-compose -f docker-compose.dev.yml --env-file .env up ```
 
 ##### For Setting up Backend containers only
-* Apply database migrations (only required for first run )
-
-```docker-compose -f docker-compose.dev.yml run --rm django ./manage.py makemigrations --noinput```
-
-```docker-compose -f docker-compose.dev.yml run --rm django ./manage.py migrate --noinput```
 
 * Run Development environment
 

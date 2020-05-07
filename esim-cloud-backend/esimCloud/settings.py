@@ -90,22 +90,21 @@ DATABASES = {
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
 
-    # "mongodb":{
-    #     "ENGINE": 'djongo',
-    #     "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
-    #     "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
-    #     "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-    #     "HOST": "localhost",
-    #     "PORT": 27017,
-    #     'AUTH_SOURCE': 'admin',
-    #     'AUTH_MECHANISM': 'SCRAM-SHA-1',
-
-    # }
+    "mongodb": {
+        "ENGINE": 'djongo',
+        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
+        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
+        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
+        "HOST": "mongodb",
+        "PORT": 27017,
+        'AUTH_SOURCE': 'admin',
+        'AUTH_MECHANISM': 'SCRAM-SHA-1',
+    }
 
 }
 
 
-DATABASE_ROUTERS = ('simulationAPI.dbrouters.to_mongo',)
+DATABASE_ROUTERS = ('simulationAPI.dbrouters.mongoRouter',)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
