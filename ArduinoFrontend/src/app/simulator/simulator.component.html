@@ -90,6 +90,23 @@
     <h4 class="text-center text-primary mt-2">Circuit Components</h4>
 
     <div>
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(generalItems)">
+        General
+      </div>
+
+      <div class="collapse-div" #generalItems>
+        <div class="component-row" *ngFor="let row of componentsBox.general">
+          <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+            (dragstart)="dragStart($event,item)">
+            <img src={{components[item].image}} alt="{{components[item].name}}">
+            <label style="font-size: smaller;">{{components[item].name}}</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
 
       <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(itemsController)">
         Controllers

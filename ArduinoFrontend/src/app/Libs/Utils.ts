@@ -13,6 +13,8 @@ import { LM35 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
+import { Resistor } from './General';
+
 export class Utils {
   static componentBox = {
     input: [
@@ -36,10 +38,18 @@ export class Utils {
     ],
     misc: [
       ['Label', 'RelayModule']
+    ],
+    general: [
+      ['Resistor']
     ]
   };
 
   static components = {
+    Resistor: {
+      name: 'Resistor',
+      image: './assets/images/components/Resistor.png',
+      className: Resistor
+    },
     RGBLED: {
       name: 'RGB LED',
       image: './assets/images/components/RGBLED.png',
