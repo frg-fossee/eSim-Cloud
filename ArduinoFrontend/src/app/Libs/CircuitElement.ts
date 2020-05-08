@@ -11,15 +11,73 @@ export abstract class CircuitElement {
   public elements: any;
   public tx = 0;
   public ty = 0;
-
+  public title: string;
+  public simulationData: any = {}; // Store Values That are required during simulation
+  public data: any = {}; // Store Values that are additionaly require by class
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
    */
-  constructor(keyName: string, public x: number, public y: number) {
+  constructor(keyName: string, public x: number, public y: number, filename: string = '', canvas: any = null) {
     this.id = Date.now(); // Generate New id
     this.keyName = keyName; // Set key name
     this.elements = window['canvas'].set();
+
+    if (filename) {
+      fetch(`/assets/jsons/${filename}`)
+        .then(v => v.json())
+        .then(obj => {
+          this.title = obj.name;
+          this.DrawElement(canvas, obj.draw);
+          this.DrawNodes(canvas, obj.pins, obj.pointHalf);
+          console.log(obj);
+          this.setDragListeners();
+          this.setClickListener(null);
+          this.setHoverListener();
+        })
+        .catch(err => {
+          // TODO: Show Toast failed to load
+        });
+    }
+  }
+
+  DrawNodes(canvas: any, pinData: any, pointHalf: number) {
+    for (const pin of pinData) {
+      this.nodes.push(
+        new Point(
+          canvas,
+          this.x + pin.x,
+          this.y + pin.y,
+          pin.name,
+          pointHalf,
+          this
+        )
+      );
+    }
+  }
+
+  DrawElement(canvas: any, drawData: any) {
+    for (const item of drawData) {
+      if (item.type === 'image') {
+        this.elements.push(
+          canvas.image(
+            item.url,
+            this.x + item.x,
+            this.y + item.y,
+            item.width,
+            item.height
+          )
+        );
+      } else if (item.type === 'path') {
+        this.elements.push(
+          this.DrawPath(canvas, item)
+        );
+      }
+    }
+  }
+
+  DrawPath(canvas: any, item: any) {
+
   }
 
   setDragListeners() {
