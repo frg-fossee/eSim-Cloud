@@ -340,7 +340,7 @@ class SvgGenerator:
 
                         self.save_svg(d,
                                       f"{symbol_prefix}" +
-                                      f"-{name_of_symbol}-{dm}:" +
+                                      f"-{name_of_symbol}-{dm}_" +
                                       f"{chr(64+z)}",
                                       save_path)
 
