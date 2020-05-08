@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
   // Necessary for content to be below Header
   content: {
     flexGrow: 1,
-    padding: theme.spacing(5),
+    padding: theme.spacing(5, 3),
     backgroundColor: "#f4f6f8",
   },
 }));
