@@ -31,7 +31,6 @@ class SvgGenerator:
         self.parser = Parser()
 
     def match_part_dmg(self, part, dmg):
-
         """ Check if part  matches or not
         """
         if (part == "0" or part == self.PART_NUMBER) and (
@@ -42,7 +41,6 @@ class SvgGenerator:
         return False
 
     def save_svg(self, d, name_of_symbol, save_path):
-
         """ save svg"""
 
         # check if symbols directory is present or not.
@@ -50,7 +48,6 @@ class SvgGenerator:
         d.saveSvg(f"{save_path}/{name_of_symbol}.svg")
 
     def generate_svg_from_lib(self, file_path, output_path):
-
         """ Takes .lib file as input and generates
             svg from the .lib file.
         """
@@ -82,7 +79,7 @@ class SvgGenerator:
             # ['DEF', '14529', 'U', '0', '40', 'Y', 'Y', '1', 'L', 'N']
             name_of_symbol = DEF_LINE[1]
             # symbol_prefix is 'U' for integrated circiut and 'R' for resister
-            symbol_prefix = DEF_LINE[2] # noqa
+            symbol_prefix = DEF_LINE[2]  # noqa
             # The third paramater is always 0
             pin_name_offset = DEF_LINE[4]
             show_pin_number = DEF_LINE[5]   # noqa
@@ -131,10 +128,10 @@ class SvgGenerator:
                         x = fn_instructions[index][2]
                         y = fn_instructions[index][3]
                         text_size = fn_instructions[index][4]
-                        orientation = fn_instructions[index][5] # noqa
+                        orientation = fn_instructions[index][5]  # noqa
                         isVisible = fn_instructions[index][6] == "V"
                         hjustify = fn_instructions[index][7]    # noqa
-                        vjustify = fn_instructions[index][8][0] # noqa
+                        vjustify = fn_instructions[index][8][0]  # noqa
                         isItalic = fn_instructions[index][8][1] == "I"  # noqa
                         isBold = fn_instructions[index][8][2] == "B"    # noqa
 
@@ -169,7 +166,7 @@ class SvgGenerator:
                             part = current_instruction[9]
                             dmg = current_instruction[10]
 
-                            type_of_pin = current_instruction[11] # noqa
+                            type_of_pin = current_instruction[11]  # noqa
 
                             if dmg == "2":
                                 self.IS_DMG_2_PRESENT = True
@@ -302,8 +299,8 @@ class SvgGenerator:
                                 continue
 
                             fill = current_instruction[
-                                                len(current_instruction) - 1
-                                                    ]
+                                len(current_instruction) - 1
+                            ]
 
                             vertices_list = []
                             for j in range(5, len(current_instruction) - 1, 2):
