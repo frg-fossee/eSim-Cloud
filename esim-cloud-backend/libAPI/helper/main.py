@@ -1,6 +1,7 @@
 from plotter import SvgPlotter
 from parser import Parser
 import os
+import sys
 
 # import drawSvg as draw
 import drawSvg as draw
@@ -351,6 +352,10 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 
 
 if __name__ == "__main__":
-    print("plotting to svg..")
-    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
-    print("done!!")
+    # Takes Libraries as command line arguments,
+    # Only if script is run on command line
+    if(len(sys.argv)) != 3:
+        print("Usage: script.py <Path to library> <Output Directory>")
+        sys.exit(1)
+    generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
+    print('Processed', sys.argv[1])
