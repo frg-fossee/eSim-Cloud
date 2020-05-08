@@ -3,7 +3,7 @@ import { Drawer, Hidden, IconButton } from "@material-ui/core";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import { makeStyles } from "@material-ui/core/styles";
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Sidebar(props) {
+function LayoutSidebar(props) {
   let { window, mobileOpen, mobileClose } = props;
   const classes = useStyles();
 
@@ -47,6 +47,7 @@ function Sidebar(props) {
             >
               <HighlightOffIcon />
             </IconButton>
+            {props.children}
           </Drawer>
         </Hidden>
 
@@ -57,11 +58,13 @@ function Sidebar(props) {
             }}
             variant="permanent"
             open
-          ></Drawer>
+          >
+            {props.children}
+          </Drawer>
         </Hidden>
       </nav>
     </>
   );
 }
 
-export default Sidebar;
+export default LayoutSidebar;
