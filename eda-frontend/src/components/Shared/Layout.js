@@ -3,7 +3,7 @@ import { AppBar, IconButton, Toolbar } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import Sidebar from "./Sidebar";
+import LayoutSidebar from "./LayoutSidebar";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -28,6 +28,7 @@ function Layout(props) {
 
   return (
     <>
+      {/* Header and Toolbar of Dashboard and Schematic Editor */}
       <AppBar
         position="fixed"
         color="default"
@@ -51,7 +52,10 @@ function Layout(props) {
         </Toolbar>
       </AppBar>
 
-      <Sidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle} />
+      {/* Left Sidebar for Layout */}
+      <LayoutSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle}>
+        {props.sidebar}
+      </LayoutSidebar>
     </>
   );
 }
