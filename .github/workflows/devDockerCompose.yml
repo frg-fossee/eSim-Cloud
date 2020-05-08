@@ -20,7 +20,7 @@ jobs:
       run: docker-compose -f docker-compose.dev.yml --env-file .env build
 
     - name: Run the docker-compose step
-      run: docker-compose -f docker-compose.dev.yml --env-file .env up
+      run: docker-compose -f docker-compose.dev.yml --env-file .env up -d
 
     - name: Check running containers
       run: docker ps -a
