@@ -1,0 +1,28 @@
+{
+    "name": "Battery 9v",
+    "className": "Battery9v",
+    "pointHalf": 4,
+    "pins": [
+        {
+            "x": 0,
+            "y": 27,
+            "name": "Positive"
+        },
+        {
+            "x": 0,
+            "y": 69,
+            "name": "Negative"
+        }
+    ],
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/9vBattery.svg",
+            "width": 179,
+            "height": 99,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}
