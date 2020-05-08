@@ -6,7 +6,8 @@ declare let window;
 /**
  * Class for Wire
  */
-export class Wire extends CircuitElement {
+export class Wire {
+  static keyName = 'wire';
   points: number[][] = []; // stores array of position [x,y]
   joints: any[] = [];
   value = -1; // Value of the wire (5,0 -> GND)
@@ -14,14 +15,15 @@ export class Wire extends CircuitElement {
   element: any; // body of the wire
   color: any = '#000'; // color of the wire
   glow: any;
-
+  id: number;
   /**
    * Constructor of wire
    * @param canvas Raphael Canvas / paper
    * @param start Start circuit node of wire
    */
   constructor(public canvas, public start: Point) {
-    super('wire', -1, -1);
+    this.id = Date.now(); // Generate New id
+
     // insert the position of start node in array
     this.points.push(start.position());
   }
@@ -105,7 +107,7 @@ export class Wire extends CircuitElement {
     body.append(select);
     return {
       title: 'Wire',
-      keyName: this.keyName,
+      keyName: Wire.keyName,
       id: this.id,
       body
     };
