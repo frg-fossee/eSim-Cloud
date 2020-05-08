@@ -22,7 +22,7 @@ class Parser:
 
                     elif line.find("ENDDEF") == 0:
                         data.append(instruction)
-                        def_flag = False
+                        def_flag = False  # noqa
 
                     elif re.match(r"F[0-9]+", line):
                         instruction["fn"].append(line.strip().split(" "))
@@ -33,7 +33,7 @@ class Parser:
                     else:
                         pass
 
-        return  data
+        return data
 
 
 if __name__ == "__main__":

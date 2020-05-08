@@ -7,11 +7,12 @@ class SvgPlotter:
         self.PIN_NAME_COLOR = "black"
         self.PIN_NUMBER_COLOR = "black"
         self.PIN_NUMBER_OFFSET = 40
-        self.RADIUS_OF_NOT_GATE = 20
+        self.RADIUS_OF_NOT_GATE = 25
+        self.FILL_NOT_GATE = "F"
 
     """pen-parameter is the thickness of the pen,when
     zero the default pen width is used.
-    The fill parameter is “f” for a filled shape in the 
+    The fill parameter is “f” for a filled shape in the
     background colour, “F” for a filled shape in
     the pen colour, or “N” for an unfilled shape.
     """
@@ -37,8 +38,11 @@ class SvgPlotter:
             kwargs = {"fill": self.STROKE_COLOR}
         else:
             kwargs = {"fill_opacity": 0}
+
         d.append(
-            draw.Circle(x, y, r, stroke_width=pen, stroke=self.STROKE_COLOR, **kwargs)
+            draw.Circle(x, y, r, stroke_width=pen,
+                        stroke=self.STROKE_COLOR,
+                        **kwargs)
         )
 
         return d
@@ -132,7 +136,8 @@ class SvgPlotter:
         return d
 
     # P count part dmg pen X Y ... fill
-    def drawPolygon(self, d, vertices_count, pen=5, vertices_list=[], fill="f"):
+    def drawPolygon(self, d, vertices_count, pen=5,
+                    vertices_list=[], fill="f"):
 
         # if(fill == 'f'):
         #     kwargs = {"fill_opacity" : 0.3}
@@ -152,9 +157,10 @@ class SvgPlotter:
             x2 = int(point_2[0])
             y2 = int(point_2[1])
 
-            # d.append(draw.Line(x1,y1,x2,y2,stroke=self.STROKE_COLOR , stroke_width=pen,**kwargs))
+            # d.append(draw.Line(x1,y1,x2,y2,stroke=self.STROKE_COLOR , stroke_width=pen,**kwargs))# noqa
             d.append(
-                draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR, stroke_width=pen)
+                draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR,
+                          stroke_width=pen)
             )
 
         return d
@@ -162,10 +168,12 @@ class SvgPlotter:
     def draw_pin_shape(self, d, x, y, pin_orientation, shape_of_pin):
 
         # inverted pin draw a circle of radius 10 at the end of the pin.
-       
+
         if shape_of_pin == "I":
 
-            d = self.drawCircle(d, x, y, self.RADIUS_OF_NOT_GATE, fill="F")
+            d = self.drawCircle(
+                d, x, y, self.RADIUS_OF_NOT_GATE, fill=self.FILL_NOT_GATE
+            )
 
         return d
 
@@ -201,7 +209,6 @@ class SvgPlotter:
             # subtracted 12 just to make the pin look better
             shape_x = x2 - self.RADIUS_OF_NOT_GATE
             shape_y = y2
-            d = self.draw_pin_shape(d, shape_x, shape_y, orientation, shape_of_pin)
 
             # to position pin number properly
             x = x1 + (length / 2)
@@ -209,9 +216,12 @@ class SvgPlotter:
             # x = x1
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6, fill=self.PIN_NUMBER_COLOR
+                    pinNumber, text_size, x, y, center=0.6,
+                    fill=self.PIN_NUMBER_COLOR
                 )
             )
+            d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                                    shape_of_pin)
             if pinName != "~":
                 d = self.draw_text(
                     d,
@@ -232,7 +242,6 @@ class SvgPlotter:
             # added 12 just to make the pin look better
             shape_x = x2 + self.RADIUS_OF_NOT_GATE
             shape_y = y2
-            d = self.draw_pin_shape(d, shape_x, shape_y, orientation, shape_of_pin)
 
             # to position pin number properly
             x = x1 - (length / 2)
@@ -242,9 +251,13 @@ class SvgPlotter:
 
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6, fill=self.PIN_NUMBER_COLOR
+                    pinNumber, text_size, x, y, center=0.6,
+                    fill=self.PIN_NUMBER_COLOR
                 )
             )
+            d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                                    shape_of_pin)
+
             if pinName != "~":
                 d = self.draw_text(
                     d,
@@ -262,13 +275,13 @@ class SvgPlotter:
             y2 = y1 + length
 
             # draw pin shape
-            d = self.draw_pin_shape(d, x2, y2, orientation, shape_of_pin)
 
             # draw pin shape
             # subtracted 12 just to make the pin look better
             shape_x = x2
             shape_y = y2 - self.RADIUS_OF_NOT_GATE
-            d = self.draw_pin_shape(d, shape_x, shape_y, orientation, shape_of_pin)
+            d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                                    shape_of_pin)
 
             # to position pin number properly
             x = x1 - 40
@@ -277,9 +290,12 @@ class SvgPlotter:
             # y = y1
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6, fill=self.PIN_NUMBER_COLOR
+                    pinNumber, text_size, x, y, center=0.6,
+                    fill=self.PIN_NUMBER_COLOR
                 )
             )
+            d = self.draw_pin_shape(d, x2, y2, orientation, shape_of_pin)
+
             if pinName != "~":
                 d = self.draw_text(
                     d,
@@ -296,13 +312,12 @@ class SvgPlotter:
             y2 = y1 - length
 
             # draw pin shape
-            d = self.draw_pin_shape(d, x2, y2, orientation, shape_of_pin)
+            # d = self.draw_pin_shape(d, x2, y2, orientation, shape_of_pin)
 
             # draw pin shape
             # subtracted 12 just to make the pin look better
             shape_x = x2
             shape_y = y2 + self.RADIUS_OF_NOT_GATE
-            d = self.draw_pin_shape(d, shape_x, shape_y, orientation, shape_of_pin)
 
             # y2 = y1
             # to position pin number properly
@@ -311,9 +326,13 @@ class SvgPlotter:
             y = y1 - (length / 2)
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6, fill=self.PIN_NUMBER_COLOR
+                    pinNumber, text_size, x, y, center=0.6,
+                    fill=self.PIN_NUMBER_COLOR
                 )
             )
+            d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                                    shape_of_pin)
+
             if pinName != "~":
                 d = self.draw_text(
                     d,
@@ -325,6 +344,7 @@ class SvgPlotter:
                 )
                 # d.append(draw.Text(pinName,text_size,x1,y1-length-pin_name_offset,center=0.6,fill=self.PIN_NAME_COLOR))
 
-        d.append(draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR, stroke_width=pen))
+        d.append(draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR,
+                 stroke_width=pen))
 
         return d
