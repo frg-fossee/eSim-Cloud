@@ -10,3 +10,4 @@ sample_lib/
 symbols/*
 .DS_Store
 migrations
+symbol_svgs
