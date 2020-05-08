@@ -100,8 +100,20 @@ export default function Header() {
         TransitionComponent={Fade}
         style={{ marginTop: "25px" }}
       >
-        <MenuItem onClick={handleClose}>My Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My Schematics</MenuItem>
+        <MenuItem
+          component="Link"
+          href="/dashboard/profile"
+          onClick={handleClose}
+        >
+          My Profile
+        </MenuItem>
+        <MenuItem
+          component="Link"
+          href="/dashboard/schematics"
+          onClick={handleClose}
+        >
+          My Schematics
+        </MenuItem>
         <MenuItem onClick={handleClose}>Settings</MenuItem>
         <MenuItem component="Link" href="/login" onClick={handleClose}>
           Logout
