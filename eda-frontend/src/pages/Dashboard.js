@@ -8,6 +8,7 @@ import Layout from "../components/Shared/Layout";
 import LayoutMain from "../components/Shared/LayoutMain";
 import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 import DashboardHome from "../components/Dashboard/DashboardHome";
+import SchematicsList from "../components/Dashboard/SchematicsList";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +36,11 @@ export default function Dashboard() {
         <Switch>
           <Route exact path="/dashboard" component={DashboardHome} />
           <Route exact path="/dashboard/profile" />
-          <Route exact path="/dashboard/schematics" />
+          <Route
+            exact
+            path="/dashboard/schematics"
+            component={SchematicsList}
+          />
         </Switch>
       </LayoutMain>
     </div>
