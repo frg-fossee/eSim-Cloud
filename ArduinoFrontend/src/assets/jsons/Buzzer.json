@@ -1,29 +1,20 @@
 {
-    "name": "",
-    "className": "",
+    "name": "Buzzer",
+    "className": "Buzzer",
     "pins": [
         {
-            "x": 10,
-            "y": 10,
-            "name": "ena"
+            "x": -19,
+            "y": 46,
+            "name": "POSITIVE"
+        },
+        {
+            "x": 11,
+            "y": 46,
+            "name": "Negative"
         }
     ],
     "nodeSize": 4,
     "draw": [
-        {
-            "type": "image",
-            "url": "",
-            "width": 100,
-            "height": 100,
-            "x": 0,
-            "y": 0
-        },
-        {
-            "type": "polygon",
-            "points": [
-                []
-            ]
-        },
         {
             "type": "rectange",
             "width": 100,

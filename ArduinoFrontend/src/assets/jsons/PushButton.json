@@ -1,0 +1,100 @@
+{
+    "name": "Push Button",
+    "className": "PushButton",
+    "pins": [
+        {
+            "x": 10,
+            "y": -24,
+            "name": "Terminal 1b"
+        },
+        {
+            "x": 45,
+            "y": -24,
+            "name": "Terminal 2b"
+        },
+        {
+            "x": 10,
+            "y": 76,
+            "name": "Terminal 1a"
+        },
+        {
+            "x": 45,
+            "y": 76,
+            "name": "Terminal 2a"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "rectange",
+            "width": 5,
+            "height": 30,
+            "x": 10,
+            "y": -20,
+            "radius": 5
+        },
+        {
+            "type": "rectange",
+            "width": 5,
+            "height": 30,
+            "x": 45,
+            "y": -20,
+            "radius": 5
+        },
+        {
+            "type": "rectange",
+            "width": 5,
+            "height": 30,
+            "x": 10,
+            "y": 50,
+            "radius": 5
+        },
+        {
+            "type": "rectange",
+            "width": 5,
+            "height": 30,
+            "x": 45,
+            "y": 50,
+            "radius": 5
+        },
+        {
+            "type": "rectange",
+            "width": 60,
+            "height": 60,
+            "x": 0,
+            "y": 0,
+            "radius": 10
+        },
+        {
+            "type": "circle",
+            "radius": 5,
+            "x": 10,
+            "y": 10
+        },
+        {
+            "type": "circle",
+            "radius": 5,
+            "x": 10,
+            "y": 50
+        },
+        {
+            "type": "circle",
+            "radius": 5,
+            "x": 50,
+            "y": 10
+        },
+        {
+            "type": "circle",
+            "radius": 5,
+            "x": 50,
+            "y": 50
+        },
+        {
+            "type": "circle",
+            "radius": 12,
+            "x": 30,
+            "y": 30
+        }
+    ],
+    "simulation": {}
+}
