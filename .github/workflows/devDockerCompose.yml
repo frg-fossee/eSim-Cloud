@@ -3,7 +3,7 @@ name: Containers
 on:
   push:
     #Until changes are merged to master initially
-    branches: [ develop ]
+    branches: [ develop, docker-images ]
 
 jobs:
 
