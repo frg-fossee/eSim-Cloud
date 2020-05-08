@@ -51,7 +51,7 @@ function Header() {
         </Link>
       </Typography>
 
-      <Hidden smDown>
+      <Hidden xsDown>
         <form className={classes.form} noValidate autoComplete="off">
           <Input
             className={classes.input}

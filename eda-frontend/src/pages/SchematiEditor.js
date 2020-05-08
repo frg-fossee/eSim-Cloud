@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Layout from "../components/Shared/Layout";
 import Header from "../components/SchematicEditor/Header";
+import ComponentSidebar from "../components/SchematicEditor/ComponentSidebar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +19,8 @@ export default function SchematiEditor() {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Layout header={<Header />} />
+
+      <Layout header={<Header />} sidebar={<ComponentSidebar />} />
     </div>
   );
 }
