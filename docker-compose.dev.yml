@@ -2,7 +2,7 @@ version: '3'
 services:
 
   eda-frontend:
-    image: "docker.pkg.github.com/frg-fossee/eSim-Cloud/eda-frontend:dev"
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/eda-frontend:dev"
     build: ./eda-frontend/
     command: >
       sh -c "npm install &&
@@ -23,7 +23,7 @@ services:
 
 
   arduino-frontend:
-    image: "docker.pkg.github.com/frg-fossee/eSim-Cloud/arduino-frontend:dev"
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/arduino-frontend:dev"
     build: ./ArduinoFrontend/
     command: >
       sh -c "npm install &&
@@ -45,7 +45,7 @@ services:
 
 
   django:
-    image: "docker.pkg.github.com/frg-fossee/eSim-Cloud/django:dev"
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/django:dev"
     build: ./esim-cloud-backend/
     command: "python3 manage.py runserver 0.0.0.0:8000"
     ports:
@@ -69,7 +69,7 @@ services:
         - "db:mysql"
 
   celery:
-    image: "docker.pkg.github.com/frg-fossee/eSim-Cloud/celery:dev"
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/celery:dev"
     build: ./esim-cloud-backend/
     command: celery -A esimCloud.celery worker -l info --concurrency=1
     links:
