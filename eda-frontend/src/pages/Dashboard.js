@@ -3,7 +3,7 @@ import { CssBaseline } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 import Layout from "../components/Shared/Layout";
-import Header from "../components/User/Header";
+import Header from "../components/Dashboard/Header";
 
 const useStyles = makeStyles((theme) => ({
   root: {

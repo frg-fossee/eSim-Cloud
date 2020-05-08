@@ -8,18 +8,23 @@ import {
   Checkbox,
   FormControlLabel,
   TextField,
+  Card,
+  Avatar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(30),
+    marginTop: theme.spacing(27),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    padding: "30px",
-    borderRadius: "5px",
-    border: `1px solid #8c8c8c`,
+    padding: theme.spacing(3, 5),
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.primary.main,
   },
   form: {
     width: "100%", // Fix IE 11 issue.
@@ -35,9 +40,13 @@ export default function SignIn() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <div className={classes.paper}>
+      <Card className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+
         <Typography component="h1" variant="h5">
-          Login / Sign In
+          Login | Sign IN
         </Typography>
 
         <form className={classes.form} noValidate>
@@ -90,7 +99,16 @@ export default function SignIn() {
             </Grid>
           </Grid>
         </form>
-      </div>
+      </Card>
+      <Button
+        href="/"
+        type="submit"
+        fullWidth
+        color="default"
+        className={classes.submit}
+      >
+        Back to home
+      </Button>
     </Container>
   );
 }
