@@ -73,11 +73,6 @@ export class LED extends CircuitElement {
 
 export class RGBLED extends CircuitElement {
   static pointHalf = 4;
-  static legAttr = {
-    stroke: '#8C8C8C',
-    'stroke-linecap': 'round',
-    'stroke-width': '4'
-  };
   constructor(public canvas: any, x: number, y: number) {
     super('RGBLED', x, y);
     this.elements.push(
