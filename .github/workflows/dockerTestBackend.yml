@@ -1,11 +1,9 @@
-name: Django Tests
+name: Django Build and Tests
 
 on:
   push:
-    branches: [ develop, master ]
     paths: [ 'esim-cloud-backend/**' ]
   pull_request:
-    branches: [ develop, master ]
     paths: [ 'esim-cloud-backend/**' ]
 
 

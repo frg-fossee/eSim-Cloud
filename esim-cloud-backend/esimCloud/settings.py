@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
     'corsheaders',
-    'simulationAPI'
+    'simulationAPI',
+    'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -87,22 +89,22 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
-    # "mongodb":{
-    #     "ENGINE": 'djongo',
-    #     "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
-    #     "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
-    #     "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-    #     "HOST": "localhost",
-    #     "PORT": 27017,
-    #     'AUTH_SOURCE': 'admin',
-    #     'AUTH_MECHANISM': 'SCRAM-SHA-1',
 
-    # }
+    "mongodb": {
+        "ENGINE": 'djongo',
+        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
+        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
+        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
+        "HOST": "mongodb",
+        "PORT": 27017,
+        'AUTH_SOURCE': 'admin',
+        'AUTH_MECHANISM': 'SCRAM-SHA-1',
+    }
 
 }
 
 
-DATABASE_ROUTERS = ('simulationAPI.dbrouters.to_mongo',)
+DATABASE_ROUTERS = ('simulationAPI.dbrouters.mongoRouter',)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -154,7 +156,9 @@ CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_IMPORTS = ()
+CELERY_IMPORTS = (
+    'simulationAPI.tasks'
+)
 
 
 LOGGING = {

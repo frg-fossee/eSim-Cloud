@@ -30,7 +30,7 @@ RUN curl -fSL https://github.com/imr/ngspice/archive/ngspice-$NGSPICE_VERSION.ta
     && make \
     && make install \
     && apk del .build-deps
-
+RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool
 COPY requirements.txt /code/
 RUN apk add --no-cache mariadb-connector-c-dev ;\
     apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev\

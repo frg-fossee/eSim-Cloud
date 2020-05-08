@@ -13,18 +13,18 @@ services:
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
     depends_on:
       - django
-#       - eda-frontend
+      - eda-frontend
       - arduino-frontend
 
-#   eda-frontend:
-#     build: ./eda-frontend/
-#     command: >
-#       sh -c "npm install &&
-#            npm run build"
-#     environment:
-#       - "PUBLIC_URL=${EDA_PUBLIC_URL}"
-#     volumes:
-#       - ./eda-frontend:/code
+  eda-frontend:
+    build: ./eda-frontend/
+    command: >
+      sh -c "npm install &&
+           npm run build"
+    environment:
+      - "PUBLIC_URL=${EDA_PUBLIC_URL}"
+    volumes:
+      - ./eda-frontend:/code
 
 
 
@@ -68,7 +68,7 @@ services:
 
   celery:
     build: ./esim-cloud-backend/
-    command: celery -A esimCloud.celery worker -l info --concurrency=1
+    command: "celery -A esimCloud.celery worker -l info --concurrency=${CELERY_WORKERS}"
     links:
         - "redis:redis_cache"
         - "db:postgres"
