@@ -344,11 +344,12 @@ class SvgGenerator:
                                       f"-{name_of_symbol}-{dm}_" +
                                       f"{chr(64+z)}",
                                       save_path)
+        return symbol_prefix
 
 
 def generate_svg_and_save_to_folder(input_file, output_folder):
     svg_gen = SvgGenerator()
-    svg_gen.generate_svg_from_lib(input_file, output_folder)
+    return svg_gen.generate_svg_from_lib(input_file, output_folder)
 
 
 if __name__ == "__main__":
