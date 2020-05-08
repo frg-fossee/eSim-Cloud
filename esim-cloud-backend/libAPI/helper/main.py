@@ -34,8 +34,6 @@ class SvgGenerator:
 
         """ Check if part  matches or not
         """
-     
-    
         if (part == "0" or part == self.PART_NUMBER) and (
             dmg == "0" or dmg == self.DMG_NUMBER
         ):
@@ -61,34 +59,34 @@ class SvgGenerator:
         folder_name = file_path.split('/')[-1].split(".")[0]
         # print(folder_name)
 
-    
         for i in range(
             len(data)
         ):  # loop through all the components in that library file.
 
-            # initialize the drawing canvas.we need to initialize and save svg for each components.
+            # initialize the drawing canvas.we need to initialize and save svg
+            # for each components.
 
             DEF_LINE = data[i]["def"]
 
-            F0_LINE = data[i]["fn"][0]
+            F0_LINE = data[i]["fn"][0]  # noqa
 
-            F1_LINE = data[i]["fn"][1]
+            F1_LINE = data[i]["fn"][1]  # noqa
 
             # footprint name if present
-            F2_LINE = data[i]["fn"][2]
+            F2_LINE = data[i]["fn"][2]  # noqa
 
             # relative path to datasheet if prsent
-            F3_LINE = data[i]["fn"][3]
+            F3_LINE = data[i]["fn"][3]  # noqa
 
             # DEF 14529 U 0 40 Y Y 1 L N
             # ['DEF', '14529', 'U', '0', '40', 'Y', 'Y', '1', 'L', 'N']
             name_of_symbol = DEF_LINE[1]
             # symbol_prefix is 'U' for integrated circiut and 'R' for resister
-            symbol_prefix = DEF_LINE[2]
+            symbol_prefix = DEF_LINE[2] # noqa
             # The third paramater is always 0
             pin_name_offset = DEF_LINE[4]
-            show_pin_number = DEF_LINE[5]
-            show_pin_name = DEF_LINE[6]
+            show_pin_number = DEF_LINE[5]   # noqa
+            show_pin_name = DEF_LINE[6]     # noqa
 
             # this tells the number of parts in the symbol.
             number_of_parts_in_symbol = DEF_LINE[7]
@@ -133,12 +131,12 @@ class SvgGenerator:
                         x = fn_instructions[index][2]
                         y = fn_instructions[index][3]
                         text_size = fn_instructions[index][4]
-                        orientation = fn_instructions[index][5]
+                        orientation = fn_instructions[index][5] # noqa
                         isVisible = fn_instructions[index][6] == "V"
-                        hjustify = fn_instructions[index][7]
-                        vjustify = fn_instructions[index][8][0]
-                        isItalic = fn_instructions[index][8][1] == "I"
-                        isBold = fn_instructions[index][8][2] == "B"
+                        hjustify = fn_instructions[index][7]    # noqa
+                        vjustify = fn_instructions[index][8][0] # noqa
+                        isItalic = fn_instructions[index][8][1] == "I"  # noqa
+                        isBold = fn_instructions[index][8][2] == "B"    # noqa
 
                         if fn_instructions[index][0] == "F0":
                             text = text.strip('"')
@@ -148,7 +146,8 @@ class SvgGenerator:
 
                         if isVisible and self.SHOW_TEXT:
 
-                            d = self.plotter.draw_text(d, text, x, y, text_size)
+                            d = self.plotter.draw_text(d, text, x,
+                                                       y, text_size)
 
                     for x in range(len(draw_instructions)):
 
@@ -170,7 +169,7 @@ class SvgGenerator:
                             part = current_instruction[9]
                             dmg = current_instruction[10]
 
-                            type_of_pin = current_instruction[11]
+                            type_of_pin = current_instruction[11] # noqa
 
                             if dmg == "2":
                                 self.IS_DMG_2_PRESENT = True
@@ -277,7 +276,8 @@ class SvgGenerator:
                             if not self.match_part_dmg(part, dmg):
                                 continue
                             d = self.plotter.drawArc(
-                                d, cx, cy, r, start_deg, end_deg, pen_width, fill
+                                d, cx, cy, r, start_deg, end_deg, pen_width,
+                                fill
                             )
 
                         # (d,vertices_count,pen=5,vertices_list = [],fill='f')
@@ -301,7 +301,9 @@ class SvgGenerator:
                             if not self.match_part_dmg(part, dmg):
                                 continue
 
-                            fill = current_instruction[len(current_instruction) - 1]
+                            fill = current_instruction[
+                                                len(current_instruction) - 1
+                                                    ]
 
                             vertices_list = []
                             for j in range(5, len(current_instruction) - 1, 2):
@@ -312,7 +314,8 @@ class SvgGenerator:
                                 vertices_list.append(point)
 
                             d = self.plotter.drawPolygon(
-                                d, vertices_count, pen_width, vertices_list, fill
+                                d, vertices_count, pen_width,
+                                vertices_list, fill
                             )
 
                         elif shape == "T":
@@ -321,8 +324,6 @@ class SvgGenerator:
 
                         else:
                             pass
-
-
                         # check if user inputed path exists or not
 
                         if not os.path.exists(output_path):
@@ -330,22 +331,18 @@ class SvgGenerator:
                                 os.mkdir(output_path)
                             except OSError as error:
                                 print(error)
-                                
 
-
-                        # create a folder with the name of the input file if not already exist.
+                        # create a folder with the name of the input
+                        # file if not already exist.
                         save_path = f"{output_path}/{folder_name}"
                         if not os.path.exists(save_path):
-                            try: 
-                                os.mkdir(save_path) 
-                            except OSError as error: 
-                                print(error) 
+                            try:
+                                os.mkdir(save_path)
+                            except OSError as error:
+                                print(error)
 
-
-                        self.save_svg(d, f"{name_of_symbol}-{dm}:{chr(64+z)}", save_path)
-
-
-
+                        self.save_svg(d, f"{name_of_symbol}-{dm}:{chr(64+z)}",
+                                      save_path)
 
 
 def generate_svg_and_save_to_folder(input_file, output_folder):
@@ -355,7 +352,5 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    
-    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib","./symbols/")
-
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
     print("done!!")
