@@ -341,7 +341,10 @@ class SvgGenerator:
                             except OSError as error:
                                 print(error)
 
-                        self.save_svg(d, f"{name_of_symbol}-{dm}:{chr(64+z)}",
+                        self.save_svg(d,
+                                      f"{symbol_prefix}" +
+                                      f"-{name_of_symbol}-{dm}:" +
+                                      f"{chr(64+z)}",
                                       save_path)
 
 
