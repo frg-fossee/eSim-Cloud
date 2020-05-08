@@ -1,5 +1,5 @@
-from plotter import SvgPlotter
-from parser import Parser
+from .plotter import SvgPlotter
+from .parser import Parser
 import os
 import sys
 
