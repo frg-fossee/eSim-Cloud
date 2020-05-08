@@ -101,6 +101,8 @@ services:
       - MONGO_LOG_DIR=/dev/null
     volumes:
       - ./mongo_data:/usr/data/db
+    env_file:
+      - .env.prod
     command: mongod
 
   redis:
