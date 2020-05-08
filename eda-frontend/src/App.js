@@ -21,7 +21,7 @@ function App() {
   // Routes For User
   const UserRoute = () => (
     <>
-      <Route exact path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard" component={Dashboard} />
     </>
   );
 

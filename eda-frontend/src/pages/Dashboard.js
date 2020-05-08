@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import Layout from "../components/Shared/Layout";
 import Header from "../components/Dashboard/Header";
+import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,7 +19,8 @@ export default function Dashboard() {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Layout resToolbar={<Header />} />
+
+      <Layout resToolbar={<Header />} sidebar={<DashboardSidebar />} />
     </div>
   );
 }
