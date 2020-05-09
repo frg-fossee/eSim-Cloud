@@ -16,6 +16,8 @@ jobs:
     - name: Login to docker
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
 
+    - name: Pull the latest docker-compose stack
+      run: docker-compose -f docker-compose.dev.yml --env-file .env pull --ignore-pull-failures
     - name: Build the docker-compose stack
       run: docker-compose -f docker-compose.dev.yml --env-file .env build
 
