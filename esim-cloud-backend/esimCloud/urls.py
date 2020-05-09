@@ -7,6 +7,7 @@ esimCloud URL Configuration
 from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
+from libAPI import urls as libURLs
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -28,6 +29,7 @@ urlpatterns = [
 
     # Simulation API Routes
     path('api/simulation/', include(simulationURLs)),
+    path('api/', include(libURLs)),
 
 
 

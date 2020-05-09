@@ -12,10 +12,10 @@ class Library(models.Model):
 
 class LibraryComponent(models.Model):
     component_name = models.CharField(max_length=200)
-    svg_path = models.FilePathField()
+    svg_path = models.CharField(max_length=400)
     component_type = models.CharField(max_length=20)
     component_library = models.ForeignKey(
-        Library, on_delete=models.CASCADE, null=False)
+        Library, on_delete=models.CASCADE, null=False, related_name='library')
 
     def __str__(self):
         return self.component_name
