@@ -18,6 +18,7 @@ export class Resistor extends CircuitElement {
     '#C0C0C0'
   ];
   value = 1000;
+  toleranceIndex = 10;
   constructor(public canvas: any, x: number, y: number) {
     super('Resistor', x, y);
     this.elements.push(
@@ -44,9 +45,6 @@ export class Resistor extends CircuitElement {
       C${x + 21.2},${y + 38.6},${x + 21.4},${y + 37.6},${x + 21.6},${y + 36.7}z`)
         .attr({ stroke: 'none' })
     );
-    this.elements[4].attr({
-      fill: Resistor.colorTable[10]
-    }); // Tolerance
     this.updateColors();
     this.nodes = [
       new Point(canvas, x + 7, y + 0, 'Power', Resistor.pointHalf, this),
@@ -63,6 +61,9 @@ export class Resistor extends CircuitElement {
     this.elements[2].attr({ fill: Resistor.colorTable[cur.second] }); // Second
     this.elements[3].attr({ fill: Resistor.colorTable[cur.first] }); // First
     this.elements[5].attr({ fill: Resistor.colorTable[cur.multiplier] }); // multiplier
+    this.elements[4].attr({
+      fill: Resistor.colorTable[this.toleranceIndex]
+    }); // Tolerance
   }
   save() {
   }
@@ -179,15 +180,33 @@ export class Resistor extends CircuitElement {
     unit.innerHTML = tmp;
     unit.selectedIndex = cur.index;
 
+    const toleranceValues = ['1', '2', '3', '4', '0.5', '0.25', '0.1', '0.05', '5', '10'];
+    const tolColorMap = [1, 2, 3, 4, 5, 6, 7, 8, 10, 11];
+    const tole = document.createElement('select');
+    tmp = '';
+    for (const t of toleranceValues) {
+      tmp += `<option>&#177; ${t}%</option>`;
+    }
+    tole.innerHTML = tmp;
+
     unit.onchange = () => this.update(inp.value, unit.selectedIndex);
     inp.onkeyup = () => this.update(inp.value, unit.selectedIndex);
     inp.onchange = () => this.update(inp.value, unit.selectedIndex);
+    tole.onchange = () => {
+      this.toleranceIndex = tolColorMap[tole.selectedIndex];
+      this.updateColors();
+    };
 
     const lab = document.createElement('label');
     lab.innerText = 'Resistance';
     body.append(lab);
     body.append(inp);
     body.append(unit);
+    const lab2 = document.createElement('label');
+    lab2.innerText = 'Tolerance';
+    body.append(lab2);
+    body.append(tole);
+
     return {
       keyName: this.keyName,
       id: this.id,
