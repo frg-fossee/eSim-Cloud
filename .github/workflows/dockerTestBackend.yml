@@ -16,8 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Pull the latest docker-compose stack
-      run: docker-compose -f docker-compose.dev.yml --env-file .env pull --ignore-pull-failures
+
 
     - name: Run Django Test Suite
-      run: docker-compose -f docker-compose.dev.yml run django python manage.py test
+    run: docker-compose -f docker-compose.dev.yml --env-file .env pull --ignore-pull-failures
+    run: docker-compose -f docker-compose.dev.yml run django python manage.py test
