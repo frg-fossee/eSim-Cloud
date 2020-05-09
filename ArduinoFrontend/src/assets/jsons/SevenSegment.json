@@ -56,7 +56,7 @@
   ],
   "draw": [
     {
-      "type": "rectange",
+      "type": "rectangle",
       "width": 76,
       "height": 113,
       "x": 0,
