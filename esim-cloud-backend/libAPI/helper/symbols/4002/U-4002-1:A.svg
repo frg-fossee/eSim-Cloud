@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="150.0" height="200.0" viewBox="-750.0 -1000.0 1500 2000">
+<defs>
+</defs>
+<text x="0" y="-50" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">U1:A</text>
+<text x="0" y="50" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">4002</text>
+<path d="M-149.76548473764734,-174.60120560237735 A343,343,0,0,1,-149.76548473764745,174.6012056023776" stroke="black" stroke-width="10" fill-opacity="0" />
+<path d="M150.22869055943977,-0.3674787636172425 A238,238,0,0,0,-26.652492913663956,-175.71177888381214" stroke="black" stroke-width="10" fill-opacity="0" />
+<path d="M-26.652492913664005,175.71177888381214 A238,238,0,0,0,150.2286905594398,0.36747876361715015" stroke="black" stroke-width="10" fill-opacity="0" />
+<path d="M-25,175 L-150,175" stroke="black" stroke-width="10" />
+<path d="M-25,-175 L-150,-175" stroke="black" stroke-width="10" />
+<path d="M-150,-175 L-25,-175" stroke="black" stroke-width="-1000" />
+<path d="M-150,-175 L-150,-175" stroke="black" stroke-width="-1000" />
+<path d="M-143,-161 L-150,-175" stroke="black" stroke-width="-1000" />
+<path d="M-122,-115 L-143,-161" stroke="black" stroke-width="-1000" />
+<path d="M-109,-66 L-122,-115" stroke="black" stroke-width="-1000" />
+<path d="M-103,-17 L-109,-66" stroke="black" stroke-width="-1000" />
+<path d="M-104,34 L-103,-17" stroke="black" stroke-width="-1000" />
+<path d="M-113,83 L-104,34" stroke="black" stroke-width="-1000" />
+<path d="M-128,131 L-113,83" stroke="black" stroke-width="-1000" />
+<path d="M-150,175 L-128,131" stroke="black" stroke-width="-1000" />
+<path d="M-150,175 L-150,175" stroke="black" stroke-width="-1000" />
+<path d="M-25,175 L-150,175" stroke="black" stroke-width="-1000" />
+<text x="225.0" y="-40" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
+<circle cx="175" cy="0" r="25" stroke-width="5" stroke="black" fill="black" />
+<path d="M300,0 L150,0" stroke="black" stroke-width="5" />
+<text x="-225.0" y="-190" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">2</text>
+<path d="M-300,-150 L-150,-150" stroke="black" stroke-width="5" />
+<text x="-205.0" y="-90" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">3</text>
+<path d="M-300,-50 L-110,-50" stroke="black" stroke-width="5" />
+<text x="-205.0" y="10" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">4</text>
+<path d="M-300,50 L-110,50" stroke="black" stroke-width="5" />
+<text x="-225.0" y="110" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">5</text>
+<path d="M-300,150 L-150,150" stroke="black" stroke-width="5" />
+</svg>
