@@ -6,11 +6,15 @@ import Layout from "../components/Shared/Layout";
 import Header from "../components/SchematicEditor/Header";
 import ComponentSidebar from "../components/SchematicEditor/ComponentSidebar";
 import LayoutMain from "../components/Shared/LayoutMain";
+import SchematicGrid from "../components/SchematicEditor/SchematicGrid";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     minHeight: "100vh",
+  },
+  toolbar: {
+    minHeight: "80px",
   },
 }));
 
@@ -23,7 +27,10 @@ export default function SchematiEditor() {
 
       <Layout header={<Header />} sidebar={<ComponentSidebar />} />
 
-      <LayoutMain></LayoutMain>
+      <LayoutMain>
+        <div className={classes.toolbar} />
+        <SchematicGrid />
+      </LayoutMain>
     </div>
   );
 }

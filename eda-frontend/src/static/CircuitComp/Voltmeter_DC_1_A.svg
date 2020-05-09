@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="84.0" height="84.0" viewBox="-350.0 -350.0 700 700">
+<defs>
+</defs>
+<text x="-130" y="-40" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">MES1:A</text>
+<text x="-130" y="30" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">Voltmeter_DC</text>
+<circle cx="0" cy="0" r="100" stroke-width="10" stroke="black" fill-opacity="0" />
+<path d="M-75,75 L-125,125" stroke="black" stroke-width="6" />
+<path d="M125,-125 L75,-75" stroke="black" stroke-width="6" />
+<path d="M125,-125 L75,-125" stroke="black" stroke-width="6" />
+<path d="M125,-75 L125,-125" stroke="black" stroke-width="6" />
+<path d="M30,-150 L10,-150" stroke="black" stroke-width="6" />
+<path d="M20,-140 L20,-160" stroke="black" stroke-width="6" />
+<text x="-40" y="150.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">1</text>
+<text x="0" y="86" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">-</text>
+<path d="M0,200 L0,100" stroke="black" stroke-width="5" />
+<text x="-40" y="-150.0" font-size="50.0" fill="black" text-anchor="middle" transform="translate(0,15.0)">2</text>
+<text x="0" y="-86" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">+</text>
+<path d="M0,-200 L0,-100" stroke="black" stroke-width="5" />
+</svg>
