@@ -19,6 +19,6 @@ jobs:
 
 
     - name: Run Django Test Suite
-    run: |
-      docker-compose -f docker-compose.dev.yml --env-file .env pull --ignore-pull-failures
-      docker-compose -f docker-compose.dev.yml run django python manage.py test
+      run: |
+        docker-compose -f docker-compose.dev.yml --env-file .env pull --ignore-pull-failures
+        docker-compose -f docker-compose.dev.yml run django python manage.py test
