@@ -11,6 +11,7 @@ Development branch status
 ![Django Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Django%20Build%20and%20Tests/badge.svg?branch=develop)
 ![Angular Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Angular%20Build%20and%20Tests/badge.svg?branch=develop)
 ![React Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/React%20Build%20and%20Tests/badge.svg?branch=develop)
+![Containers](https://github.com/frg-fossee/eSim-Cloud/workflows/Containers/badge.svg)
 ### Configuring Production Environment
 * Install Docker and docker-compose for server OS
 * ``` git clone git@github.com:frg-fossee/eSim-Cloud.git && cd eSim-Cloud```
