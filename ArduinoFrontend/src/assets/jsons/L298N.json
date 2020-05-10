@@ -1,78 +1,83 @@
 {
-    "name": "Motor Driver L298N",
-    "className": "L298N",
-    "pins": [
-        {
-            "x": 118,
-            "y": 9,
-            "name": "ENB"
-        },
-        {
-            "x": 118,
-            "y": 19,
-            "name": "IN4"
-        },
-        {
-            "x": 118,
-            "y": 29,
-            "name": "IN3"
-        },
-        {
-            "x": 118,
-            "y": 39,
-            "name": "IN2"
-        },
-        {
-            "x": 118,
-            "y": 49,
-            "name": "IN1"
-        },
-        {
-            "x": 69,
-            "y": 3,
-            "name": "Terminal 1"
-        },
-        {
-            "x": 82,
-            "y": 3,
-            "name": "Terminal 2"
-        },
-        {
-            "x": 72,
-            "y": 117,
-            "name": "Terminal 3"
-        },
-        {
-            "x": 84,
-            "y": 117,
-            "name": "Terminal 4"
-        },
-        {
-            "x": 115,
-            "y": 77,
-            "name": "5V IN"
-        },
-        {
-            "x": 115,
-            "y": 97,
-            "name": "12V IN"
-        },
-        {
-            "x": 115,
-            "y": 87,
-            "name": "GND"
-        }
-    ],
-    "pointHalf": 4,
-    "draw": [
-        {
-            "type": "image",
-            "url": "assets/images/components/L298N.svg",
-            "width": 128,
-            "height": 128,
-            "x": 0,
-            "y": 0
-        }
-    ],
-    "simulation": {}
+  "name": "Motor Driver L298N",
+  "className": "L298N",
+  "pins": [
+    {
+      "x": 118,
+      "y": 9,
+      "name": "ENB"
+    },
+    {
+      "x": 118,
+      "y": 19,
+      "name": "IN4"
+    },
+    {
+      "x": 118,
+      "y": 29,
+      "name": "IN3"
+    },
+    {
+      "x": 118,
+      "y": 39,
+      "name": "IN2"
+    },
+    {
+      "x": 118,
+      "y": 49,
+      "name": "IN1"
+    },
+    {
+      "x": 118,
+      "y": 59,
+      "name": "IN1"
+    },
+    {
+      "x": 69,
+      "y": 3,
+      "name": "Terminal 1"
+    },
+    {
+      "x": 82,
+      "y": 3,
+      "name": "Terminal 2"
+    },
+    {
+      "x": 72,
+      "y": 117,
+      "name": "Terminal 3"
+    },
+    {
+      "x": 84,
+      "y": 117,
+      "name": "Terminal 4"
+    },
+    {
+      "x": 115,
+      "y": 77,
+      "name": "5V IN"
+    },
+    {
+      "x": 115,
+      "y": 97,
+      "name": "12V IN"
+    },
+    {
+      "x": 115,
+      "y": 87,
+      "name": "GND"
+    }
+  ],
+  "pointHalf": 4,
+  "draw": [
+    {
+      "type": "image",
+      "url": "assets/images/components/L298N.svg",
+      "width": 128,
+      "height": 128,
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "simulation": {}
 }

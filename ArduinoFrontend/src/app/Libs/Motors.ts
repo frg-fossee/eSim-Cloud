@@ -52,28 +52,7 @@ export class Motor extends CircuitElement {
 export class L298N extends CircuitElement {
   static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
-    super('L298N', x, y);
-    this.elements.push(
-      this.canvas.image('assets/images/components/L298N.svg', this.x, this.y, 128, 128),
-    );
-    this.nodes = [
-      new Point(canvas, x + 118, y + 9, 'ENB', L298N.pointHalf, this),
-      new Point(canvas, x + 118, y + 19, 'IN4', L298N.pointHalf, this),
-      new Point(canvas, x + 118, y + 29, 'IN3', L298N.pointHalf, this),
-      new Point(canvas, x + 118, y + 39, 'IN2', L298N.pointHalf, this),
-      new Point(canvas, x + 118, y + 49, 'IN1', L298N.pointHalf, this),
-      new Point(canvas, x + 118, y + 59, 'ENA', L298N.pointHalf, this),
-      new Point(canvas, x + 69, y + 3, 'Terminal 1', L298N.pointHalf, this),
-      new Point(canvas, x + 82, y + 3, 'Terminal 2', L298N.pointHalf, this),
-      new Point(canvas, x + 72, y + 117, 'Terminal 3', L298N.pointHalf, this),
-      new Point(canvas, x + 84, y + 117, 'Terminal 4', L298N.pointHalf, this),
-      new Point(canvas, x + 115, y + 77, '5V IN', L298N.pointHalf, this),
-      new Point(canvas, x + 115, y + 97, '12V IN', L298N.pointHalf, this),
-      new Point(canvas, x + 115, y + 87, 'GND', L298N.pointHalf, this),
-    ];
-    this.setClickListener(null);
-    this.setDragListeners();
-    this.setHoverListener();
+    super('L298N', x, y, 'L298N.json', canvas);
   }
   save() {
   }
