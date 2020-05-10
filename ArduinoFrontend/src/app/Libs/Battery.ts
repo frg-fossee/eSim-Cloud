@@ -4,17 +4,7 @@ import { Point } from './Point';
 export class Battery9v extends CircuitElement {
   static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
-    super('Battery9v', x, y);
-    this.elements.push(
-      this.canvas.image('assets/images/components/9vBattery.svg', this.x, this.y, 179, 99)
-    );
-    this.nodes = [
-      new Point(canvas, x, y + 27, 'Positive', Battery9v.pointHalf, this),
-      new Point(canvas, x, y + 69, 'Negative', Battery9v.pointHalf, this)
-    ];
-    this.setDragListeners();
-    this.setClickListener(null);
-    this.setHoverListener();
+    super('Battery9v', x, y, 'Battery9v.json', canvas);
   }
   save() {
   }
@@ -45,18 +35,7 @@ export class Battery9v extends CircuitElement {
 export class CoinCell extends CircuitElement {
   static pointHalf = 5;
   constructor(public canvas: any, x: number, y: number) {
-    super('CoinCell', x, y);
-    this.elements.push(
-      this.canvas.image('assets/images/components/CoinCell.svg', this.x, this.y, 58, 74),
-    );
-    this.nodes = [
-      new Point(canvas, x + 25, y - 2, 'POSITIVE', CoinCell.pointHalf, this),
-      new Point(canvas, x + 25, y + 70, 'NEGATIVE', CoinCell.pointHalf, this),
-    ];
-    this.setClickListener(null);
-    this.setDragListeners();
-    this.setHoverListener();
-
+    super('CoinCell', x, y, 'CoinCell.json', canvas);
   }
   save() {
   }
