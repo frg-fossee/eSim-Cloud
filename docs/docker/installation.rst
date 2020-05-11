@@ -23,9 +23,9 @@ Development Environment
 
 * git clone git@github.com:frg-fossee/eSim-Cloud.git && cd eSim-Cloud
 * git checkout develop
-* docker-compose -f docker-compose.dev.yml build
-* docker-compose -f docker-compose.dev.yml run --rm django ./manage.py makemigrations --noinput
-* docker-compose -f docker-compose.dev.yml run --rm django ./manage.py migrate --noinput
+* Configure docker with github packages for pulling pre built images
+* echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin
+* /bin/bash first_run.dev.sh
 
 
 For running only the backend containers

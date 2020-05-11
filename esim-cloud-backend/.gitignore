@@ -2,3 +2,5 @@
 __pycache__
 venv/
 static/
+symbols/*
+.DS_Store

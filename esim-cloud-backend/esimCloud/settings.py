@@ -38,8 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
+    'django_filters',
     'corsheaders',
     'simulationAPI',
+    'libAPI',
     'rest_framework',
     'drf_yasg',
 ]
@@ -104,7 +106,8 @@ DATABASES = {
 }
 
 
-DATABASE_ROUTERS = ('simulationAPI.dbrouters.mongoRouter',)
+DATABASE_ROUTERS = ('simulationAPI.dbrouters.mongoRouter',
+                    'libAPI.dbrouters.mongoRouter')
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
