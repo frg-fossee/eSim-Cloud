@@ -83,19 +83,7 @@ export class ServoMotor extends CircuitElement {
   static pointHalf = 6;
 
   constructor(public canvas: any, x: number, y: number) {
-    super('ServoMotor', x, y);
-    this.elements.push(
-      this.canvas.image('assets/images/components/Servo.svg', this.x, this.y, 73.5, 274),
-      this.canvas.image('assets/images/components/ServoAbove.svg', this.x - 12, this.y + 40, 98, 204),
-    );
-    this.nodes = [
-      new Point(canvas, x + 15, y + 2, 'GND', ServoMotor.pointHalf, this),
-      new Point(canvas, x + 30, y + 2, 'POWER', ServoMotor.pointHalf, this),
-      new Point(canvas, x + 45, y + 2, 'Signal', ServoMotor.pointHalf, this),
-    ];
-    this.setClickListener(null);
-    this.setDragListeners();
-    this.setHoverListener();
+    super('ServoMotor', x, y, 'ServoMotor.json', canvas);
   }
   animate(angle: number) {
     const anim = Raphael.animation({ transform: `r${angle}` }, 2500);
