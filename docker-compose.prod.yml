@@ -1,0 +1,137 @@
+version: '3'
+services:
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - tmp_vol:/tmp
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./eda-frontend/build:/usr/share/nginx/eda
+      - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino
+      - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
+    depends_on:
+      - django
+      - eda-frontend
+      - arduino-frontend
+
+  eda-frontend:
+    build: ./eda-frontend/
+    command: >
+      sh -c "npm install &&
+           npm run build"
+    environment:
+      - "PUBLIC_URL=${EDA_PUBLIC_URL}"
+    volumes:
+      - ./eda-frontend:/code
+
+
+
+  arduino-frontend:
+    build: ./ArduinoFrontend/
+    command: >
+      sh -c "npm install &&
+             npm run ng -- build --base-href ${ARDUINO_BASE_HREF}"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./ArduinoFrontend:/code
+
+
+
+  django:
+    build: ./esim-cloud-backend/
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             python manage.py migrate --noinput &&
+             gunicorn -w ${GUNICORN_WORKERS} --reload -b 0.0.0.0:8000 --log-level info esimCloud.wsgi"
+    volumes:
+      - ./esim-cloud-backend:/code
+      - run_vol:/var/run
+      - cache_vol:/var/cache
+      - tmp_vol:/tmp
+    depends_on:
+        - redis
+        - db
+        - celery
+        - mongodb
+    env_file:
+      - .env.prod
+    environment:
+      - DJANGO_DEBUG=False
+    links:
+      - "redis:redis"
+      - "db:db"
+      - "mongodb:mongodb"
+
+
+  celery:
+    build: ./esim-cloud-backend/
+    command: "celery -A esimCloud.celery worker -l info --concurrency=${CELERY_WORKERS}"
+    links:
+        - "redis:redis_cache"
+        - "db:postgres"
+    env_file:
+          - .env.prod
+    environment:
+          - DJANGO_DEBUG=False
+    volumes:
+      - ./esim-cloud-backend:/code
+      - run_vol:/var/run
+      - cache_vol:/var/cache
+      - tmp_vol:/tmp
+    depends_on:
+      - redis
+      - db
+      - mongodb
+    links:
+      - "redis:redis"
+      - "db:db"
+      - "mongodb:mongodb"
+
+    deploy:
+      replicas: 3
+
+  mongodb:
+    image: "mongo:${TAG_MONGO}"
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/usr/data/db/
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./mongo_data:/usr/data/db
+    env_file:
+      - .env.prod
+    command: mongod
+
+  redis:
+      image: "redis:${TAG_REDIS}"
+      environment:
+        - ALLOW_EMPTY_PASSWORD=yes
+        - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+      volumes:
+          - ./redis_data:/data
+
+  db:
+    image: "mysql:${TAG_MYSQL}"
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+volumes:
+  run_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  cache_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  tmp_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs

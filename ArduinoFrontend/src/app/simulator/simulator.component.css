@@ -1,0 +1,242 @@
+.grabbing {
+  cursor: grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
+}
+
+
+.component-card {
+    max-width: 32%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.component-card:hover {
+    background-color: #eee;
+}
+
+.component-card img {
+    max-width: 100%;
+    height: 50px;
+}
+
+
+.component-card label {
+    margin: 0 auto 0 auto;
+}
+
+.component-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+#bubblebox {
+    top: 120px;
+    position: fixed;
+    background: #000;
+    padding: 10px;
+    color: #fff;
+    border-radius: .4em;
+    z-index: 100;
+    display: none;
+}
+
+#bubblebox:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border: 10px solid transparent;
+    border-bottom-color: #000;
+    border-top: 0;
+    margin-left: -10px;
+    margin-top: -10px;
+}
+
+#propertybox {
+    display: block;
+    position: fixed;
+    width: 220px;
+    min-height: 50px;
+    z-index: 100;
+    background: #fff;
+    top: 120px;
+    box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
+    padding: 15px;
+    border-radius: 5px;
+}
+
+* {
+    user-select: none;
+}
+
+.collapse-card {
+    background-color: transparent;
+}
+
+.card-header:hover {
+    background-color: #fff;
+}
+
+.collapse-div {
+    display: block;
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height .5s ease-in-out;
+}
+
+
+.show-div {
+    max-height: 1000vh;
+    transition: max-height .5s ease-in-out;
+}
+
+#holder {
+    cursor: pointer;
+    overflow: scroll;
+    width: 100%;
+    height: calc(100vh - 101px);
+    background-color:white;
+    padding-left: 0.525px;
+}
+
+#sidebar-wrapper {
+    overflow-y: scroll;
+    height: calc(100vh - 101px);
+    width: 400px;
+    margin-left: -15rem;
+    -webkit-transition: margin .25s ease-out;
+    -moz-transition: margin .25s ease-out;
+    -o-transition: margin .25s ease-out;
+    transition: margin .25s ease-out;
+}
+
+.code-editor {
+    position: fixed;
+    top: 100px;
+    left: -600px;
+    width: 500px;
+    transition: left 0.5s ease-in-out;
+}
+
+.show-code-editor {
+    left: 0;
+}
+
+#project-title {
+    color: black !important;
+    background-color: transparent;
+    border: none;
+}
+
+#project-title:focus {
+    background-color: #fff !important;
+}
+
+#secondary-header {
+    display: flex;
+    background-color: whitesmoke;
+    justify-content: space-between;
+    max-height: 50px;
+}
+
+#secondary-header > button {
+    font-size: 20px;
+    background-color: #fff;
+}
+
+#sidebar-wrapper .sidebar-heading {
+    padding: 0.900rem 1.28rem;
+    font-size: 1.7rem;
+}
+
+#sidebar-wrapper .list-group {
+    width: 21.5rem;
+    font-size: 20px;
+    padding-left: 5px;
+}
+
+
+#page-content-wrapper {
+    min-width: 100vw;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: 0;
+}
+
+@media (min-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: -15rem;
+    }
+}
+/*context-menu*/
+
+html,body{
+    height:100%;
+
+}
+.context-menu{
+    width:160px;
+    height:140px;
+    box-shadow: 0 0 5px 0 #ccc;
+    position: absolute;
+    display: none;
+    background-color: white;
+
+}
+.context-menu ul{
+    list-style: none; /*show no bullets*/
+    padding: 5px 0px 5px 0px;
+
+}
+
+.context-menu ul li{
+    padding: 10px 5px 10px 5px;
+    border-left: 4px solid transparent;
+    cursor: pointer;
+    z-index: 5000 !important;
+    overflow: visible !important;
+}
+.context-menu ul li:hover{
+    background-color:rgb(245, 207, 161);
+    border-left: 4px solid #666;
+
+}
+
+#ToastMessage {
+    top: 100px;
+    left: 500px;
+    z-index: 100;
+    position: fixed;
+    width: 300px;
+    height: 100px;
+    box-shadow: 0 0 20px 0 #ccc;
+    display: block;
+    background-color: #eee;
+}
+
+.toast  {
+    text-align: left;
+}
+
+
+
+
+

@@ -1,0 +1,36 @@
+{
+  "name": "Motor",
+  "className": "Motor",
+  "pins": [
+    {
+      "x": 24,
+      "y": 51,
+      "name": "Negative"
+    },
+    {
+      "x": 24,
+      "y": 51,
+      "name": "Positive"
+    }
+  ],
+  "nodeSize": 4,
+  "draw": [
+    {
+      "type": "image",
+      "url": "assets/images/components/Motor.svg",
+      "width": 69,
+      "height": 56,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "image",
+      "url": "assets/images/components/MotorAbove.svg",
+      "width": 21,
+      "height": 21,
+      "x": 24,
+      "y": 17.5
+    }
+  ],
+  "simulation": {}
+}

@@ -1,0 +1,31 @@
+name: Containers
+
+on:
+  push:
+    #Until changes are merged to master initially
+    branches: [ develop, docker-images ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Login to docker
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+
+    - name: Build the docker-compose stack
+      run: |
+        docker-compose -f docker-compose.dev.yml --env-file .env pull --ignore-pull-failures
+        docker-compose -f docker-compose.dev.yml --env-file .env build
+
+    - name: Run the docker-compose step
+      run: docker-compose -f docker-compose.dev.yml --env-file .env up -d
+
+    - name: Check running containers
+      run: docker ps -a
+
+    - name: Publish images
+      run: docker-compose -f docker-compose.dev.yml --env-file .env push

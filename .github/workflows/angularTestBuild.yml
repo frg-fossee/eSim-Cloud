@@ -1,0 +1,24 @@
+name: Angular Build and Tests
+
+on:
+  push:
+    paths: [ 'ArduinoFrontend/**' ]
+  pull_request:
+    paths: [ 'ArduinoFrontend/**' ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node js
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.5.0
+    - name: Install packages,lint,build and Unit testing
+      working-directory: ./ArduinoFrontend
+      run: |
+        npm install
+        npm run lint
+        npm run build -- --prod
+        npm test -- --configuration=ci

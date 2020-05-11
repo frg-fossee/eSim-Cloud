@@ -1,0 +1,98 @@
+{
+    "name": "LCD 16x2",
+    "className": "LCD16X2",
+    "pointHalf": 3,
+    "pins": [
+        {
+            "x": 20,
+            "y": 2,
+            "name": "GND"
+        },
+        {
+            "x": 28,
+            "y": 2,
+            "name": "VCC"
+        },
+        {
+            "x": 36,
+            "y": 2,
+            "name": "V0"
+        },
+        {
+            "x": 44,
+            "y": 2,
+            "name": "RS"
+        },
+        {
+            "x": 52,
+            "y": 2,
+            "name": "RW"
+        },
+        {
+            "x": 61,
+            "y": 2,
+            "name": "E"
+        },
+        {
+            "x": 69,
+            "y": 2,
+            "name": "DB0"
+        },
+        {
+            "x": 77,
+            "y": 2,
+            "name": "DB1"
+        },
+        {
+            "x": 85,
+            "y": 2,
+            "name": "DB2"
+        },
+        {
+            "x": 93,
+            "y": 2,
+            "name": "DB3"
+        },
+        {
+            "x": 101,
+            "y": 2,
+            "name": "DB4"
+        },
+        {
+            "x": 109,
+            "y": 2,
+            "name": "DB5"
+        },
+        {
+            "x": 117,
+            "y": 2,
+            "name": "DB6"
+        },
+        {
+            "x": 125,
+            "y": 2,
+            "name": "DB7"
+        },
+        {
+            "x": 133,
+            "y": 2,
+            "name": "LED ANODE(+VE)"
+        },
+        {
+            "x": 141,
+            "y": 2,
+            "name": "LED CATHODE(-VE)"
+        }
+    ],
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/LCD16X2.svg",
+            "width": 256,
+            "height": 119.5,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}

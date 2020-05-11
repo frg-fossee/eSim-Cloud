@@ -1,0 +1,147 @@
+version: '3'
+services:
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - tmp_vol:/tmp
+      - ./nginx/dev.conf.d:/etc/nginx/conf.d
+      - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
+    depends_on:
+      - django
+
+
+  eda-frontend:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/eda-frontend:dev"
+    build: ./eda-frontend/
+    command: >
+      sh -c "npm install &&
+             npm start"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./eda-frontend:/code
+    environment:
+      - NODE_ENV=development
+      - "PUBLIC_URL=${EDA_PUBLIC_URL}"
+    stdin_open: true
+    depends_on:
+      - django
+      - celery
+      - redis
+      - db
+      - mongodb
+
+
+  arduino-frontend:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/arduino-frontend:dev"
+    build: ./ArduinoFrontend/
+    command: >
+      sh -c "npm install &&
+             npm start"
+
+    ports:
+      - "4200:4200"
+
+    volumes:
+      - ./ArduinoFrontend:/code
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - django
+      - celery
+      - redis
+      - db
+      - mongodb
+
+
+  django:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/django:dev"
+    build: ./esim-cloud-backend/
+    command: "python3 manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./esim-cloud-backend:/code
+      - run_vol:/var/run
+      - cache_vol:/var/cache
+      - tmp_vol:/tmp
+    depends_on:
+        - redis
+        - db
+        - celery
+        - mongodb
+
+    env_file:
+      - .env
+
+    links:
+        - "redis:redis_cache"
+        - "db:mysql"
+
+  celery:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/celery:dev"
+    build: ./esim-cloud-backend/
+    command: celery -A esimCloud.celery worker -l info --concurrency=1
+    links:
+        - "redis:redis_cache"
+        - "db:postgres"
+    env_file:
+          - .env
+
+    volumes:
+      - ./esim-cloud-backend:/code
+      - run_vol:/var/run
+      - cache_vol:/var/cache
+      - tmp_vol:/tmp
+    depends_on:
+        - redis
+        - db
+        - mongodb
+
+  mongodb:
+    image: "mongo:${TAG_MONGO}"
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/usr/data/db/
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./mongo_data:/usr/data/db
+    ports:
+      - 27017:27017
+    env_file:
+      - .env
+    command: mongod
+
+  redis:
+      image: "redis:${TAG_REDIS}"
+      environment:
+        - ALLOW_EMPTY_PASSWORD=yes
+        - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+      volumes:
+          - ./redis_data:/data
+
+  db:
+    image: "mysql:${TAG_MYSQL}"
+    command: --default-authentication-plugin=mysql_native_password
+    env_file:
+      - .env
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+volumes:
+  run_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  cache_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+  tmp_vol:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
