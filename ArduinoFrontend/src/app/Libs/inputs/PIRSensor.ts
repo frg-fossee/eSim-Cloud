@@ -2,21 +2,8 @@ import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 
 export class PIRSensor extends CircuitElement {
-  static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
-    super('PIRSensor', x, y);
-    this.elements.push(
-      this.canvas.image('assets/images/components/PIRSensor.svg', this.x, this.y, 198, 168)
-    );
-    this.nodes = [
-      new Point(canvas, x + 81, y + 161, 'SIGNAL', PIRSensor.pointHalf, this),
-      new Point(canvas, x + 96, y + 161, 'VCC', PIRSensor.pointHalf, this),
-      new Point(canvas, x + 110, y + 161, 'GND', PIRSensor.pointHalf, this),
-    ];
-
-    this.setClickListener(null);
-    this.setDragListeners();
-    this.setHoverListener();
+    super('PIRSensor', x, y, 'PIRSensor.json', canvas);
   }
   save() {
   }
