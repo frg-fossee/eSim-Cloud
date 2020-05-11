@@ -11,6 +11,7 @@ services:
       - ./eda-frontend/build:/usr/share/nginx/eda
       - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
       - django
       - eda-frontend
@@ -101,6 +102,8 @@ services:
       - MONGO_LOG_DIR=/dev/null
     volumes:
       - ./mongo_data:/usr/data/db
+    env_file:
+      - .env.prod
     command: mongod
 
   redis:

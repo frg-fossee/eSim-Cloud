@@ -22,7 +22,6 @@ export default function SchematiEditor() {
   const classes = useStyles();
 
   const compRef = React.createRef();
-
   return (
     <div className={classes.root}>
       <CssBaseline />
