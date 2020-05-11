@@ -1,0 +1,51 @@
+{
+  "name": "Buzzer",
+  "className": "Buzzer",
+  "pins": [
+    {
+      "x": 11,
+      "y": 76,
+      "name": "POSITIVE"
+    },
+    {
+      "x": 41,
+      "y": 76,
+      "name": "Negative"
+    }
+  ],
+  "pointHalf": 4,
+  "draw": [
+    {
+      "type": "path",
+      "value": "M15,50L15,80",
+      "stroke": "#000000"
+    },
+    {
+      "type": "path",
+      "value": "M45,50L45,80",
+      "stroke": "#000000"
+    },
+    {
+      "type": "circle",
+      "radius": 30,
+      "x": 30,
+      "y": 30,
+      "fill": "#383838",
+      "stroke": "#383838"
+    },
+    {
+      "type": "circle",
+      "radius": 5,
+      "x": 30,
+      "y": 30,
+      "fill": "#aaa9ad",
+      "stroke": "#aaa9ad"
+    }
+  ],
+  "simulation": {
+    "minVolage": 4,
+    "maxVolage": 8,
+    "current": 0.03,
+    "frequency": 2300
+  }
+}

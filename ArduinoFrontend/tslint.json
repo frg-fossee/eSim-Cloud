@@ -41,6 +41,7 @@
       "timeEnd",
       "trace"
     ],
+    "no-bitwise": false,
     "no-empty": false,
     "no-inferrable-types": [
       true,

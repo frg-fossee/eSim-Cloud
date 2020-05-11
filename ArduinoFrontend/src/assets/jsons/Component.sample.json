@@ -1,0 +1,49 @@
+{
+    "name": "",
+    "className": "",
+    "pins": [
+        {
+            "x": 10,
+            "y": 10,
+            "name": "ena"
+        }
+    ],
+    "nodeSize": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "",
+            "width": 100,
+            "height": 100,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "type": "polygon",
+            "points": [
+                []
+            ]
+        },
+        {
+            "type": "rectange",
+            "width": 100,
+            "height": 100,
+            "x": 11,
+            "y": 111
+        },
+        {
+            "type": "circle",
+            "radius": 100,
+            "x": 11,
+            "y": 111
+        },
+        {
+            "type": "path",
+            "value": ""
+        }
+    ],
+    "simulation": {
+        "volage": 5,
+        "current": 0.01
+    }
+}

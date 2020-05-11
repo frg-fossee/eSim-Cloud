@@ -1,0 +1,45 @@
+Component   	 MinVol		MaxVol		MinCurrent		MaxCurrent
+
+Buzzer		4V		8V					0.03A or <30mA
+
+ArduinoUNO R3	7V		12V					40 mA DC (50 mA DC on 3.3V pin)
+
+LM35 sensor	35V		-0.2V					10mA
+
+UltraSonic			5V					<15mA
+
+PIR Sensor	4V		12V					less than 60 micro-Amps.
+
+GasSenso	0V		5V					65mA
+
+Pontientiometer			200Vdc					20 mA.
+
+PushButton			24V DC					50mA
+
+SlideSwitch			12 V DC					200 mA
+
+L298N		5V		35V		0mA			36mA
+
+ServoMeter	4.8V		5V		100mA			700mA
+	
+LED		3V DC		5V DC					20mA
+
+RGBLED		3V DC		5V DC					6mA
+
+LCD(16X2)	3V		5V					1mA
+
+7SegementModule	3V		5V					30mA/segment
+
+Relay /module			70VDC/50VAC	10mA					
+
+Battery 9V	-		9V					400-600 mAh
+
+Coincell	-		3V					240mAh @ 190µA	
+
+DC Motor	4.5V		9V					70mA			
+
+
+
+
+
+

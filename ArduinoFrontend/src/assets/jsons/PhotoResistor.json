@@ -1,0 +1,28 @@
+{
+    "name": "Photo Resistor",
+    "className": "PhotoResistor",
+    "pins": [
+        {
+            "x": 9,
+            "y": 92,
+            "name": "Terminal 1"
+        },
+        {
+            "x": 27,
+            "y": 92,
+            "name": "Terminal 2"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/PhotoResistor.svg",
+            "width": 44,
+            "height": 100,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}
