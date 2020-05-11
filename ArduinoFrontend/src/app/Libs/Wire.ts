@@ -7,7 +7,7 @@ declare let window;
  * Class for Wire
  */
 export class Wire {
-  static keyName = 'wire';
+  keyName = 'wires';
   points: number[][] = []; // stores array of position [x,y]
   joints: any[] = [];
   value = -1; // Value of the wire (5,0 -> GND)
@@ -107,7 +107,7 @@ export class Wire {
     body.append(select);
     return {
       title: 'Wire',
-      keyName: Wire.keyName,
+      keyName: this.keyName,
       id: this.id,
       body
     };
@@ -235,7 +235,18 @@ export class Wire {
    * Remove wire from canvas
    */
   remove() {
+    for (const joint of this.joints) {
+      joint.remove();
+    }
+    this.joints = [];
+    this.joints = null;
+    this.points = [];
+    this.points = null;
     this.element.remove();
+    this.start.connectedTo = null;
+    this.end.connectedTo = null;
+    this.start = null;
+    this.end = null;
   }
   // No need of this function as it is inherited from CircuitElement class
   getNode(x: number, y: number) {

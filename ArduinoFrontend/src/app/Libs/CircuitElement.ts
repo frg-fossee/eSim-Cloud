@@ -30,7 +30,7 @@ export abstract class CircuitElement {
           this.title = obj.name;
           this.DrawElement(canvas, obj.draw);
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
-          console.log(obj);
+          // console.log(obj);
           this.data = obj.data;
           this.setDragListeners();
           this.setClickListener(null);
@@ -230,7 +230,7 @@ export abstract class CircuitElement {
   }
 
   setClickListener(callback: () => void) {
-    this.elements.click(() => {
+    this.elements.mousedown(() => {
       window['isSelected'] = true;
       window['Selected'] = this;
       window['showProperty'](() => this.properties());

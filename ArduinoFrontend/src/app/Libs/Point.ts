@@ -22,7 +22,7 @@ export class Point {
   };
 
   // Stores the reference of wire which is connected to it
-  connectedTo = null;
+  connectedTo: Wire = null;
 
   // Hover callback called on hover over node
   hoverCallback: any = null;
@@ -95,7 +95,10 @@ export class Point {
     // return;
 
     // Set click listener
-    this.body.click(() => {
+    this.body.mousedown(() => {
+      if (this.connectedTo != null) {
+        return;
+      }
       if ((window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
         // if selected item is wire then connect the wire with the node
         // console.log([]);
@@ -192,5 +195,10 @@ export class Point {
    */
   remove() {
     this.body.remove();
+    if (this.connectedTo) {
+      this.connectedTo.remove();
+      this.connectedTo = null;
+      this.parent = null;
+    }
   }
 }

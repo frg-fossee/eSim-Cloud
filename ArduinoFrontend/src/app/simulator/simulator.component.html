@@ -60,7 +60,7 @@
 
   <span style="flex:1 1 auto;"></span>
 
-  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"><i class="fa fa-trash"></i></button>
+  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"  (click)="delete()"><i class="fa fa-trash"></i></button>
 
   <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
 
@@ -255,13 +255,13 @@
 
 <div id="contextMenu" class="context-menu">
   <ul>
-    <li>
+    <li (click)="copy()">
       <h6><i class="fas fa-copy mr-2"></i> Copy</h6>
     </li>
-    <li>
+    <li (click)="paste()">
       <h6><i class="fas fa-paste mr-2"></i> Paste</h6>
     </li>
-    <li>
+    <li (click)="delete()">
       <h6><i class="fas fa-trash-alt mr-2"></i> Delete</h6>
     </li>
   </ul>

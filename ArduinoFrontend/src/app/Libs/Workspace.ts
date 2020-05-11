@@ -16,7 +16,7 @@ export class Workspace {
     y: 0,
     start: false
   };
-
+  static copiedItem: any;
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -314,8 +314,56 @@ export class Workspace {
     pt.y = y;
     return pt.matrixTransform(window.canvas.canvas.getScreenCTM().inverse());
   }
-
+  static removeMeta(obj) {
+    for (const prop in obj) {
+      if (typeof obj[prop] === 'object') {
+        obj[prop] = null;
+      } else {
+        delete obj[prop];
+      }
+    }
+  }
   static DeleteComponent() {
-
+    if (window['Selected']) {
+      const uid = window.Selected.id;
+      const items = window.scope[window.Selected.keyName];
+      for (let i = 0; i < items.length; ++i) {
+        if (items[i].id === uid) {
+          window.Selected.remove();
+          window.Selected = null;
+          window.isSelected = false;
+          const k = items.splice(i, 1);
+          Workspace.removeMeta(k[0]);
+          break;
+        }
+      }
+      window.hideProperties();
+    } else {
+      // TODO: Show Toast
+      console.log('No Element Selected');
+    }
+  }
+  static copyComponent() {
+    if (window['Selected']) {
+      Workspace.copiedItem = window.Selected;
+    } else {
+      Workspace.copiedItem = null;
+    }
+  }
+  static pasteComponent() {
+    // console.log(Workspace.copiedItem);
+    if (Workspace.copiedItem) {
+      const ele = document.getElementById('contextMenu');
+      const x = +ele.style.left.replace('px', '');
+      const y = +ele.style.top.replace('px', '');
+      // console.log([x, y]);
+      const key = Workspace.copiedItem.keyName;
+      const pt = Workspace.svgPoint(x, y);
+      // Workspace.addComponent(Workspace.copiedItem, pt.x, pt.y, 0, 0);
+      const myClass = Utils.components[key].className;
+      const obj = new myClass(window['canvas'], pt.x, pt.y);
+      window['scope'][key].push(obj);
+      // obj.copy(Workspace.copiedItem)
+    }
   }
 }

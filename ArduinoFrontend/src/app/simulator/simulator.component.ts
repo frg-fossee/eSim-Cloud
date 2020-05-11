@@ -175,4 +175,16 @@ export class SimulatorComponent implements OnInit {
       console.log(`Dialog result: ${result}`);
     });
   }
+  delete() {
+    Workspace.DeleteComponent();
+    Workspace.hideContextMenu();
+  }
+  paste() {
+    Workspace.pasteComponent();
+    Workspace.hideContextMenu();
+  }
+  copy() {
+    Workspace.copyComponent();
+    Workspace.hideContextMenu();
+  }
 }
