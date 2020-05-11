@@ -1,41 +1,42 @@
 {
-    "name": "Slide Switch",
-    "className": "SlideSwitch",
-    "pins": [
-        {
-            "x": 3,
-            "y": 23,
-            "name": "TERMINAL 1"
-        },
-        {
-            "x": 21,
-            "y": 23,
-            "name": "COMMON"
-        },
-        {
-            "x": 38,
-            "y": 23,
-            "name": "TERMINAL 2"
-        }
-    ],
-    "pointHalf": 4,
-    "draw": [
-        {
-            "type": "image",
-            "url": "assets/images/components/SlideSwitch.svg",
-            "width": 50.4911,
-            "height": 27.0178,
-            "x": 0,
-            "y": 0
-        },
-        {
-            "type": "rectange",
-            "width": 17,
-            "height": 12,
-            "x": 9,
-            "y": 3,
-            "radius": 0
-        }
-    ],
-    "simulation": {}
+  "name": "Slide Switch",
+  "className": "SlideSwitch",
+  "pins": [
+    {
+      "x": 3,
+      "y": 23,
+      "name": "TERMINAL 1"
+    },
+    {
+      "x": 21,
+      "y": 23,
+      "name": "COMMON"
+    },
+    {
+      "x": 38,
+      "y": 23,
+      "name": "TERMINAL 2"
+    }
+  ],
+  "pointHalf": 4,
+  "draw": [
+    {
+      "type": "image",
+      "url": "assets/images/components/SlideSwitch.svg",
+      "width": 50.4911,
+      "height": 27.0178,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "rectangle",
+      "width": 17,
+      "height": 12,
+      "x": 9,
+      "y": 3,
+      "radius": 0,
+      "fill": "#8c8c8c"
+    }
+  ],
+  "simulation": {}
 }
