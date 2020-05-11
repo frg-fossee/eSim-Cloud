@@ -5,9 +5,6 @@ import uuid
 
 
 class Task(models.Model):
-    class params:
-        use_db = 'default'
-
     # User details for auth to be stored along with task.
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -20,8 +17,6 @@ class Task(models.Model):
 
 
 class spiceFile(models.Model):
-    class params:
-        use_db = 'default'
 
     file_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
@@ -33,3 +28,6 @@ class spiceFile(models.Model):
     # owner = models.ForeignKey('auth.User')
     task = models.ForeignKey(
         Task, on_delete=models.CASCADE, related_name='file')
+
+    def save(self, *args, **kwargs):
+        super(spiceFile, self).save(*args, **kwargs)

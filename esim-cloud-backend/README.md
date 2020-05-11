@@ -3,21 +3,15 @@
 
 
 ### Configurable Environment Variables for docker container
-|  Variable 	|   Description	| Default
-|---	    	|---            |---
-| SECRET_KEY  	|   Secret key to use for Django| Generated Key
-| DJANGO_DEBUG	|   Django Debug mode| True
-| SQL_ENGINE    | SQL Engine to use  | django.db.backends.sqlite3
-| SQL_DATABASE  | DB Location / Name | db.sqlite3
-| SQL_PASSWORD  | Database Password  | password
-| SQL_USER      | Database Username  | user
-| SQL_HOST      | Hostname / Address for DB | localhost
-| SQL_PORT      | Port for SQL Server | 5432
+Environment variables can be found in the .env file, detailed description for each environment variable is provided in readthedocs documentation
+
+### Custom Management Commands:
+* ```python manage.py seed_libs --location kicad-symbols``` can be used to convert ```.lib``` files to SVGs and seed their details to the database for libAPI endpoints.
+* ```python manage.py seed_libs --clear ``` can be used to delete all existing libraries and components.
 
 
-
-To build and run **only** the django container use the following commands
-
-```docker build . -t esimcloud-django```
-
-``` docker run --rm -v $(pwd):/code esimcloud-django python manage.py runserver ```
+### Database Migrations:
+* ``` migrations.sh ``` can be used to apply all necessary database migrations automatially
+* If manually running the django backend, please ensure to apply migrations to specific databases
+* ```python manage.py migrate libAPI --database="mongodb"```
+* ```python manage.py migrate simulationAPI --database="mongodb"```
