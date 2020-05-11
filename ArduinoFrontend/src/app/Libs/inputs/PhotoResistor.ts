@@ -4,18 +4,7 @@ import { Point } from '../Point';
 export class PhotoResistor extends CircuitElement {
   static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
-    super('PhotoResistor', x, y);
-    this.elements.push(
-      this.canvas.image('assets/images/components/PhotoResistor.svg', this.x, this.y, 44, 100),
-    );
-    this.nodes = [
-      new Point(canvas, x + 9, y + 92, 'Terminal 1', PhotoResistor.pointHalf, this),
-      new Point(canvas, x + 27, y + 92, 'Terminal 2', PhotoResistor.pointHalf, this),
-    ];
-
-    this.setDragListeners();
-    this.setHoverListener();
-    this.setClickListener(null);
+    super('PhotoResistor', x, y, 'PhotoResistor.json', canvas);
   }
   save() {
   }
