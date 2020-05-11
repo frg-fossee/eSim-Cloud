@@ -50,16 +50,16 @@ export class SevenSegment extends CircuitElement {
       SevenSegment.mapping = this.data.mapping;
       SevenSegment.barColor = this.data.barColor;
       SevenSegment.barGlowColor = this.data.barGlowColor;
-      // Remove From memory
-      this.data.mapping = null;
-      this.data.barColor = null;
-      this.data.barGlowColor = null;
-      this.data = null;
     }
     for (const value of SevenSegment.mapping) {
       this.elements[value].attr({ fill: SevenSegment.barColor });
       this.glows.push(null);
     }
+    // Remove From memory
+    this.data.mapping = null;
+    this.data.barColor = null;
+    this.data.barGlowColor = null;
+    this.data = null;
   }
   animate(value: number) {
     value = value & 0xFF;
