@@ -1,6 +1,19 @@
 version: '3'
 services:
 
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - tmp_vol:/tmp
+      - ./nginx/dev.conf.d:/etc/nginx/conf.d
+      - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
+    depends_on:
+      - django
+
+
   eda-frontend:
     image: "docker.pkg.github.com/frg-fossee/esim-cloud/eda-frontend:dev"
     build: ./eda-frontend/
