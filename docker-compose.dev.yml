@@ -26,6 +26,7 @@ services:
       - ./eda-frontend:/code
     environment:
       - NODE_ENV=development
+      - "PUBLIC_URL=${EDA_PUBLIC_URL}"
     stdin_open: true
     depends_on:
       - django
