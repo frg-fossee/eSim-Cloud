@@ -13,6 +13,7 @@ import ShareIcon from "@material-ui/icons/Share";
 import GetAppRoundedIcon from "@material-ui/icons/GetAppRounded";
 import { makeStyles } from "@material-ui/core/styles";
 import Rating from "@material-ui/lab/Rating";
+import { Link as RouterLink } from "react-router-dom";
 
 import index from "../../static/index.png";
 
@@ -61,7 +62,13 @@ export default function SchCard(props) {
         </CardActionArea>
 
         <CardActions>
-          <Button target="_blank" href="/editor" size="small" color="primary">
+          <Button
+            target="_blank"
+            component={RouterLink}
+            to="/editor"
+            size="small"
+            color="primary"
+          >
             Launch in Editor
           </Button>
 

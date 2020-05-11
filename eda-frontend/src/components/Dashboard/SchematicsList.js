@@ -8,6 +8,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link as RouterLink } from "react-router-dom";
 
 import SchematicCard from "./SchematicCard";
 
@@ -37,7 +38,13 @@ function MainCard() {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button target="_blank" href="/editor" size="small" color="primary">
+        <Button
+          target="_blank"
+          component={RouterLink}
+          to="/editor"
+          size="small"
+          color="primary"
+        >
           Create New
         </Button>
         <Button size="small" color="secondary">
