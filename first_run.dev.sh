@@ -8,7 +8,7 @@ rm -rf mongo_data
 
 #Build Containers
 echo 'Building Containers, might take a while'
-docker-compose -f docker-compose.dev.yml build
+docker-compose -f docker-compose.dev.yml build --pull
 
 # MYSQL does not play well with other containers if not allowed to finish config beforehand
 echo 'Waiting for MYSQL to finish its thing....'
