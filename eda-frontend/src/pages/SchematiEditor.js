@@ -21,15 +21,17 @@ const useStyles = makeStyles((theme) => ({
 export default function SchematiEditor() {
   const classes = useStyles();
 
+  const compRef = React.createRef();
+
   return (
     <div className={classes.root}>
       <CssBaseline />
 
-      <Layout header={<Header />} sidebar={<ComponentSidebar />} />
+      <Layout header={<Header />} sidebar={<ComponentSidebar compRef={compRef} />} />
 
       <LayoutMain>
         <div className={classes.toolbar} />
-        <SchematicGrid />
+        <SchematicGrid compRef={compRef} />
       </LayoutMain>
     </div>
   );
