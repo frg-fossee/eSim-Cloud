@@ -16,9 +16,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-
-
-    - name: Run Django Test Suite
+    - name: Login to docker
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login https://docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+    - name: Build Images
       run: |
         docker-compose -f docker-compose.dev.yml --env-file .env pull --ignore-pull-failures
+        docker-compose -f docker-compose.dev.yml --env-file .env build
+    - name: Run Django Test Suite
+      run: |
         docker-compose -f docker-compose.dev.yml run django python manage.py test
