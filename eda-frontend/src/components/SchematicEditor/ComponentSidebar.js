@@ -81,7 +81,9 @@ export default function ComponentSidebar(props) {
             </ListItem>
           </List>
         </Collapse>
-        <ListItem></ListItem>
+        <ListItem>
+          <div ref={props.compRef}></div>
+        </ListItem>
       </List>
     </>
   );
