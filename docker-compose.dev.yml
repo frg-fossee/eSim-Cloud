@@ -33,28 +33,29 @@ services:
       - redis
       - db
       - mongodb
+      - nginx
 
 
-  arduino-frontend:
-    image: "docker.pkg.github.com/frg-fossee/esim-cloud/arduino-frontend:dev"
-    build: ./ArduinoFrontend/
-    command: >
-      sh -c "npm install &&
-             npm start"
+  # arduino-frontend:
+  #   image: "docker.pkg.github.com/frg-fossee/esim-cloud/arduino-frontend:dev"
+  #   build: ./ArduinoFrontend/
+  #   command: >
+  #     sh -c "npm install &&
+  #            npm start"
 
-    ports:
-      - "4200:4200"
+  #   ports:
+  #     - "4200:4200"
 
-    volumes:
-      - ./ArduinoFrontend:/code
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - django
-      - celery
-      - redis
-      - db
-      - mongodb
+  #   volumes:
+  #     - ./ArduinoFrontend:/code
+  #   environment:
+  #     - NODE_ENV=development
+  #   depends_on:
+  #     - django
+  #     - celery
+  #     - redis
+  #     - db
+  #     - mongodb
 
 
   django:
