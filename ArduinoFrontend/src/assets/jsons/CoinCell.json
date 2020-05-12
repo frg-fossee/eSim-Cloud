@@ -1,0 +1,28 @@
+{
+    "name": "Coin Cell 3V",
+    "className": "CoinCell",
+    "pins": [
+        {
+            "x": 25,
+            "y": -2,
+            "name": "POSITIVE"
+        },
+        {
+            "x": 25,
+            "y": 70,
+            "name": "NEGATIVE"
+        }
+    ],
+    "pointHalf": 5,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/CoinCell.svg",
+            "width": 58,
+            "height": 74,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}

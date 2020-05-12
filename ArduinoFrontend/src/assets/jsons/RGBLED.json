@@ -1,0 +1,43 @@
+{
+  "name": "RGB LED",
+  "className": "RGBLED",
+  "pointHalf": 4,
+  "pins": [
+    {
+      "x": -3,
+      "y": 95,
+      "name": "RED"
+    },
+    {
+      "x": 12,
+      "y": 95,
+      "name": "CATHODE"
+    },
+    {
+      "x": 29,
+      "y": 95,
+      "name": "BLUE"
+    },
+    {
+      "x": 46,
+      "y": 95,
+      "name": "GREEN"
+    }
+  ],
+  "draw": [
+    {
+      "type": "image",
+      "url": "assets/images/components/RGBLED.svg",
+      "width": 50,
+      "height": 104,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "path",
+      "value": "M38.9,33.3V15c0-8.3-6.4-15-14.4-15S10.2,6.7,10.2,15v18.3v4.5v7.4c2.9,2.5,8.2,4.2,14.4,4.2c9.2,0,16.7-3.8,16.7-8.6c0-0.5,0-2.5,0-3.1C41.2,36.1,40.4,34.6,38.9,33.3z",
+      "stroke": "#8C8C8C"
+    }
+  ],
+  "simulation": {}
+}

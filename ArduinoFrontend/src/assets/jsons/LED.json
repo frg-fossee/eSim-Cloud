@@ -1,0 +1,49 @@
+{
+  "name": "LED",
+  "className": "LED",
+  "pointHalf": 4,
+  "pins": [
+    {
+      "x": -15,
+      "y": 64,
+      "name": "POSITIVE"
+    },
+    {
+      "x": 1,
+      "y": 64,
+      "name": "NEGATIVE"
+    }
+  ],
+  "draw": [
+    {
+      "type": "path",
+      "value": "M-10,10C-10,0,10,0,10,10L10,30L14,30L14,35L-14,35L-14,30L-10,30z",
+      "fill": "#802020"
+    },
+    {
+      "type": "path",
+      "value": "M-5,35L-5,40L-10,45L-10,70",
+      "stroke": "#000000"
+    },
+    {
+      "type": "path",
+      "value": "M5,35L5,70",
+      "stroke": "#000000"
+    },
+    {
+      "type": "circle",
+      "radius": 30,
+      "x": 0,
+      "y": 5
+    }
+  ],
+  "simulation": {},
+  "data": {
+    "colors": [
+      "#802020"
+    ],
+    "glowcolors": [
+      "rgba(255,0,0,0.7)-rgba(255,0,0,0.2)"
+    ]
+  }
+}

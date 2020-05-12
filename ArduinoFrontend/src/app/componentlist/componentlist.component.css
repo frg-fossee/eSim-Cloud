@@ -1,0 +1,26 @@
+table, td {
+    border: 1px solid #c5cfd9;
+  }
+  
+  table {
+    border-collapse: separate;
+     border-spacing: 0;
+     width: 400px;
+     height: 100px;
+     border: 1px solid #ddd;
+     border-width: thin;
+     margin-top: 10px;
+     margin-bottom: 20px;
+  }
+  
+  th, td {
+    text-align: left;
+    padding: 10px;
+    
+  }
+  tr:nth-child(even){background-color: #f2f2f2}
+
+  th{
+      background-color: lightgrey;
+      font-weight: lighter;
+  }

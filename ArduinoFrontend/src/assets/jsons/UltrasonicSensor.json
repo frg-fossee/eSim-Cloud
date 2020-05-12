@@ -1,0 +1,38 @@
+{
+    "name": "Ultrasonic Distance Sensor",
+    "className": "UltrasonicSensor",
+    "pins": [
+        {
+            "x": 78,
+            "y": 100,
+            "name": "VCC"
+        },
+        {
+            "x": 88,
+            "y": 100,
+            "name": "TRIG"
+        },
+        {
+            "x": 100,
+            "y": 100,
+            "name": "ECHO"
+        },
+        {
+            "x": 110,
+            "y": 100,
+            "name": "GND"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/UltrasonicSensor.svg",
+            "width": 203,
+            "height": 103.5,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}

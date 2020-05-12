@@ -1,0 +1,82 @@
+5 Strip
+1-Digit 
+
+Color		RGB			HEX
+1 Brown		rgb(165,42,42)		#A52A2A
+2 Red		rgb(255,0,0)		#FF0000
+3 Orange	rgb(255,165,0)		#FFA500
+4 Yellow	rgb(255,255,0)		#FFFF00
+5 Green		rgb(0,128,0)		#008000
+6 Blue		rgb(0,0,255)		#0000FF
+7 Violet	rgb(75,0,130)		#4B0082
+8 Gray		rgb(128,128,128)	#808080
+9 White		rgb(255,255,255)	#FFFFFF
+
+2-Digit
+Color		RGB			HEX
+0 Black		rgb(0,0,0)		#000000
+1 Brown		rgb(165,42,42)		#A52A2A
+2 Red		rgb(255,0,0)		#FF0000
+3 Orange	rgb(255,165,0)		#FFA500
+4 Yellow	rgb(255,255,0)		#FFFF00
+5 Green		rgb(0,128,0)		#008000
+6 Blue		rgb(0,0,255)		#0000FF
+7 Violet	rgb(75,0,130)		#4B0082
+8 Gray		rgb(128,128,128)	#808080
+9 White		rgb(255,255,255)	#FFFFFF
+
+
+3-Digit
+Color		RGB			HEX
+0 Black		rgb(0,0,0)		#000000
+1 Brown		rgb(165,42,42)		#A52A2A
+2 Red		rgb(255,0,0)		#FF0000
+3 Orange	rgb(255,165,0)		#FFA500
+4 Yellow	rgb(255,255,0)		#FFFF00
+5 Green		rgb(0,128,0)		#008000
+6 Blue		rgb(0,0,255)		#0000FF
+7 Violet	rgb(75,0,130)		#4B0082
+8 Gray		rgb(128,128,128)	#808080
+9 White		rgb(255,255,255)	#FFFFFF
+
+
+
+Multiplier
+Color			RGB			HEX
+x1    Black		rgb(0,0,0)		#000000
+x10   Brown		rgb(165,42,42)		#A52A2A
+x100  Red		rgb(255,0,0)		#FF0000
+x1k   Orange		rgb(255,165,0)		#FFA500
+x10k  Yellow		rgb(255,255,0)		#FFFF00
+x100k Green		rgb(0,128,0)		#008000
+x1M   Blue		rgb(0,0,255)		#0000FF
+x10M  Violet		rgb(75,0,130)		#4B0082
+x100M Gray		rgb(128,128,128)	#808080
+x1G   White		rgb(255,255,255)	#FFFFFF
+/10   Gold		rgb(255,215,0)		#FFD700
+/100  Silver		rgb(192,192,192)	#C0C0C0
+
+Tolerance
+Color			RGB			HEX
+1%   Brown		rgb(165,42,42)		#A52A2A
+2%   Red		rgb(255,0,0)		#FF0000
+3%   Orange		rgb(255,165,0)		#FFA500
+4%   Yellow		rgb(255,255,0)		#FFFF00
+0.5% Green		rgb(0,128,0)		#008000
+0.25% Blue		rgb(0,0,255)		#0000FF
+0.10% Violet		rgb(75,0,130)		#4B0082
+0.05% Gray		rgb(128,128,128)	#808080
+5%   Gold		rgb(255,215,0)		#FFD700
+10%  Silver		rgb(192,192,192)	#C0C0C0
+
+
+6 Strip
+
+Tempco
+Color		RGB			HEX
+100 Brown	rgb(165,42,42)		#A52A2A
+50  Red		rgb(255,0,0)		#FF0000
+15  Orange	rgb(255,165,0)		#FFA500
+25  Yellow	rgb(255,255,0)		#FFFF00
+10  Blue	rgb(0,0,255)		#0000FF
+5   Violet	rgb(75,0,130)		#4B0082

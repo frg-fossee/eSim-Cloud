@@ -1,0 +1,33 @@
+{
+    "name": "PIR Sensor",
+    "className": "PIRSensor",
+    "pins": [
+        {
+            "x": 81,
+            "y": 161,
+            "name": "SIGNAL"
+        },
+        {
+            "x": 96,
+            "y": 161,
+            "name": "VCC"
+        },
+        {
+            "x": 110,
+            "y": 161,
+            "name": "GND"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/PIRSensor.svg",
+            "width": 198,
+            "height": 168,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}
