@@ -1,5 +1,5 @@
-from .plotter import SvgPlotter
-from .parser import Parser
+from plotter import SvgPlotter
+from parser import Parser
 import os
 import sys
 
@@ -41,12 +41,15 @@ class SvgGenerator:
 
         return False
 
-    def save_svg(self, d, name_of_symbol, save_path):
+    def save_svg(self, d, name_of_symbol, save_path,pin_number_positions):
         """ save svg"""
 
         # check if symbols directory is present or not.
 
         d.saveSvg(f"{save_path}/{name_of_symbol}.svg")
+        
+        # after saving svg open it again and embedd metadata.
+        
 
     def generate_svg_from_lib(self, file_path, output_path):
         """ Takes .lib file as input and generates
@@ -113,6 +116,9 @@ class SvgGenerator:
                     break
 
                 for z in range(1, int(number_of_parts_in_symbol) + 1):
+
+                    pin_number_positions = []
+
                     d = draw.Drawing(
                         self.CANVAS_WIDTH,
                         self.CANVAS_HEIGHT,
@@ -169,6 +175,12 @@ class SvgGenerator:
 
                             type_of_pin = current_instruction[11]  # noqa
 
+                            pin_number_positions.append({
+                                "pinNumber" : pinNumber,
+                                "x" : x_pos,
+                                "y" : y_pos,
+                                "type" : type_of_pin, 
+                            })
                             if dmg == "2":
                                 self.IS_DMG_2_PRESENT = True
                             # The 12th index may or maynot be present in every
@@ -343,7 +355,7 @@ class SvgGenerator:
                                       f"{symbol_prefix}" +
                                       f"-{name_of_symbol}-{dm}_" +
                                       f"{chr(64+z)}",
-                                      save_path)
+                                      save_path,pin_number_positions)
         return symbol_prefix
 
 
@@ -355,8 +367,9 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 if __name__ == "__main__":
     # Takes Libraries as command line arguments,
     # Only if script is run on command line
-    if(len(sys.argv)) != 3:
-        print("Usage: script.py <Path to library> <Output Directory>")
-        sys.exit(1)
-    generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
-    print('Processed', sys.argv[1])
+    # if(len(sys.argv)) != 3:
+    #     print("Usage: script.py <Path to library> <Output Directory>")
+    #     sys.exit(1)
+    # generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
+    # print('Processed', sys.argv[1])
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols")
