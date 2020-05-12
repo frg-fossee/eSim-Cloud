@@ -47,7 +47,7 @@ function Header() {
         noWrap
         className={classes.toolbarTitle}
       >
-        <Link color="inherit" target="_blank" component={RouterLink} to="/">
+        <Link color="inherit" component={RouterLink} to="/">
           EDA
         </Link>
       </Typography>
