@@ -2,9 +2,9 @@ name: Angular Build and Tests
 
 on:
   push:
-    branches: [ ArduinoFrontend ]
+    paths: [ 'ArduinoFrontend/**' ]
   pull_request:
-    branches: [ ArduinoFrontend ]
+    paths: [ 'ArduinoFrontend/**' ]
 
 jobs:
   build:
