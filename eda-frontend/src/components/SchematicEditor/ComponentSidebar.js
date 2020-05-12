@@ -1,42 +1,43 @@
-import React from "react";
+/* eslint-disable react/prop-types */
+import React from 'react'
 import {
   Hidden,
   List,
   ListItem,
   Collapse,
-  ListItemIcon,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import ExpandLess from "@material-ui/icons/ExpandLess";
-import ExpandMore from "@material-ui/icons/ExpandMore";
+  ListItemIcon
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
 
-import "./Helper/SchematicEditor.css";
-import comp1 from "../../static/CircuitComp/4002_1_A.svg";
-import comp2 from "../../static/CircuitComp/C_1_A.svg";
-import comp3 from "../../static/CircuitComp/resistor.svg";
-import comp4 from "../../static/CircuitComp/Voltmeter_DC_1_A.svg";
+import './Helper/SchematicEditor.css'
+import comp1 from '../../static/CircuitComp/4002_1_A.svg'
+import comp2 from '../../static/CircuitComp/C_1_A.svg'
+import comp3 from '../../static/CircuitComp/resistor.svg'
+import comp4 from '../../static/CircuitComp/Voltmeter_DC_1_A.svg'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
-    minHeight: "90px",
+    minHeight: '90px'
   },
   nested: {
     paddingLeft: theme.spacing(2),
-    width: "100%",
+    width: '100%'
   },
   head: {
-    marginRight: "auto",
-  },
-}));
+    marginRight: 'auto'
+  }
+}))
 
-export default function ComponentSidebar(props) {
-  const classes = useStyles();
+export default function ComponentSidebar (props) {
+  const classes = useStyles()
 
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false)
 
   const handleClick = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
 
   return (
     <>
@@ -47,7 +48,7 @@ export default function ComponentSidebar(props) {
       {/* Display List of categorized components */}
       <List>
         <ListItem button divider>
-          <h2 style={{ margin: "5px" }}>Components List</h2>
+          <h2 style={{ margin: '5px' }}>Components List</h2>
         </ListItem>
 
         <ListItem onClick={handleClick} button divider>
@@ -86,5 +87,5 @@ export default function ComponentSidebar(props) {
         </ListItem>
       </List>
     </>
-  );
+  )
 }
