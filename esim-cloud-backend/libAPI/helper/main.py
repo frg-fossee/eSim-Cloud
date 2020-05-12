@@ -19,7 +19,7 @@ class SvgGenerator:
 
         self.SHOW_TEXT = True
 
-        self.SVG_SCALE = 0.1
+        self.SVG_SCALE = 1
 
         # some symbols dont have dmg 2.
         # assuming dmg 2 is present.
@@ -355,5 +355,5 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 
 if __name__ == "__main__":
     print("plotting to svg..")
-    generate_svg_and_save_to_folder("./sample_lib/4002.lib", "./symbols/")
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
     print("done!!")
