@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect } from 'react'
 import {
   Hidden,
   List,
@@ -46,10 +46,10 @@ export default function ComponentSidebar (props) {
 
   const dispatch = useDispatch()
 
-  const handleCollapse = useCallback((id) => {
+  const handleCollapse = (id) => {
     dispatch(toggleCollapse(id))
     console.log(collapse)
-  })
+  }
 
   // For Fetching Libraries
   useEffect(() => {
