@@ -2,6 +2,7 @@ import React from "react";
 
 import { AppBar, Button, Toolbar, Typography, Link } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link as RouterLink} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -28,6 +29,7 @@ export default function Navbar() {
       elevation={0}
       className={classes.appBar}
     >
+
       <Toolbar variant="dense" color="default" className={classes.toolbar}>
         <Typography
           variant="h6"
@@ -35,23 +37,27 @@ export default function Navbar() {
           noWrap
           className={classes.toolbarTitle}
         >
-          <Link color="inherit" href="/">
+          <Link color="inherit" to="/" component={RouterLink}>
             EDA Cloud
           </Link>
         </Typography>
         <nav>
+
           <Link
             variant="button"
             color="textPrimary"
-            href="/"
+            to="/"
+            component={RouterLink}
             className={classes.link}
           >
             Home
           </Link>
+
           <Link
             variant="button"
             color="textPrimary"
-            href="/editor"
+            to="/editor"
+            component={RouterLink}
             className={classes.link}
           >
             Editor
@@ -59,7 +65,8 @@ export default function Navbar() {
           <Link
             variant="button"
             color="textPrimary"
-            href="/simulator"
+            to="/simulator"
+            component={RouterLink}
             className={classes.link}
           >
             Simulator
@@ -67,7 +74,8 @@ export default function Navbar() {
           <Link
             variant="button"
             color="textPrimary"
-            href="/dashboard"
+            to="/dashboard"
+            component={RouterLink}
             className={classes.link}
           >
             Dashboard
@@ -75,7 +83,8 @@ export default function Navbar() {
         </nav>
         <Button
           size="small"
-          href="/login"
+          to="/login"
+          component={RouterLink}
           color="primary"
           variant="outlined"
           className={classes.link}
@@ -83,6 +92,6 @@ export default function Navbar() {
           Login
         </Button>
       </Toolbar>
-    </AppBar>
+     </AppBar>
   );
 }

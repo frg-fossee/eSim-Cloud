@@ -12,6 +12,7 @@ services:
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
       - django
+      - eda-frontend
 
 
   eda-frontend:

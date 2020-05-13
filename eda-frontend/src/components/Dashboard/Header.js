@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -40,7 +41,7 @@ export default function Header() {
         noWrap
         className={classes.toolbarTitle}
       >
-        <Link color="inherit" href="/">
+        <Link color="inherit" component={RouterLink} to="/">
           EDA Cloud
         </Link>
       </Typography>
@@ -49,7 +50,8 @@ export default function Header() {
           <Link
             variant="button"
             color="textPrimary"
-            href="/"
+            component={RouterLink}
+            to="/"
             className={classes.link}
           >
             Home
@@ -57,7 +59,8 @@ export default function Header() {
           <Link
             variant="button"
             color="textPrimary"
-            href="/editor"
+            component={RouterLink}
+            to="/editor"
             className={classes.link}
           >
             Editor
@@ -65,7 +68,8 @@ export default function Header() {
           <Link
             variant="button"
             color="textPrimary"
-            href="/simulator"
+            component={RouterLink}
+            to="/simulator"
             className={classes.link}
           >
             Simulator
@@ -73,7 +77,8 @@ export default function Header() {
           <Link
             variant="button"
             color="textPrimary"
-            href="/dashboard"
+            component={RouterLink}
+            to="/dashboard"
             className={classes.link}
           >
             Dashboard
@@ -101,21 +106,21 @@ export default function Header() {
         style={{ marginTop: "25px" }}
       >
         <MenuItem
-          component="Link"
-          href="/dashboard/profile"
+          component={RouterLink}
+          to="/dashboard/profile"
           onClick={handleClose}
         >
           My Profile
         </MenuItem>
         <MenuItem
-          component="Link"
-          href="/dashboard/schematics"
+          component={RouterLink}
+          to="/dashboard/schematics"
           onClick={handleClose}
         >
           My Schematics
         </MenuItem>
         <MenuItem onClick={handleClose}>Settings</MenuItem>
-        <MenuItem component="Link" href="/login" onClick={handleClose}>
+        <MenuItem component={RouterLink} to="/login" onClick={handleClose}>
           Logout
         </MenuItem>
       </Menu>

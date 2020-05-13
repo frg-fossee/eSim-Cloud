@@ -11,6 +11,7 @@ import {
 import Description from "@material-ui/icons/Description";
 import ShareIcon from "@material-ui/icons/Share";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -46,7 +47,7 @@ function Header() {
         noWrap
         className={classes.toolbarTitle}
       >
-        <Link color="inherit" target="_blank" href="/">
+        <Link color="inherit" component={RouterLink} to="/">
           EDA
         </Link>
       </Typography>
@@ -75,7 +76,8 @@ function Header() {
 
         <Button
           size="small"
-          href="/login"
+          component={RouterLink}
+          to="/login"
           color="primary"
           variant="outlined"
           className={classes.button}

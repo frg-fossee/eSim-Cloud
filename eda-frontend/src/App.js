@@ -14,14 +14,14 @@ function App() {
   // Routes For SchematicEditor
   const SchematicRoute = () => (
     <>
-      <Route exact path="/editor" component={SchematicEditor} />
+      <Route component={SchematicEditor} />
     </>
   );
 
   // Routes For User
   const UserRoute = () => (
     <>
-      <Route path="/dashboard" component={Dashboard} />
+      <Route component={Dashboard} />
     </>
   );
 
@@ -31,14 +31,14 @@ function App() {
       <Navbar />
       <Switch>
         <Route exact path="/" component={Home} />
-        <Route path="/simulator" component={Simulator} />
+        <Route component={Simulator} />
         <Route component={NotFound} />
       </Switch>
     </>
   );
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={'/eda'}>
       <Switch>
         <Route path="/login" component={Login} />
         <Route path="/editor" component={SchematicRoute} />

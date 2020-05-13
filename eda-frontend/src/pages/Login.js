@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -77,7 +78,8 @@ export default function SignIn() {
             label="Remember me"
           />
           <Button
-            href="/dashboard"
+            component={RouterLink}
+            to="/dashboard"
             type="submit"
             fullWidth
             variant="contained"
@@ -88,12 +90,12 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to="#" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="/signup" variant="body2">
+              <Link component={RouterLink} to="/signup" variant="body2">
                 {"New User? Sign Up"}
               </Link>
             </Grid>
@@ -101,7 +103,8 @@ export default function SignIn() {
         </form>
       </Card>
       <Button
-        href="/"
+        component={RouterLink}
+        to="/"
         type="submit"
         fullWidth
         color="default"
