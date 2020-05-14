@@ -1,5 +1,10 @@
 import mxGraphFactory from "mxgraph";
 import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
+import comp2 from "../../../static/CircuitComp/C_1_A.svg";
+import comp3 from "../../../static/CircuitComp/resistor.svg";
+import AddSideBarComponent from "./SideBar.js"
+var paths=[comp2,comp3];
+
 
 const {
   mxGraph,
@@ -135,6 +140,7 @@ export default function LoadGrid(container, sidebar) {
         evt.returnValue = false;
       });
     }
+    
 
     // Creates the element that is being for the actual preview.
     var dragElt = document.createElement("div");
@@ -165,5 +171,10 @@ export default function LoadGrid(container, sidebar) {
 
     // Restores original drag icon while outside of graph
     ds.createDragElement = mxDragSource.prototype.createDragElement;
+
   }
+  for(var i=0;i<paths.length;i++){
+    AddSideBarComponent(graph,sidebar,paths[i]);
+  }
+  //AddSideBarComponent(graph,sidebar,comp2);
 }

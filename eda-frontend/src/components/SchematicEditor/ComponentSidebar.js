@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
+//import AddSideBarComponent from "./Helper/SideBar.js"
 import {
   Hidden,
   List,
@@ -18,6 +19,7 @@ import comp3 from '../../static/CircuitComp/resistor.svg'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
+import AddSideBarComponent from './Helper/SideBar'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -31,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 'auto'
   }
 }))
+
 export default function ComponentSidebar (props) {
   const classes = useStyles()
 

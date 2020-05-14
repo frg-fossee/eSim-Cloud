@@ -11,8 +11,14 @@ const {
   mxDragSource,
 } = new mxGraphFactory();
 
-export default function AddSideBarComponent(graph,sidebar,img) {
-  sidebar.appendChild(img)
+export default function AddSideBarComponent(graph,sidebar,src) {
+  var img = document.createElement("img");
+  img.setAttribute("src", src);
+  img.style.width = "48px";
+  img.style.height = "48px";
+  img.title = "Drag this to the diagram to create a new vertex";
+  sidebar.appendChild(img);
+  
   var graphF = function (evt) {
     var x = mxEvent.getClientX(evt);
     var y = mxEvent.getClientY(evt);
@@ -42,7 +48,7 @@ export default function AddSideBarComponent(graph,sidebar,img) {
         y,
         100,
         100,
-        "shape=image;image=" + comp1 + ";"
+        "shape=image;image=" + src + ";"
       );
       v1.setConnectable(false);
 
