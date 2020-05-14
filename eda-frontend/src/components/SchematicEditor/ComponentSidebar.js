@@ -70,12 +70,7 @@ export default function ComponentSidebar (props) {
   }, [dispatch])
 
 
-  const listComponents = (id) => {
-      // console.log('listing', id, components[id])
-      components[id].map((component)=>{
-        console.log(component.svg_path)
-      })
-  }
+
   return (
     <>
       <Hidden smDown>
@@ -123,7 +118,16 @@ export default function ComponentSidebar (props) {
                     <List component="div" disablePadding dense >
                       <ListItem divider>
 
-                      {listComponents(library.id)}
+                      {components[library.id].map((component)=>{
+                console.log(component.svg_path)
+                 return(
+                  <ListItem key={component.component_name} divider>
+                  <ListItemIcon>
+                  <img src={'../'+component.svg_path} alt="Logo" />
+                  </ListItemIcon>
+                  </ListItem>
+                )
+                 })}
 
                       </ListItem>
                     </List>
