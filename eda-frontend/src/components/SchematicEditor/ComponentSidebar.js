@@ -17,7 +17,7 @@ import comp2 from '../../static/CircuitComp/C_1_A.svg'
 import comp3 from '../../static/CircuitComp/resistor.svg'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchLibraries, toggleCollapse } from '../../redux/actions/index'
+import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -35,7 +35,6 @@ export default function ComponentSidebar (props) {
   const classes = useStyles()
 
   const [open, setOpen] = React.useState(false)
-  // const [collapse, setCollapse] = React.useState({ id: -1, open: false })
 
   const handleClick = () => {
     setOpen(!open)
@@ -43,11 +42,22 @@ export default function ComponentSidebar (props) {
 
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
+  const components = useSelector(state => state.schematicEditorReducer.components)
 
   const dispatch = useDispatch()
 
   const handleCollapse = (id) => {
+    console.log('Current: ', collapse[id], components[id].length)
+
+    // Fetches Components for given library if not already fetched
+    if(collapse[id]===false && components[id].length===0){
+      console.log('Components not fetched earlier, fetching.')
+      dispatch(fetchComponents(id))
+    }
+
+    // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
+
     console.log(collapse)
   }
 
@@ -56,6 +66,13 @@ export default function ComponentSidebar (props) {
     dispatch(fetchLibraries())
   }, [dispatch])
 
+
+  const listComponents = (id) => {
+      // console.log('listing', id, components[id])
+      components[id].map((component)=>{
+        console.log(component.svg_path)
+      })
+  }
   return (
     <>
       <Hidden smDown>
@@ -100,17 +117,11 @@ export default function ComponentSidebar (props) {
                     {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
                   <Collapse in={collapse[library.id]} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding dense="true">
+                    <List component="div" disablePadding dense >
                       <ListItem divider>
-                        <ListItemIcon>
-                          <img src={comp1} alt="Logo" />
-                        </ListItemIcon>
-                        <ListItemIcon>
-                          <img src={comp2} alt="Logo" />
-                        </ListItemIcon>
-                        <ListItemIcon>
-                          <img src={comp3} alt="Logo" />
-                        </ListItemIcon>
+
+                      {listComponents(library.id)}
+
                       </ListItem>
                     </List>
                   </Collapse>
