@@ -41,7 +41,7 @@ class SvgGenerator:
 
         return False
 
-    def save_svg(self, d, name_of_symbol, save_path, pin_number_positions):
+    def save_svg(self, d, name_of_symbol, save_path, pin_number_positions,dimension):
         """ save svg"""
 
         # check if symbols directory is present or not.
@@ -59,6 +59,7 @@ class SvgGenerator:
             elem += f"""<p-{pin_number}><x>{x}</x><y>{y}</y><type>{pin_type}
                      </type></p-{pin_number}>"""
 
+        
         # save the above elem in the same svg file.
         fd = open(path_to_svg, 'r')
         s = fd.readlines()
@@ -70,7 +71,7 @@ class SvgGenerator:
         fd = open(path_to_svg, 'w')
         for i in range(len(s)):
             fd.write(s[i])
-        fd.write("<metadata>")
+        fd.write(f'<metadata width="{dimension[0]}" height="{dimension[1]}">')
         fd.write(elem)
         fd.write("</metadata></svg>")
         fd.close()
@@ -409,7 +410,7 @@ class SvgGenerator:
                                             f"{symbol_prefix}" +
                                             f"-{name_of_symbol}-{dm}:" +
                                             f"{chr(64+z)}",
-                                            save_path,pin_number_positions)
+                                            save_path,pin_number_positions,(width,height))
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
 
