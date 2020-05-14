@@ -1,10 +1,7 @@
 import drawSvg as draw
 
 
-
-
 class SvgPlotter:
-
     svg_boundary = {
                         "top": 0,
                         "right": 0,
@@ -20,31 +17,28 @@ class SvgPlotter:
         self.RADIUS_OF_NOT_GATE = 25
         self.FILL_NOT_GATE = "F"
 
-
     # def update_svg_boundary(self,value,axis):
     #     # axis can be 'x' or 'y'
     #     if axis == 'x':
     #         # update along x axis
     #         if(value > 0):
     #             # right side
-    #             # check if passed value is greater than 
+    #             # check if passed value is greater than
     #             # current value
     #             if(value > self.svg_boundary["right"]):
     #                 self.svg_boundary["right"] = value
-                
     #         else:
     #             # left side
     #             # check if passed values is smaller
     #             # than the current value
     #             if(value < self.svg_boundary["left"]):
     #                 self.svg_boundary["left"] = value
-                
-        
+
     #     if axis == 'y':
     #         # update along y axis
     #         if(value > 0):
     #             # top side
-    #             # check if passed value is greater than 
+    #             # check if passed value is greater than
     #             # current value
     #             if(value > self.svg_boundary["top"]):
     #                 self.svg_boundary["top"] = value
@@ -53,20 +47,17 @@ class SvgPlotter:
     #             if(value < self.svg_boundary["bottom"]):
     #                 self.svg_boundary["bottom"] = value
 
-    def update_svg_boundary(self,vertex_list):
-
-
+    def update_svg_boundary(self, vertex_list):
         for point in range(len(vertex_list)):
             x_value = int(vertex_list[point][0])
             y_value = int(vertex_list[point][1])
 
             if(x_value > 0):
                 # right side
-                # check if passed value is greater than 
+                # check if passed value is greater than
                 # current value
                 if(x_value > self.svg_boundary["right"]):
                     self.svg_boundary["right"] = x_value
-                
             else:
                 # left side
                 # check if passed values is smaller
@@ -74,10 +65,9 @@ class SvgPlotter:
                 if(x_value < self.svg_boundary["left"]):
                     self.svg_boundary["left"] = x_value
 
-
             if(y_value > 0):
                 # top side
-                # check if passed value is greater than 
+                # check if passed value is greater than
                 # current value
                 if(y_value > self.svg_boundary["top"]):
                     self.svg_boundary["top"] = y_value
@@ -86,13 +76,9 @@ class SvgPlotter:
                 if(y_value < self.svg_boundary["bottom"]):
                     self.svg_boundary["bottom"] = y_value
 
-
-        
-
     def get_svg_boundary(self,):
 
-        return self.svg_boundary      
-
+        return self.svg_boundary
 
     def reset_svg_boundary(self,):
         self.svg_boundary = {
@@ -123,8 +109,6 @@ class SvgPlotter:
     def drawCircle(self, d, x, y, r, fill="f", pen=5):
 
         pen = int(pen)
-
-
         if fill == "f":
             kwargs = {"fill_opacity": 0}
         elif fill == "F":
@@ -138,9 +122,8 @@ class SvgPlotter:
                         **kwargs)
         )
 
+        v_list = [(x, y+r),  (x, y-r), (x + r, y), (x - r, y)]
 
-        v_list = [(x,y+r),(x,y-r),(x+r,y),(x-r,y)]
-        
         self.update_svg_boundary(v_list)
 
         return d
@@ -164,8 +147,6 @@ class SvgPlotter:
         # self.update_svg_boundary(x2,'x')
         # self.update_svg_boundary(y2,'y')
 
-        
-        
         if fill == "f":
             kwargs = {"fill_opacity": 0}
         elif fill == "F":
@@ -189,7 +170,7 @@ class SvgPlotter:
                 **kwargs
             )
         )
-        self.update_svg_boundary([(x1,y1),(x2,y2)])
+        self.update_svg_boundary([(x1, y1), (x2, y2)])
 
         return d
 
@@ -302,12 +283,9 @@ class SvgPlotter:
         pen=5,
         text_size=50,
         shape_of_pin="",
-        
     ):
 
-
         # C 55 0 10 1 0 6 N ->invertec pin circle shape example.
-
         x1 = int(x1)
         y1 = int(y1)
         text_size = int(text_size)
@@ -315,9 +293,9 @@ class SvgPlotter:
         pin_name_offset = int(pin_name_offset)
         pen = int(pen)
 
-        v_list = [(x1,y1)]
+        v_list = [(x1, y1)]
         self.update_svg_boundary(v_list)
-        
+
         if orientation == "R":
 
             x2 = x1 + length

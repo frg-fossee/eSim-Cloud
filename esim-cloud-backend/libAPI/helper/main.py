@@ -1,5 +1,5 @@
-from plotter import SvgPlotter
-from parser import Parser
+from .plotter import SvgPlotter
+from .parser import Parser
 import os
 import sys
 
@@ -41,7 +41,8 @@ class SvgGenerator:
 
         return False
 
-    def save_svg(self, d, name_of_symbol, save_path, pin_number_positions,dimension):
+    def save_svg(self, d, name_of_symbol, save_path, pin_number_positions,
+                 dimension):
         """ save svg"""
 
         # check if symbols directory is present or not.
@@ -59,7 +60,6 @@ class SvgGenerator:
             elem += f"""<p-{pin_number}><x>{x}</x><y>{y}</y><type>{pin_type}
                      </type></p-{pin_number}>"""
 
-        
         # save the above elem in the same svg file.
         fd = open(path_to_svg, 'r')
         s = fd.readlines()
@@ -155,7 +155,6 @@ class SvgGenerator:
                             displayInline=False,
                         )
 
-                    
                         d.setPixelScale(s=self.SVG_SCALE)
 
                         self.PART_NUMBER = str(z)
@@ -182,7 +181,7 @@ class SvgGenerator:
                             if isVisible and self.SHOW_TEXT:
 
                                 d = self.plotter.draw_text(d, text, x,
-                                                        y, text_size)
+                                                           y, text_size)
 
                         for x in range(len(draw_instructions)):
 
@@ -208,7 +207,8 @@ class SvgGenerator:
 
                                 if dmg == "2":
                                     self.IS_DMG_2_PRESENT = True
-                                # The 12th index may or maynot be present in every
+                                # The 12th index may or maynot be present
+                                #  in every
                                 # instruction.
                                 try:
                                     shape_of_pin = current_instruction[12]
@@ -291,7 +291,8 @@ class SvgGenerator:
                                     continue
 
                                 d = self.plotter.drawCircle(
-                                    d, cx, cy, r, fill=fill_shape, pen=pen_width
+                                    d, cx, cy, r, fill=fill_shape,
+                                    pen=pen_width
                                 )
 
                             # (d,cx,cy,r,start_deg,end_deg,pen = 5,fill='f')
@@ -318,11 +319,11 @@ class SvgGenerator:
                                 if not self.match_part_dmg(part, dmg):
                                     continue
                                 d = self.plotter.drawArc(
-                                    d, cx, cy, r, start_deg, end_deg, pen_width,
+                                    d, cx, cy, r, start_deg, end_deg,
+                                    pen_width,
                                     fill
                                 )
 
-                            # (d,vertices_count,pen=5,vertices_list = [],fill='f')
                             elif shape == "P":
 
                                 # its a polygon
@@ -348,7 +349,9 @@ class SvgGenerator:
                                 ]
 
                                 vertices_list = []
-                                for j in range(5, len(current_instruction) - 1, 2):
+                                for j in range(5,
+                                               len(current_instruction) - 1,
+                                               2):
                                     point = (
                                         current_instruction[j],
                                         current_instruction[j + 1],
@@ -403,14 +406,13 @@ class SvgGenerator:
                             #               f"{chr(64+z)}")
 
                             # print("------------------------")
-                        
                         if(run == 1):
-                           
                             self.save_svg(d,
-                                            f"{symbol_prefix}" +
-                                            f"-{name_of_symbol}-{dm}:" +
-                                            f"{chr(64+z)}",
-                                            save_path,pin_number_positions,(width,height))
+                                          f"{symbol_prefix}" +
+                                          f"-{name_of_symbol}-{dm}:" +
+                                          f"{chr(64+z)}",
+                                          save_path, pin_number_positions,
+                                          (width, height))
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
 
@@ -425,13 +427,13 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 if __name__ == "__main__":
     # Takes Libraries as command line arguments,
     # Only if script is run on command line
-    # if(len(sys.argv)) != 3:
-    #     print("Usage: script.py <Path to library> <Output Directory>")
-    #     sys.exit(1)
-    # generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
-    # print('Processed', sys.argv[1])
-    # generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols")
+    if(len(sys.argv)) != 3:
+        print("Usage: script.py <Path to library> <Output Directory>")
+        sys.exit(1)
+    generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
+    print('Processed', sys.argv[1])
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols")
 
-    print("plotting to svg..")
-    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
-    print("done!!")
+    # print("plotting to svg..")
+    # generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
+    # print("done!!")
