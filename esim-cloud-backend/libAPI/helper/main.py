@@ -1,5 +1,5 @@
-from .plotter import SvgPlotter
-from .parser import Parser
+from plotter import SvgPlotter
+from parser import Parser
 import os
 import sys
 
@@ -382,10 +382,37 @@ class SvgGenerator:
                                 except OSError as error:
                                     print(error)
 
-                        self.save_svg(d, f"{symbol_prefix}" +
-                                        f"-{name_of_symbol}-{dm}_" +
-                                        f"{chr(64+z)}",
-                                        save_path, pin_number_positions)
+                            svg_boundary = self.plotter.get_svg_boundary()
+                            top = svg_boundary["top"]
+                            right = svg_boundary["right"]
+                            bottom = svg_boundary["bottom"]
+                            left = svg_boundary["left"]
+
+                            height = abs(top - bottom)
+                            width = abs(left - right)
+                            my_height = height
+                            if width <= 0:
+                                width = 400
+                            my_width = width
+                            # # print(svg_boundary)
+                            # print("------------------------")
+                            # print(height,width)
+                            # print(f"{symbol_prefix}" +
+                            #               f"-{name_of_symbol}-{dm}:" +
+                            #               f"{chr(64+z)}")
+
+                            # print("------------------------")
+                        
+                        if(run == 1):
+                           
+                            self.save_svg(d,
+                                            f"{symbol_prefix}" +
+                                            f"-{name_of_symbol}-{dm}:" +
+                                            f"{chr(64+z)}",
+                                            save_path,pin_number_positions)
+                            # reset svg_boundary set all paramerers to 0
+                            self.plotter.reset_svg_boundary()
+
         return symbol_prefix
 
 
@@ -397,9 +424,13 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 if __name__ == "__main__":
     # Takes Libraries as command line arguments,
     # Only if script is run on command line
-    if(len(sys.argv)) != 3:
-        print("Usage: script.py <Path to library> <Output Directory>")
-        sys.exit(1)
-    generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
-    print('Processed', sys.argv[1])
+    # if(len(sys.argv)) != 3:
+    #     print("Usage: script.py <Path to library> <Output Directory>")
+    #     sys.exit(1)
+    # generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
+    # print('Processed', sys.argv[1])
     # generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols")
+
+    print("plotting to svg..")
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
+    print("done!!")
