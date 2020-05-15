@@ -13,13 +13,11 @@ import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import './Helper/SchematicEditor.css'
-import comp1 from '../../static/CircuitComp/4002_1_A.svg'
-import comp2 from '../../static/CircuitComp/C_1_A.svg'
-import comp3 from '../../static/CircuitComp/resistor.svg'
-
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-import AddSideBarComponent from './Helper/SideBar'
+// import AddSideBarComponent from './Helper/SideBar'
+
+const COMPONENTS_PER_ROW = 3
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -36,13 +34,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ComponentSidebar (props) {
   const classes = useStyles()
-
-  const [open, setOpen] = React.useState(false)
-
-  const handleClick = () => {
-    setOpen(!open)
-  }
-
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
   const components = useSelector(state => state.schematicEditorReducer.components)
@@ -69,7 +60,16 @@ export default function ComponentSidebar (props) {
     dispatch(fetchLibraries())
   }, [dispatch])
 
-
+  const chunk = (array, size) => {
+    return array.reduce((chunks, item, i) => {
+      if (i % size === 0) {
+        chunks.push([item]);
+      } else {
+        chunks[chunks.length - 1].push(item);
+      }
+      return chunks;
+    }, []);
+  }
 
   return (
     <>
@@ -83,27 +83,6 @@ export default function ComponentSidebar (props) {
           <h2 style={{ margin: '5px' }}>Components List</h2>
         </ListItem>
 
-        {/* Sample Collapsing List */}
-        <ListItem onClick={handleClick} button divider>
-          <span className={classes.head}>Sample Elements</span>
-          {open ? <ExpandLess /> : <ExpandMore />}
-        </ListItem>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding dense="true">
-            <ListItem divider>
-              <ListItemIcon>
-                <img src={comp1} alt="Logo" />
-              </ListItemIcon>
-              <ListItemIcon>
-                <img src={comp2} alt="Logo" />
-              </ListItemIcon>
-              <ListItemIcon>
-                <img src={comp3} alt="Logo" />
-              </ListItemIcon>
-            </ListItem>
-          </List>
-        </Collapse>
-
         {/* Collapsing List Mapped by Libraries fetched by the API */}
         {
           libraries.map(
@@ -116,20 +95,25 @@ export default function ComponentSidebar (props) {
                   </ListItem>
                   <Collapse in={collapse[library.id]} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding dense >
-                      <ListItem divider>
 
-                      {components[library.id].map((component)=>{
-                console.log(component.svg_path)
+                {/* Chunked Components of Library */}
+                {
+                chunk(components[library.id], COMPONENTS_PER_ROW).map((component_chunk)=>{
                  return(
-                  <ListItem key={component.component_name} divider>
-                  <ListItemIcon>
+                  <ListItem key={component_chunk[0].svg_path} divider>
+                  {
+                  component_chunk.map((component)=>{
+                  return(<ListItemIcon key={component.component_name}>
                   <img src={'../'+component.svg_path} alt="Logo" />
-                  </ListItemIcon>
+                  </ListItemIcon>)
+                                     }
+                          )
+                  }
                   </ListItem>
-                )
-                 })}
+                      )
+                 })
+                 }
 
-                      </ListItem>
                     </List>
                   </Collapse>
                 </div>
