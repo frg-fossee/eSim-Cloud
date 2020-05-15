@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1000" height="1800" viewBox="-500.0 -900.0 1000 1800">
+<defs>
+</defs>
+<text x="-300" y="-750" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">U1:A</text>
+<text x="-300" y="750" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">4051</text>
+<path d="M-300,-700 L300,-700 L300,700 L-300,700 L-300,-700" stroke-width="10" stroke="black" fill-opacity="0" />
+<text x="-400.0" y="-240" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">1</text>
+<text x="-234" y="-200" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X4</text>
+<path d="M-500,-200 L-300,-200" stroke="black" stroke-width="5" />
+<text x="-400.0" y="460" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">10</text>
+<text x="-247" y="500" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">B</text>
+<path d="M-500,500 L-300,500" stroke="black" stroke-width="5" />
+<text x="-400.0" y="360" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">11</text>
+<text x="-247" y="400" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">A</text>
+<path d="M-500,400 L-300,400" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-340" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">12</text>
+<text x="-234" y="-300" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X3</text>
+<path d="M-500,-300 L-300,-300" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-640" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">13</text>
+<text x="-234" y="-600" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X0</text>
+<path d="M-500,-600 L-300,-600" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-540" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">14</text>
+<text x="-234" y="-500" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X1</text>
+<path d="M-500,-500 L-300,-500" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-440" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">15</text>
+<text x="-234" y="-400" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X2</text>
+<path d="M-500,-400 L-300,-400" stroke="black" stroke-width="5" />
+<text x="-40" y="-766.6666666666666" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">16</text>
+<text x="0" y="-621" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">VDD</text>
+<path d="M0,-900 L0,-700" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-40" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">2</text>
+<text x="-234" y="0" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X6</text>
+<path d="M-500,0 L-300,0" stroke="black" stroke-width="5" />
+<text x="400.0" y="-640" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">3</text>
+<text x="247" y="-600" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X</text>
+<path d="M500,-600 L300,-600" stroke="black" stroke-width="5" />
+<text x="-400.0" y="60" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">4</text>
+<text x="-234" y="100" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X7</text>
+<path d="M-500,100 L-300,100" stroke="black" stroke-width="5" />
+<text x="-400.0" y="-140" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">5</text>
+<text x="-234" y="-100" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">X5</text>
+<path d="M-500,-100 L-300,-100" stroke="black" stroke-width="5" />
+<text x="-400.0" y="260" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">6</text>
+<text x="-221" y="300" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">Inh</text>
+<path d="M-500,300 L-300,300" stroke="black" stroke-width="5" />
+<text x="60" y="766.6666666666666" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">7</text>
+<text x="100" y="621" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">VEE</text>
+<path d="M100,900 L100,700" stroke="black" stroke-width="5" />
+<text x="-40" y="766.6666666666666" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">8</text>
+<text x="0" y="621" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">VSS</text>
+<path d="M0,900 L0,700" stroke="black" stroke-width="5" />
+<text x="-400.0" y="560" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">9</text>
+<text x="-247" y="600" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">C</text>
+<path d="M-500,600 L-300,600" stroke="black" stroke-width="5" />
+<metadata width="1000" height="1800"><p-1><x>-500</x><y>200</y><type>P
+                     </type></p-1><p-10><x>-500</x><y>-500</y><type>I
+                     </type></p-10><p-11><x>-500</x><y>-400</y><type>I
+                     </type></p-11><p-12><x>-500</x><y>300</y><type>P
+                     </type></p-12><p-13><x>-500</x><y>600</y><type>P
+                     </type></p-13><p-14><x>-500</x><y>500</y><type>P
+                     </type></p-14><p-15><x>-500</x><y>400</y><type>P
+                     </type></p-15><p-16><x>0</x><y>900</y><type>W
+                     </type></p-16><p-2><x>-500</x><y>0</y><type>P
+                     </type></p-2><p-3><x>500</x><y>600</y><type>P
+                     </type></p-3><p-4><x>-500</x><y>-100</y><type>P
+                     </type></p-4><p-5><x>-500</x><y>100</y><type>P
+                     </type></p-5><p-6><x>-500</x><y>-300</y><type>I
+                     </type></p-6><p-7><x>100</x><y>-900</y><type>W
+                     </type></p-7><p-8><x>0</x><y>-900</y><type>W
+                     </type></p-8><p-9><x>-500</x><y>-600</y><type>I
+                     </type></p-9><p-1><x>-500</x><y>200</y><type>P
+                     </type></p-1><p-10><x>-500</x><y>-500</y><type>I
+                     </type></p-10><p-11><x>-500</x><y>-400</y><type>I
+                     </type></p-11><p-12><x>-500</x><y>300</y><type>P
+                     </type></p-12><p-13><x>-500</x><y>600</y><type>P
+                     </type></p-13><p-14><x>-500</x><y>500</y><type>P
+                     </type></p-14><p-15><x>-500</x><y>400</y><type>P
+                     </type></p-15><p-16><x>0</x><y>900</y><type>W
+                     </type></p-16><p-2><x>-500</x><y>0</y><type>P
+                     </type></p-2><p-3><x>500</x><y>600</y><type>P
+                     </type></p-3><p-4><x>-500</x><y>-100</y><type>P
+                     </type></p-4><p-5><x>-500</x><y>100</y><type>P
+                     </type></p-5><p-6><x>-500</x><y>-300</y><type>I
+                     </type></p-6><p-7><x>100</x><y>-900</y><type>W
+                     </type></p-7><p-8><x>0</x><y>-900</y><type>W
+                     </type></p-8><p-9><x>-500</x><y>-600</y><type>I
+                     </type></p-9></metadata></svg>
