@@ -1,4 +1,5 @@
 let pinData,metadata,pinList
+let currentPin,x_pos,y_pos
 let width,height
 
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
@@ -45,8 +46,10 @@ function extractData(xml){
   }).then(function(data){
 
     // MX GRAPHS TRY BLOCK HAS BEEN SHIFTED HERE.
+    let pins = []
       width = data["width"]
       height = data["height"]
+      pinData = data["pinData"]
 
       width  = width/fixed_number
       height = height/fixed_number
@@ -63,6 +66,21 @@ function extractData(xml){
         "shape=image;image=" + path + ";"
       );
       v1.setConnectable(false);
+      for(let i = 0; i < pinData.length;i++){
+        currentPin = pinData[i]
+
+        // move this to another file
+
+        x_pos = (parseInt(width)/2 + parseInt(currentPin["pinX"])/fixed_number);
+        y_pos = (parseInt(height)/2 - parseInt(currentPin["pinY"])/fixed_number);
+
+        // move this to another file
+
+        pins[i] = graph.insertVertex(v1, null, '', x_pos, y_pos, 2, 2,
+        'align=top;verticalAlign=top;' +
+                'fontColor=' + 'black' + ';strokeColor=' + 'black');
+                 pins[i].geometry.relative = false;
+    }
   
   })
   
