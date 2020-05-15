@@ -13,13 +13,9 @@ import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 
 import './Helper/SchematicEditor.css'
-import comp1 from '../../static/CircuitComp/4002_1_A.svg'
-import comp2 from '../../static/CircuitComp/C_1_A.svg'
-import comp3 from '../../static/CircuitComp/resistor.svg'
-
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-import AddSideBarComponent from './Helper/SideBar'
+// import AddSideBarComponent from './Helper/SideBar'
 
 const COMPONENTS_PER_ROW = 3
 
@@ -38,13 +34,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ComponentSidebar (props) {
   const classes = useStyles()
-
-  const [open, setOpen] = React.useState(false)
-
-  const handleClick = () => {
-    setOpen(!open)
-  }
-
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
   const components = useSelector(state => state.schematicEditorReducer.components)
