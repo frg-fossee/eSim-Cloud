@@ -1,6 +1,6 @@
 import mxGraphFactory from "mxgraph";
 import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
-
+import getMetadataXML from "./xml_parser";
 const {
   mxGraph,
   mxRubberband,
@@ -10,6 +10,8 @@ const {
   mxPoint,
   mxDragSource,
 } = new mxGraphFactory();
+
+
 
 export default function AddSideBarComponent(graph,sidebar,src) {
   var img = document.createElement("img");
@@ -40,17 +42,16 @@ export default function AddSideBarComponent(graph,sidebar,src) {
       // rather than the label markup, so use 'image=' + image for the style.
       // as follows: v1 = graph.insertVertex(parent, null, label,
       // pt.x, pt.y, 120, 120, 'image=' + image);
-      v1 = graph.insertVertex(
-        parent,
-        null,
-        "",
-        x,
-        y,
-        200,
-        200,
-        "shape=image;image=" + src + ";"
-      );
-      v1.setConnectable(false);
+
+      // ***IMP 
+      // GET THE SIZE OF SVG FOROM METADATA AND THEN DIVIDE BOTH WIDTH AND HEIGHT BE SAME RATIO 
+      // THEN USE THAT VALUE BELOW
+
+      getMetadataXML(src,graph,parent,evt,target,x,y);
+      
+      // **IMP VERTICS DRAWING IS MOVED TO xml_parser.js
+      // WILL BE REFACTORED IN SOME TIME.
+      
 
     
     } finally {
@@ -80,6 +81,8 @@ export default function AddSideBarComponent(graph,sidebar,src) {
   // if scalePreview (last) argument is true. Dx and dy are null to force
   // the use of the defaults. Note that dx and dy are only used for the
   // drag icon but not for the preview.
+
+
   var ds = mxUtils.makeDraggable(
     img,
     graphF,
