@@ -44,7 +44,7 @@ class SvgGenerator:
     def save_svg(self, d, name_of_symbol, save_path, pin_number_positions,
                  dimension):
         """ save svg"""
-
+        # print(pin_number_positions)
         # check if symbols directory is present or not.
         path_to_svg = f"{save_path}/{name_of_symbol}.svg"
         d.saveSvg(path_to_svg)
@@ -223,12 +223,13 @@ class SvgGenerator:
                                     + len(pinName) * self.PIN_NAME_PADDING
                                 )
 
-                                pin_number_positions.append({
-                                    "pinNumber": pinNumber,
-                                    "x": x_pos,
-                                    "y": y_pos,
-                                    "type": type_of_pin,
-                                })
+                                if run == 1:
+                                    pin_number_positions.append({
+                                        "pinNumber": pinNumber,
+                                        "x": x_pos,
+                                        "y": y_pos,
+                                        "type": type_of_pin,
+                                    })
 
                                 d = self.plotter.drawPin(
                                     d,
