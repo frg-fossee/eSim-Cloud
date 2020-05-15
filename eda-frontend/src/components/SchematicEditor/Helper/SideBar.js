@@ -46,8 +46,8 @@ export default function AddSideBarComponent(graph,sidebar,src) {
         "",
         x,
         y,
-        100,
-        100,
+        200,
+        200,
         "shape=image;image=" + src + ";"
       );
       v1.setConnectable(false);

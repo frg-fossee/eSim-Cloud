@@ -1,7 +1,7 @@
 import mxGraphFactory from "mxgraph";
-import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
-import comp2 from "../../../static/CircuitComp/C_1_A.svg";
-import comp3 from "../../../static/CircuitComp/resistor.svg";
+import comp1 from "../../../static/CircuitComp/U-4001-1:A.svg";
+import comp2 from "../../../static/CircuitComp/U-4011-1:B.svg";
+import comp3 from "../../../static/CircuitComp/U-4051-1:A.svg";
 import AddSideBarComponent from "./SideBar.js"
 var paths=[comp1,comp2,comp3];
 
