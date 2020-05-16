@@ -7,7 +7,7 @@ services:
       - 80:80
     volumes:
       - tmp_vol:/tmp
-      - ./nginx/dev.conf.d:/etc/nginx/conf.d
+      - ./Nginx/dev.conf.d:/etc/nginx/conf.d
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
