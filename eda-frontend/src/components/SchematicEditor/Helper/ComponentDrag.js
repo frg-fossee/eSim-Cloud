@@ -3,6 +3,8 @@ import comp1 from "../../../static/CircuitComp/U-4001-1:A.svg";
 import comp2 from "../../../static/CircuitComp/U-4011-1:B.svg";
 import comp3 from "../../../static/CircuitComp/U-4051-1:A.svg";
 import AddSideBarComponent from "./SideBar.js"
+import WireConfigFunct from "./WireConfig.js"
+import EdgeWireFunct from "./EdgeWire.js"
 var paths=[comp1,comp2,comp3];
 
 
@@ -31,6 +33,7 @@ export default function LoadGrid(container, sidebar) {
     // Enables rubberband selection
     new mxRubberband(graph);
     WireConfigFunct(graph);
+    EdgeWireFunct();
 
   }
   for(var i=0;i<paths.length;i++){
