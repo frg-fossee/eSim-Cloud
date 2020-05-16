@@ -20,7 +20,7 @@ class SvgGenerator:
 
         self.SHOW_TEXT = True
 
-        self.SVG_SCALE = 0.1
+        self.SVG_SCALE = 1
 
         # some symbols dont have dmg 2.
         # assuming dmg 2 is present.
@@ -41,12 +41,39 @@ class SvgGenerator:
 
         return False
 
-    def save_svg(self, d, name_of_symbol, save_path):
+    def save_svg(self, d, name_of_symbol, save_path, pin_number_positions):
         """ save svg"""
 
         # check if symbols directory is present or not.
+        path_to_svg = f"{save_path}/{name_of_symbol}.svg"
+        d.saveSvg(path_to_svg)
+        # after saving svg open it again and embedd metadata.
+        # print(pin_number_positions)
+        elem = ""
+        for x in range(len(pin_number_positions)):
+            pin = pin_number_positions[x]
+            pin_number = pin["pinNumber"]
+            x = pin['x']
+            y = pin['y']
+            pin_type = pin['type']
+            elem += f"""<p-{pin_number}><x>{x}</x><y>{y}</y><type>{pin_type}
+                     </type></p-{pin_number}>"""
 
-        d.saveSvg(f"{save_path}/{name_of_symbol}.svg")
+        # save the above elem in the same svg file.
+        fd = open(path_to_svg, 'r')
+        s = fd.readlines()
+        if(s[-1].strip('\n') != '</svg>'):
+            while s[-1].strip("\n") != '</svg>':
+                s.pop(-1)
+        s.pop(-1)
+
+        fd = open(path_to_svg, 'w')
+        for i in range(len(s)):
+            fd.write(s[i])
+        fd.write("<metadata>")
+        fd.write(elem)
+        fd.write("</metadata></svg>")
+        fd.close()
 
     def generate_svg_from_lib(self, file_path, output_path):
         """ Takes .lib file as input and generates
@@ -113,6 +140,9 @@ class SvgGenerator:
                     break
 
                 for z in range(1, int(number_of_parts_in_symbol) + 1):
+
+                    pin_number_positions = []
+
                     d = draw.Drawing(
                         self.CANVAS_WIDTH,
                         self.CANVAS_HEIGHT,
@@ -185,6 +215,13 @@ class SvgGenerator:
                                 int(pin_name_offset)
                                 + len(pinName) * self.PIN_NAME_PADDING
                             )
+
+                            pin_number_positions.append({
+                                "pinNumber": pinNumber,
+                                "x": x_pos,
+                                "y": y_pos,
+                                "type": type_of_pin,
+                            })
 
                             d = self.plotter.drawPin(
                                 d,
@@ -339,11 +376,10 @@ class SvgGenerator:
                             except OSError as error:
                                 print(error)
 
-                        self.save_svg(d,
-                                      f"{symbol_prefix}" +
-                                      f"-{name_of_symbol}-{dm}_" +
-                                      f"{chr(64+z)}",
-                                      save_path)
+                    self.save_svg(d, f"{symbol_prefix}" +
+                                     f"-{name_of_symbol}-{dm}_" +
+                                     f"{chr(64+z)}",
+                                     save_path, pin_number_positions)
         return symbol_prefix
 
 
@@ -360,3 +396,4 @@ if __name__ == "__main__":
         sys.exit(1)
     generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
     print('Processed', sys.argv[1])
+    # generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols")

@@ -7,7 +7,7 @@ services:
       - 80:80
     volumes:
       - tmp_vol:/tmp
-      - ./nginx/dev.conf.d:/etc/nginx/conf.d
+      - ./Nginx/dev.conf.d:/etc/nginx/conf.d
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
@@ -105,7 +105,6 @@ services:
 
   mongodb:
     image: "mongo:${TAG_MONGO}"
-    container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/usr/data/db/
       - MONGO_LOG_DIR=/dev/null
