@@ -30,12 +30,11 @@ export default function LoadGrid(container, sidebar) {
 
     // Enables rubberband selection
     new mxRubberband(graph);
+    WireConfigFunct(graph);
 
   }
   for(var i=0;i<paths.length;i++){
     AddSideBarComponent(graph,sidebar,paths[i]); //Adds the component to the sidebar and makes it draggable
   }
-  var a = document.getElementsByTagName('img');
-  console.log(a);
   
 }
