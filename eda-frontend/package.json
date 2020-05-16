@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
+    "classnames": "^2.2.6",
     "draw2d": "^1.0.37",
     "jquery": "^3.5.0",
     "jquery-ui-bundle": "^1.12.1-migrate",

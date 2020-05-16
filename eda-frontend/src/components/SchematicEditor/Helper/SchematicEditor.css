@@ -12,11 +12,64 @@ img:hover {
 /* A4
   portrait- 21X29.7cm 
   landscape - 29.7X21cm*/
+
+.a1p{
+  width:59.4cm;
+  height:84.1cm;
+}
+.a1l{
+  width:84.1cm;
+  height:59.4cm;
+
+}
+.a2l{
+  height:42.0cm;
+  width:59.4cm;
+}
+
+.a2p{
+  width:42.0cm;
+  height:59.4cm;
+}
+
+
+.a3p{
+  width:29.7cm;
+  height:42.0cm;
+}
+
+.a3l{
+  height:29.7cm;
+  width:42.0cm;
+}
+
+
+.a4p{
+  width: 21cm;
+  height: 29.7cm;
+}
+
+.a4l{
+  width: 29.7cm;
+  height: 21cm;
+}
+
+.a5p{
+ width: 14.8cm;
+ height:21.0cm;
+
+}
+
+.a5l{
+  height: 14.8cm;
+  width:21.0cm;
+}
+
+
 .grid-container {
   position: relative;
   overflow: hidden;
-  width: 21cm;
-  height: 29.7cm;
+  
   /* background-color: #b3b3b3; */
   background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2UwZTBlMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZTBlMGUwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
   /* background: url("../../static/grid.gif"); */
