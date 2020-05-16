@@ -7,7 +7,7 @@ services:
       - 80:80
     volumes:
       - tmp_vol:/tmp
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./Nginx/conf.d:/etc/nginx/conf.d
       - ./eda-frontend/build:/usr/share/nginx/eda
       - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
