@@ -35,5 +35,7 @@ export default function LoadGrid(container, sidebar) {
   for(var i=0;i<paths.length;i++){
     AddSideBarComponent(graph,sidebar,paths[i]); //Adds the component to the sidebar and makes it draggable
   }
+  var a = document.getElementsByTagName('img');
+  console.log(a);
   
 }

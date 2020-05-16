@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
-//import AddSideBarComponent from "./Helper/SideBar.js"
+import AddSideBarComponentDOM from "./Helper/SidebarDom.js"
 import {
   Hidden,
   List,
@@ -51,8 +51,9 @@ export default function ComponentSidebar (props) {
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-
+  
     console.log(collapse)
+  
   }
 
   // For Fetching Libraries
@@ -104,7 +105,7 @@ export default function ComponentSidebar (props) {
                   {
                   component_chunk.map((component)=>{
                   return(<ListItemIcon key={component.component_name}>
-                  <img src={'../'+component.svg_path} alt="Logo" />
+                  <img src={'../'+component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} />
                   </ListItemIcon>)
                                      }
                           )
