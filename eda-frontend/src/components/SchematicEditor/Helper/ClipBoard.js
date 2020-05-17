@@ -1,12 +1,9 @@
 /* 
 	This module containes functions to perform clipboard functions on the schematic editor graph 
-
 */
 import mxGraphFactory from "mxgraph";
 
 const {
-  mxGraph,
-  mxRubberband,
   mxClient,
   mxUtils,
   mxEvent,
@@ -45,9 +42,9 @@ export default function ClipBoardFunct(graph) {
 					// No dialog visible
 		var source = mxEvent.getSource(evt);
 					
-		if (graph.isEnabled() && !graph.isMouseDown && !graph.isEditing() && source.nodeName != 'INPUT')
+		if (graph.isEnabled() && !graph.isMouseDown && !graph.isEditing() && source.nodeName !== 'INPUT')
 		{
-			if (evt.keyCode == 224 /* FF */ || (!mxClient.IS_MAC && evt.keyCode == 17 /* Control */) || (mxClient.IS_MAC && evt.keyCode == 91 /* Meta */))
+			if (evt.keyCode === 224 /* FF */ || (!mxClient.IS_MAC && evt.keyCode === 17 /* Control */) || (mxClient.IS_MAC && evt.keyCode === 91 /* Meta */))
 			{
 				// Cannot use parentNode for check in IE
 				if (!restoreFocus)
@@ -69,7 +66,7 @@ export default function ClipBoardFunct(graph) {
 	// Restores focus on graph container and removes text input from DOM
 	mxEvent.addListener(document, 'keyup', function(evt)
 	{
-		if (restoreFocus && (evt.keyCode == 224 /* FF */ || evt.keyCode == 17 /* Control */ ||evt.keyCode == 91 /* Meta */))
+		if (restoreFocus && (evt.keyCode === 224 /* FF */ || evt.keyCode === 17 /* Control */ ||evt.keyCode === 91 /* Meta */))
 		{
 			restoreFocus = false;
 						
@@ -163,16 +160,17 @@ export default function ClipBoardFunct(graph) {
 					for (var i = 0; i < childCount; i++)
 					{
 						var parent = model.getChildAt(model.getRoot(), i);
+						var children;
 									
 						// Adds cells to existing layers if not locked
 						if (targetChildCount > i)
 						{
 							// Inserts into active layer if only one layer is being pasted
-							var target = (childCount == 1) ? graph.getDefaultParent() : graph.model.getChildAt(graph.model.getRoot(), i);
+							var target = (childCount === 1) ? graph.getDefaultParent() : graph.model.getChildAt(graph.model.getRoot(), i);
 										
 							if (!graph.isCellLocked(target))
 							{								
-								var children = model.getChildren(parent);
+								children = model.getChildren(parent);
 								cells = cells.concat(graph.importCells(children, dx, dy, target));
 							}
 						}
@@ -180,7 +178,7 @@ export default function ClipBoardFunct(graph) {
 						{
 							// Delta is non cascading, needs separate move for layers
 							parent = graph.importCells([parent], 0, 0, graph.model.getRoot())[0];
-							var children = graph.model.getChildren(parent);
+							children = graph.model.getChildren(parent);
 							graph.moveCells(children, dx, dy);
 							cells = cells.concat(children);
 						}
@@ -204,12 +202,12 @@ export default function ClipBoardFunct(graph) {
 	var pasteText = function(text)
 	{
 		var xml = mxUtils.trim(text);
-		var x = graph.container.scrollLeft / graph.view.scale - graph.view.translate.x;
-		var y = graph.container.scrollTop / graph.view.scale - graph.view.translate.y;
+		// var x = graph.container.scrollLeft / graph.view.scale - graph.view.translate.x;
+		// var y = graph.container.scrollTop / graph.view.scale - graph.view.translate.y;
 					
 		if (xml.length > 0)
 		{
-			if (lastPaste != xml)
+			if (lastPaste !== xml)
 			{
 				lastPaste = xml;
 				dx = 0;
@@ -222,7 +220,7 @@ export default function ClipBoardFunct(graph) {
 			}
 								
 			// Standard paste via control-v
-			if (xml.substring(0, 14) == '<mxGraphModel>')
+			if (xml.substring(0, 14) === '<mxGraphModel>')
 			{
 				graph.setSelectionCells(importXml(xml, dx, dy));
 				graph.scrollCellToVisible(graph.getSelectionCell());
@@ -240,7 +238,7 @@ export default function ClipBoardFunct(graph) {
 						
 			if (provider != null)
 			{
-				if (document.documentMode == 10 || document.documentMode == 11)
+				if (document.documentMode === 10 || document.documentMode === 11)
 				{
 					data = provider.getData('Text');
 				}
@@ -248,7 +246,7 @@ export default function ClipBoardFunct(graph) {
 				{
 					data = (mxUtils.indexOf(provider.types, 'text/html') >= 0) ? provider.getData('text/html') : null;
 							
-					if (mxUtils.indexOf(provider.types, 'text/plain' && (data == null || data.length == 0)))
+					if (mxUtils.indexOf(provider.types, 'text/plain' && (data == null || data.length === 0)))
 					{
 						data = provider.getData('text/plain');
 					}
