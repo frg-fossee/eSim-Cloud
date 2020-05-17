@@ -15,8 +15,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.5.0
-    - name: ESLint Check
-      uses: hallee/eslint-action@1.0.1
     - name: Install packages,lint,build and Unit testing
       working-directory: ./eda-frontend
       run: |
