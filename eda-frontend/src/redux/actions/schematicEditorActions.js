@@ -1,6 +1,6 @@
 import api from '../../utils/Api'
 import * as actions from './actions'
-import AddSideBarComponentDOM from '../../components/SchematicEditor/Helper/SidebarDom.js'
+
 
 export const fetchLibraries = () => (dispatch) => {
 // SAMPLE Response from API

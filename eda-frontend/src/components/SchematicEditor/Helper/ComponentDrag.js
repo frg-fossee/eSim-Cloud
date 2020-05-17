@@ -14,8 +14,6 @@ const {
   mxClient,
   mxUtils,
   mxEvent,
-  mxPoint,
-  mxDragSource,
 } = new mxGraphFactory();
 
 export default function LoadGrid(container, sidebar) {

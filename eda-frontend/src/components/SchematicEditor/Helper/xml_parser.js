@@ -39,7 +39,7 @@ function extractData(xml){
       let parser = new DOMParser(),
       xml = parser.parseFromString(data,'text/xml');
       // console.log(xmlDoc);
-      var data = extractData(xml);
+      data = extractData(xml);
       // console.log(data)
       return data;
       
@@ -75,10 +75,8 @@ function extractData(xml){
         y_pos = (parseInt(height)/2 - parseInt(currentPin["pinY"])/fixed_number);
 
         // move this to another file
-
-        pins[i] = graph.insertVertex(v1, null, '', x_pos, y_pos, 2, 2,
-        'align=top;verticalAlign=top;' +
-                'fontColor=' + 'black' + ';strokeColor=' + 'black');
+        // eslint-disable-next-line
+        pins[i] = graph.insertVertex(v1, null, '', x_pos, y_pos, 2, 2, 'align=top;verticalAlign=top;'+'fontColor=' + 'black' + ';strokeColor=' + 'black');
                  pins[i].geometry.relative = false;
     }
   

@@ -1,6 +1,8 @@
 import mxGraphFactory from "mxgraph";
+//import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
 import getMetadataXML from "./xml_parser";
 const {
+  mxGraph,
   mxClient,
   mxUtils,
   mxEvent,
@@ -9,13 +11,13 @@ const {
 
 
 
-export default function AddSideBarComponent(graph,sidebar,src) {
-  var img = document.createElement("img");
-  img.setAttribute("src", src);
-  img.style.width = "48px";
-  img.style.height = "48px";
-  img.title = "Drag this to the diagram to create a new vertex";
-  sidebar.appendChild(img);
+export default function AddSideBarComponentDOMd(img) {
+  var container = document.getElementById('divGrid');
+  var graph = new mxGraph(container);
+
+  
+  var src=img.src;
+
   
   var graphF = function (evt) {
     var x = mxEvent.getClientX(evt);

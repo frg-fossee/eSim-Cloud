@@ -1,21 +1,17 @@
 import mxGraphFactory from "mxgraph";
-import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
-import getMetadataXML from "./xml_parser";
+//import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
+//import getMetadataXML from "./xml_parser";
 const {
-  mxGraph,
-  mxRubberband,
-  mxClient,
-  mxUtils,
-  mxEvent,
   mxPoint,
-  mxDragSource,
   mxConnectionConstraint,
   mxEdgeHandler,
-  mxCellEditor
+  mxCellEditor,
+  mxGraphHandler
 } = new mxGraphFactory();
 
 export default function WireConfigFunct(graph) 
 {
+	var container = document.getElementById("divGrid");
     graph.view.scale=1;
     graph.view.scale = 1;
     graph.setPanning(true);
@@ -28,10 +24,10 @@ export default function WireConfigFunct(graph)
     graph.setEnterStopsCellEditing(true);
     graph.getAllConnectionConstraints = function(terminal){
 		var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null;
-
+				// eslint-disable-next-line
 			   if ((geo != null ? !geo.relative : false) &&
 				   this.getModel().isVertex(terminal.cell) &&
-				   this.getModel().getChildCount(terminal.cell) == 0)
+				   this.getModel().getChildCount(terminal.cell) === 0)
 			   {
 					return [new mxConnectionConstraint(new mxPoint(0, 0.5), false),
 				    	new mxConnectionConstraint(new mxPoint(1, 0.5), false)];
@@ -100,7 +96,7 @@ export default function WireConfigFunct(graph)
 				container.style.backgroundColor = 'black';
 				
 				// White in-place editor text color
-				mxCellEditorStartEditing = mxCellEditor.prototype.startEditing;
+				var mxCellEditorStartEditing = mxCellEditor.prototype.startEditing;
 				mxCellEditor.prototype.startEditing = function (cell, trigger)
 				{
 					mxCellEditorStartEditing.apply(this, arguments);
@@ -116,14 +112,14 @@ export default function WireConfigFunct(graph)
             var labelBackground = (invert) ? '#000000' : '#FFFFFF';
 			var fontColor = (invert) ? '#FFFFFF' : '#000000';
 			var strokeColor = (invert) ? '#C0C0C0' : '#000000';
-			var fillColor = (invert) ? 'none' : '#FFFFFF';
+			//var fillColor = (invert) ? 'none' : '#FFFFFF';
 			
 			var style = graph.getStylesheet().getDefaultEdgeStyle();
 			delete style['endArrow'];
 			//style['strokeColor'] = strokeColor;
 			style['labelBackgroundColor'] = labelBackground;
 			style['edgeStyle'] = 'wireEdgeStyle';
-			//style['fontColor'] = fontColor;
+			style['fontColor'] = fontColor;
 			style['fontSize'] = '9';
 			style['movable'] = '0';
 			//style['strokeWidth'] = strokeWidth;
@@ -136,7 +132,7 @@ export default function WireConfigFunct(graph)
 			style = graph.getStylesheet().getDefaultVertexStyle();
 			style['gradientDirection'] = 'south';
 			//style['gradientColor'] = '#909090';
-			//style['strokeColor'] = strokeColor;
+			style['strokeColor'] = strokeColor;
 			//style['fillColor'] = '#e0e0e0';
 			style['fillColor'] = 'none';
 			//style['fontColor'] = fontColor;

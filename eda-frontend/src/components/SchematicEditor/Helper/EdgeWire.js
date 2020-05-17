@@ -2,20 +2,17 @@
     Adding clipboard functionality to the diagram editor 
 */
 import mxGraphFactory from "mxgraph";
-import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
-import getMetadataXML from "./xml_parser";
+
+
 const {
-  mxGraph,
-  mxRubberband,
-  mxClient,
   mxUtils,
   mxEvent,
   mxPoint,
-  mxDragSource,
   mxConstants,
   mxConnectionHandler,
   mxEdgeHandler,
   mxEdgeSegmentHandler,
+  mxCellHighlight
 } = new mxGraphFactory();
 
 export default function EdgeWireFunct() {
@@ -99,6 +96,7 @@ export default function EdgeWireFunct() {
 		{
 			var result = null;
 			var model = this.graph.getModel();
+			// eslint-disable-next-line
 			var parent = model.getParent(edge);
 			
 			model.beginUpdate();
@@ -154,9 +152,11 @@ export default function EdgeWireFunct() {
 			};
 			
 			// Adds in-place highlighting
-			mxCellHighlightHighlight = mxCellHighlight.prototype.highlight;
+			// eslint-disable-next-line
+			var mxCellHighlightHighlight = mxCellHighlight.prototype.highlight;
 			marker.highlight.highlight = function(state)
 			{
+				// eslint-disable-next-line
 				if (this.state != state)
 				{
 					if (this.state != null)
