@@ -2,6 +2,13 @@ import drawSvg as draw
 
 
 class SvgPlotter:
+    svg_boundary = {
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0,
+                        "left": 0,
+                    }
+
     def __init__(self):
         self.STROKE_COLOR = "black"
         self.PIN_NAME_COLOR = "black"
@@ -9,6 +16,77 @@ class SvgPlotter:
         self.PIN_NUMBER_OFFSET = 40
         self.RADIUS_OF_NOT_GATE = 25
         self.FILL_NOT_GATE = "F"
+
+    # def update_svg_boundary(self,value,axis):
+    #     # axis can be 'x' or 'y'
+    #     if axis == 'x':
+    #         # update along x axis
+    #         if(value > 0):
+    #             # right side
+    #             # check if passed value is greater than
+    #             # current value
+    #             if(value > self.svg_boundary["right"]):
+    #                 self.svg_boundary["right"] = value
+    #         else:
+    #             # left side
+    #             # check if passed values is smaller
+    #             # than the current value
+    #             if(value < self.svg_boundary["left"]):
+    #                 self.svg_boundary["left"] = value
+
+    #     if axis == 'y':
+    #         # update along y axis
+    #         if(value > 0):
+    #             # top side
+    #             # check if passed value is greater than
+    #             # current value
+    #             if(value > self.svg_boundary["top"]):
+    #                 self.svg_boundary["top"] = value
+    #         else:
+    #             # bottom side
+    #             if(value < self.svg_boundary["bottom"]):
+    #                 self.svg_boundary["bottom"] = value
+
+    def update_svg_boundary(self, vertex_list):
+        for point in range(len(vertex_list)):
+            x_value = int(vertex_list[point][0])
+            y_value = int(vertex_list[point][1])
+
+            if(x_value > 0):
+                # right side
+                # check if passed value is greater than
+                # current value
+                if(x_value > self.svg_boundary["right"]):
+                    self.svg_boundary["right"] = x_value
+            else:
+                # left side
+                # check if passed values is smaller
+                # than the current value
+                if(x_value < self.svg_boundary["left"]):
+                    self.svg_boundary["left"] = x_value
+
+            if(y_value > 0):
+                # top side
+                # check if passed value is greater than
+                # current value
+                if(y_value > self.svg_boundary["top"]):
+                    self.svg_boundary["top"] = y_value
+            else:
+                # bottom side
+                if(y_value < self.svg_boundary["bottom"]):
+                    self.svg_boundary["bottom"] = y_value
+
+    def get_svg_boundary(self,):
+
+        return self.svg_boundary
+
+    def reset_svg_boundary(self,):
+        self.svg_boundary = {
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0,
+                        "left": 0,
+                    }
 
     """pen-parameter is the thickness of the pen,when
     zero the default pen width is used.
@@ -31,7 +109,6 @@ class SvgPlotter:
     def drawCircle(self, d, x, y, r, fill="f", pen=5):
 
         pen = int(pen)
-
         if fill == "f":
             kwargs = {"fill_opacity": 0}
         elif fill == "F":
@@ -45,9 +122,14 @@ class SvgPlotter:
                         **kwargs)
         )
 
+        v_list = [(x, y+r),  (x, y-r), (x + r, y), (x - r, y)]
+
+        self.update_svg_boundary(v_list)
+
         return d
 
-    def drawRec(self, d, x1, y1, x2, y2, fill="f", pen=5):
+    def drawRec(self, d, x1, y1, x2, y2, fill="f", pen=5,
+                ):
 
         # 'f'->filled shape in background color
         # 'F' -> filled shape in pen color
@@ -58,6 +140,13 @@ class SvgPlotter:
         y1 = int(y1)
         x2 = int(x2)
         y2 = int(y2)
+
+        # self.update_svg_boundary(x1,'x')
+        # self.update_svg_boundary(y1,'y')
+
+        # self.update_svg_boundary(x2,'x')
+        # self.update_svg_boundary(y2,'y')
+
         if fill == "f":
             kwargs = {"fill_opacity": 0}
         elif fill == "F":
@@ -81,11 +170,13 @@ class SvgPlotter:
                 **kwargs
             )
         )
+        self.update_svg_boundary([(x1, y1), (x2, y2)])
 
         return d
 
     # A X Y radius start end part dmg pen fill Xstart Ystart Xend Yend
-    def drawArc(self, d, cx, cy, r, start_deg, end_deg, pen=5, fill="f"):
+    def drawArc(self, d, cx, cy, r, start_deg, end_deg, pen=5, fill="f",
+                ):
 
         cx = int(cx)
         cy = int(cy)
@@ -137,7 +228,7 @@ class SvgPlotter:
 
     # P count part dmg pen X Y ... fill
     def drawPolygon(self, d, vertices_count, pen=5,
-                    vertices_list=[], fill="f"):
+                    vertices_list=[], fill="f", ):
 
         # if(fill == 'f'):
         #     kwargs = {"fill_opacity" : 0.3}
@@ -162,6 +253,8 @@ class SvgPlotter:
                 draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR,
                           stroke_width=pen)
             )
+
+            self.update_svg_boundary(vertices_list)
 
         return d
 
@@ -193,13 +286,16 @@ class SvgPlotter:
     ):
 
         # C 55 0 10 1 0 6 N ->invertec pin circle shape example.
-
         x1 = int(x1)
         y1 = int(y1)
         text_size = int(text_size)
         length = int(length)
         pin_name_offset = int(pin_name_offset)
         pen = int(pen)
+
+        v_list = [(x1, y1)]
+        self.update_svg_boundary(v_list)
+
         if orientation == "R":
 
             x2 = x1 + length
@@ -216,7 +312,7 @@ class SvgPlotter:
             # x = x1
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6,
+                    pinNumber, text_size/2, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
@@ -251,7 +347,7 @@ class SvgPlotter:
 
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6,
+                    pinNumber, text_size/2, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
@@ -286,11 +382,11 @@ class SvgPlotter:
             # to position pin number properly
             x = x1 - 40
             x = x1 - self.PIN_NUMBER_OFFSET
-            y = y1 + (length / 2)
+            y = y2 - (length / 3)
             # y = y1
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6,
+                    pinNumber, text_size/2, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
@@ -323,10 +419,10 @@ class SvgPlotter:
             # to position pin number properly
             # x = x1 - 40
             x = x1 - self.PIN_NUMBER_OFFSET
-            y = y1 - (length / 2)
+            y = y2 + (length / 3)
             d.append(
                 draw.Text(
-                    pinNumber, text_size, x, y, center=0.6,
+                    pinNumber, text_size/2, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
