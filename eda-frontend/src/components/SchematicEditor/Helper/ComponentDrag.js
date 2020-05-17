@@ -5,6 +5,7 @@ import comp3 from "../../../static/CircuitComp/U-4051-1:A.svg";
 import AddSideBarComponent from "./SideBar.js"
 import WireConfigFunct from "./WireConfig.js"
 import EdgeWireFunct from "./EdgeWire.js"
+import ClipBoardFunct from "./ClipBoard.js"
 var paths=[comp1,comp2,comp3];
 
 
@@ -32,10 +33,21 @@ export default function LoadGrid(container, sidebar) {
     new mxRubberband(graph);
     WireConfigFunct(graph);
     EdgeWireFunct();
+    ClipBoardFunct(graph);
 
   }
   for(var i=0;i<paths.length;i++){
     AddSideBarComponent(graph,sidebar,paths[i]); //Adds the component to the sidebar and makes it draggable
   }
+  graph.getModel().beginUpdate();
+	try
+	{
+
+	}
+	finally
+	{
+					// Updates the display
+					graph.getModel().endUpdate();
+	}
   
 }
