@@ -18,8 +18,9 @@ import MenuButton from './MenuButton'
 const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginLeft: 'auto',
+    marginRight: theme.spacing(0),
     padding: theme.spacing(1),
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('lg')]: {
       display: 'none'
     }
   },

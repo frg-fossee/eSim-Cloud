@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
-import AddSideBarComponentDOM from "./Helper/SidebarDom.js"
+import PropTypes from 'prop-types'
+import AddSideBarComponentDOM from './Helper/SidebarDom.js'
 import {
   Hidden,
   List,
@@ -15,7 +15,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-// import AddSideBarComponent from './Helper/SideBar'
 
 const COMPONENTS_PER_ROW = 3
 
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function ComponentSidebar (props) {
+export default function ComponentSidebar ({ compRef }) {
   const classes = useStyles()
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
@@ -44,16 +43,15 @@ export default function ComponentSidebar (props) {
     console.log('Current: ', collapse[id], components[id].length)
 
     // Fetches Components for given library if not already fetched
-    if(collapse[id]===false && components[id].length===0){
+    if (collapse[id] === false && components[id].length === 0) {
       console.log('Components not fetched earlier, fetching.')
       dispatch(fetchComponents(id))
     }
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-  
+
     console.log(collapse)
-  
   }
 
   // For Fetching Libraries
@@ -64,12 +62,12 @@ export default function ComponentSidebar (props) {
   const chunk = (array, size) => {
     return array.reduce((chunks, item, i) => {
       if (i % size === 0) {
-        chunks.push([item]);
+        chunks.push([item])
       } else {
-        chunks[chunks.length - 1].push(item);
+        chunks[chunks.length - 1].push(item)
       }
-      return chunks;
-    }, []);
+      return chunks
+    }, [])
   }
 
   return (
@@ -97,24 +95,23 @@ export default function ComponentSidebar (props) {
                   <Collapse in={collapse[library.id]} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding dense >
 
-                {/* Chunked Components of Library */}
-                {
-                chunk(components[library.id], COMPONENTS_PER_ROW).map((component_chunk)=>{
-                 return(
-                  <ListItem key={component_chunk[0].svg_path} divider>
-                  {
-                  component_chunk.map((component)=>{
-                  return(<ListItemIcon key={component.component_name}>
-                  <img src={'../'+component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} />
-                  </ListItemIcon>)
-                                     }
+                      {/* Chunked Components of Library */}
+                      {
+                        chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
+                          return (
+                            <ListItem key={componentChunk[0].svg_path} divider>
+                              {
+                                componentChunk.map((component) => {
+                                  return (<ListItemIcon key={component.component_name}>
+                                    <img src={'../' + component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} />
+                                  </ListItemIcon>)
+                                }
+                                )
+                              }
+                            </ListItem>
                           )
-                  }
-                  </ListItem>
-                      )
-                 })
-                 }
-
+                        })
+                      }
                     </List>
                   </Collapse>
                 </div>
@@ -123,10 +120,13 @@ export default function ComponentSidebar (props) {
           )
         }
 
-        <ListItem>
-          <div ref={props.compRef}></div>
+        <ListItem ref={compRef}>
         </ListItem>
       </List>
     </>
   )
+}
+
+ComponentSidebar.propTypes = {
+  compRef: PropTypes.object.isRequired
 }
