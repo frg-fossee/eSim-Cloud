@@ -52,6 +52,9 @@ export default function ComponentSidebar ({ compRef }) {
     dispatch(toggleCollapse(id))
 
     console.log(collapse)
+
+
+
   }
 
   // For Fetching Libraries
@@ -95,20 +98,20 @@ export default function ComponentSidebar ({ compRef }) {
                   <Collapse in={collapse[library.id]} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding dense >
 
-                      {/* Chunked Components of Library */}
-                      {
-                        chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
-                          return (
-                            <ListItem key={componentChunk[0].svg_path} divider>
-                              {
-                                componentChunk.map((component) => {
-                                  return (<ListItemIcon key={component.component_name}>
-                                    <img src={'../' + component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} />
-                                  </ListItemIcon>)
-                                }
-                                )
-                              }
-                            </ListItem>
+                {/* Chunked Components of Library */}
+                {
+                chunk(components[library.id], COMPONENTS_PER_ROW).map((component_chunk)=>{
+                 return(
+                  <ListItem key={component_chunk[0].svg_path} divider>
+                  {
+                  component_chunk.map((component)=>{
+                  console.log(component)
+                  return(<ListItemIcon key={component.component_name}>
+                  {/* <img src={'../'+component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} /> */}
+                  <li>{component.component_name}</li>
+                  </ListItemIcon>)
+                                     }
+
                           )
                         })
                       }

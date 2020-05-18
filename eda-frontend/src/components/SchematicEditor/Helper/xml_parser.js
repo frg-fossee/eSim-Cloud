@@ -1,3 +1,4 @@
+/* eslint-disable */
 let pinData,metadata,pinList
 let currentPin,x_pos,y_pos
 let width,height

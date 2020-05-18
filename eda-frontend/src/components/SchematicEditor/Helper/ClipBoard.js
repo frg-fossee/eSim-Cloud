@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* 
 	This module containes functions to perform clipboard functions on the schematic editor graph 
 */
@@ -284,6 +285,7 @@ export default function ClipBoardFunct(graph) {
 		
 		textInput.select();
 	});
+	
 
 				
 				
