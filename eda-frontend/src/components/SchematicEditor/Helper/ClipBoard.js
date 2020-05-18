@@ -286,6 +286,7 @@ export default function ClipBoardFunct(graph) {
 		
 		textInput.select();
 	});
+	
 
 				
 				
