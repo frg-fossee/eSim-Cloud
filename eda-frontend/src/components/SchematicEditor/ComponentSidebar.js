@@ -1,6 +1,6 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
-import AddSideBarComponentDOM from "./Helper/SidebarDom.js"
+import PropTypes from 'prop-types'
+// import AddSideBarComponentDOM from './Helper/SidebarDom.js'
 import {
   Hidden,
   List,
@@ -15,7 +15,6 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-// import AddSideBarComponent from './Helper/SideBar'
 
 const COMPONENTS_PER_ROW = 3
 
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function ComponentSidebar (props) {
+export default function ComponentSidebar ({ compRef }) {
   const classes = useStyles()
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
@@ -44,7 +43,7 @@ export default function ComponentSidebar (props) {
     console.log('Current: ', collapse[id], components[id].length)
 
     // Fetches Components for given library if not already fetched
-    if(collapse[id]===false && components[id].length===0){
+    if (collapse[id] === false && components[id].length === 0) {
       console.log('Components not fetched earlier, fetching.')
       dispatch(fetchComponents(id))
     }
@@ -53,6 +52,7 @@ export default function ComponentSidebar (props) {
     dispatch(toggleCollapse(id))
 
     console.log(collapse)
+
 
   }
 
@@ -64,12 +64,12 @@ export default function ComponentSidebar (props) {
   const chunk = (array, size) => {
     return array.reduce((chunks, item, i) => {
       if (i % size === 0) {
-        chunks.push([item]);
+        chunks.push([item])
       } else {
-        chunks[chunks.length - 1].push(item);
+        chunks[chunks.length - 1].push(item)
       }
-      return chunks;
-    }, []);
+      return chunks
+    }, [])
   }
 
   return (
@@ -78,8 +78,8 @@ export default function ComponentSidebar (props) {
         <div className={classes.toolbar} />
       </Hidden>
 
-      {/* Display List of categorized components */}
-      <List>
+       {/* Display List of categorized components */}
+       <List>
         <ListItem button divider>
           <h2 style={{ margin: '5px' }}>Components List</h2>
         </ListItem>
@@ -125,10 +125,13 @@ export default function ComponentSidebar (props) {
           )
         }
 
-        <ListItem>
-          <div ref={props.compRef}></div>
+        <ListItem ref={compRef}>
         </ListItem>
       </List>
     </>
   )
+}
+
+ComponentSidebar.propTypes = {
+  compRef: PropTypes.object.isRequired
 }

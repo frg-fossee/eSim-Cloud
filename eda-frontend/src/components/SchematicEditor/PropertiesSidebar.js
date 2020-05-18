@@ -113,7 +113,7 @@ export default function PropertiesSidebar ({ gridRef }) {
 
   return (
     <>
-      <Hidden smDown>
+      <Hidden mdDown>
         <div className={classes.toolbar} />
       </Hidden>
       <List>
@@ -126,6 +126,7 @@ export default function PropertiesSidebar ({ gridRef }) {
     </>
   )
 }
+
 PropertiesSidebar.propTypes = {
   gridRef: PropTypes.object.isRequired
 }
