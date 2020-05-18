@@ -154,5 +154,26 @@
       "y": 0
     }
   ],
-  "simulation": {}
+  "simulation": {},
+  "info": {
+    "name": "Arduino UNO R3",
+    "image": "https://5.imimg.com/data5/RG/FF/LP/SELLER-43948449/arduino-uno-r3-board-500x500.jpg",
+    "Datasheet": "https://www.farnell.com/datasheets/1682209.pdf",
+    "description": "This is the Arduino Uno R3. In addition to all the features of the previous board, the Uno now uses an ATmega16U2 instead of the 8U2 found on the Uno (or the FTDI found on previous generations). This allows for faster transfer rates and more memory. No drivers needed for Linux or Mac (inf file for Windows is needed and included in the Arduino IDE), and the ability to have the Uno show up as a keyboard, mouse, joystick, etc.",
+    "properties": {
+      "Microcontroller": "ATMega328P",
+      "Operating Voltage": "5V",
+      "Input Voltage(limits)": "6-20V(limits)",
+      "Input Voltage(recommended)": "7V to 12V(recommended)",
+      "DC Current per I/O Pin": "40 mA",
+      "DC Current for 3.3V Pin": "50 mA",
+      "Digital Pins": "14(of which 6 provide PWM output)",
+      "Analog Pins": "6",
+      "Flash Memory": "32KB of which 0.5 KB used by bootloader",
+      "SRAM": "2KB(ATmega328)",
+      "Clock Speed": "16MHz",
+      "EEPROM": "1 KB (ATmega328)",
+      "LED": "Inbuilt"
+    }
+  }
 }

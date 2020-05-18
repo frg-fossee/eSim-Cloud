@@ -187,4 +187,9 @@ export class SimulatorComponent implements OnInit {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
   }
+  /* exportPng() {
+     const cnvas = document.getElementById('canvas') as HTMLCanvasElement;
+     const img = cnvas.toDataURL("image/png");
+     document.write('<img src="' + img + '"/>');
+   }*/
 }

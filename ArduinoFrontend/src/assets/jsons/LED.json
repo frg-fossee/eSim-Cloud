@@ -45,5 +45,14 @@
     "glowcolors": [
       "rgba(255,0,0,0.7)-rgba(255,0,0,0.2)"
     ]
+  },
+  "info": {
+    "name": "LED",
+    "image": "https://static.rapidonline.com/catalogueimages/module/06/01/m060113p01wl.jpg",
+    "description": "A light-emitting diode (LED) is a semiconductor light source that emits light when current flows through it.",
+    "properties": {
+      "Light Color": "White, Yellow, Red, Green & Blue",
+      "Voltage ": "DC 3V - 5V"
+    }
   }
 }

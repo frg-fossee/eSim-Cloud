@@ -51,7 +51,7 @@ Configuring Production Environment
 * ``docker-compose -f docker-compose.prod.yml --env-file .env.prod up --scale django=2 --scale celery=3 -d``
 
 Configuring Development Environment
-===================================
+-----------------------------------
 
 Setting up docker containers
 ----------------------------
@@ -69,6 +69,19 @@ For Frontend Containers and backend containers
 * To run arduino-frontend along with all backend containers
   
   ``docker-compose -f docker-compose.dev.yml up arduino-frontend``
+  
+References
+##########
+
+
+* https://angular.io/ (Angular)
+* https://material.angular.io/(Material UI Angular)
+* https://getbootstrap.com/docs/4.0/getting-started/introduction/(Bootstrap)
+* https://www.w3schools.com/icons/fontawesome_icons_intro.asp (Fontawesome)
+* https://www.electronics-lab.com/avr8js-open-source-arduino-simulator-based-javascript/ (avr8js)
+* https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html(documentation .rstfile)
+* https://inkscape.org/ (inkscape for drawing svg)
+* https://microsoft.github.io/monaco-editor/(monaco editor for code editor)
 
 
 
