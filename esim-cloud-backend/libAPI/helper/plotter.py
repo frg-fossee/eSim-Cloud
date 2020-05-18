@@ -108,6 +108,7 @@ class SvgPlotter:
 
     def drawCircle(self, d, x, y, r, fill="f", pen=5):
 
+
         pen = int(pen)
         if fill == "f":
             kwargs = {"fill_opacity": 0}
@@ -121,6 +122,11 @@ class SvgPlotter:
                         stroke=self.STROKE_COLOR,
                         **kwargs)
         )
+
+        x = int(x)
+        y = int(y)
+        r = int(r)
+        
 
         v_list = [(x, y+r),  (x, y-r), (x + r, y), (x - r, y)]
 
