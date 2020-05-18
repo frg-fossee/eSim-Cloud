@@ -2,11 +2,12 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
-  // Necessary for content to be below Header
   content: {
     flexGrow: 1,
     padding: theme.spacing(5, 3),
     backgroundColor: "#f4f6f8",
+    height: "100vh",
+    overflow: "auto",
   },
 }));
 
