@@ -6,7 +6,7 @@ const {
   mxUtils,
   mxEvent,
   mxDragSource,
-  mxPrintPreview
+  // mxPrintPreview
 } = new MxGraphFactory()
 
 export default function AddSideBarComponent(graph, sidebar, src) {

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import AddSideBarComponentDOM from './Helper/SidebarDom.js'
+// import AddSideBarComponentDOM from './Helper/SidebarDom.js'
 import {
   Hidden,
   List,
@@ -54,7 +54,6 @@ export default function ComponentSidebar ({ compRef }) {
     console.log(collapse)
 
 
-
   }
 
   // For Fetching Libraries
@@ -79,8 +78,8 @@ export default function ComponentSidebar ({ compRef }) {
         <div className={classes.toolbar} />
       </Hidden>
 
-      {/* Display List of categorized components */}
-      <List>
+       {/* Display List of categorized components */}
+       <List>
         <ListItem button divider>
           <h2 style={{ margin: '5px' }}>Components List</h2>
         </ListItem>
@@ -111,10 +110,13 @@ export default function ComponentSidebar ({ compRef }) {
                   <li>{component.component_name}</li>
                   </ListItemIcon>)
                                      }
-
                           )
-                        })
-                      }
+                  }
+                  </ListItem>
+                      )
+                 })
+                 }
+
                     </List>
                   </Collapse>
                 </div>
