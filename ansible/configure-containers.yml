@@ -1,0 +1,9 @@
+- name: Configure Docker
+  hosts: all
+  become: true
+  tasks:
+      - name: Clone eSim Repo
+        git:
+          repo: https://github.com/frg-fossee/eSim-Cloud.git
+          dest: /home/{{ansible_user_id}}/eSim-Cloud
+

@@ -1,0 +1,4 @@
+---
+- import_playbook: configure-instance.yml
+- import_playbook: configure-containers.yml
+
