@@ -36,6 +36,10 @@
       - name: Install Docker Module for Python
         pip:
           name: docker
+      - name: Install Docker-Compose Module for Python
+        pip:
+          name: docker-compose
+
       - name: add user mod
         command: usermod -aG docker {{ansible_user_id}}
 
@@ -51,16 +55,3 @@
           dest: /usr/bin/docker-compose
           state: link
 
-      - name: Stop service httpd, if running
-        service:
-          name: httpd
-          state: stopped
-          enabled: no
-        ignore_errors: yes
-
-      - name: Stop service apache2, if running
-        service:
-          name: apache2
-          state: stopped
-          enabled: no
-        ignore_errors: yes
