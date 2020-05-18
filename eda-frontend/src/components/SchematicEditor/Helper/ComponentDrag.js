@@ -1,3 +1,4 @@
+/* eslint-disable */
 import mxGraphFactory from "mxgraph";
 import comp1 from "../../../static/CircuitComp/U-4001-1:A.svg";
 import comp2 from "../../../static/CircuitComp/U-4011-1:B.svg";

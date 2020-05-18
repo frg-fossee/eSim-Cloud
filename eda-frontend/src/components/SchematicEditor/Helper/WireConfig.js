@@ -1,29 +1,28 @@
-import mxGraphFactory from "mxgraph";
-//import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
-//import getMetadataXML from "./xml_parser";
+import MxGraphFactory from 'mxgraph'
+// import comp1 from "../../../static/CircuitComp/4002_1_A.svg";
+// import getMetadataXML from "./xml_parser";
 const {
   mxPoint,
   mxConnectionConstraint,
   mxEdgeHandler,
   mxCellEditor,
   mxGraphHandler
-} = new mxGraphFactory();
+} = new MxGraphFactory()
 
-export default function WireConfigFunct(graph) 
-{
-	var container = document.getElementById("divGrid");
-    graph.view.scale=1;
-    graph.view.scale = 1;
-    graph.setPanning(true);
-    graph.setConnectable(true);
-    graph.setConnectableEdges(true);
-    graph.setDisconnectOnMove(false);
-    graph.foldingEnabled = false;    
-    graph.panningHandler.isPopupTrigger = function() { return false; };
-
-    graph.setEnterStopsCellEditing(true);
-    graph.getAllConnectionConstraints = function(terminal){
-		var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null;
+export default function WireConfigFunct (graph) {
+  var container = document.getElementById('divGrid')
+  graph.view.scale = 1
+  graph.view.scale = 1
+  graph.setPanning(true)
+  graph.setConnectable(true)
+  graph.setConnectableEdges(true)
+  graph.setDisconnectOnMove(false)
+  graph.foldingEnabled = false
+  graph.panningHandler.isPopupTrigger = function () { return false }
+  graph.setEnterStopsCellEditing(true)
+/* eslint-disable */
+  graph.getAllConnectionConstraints = function (terminal){
+	var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null;
 				// eslint-disable-next-line
 			   if ((geo != null ? !geo.relative : false) &&
 				   this.getModel().isVertex(terminal.cell) &&

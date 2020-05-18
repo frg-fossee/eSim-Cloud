@@ -1,6 +1,7 @@
-/* 
+/*
     Adding clipboard functionality to the diagram editor 
 */
+/* eslint-disable */
 import mxGraphFactory from "mxgraph";
 
 
