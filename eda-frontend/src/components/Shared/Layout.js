@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(1),
+    padding: theme.spacing(0.5),
     [theme.breakpoints.up('sm')]: {
       display: 'none'
     }
