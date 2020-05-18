@@ -82,16 +82,18 @@ class SvgGenerator:
         """
 
         data = self.parser.extract_data_from_lib(file_path)
+        dcm_path = file_path.split('.')[0] + ".dcm"
         folder_name = file_path.split('/')[-1].split(".")[0]
+        dcm_data = self.parser.extract_data_from_dcm(dcm_path)
+        # folder_name is also same as the file name without extension
+     
         # print(folder_name)
 
-        for i in range(
-            len(data)
-        ):  # loop through all the components in that library file.
+        for i in range(len(data)):  # loop through all the components in that library file.
 
             # initialize the drawing canvas.we need to initialize and save svg
             # for each components.
-
+            
             DEF_LINE = data[i]["def"]
 
             F0_LINE = data[i]["fn"][0]  # noqa
@@ -107,8 +109,19 @@ class SvgGenerator:
             # DEF 14529 U 0 40 Y Y 1 L N
             # ['DEF', '14529', 'U', '0', '40', 'Y', 'Y', '1', 'L', 'N']
             name_of_symbol = DEF_LINE[1]
+            
+
             # symbol_prefix is 'U' for integrated circiut and 'R' for resister
             symbol_prefix = DEF_LINE[2]  # noqa
+            cmp_data = {}
+            for co in range(0, len(dcm_data)):
+                comp = dcm_data[co]
+                if(name_of_symbol == comp["name"]):
+                    cmp_data["name": comp["name"]]
+                    cmp_data["keyword":comp["K"]]
+                    cmp_data["description":comp["D"]]
+                    cmp_data["data_link":comp["F"]]
+                    cmp_data["symbol_prefix":symbol_prefix]
             # The third paramater is always 0
             pin_name_offset = DEF_LINE[4]
             show_pin_number = DEF_LINE[5]   # noqa
@@ -410,13 +423,15 @@ class SvgGenerator:
                         if(run == 1):
                             self.save_svg(d,
                                           f"{symbol_prefix}" +
-                                          f"-{name_of_symbol}-{dm}:" +
+                                          f"-{name_of_symbol}-{dm}-" +
                                           f"{chr(64+z)}",
                                           save_path, pin_number_positions,
                                           (width, height))
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
 
+        # list containgn a dictinory and file name
+        # filen, data sheetling symbolprefix dmg part number DCM FILE
         return symbol_prefix
 
 

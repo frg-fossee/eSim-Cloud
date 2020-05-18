@@ -32,11 +32,40 @@ class Parser:
 
                     else:
                         pass
-
+        
         return data
 
+    def extract_data_from_dcm(self, filename):
+        print(filename.split("/")[-1].split(".")[0])
+        with open(filename) as file:
+            file_contents = file.readlines()
+            # data = [] 
+            # print(file_contents)
+            
+            dcm_data = []
+
+            for line in file_contents:
+                line = line.strip().split(' ')
+                if('$CMP' in line):
+                    dcm_component = {"name": line[1]}
+                elif('$ENDCMP' in line):
+                    dcm_data.append(dcm_component)
+                elif(line[0] == 'D'):
+                    # description
+                    dcm_component["D"] = line[1]
+                elif(line[0] == 'K'):
+                    # keyword
+                    dcm_component["K"] = line[1]
+                elif(line[0] == 'F'):
+                    # datasheet_link
+                    dcm_component["F"] = line[1]
+
+        return dcm_data
 
 if __name__ == "__main__":
     parser = Parser()
-    data = parser.extract_data_from_lib("./sample_lib/4002.lib")
-    print(data)
+    # data = parser.extract_data_from_lib("./sample_lib/4002.lib")
+    data = parser.extract_data_from_dcm("../../kicad-symbols/4xxx.dcm")
+    # print(data)
+    for co in range(0, len(data)):
+        print(data[co]["name"])
