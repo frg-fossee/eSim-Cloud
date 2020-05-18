@@ -1,10 +1,12 @@
+/* eslint-disable new-cap */
 import MxGraphFactory from 'mxgraph'
 import getMetadataXML from './xml_parser'
 const {
   mxClient,
   mxUtils,
   mxEvent,
-  mxDragSource
+  mxDragSource,
+  mxPrintPreview
 } = new MxGraphFactory()
 
 export default function AddSideBarComponent(graph, sidebar, src) {
@@ -50,6 +52,8 @@ export default function AddSideBarComponent(graph, sidebar, src) {
     }
 
     graph.setSelectionCell(v1)
+    /* var preview = new mxPrintPreview(graph)
+    preview.open() */
   }
 
   // Creates a DOM node that acts as the drag source

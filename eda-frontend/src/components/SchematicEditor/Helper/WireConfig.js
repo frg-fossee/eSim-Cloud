@@ -115,7 +115,7 @@ export default function WireConfigFunct (graph) {
 			
 			var style = graph.getStylesheet().getDefaultEdgeStyle();
 			delete style['endArrow'];
-			//style['strokeColor'] = strokeColor;
+			style['strokeColor'] = strokeColor;
 			style['labelBackgroundColor'] = labelBackground;
 			style['edgeStyle'] = 'wireEdgeStyle';
 			style['fontColor'] = fontColor;
@@ -130,9 +130,9 @@ export default function WireConfigFunct (graph) {
 			
 			style = graph.getStylesheet().getDefaultVertexStyle();
 			style['gradientDirection'] = 'south';
-			//style['gradientColor'] = '#909090';
+			style['gradientColor'] = '#909090';
 			style['strokeColor'] = strokeColor;
-			//style['fillColor'] = '#e0e0e0';
+			style['fillColor'] = '#e0e0e0';
 			style['fillColor'] = 'none';
 			//style['fontColor'] = fontColor;
 			style['fontStyle'] = '1';
