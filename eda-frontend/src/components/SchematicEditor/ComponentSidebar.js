@@ -6,7 +6,7 @@ import {
   List,
   ListItem,
   Collapse,
-  ListItemIcon
+
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -15,8 +15,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-
-const COMPONENTS_PER_ROW = 3
+import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state"
+import Popover from "@material-ui/core/Popover"
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -51,9 +51,6 @@ export default function ComponentSidebar ({ compRef }) {
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
 
-    console.log(collapse)
-
-
   }
 
   // For Fetching Libraries
@@ -61,16 +58,39 @@ export default function ComponentSidebar ({ compRef }) {
     dispatch(fetchLibraries())
   }, [dispatch])
 
-  const chunk = (array, size) => {
-    return array.reduce((chunks, item, i) => {
-      if (i % size === 0) {
-        chunks.push([item])
-      } else {
-        chunks[chunks.length - 1].push(item)
-      }
-      return chunks
-    }, [])
-  }
+
+// Generates Component Listing and It's Pop Over
+const generateComponent = (component) => {
+  return (
+    <PopupState variant="popover" popupId={component.component_name}>
+    {popupState => (
+      <div>
+    <ListItem key={component.component_name} {...bindTrigger(popupState)}>
+    {/* <img src={'../'+component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} /> */}
+      {component.component_name}
+    </ListItem>
+
+    <Popover
+              {...bindPopover(popupState)}
+              anchorOrigin={{
+                vertical: "center",
+                horizontal: "right"
+              }}
+              transformOrigin={{
+                vertical: "center",
+                horizontal: "left"
+              }}
+    >
+              Component Details Here
+    </Popover>
+    </div>
+        )}
+    </PopupState>
+  )
+}
+
+
+
 
   return (
     <>
@@ -99,18 +119,11 @@ export default function ComponentSidebar ({ compRef }) {
 
                 {/* Chunked Components of Library */}
                 {
-                chunk(components[library.id], COMPONENTS_PER_ROW).map((component_chunk)=>{
+                components[library.id].map((component)=>{
                  return(
-                  <ListItem key={component_chunk[0].svg_path} divider>
+                  <ListItem key={component.component_name} divider>
                   {
-                  component_chunk.map((component)=>{
-                  console.log(component)
-                  return(<ListItemIcon key={component.component_name}>
-                  {/* <img src={'../'+component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} /> */}
-                  <li>{component.component_name}</li>
-                  </ListItemIcon>)
-                                     }
-                          )
+                      generateComponent(component)
                   }
                   </ListItem>
                       )
