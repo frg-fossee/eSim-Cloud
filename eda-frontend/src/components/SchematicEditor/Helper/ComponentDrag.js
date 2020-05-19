@@ -49,7 +49,7 @@ export default function LoadGrid (container, sidebar, outline) {
     EdgeWireFunct()
     ClipBoardFunct(graph)
     var button = document.createElement('button')
-    mxUtils.write(button, 'GridInfo')
+    mxUtils.write(button, 'ERC')
 
     // graph.autoSizeCellsOnAdd = true
     var view = graph.getView()
