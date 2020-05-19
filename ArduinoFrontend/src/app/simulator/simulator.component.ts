@@ -141,26 +141,12 @@ export class SimulatorComponent implements OnInit {
     }
   }
   openInfo() {
-    if (window['suggestion_json']) {
-      const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
-        width: '500px'
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        // console.log(result);
-      });
-    } else {
-      this.api.fetchSuggestions().subscribe(v => {
-        window['suggestion_json'] = v;
-        const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
-          width: '500px'
-        });
-
-        dialogRef.afterClosed().subscribe(result => {
-          // console.log(result);
-        });
-      });
-    }
-
+    const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
+      width: '500px'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      // console.log(result);
+    });
   }
   openDailog() {
     const exportref = this.dialog.open(ExportfileComponent);

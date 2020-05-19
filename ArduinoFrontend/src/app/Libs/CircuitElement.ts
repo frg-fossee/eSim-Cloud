@@ -14,6 +14,7 @@ export abstract class CircuitElement {
   public title: string;
   public simulationData: any = {}; // Store Values That are required during simulation
   public data: any = {}; // Store Values that are additionaly require by class
+  public info: any;
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
@@ -31,6 +32,7 @@ export abstract class CircuitElement {
           this.DrawElement(canvas, obj.draw);
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
           // console.log(obj);
+          this.info = obj.info;
           this.data = obj.data;
           this.setDragListeners();
           this.setClickListener(null);
