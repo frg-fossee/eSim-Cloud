@@ -1,9 +1,10 @@
+/* eslint-disable no-new */
 /* eslint-disable new-cap */
-
 import mxGraphFactory from 'mxgraph'
-import comp1 from '../../../static/CircuitComp/U-4001-1:A.svg'
-import comp2 from '../../../static/CircuitComp/U-4011-1:B.svg'
-import comp3 from '../../../static/CircuitComp/U-4051-1:A.svg'
+import comp1 from '../../../static/CircuitComp/U-4001-1_A.svg'
+import comp2 from '../../../static/CircuitComp/U-4011-1_B.svg'
+import comp3 from '../../../static/CircuitComp/U-4051-1_A.svg'
+
 import AddSideBarComponent from './SideBar.js'
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
@@ -32,7 +33,8 @@ export default function LoadGrid (container, sidebar) {
     var graph = new mxGraph(container)
 
     // Enables rubberband selection
-    // eslint-disable-next-line no-new
+
+
     new mxRubberband(graph)
     WireConfigFunct(graph)
     EdgeWireFunct()

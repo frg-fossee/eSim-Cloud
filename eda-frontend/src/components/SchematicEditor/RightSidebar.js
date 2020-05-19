@@ -1,33 +1,33 @@
-import React from "react";
-import { Drawer, Hidden, IconButton } from "@material-ui/core";
-import HighlightOffIcon from "@material-ui/icons/HighlightOff";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Drawer, Hidden, IconButton } from '@material-ui/core'
+import HighlightOffIcon from '@material-ui/icons/HighlightOff'
+import { makeStyles } from '@material-ui/core/styles'
 
-const drawerWidth = 250;
+const drawerWidth = 250
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up('lg')]: {
       width: drawerWidth,
-      flexShrink: 0,
-    },
+      flexShrink: 0
+    }
   },
   drawerPaper: {
-    width: drawerWidth,
-  },
-}));
+    width: drawerWidth
+  }
+}))
 
-export default function RightSidebar(props) {
-  let { window, mobileOpen, mobileClose } = props;
-  const classes = useStyles();
+export default function RightSidebar ({ window, mobileOpen, mobileClose, children }) {
+  const classes = useStyles()
 
   const container =
-    window !== undefined ? () => window().document.body : undefined;
+    window !== undefined ? () => window().document.body : undefined
 
   return (
     <>
       <nav className={classes.drawer} aria-label="mailbox folders">
-        <Hidden smUp implementation="css">
+        <Hidden xlUp implementation="css">
           <Drawer
             container={container}
             variant="temporary"
@@ -35,36 +35,43 @@ export default function RightSidebar(props) {
             anchor="right"
             onClose={mobileClose}
             classes={{
-              paper: classes.drawerPaper,
+              paper: classes.drawerPaper
             }}
             ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
+              keepMounted: true // Better open performance on mobile.
             }}
           >
             <IconButton
               onClick={mobileClose}
               color="inherit"
-              style={{ marginRight: "190px" }}
+              style={{ marginRight: '190px' }}
             >
               <HighlightOffIcon />
             </IconButton>
-            {props.children}
+            {children}
           </Drawer>
         </Hidden>
 
-        <Hidden xsDown implementation="css">
+        <Hidden mdDown implementation="css">
           <Drawer
             classes={{
-              paper: classes.drawerPaper,
+              paper: classes.drawerPaper
             }}
             anchor="right"
             variant="permanent"
             open
           >
-            {props.children}
+            {children}
           </Drawer>
         </Hidden>
       </nav>
     </>
-  );
+  )
+}
+
+RightSidebar.propTypes = {
+  window: PropTypes.object,
+  mobileOpen: PropTypes.bool.isRequired,
+  mobileClose: PropTypes.func.isRequired,
+  children: PropTypes.element
 }
