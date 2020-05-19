@@ -17,10 +17,11 @@ const {
   mxRubberband,
   mxClient,
   mxUtils,
-  mxEvent
+  mxEvent,
+  mxOutline
 } = new mxGraphFactory()
 
-export default function LoadGrid (container, sidebar) {
+export default function LoadGrid (container, sidebar, outline) {
   // Checks if the browser is supported
   if (!mxClient.isBrowserSupported()) {
     // Displays an error message if the browser is not supported.
@@ -33,15 +34,21 @@ export default function LoadGrid (container, sidebar) {
     var graph = new mxGraph(container)
 
     // Enables rubberband selection
-
-
     new mxRubberband(graph)
+
+    // Creates the outline (navigator, overview) for moving
+    // around the graph in the top, right corner of the window.
+    var outln = new mxOutline(graph, outline)
+
+    // To show the images in the outline, uncomment the following code
+    outln.outline.labelsVisible = true
+    outln.outline.setHtmlLabels(true)
+
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
     var button = document.createElement('button')
     mxUtils.write(button, 'GridInfo')
-
 
     // graph.autoSizeCellsOnAdd = true
     var view = graph.getView()
@@ -50,7 +57,7 @@ export default function LoadGrid (container, sidebar) {
     try {
 
     } finally {
-    // Updates the display
+      // Updates the display
       graph.getModel().endUpdate()
     }
     for (var i = 0; i < paths.length; i++) {
@@ -65,13 +72,14 @@ export default function LoadGrid (container, sidebar) {
         // eslint-disable-next-line no-undef
         var vertexCount = 0
         var cell = list[property]
-        if(cell.vertex === true)
+        if (cell.vertex === true) {
           ++vertexCount
+        }
       }
-      if(vertexCount === 0)
+      if (vertexCount === 0) {
         alert('No componenet added')
+      }
     })
     NetlistInfoFunct(graph)
   }
 }
-
