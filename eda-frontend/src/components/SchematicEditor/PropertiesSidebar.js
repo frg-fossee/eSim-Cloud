@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Hidden, List, ListItem, ListItemText, TextField, MenuItem } from '@material-ui/core'
+import { Hidden, List, ListItem, Typography,ListItemText, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import SimulationProperties from "./SimulationProperties"
 
 import './Helper/SchematicEditor.css'
 
@@ -103,6 +104,7 @@ function GridProperties ({ gridRef }) {
           ))}
         </TextField>
       </ListItem>
+      
     </>
   )
 }
@@ -130,6 +132,11 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         </ListItem>
         <ListItem style={{ padding: '0px' }} divider>
           <div className="outline-container" ref={outlineRef} id="outlineContainer" />
+        </ListItem>
+        <ListItem>
+        
+        <SimulationProperties/>
+
         </ListItem>
       </List>
     </>
