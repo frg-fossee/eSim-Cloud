@@ -8,6 +8,7 @@ import AddSideBarComponent from './SideBar.js'
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
 import ClipBoardFunct from './ClipBoard.js'
+import NetlistInfoFunct from './NetlistInfo.js'
 var paths = [comp1, comp2, comp3]
 
 const {
@@ -36,15 +37,39 @@ export default function LoadGrid (container, sidebar) {
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
-  }
-  for (var i = 0; i < paths.length; i++) {
-    AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
-  }
-  graph.getModel().beginUpdate()
-  try {
+    var button = document.createElement('button')
+    mxUtils.write(button, 'GridInfo')
 
-  } finally {
+
+    // graph.autoSizeCellsOnAdd = true
+    var view = graph.getView()
+    console.log(view.currentRoot)
+    graph.getModel().beginUpdate()
+    try {
+
+    } finally {
     // Updates the display
-    graph.getModel().endUpdate()
+      graph.getModel().endUpdate()
+    }
+    for (var i = 0; i < paths.length; i++) {
+      AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
+    }
+    sidebar.appendChild(button)
+    mxEvent.addListener(button, 'click', function (evt) {
+      var list = graph.getModel().cells
+      // console.log(list)
+      // eslint-disable-next-line no-undef
+      for (var property in list) {
+        // eslint-disable-next-line no-undef
+        var vertexCount = 0
+        var cell = list[property]
+        if(cell.vertex === true)
+          ++vertexCount
+      }
+      if(vertexCount === 0)
+        alert('No componenet added')
+    })
+    NetlistInfoFunct(graph)
   }
 }
+

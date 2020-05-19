@@ -1,12 +1,12 @@
 /* eslint-disable new-cap */
 import MxGraphFactory from 'mxgraph'
 import getMetadataXML from './xml_parser'
+import NetlistInfoFunct from './NetlistInfo.js'
 const {
   mxClient,
   mxUtils,
   mxEvent,
-  mxDragSource,
-  mxPrintPreview
+  mxDragSource
 } = new MxGraphFactory()
 
 export default function AddSideBarComponent(graph, sidebar, src) {
