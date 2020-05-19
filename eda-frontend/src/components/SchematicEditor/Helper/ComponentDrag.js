@@ -70,36 +70,41 @@ export default function LoadGrid (container, sidebar, outline) {
       // console.log(list)
       // eslint-disable-next-line no-undef
       var vertexCount = 0
+      var errorCount = 0
       for (var property in list) {
         // eslint-disable-next-line no-undef
-        
+
         var cell = list[property]
-        if(cell.vertex === true && cell.parent.value === undefined){
-            ++vertexCount
-            console.log(cell)
-            for(var child in cell.children){
-              console.log(cell.children[child])
-              var childcurrent = cell.children[child]
-              if(childcurrent.vertex === true){
-                if(childcurrent.edges === null){
-                  alert("Wires not connected")
-                  break
-                }
+        if (cell.vertex === true && cell.parent.value === undefined) {
+          ++vertexCount
+          console.log(cell)
+          for (var child in cell.children) {
+            console.log(cell.children[child])
+            var childcurrent = cell.children[child]
+            if (childcurrent.vertex === true) {
+              if (childcurrent.edges === null) {
+                alert('Wires not connected')
+                ++errorCount
+                break
               }
             }
           }
-        if(cell.edge === true){
-          if(cell.target != null && cell.source != null){
-          console.log("Wire Information")
-          console.log("Source:"+cell.source.id)
-          console.log("Target:"+cell.target.id)
+        }
+        if (cell.edge === true) {
+          if (cell.target != null && cell.source != null) {
+            console.log('Wire Information')
+            console.log('Source:' + cell.source.id)
+            console.log('Target:' + cell.target.id)
           }
         }
-        
-         
+
       }
       if (vertexCount === 0) {
         alert('No componenet added')
+        ++errorCount
+      }
+      if (errorCount === 0) {
+        alert('ERC check completed')
       }
     })
     NetlistInfoFunct(graph)
