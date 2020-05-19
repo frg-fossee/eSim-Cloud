@@ -1,5 +1,6 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
+import { ArduinoUno } from './Arduino';
 
 declare var window;
 declare var $; // For Jquery
@@ -326,6 +327,13 @@ export class Workspace {
   }
   static DeleteComponent() {
     if (window['Selected']) {
+      if (window['Selected'] instanceof ArduinoUno) {
+        // TODO: Show Alert
+        const ans = confirm('The Respective code will also be lost!');
+        if (!ans) {
+          return;
+        }
+      }
       const uid = window.Selected.id;
       const items = window.scope[window.Selected.keyName];
       for (let i = 0; i < items.length; ++i) {
@@ -346,6 +354,11 @@ export class Workspace {
   }
   static copyComponent() {
     if (window['Selected']) {
+      if (window['Selected'] instanceof Wire) {
+        // TODO: Show Toast
+        console.log('You Can\'t Copy Wire');
+        return;
+      }
       Workspace.copiedItem = window.Selected;
     } else {
       Workspace.copiedItem = null;
