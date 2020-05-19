@@ -14,6 +14,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { makeStyles } from '@material-ui/core/styles'
 
 import MenuButton from './MenuButton'
+import { ZoomIn, ZoomOut } from './Helper/ComponentDrag'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -45,10 +46,10 @@ export default function SchematicToolbar ({ mobileClose }) {
       <IconButton color="inherit" className={classes.tools} size="small">
         <RedoIcon fontSize="small" />
       </IconButton>
-      <IconButton color="inherit" className={classes.tools} size="small">
+      <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomIn}>
         <ZoomInIcon fontSize="small" />
       </IconButton>
-      <IconButton color="inherit" className={classes.tools} size="small">
+      <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomOut}>
         <ZoomOutIcon fontSize="small" />
       </IconButton>
       <IconButton color="inherit" className={classes.tools} size="small">

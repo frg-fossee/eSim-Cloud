@@ -11,6 +11,7 @@ import EdgeWireFunct from './EdgeWire.js'
 import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
 var paths = [comp1, comp2, comp3]
+var graph
 
 const {
   mxGraph,
@@ -31,7 +32,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxEvent.disableContextMenu(container)
 
     // Creates the graph inside the given container
-    var graph = new mxGraph(container)
+    graph = new mxGraph(container)
 
     // Enables rubberband selection
     new mxRubberband(graph)
@@ -103,4 +104,12 @@ export default function LoadGrid (container, sidebar, outline) {
     })
     NetlistInfoFunct(graph)
   }
+}
+
+export function ZoomIn () {
+  graph.zoomIn()
+}
+
+export function ZoomOut () {
+  graph.zoomOut()
 }
