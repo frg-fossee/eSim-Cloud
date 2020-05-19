@@ -77,7 +77,7 @@ function extractData(xml){
 
         // move this to another file
         // eslint-disable-next-line
-        pins[i] = graph.insertVertex(v1, null, '', x_pos, y_pos, 2, 2, 'align=top;verticalAlign=top;'+'fontColor=' + 'black' + ';strokeColor=' + 'black');
+        pins[i] = graph.insertVertex(v1, null, '', x_pos, y_pos, 0.5, 0.5, 'align=top;verticalAlign=top;shape=circle;'+'fontColor=' + 'black' + ';strokeColor=' + 'black');
                  pins[i].geometry.relative = false;
     }
   
