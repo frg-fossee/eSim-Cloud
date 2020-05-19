@@ -113,3 +113,7 @@ export function ZoomIn () {
 export function ZoomOut () {
   graph.zoomOut()
 }
+
+export function DeleteComp () {
+  graph.removeCells()
+}
