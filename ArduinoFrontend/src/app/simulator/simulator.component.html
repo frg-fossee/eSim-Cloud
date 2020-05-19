@@ -12,21 +12,28 @@
           aria-haspopup="true" aria-expanded="false">
           Project
         </a>
-        <div class="dropdown-menu " style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
+        <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
           <a class="dropdown-item text-dark" href="#">New Project</a>
           <a class="dropdown-item text-dark" href="#">Clear Project</a>
           <a class="dropdown-item text-dark" href="#">Save</a>
 
         </div>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
+      <li class="nav-item">
+        <a class="nav-link text-dark" id="navbarDropdown" role="button" (click)="openDailog()">
           Export
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #b8b8b8">
-          <a class="dropdown-item text-dark" href="#">Schematic File</a>
-          <a class="dropdown-item text-dark" href="#">Image</a>
+        <!-- <button mat-button class="text-dark m-auto" >
+          Export
+        </button> -->
+      </li>
+      <li class="nav-item dropdown text-white">
+        <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          View
+        </a>
+        <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item text-dark" role="button" (click)="openview()">Component List</a>
         </div>
       </li>
     </ul>
@@ -53,7 +60,7 @@
 
   <span style="flex:1 1 auto;"></span>
 
-  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"><i class="fa fa-trash"></i></button>
+  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"  (click)="delete()"><i class="fa fa-trash"></i></button>
 
   <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
 
@@ -79,8 +86,25 @@
 
 <div class="d-flex" id="wrapper">
   <!-- Sidebar -->
-  <div class="border-right" id="sidebar-wrapper" style="background-color:#ddd;">
+  <div class="border-right" id="sidebar-wrapper" style="background-color:white;">
     <h4 class="text-center text-primary mt-2">Circuit Components</h4>
+
+    <div>
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(generalItems)">
+        General
+      </div>
+
+      <div class="collapse-div" #generalItems>
+        <div class="component-row" *ngFor="let row of componentsBox.general">
+          <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+            (dragstart)="dragStart($event,item)">
+            <img src={{components[item].image}} alt="{{components[item].name}}">
+            <label style="font-size: smaller;">{{components[item].name}}</label>
+          </div>
+        </div>
+
+      </div>
+    </div>
 
     <div>
 
@@ -93,7 +117,7 @@
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
             <img src={{components[item].image}} alt="{{components[item].name}}">
-            <label>{{components[item].name}}</label>
+            <label style="font-size: smaller;">{{components[item].name}}</label>
           </div>
         </div>
 
@@ -110,8 +134,8 @@
         <div class="component-row" *ngFor="let row of componentsBox.output">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
-            <img src={{components[item].image}} alt="{{components[item].name}}">
-            <label>{{components[item].name}}</label>
+            <img src={{components[item].image}} alt="{{components[item].name}}" style="margin: auto;">
+            <label style="font-size: smaller;">{{components[item].name}}</label>
           </div>
           <!-- <div class="component-card">
             <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
@@ -136,8 +160,8 @@
         <div class="component-row" *ngFor="let row of componentsBox.input">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
-            <img src={{components[item].image}} alt="{{components[item].name}}">
-            <label>{{components[item].name}}</label>
+            <img src={{components[item].image}} alt="{{components[item].name}}" style="margin: auto;">
+            <label style="font-size: smaller;">{{components[item].name}}</label>
           </div>
         </div>
       </div>
@@ -148,13 +172,43 @@
       <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(sourceDiv)">
         Sources
       </div>
-
       <div class="collapse-div" #sourceDiv>
         <div class="component-row" *ngFor="let row of componentsBox.power">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
             <img src={{components[item].image}} alt="{{components[item].name}}">
             <label>{{components[item].name}}</label>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(driverDiv)">
+        Drivers
+      </div>
+
+      <div class="collapse-div" #driverDiv>
+        <div class="component-row" *ngFor="let row of componentsBox.drivers">
+          <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+            (dragstart)="dragStart($event,item)">
+            <img src={{components[item].image}} alt="{{components[item].name}}">
+            <label style="font-size: smaller;">{{components[item].name}}</label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(miscDiv)">
+        Miscellaneous
+      </div>
+
+      <div class="collapse-div" #miscDiv>
+        <div class="component-row" *ngFor="let row of componentsBox.misc">
+          <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+            (dragstart)="dragStart($event,item)">
+            <img src={{components[item].image}} alt="{{components[item].name}}">
+            <label style="font-size: smaller;">{{components[item].name}}</label>
           </div>
         </div>
 
@@ -199,16 +253,16 @@
 <div id="bubblebox"></div>
 <!--context menu-->
 
-<div id="contextMenu" class="context-menu" style="display: none;position: fixed;">
+<div id="contextMenu" class="context-menu">
   <ul>
-    <li>
-        <h6><i class="fas fa-copy"></i> Copy</h6>
+    <li (click)="copy()">
+      <h6><i class="fas fa-copy mr-2"></i> Copy</h6>
     </li>
-    <li>
-        <h6><i class="fas fa-paste"></i> Paste</h6>
+    <li (click)="paste()">
+      <h6><i class="fas fa-paste mr-2"></i> Paste</h6>
     </li>
-    <li>
-      <h6><i class="fas fa-trash-alt"></i> Delete</h6>
+    <li (click)="delete()">
+      <h6><i class="fas fa-trash-alt mr-2"></i> Delete</h6>
     </li>
   </ul>
 </div>
@@ -216,5 +270,15 @@
 
 
 <!--/context menu-->
-
-
+<!--toast message-->
+<!--<div id="ToastMessage" class="toast" style="margin-left: auto; background-color: white;">
+  <div class="toast-header">
+      <strong class="mr-auto text-primary">Toast Header</strong>
+      <small class="text-muted mr-auto">5 mins ago</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+  </div>
+  <div class="toast-body">
+          Some text inside the toast body
+  </div>
+ </div>-->
+<!--/toast message-->

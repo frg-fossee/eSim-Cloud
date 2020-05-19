@@ -22,7 +22,7 @@ export class Point {
   };
 
   // Stores the reference of wire which is connected to it
-  connectedTo = null;
+  connectedTo: Wire = null;
 
   // Hover callback called on hover over node
   hoverCallback: any = null;
@@ -68,11 +68,13 @@ export class Point {
 
     // Set Mouse over event
     this.body.mouseover((evt: MouseEvent) => {
+      this.show();
       window.showBubble(this.label, evt.clientX, evt.clientY);
     });
 
     // Set mouse out popup
     this.body.mouseout(() => {
+      this.hide();
     });
     // TODO: Remove The following code After Development
     // this.body.drag((dx, dy) => {
@@ -83,14 +85,20 @@ export class Point {
     // }, () => {
     //   this.x = this.body.attr("x");
     //   this.y = this.body.attr("y");
-    // }, () => { });
+    // }, () => {
+    //   this.x = this.body.attr("x");
+    //   this.y = this.body.attr("y");
+    // });
     // this.body.dblclick(() => {
     //   alert((this.x - this.parent.x) + "," + (this.y - this.parent.y) + "   " + this.label);
     // });
     // return;
 
     // Set click listener
-    this.body.click(() => {
+    this.body.mousedown(() => {
+      if (this.connectedTo != null) {
+        return;
+      }
       if ((window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
         // if selected item is wire then connect the wire with the node
         // console.log([]);
@@ -187,5 +195,10 @@ export class Point {
    */
   remove() {
     this.body.remove();
+    if (this.connectedTo) {
+      this.connectedTo.remove();
+      this.connectedTo = null;
+      this.parent = null;
+    }
   }
 }

@@ -1,7 +1,22 @@
 version: '3'
 services:
 
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - tmp_vol:/tmp
+      - ./Nginx/dev.conf.d:/etc/nginx/conf.d
+      - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
+    depends_on:
+      - django
+      - eda-frontend
+
+
   eda-frontend:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/eda-frontend:dev"
     build: ./eda-frontend/
     command: >
       sh -c "npm install &&
@@ -12,6 +27,7 @@ services:
       - ./eda-frontend:/code
     environment:
       - NODE_ENV=development
+      - "PUBLIC_URL=${EDA_PUBLIC_URL}"
     stdin_open: true
     depends_on:
       - django
@@ -22,6 +38,7 @@ services:
 
 
   arduino-frontend:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/arduino-frontend:dev"
     build: ./ArduinoFrontend/
     command: >
       sh -c "npm install &&
@@ -43,6 +60,7 @@ services:
 
 
   django:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/django:dev"
     build: ./esim-cloud-backend/
     command: "python3 manage.py runserver 0.0.0.0:8000"
     ports:
@@ -66,6 +84,7 @@ services:
         - "db:mysql"
 
   celery:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/celery:dev"
     build: ./esim-cloud-backend/
     command: celery -A esimCloud.celery worker -l info --concurrency=1
     links:
@@ -86,7 +105,6 @@ services:
 
   mongodb:
     image: "mongo:${TAG_MONGO}"
-    container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/usr/data/db/
       - MONGO_LOG_DIR=/dev/null

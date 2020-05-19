@@ -1,0 +1,33 @@
+{
+    "name": "'Temperature Sensor LM35",
+    "className": "LM35",
+    "pins": [
+        {
+            "x": -1,
+            "y": 64,
+            "name": "Power"
+        },
+        {
+            "x": 10,
+            "y": 64,
+            "name": "Vout"
+        },
+        {
+            "x": 22,
+            "y": 64,
+            "name": "GND"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/LM35.svg",
+            "width": 29,
+            "height": 73,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}

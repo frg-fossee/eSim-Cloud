@@ -1,5 +1,6 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
+
 declare var window;
 declare var $; // For Jquery
 
@@ -15,7 +16,7 @@ export class Workspace {
     y: 0,
     start: false
   };
-
+  static copiedItem: any;
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -120,7 +121,10 @@ export class Workspace {
     };
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
-
+      const toastele = document.getElementById('ToastMessage');
+      setTimeout(() => {
+        toastele.style.display = 'block';
+      }, 6000);
     };
   }
   /**
@@ -161,17 +165,14 @@ export class Workspace {
   }
 
   static mouseDown(event: MouseEvent) {
-    if (event.button === 2) {
-      const element = document.getElementById('contextMenu');
-      element.style.display = 'none';
-    }
+    Workspace.hideContextMenu();
     if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
       // if selected item is wire and it is not connected then add the point
       if (window.Selected.end == null) {
         const pt = Workspace.svgPoint(event.clientX, event.clientY);
         window.Selected.add(pt.x, pt.y);
+        return;
       }
-      return;
     }
     if ((event.target as HTMLElement).tagName === 'svg') {
       Workspace.moveCanvas = {
@@ -230,7 +231,10 @@ export class Workspace {
     element.style.top = `${event.clientY}px`;
     return true;
   }
-
+  static hideContextMenu() {
+    const element = document.getElementById('contextMenu');
+    element.style.display = 'none';
+  }
   static copy(event: ClipboardEvent) {
   }
 
@@ -239,7 +243,7 @@ export class Workspace {
   }
 
   static doubleClick(event: MouseEvent) {
-    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+    if (window['isSelected'] && (window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
       return;
     }
     if ((event.target as HTMLElement).tagName !== 'svg') {
@@ -309,5 +313,57 @@ export class Workspace {
     pt.x = x;
     pt.y = y;
     return pt.matrixTransform(window.canvas.canvas.getScreenCTM().inverse());
+  }
+  static removeMeta(obj) {
+    for (const prop in obj) {
+      if (typeof obj[prop] === 'object') {
+        obj[prop] = null;
+      } else {
+        delete obj[prop];
+      }
+    }
+  }
+  static DeleteComponent() {
+    if (window['Selected']) {
+      const uid = window.Selected.id;
+      const items = window.scope[window.Selected.keyName];
+      for (let i = 0; i < items.length; ++i) {
+        if (items[i].id === uid) {
+          window.Selected.remove();
+          window.Selected = null;
+          window.isSelected = false;
+          const k = items.splice(i, 1);
+          Workspace.removeMeta(k[0]);
+          break;
+        }
+      }
+      window.hideProperties();
+    } else {
+      // TODO: Show Toast
+      console.log('No Element Selected');
+    }
+  }
+  static copyComponent() {
+    if (window['Selected']) {
+      Workspace.copiedItem = window.Selected;
+    } else {
+      Workspace.copiedItem = null;
+    }
+  }
+  static pasteComponent() {
+    // console.log(Workspace.copiedItem);
+    if (Workspace.copiedItem) {
+      const ele = document.getElementById('contextMenu');
+      const x = +ele.style.left.replace('px', '');
+      const y = +ele.style.top.replace('px', '');
+      // console.log([x, y]);
+      const key = Workspace.copiedItem.keyName;
+      const pt = Workspace.svgPoint(x, y);
+      // Workspace.addComponent(Workspace.copiedItem, pt.x, pt.y, 0, 0);
+      const myClass = Utils.components[key].className;
+      const obj = new myClass(window['canvas'], pt.x, pt.y);
+      window['scope'][key].push(obj);
+      // obj.copy(Workspace.copiedItem)
+    }
   }
 }

@@ -11,6 +11,7 @@ Development branch status
 ![Django Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Django%20Build%20and%20Tests/badge.svg?branch=develop)
 ![Angular Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Angular%20Build%20and%20Tests/badge.svg?branch=develop)
 ![React Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/React%20Build%20and%20Tests/badge.svg?branch=develop)
+![Containers](https://github.com/frg-fossee/eSim-Cloud/workflows/Containers/badge.svg)
 ### Configuring Production Environment
 * Install Docker and docker-compose for server OS
 * ``` git clone git@github.com:frg-fossee/eSim-Cloud.git && cd eSim-Cloud```
@@ -50,5 +51,51 @@ Development branch status
 * To run arduino-frontend along with all backend containers
 
 ``` docker-compose -f docker-compose.dev.yml --env-file .env up arduino-frontend ```
+
+##### Ubuntu Installation Dump
+* Note: These are all commands being executed to setup the project's development environment on a fresh ubuntu system with username ``` ubuntu ```
+
+```
+
+   git clone https://github.com/frg-fossee/eSim-Cloud/
+
+   cd eSim-Cloud/
+
+   git checkout develop
+
+   sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+   sudo chmod +x /usr/local/bin/docker-compose
+
+   sudo apt-get remove docker docker-engine docker.io containerd runc
+
+   curl -fsSL https://get.docker.com -o get-docker.sh
+
+   sudo sh get-docker.sh
+
+   sudo usermod -aG docker ubuntu
+
+   sudo systemctl start docker
+
+   sudo systemctl status docker
+
+   sudo docker ps
+
+   sudo ./first_run.dev.sh
+
+```
+
+* If you notice ``` ERROR: UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. ``` or ``` Exited with code 137```, it means docker / host system ran out of memory
+
+
+* Alternatively docker images can be directly pulled from github instead of building on system
+```
+   echo <GITHUB_TOKEN> | sudo docker login docker.pkg.github.com --username darshkpatel --password-stdin
+   sudo docker-compose -f docker-compose.dev.yml pull
+   sudo docker-compose -f docker-compose.dev.yml up -d db
+   ----WAIT FOR DB TO FINISH INITIALIZING-----
+   sudo docker-compose -f docker-compose.dev.yml up
+```
+
 
 ![Docker Containers](docs/images/docker.png)

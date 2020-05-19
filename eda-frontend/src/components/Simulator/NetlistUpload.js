@@ -79,7 +79,7 @@ class NetlistUpload extends Component {
       .get(url)
       .then((res) => {
         if (res.data.state === "PROGRESS" || res.data.state === "PENDING") {
-          setTimeout(this.simulationResult(url), 1000)
+          setTimeout(this.simulationResult(url), 1000);
         } else {
           this.setState({
             x_1: res.data.details.data[0].x,
@@ -118,7 +118,7 @@ class NetlistUpload extends Component {
       <>
         <Grid item xs={12} sm={5}>
           <Paper className={classes.paper}>
-            <h2>Submit Netlist</h2>
+            <h2>SUBMIT NETLIST</h2>
             <form onSubmit={this.onFormSubmit} style={{ marginTop: "45px" }}>
               <label htmlFor="netlist" className={classes.finlabel}>
                 {this.state.filename}
@@ -146,7 +146,6 @@ class NetlistUpload extends Component {
         <Grid item xs={12} sm={7}>
           <Paper className={classes.paper}>
             <h2>GRAPH OUTPUT</h2>
-            <br />
             <Graph
               x={this.state.x_1}
               y1={this.state.y1_1}

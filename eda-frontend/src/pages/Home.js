@@ -4,6 +4,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -34,7 +35,13 @@ export default function Home() {
         Online Circuit Simulator
         <br></br>
         <br></br>
-        <Button href="/editor" variant="contained" size="large" color="primary">
+        <Button
+          component={RouterLink}
+          to="/editor"
+          variant="contained"
+          size="large"
+          color="primary"
+        >
           Schematic Editor
         </Button>
       </Typography>

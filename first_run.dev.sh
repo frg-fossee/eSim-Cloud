@@ -6,6 +6,10 @@ rm -rf redis_data
 rm -rf mysql_data
 rm -rf mongo_data
 
+#For Slow Systems / Systems with less memory
+export DOCKER_CLIENT_TIMEOUT=120
+export COMPOSE_HTTP_TIMEOUT=120
+
 #Build Containers
 echo 'Building Containers, might take a while'
 docker-compose -f docker-compose.dev.yml build --pull

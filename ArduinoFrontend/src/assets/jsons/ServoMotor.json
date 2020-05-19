@@ -1,0 +1,41 @@
+{
+    "name": "Servo Motor",
+    "className": "ServoMotor",
+    "pins": [
+        {
+            "x": 15,
+            "y": 2,
+            "name": "GND"
+        },
+        {
+            "x": 30,
+            "y": 2,
+            "name": "POWER"
+        },
+        {
+            "x": 45,
+            "y": 2,
+            "name": "Signal"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/Servo.svg",
+            "width": 73.5,
+            "height": 274,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "type": "image",
+            "url": "assets/images/components/ServoAbove.svg",
+            "width": 98,
+            "height": 204,
+            "x": -12,
+            "y": 40
+        }
+    ],
+    "simulation": {}
+}
