@@ -106,8 +106,10 @@ DATABASES = {
 }
 
 
-DATABASE_ROUTERS = ('simulationAPI.dbrouters.mongoRouter',
-                    'libAPI.dbrouters.mongoRouter')
+DATABASE_ROUTERS = (
+    'simulationAPI.dbrouters.mongoRouter',
+    # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
+)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
