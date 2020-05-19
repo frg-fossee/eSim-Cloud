@@ -8,7 +8,7 @@ const drawerWidth = 250
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    [theme.breakpoints.up('md')]: {
+    [theme.breakpoints.up('lg')]: {
       width: drawerWidth,
       flexShrink: 0
     }
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LayoutSidebar ({ window, mobileOpen, mobileClose, children }) {
+export default function RightSidebar ({ window, mobileOpen, mobileClose, children }) {
   const classes = useStyles()
 
   const container =
@@ -27,11 +27,12 @@ export default function LayoutSidebar ({ window, mobileOpen, mobileClose, childr
   return (
     <>
       <nav className={classes.drawer} aria-label="mailbox folders">
-        <Hidden lgUp implementation="css">
+        <Hidden xlUp implementation="css">
           <Drawer
             container={container}
             variant="temporary"
             open={mobileOpen}
+            anchor="right"
             onClose={mobileClose}
             classes={{
               paper: classes.drawerPaper
@@ -43,7 +44,7 @@ export default function LayoutSidebar ({ window, mobileOpen, mobileClose, childr
             <IconButton
               onClick={mobileClose}
               color="inherit"
-              style={{ marginLeft: '190px' }}
+              style={{ marginRight: '190px' }}
             >
               <HighlightOffIcon />
             </IconButton>
@@ -51,11 +52,12 @@ export default function LayoutSidebar ({ window, mobileOpen, mobileClose, childr
           </Drawer>
         </Hidden>
 
-        <Hidden smDown implementation="css">
+        <Hidden mdDown implementation="css">
           <Drawer
             classes={{
               paper: classes.drawerPaper
             }}
+            anchor="right"
             variant="permanent"
             open
           >
@@ -67,7 +69,7 @@ export default function LayoutSidebar ({ window, mobileOpen, mobileClose, childr
   )
 }
 
-LayoutSidebar.propTypes = {
+RightSidebar.propTypes = {
   window: PropTypes.object,
   mobileOpen: PropTypes.bool.isRequired,
   mobileClose: PropTypes.func.isRequired,

@@ -11,11 +11,8 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
-    "draw2d": "^1.0.37",
-    "jquery": "^3.5.0",
-    "jquery-ui-bundle": "^1.12.1-migrate",
+    "material-ui-popup-state": "^1.5.4",
     "mxgraph": "^4.1.1",
-    "parcel-bundler": "^1.12.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
@@ -26,7 +23,6 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "dev": "parcel src/index.html -p 3000",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
