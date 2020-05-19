@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 import MxGraphFactory from 'mxgraph'
 import getMetadataXML from './xml_parser'
-import NetlistInfoFunct from './NetlistInfo.js'
+// import NetlistInfoFunct from './NetlistInfo.js'
 const {
   mxClient,
   mxUtils,
