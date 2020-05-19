@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ArduinoUno } from '../Libs/Arduino';
 
 declare var monaco: any;
 
@@ -12,10 +13,34 @@ export class CodeEditorComponent implements OnInit {
     theme: 'vs',
     language: 'c'
   };
-  code = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}';
+  code = 's';
+  names: string[] = [];
+  arduinos: ArduinoUno[] = [];
+  selectedIndex = 0;
+
   @Input() width = 500;
   @Input() height = 80;
 
+  @Input('reinit')
+  set reinit(value: boolean) {
+    if (value) {
+      this.names = [];
+      this.arduinos = [];
+      // console.log(window['ArduinoUno_name']);
+      for (const key in window['ArduinoUno_name']) {
+        if (window['ArduinoUno_name'][key]) {
+          this.names.push(key);
+          this.arduinos.push(window['ArduinoUno_name'][key]);
+        }
+      }
+      if (this.selectedIndex >= this.arduinos.length) {
+        this.selectedIndex = 0;
+      }
+      if (this.arduinos.length > 0) {
+        this.code = this.arduinos[this.selectedIndex].code;
+      }
+    }
+  }
   onInit(_) {
     (window as any).monaco.languages.registerCompletionItemProvider('c', {
       provideCompletionItems: () => {
@@ -1032,5 +1057,11 @@ export class CodeEditorComponent implements OnInit {
 
   ngOnInit() {
   }
-
+  codeChanged() {
+    this.arduinos[this.selectedIndex].code = this.code;
+  }
+  chooseArduino(item: HTMLSelectElement) {
+    this.selectedIndex = item.selectedIndex;
+    this.code = this.arduinos[this.selectedIndex].code;
+  }
 }

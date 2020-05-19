@@ -54,6 +54,7 @@ export class Workspace {
     window['test'] = Workspace.zoomIn;
     window['holder'] = document.getElementById('holder').getBoundingClientRect();
     window['holder_svg'] = document.querySelector('#holder > svg');
+    window['ArduinoUno_name'] = {};
     // Stores all the Circuit Information
     window['scope'] = {
       wires: []

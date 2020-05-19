@@ -59,7 +59,7 @@
 
   <span style="flex:1 1 auto;"></span>
 
-  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"  (click)="delete()"><i class="fa fa-trash"></i></button>
+  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1" (click)="delete()"><i class="fa fa-trash"></i></button>
 
   <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
 
@@ -78,7 +78,7 @@
 
 
 <div class="code-editor" style="z-index: 1000;" #codeDiv>
-  <app-code-editor width="500" height="100"></app-code-editor>
+  <app-code-editor width="500" height="100" [reinit]="openCodeEditor"></app-code-editor>
 </div>
 
 
@@ -244,8 +244,9 @@
       <textarea matInput></textarea>
     </mat-form-field>
   </div>
-  <div *ngIf="!showProperty" style="display: flex;">
-    <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button></div>
+  <div *ngIf="!showProperty" style="display: flex;margin-top: 10px;">
+    <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button>
+  </div>
 </div>
 
 

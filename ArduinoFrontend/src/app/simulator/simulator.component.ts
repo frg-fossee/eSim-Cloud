@@ -20,7 +20,7 @@ export class SimulatorComponent implements OnInit {
   showProperty = true;
   componentsBox = Utils.componentBox;
   components = Utils.components;
-
+  openCodeEditor = false;
   constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
     Workspace.initializeGlobalFunctions();
   }
@@ -109,6 +109,7 @@ export class SimulatorComponent implements OnInit {
    */
   toggleCodeEditor(elem: HTMLElement) {
     elem.classList.toggle('show-code-editor');
+    this.openCodeEditor = !this.openCodeEditor;
   }
 
   /**
