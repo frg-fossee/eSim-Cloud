@@ -32,16 +32,16 @@ class Parser:
 
                     else:
                         pass
-        
+
         return data
 
     def extract_data_from_dcm(self, filename):
-        print(filename.split("/")[-1].split(".")[0])
+
         with open(filename) as file:
             file_contents = file.readlines()
-            # data = [] 
+            # data = []
             # print(file_contents)
-            
+
             dcm_data = []
 
             for line in file_contents:
@@ -61,6 +61,7 @@ class Parser:
                     dcm_component["F"] = line[1]
 
         return dcm_data
+
 
 if __name__ == "__main__":
     parser = Parser()
