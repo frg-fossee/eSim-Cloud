@@ -89,8 +89,7 @@ class SvgGenerator:
         dcm_data = self.parser.extract_data_from_dcm(dcm_path)
         # folder_name is also same as the file name without extension
 
-        # print(folder_name)
-        cmp_data_list = []
+        component_data = {}
         # loop through all the components in that library file.
         for i in range(len(data)):
 
@@ -406,14 +405,7 @@ class SvgGenerator:
                             if width <= 0:
                                 width = 400
                             my_width = width
-                            # # print(svg_boundary)
-                            # print("------------------------")
-                            # print(height,width)
-                            # print(f"{symbol_prefix}" +
-                            #               f"-{name_of_symbol}-{dm}:" +
-                            #               f"{chr(64+z)}")
 
-                            # print("------------------------")
                         if(run == 1):
                             self.save_svg(d,
                                           f"{symbol_prefix}" +
@@ -439,9 +431,9 @@ class SvgGenerator:
                                     cmp_data["symbol_prefix"] = symbol_prefix
                                     cmp_data["dmg"] = dm
                                     cmp_data["part"] = chr(64+z)
-                                    cmp_data_list.append(cmp_data)
+                                    component_data[cmp_data["full_name"]] = cmp_data
 
-        return cmp_data_list
+        return component_data
 
 
 def generate_svg_and_save_to_folder(input_file, output_folder):
@@ -457,8 +449,3 @@ if __name__ == "__main__":
         sys.exit(1)
     generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
     print('Processed', sys.argv[1])
-    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols")
-
-    # print("plotting to svg..")
-    # generate_svg_and_save_to_folder("./sample_lib/4002.lib", "./symbols/")
-    # print("done!!")
