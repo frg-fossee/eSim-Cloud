@@ -9,7 +9,7 @@ const {
   mxDragSource
 } = new MxGraphFactory()
 
-export default function AddSideBarComponent(graph, sidebar, src) {
+export default function AddSideBarComponent (graph, sidebar, src) {
   var img = document.createElement('img')
   img.setAttribute('src', src)
   img.style.width = '48px'
