@@ -45,20 +45,30 @@ class Parser:
             dcm_data = []
 
             for line in file_contents:
-                line = line.strip().split(' ')
+
                 if('$CMP' in line):
-                    dcm_component = {"name": line[1]}
+                    # line = line.strip().split(' ')
+                    s2 = ' '.join(line.split()[1:])
+                    dcm_component = {"name": s2}
                 elif('$ENDCMP' in line):
+                    # line = line.strip().split(' ')
+                    s2 = ' '.join(line.split()[1:])
                     dcm_data.append(dcm_component)
                 elif(line[0] == 'D'):
                     # description
-                    dcm_component["D"] = line[1]
+
+                    s2 = ' '.join(line.split()[1:])
+                    dcm_component["D"] = s2
                 elif(line[0] == 'K'):
                     # keyword
-                    dcm_component["K"] = line[1]
+                    # line = line.strip().split(' ')
+                    s2 = ' '.join(line.split()[1:])
+                    dcm_component["K"] = s2
                 elif(line[0] == 'F'):
                     # datasheet_link
-                    dcm_component["F"] = line[1]
+                    # line = line.strip().split(' ')
+                    s2 = ' '.join(line.split()[1:])
+                    dcm_component["F"] = s2
 
         return dcm_data
 
@@ -66,7 +76,6 @@ class Parser:
 if __name__ == "__main__":
     parser = Parser()
     # data = parser.extract_data_from_lib("./sample_lib/4002.lib")
-    data = parser.extract_data_from_dcm("../../kicad-symbols/4xxx.dcm")
+    data = parser.extract_data_from_dcm("./sample_lib/4002.dcm")
     # print(data)
-    for co in range(0, len(data)):
-        print(data[co]["name"])
+    print(data)
