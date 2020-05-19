@@ -238,6 +238,8 @@ export class Wire {
     for (const joint of this.joints) {
       joint.remove();
     }
+    this.glow.remove();
+    this.glow = null;
     this.joints = [];
     this.joints = null;
     this.points = [];
