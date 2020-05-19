@@ -70,7 +70,7 @@ export default function RightSidebar ({ window, mobileOpen, mobileClose, childre
 }
 
 RightSidebar.propTypes = {
-  window: PropTypes.object.isRequired,
+  window: PropTypes.object,
   mobileOpen: PropTypes.bool.isRequired,
   mobileClose: PropTypes.func.isRequired,
   children: PropTypes.element

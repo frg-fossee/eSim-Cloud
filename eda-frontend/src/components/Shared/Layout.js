@@ -64,9 +64,9 @@ function Layout ({ header, resToolbar, sidebar }) {
 }
 
 Layout.propTypes = {
-  header: PropTypes.elementType,
-  resToolbar: PropTypes.elementType,
-  sidebar: PropTypes.elementType
+  header: PropTypes.element,
+  resToolbar: PropTypes.element,
+  sidebar: PropTypes.element
 }
 
 export default Layout

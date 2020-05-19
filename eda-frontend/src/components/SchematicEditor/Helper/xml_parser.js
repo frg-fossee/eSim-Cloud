@@ -24,7 +24,7 @@ function extractData(xml){
             let pinY = pin.getElementsByTagName("y")[0].innerHTML
             let pinType = pin.getElementsByTagName('type')[0].innerHTML.trim()
             pinData.push({"pinNumber":pinNumber,"pinX":pinX,"pinY":pinY,"type":pinType})
-            console.log(pinNumber, pinX, pinY, pinType)
+            // console.log(pinNumber, pinX, pinY, pinType)
         } )
         return {"width" : width,
                 "height" : height,

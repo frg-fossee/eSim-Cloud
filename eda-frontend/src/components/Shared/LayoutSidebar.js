@@ -68,7 +68,7 @@ export default function LayoutSidebar ({ window, mobileOpen, mobileClose, childr
 }
 
 LayoutSidebar.propTypes = {
-  window: PropTypes.object.isRequired,
+  window: PropTypes.object,
   mobileOpen: PropTypes.bool.isRequired,
   mobileClose: PropTypes.func.isRequired,
   children: PropTypes.element
