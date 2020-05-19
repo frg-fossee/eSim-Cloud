@@ -73,7 +73,6 @@ export default function LoadGrid (container, sidebar, outline) {
         // eslint-disable-next-line no-undef
         
         var cell = list[property]
-<<<<<<< HEAD
         if(cell.vertex === true && cell.parent.value === undefined){
             ++vertexCount
             console.log(cell)
@@ -97,11 +96,6 @@ export default function LoadGrid (container, sidebar, outline) {
         }
         
          
-=======
-        if (cell.vertex === true) {
-          ++vertexCount
-        }
->>>>>>> f36f72a50d3dbb1699ea01c2b52e3e6fec483adc
       }
       if (vertexCount === 0) {
         alert('No componenet added')
