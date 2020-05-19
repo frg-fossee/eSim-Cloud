@@ -425,9 +425,26 @@ class SvgGenerator:
                                                             f"{name_of_symbol}"
                                                             f"-{dm}-" +
                                                             f"{chr(64+z)}")
-                                    cmp_data["keyword"] = comp["K"]
-                                    cmp_data["description"] = comp["D"]
-                                    cmp_data["data_link"] = comp["F"]
+                                    if 'K' in comp.keys():
+                                        cmp_data["keyword"] = comp["K"]
+                                    else:
+                                        cmp_data["keyword"] = ""
+
+                                    if 'D' in comp.keys():
+                                        cmp_data["description"] = comp["D"]
+                                    else:
+                                        cmp_data["description"] = ""
+
+                                    if 'F' in comp.keys():
+                                        cmp_data["data_link"] = comp["F"]
+                                    else:
+                                        cmp_data["data_link"] = ""
+
+                                    if 'F' in comp.keys():
+                                        cmp_data["data_link"] = comp["F"]
+                                    else:
+                                        cmp_data["data_link"] = ""
+
                                     cmp_data["symbol_prefix"] = symbol_prefix
                                     cmp_data["dmg"] = dm
                                     cmp_data["part"] = chr(64+z)
