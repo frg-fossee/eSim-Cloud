@@ -97,7 +97,6 @@ export default function LoadGrid (container, sidebar, outline) {
             console.log('Target:' + cell.target.id)
           }
         }
-
       }
       if (vertexCount === 0) {
         alert('No componenet added')
@@ -117,6 +116,10 @@ export function ZoomIn () {
 
 export function ZoomOut () {
   graph.zoomOut()
+}
+
+export function ZoomAct () {
+  graph.zoomActual()
 }
 
 export function DeleteComp () {

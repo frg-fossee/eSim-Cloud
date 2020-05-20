@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import SimulationProperties from "./SimulationProperties"
+import SimulationProperties from './SimulationProperties'
 
 import './Helper/SchematicEditor.css'
 
@@ -49,7 +49,7 @@ const pageLayout = [
   }
 ]
 
-function GridProperties({ gridRef }) {
+function GridProperties ({ gridRef }) {
   const classes = useStyles()
 
   const [gridSize, setGridSize] = React.useState('A4')
@@ -112,7 +112,7 @@ GridProperties.propTypes = {
   gridRef: PropTypes.object.isRequired
 }
 
-export default function PropertiesSidebar({ gridRef, outlineRef }) {
+export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const classes = useStyles()
 
   return (
