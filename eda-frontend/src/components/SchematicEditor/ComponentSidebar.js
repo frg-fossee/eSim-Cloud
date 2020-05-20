@@ -6,7 +6,7 @@ import {
   List,
   ListItem,
   Collapse,
-
+  ListItemText,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -50,7 +50,7 @@ export default function ComponentSidebar ({ compRef }) {
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-
+    console.log(collapse)
   }
 
   // For Fetching Libraries
@@ -62,12 +62,12 @@ export default function ComponentSidebar ({ compRef }) {
 // Generates Component Listing and It's Pop Over
 const generateComponent = (component) => {
   return (
-    <PopupState variant="popover" popupId={component.component_name}>
+    <PopupState variant="popover" popupId={component.full_name}>
     {popupState => (
       <div>
-    <ListItem key={component.component_name} {...bindTrigger(popupState)}>
+    <ListItem key={component.full_name} {...bindTrigger(popupState)}>
     {/* <img src={'../'+component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} /> */}
-      {component.component_name}
+      {component.full_name}
     </ListItem>
 
     <Popover
@@ -81,8 +81,25 @@ const generateComponent = (component) => {
                 horizontal: "left"
               }}
     >
-              Component Details Here
-    </Popover>
+      <List component="div" disablePadding dense >
+        <ListItem>
+          <b>Description:</b> {component.description}
+        </ListItem>
+
+        <ListItem>
+        <b>Keywords:</b> {component.keyword}
+        </ListItem>
+
+        <ListItem>
+        <b>Datasheet:</b> <a href={component.data_link}>{component.data_link}</a>
+        </ListItem>
+
+        <ListItem>
+        <b>DMG:</b> {component.dmg}
+        </ListItem>
+
+     </List>
+     </Popover>
     </div>
         )}
     </PopupState>
@@ -121,10 +138,12 @@ const generateComponent = (component) => {
                 {
                 components[library.id].map((component)=>{
                  return(
-                  <ListItem key={component.component_name} divider>
+                  <ListItem key={component.full_name} divider>
+                    <ListItemText component="div" disablePadding dense >
                   {
                       generateComponent(component)
                   }
+                   </ListItemText>
                   </ListItem>
                       )
                  })
