@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Hidden, List, ListItem, Typography,ListItemText, TextField, MenuItem } from '@material-ui/core'
+import { Hidden, List, ListItem, ListItemText, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import SimulationProperties from "./SimulationProperties"
 
@@ -49,7 +49,7 @@ const pageLayout = [
   }
 ]
 
-function GridProperties ({ gridRef }) {
+function GridProperties({ gridRef }) {
   const classes = useStyles()
 
   const [gridSize, setGridSize] = React.useState('A4')
@@ -104,7 +104,7 @@ function GridProperties ({ gridRef }) {
           ))}
         </TextField>
       </ListItem>
-      
+
     </>
   )
 }
@@ -112,7 +112,7 @@ GridProperties.propTypes = {
   gridRef: PropTypes.object.isRequired
 }
 
-export default function PropertiesSidebar ({ gridRef, outlineRef }) {
+export default function PropertiesSidebar({ gridRef, outlineRef }) {
   const classes = useStyles()
 
   return (
@@ -134,8 +134,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           <div className="outline-container" ref={outlineRef} id="outlineContainer" />
         </ListItem>
         <ListItem>
-        
-        <SimulationProperties/>
+
+          <SimulationProperties />
 
         </ListItem>
       </List>
