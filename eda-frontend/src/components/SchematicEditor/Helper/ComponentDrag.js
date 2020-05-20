@@ -32,7 +32,7 @@ export default function LoadGrid (container, sidebar, outline) {
     // Displays an error message if the browser is not supported.
     mxUtils.error('Browser is not supported!', 200, false)
   } else {
-    // Disables the built-in context menu
+    // Disables the built-in context men
     mxEvent.disableContextMenu(container)
     // Tells if the cell is a component or a pin or a wire
     mxCell.prototype.CellType = 'This is where you say what the vertex is'
@@ -67,12 +67,17 @@ export default function LoadGrid (container, sidebar, outline) {
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
+    // var state = mxCellState
     var button = document.createElement('button')
     mxUtils.write(button, 'ERC')
+    var button2 = document.createElement('button')
+    mxUtils.write(button2, 'Rotate')
+
 
     // graph.autoSizeCellsOnAdd = true
     var view = graph.getView()
-    console.log(view.currentRoot)
+    // var style = graph.getStylesheet()
+    // console.log(view.currentRoot)
     graph.getModel().beginUpdate()
     try {
 
@@ -91,7 +96,12 @@ export default function LoadGrid (container, sidebar, outline) {
       for (var property in list) {
         var cell = list[property]
         if (cell.Component === true) {
-          // console.log(cell.CellType)
+          var state = view.getState(cell,true)
+          console.log(state)
+          var vHandler = graph.createVertexHandler(state)
+          console.log("Handler")
+          console.log(vHandler)
+          vHandler.rotateCell(cell,90, cell.getParent())
           for (var child in cell.children) {
             console.log(cell.children[child])
             var childVertex = cell.children[child]
@@ -105,6 +115,7 @@ export default function LoadGrid (container, sidebar, outline) {
         }
         // Setting a rule check that only input and output ports can be connected
         if (cell.edge === true) {
+         
           // eslint-disable-next-line no-constant-condition
           if (cell.source.pinType === 'Input' && cell.target.pinType === 'Output') {
             console.log('Wire Information')
@@ -132,7 +143,18 @@ export default function LoadGrid (container, sidebar, outline) {
         alert('ERC Check completed')
       }
     })
+    sidebar.appendChild(button2)
     NetlistInfoFunct(graph)
+    mxEvent.addListener(button2, 'click', function (evt) {
+      var cell = graph.getSelectionCell()
+      var state = view.getState(cell,true)
+      console.log(state)
+      var vHandler = graph.createVertexHandler(state)
+      console.log("Handler")
+      console.log(vHandler)
+      vHandler.rotateCell(cell,90, cell.getParent())
+      
+    })
   }
 }
 
