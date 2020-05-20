@@ -105,7 +105,12 @@ export default function LoadGrid (container, sidebar, outline) {
         }
         // Setting a rule check that only input and output ports can be connected
         if (cell.edge === true) {
-          if ((cell.source.pinType === 'Input' && cell.source.pinType === 'Output') || (cell.source.pinType === 'Output' && cell.target.pinType === 'Input' )) {
+          // eslint-disable-next-line no-constant-condition
+          if (cell.source.pinType === 'Input' && cell.target.pinType === 'Output') {
+            console.log('Wire Information')
+            console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
+            console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
+          } else if (cell.source.pinType === 'Ouput' && cell.target.pinType === 'Input') {
             console.log('Wire Information')
             console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
             console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
