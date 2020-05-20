@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Typography,
   Link,
@@ -6,32 +6,32 @@ import {
   Hidden,
   Menu,
   MenuItem,
-  Fade,
-} from "@material-ui/core";
-import AccountCircleRoundedIcon from "@material-ui/icons/AccountCircleRounded";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link as RouterLink } from "react-router-dom";
+  Fade
+} from '@material-ui/core'
+import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
-    marginRight: theme.spacing(3),
+    marginRight: theme.spacing(3)
   },
   link: {
-    margin: theme.spacing(1, 1.5),
-  },
-}));
+    margin: theme.spacing(1, 1.5)
+  }
+}))
 
-export default function Header() {
-  const classes = useStyles();
-  const [anchorEl, setAnchorEl] = React.useState(null);
+export default function Header () {
+  const classes = useStyles()
+  const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
   return (
     <>
@@ -88,7 +88,7 @@ export default function Header() {
       <IconButton
         edge="start"
         className={classes.button}
-        style={{ marginLeft: "auto" }}
+        style={{ marginLeft: 'auto' }}
         color="primary"
         aria-controls="simple-menu"
         aria-haspopup="true"
@@ -103,7 +103,7 @@ export default function Header() {
         open={Boolean(anchorEl)}
         onClose={handleClose}
         TransitionComponent={Fade}
-        style={{ marginTop: "25px" }}
+        style={{ marginTop: '25px' }}
       >
         <MenuItem
           component={RouterLink}
@@ -125,5 +125,5 @@ export default function Header() {
         </MenuItem>
       </Menu>
     </>
-  );
+  )
 }
