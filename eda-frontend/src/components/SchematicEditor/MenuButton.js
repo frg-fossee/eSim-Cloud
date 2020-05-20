@@ -5,7 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = (theme) => ({
   tools: {
     padding: theme.spacing(1),
-    margin: theme.spacing(0, 0.5)
+    margin: theme.spacing(0, 0.5),
+    color: '#404040'
   }
 });
 
@@ -28,7 +29,7 @@ class MenuButton extends React.Component {
     const open = Boolean(anchorEl);
     const Wrapper = this.props.iconType;
     const listItems = this.props.items.map((link) =>
-      <MenuItem onClick={this.handleClose} >{link}</MenuItem>
+      <MenuItem key={link} onClick={this.handleClose} >{link}</MenuItem>
     );
 
     return (

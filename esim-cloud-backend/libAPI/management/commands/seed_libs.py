@@ -47,24 +47,28 @@ def seed_libraries(self, location):
             self.stdout.write(f'Processing {file}')
             lib_location = os.path.join(location, file)
             lib_output_location = os.path.join(location, 'symbol_svgs')
-            lib_type = generate_svg_and_save_to_folder(
+            component_details = generate_svg_and_save_to_folder(
                 lib_location,
                 lib_output_location
             )
-
             library = Library(
                 library_name=file,
-                library_type=lib_type
             )
             library.save()
             logger.info('Created Library Object')
-
             library_svg_folder = os.path.join(lib_output_location, file[:-4])
             for component_svg in os.listdir(library_svg_folder):
+                svg_desc = component_details[component_svg[:-4]]
                 component = LibraryComponent(
-                    component_name=component_svg[:-4],
+                    name=svg_desc['name'],
                     svg_path=os.path.join(library_svg_folder, component_svg),
-                    component_type=lib_type,
+                    symbol_prefix=svg_desc['symbol_prefix'],
+                    full_name=svg_desc['full_name'],
+                    keyword=svg_desc['keyword'],
+                    description=svg_desc['description'],
+                    data_link=svg_desc['data_link'],
+                    part=svg_desc['part'],
+                    dmg=svg_desc['dmg'],
                     component_library=library
                 )
                 component.save()
