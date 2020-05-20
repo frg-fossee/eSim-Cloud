@@ -33,6 +33,21 @@ export default function LoadGrid (container, sidebar, outline) {
   } else {
     // Disables the built-in context menu
     mxEvent.disableContextMenu(container)
+    // Tells if the cell is a component or a pin or a wire
+    mxCell.prototype.CellType = 'This is where you say what the vertex is'
+    // Tells the magnitude of a resistor/capacitor
+    mxCell.prototype.Magnitude = null
+    // Tells whether the pin is input/output
+    mxCell.prototype.pinType = ' '
+    // Tells if the cell is component, Default is false
+    mxCell.prototype.Component = false
+    // Tells if the cell is pin, Default is false
+    mxCell.prototype.Pin = false
+    // Pin number of the component, default is 0
+    mxCell.prototype.PinNumber = 0
+    // Parent component of a pin, default is null 
+    mxCell.prototype.ParentComponent = null
+    // Creates the graph inside the given container
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
