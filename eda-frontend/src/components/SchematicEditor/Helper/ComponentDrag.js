@@ -53,17 +53,12 @@ export default function LoadGrid (container, sidebar, outline) {
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
-<<<<<<< HEAD
     // var state = mxCellState
     var button = document.createElement('button')
     mxUtils.write(button, 'ERC')
     var button2 = document.createElement('button')
     mxUtils.write(button2, 'Rotate')
 
-=======
-    // var button = document.createElement('button')
-    // mxUtils.write(button, 'ERC')
->>>>>>> 1d098da653986e86e85a42ebcc1f99111d167303
 
     // graph.autoSizeCellsOnAdd = true
     var view = graph.getView()
@@ -79,7 +74,6 @@ export default function LoadGrid (container, sidebar, outline) {
     for (var i = 0; i < paths.length; i++) {
       AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
     }
-<<<<<<< HEAD
     sidebar.appendChild(button)
     mxEvent.addListener(button, 'click', function (evt) {
       var list = graph.getModel().cells // mapping the grid
@@ -136,12 +130,6 @@ export default function LoadGrid (container, sidebar, outline) {
       }
     })
     sidebar.appendChild(button2)
-=======
-    // sidebar.appendChild(button)
-    // mxEvent.addListener(button, 'click', function (evt) {
-
-    // })
->>>>>>> 1d098da653986e86e85a42ebcc1f99111d167303
     NetlistInfoFunct(graph)
     mxEvent.addListener(button2, 'click', function (evt) {
       var cell = graph.getSelectionCell()
