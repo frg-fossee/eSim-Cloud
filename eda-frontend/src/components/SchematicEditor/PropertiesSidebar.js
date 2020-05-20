@@ -133,12 +133,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         <ListItem style={{ padding: '0px' }} divider>
           <div className="outline-container" ref={outlineRef} id="outlineContainer" />
         </ListItem>
-        <ListItem>
-
-          <SimulationProperties />
-
-        </ListItem>
       </List>
+      <SimulationProperties />
     </>
   )
 }
