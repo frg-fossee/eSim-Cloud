@@ -7,7 +7,7 @@ services:
       - 80:80
     volumes:
       - tmp_vol:/tmp
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./Nginx/conf.d:/etc/nginx/conf.d
       - ./eda-frontend/build:/usr/share/nginx/eda
       - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
@@ -18,6 +18,7 @@ services:
       - arduino-frontend
 
   eda-frontend:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/eda-frontend:master"
     build: ./eda-frontend/
     command: >
       sh -c "npm install &&
@@ -30,6 +31,7 @@ services:
 
 
   arduino-frontend:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/arduino-frontend:master"
     build: ./ArduinoFrontend/
     command: >
       sh -c "npm install &&
@@ -42,6 +44,7 @@ services:
 
 
   django:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/django:master"
     build: ./esim-cloud-backend/
     command: >
       sh -c "python manage.py collectstatic --noinput &&
@@ -68,6 +71,7 @@ services:
 
 
   celery:
+    image: "docker.pkg.github.com/frg-fossee/esim-cloud/celery:master"
     build: ./esim-cloud-backend/
     command: "celery -A esimCloud.celery worker -l info --concurrency=${CELERY_WORKERS}"
     links:
@@ -96,7 +100,6 @@ services:
 
   mongodb:
     image: "mongo:${TAG_MONGO}"
-    container_name: "mongodb"
     environment:
       - MONGO_DATA_DIR=/usr/data/db/
       - MONGO_LOG_DIR=/dev/null

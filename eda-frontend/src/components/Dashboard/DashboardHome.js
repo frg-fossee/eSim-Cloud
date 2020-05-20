@@ -8,6 +8,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { Link as RouterLink } from "react-router-dom";
 
 import ProgressPanel from "./ProgressPanel";
 
@@ -37,7 +38,12 @@ function MainCard() {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button href="/dashboard/schematics" color="primary" size="small">
+        <Button
+          component={RouterLink}
+          to="/dashboard/schematics"
+          color="primary"
+          size="small"
+        >
           My Schematics
         </Button>
       </CardActions>

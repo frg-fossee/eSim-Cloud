@@ -10,7 +10,7 @@ import {
   ListItemText,
   ListItemAvatar,
 } from "@material-ui/core";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { deepPurple } from "@material-ui/core/colors";
 
@@ -54,7 +54,7 @@ export default function DashSidebar(props) {
 
       <ListItem
         alignItems="flex-start"
-        component={Link}
+        component={RouterLink}
         to="/dashboard"
         style={{ marginTop: "15px" }}
         className={classes.sideItem}
@@ -82,7 +82,7 @@ export default function DashSidebar(props) {
 
       <List>
         <ListItem
-          component={Link}
+          component={RouterLink}
           to="/dashboard/profile"
           className={classes.sideItem}
           button
@@ -94,7 +94,7 @@ export default function DashSidebar(props) {
 
       <List>
         <ListItem
-          component={Link}
+          component={RouterLink}
           to="/dashboard/schematics"
           className={classes.sideItem}
           button
