@@ -35,6 +35,19 @@ export default function LoadGrid (container, sidebar, outline) {
     // Disables the built-in context men
     mxEvent.disableContextMenu(container)
     // Tells if the cell is a component or a pin or a wire
+    mxCell.prototype.CellType = 'This is where you say what the vertex is'
+    // Tells the magnitude of a resistor/capacitor
+    mxCell.prototype.Magnitude = null
+    // Tells whether the pin is input/output
+    mxCell.prototype.pinType = ' '
+    // Tells if the cell is component, Default is false
+    mxCell.prototype.Component = false
+    // Tells if the cell is pin, Default is false
+    mxCell.prototype.Pin = false
+    // Pin number of the component, default is 0
+    mxCell.prototype.PinNumber = 0
+    // Parent component of a pin, default is null
+    mxCell.prototype.ParentComponent = null
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
@@ -45,7 +58,6 @@ export default function LoadGrid (container, sidebar, outline) {
     // Creates the outline (navigator, overview) for moving
     // around the graph in the top, right corner of the window.
     var outln = new mxOutline(graph, outline)
-
     // To show the images in the outline, uncomment the following code
     outln.outline.labelsVisible = true
     outln.outline.setHtmlLabels(true)
@@ -53,94 +65,22 @@ export default function LoadGrid (container, sidebar, outline) {
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
+    NetlistInfoFunct(graph)
+    for (var i = 0; i < paths.length; i++) {
+      AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
+    }
+
     // var state = mxCellState
-    var button = document.createElement('button')
-    mxUtils.write(button, 'ERC')
-    var button2 = document.createElement('button')
-    mxUtils.write(button2, 'Rotate')
-
-
     // graph.autoSizeCellsOnAdd = true
-    var view = graph.getView()
+    // var view = graph.getView()
     // var style = graph.getStylesheet()
     // console.log(view.currentRoot)
     graph.getModel().beginUpdate()
     try {
-
     } finally {
       // Updates the display
       graph.getModel().endUpdate()
     }
-    for (var i = 0; i < paths.length; i++) {
-      AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
-    }
-    sidebar.appendChild(button)
-    mxEvent.addListener(button, 'click', function (evt) {
-      var list = graph.getModel().cells // mapping the grid
-      var vertexCount = 0
-      var errorCount = 0
-      for (var property in list) {
-        var cell = list[property]
-        if (cell.Component === true) {
-          var state = view.getState(cell,true)
-          console.log(state)
-          var vHandler = graph.createVertexHandler(state)
-          console.log("Handler")
-          console.log(vHandler)
-          vHandler.rotateCell(cell,90, cell.getParent())
-          for (var child in cell.children) {
-            console.log(cell.children[child])
-            var childVertex = cell.children[child]
-            if (childVertex.Pin === true && childVertex.edges === null) {
-              // console.log('Wires not Connected')
-              alert('Wires not connected')
-              ++errorCount
-            }
-          }
-          ++vertexCount
-        }
-        // Setting a rule check that only input and output ports can be connected
-        if (cell.edge === true) {
-         
-          // eslint-disable-next-line no-constant-condition
-          if (cell.source.pinType === 'Input' && cell.target.pinType === 'Output') {
-            console.log('Wire Information')
-            console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
-            console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
-          } else if (cell.source.pinType === 'Ouput' && cell.target.pinType === 'Input') {
-            console.log('Wire Information')
-            console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
-            console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
-          } else {
-            // Automatically remove wire if same pintype are connected
-            /* cell.source.removeFromTerminal(true)
-            cell.target.removeFromTerminal(false) */
-            graph.setSelectionCell(cell)
-            alert('Same pintypes are connected together')
-            ++errorCount
-          }
-        }
-      }
-      if (vertexCount === 0) {
-        alert('No Component added')
-        ++errorCount
-      }
-      if (errorCount === 0) {
-        alert('ERC Check completed')
-      }
-    })
-    sidebar.appendChild(button2)
-    NetlistInfoFunct(graph)
-    mxEvent.addListener(button2, 'click', function (evt) {
-      var cell = graph.getSelectionCell()
-      var state = view.getState(cell,true)
-      console.log(state)
-      var vHandler = graph.createVertexHandler(state)
-      console.log("Handler")
-      console.log(vHandler)
-      vHandler.rotateCell(cell,90, cell.getParent())
-      
-    })
   }
 }
 
@@ -158,6 +98,17 @@ export function ZoomAct () {
 
 export function DeleteComp () {
   graph.removeCells()
+}
+
+export function Rotate () {
+  var view = graph.getView()
+  var cell = graph.getSelectionCell()
+  var state = view.getState(cell, true)
+  // console.log(state)
+  var vHandler = graph.createVertexHandler(state)
+  // console.log('Handler')
+  // console.log(vHandler)
+  vHandler.rotateCell(cell, 90, cell.getParent())
 }
 
 export function PrintPreview () {
@@ -223,21 +174,6 @@ export function PrintPreview () {
 }
 
 export function ErcCheck () {
-  mxCell.prototype.CellType = 'This is where you say what the vertex is'
-  // Tells the magnitude of a resistor/capacitor
-  mxCell.prototype.Magnitude = null
-  // Tells whether the pin is input/output
-  mxCell.prototype.pinType = ' '
-  // Tells if the cell is component, Default is false
-  mxCell.prototype.Component = false
-  // Tells if the cell is pin, Default is false
-  mxCell.prototype.Pin = false
-  // Pin number of the component, default is 0
-  mxCell.prototype.PinNumber = 0
-  // Parent component of a pin, default is null
-  mxCell.prototype.ParentComponent = null
-  // Creates the graph inside the given container
-
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0

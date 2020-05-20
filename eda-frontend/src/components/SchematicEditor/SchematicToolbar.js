@@ -14,10 +14,11 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined'
 import BugReportIcon from '@material-ui/icons/BugReport'
+import RotateRightIcon from '@material-ui/icons/RotateRight'
 import { makeStyles } from '@material-ui/core/styles'
 
 import MenuButton from './MenuButton'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck } from './Helper/ComponentDrag'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate } from './Helper/ComponentDrag'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -74,6 +75,9 @@ export default function SchematicToolbar ({ mobileClose }) {
       </IconButton>
       <span className={classes.pipe}>|</span>
 
+      <IconButton color="inherit" className={classes.tools} size="small" onClick={Rotate}>
+        <RotateRightIcon fontSize="small" />
+      </IconButton>
       <IconButton color="inherit" className={classes.tools} size="small" onClick={ErcCheck}>
         <BugReportIcon fontSize="small" />
       </IconButton>
