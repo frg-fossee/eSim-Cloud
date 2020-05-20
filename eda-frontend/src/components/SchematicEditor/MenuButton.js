@@ -1,5 +1,5 @@
 import React from 'react';
-import {  IconButton, Menu, MenuItem, Fade } from '@material-ui/core';
+import { IconButton, Menu, MenuItem, Fade, Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = (theme) => ({
@@ -34,16 +34,18 @@ class MenuButton extends React.Component {
 
     return (
       <>
-        <IconButton
-          aria-owns={open ? 'menu-toolbar' : null}
-          aria-haspopup="true"
-          onClick={this.handleMenu}
-          color="inherit"
-          className={classes.tools}
-          size="small"
-        >
-          {<Wrapper fontSize="small" />}
-        </IconButton>
+        <Tooltip title={this.props.title} >
+          <IconButton
+            aria-owns={open ? 'menu-toolbar' : null}
+            aria-haspopup="true"
+            onClick={this.handleMenu}
+            color="inherit"
+            className={classes.tools}
+            size="small"
+          >
+            {<Wrapper fontSize="small" />}
+          </IconButton>
+        </Tooltip>
         <Menu
           id="menu-toolbar"
           anchorEl={anchorEl}
