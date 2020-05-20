@@ -1,16 +1,20 @@
 /* eslint-disable no-new */
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
-import comp1 from '../../../static/CircuitComp/U-4001-1_A.svg'
-import comp2 from '../../../static/CircuitComp/U-4011-1_B.svg'
-import comp3 from '../../../static/CircuitComp/U-4051-1_A.svg'
+import comp1 from '../../../static/CircuitComp/V-VSOURCE-1_A.svg'
+import comp2 from '../../../static/CircuitComp/R-R-1_A.svg'
+import comp3 from '../../../static/CircuitComp/C-CAP-1_A.svg'
+import comp4 from '../../../static/CircuitComp/GND-0-1_A.svg'
+import comp5 from '../../../static/CircuitComp/U-4001-1_A.svg'
+import comp6 from '../../../static/CircuitComp/U-4011-1_B.svg'
+import comp7 from '../../../static/CircuitComp/U-4051-1_A.svg'
 
 import AddSideBarComponent from './SideBar.js'
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
 import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
-var paths = [comp1, comp2, comp3]
+var paths = [comp1, comp2, comp3, comp4, comp5, comp6, comp7]
 var graph
 
 const {
@@ -68,6 +72,9 @@ export default function LoadGrid (container, sidebar, outline) {
     NetlistInfoFunct(graph)
     for (var i = 0; i < paths.length; i++) {
       AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
+      if (((i + 1) % 3 === 0)) {
+        sidebar.appendChild(document.createElement('br'))
+      }
     }
 
     // var state = mxCellState
