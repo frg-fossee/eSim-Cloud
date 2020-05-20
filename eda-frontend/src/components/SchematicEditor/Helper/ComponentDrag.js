@@ -19,7 +19,10 @@ const {
   mxClient,
   mxUtils,
   mxEvent,
-  mxOutline
+  mxOutline,
+  mxPrintPreview,
+  mxConstants,
+  mxRectangle
 } = new mxGraphFactory()
 
 export default function LoadGrid (container, sidebar, outline) {
@@ -124,4 +127,66 @@ export function ZoomAct () {
 
 export function DeleteComp () {
   graph.removeCells()
+}
+
+export function PrintPreview () {
+  // Matches actual printer paper size and avoids blank pages
+  var scale = 0.8
+  var headerSize = 50
+  var footerSize = 50
+
+  // Applies scale to page
+  var pf = mxRectangle.fromRectangle(graph.pageFormat || mxConstants.PAGE_FORMAT_A4_PORTRAIT)
+  pf.width = Math.round(pf.width * scale * graph.pageScale)
+  pf.height = Math.round(pf.height * scale * graph.pageScale)
+
+  // Finds top left corner of top left page
+  var bounds = mxRectangle.fromRectangle(graph.getGraphBounds())
+  bounds.x -= graph.view.translate.x * graph.view.scale
+  bounds.y -= graph.view.translate.y * graph.view.scale
+
+  var x0 = Math.floor(bounds.x / pf.width) * pf.width
+  var y0 = Math.floor(bounds.y / pf.height) * pf.height
+
+  var preview = new mxPrintPreview(graph, scale, pf, 0, -x0, -y0)
+  preview.marginTop = headerSize * scale * graph.pageScale
+  preview.marginBottom = footerSize * scale * graph.pageScale
+  preview.autoOrigin = false
+
+  var oldRenderPage = preview.renderPage
+  preview.renderPage = function (w, h, x, y, content, pageNumber) {
+    var div = oldRenderPage.apply(this, arguments)
+
+    var header = document.createElement('div')
+    header.style.position = 'absolute'
+    header.style.boxSizing = 'border-box'
+    header.style.fontFamily = 'Arial,Helvetica'
+    header.style.height = (this.marginTop - 10) + 'px'
+    header.style.textAlign = 'center'
+    header.style.verticalAlign = 'middle'
+    header.style.marginTop = 'auto'
+    header.style.fontSize = '12px'
+    header.style.width = '100%'
+    header.style.fontWeight = '100'
+
+    // Vertical centering for text in header/footer
+    header.style.lineHeight = (this.marginTop - 10) + 'px'
+
+    var footer = header.cloneNode(true)
+
+    mxUtils.write(header, 'Untitled_Schematic ' + pageNumber + ' - EDA Cloud')
+    header.style.borderBottom = '1px solid gray'
+    header.style.top = '0px'
+
+    mxUtils.write(footer, 'Made with Schematic Editor - EDA Cloud')
+    footer.style.borderTop = '1px solid gray'
+    footer.style.bottom = '0px'
+
+    div.firstChild.appendChild(footer)
+    div.firstChild.appendChild(header)
+
+    return div
+  }
+
+  preview.open()
 }
