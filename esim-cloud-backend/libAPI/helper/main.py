@@ -17,7 +17,7 @@ class SvgGenerator:
         self.PIN_NAME_PADDING = 13
         self.SHOW_TEXT = False
         self.SHOW_PIN_NUMBER = True
-        self.SHOW_PIN_NAME = False
+        self.SHOW_PIN_NAME = True
         self.SHOW_PIN_NOT_CONNECTED = False
         self.SVG_SCALE = 1
 
@@ -510,5 +510,5 @@ if __name__ == "__main__":
     # print('Processed', sys.argv[1])
 
     print("running")
-    generate_svg_and_save_to_folder("./sample_lib/pspice.lib", './symbols/')
+    generate_svg_and_save_to_folder("./sample_lib/Analog.lib", './symbols/')
     print("done")

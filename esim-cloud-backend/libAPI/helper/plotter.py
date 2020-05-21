@@ -238,9 +238,19 @@ class SvgPlotter:
 
         pen = int(pen)
 
+        # only fill the polygon if its implicitly closed
+
         #
         # unpack arguments in list using *operator
         #
+        kwargs = {}
+        if fill == 'F':
+            # fill the shape
+            kwargs["fill"] = self.STROKE_COLOR
+        if fill == 'f':
+            # dont fill the shape
+            kwargs["fill_opacity"] = 0
+        print(kwargs)
         arg = []
         for i in range(0, len(vertices_list)):
             for index in range(0, 2):
@@ -249,8 +259,8 @@ class SvgPlotter:
         d.append(draw.Lines(*arg,
                             close=False,
                             stroke_width=pen,
-                            fill=self.STROKE_COLOR,
-                            stroke=self.STROKE_COLOR))
+                            stroke=self.STROKE_COLOR,
+                            **kwargs))
         return d
 
     def draw_pin_shape(self, d, x, y, pin_orientation, shape_of_pin):
