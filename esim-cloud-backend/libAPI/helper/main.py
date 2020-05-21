@@ -1,5 +1,5 @@
-from .plotter import SvgPlotter
-from .parser import Parser
+from plotter import SvgPlotter
+from parser import Parser
 import os
 import sys
 
@@ -11,16 +11,18 @@ class SvgGenerator:
     def __init__(self):
         self.CANVAS_HEIGHT = 2000
         self.CANVAS_WIDTH = 1500
-
         self.PART_NUMBER = "1"
         self.DMG_NUMBER = "1"
-
         self.DEFAULT_PEN_WIDTH = "6"
         self.PIN_NAME_PADDING = 13
-
-        self.SHOW_TEXT = True
-
+        self.SHOW_TEXT = False
+        self.SHOW_PIN_NUMBER = True
+        self.SHOW_PIN_NAME = True
+        self.SHOW_PIN_NOT_CONNECTED = False
         self.SVG_SCALE = 1
+
+        # set PIN_NAME_TEXT_SIZE = 0 to use default text_size
+        self.PIN_NAME_TEXT_SIZE = 35
 
         # some symbols dont have dmg 2.
         # assuming dmg 2 is present.
@@ -154,9 +156,15 @@ class SvgGenerator:
                     for run in range(0, 2):
 
                         # initialize canvas here.
+                        # d = draw.Drawing(
+                        #     my_width,
+                        #     my_height,
+                        #     origin="center",
+                        #     displayInline=False,
+                        # )
                         d = draw.Drawing(
-                            my_width,
-                            my_height,
+                            1500,
+                            2000,
                             origin="center",
                             displayInline=False,
                         )
@@ -236,6 +244,17 @@ class SvgGenerator:
                                         "y": y_pos,
                                         "type": type_of_pin,
                                     })
+
+                                if not self.SHOW_PIN_NUMBER:
+                                    pinNumber = ""
+                                if not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED:
+                                    pinName = ""
+
+                                if pinName == "NC":
+                                    pinName = ""
+
+                                if self.PIN_NAME_TEXT_SIZE != 0:
+                                    text_size = self.PIN_NAME_TEXT_SIZE
 
                                 d = self.plotter.drawPin(
                                     d,
@@ -420,7 +439,7 @@ class SvgGenerator:
                                 comp = dcm_data[co]
                                 if(name_of_symbol == comp["name"]):
                                     cmp_data["name"] = comp["name"]
-                                    cmp_data["full_name"] = (f"{symbol_prefix}-" # noqa
+                                    cmp_data["full_name"] = (f"{symbol_prefix}-"  # noqa
                                                             +
                                                             f"{name_of_symbol}"
                                                             f"-{dm}-" +
@@ -448,7 +467,7 @@ class SvgGenerator:
                                     cmp_data["symbol_prefix"] = symbol_prefix
                                     cmp_data["dmg"] = dm
                                     cmp_data["part"] = chr(64+z)
-                                    component_data[cmp_data["full_name"]] = cmp_data # noqa
+                                    component_data[cmp_data["full_name"]] = cmp_data  # noqa
         # print(component_data)
         return component_data
 
@@ -461,8 +480,12 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 if __name__ == "__main__":
     # Takes Libraries as command line arguments,
     # Only if script is run on command line
-    if(len(sys.argv)) != 3:
-        print("Usage: script.py <Path to library> <Output Directory>")
-        sys.exit(1)
-    generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
-    print('Processed', sys.argv[1])
+    # if(len(sys.argv)) != 3:
+    #     print("Usage: script.py <Path to library> <Output Directory>")
+    #     sys.exit(1)
+    # generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
+    # print('Processed', sys.argv[1])
+
+    print("running")
+    generate_svg_and_save_to_folder("./sample_lib/Analog.lib", './symbols/')
+    print("done")

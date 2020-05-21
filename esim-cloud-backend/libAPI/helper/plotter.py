@@ -3,11 +3,11 @@ import drawSvg as draw
 
 class SvgPlotter:
     svg_boundary = {
-                        "top": 0,
-                        "right": 0,
-                        "bottom": 0,
-                        "left": 0,
-                    }
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0,
+    }
 
     def __init__(self):
         self.STROKE_COLOR = "black"
@@ -82,11 +82,11 @@ class SvgPlotter:
 
     def reset_svg_boundary(self,):
         self.svg_boundary = {
-                        "top": 0,
-                        "right": 0,
-                        "bottom": 0,
-                        "left": 0,
-                    }
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0,
+        }
 
     """pen-parameter is the thickness of the pen,when
     zero the default pen width is used.
@@ -444,6 +444,6 @@ class SvgPlotter:
                 # d.append(draw.Text(pinName,text_size,x1,y1-length-pin_name_offset,center=0.6,fill=self.PIN_NAME_COLOR))
 
         d.append(draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR,
-                 stroke_width=pen))
+                           stroke_width=pen))
 
         return d
