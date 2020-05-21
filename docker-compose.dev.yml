@@ -124,13 +124,21 @@ services:
       volumes:
           - ./redis_data:/data
 
+  # Uncomment this and Change appropriate env variables to switch to mysql
+  # db:
+  #   image: "mysql:${TAG_MYSQL}"
+  #   command: --default-authentication-plugin=mysql_native_password
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./mysql_data:/var/lib/mysql
+
   db:
-    image: "mysql:${TAG_MYSQL}"
-    command: --default-authentication-plugin=mysql_native_password
+    image: postgres
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
-    volumes:
-      - ./mysql_data:/var/lib/mysql
 
 volumes:
   run_vol:
