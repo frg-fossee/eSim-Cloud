@@ -215,6 +215,8 @@ export abstract class CircuitElement {
       // }
       this.tx = tmpx;
       this.ty = tmpy;
+      this.x += this.tx;
+      this.y += this.ty;
     });
   }
 

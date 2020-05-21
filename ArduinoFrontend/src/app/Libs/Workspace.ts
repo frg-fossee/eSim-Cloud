@@ -281,6 +281,19 @@ export class Workspace {
   }
   static keyUp(event: KeyboardEvent) {
     // event.preventDefault();
+    // console.log([event.ctrlKey, event.key]);
+    if (event.key === 'Delete') {
+      // Backspace or Delete
+      Workspace.DeleteComponent();
+    }
+    if (event.ctrlKey && (event.key === 'c' || event.key === 'C')) {
+      // Copy
+      Workspace.copyComponent();
+    }
+    if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
+      // paste
+      Workspace.pasteComponent();
+    }
   }
   static mouseWheel(event: WheelEvent) {
     event.preventDefault();
@@ -368,10 +381,14 @@ export class Workspace {
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
       const ele = document.getElementById('contextMenu');
-      const x = +ele.style.left.replace('px', '');
-      const y = +ele.style.top.replace('px', '');
+      let x = +ele.style.left.replace('px', '');
+      let y = +ele.style.top.replace('px', '');
       // console.log([x, y]);
       const key = Workspace.copiedItem.keyName;
+      if (x === 0 && y === 0) {
+        x = Workspace.copiedItem.x + 100;
+        y = Workspace.copiedItem.y + 100;
+      }
       const pt = Workspace.svgPoint(x, y);
       // Workspace.addComponent(Workspace.copiedItem, pt.x, pt.y, 0, 0);
       const myClass = Utils.components[key].className;
