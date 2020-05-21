@@ -58,13 +58,13 @@ export class SimulatorComponent implements OnInit {
     holder.addEventListener('dragleave', Workspace.dragLeave, true);
     holder.addEventListener('dragover', Workspace.dragOver, true);
     holder.addEventListener('drop', Workspace.drop, true);
-    holder.addEventListener('keydown', Workspace.keyDown, true);
-    holder.addEventListener('keypress', Workspace.keyPress, true);
-    holder.addEventListener('keyup', Workspace.keyUp, true);
     holder.addEventListener('wheel', Workspace.mouseWheel, true);
     holder.addEventListener('paste', Workspace.paste, true);
     document.body.addEventListener('mousemove', Workspace.bodyMouseMove);
     document.body.addEventListener('mouseup', Workspace.bodyMouseUp);
+    document.body.addEventListener('keydown', Workspace.keyDown, true);
+    document.body.addEventListener('keypress', Workspace.keyPress, true);
+    document.body.addEventListener('keyup', Workspace.keyUp, true);
 
     // Initialize Property Box
     Workspace.initProperty(v => {

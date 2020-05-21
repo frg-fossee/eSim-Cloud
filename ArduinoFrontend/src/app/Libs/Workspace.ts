@@ -274,13 +274,13 @@ export class Workspace {
   }
 
   static keyDown(event: KeyboardEvent) {
-
+    // event.preventDefault();
   }
   static keyPress(event: KeyboardEvent) {
-
+    // event.preventDefault();
   }
   static keyUp(event: KeyboardEvent) {
-
+    // event.preventDefault();
   }
   static mouseWheel(event: WheelEvent) {
     event.preventDefault();
