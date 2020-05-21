@@ -51,7 +51,5 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-standard": "^4.0.1",
-    "typescript": "*",
-    "@typescript-eslint/parser": "*",
   }
 }
