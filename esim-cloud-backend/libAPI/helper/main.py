@@ -17,7 +17,7 @@ class SvgGenerator:
         self.PIN_NAME_PADDING = 13
         self.SHOW_TEXT = False
         self.SHOW_PIN_NUMBER = True
-        self.SHOW_PIN_NAME = True
+        self.SHOW_PIN_NAME = False
         self.SHOW_PIN_NOT_CONNECTED = False
         self.SVG_SCALE = 1
 
@@ -156,18 +156,19 @@ class SvgGenerator:
                     for run in range(0, 2):
 
                         # initialize canvas here.
-                        # d = draw.Drawing(
-                        #     my_width,
-                        #     my_height,
-                        #     origin="center",
-                        #     displayInline=False,
-                        # )
                         d = draw.Drawing(
-                            1500,
-                            2000,
+                            my_width,
+                            my_height,
                             origin="center",
                             displayInline=False,
                         )
+
+                        # d = draw.Drawing(
+                        #     1500,
+                        #     2000,
+                        #     origin="center",
+                        #     displayInline=False,
+                        # )
 
                         d.setPixelScale(s=self.SVG_SCALE)
 
@@ -418,12 +419,34 @@ class SvgGenerator:
                             bottom = svg_boundary["bottom"]
                             left = svg_boundary["left"]
 
-                            height = abs(top - bottom)
-                            width = abs(left - right)
-                            my_height = height
-                            if width <= 0:
-                                width = 400
-                            my_width = width
+                            if abs(top) != abs(bottom):
+                                # the svg is not symmetric
+                                # then taking the greater side
+                                greater_side = abs(top) if abs(
+                                    top) > abs(bottom) else abs(bottom)
+
+                                my_height = greater_side * 2
+                            else:
+
+                                height = abs(top - bottom)
+
+                                if height <= 0:
+                                    height = 100
+                                my_height = height
+
+                            if abs(left) != abs(right):
+                                # the svg is not symmetric
+                                # then taking the greater side
+                                greater_side = abs(left) if abs(
+                                    left) > abs(right) else abs(right)
+                                my_width = greater_side * 2
+
+                            else:
+                                width = abs(left - right)
+
+                                if width <= 0:
+                                    width = 100
+                                my_width = width
 
                         if(run == 1):
                             self.save_svg(d,
@@ -431,7 +454,7 @@ class SvgGenerator:
                                           f"-{name_of_symbol}-{dm}-" +
                                           f"{chr(64+z)}",
                                           save_path, pin_number_positions,
-                                          (width, height))
+                                          (my_width, my_height))
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
                             cmp_data = {}
@@ -487,5 +510,5 @@ if __name__ == "__main__":
     # print('Processed', sys.argv[1])
 
     print("running")
-    generate_svg_and_save_to_folder("./sample_lib/Analog.lib", './symbols/')
+    generate_svg_and_save_to_folder("./sample_lib/pspice.lib", './symbols/')
     print("done")

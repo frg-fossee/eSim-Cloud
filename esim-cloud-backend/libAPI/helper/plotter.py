@@ -13,9 +13,12 @@ class SvgPlotter:
         self.STROKE_COLOR = "black"
         self.PIN_NAME_COLOR = "black"
         self.PIN_NUMBER_COLOR = "black"
-        self.PIN_NUMBER_OFFSET = 40
+        self.PIN_NUMBER_OFFSET = 20
         self.RADIUS_OF_NOT_GATE = 25
         self.FILL_NOT_GATE = "F"
+
+        # increase ratio to reduce pin Number size
+        self.TEXT_SIZE_REDUCE_RATION = 1
 
     # def update_svg_boundary(self,value,axis):
     #     # axis can be 'x' or 'y'
@@ -315,7 +318,7 @@ class SvgPlotter:
             # x = x1
             d.append(
                 draw.Text(
-                    pinNumber, text_size/2, x, y, center=0.6,
+                    pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
@@ -350,7 +353,7 @@ class SvgPlotter:
 
             d.append(
                 draw.Text(
-                    pinNumber, text_size/2, x, y, center=0.6,
+                    pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
@@ -376,20 +379,20 @@ class SvgPlotter:
             # draw pin shape
 
             # draw pin shape
-            # subtracted 12 just to make the pin look better
+
             shape_x = x2
             shape_y = y2 - self.RADIUS_OF_NOT_GATE
             d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
                                     shape_of_pin)
 
             # to position pin number properly
-            x = x1 - 40
+            # x = x1 - 50
             x = x1 - self.PIN_NUMBER_OFFSET
             y = y2 - (length / 3)
             # y = y1
             d.append(
                 draw.Text(
-                    pinNumber, text_size/2, x, y, center=0.6,
+                    pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
@@ -422,10 +425,11 @@ class SvgPlotter:
             # to position pin number properly
             # x = x1 - 40
             x = x1 - self.PIN_NUMBER_OFFSET
+            # x = x1 - 20
             y = y2 + (length / 3)
             d.append(
                 draw.Text(
-                    pinNumber, text_size/2, x, y, center=0.6,
+                    pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
                     fill=self.PIN_NUMBER_COLOR
                 )
             )
