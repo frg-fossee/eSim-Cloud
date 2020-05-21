@@ -1,24 +1,24 @@
-import React from "react";
-import { Container, Grid, Paper } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react'
+import { Container, Grid, Paper } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 
-import NetlistUpload from "../components/Simulator/NetlistUpload"
+import NetlistUpload from '../components/Simulator/NetlistUpload'
 
 const useStyles = makeStyles((theme) => ({
   header: {
     padding: theme.spacing(5, 0, 6),
-    color: "#fff",
+    color: '#fff'
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: "center",
-    backgroundColor: "#404040",
-    color: "#fff",
-  },
-}));
+    textAlign: 'center',
+    backgroundColor: '#404040',
+    color: '#fff'
+  }
+}))
 
-export default function () {
-  const classes = useStyles();
+export default function Simulator () {
+  const classes = useStyles()
 
   return (
     <Container maxWidth="lg" className={classes.header}>
@@ -38,5 +38,5 @@ export default function () {
         <NetlistUpload />
       </Grid>
     </Container>
-  );
+  )
 }

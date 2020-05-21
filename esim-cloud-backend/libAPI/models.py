@@ -3,7 +3,6 @@ from djongo import models
 
 class Library(models.Model):
     library_name = models.CharField(max_length=200)
-    library_type = models.CharField(max_length=20)
     saved_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -11,11 +10,17 @@ class Library(models.Model):
 
 
 class LibraryComponent(models.Model):
-    component_name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200)
     svg_path = models.CharField(max_length=400)
-    component_type = models.CharField(max_length=20)
+    description = models.CharField(max_length=400)
+    data_link = models.URLField(max_length=200)
+    full_name = models.CharField(max_length=200)
+    keyword = models.CharField(max_length=200)
+    symbol_prefix = models.CharField(max_length=10)
+    part = models.CharField(max_length=10)
+    dmg = models.PositiveSmallIntegerField()
     component_library = models.ForeignKey(
         Library, on_delete=models.CASCADE, null=False, related_name='library')
 
     def __str__(self):
-        return self.component_name
+        return self.name

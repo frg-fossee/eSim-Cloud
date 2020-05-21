@@ -1,18 +1,19 @@
-import React from "react";
-import { Tab, Box, Tabs, AppBar, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import PropTypes from "prop-types";
+/* eslint-disable react/no-unescaped-entities */
+import React from 'react'
+import { Tab, Box, Tabs, AppBar, Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-}));
+    width: '100%',
+    backgroundColor: theme.palette.background.paper
+  }
+}))
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+function TabPanel (props) {
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -28,29 +29,29 @@ function TabPanel(props) {
         </Box>
       )}
     </div>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `scrollable-auto-tab-${index}`,
-    "aria-controls": `scrollable-auto-tabpanel-${index}`,
-  };
+  value: PropTypes.any.isRequired
 }
 
-export default function ProgressPanel() {
-  const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+function a11yProps (index) {
+  return {
+    id: `scrollable-auto-tab-${index}`,
+    'aria-controls': `scrollable-auto-tabpanel-${index}`
+  }
+}
+
+export default function ProgressPanel () {
+  const classes = useStyles()
+  const [value, setValue] = React.useState(0)
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+    setValue(newValue)
+  }
 
   return (
     <div className={classes.root}>
@@ -78,5 +79,5 @@ export default function ProgressPanel() {
         domain expert...
       </TabPanel>
     </div>
-  );
+  )
 }

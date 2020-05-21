@@ -1,31 +1,31 @@
-import React from "react";
+import React from 'react'
 import {
   Card,
   Grid,
   Button,
   Typography,
   CardActions,
-  CardContent,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link as RouterLink } from "react-router-dom";
+  CardContent
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
-import SchematicCard from "./SchematicCard";
+import SchematicCard from './SchematicCard'
 
 const useStyles = makeStyles({
   mainHead: {
-    width: "100%",
-    backgroundColor: "#404040",
-    color: "#fff",
+    width: '100%',
+    backgroundColor: '#404040',
+    color: '#fff'
   },
   title: {
     fontSize: 14,
-    color: "#80ff80",
-  },
-});
+    color: '#80ff80'
+  }
+})
 
-function MainCard() {
-  const classes = useStyles();
+function MainCard () {
+  const classes = useStyles()
 
   return (
     <Card className={classes.mainHead}>
@@ -52,10 +52,10 @@ function MainCard() {
         </Button>
       </CardActions>
     </Card>
-  );
+  )
 }
 
-export default function SchematicsList() {
+export default function SchematicsList () {
   return (
     <>
       <Grid
@@ -76,5 +76,5 @@ export default function SchematicsList() {
         </Grid>
       </Grid>
     </>
-  );
+  )
 }

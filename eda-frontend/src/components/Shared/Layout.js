@@ -1,30 +1,32 @@
-import React from "react";
-import { AppBar, IconButton, Toolbar } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import MenuIcon from "@material-ui/icons/Menu";
+import React from 'react'
+import PropTypes from 'prop-types'
+import { AppBar, IconButton, Toolbar } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import MenuIcon from '@material-ui/icons/Menu'
 
-import LayoutSidebar from "./LayoutSidebar";
+import LayoutSidebar from './LayoutSidebar'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`,
-    zIndex: theme.zIndex.drawer + 1,
+    zIndex: theme.zIndex.drawer + 1
   },
   menuButton: {
-    marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
-      display: "none",
-    },
-  },
-}));
+    marginRight: theme.spacing(1),
+    padding: theme.spacing(1),
+    [theme.breakpoints.up('md')]: {
+      display: 'none'
+    }
+  }
+}))
 
-function Layout(props) {
-  const classes = useStyles();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+function Layout ({ header, resToolbar, sidebar }) {
+  const classes = useStyles()
+  const [mobileOpen, setMobileOpen] = React.useState(false)
 
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+    setMobileOpen(!mobileOpen)
+  }
 
   return (
     <>
@@ -35,29 +37,36 @@ function Layout(props) {
         elevation={0}
         className={classes.appBar}
       >
-        {props.header}
+        {header}
 
         <Toolbar variant="dense" color="default">
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
+            size="small"
             onClick={handleDrawerToggle}
             className={classes.menuButton}
           >
-            <MenuIcon />
+            <MenuIcon fontSize="small" />
           </IconButton>
 
-          {props.resToolbar}
+          {resToolbar}
         </Toolbar>
       </AppBar>
 
       {/* Left Sidebar for Layout */}
       <LayoutSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle}>
-        {props.sidebar}
+        {sidebar}
       </LayoutSidebar>
     </>
-  );
+  )
 }
 
-export default Layout;
+Layout.propTypes = {
+  header: PropTypes.element,
+  resToolbar: PropTypes.element,
+  sidebar: PropTypes.element
+}
+
+export default Layout

@@ -50,3 +50,6 @@ Useful Commands
 
 * docker exec -it <container ID> <command>
 * eg. docker exec -it b7e7acf2283e /bin/sh
+* sh migrations.sh inside a docker container to apply db migrations manually
+* To seed libraries - python manage.py seed_libs --location kicad-symbols/ inside container
+* To remove seeded libraries - python manage.py seed_libs --clear inside container
