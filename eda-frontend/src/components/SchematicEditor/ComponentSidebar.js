@@ -95,7 +95,7 @@ const generateComponent = (component) => {
         </ListItemText>
 
         <ListItemText>
-        <b>DMG:</b> {component.dmg}
+        <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
         </ListItemText>
         <ListItemIcon>
         <img src={'../'+component.svg_path} alt="Logo"/>
