@@ -21,7 +21,7 @@ export const fetchLibraries = () => (dispatch) => {
     )
     .catch((err) => { console.error(err) })
 }
-export const fetchComponents = (library_id) => (dispatch) => {
+export const fetchComponents = (libraryId) => (dispatch) => {
 // SAMPLE Response from API
 //   [
 //   {
@@ -38,13 +38,13 @@ export const fetchComponents = (library_id) => (dispatch) => {
 //     "dmg": 1
 //   },
 // ] -- Multiple dicts in array
-  const url = 'components/?component_library=' + parseInt(library_id)
+  const url = 'components/?component_library=' + parseInt(libraryId)
   api.get(url)
     .then(
       (res) => {
         dispatch({
           type: actions.FETCH_COMPONENTS,
-          payload: { components: res.data, id: library_id }
+          payload: { components: res.data, id: libraryId }
         })
       }
     )
