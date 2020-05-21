@@ -431,7 +431,7 @@ class SvgGenerator:
                                 height = abs(top - bottom)
 
                                 if height <= 0:
-                                    height = 100
+                                    height = 200
                                 my_height = height
 
                             if abs(left) != abs(right):
@@ -445,7 +445,7 @@ class SvgGenerator:
                                 width = abs(left - right)
 
                                 if width <= 0:
-                                    width = 100
+                                    width = 200
                                 my_width = width
 
                         if(run == 1):

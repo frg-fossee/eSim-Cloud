@@ -236,12 +236,12 @@ class SvgPlotter:
     def drawPolygon(self, d, vertices_count, pen=5,
                     vertices_list=[], fill="f", ):
 
-        # if(fill == 'f'):
-        #     kwargs = {"fill_opacity" : 0.3}
-        # elif(fill == 'F'):
-        #     kwargs = {'fill':self.STROKE_COLOR }
-        # else:
-        #     kwargs = {"fill_opacity" : 0}
+        if(fill == 'f'):
+            kwargs = {"fill_opacity": 0.3}
+        elif(fill == 'F'):
+            kwargs = {'fill': self.STROKE_COLOR}
+        else:
+            kwargs = {"fill_opacity": 0}
 
         pen = int(pen)
 
@@ -254,13 +254,25 @@ class SvgPlotter:
             x2 = int(point_2[0])
             y2 = int(point_2[1])
 
-            # d.append(draw.Line(x1,y1,x2,y2,stroke=self.STROKE_COLOR , stroke_width=pen,**kwargs))# noqa
+            # d.append(draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR, stroke_width=pen))  # noqa
             d.append(
                 draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR,
-                          stroke_width=pen)
+                          stroke_width=pen, fill="red", fill_opacity=0.5)
             )
 
             self.update_svg_boundary(vertices_list)
+
+        point_1 = vertices_list[-1]
+        point_2 = vertices_list[0]
+
+        x1 = int(point_1[0])
+        y1 = int(point_1[1])
+        x2 = int(point_2[0])
+        y2 = int(point_2[1])
+        d.append(
+            draw.Line(x1, y1, x2, y2, stroke=self.STROKE_COLOR,
+                      stroke_width=pen)
+        )
 
         return d
 
