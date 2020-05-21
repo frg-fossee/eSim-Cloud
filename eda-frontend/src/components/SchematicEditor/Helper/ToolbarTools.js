@@ -136,16 +136,20 @@ export function ErcCheck () {
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0
+  var PinNC = 0
+  var stypes = 0
   for (var property in list) {
     var cell = list[property]
     if (cell.Component === true) {
-      // console.log(cell.CellType)
+      console.log(cell)
       for (var child in cell.children) {
         console.log(cell.children[child])
         var childVertex = cell.children[child]
         if (childVertex.Pin === true && childVertex.edges === null) {
           // console.log('Wires not Connected')
-          alert('Wires not connected')
+          // alert('Wires not connected')
+          graph.getSelectionCell(childVertex)
+          ++PinNC
           ++errorCount
         }
       }
@@ -154,30 +158,37 @@ export function ErcCheck () {
     // Setting a rule check that only input and output ports can be connected
     if (cell.edge === true) {
       // eslint-disable-next-line no-constant-condition
-      if (cell.source.pinType === 'Input' && cell.target.pinType === 'Output') {
-        console.log('Wire Information')
+      if ((cell.source.pinType === 'Input' && cell.target.pinType === 'Input') || (cell.source.pinType === 'Output' && cell.target.pinType === 'Output')) {
+        /* console.log('Wire Information')
         console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
-        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
-      } else if (cell.source.pinType === 'Ouput' && cell.target.pinType === 'Input') {
-        console.log('Wire Information')
-        console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
-        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
-      } else {
-        // Automatically remove wire if same pintype are connected
-        /* cell.source.removeFromTerminal(true)
-                        cell.target.removeFromTerminal(false) */
-        graph.setSelectionCell(cell)
-        alert('Same pintypes are connected together')
-        ++errorCount
+        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style) */
+        ++stypes
+
       }
+      // (cell.source.pinType === 'Ouput' && cell.target.pinType === 'Input') {
+      else {
+        console.log('Wire Information')
+        console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
+        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
+      } /* else {
+        graph.setSelectionCell(cell)
+        // alert('Same pintypes are connected together')
+        ++stypes
+        ++errorCount
+      } */
     }
   }
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount
-  }
-  if (errorCount === 0) {
-    alert('ERC Check completed')
+  } else if (PinNC !== 0) {
+    alert('Pins not connected')
+  } else if (stypes !== 0) {
+    alert('Same pintypes connected')
+  } else {
+    if (errorCount === 0) {
+      alert('ERC Check completed')
+    }
   }
 }
 
