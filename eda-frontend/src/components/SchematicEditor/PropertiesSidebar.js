@@ -2,11 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-<<<<<<< HEAD
-//import SimulationProperties from "./SimulationProperties"
-=======
 import SimulationProperties from './SimulationProperties'
->>>>>>> 708df033b83234c89a25aea8c529959d7d6e1eb5
 
 import './Helper/SchematicEditor.css'
 
