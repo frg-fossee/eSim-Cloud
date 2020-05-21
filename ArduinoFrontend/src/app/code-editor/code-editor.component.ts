@@ -13,6 +13,44 @@ export class CodeEditorComponent implements OnInit {
     theme: 'vs',
     language: 'c'
   };
+  records = [
+    {
+      include: '#include <EEPROM.h>',
+      name: 'EEPROM',
+      Description: 'Reading and writing to permanent storage',
+      url: 'https://www.arduino.cc/en/Reference/EEPROM'
+    },
+    {
+      include: '#include <LiquidCrystal.h>',
+      name: 'LiquidCrystal',
+      Description: 'Controlling liquid crystal displays (LCDs)',
+      url: 'https://www.arduino.cc/en/Reference/LiquidCrystal'
+    },
+    {
+      include: '#include <Servo.h>',
+      name: 'Servo',
+      Description: 'Controlling Servo motor',
+      url: 'https://www.arduino.cc/en/Reference/Servo'
+    },
+    {
+      include: '#include <SoftwareSerial.h>',
+      name: 'SoftwareSerial',
+      Description: 'Allow serial communication on other digital pins of the Arduino',
+      url: 'https://www.arduino.cc/en/Reference/SoftwareSerial'
+    },
+    {
+      include: '#include <Wire.h>',
+      name: 'Wire',
+      Description: 'This library allows you to communicate with I2C / TWI devices',
+      url: 'https://www.arduino.cc/en/Reference/Wire'
+    },
+    {
+      include: '#include <SPI.h>',
+      name: 'SPI',
+      Description: 'Communicating with devices using the Serial Peripheral Interface (SPI) Bus',
+      url: 'https://www.arduino.cc/en/Reference/SPI'
+    }
+  ]
   code = 's';
   names: string[] = [];
   arduinos: ArduinoUno[] = [];
@@ -1064,4 +1102,16 @@ export class CodeEditorComponent implements OnInit {
     this.selectedIndex = item.selectedIndex;
     this.code = this.arduinos[this.selectedIndex].code;
   }
+  openFolder() {
+    var folder = document.getElementById('lib');
+    console.log(folder.style.display);
+
+    if (folder.style.display === 'none') {
+      folder.style.display = 'flex';
+    }
+    else {
+      folder.style.display = 'none';
+    }
+  }
+
 }

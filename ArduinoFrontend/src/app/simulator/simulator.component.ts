@@ -7,7 +7,10 @@ import { ViewComponentInfoComponent } from '../view-component-info/view-componen
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
 import { ApiService } from '../api.service';
+import { $ } from 'protractor';
+import { style } from '@angular/animations';
 declare var Raphael;
+
 
 @Component({
   selector: 'app-simulator',
@@ -21,6 +24,9 @@ export class SimulatorComponent implements OnInit {
   componentsBox = Utils.componentBox;
   components = Utils.components;
   openCodeEditor = false;
+  toggle = true;
+  stoggle = true;
+  status = 'Start Simulation'
   constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
     Workspace.initializeGlobalFunctions();
   }
@@ -103,14 +109,39 @@ export class SimulatorComponent implements OnInit {
     block.classList.toggle('show-div');
   }
 
+
   /**
    * Hide/Show (toggle) Code Editor
    * @param elem Code Editor Parent Div
    */
+  simulate() {
+    this.stoggle = !this.stoggle;
+    this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
+
+    var sim = document.getElementById('console');
+    if (sim.style.display === 'none') {
+      sim.style.display = 'block';
+    } else {
+      sim.style.display = 'none';
+    }
+
+  }
+
+
   toggleCodeEditor(elem: HTMLElement) {
     elem.classList.toggle('show-code-editor');
+    this.toggle = !this.toggle;
     this.openCodeEditor = !this.openCodeEditor;
+    /* var div = document.getElementById('console');
+     //alert(div.style.display);
+     // console.log("meet");
+     if (div.style.display === 'none') {
+       div.style.display = 'block';
+     } else {
+       div.style.display = 'none';
+     }*/
   }
+
 
   /**
    * Project Title input focus out callback

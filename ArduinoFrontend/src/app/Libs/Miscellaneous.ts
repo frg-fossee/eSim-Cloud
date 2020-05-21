@@ -37,6 +37,7 @@ export class Label extends CircuitElement {
   changeLabel(value: string) {
     if (value === '') {
       // TODO: Show Toast
+      window['showToast']("Label cannot be empty");
       return;
     }
     this.text = value;

@@ -1,5 +1,7 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
+import { ShowOnDirtyErrorStateMatcher } from '@angular/material';
+import { Workspace } from './Workspace';
 
 export class Resistor extends CircuitElement {
   static colorTable: string[] = [];
@@ -90,7 +92,8 @@ export class Resistor extends CircuitElement {
     const tmp = parseInt((val * p).toFixed(0), 10);
     if (value.length > 12 || isNaN(tmp) || tmp === Infinity || tmp < 1.0 || `${tmp}`.length > 12) {
       // TODO: Show Toast
-      console.log('Not Possible');
+      window['showToast']("Not possible");
+      //console.log('Not Possible');
       return;
     } else {
       this.value = tmp;
