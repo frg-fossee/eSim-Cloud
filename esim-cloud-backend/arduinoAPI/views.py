@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from arduinoAPI.tasks import compile_sketch_task
 import uuid
+from celery.result import AsyncResult
 
 
 class CompileSketch(APIView):
@@ -26,3 +27,24 @@ class CompileSketch(APIView):
             'state': task.state,
             'uuid': str(task_id)
         })
+
+
+class CompilationStatus(APIView):
+    """
+    Returns Compilation Status
+    """
+
+    def get(self, request):
+        # GET task id from Query
+        task_id = request.GET.get("task_id", -1)
+        if task_id == -1:
+            return Response({})
+
+        # Get Celery Result
+        celery_result = AsyncResult(str(task_id))
+        # return Result with status
+        response_data = {
+            'state': celery_result.state,
+            'details': celery_result.info
+        }
+        return Response(response_data)
