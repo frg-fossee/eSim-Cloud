@@ -10,7 +10,15 @@ const styles = (theme) => ({
   }
 });
 
+function buildFileSelector(){
+  const fileSelector = document.createElement('input');
+  fileSelector.setAttribute('type', 'file');
+  fileSelector.setAttribute('multiple', 'multiple');
+  return fileSelector;
+}
+
 class MenuButton extends React.Component {
+  
   state = {
     anchorEl: null
   };
@@ -23,15 +31,25 @@ class MenuButton extends React.Component {
     this.setState({ anchorEl: null });
   };
 
+  componentDidMount(){
+    this.fileSelector = buildFileSelector();
+  }
+  
+  handleFileSelect = (e) => {
+    e.preventDefault();
+    this.fileSelector.click();
+  }
+
   render() {
+     
     const { classes } = this.props;
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const Wrapper = this.props.iconType;
     const listItems = this.props.items.map((link) =>
-      <MenuItem key={link} onClick={this.handleClose} >{link}</MenuItem>
+      <MenuItem onClick={this.handleFileSelect} >{link}</MenuItem>
     );
-
+console.log(listItems.id);
     return (
       <>
         <Tooltip title={this.props.title} >
