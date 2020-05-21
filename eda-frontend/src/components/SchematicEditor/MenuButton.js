@@ -46,7 +46,7 @@ class MenuButton extends React.Component {
     const open = Boolean(anchorEl)
     const Wrapper = this.props.iconType
     const listItems = this.props.items.map((link) =>
-      <MenuItem onClick={this.handleFileSelect} >{link}</MenuItem>
+      <MenuItem onClick={this.handleFileSelect} key={link}>{link}</MenuItem>
     )
     console.log(listItems.id)
     return (
