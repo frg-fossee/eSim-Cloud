@@ -82,6 +82,10 @@ References
 * https://docs.readthedocs.io/en/stable/intro/getting-started-with-sphinx.html(documentation .rstfile)
 * https://inkscape.org/ (inkscape for drawing svg)
 * https://microsoft.github.io/monaco-editor/(monaco editor for code editor)
+* https://cancerberosgx.github.io/raphaeljs-tutorial/(Raphaeljs tutorial)
+* https://arduino.github.io/arduino-cli/getting-started/
+* https://arduino.github.io/arduino-cli/commands/arduino-cli/
+
 
 
 

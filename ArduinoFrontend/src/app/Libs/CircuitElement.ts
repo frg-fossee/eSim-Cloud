@@ -1,4 +1,6 @@
 import { Point } from './Point';
+import { element } from '@angular/core/src/render3';
+import { Workspace } from './Workspace';
 
 /**
  * Abstract Class Circuit Elements
@@ -41,6 +43,8 @@ export abstract class CircuitElement {
         })
         .catch(err => {
           // TODO: Show Toast failed to load
+          window['showToast']("Failed to load");
+           
         });
     }
   }

@@ -123,10 +123,15 @@ export class Workspace {
     };
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
-      const toastele = document.getElementById('ToastMessage');
+      const ele = document.getElementById('ToastMessage');
+      
+      ele.style.display = 'block';
+      ele.innerText = message;
+      ele.style.padding = '15px 25px 15px 25px';
       setTimeout(() => {
-        toastele.style.display = 'block';
-      }, 6000);
+        ele.style.display = 'none';
+      }, 10000);
+
     };
   }
   /**
@@ -236,6 +241,7 @@ export class Workspace {
   static hideContextMenu() {
     const element = document.getElementById('contextMenu');
     element.style.display = 'none';
+
   }
   static copy(event: ClipboardEvent) {
   }
@@ -362,7 +368,8 @@ export class Workspace {
       window.hideProperties();
     } else {
       // TODO: Show Toast
-      console.log('No Element Selected');
+      window['showToast']("No Element Selected");
+     // console.log('No Element Selected');
     }
   }
   static copyComponent() {

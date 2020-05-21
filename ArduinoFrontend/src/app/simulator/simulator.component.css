@@ -1,9 +1,8 @@
 .grabbing {
-  cursor: grabbing !important;
-  cursor: -moz-grabbing !important;
-  cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
+    cursor: -moz-grabbing !important;
+    cursor: -webkit-grabbing !important;
 }
-
 
 .component-card {
     max-width: 32%;
@@ -22,7 +21,6 @@
     max-width: 100%;
     height: 50px;
 }
-
 
 .component-card label {
     margin: 0 auto 0 auto;
@@ -92,7 +90,6 @@
     transition: max-height .5s ease-in-out;
 }
 
-
 .show-div {
     max-height: 1000vh;
     transition: max-height .5s ease-in-out;
@@ -103,7 +100,7 @@
     overflow: scroll;
     width: 100%;
     height: calc(100vh - 101px);
-    background-color:white;
+    background-color: white;
     padding-left: 0.525px;
 }
 
@@ -130,6 +127,10 @@
     left: 0;
 }
 
+.lightblue {
+    background-color: lightskyblue;
+}
+
 #project-title {
     color: black !important;
     background-color: transparent;
@@ -147,7 +148,7 @@
     max-height: 50px;
 }
 
-#secondary-header > button {
+#secondary-header>button {
     font-size: 20px;
     background-color: #fff;
 }
@@ -163,7 +164,6 @@
     padding-left: 5px;
 }
 
-
 #page-content-wrapper {
     min-width: 100vw;
 }
@@ -176,67 +176,93 @@
     #sidebar-wrapper {
         margin-left: 0;
     }
-
     #page-content-wrapper {
         min-width: 0;
         width: 100%;
     }
-
     #wrapper.toggled #sidebar-wrapper {
         margin-left: -15rem;
     }
 }
+
 /*context-menu*/
 
-html,body{
-    height:100%;
-
+html, body {
+    height: 100%;
 }
-.context-menu{
-    width:160px;
-    height:140px;
+
+.context-menu {
+    width: 160px;
+    height: 140px;
     box-shadow: 0 0 5px 0 #ccc;
     position: absolute;
     display: none;
     background-color: white;
-
 }
-.context-menu ul{
-    list-style: none; /*show no bullets*/
+
+.context-menu ul {
+    list-style: none;
+    /*show no bullets*/
     padding: 5px 0px 5px 0px;
-
 }
 
-.context-menu ul li{
+.context-menu ul li {
     padding: 10px 5px 10px 5px;
     border-left: 4px solid transparent;
     cursor: pointer;
     z-index: 5000 !important;
     overflow: visible !important;
 }
-.context-menu ul li:hover{
-    background-color:rgb(245, 207, 161);
-    border-left: 4px solid #666;
 
+.context-menu ul li:hover {
+    background-color: rgb(245, 207, 161);
+    border-left: 4px solid #666;
 }
 
 #ToastMessage {
     top: 100px;
-    left: 500px;
+    left: 1230px;
     z-index: 100;
     position: fixed;
     width: 300px;
-    height: 100px;
+    height: auto;
     box-shadow: 0 0 20px 0 #ccc;
-    display: block;
-    background-color: #eee;
+    border-radius: 5px;
+    background-color: black;
+    display: none;
 }
 
-.toast  {
+.toast {
     text-align: left;
 }
 
+.toast-body {
+    padding: 15px 15px 15px 15px;
+    margin-top: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
+#console {
+    position: fixed;
+    min-width: 1015px;
+    min-height: 230px;
+    z-index: 100;
+    background: #fff;
+    right: calc(72.7vw - 1100px);
+    top: 500px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+    padding: 1px;
+    justify-content: space-between;
+    background-color: black;
+    animation: mymove 0.2s;
+    animation-iteration-count: 1s
+}
 
-
-
+@keyframes mymove {
+    from {
+        top: 600px;
+    }
+    to {
+        bottom: 700px;
+    }
+}
