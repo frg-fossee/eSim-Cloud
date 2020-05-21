@@ -56,9 +56,9 @@ Development branch status
 * To switch between databases, follow the instructions below
 * Please note *all data in the database will be lost*
 * Turn off existing containers ```docker-compose -f docker-compose.dev.yml down```
-* Step 1:  Remove all existing migrations
-``` find ./esim-cloud-backend -name "migrations" -type d -prune -exec rm -rf '{}' + ```
-* Step 2: Build Containers and run db migrations again ``` ./first_run.dev.sh ```
+* Switch to the needed config inside .env then copy it to prod config ``` cp .env .env.prod ``` , make needed changes ( if required) in the prod config
+* Uncomment the appropriate DB Block inside docker-compse.(dev/prod).yml , please note only one db block should be present
+* Build Containers and run db migrations again ``` ./first_run.dev.sh ```
 
 ##### Ubuntu Installation Dump
 * Note: These are all commands being executed to setup the project's development environment on a fresh ubuntu system with username ``` ubuntu ```

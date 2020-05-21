@@ -7,6 +7,9 @@ rm -rf mysql_data
 rm -rf postgres_data
 rm -rf mongo_data
 
+echo 'Deleting Existing Migrations'
+find ./esim-cloud-backend -name "migrations" -type d -prune -exec rm -rf '{}' +
+
 #For Slow Systems / Systems with less memory
 export DOCKER_CLIENT_TIMEOUT=120
 export COMPOSE_HTTP_TIMEOUT=120
