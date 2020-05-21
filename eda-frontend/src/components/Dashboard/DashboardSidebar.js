@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Hidden,
   Divider,
@@ -8,43 +8,43 @@ import {
   ListItem,
   InputBase,
   ListItemText,
-  ListItemAvatar,
-} from "@material-ui/core";
-import { Link } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
-import { deepPurple } from "@material-ui/core/colors";
+  ListItemAvatar
+} from '@material-ui/core'
+import { Link as RouterLink } from 'react-router-dom'
+import { makeStyles } from '@material-ui/core/styles'
+import { deepPurple } from '@material-ui/core/colors'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
-    minHeight: "45px",
+    minHeight: '45px'
   },
   purple: {
     color: theme.palette.getContrastText(deepPurple[500]),
-    backgroundColor: deepPurple[500],
+    backgroundColor: deepPurple[500]
   },
   sideItem: {
-    padding: theme.spacing(1.5, 2),
+    padding: theme.spacing(1.5, 2)
   },
   nested: {
     paddingLeft: theme.spacing(2),
-    overflow: "auto",
-    width: "100%",
-    maxHeight: 200,
+    overflow: 'auto',
+    width: '100%',
+    maxHeight: 200
   },
   nestedSearch: {
     padding: theme.spacing(0),
-    border: "1px solid #cccccc",
+    border: '1px solid #cccccc',
     margin: theme.spacing(1, 2),
-    borderRadius: "5px",
+    borderRadius: '5px'
   },
   input: {
     marginLeft: theme.spacing(1),
-    flex: 1,
-  },
-}));
+    flex: 1
+  }
+}))
 
-export default function DashSidebar(props) {
-  const classes = useStyles();
+export default function DashSidebar (props) {
+  const classes = useStyles()
 
   return (
     <>
@@ -54,9 +54,9 @@ export default function DashSidebar(props) {
 
       <ListItem
         alignItems="flex-start"
-        component={Link}
+        component={RouterLink}
         to="/dashboard"
-        style={{ marginTop: "15px" }}
+        style={{ marginTop: '15px' }}
         className={classes.sideItem}
         button
         divider
@@ -82,7 +82,7 @@ export default function DashSidebar(props) {
 
       <List>
         <ListItem
-          component={Link}
+          component={RouterLink}
           to="/dashboard/profile"
           className={classes.sideItem}
           button
@@ -94,7 +94,7 @@ export default function DashSidebar(props) {
 
       <List>
         <ListItem
-          component={Link}
+          component={RouterLink}
           to="/dashboard/schematics"
           className={classes.sideItem}
           button
@@ -117,5 +117,5 @@ export default function DashSidebar(props) {
         <Divider />
       </List>
     </>
-  );
+  )
 }

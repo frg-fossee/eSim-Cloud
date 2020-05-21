@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Container,
   Grid,
@@ -9,34 +9,35 @@ import {
   FormControlLabel,
   TextField,
   Card,
-  Avatar,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+  Avatar
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import { Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(27),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    padding: theme.spacing(3, 5),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: theme.spacing(3, 5)
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.main
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
+    margin: theme.spacing(3, 0, 2)
+  }
+}))
 
-export default function SignIn() {
-  const classes = useStyles();
+export default function SignIn () {
+  const classes = useStyles()
 
   return (
     <Container component="main" maxWidth="xs">
@@ -77,7 +78,8 @@ export default function SignIn() {
             label="Remember me"
           />
           <Button
-            href="/dashboard"
+            component={RouterLink}
+            to="/dashboard"
             type="submit"
             fullWidth
             variant="contained"
@@ -88,20 +90,21 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link component={RouterLink} to="#" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="/signup" variant="body2">
-                {"New User? Sign Up"}
+              <Link component={RouterLink} to="/signup" variant="body2">
+                {'New User? Sign Up'}
               </Link>
             </Grid>
           </Grid>
         </form>
       </Card>
       <Button
-        href="/"
+        component={RouterLink}
+        to="/"
         type="submit"
         fullWidth
         color="default"
@@ -110,5 +113,5 @@ export default function SignIn() {
         Back to home
       </Button>
     </Container>
-  );
+  )
 }

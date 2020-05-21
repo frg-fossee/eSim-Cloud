@@ -1,30 +1,31 @@
-import React from "react";
+import React from 'react'
 import {
   Card,
   Grid,
   Button,
   Typography,
   CardActions,
-  CardContent,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+  CardContent
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
-import ProgressPanel from "./ProgressPanel";
+import ProgressPanel from './ProgressPanel'
 
 const useStyles = makeStyles((theme) => ({
   mainHead: {
-    width: "100%",
-    backgroundColor: "#404040",
-    color: "#fff",
+    width: '100%',
+    backgroundColor: '#404040',
+    color: '#fff'
   },
   title: {
     fontSize: 14,
-    color: "#80ff80",
-  },
-}));
+    color: '#80ff80'
+  }
+}))
 
-function MainCard() {
-  const classes = useStyles();
+function MainCard () {
+  const classes = useStyles()
 
   return (
     <Card className={classes.mainHead}>
@@ -37,16 +38,21 @@ function MainCard() {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button href="/dashboard/schematics" color="primary" size="small">
+        <Button
+          component={RouterLink}
+          to="/dashboard/schematics"
+          color="primary"
+          size="small"
+        >
           My Schematics
         </Button>
       </CardActions>
     </Card>
-  );
+  )
 }
 
-export default function DashboardHome() {
-  const classes = useStyles();
+export default function DashboardHome () {
+  const classes = useStyles()
 
   return (
     <>
@@ -64,7 +70,7 @@ export default function DashboardHome() {
         </Grid>
 
         <Grid item xs={12}>
-          <Card style={{ padding: "7px 15px" }} className={classes.mainHead}>
+          <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
             <Typography variant="subtitle1" gutterBottom>
               Hey Username , Track your schematics status here...
             </Typography>
@@ -79,5 +85,5 @@ export default function DashboardHome() {
         </Grid>
       </Grid>
     </>
-  );
+  )
 }

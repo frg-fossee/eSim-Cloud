@@ -1,0 +1,57 @@
+- name: Configue Docker
+  hosts: all
+  become: true
+
+  tasks:
+
+      - name: Install aptitude using apt
+        apt: name=aptitude state=latest update_cache=yes force_apt_get=yes
+
+      - name: Install required system packages
+        apt:
+         state: latest
+         update_cache: yes
+         pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+
+      - name: Add Docker GPG apt Key
+        apt_key:
+          url: https://download.docker.com/linux/{{ansible_distribution|lower}}/gpg
+          state: present
+
+      - name: Add Docker Repository
+        apt_repository:
+          repo: deb [arch=amd64] https://download.docker.com/linux/{{ansible_distribution|lower}} {{ansible_distribution_release}} stable
+          state: present
+
+      - name: Update apt and install docker-ce
+        apt: update_cache=yes name=docker-ce state=latest
+
+      - name: Install Docker Module for Python
+        pip:
+          name: docker
+      - name: Install Docker-Compose Module for Python
+        pip:
+          name: docker-compose
+
+      - name: add user mod
+        command: usermod -aG docker {{ansible_user_id}}
+
+      - name: download docker-compose
+        get_url:
+          url: "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-{{ ansible_system }}-{{ ansible_userspace_architecture }}"
+          dest: /usr/local/bin/docker-compose
+          mode: 'u+x,g+x'
+
+      - name: Docker-compose permissions
+        file:
+          src: /usr/local/bin/docker-compose
+          dest: /usr/bin/docker-compose
+          state: link
+
