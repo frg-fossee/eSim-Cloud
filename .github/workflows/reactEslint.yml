@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - uses: hallee/eslint-action@master
+      - uses: hallee/eslint-action@1.0.2
         with:
           repo-token: ${{secrets.GITHUB_TOKEN}}
           source-root: 'eda-frontend'
