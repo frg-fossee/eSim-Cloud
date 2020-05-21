@@ -13,12 +13,14 @@ import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import DeleteIcon from '@material-ui/icons/Delete'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined'
-import BugReportIcon from '@material-ui/icons/BugReport'
+import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
+import BorderClearIcon from '@material-ui/icons/BorderClear'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { NetlistModal } from './ToolbarExtension'
 import MenuButton from './MenuButton'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, Undo, Redo } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -32,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   tools: {
     padding: theme.spacing(1),
     margin: theme.spacing(0, 0.5),
-    color: '#404040'
+    color: '#262626'
   },
   pipe: {
     fontSize: '1.45rem',
@@ -43,6 +45,17 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SchematicToolbar ({ mobileClose }) {
   const classes = useStyles()
+
+  const [open, setOpen] = React.useState(false)
+  const [netlist, genNetlist] = React.useState('')
+  const handleClickOpen = () => {
+    genNetlist(GenerateNetList())
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
 
   return (
     <>
@@ -59,6 +72,11 @@ export default function SchematicToolbar ({ mobileClose }) {
       <Tooltip title="Redo">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={Redo}>
           <RedoIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Rotate">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={Rotate}>
+          <RotateRightIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>
@@ -85,16 +103,15 @@ export default function SchematicToolbar ({ mobileClose }) {
           <PrintOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <span className={classes.pipe}>|</span>
-
-      <Tooltip title="Rotate">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={Rotate}>
-          <RotateRightIcon fontSize="small" />
+      <Tooltip title="Generate Netlist">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleClickOpen} >
+          <BorderClearIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      <NetlistModal open={open} close={handleClose} netlist={netlist} />
       <Tooltip title="ERC Check">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={ErcCheck}>
-          <BugReportIcon fontSize="small" />
+          <BugReportOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>

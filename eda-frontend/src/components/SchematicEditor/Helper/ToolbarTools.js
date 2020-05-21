@@ -11,7 +11,8 @@ const {
   mxRectangle,
   mxUtils,
   mxUndoManager,
-  mxEvent
+  mxEvent,
+  mxCodec
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -178,4 +179,12 @@ export function ErcCheck () {
   if (errorCount === 0) {
     alert('ERC Check completed')
   }
+}
+
+// GENERATE NETLIST
+export function GenerateNetList () {
+  var enc = new mxCodec(mxUtils.createXmlDocument())
+  var node = enc.encode(graph.getModel())
+  var value = mxUtils.getPrettyXml(node)
+  return value
 }

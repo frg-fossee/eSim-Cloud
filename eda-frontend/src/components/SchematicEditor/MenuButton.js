@@ -6,7 +6,7 @@ const styles = (theme) => ({
   tools: {
     padding: theme.spacing(1),
     margin: theme.spacing(0, 0.5),
-    color: '#404040'
+    color: '#262626'
   }
 });
 
