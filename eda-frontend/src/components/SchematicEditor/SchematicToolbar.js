@@ -18,7 +18,7 @@ import RotateRightIcon from '@material-ui/icons/RotateRight'
 import { makeStyles } from '@material-ui/core/styles'
 
 import MenuButton from './MenuButton'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate } from './Helper/ComponentDrag'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, Undo, Redo } from './Helper/ToolbarTools'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -52,12 +52,12 @@ export default function SchematicToolbar ({ mobileClose }) {
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">
-        <IconButton color="inherit" className={classes.tools} size="small">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={Undo}>
           <UndoIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Redo">
-        <IconButton color="inherit" className={classes.tools} size="small">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={Redo}>
           <RedoIcon fontSize="small" />
         </IconButton>
       </Tooltip>
