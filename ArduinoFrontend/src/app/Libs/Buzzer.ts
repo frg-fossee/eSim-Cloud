@@ -20,9 +20,6 @@ export class Buzzer extends CircuitElement {
       body
     };
   }
-  // remove element from canvas
-  remove(): void {
-  }
   // return save object
   save() {
     return {
