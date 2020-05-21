@@ -1,11 +1,12 @@
 import React from 'react';
-import {  IconButton, Menu, MenuItem, Fade } from '@material-ui/core';
+import { IconButton, Menu, MenuItem, Fade, Tooltip } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = (theme) => ({
   tools: {
     padding: theme.spacing(1),
-    margin: theme.spacing(0, 0.5)
+    margin: theme.spacing(0, 0.5),
+    color: '#262626'
   }
 });
 
@@ -51,16 +52,18 @@ class MenuButton extends React.Component {
 console.log(listItems.id);
     return (
       <>
-        <IconButton
-          aria-owns={open ? 'menu-toolbar' : null}
-          aria-haspopup="true"
-          onClick={this.handleMenu}
-          color="inherit"
-          className={classes.tools}
-          size="small"
-        >
-          {<Wrapper fontSize="small" />}
-        </IconButton>
+        <Tooltip title={this.props.title} >
+          <IconButton
+            aria-owns={open ? 'menu-toolbar' : null}
+            aria-haspopup="true"
+            onClick={this.handleMenu}
+            color="inherit"
+            className={classes.tools}
+            size="small"
+          >
+            {<Wrapper fontSize="small" />}
+          </IconButton>
+        </Tooltip>
         <Menu
           id="menu-toolbar"
           anchorEl={anchorEl}

@@ -6,7 +6,8 @@ import {
   List,
   ListItem,
   Collapse,
-
+  ListItemText,
+  ListItemIcon,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -15,8 +16,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state"
-import Popover from "@material-ui/core/Popover"
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
+import Popover from '@material-ui/core/Popover'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -50,7 +51,7 @@ export default function ComponentSidebar ({ compRef }) {
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-
+    console.log(collapse)
   }
 
   // For Fetching Libraries
@@ -62,35 +63,50 @@ export default function ComponentSidebar ({ compRef }) {
 // Generates Component Listing and It's Pop Over
 const generateComponent = (component) => {
   return (
-    <PopupState variant="popover" popupId={component.component_name}>
+    <PopupState variant="popover" popupId={component.full_name}>
     {popupState => (
       <div>
-    <ListItem key={component.component_name} {...bindTrigger(popupState)}>
-    {/* <img src={'../'+component.svg_path} alt="Logo" onLoad={AddSideBarComponentDOM()} /> */}
-      {component.component_name}
+    <ListItem key={component.full_name} {...bindTrigger(popupState)}>
+      {component.full_name}
     </ListItem>
 
     <Popover
               {...bindPopover(popupState)}
               anchorOrigin={{
-                vertical: "center",
-                horizontal: "right"
+                vertical: 'center',
+                horizontal: 'right'
               }}
               transformOrigin={{
-                vertical: "center",
-                horizontal: "left"
+                vertical: 'center',
+                horizontal: 'left'
               }}
     >
-              Component Details Here
-    </Popover>
+      <List component="div" disablePadding dense >
+        <ListItemText>
+          <b>Description:</b> {component.description}
+        </ListItemText>
+
+        <ListItemText>
+        <b>Keywords:</b> {component.keyword}
+        </ListItemText>
+
+        <ListItemText>
+        <b>Datasheet:</b> <a href={component.data_link}>{component.data_link}</a>
+        </ListItemText>
+
+        <ListItemText>
+        <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
+        </ListItemText>
+        <ListItemIcon>
+        <img src={'../'+component.svg_path} alt="Logo"/>
+        </ListItemIcon>
+     </List>
+     </Popover>
     </div>
         )}
-    </PopupState>
-  )
-}
-
-
-
+      </PopupState>
+    )
+  }
 
   return (
     <>
@@ -98,8 +114,8 @@ const generateComponent = (component) => {
         <div className={classes.toolbar} />
       </Hidden>
 
-       {/* Display List of categorized components */}
-       <List>
+      {/* Display List of categorized components */}
+      <List>
         <ListItem button divider>
           <h2 style={{ margin: '5px' }}>Components List</h2>
         </ListItem>
@@ -121,10 +137,12 @@ const generateComponent = (component) => {
                 {
                 components[library.id].map((component)=>{
                  return(
-                  <ListItem key={component.component_name} divider>
+                  <ListItem key={component.full_name} divider>
+                    <ListItemText component="div">
                   {
                       generateComponent(component)
                   }
+                   </ListItemText>
                   </ListItem>
                       )
                  })
@@ -138,7 +156,9 @@ const generateComponent = (component) => {
           )
         }
 
-        <ListItem ref={compRef}>
+        <ListItem>
+          <div ref={compRef}>
+          </div>
         </ListItem>
       </List>
     </>
