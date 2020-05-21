@@ -68,3 +68,27 @@ def CompileINO(filenames):
             parent = settings.MEDIA_ROOT+'/'+str(filename)
             shutil.rmtree(parent, True)
     return ret
+
+
+@shared_task
+def compile_sketch_task(task_id, data):
+    try:
+        current_task.update_state(
+            state='PROGRESS',
+            meta={'current_process': 'Saving Files'})
+        filenames = saveFiles(data)
+        current_task.update_state(
+            state='PROGRESS',
+            meta={'current_process': 'Starting Compiling'})
+        output = CompileINO(filenames)
+        current_task.update_state(
+            state='PROGRESS',
+            meta={'current_process': 'Done'})
+        return output
+    except Exception as e:
+        current_task.update_state(state='FAILURE', meta={
+            'exc_type': type(e).__name__,
+            'exc_message': traceback.format_exc()
+        })
+        print(traceback.format_exc())
+        raise Ignore()
