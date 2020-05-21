@@ -16,6 +16,6 @@ export default function AddSideBarComponentDOM () {
   var a = document.getElementsByTagName('img')
   Array.from(a).forEach(function (element) {
     AddSideBarComponentDOMd(element)
-    //console.log(element)
+    // console.log(element)
   })
 }

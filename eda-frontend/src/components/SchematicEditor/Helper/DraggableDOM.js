@@ -7,7 +7,7 @@ const {
   mxUtils,
   mxEvent,
   mxDragSource
-} = new MxGraphFactory();
+} = new MxGraphFactory()
 
 export default function AddSideBarComponentDOMd (img) {
   var container = document.getElementById('divGrid')
@@ -39,7 +39,7 @@ export default function AddSideBarComponentDOMd (img) {
       // pt.x, pt.y, 120, 120, 'image=' + image);
 
       // ***IMP
-      // GET THE SIZE OF SVG FOROM METADATA AND THEN DIVIDE BOTH WIDTH AND HEIGHT BE SAME RATIO 
+      // GET THE SIZE OF SVG FOROM METADATA AND THEN DIVIDE BOTH WIDTH AND HEIGHT BE SAME RATIO
       // THEN USE THAT VALUE BELOW
 
       getMetadataXML(src, graph, parent, evt, target, x, y)

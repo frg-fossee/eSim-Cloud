@@ -163,7 +163,6 @@ export function ErcCheck () {
         console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
         console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style) */
         ++stypes
-
       }
       // (cell.source.pinType === 'Ouput' && cell.target.pinType === 'Input') {
       else {

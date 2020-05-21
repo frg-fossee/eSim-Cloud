@@ -7,7 +7,7 @@ import {
   ListItem,
   Collapse,
   ListItemText,
-  ListItemIcon,
+  ListItemIcon
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -59,18 +59,17 @@ export default function ComponentSidebar ({ compRef }) {
     dispatch(fetchLibraries())
   }, [dispatch])
 
+  // Generates Component Listing and It's Pop Over
+  const generateComponent = (component) => {
+    return (
+      <PopupState variant="popover" popupId={component.full_name}>
+        {popupState => (
+          <div>
+            <ListItem key={component.full_name} {...bindTrigger(popupState)}>
+              {component.full_name}
+            </ListItem>
 
-// Generates Component Listing and It's Pop Over
-const generateComponent = (component) => {
-  return (
-    <PopupState variant="popover" popupId={component.full_name}>
-    {popupState => (
-      <div>
-    <ListItem key={component.full_name} {...bindTrigger(popupState)}>
-      {component.full_name}
-    </ListItem>
-
-    <Popover
+            <Popover
               {...bindPopover(popupState)}
               anchorOrigin={{
                 vertical: 'center',
@@ -80,29 +79,29 @@ const generateComponent = (component) => {
                 vertical: 'center',
                 horizontal: 'left'
               }}
-    >
-      <List component="div" disablePadding dense >
-        <ListItemText>
-          <b>Description:</b> {component.description}
-        </ListItemText>
+            >
+              <List component="div" disablePadding dense >
+                <ListItemText>
+                  <b>Description:</b> {component.description}
+                </ListItemText>
 
-        <ListItemText>
-        <b>Keywords:</b> {component.keyword}
-        </ListItemText>
+                <ListItemText>
+                  <b>Keywords:</b> {component.keyword}
+                </ListItemText>
 
-        <ListItemText>
-        <b>Datasheet:</b> <a href={component.data_link}>{component.data_link}</a>
-        </ListItemText>
+                <ListItemText>
+                  <b>Datasheet:</b> <a href={component.data_link}>{component.data_link}</a>
+                </ListItemText>
 
-        <ListItemText>
-        <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
-        </ListItemText>
-        <ListItemIcon>
-        <img src={'../'+component.svg_path} alt="Logo"/>
-        </ListItemIcon>
-     </List>
-     </Popover>
-    </div>
+                <ListItemText>
+                  <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
+                </ListItemText>
+                <ListItemIcon>
+                  <img src={'../' + component.svg_path} alt="Logo"/>
+                </ListItemIcon>
+              </List>
+            </Popover>
+          </div>
         )}
       </PopupState>
     )
@@ -133,20 +132,20 @@ const generateComponent = (component) => {
                   <Collapse in={collapse[library.id]} timeout="auto" unmountOnExit>
                     <List component="div" disablePadding dense >
 
-                {/* Chunked Components of Library */}
-                {
-                components[library.id].map((component)=>{
-                 return(
-                  <ListItem key={component.full_name} divider>
-                    <ListItemText component="div">
-                  {
-                      generateComponent(component)
-                  }
-                   </ListItemText>
-                  </ListItem>
-                      )
-                 })
-                 }
+                      {/* Chunked Components of Library */}
+                      {
+                        components[library.id].map((component) => {
+                          return (
+                            <ListItem key={component.full_name} divider>
+                              <ListItemText component="div">
+                                {
+                                  generateComponent(component)
+                                }
+                              </ListItemText>
+                            </ListItem>
+                          )
+                        })
+                      }
 
                     </List>
                   </Collapse>
