@@ -1,4 +1,4 @@
-import React from 'react'
+import React ,{useState} from 'react'
 import {
   List,
   Checkbox,
@@ -36,6 +36,68 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimulationProperties () {
   const classes = useStyles()
+  const [dcSweepcontrolLine,setDcSweepControlLine] = useState({
+    parameter:"",
+    sweepType: "Linear",
+    start: "0",
+    stop: "",
+    step: "",
+  })
+  const [transientAnalysisControlLine,setTransientAnalysisControlLine] = useState({
+    start: "0",
+    stop: "",
+    step: "",
+    skipInitial:'No',
+  })
+
+  const [acAnalysisControlLine,setAcAnalysisControlLine] = useState({
+    input : "",
+    start: "",
+    stop: "",
+    pointsBydecade: "",
+  })
+
+
+
+  const handleDcSweepControlLine = (evt) => {
+    const value = evt.target.value;
+    
+    setDcSweepControlLine({
+    ...dcSweepcontrolLine,
+    [evt.target.id]: value
+  });
+  }
+
+  const handleTransientAnalysisControlLine = (evt) => {
+    const value = evt.target.value;
+    
+    setTransientAnalysisControlLine({
+    ...transientAnalysisControlLine,
+    [evt.target.id]: value
+  });
+  }
+
+  const handleAcAnalysisControlLine = (evt) => {
+    const value = evt.target.value;
+  
+    setAcAnalysisControlLine({
+    ...acAnalysisControlLine,
+    [evt.target.id]: value
+  });
+  }
+  
+  
+
+  // const simulate = (evt) => {
+  //  console.log(evt.target.id)
+  //   if(evt.target.id === "dcSweepSimulate"){
+  //     console.log(dcSweepcontrolLine)
+  //   }
+  //   // else if(evt.target.id === "transientAnalysisSimulate"){
+  //   //   console.log(transientAnalysisControlLine)
+  //   // }
+  // }
+
   return (
     <>
       <div className={classes.SimulationOptions}>
@@ -53,7 +115,9 @@ export default function SimulationProperties () {
             <List>
 
               <ListItem className={classes.simulationOptions} divider>
+               
                 <div className={classes.propertiesBox}>
+                
                   <ExpansionPanel>
                     <ExpansionPanelSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -63,16 +127,25 @@ export default function SimulationProperties () {
                       <Typography className={classes.heading}>DC Solver</Typography>
                     </ExpansionPanelSummary>
                     <ExpansionPanelDetails>
+                    <form>
                       <List>
                         <ListItem>
-                          <Button size='small' variant="contained" color="primary">
+                          <Button size='small' variant="contained" color="primary"
+                          onClick={(e)=> {
+                            console.log("To be implemented")
+                          }
+                          }>
                             Run dc solver
                           </Button>
                         </ListItem>
                       </List>
+                      </form>
                     </ExpansionPanelDetails>
                   </ExpansionPanel>
+                 
                 </div>
+               
+                
               </ListItem>
 
               <ListItem className={classes.simulationOptions} divider>
@@ -88,18 +161,21 @@ export default function SimulationProperties () {
                     <form className={classes.propertiesBox} noValidate autoComplete="off">
                       <List>
                         <ListItem>
-                          <TextField size='small' variant="outlined" id="parameter" label="Parameter" />
+                          <TextField size='small' variant="outlined" id="parameter" label="Parameter"
+                           value={dcSweepcontrolLine.parameter}
+                           onChange={handleDcSweepControlLine}
+                          />
                         </ListItem>
                         <ListItem>
                           <TextField
                             style={{ width: '100%' }}
-                            id="standard-select-currency-native"
+                            id="sweepType"
                             size='small'
                             variant="outlined"
                             select
                             label="Sweep Type"
-                            // value={currency}
-                            // onChange={handleChange}
+                            value={dcSweepcontrolLine.sweepType}
+                            onChange={handleDcSweepControlLine}
                             SelectProps={{
                               native: true
                             }}
@@ -114,13 +190,22 @@ export default function SimulationProperties () {
                           </TextField>
                         </ListItem>
                         <ListItem>
-                          <TextField id="start" label="Start" size='small' variant="outlined" />
+                          <TextField id="start" label="Start" size='small' variant="outlined" 
+                            value={dcSweepcontrolLine.start}
+                            onChange={handleDcSweepControlLine}
+                            />
                         </ListItem>
                         <ListItem>
-                          <TextField id="end" label="End" size='small' variant="outlined" />
+                          <TextField id="stop" label="Stop" size='small' variant="outlined"
+                          value={dcSweepcontrolLine.stop}
+                          onChange={handleDcSweepControlLine}
+                           />
                         </ListItem>
                         <ListItem>
-                          <TextField id="step" label="Step" size='small' variant="outlined" />
+                          <TextField id="step" label="Step" size='small' variant="outlined"
+                          value={dcSweepcontrolLine.step}
+                          onChange={handleDcSweepControlLine}
+                          />
                         </ListItem>
                         <ListItem>
                           Second Parameter:
@@ -130,8 +215,16 @@ export default function SimulationProperties () {
                           <Button size='small' variant="contained">Add Expression</Button>
                         </ListItem>
                         <ListItem>
-                          <Button size='small' variant="contained" color="primary">
+                          <Button id="dcSweepSimulate" size='small' variant="contained" color="primary"
+                          onClick={(e) => {
+                            console.log(dcSweepcontrolLine);
+                            console.log(`.dc ${dcSweepcontrolLine.parameter} `+
+                              `${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}
+                            `)
+                          }}
+                          >
                             Simulate
+
                           </Button>
                         </ListItem>
                       </List>
@@ -147,39 +240,48 @@ export default function SimulationProperties () {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography className={classes.heading}>Time Domain</Typography>
+                    <Typography className={classes.heading}>Transient Analysis</Typography>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
                     <form className={classes.propertiesBox} noValidate autoComplete="off">
                       <List>
                         <ListItem>
-                          <TextField id="start" label="Start Time" size='small' variant="outlined" />
+                          <TextField id="start" label="Start Time" size='small' variant="outlined"
+                          value={transientAnalysisControlLine.start}
+                          onChange={handleTransientAnalysisControlLine}
+                           />
                         </ListItem>
                         <ListItem>
-                          <TextField id="end" label="Stop Time" size='small' variant="outlined" />
+                          <TextField id="stop" label="Stop Time" size='small' variant="outlined"
+                          value={transientAnalysisControlLine.stop}
+                          onChange={handleTransientAnalysisControlLine}
+                          />
                         </ListItem>
                         <ListItem>
-                          <TextField id="step" label="Time Step" size='small' variant="outlined" />
+                          <TextField id="step" label="Time Step" size='small' variant="outlined"
+                          value={transientAnalysisControlLine.step}
+                          onChange={handleTransientAnalysisControlLine}
+                           />
                         </ListItem>
                         <ListItem>
                           <TextField
                             style={{ width: '100%' }}
-                            id="standard-select-currency-native"
+                            id="skipInitial"
                             size='small'
                             variant="outlined"
                             select
                             label="Skip Initial"
-                            // value={currency}
-                            // onChange={handleChange}
+                            value={transientAnalysisControlLine.skipInitial}
+                            onChange={handleTransientAnalysisControlLine}
                             SelectProps={{
                               native: true
                             }}
 
                           >
-                            <option key="N" value="N">
+                            <option key="No" value="No">
                               No
                             </option>
-                            <option key="Y" value="Y">
+                            <option key="Yes" value="Yes">
                               Yes
                             </option>
                           </TextField>
@@ -192,7 +294,13 @@ export default function SimulationProperties () {
                           <Button size='small' variant="contained">Add Expression</Button>
                         </ListItem>
                         <ListItem>
-                          <Button size='small' variant="contained" color="primary">
+                          <Button id="transientAnalysisSimulate" size='small' variant="contained" color="primary"
+                          onClick={(e) => {
+                            console.log(transientAnalysisControlLine);
+                            console.log(`.trans ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop}`+
+                            ` ${transientAnalysisControlLine.start}`);
+                          }}
+                          >
                             Simulate
                           </Button>
                         </ListItem>
@@ -209,22 +317,34 @@ export default function SimulationProperties () {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography className={classes.heading}>Frequency Domain</Typography>
+                    <Typography className={classes.heading}>AC Analysis</Typography>
                   </ExpansionPanelSummary>
                   <ExpansionPanelDetails>
                     <form className={classes.propertiesBox} noValidate autoComplete="off">
                       <List>
                         <ListItem>
-                          <TextField id="parameter" label="Input" size='small' variant="outlined" />
+                          <TextField id="input" label="Input" size='small' variant="outlined"
+                          value={acAnalysisControlLine.skipInitial}
+                          onChange={handleAcAnalysisControlLine}
+                           />
                         </ListItem>
                         <ListItem>
-                          <TextField id="start" label="Start" size='small' variant="outlined" />
+                          <TextField id="start" label="Start" size='small' variant="outlined"
+                          value={acAnalysisControlLine.skipInitial}
+                          onChange={handleAcAnalysisControlLine}
+                          />
                         </ListItem>
                         <ListItem>
-                          <TextField id="end" label="End" size='small' variant="outlined" />
+                          <TextField id="stop" label="Stop" size='small' variant="outlined"
+                          value={acAnalysisControlLine.skipInitial}
+                          onChange={handleAcAnalysisControlLine}
+                          />
                         </ListItem>
                         <ListItem>
-                          <TextField id="points-deacde" label="Points/ Decade" size='small' variant="outlined" />
+                          <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"
+                          value={acAnalysisControlLine.skipInitial}
+                          onChange={handleAcAnalysisControlLine}
+                          />
                         </ListItem>
                         <ListItem>
                           Sweep Parameter:
@@ -234,7 +354,12 @@ export default function SimulationProperties () {
                           <Button size='small' variant="contained">Add Expression</Button>
                         </ListItem>
                         <ListItem>
-                          <Button size='small' variant="contained" color="primary">
+                          <Button size='small' variant="contained" color="primary"
+                          onClick={(e) => {
+                            console.log(acAnalysisControlLine);
+                            console.log(`.ac dec ${acAnalysisControlLine.pointsBydecade} `+
+                            `${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`)
+                          }}>
                             Simulate
                           </Button>
                         </ListItem>
@@ -243,12 +368,14 @@ export default function SimulationProperties () {
                   </ExpansionPanelDetails>
                 </ExpansionPanel>
               </ListItem>
-
             </List>
 
           </ExpansionPanelDetails>
         </ExpansionPanel>
+       
       </div>
+
+      
     </>
   )
 }
