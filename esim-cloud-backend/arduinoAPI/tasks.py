@@ -36,3 +36,35 @@ def saveFiles(data):
     except Exception:
         logger.error(traceback.format_exc())
         return []
+
+
+def CompileINO(filenames):
+    ret = {}
+    try:
+        for filename in filenames:
+            ino_name = settings.MEDIA_ROOT+'/'+str(filename)+'/sketch.ino'
+            out_name = settings.MEDIA_ROOT+'/'+str(filename)+'/out.hex'
+            ps = subprocess.Popen(
+                ['arduino-cli', 'compile', ino_name, '--fqbn',
+                    'arduino:avr:uno', '-o', out_name],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            output, err = ps.communicate()
+            print(ps.returncode)
+            print(output)
+            print(err)
+            data = open(out_name, 'r').read()
+            print(data)
+            ret[str(filename)] = {
+                'output': output.decode("utf-8"),
+                'error': err.decode("utf-8"),
+                'data': data
+            }
+    except Exception:
+        print(traceback.format_exc())
+    finally:
+        for filename in filenames:
+            parent = settings.MEDIA_ROOT+'/'+str(filename)
+            shutil.rmtree(parent, True)
+    return ret
