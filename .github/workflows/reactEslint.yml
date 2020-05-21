@@ -1,0 +1,17 @@
+name: ESLint eda-frontend
+
+on:
+  push:
+    branches: [ 'eda-frontend', 'develop' ]
+  pull_request:
+    branches: [ 'eda-frontend', 'develop' ]
+
+jobs:
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: darshkpatel/eslint-action@master
+        with:
+          repo-token: ${{secrets.GITHUB_TOKEN}}
+          source-root: 'eda-frontend'

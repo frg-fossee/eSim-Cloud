@@ -146,8 +146,6 @@ export function ErcCheck () {
         console.log(cell.children[child])
         var childVertex = cell.children[child]
         if (childVertex.Pin === true && childVertex.edges === null) {
-          // console.log('Wires not Connected')
-          // alert('Wires not connected')
           graph.getSelectionCell(childVertex)
           ++PinNC
           ++errorCount
@@ -159,23 +157,12 @@ export function ErcCheck () {
     if (cell.edge === true) {
       // eslint-disable-next-line no-constant-condition
       if ((cell.source.pinType === 'Input' && cell.target.pinType === 'Input') || (cell.source.pinType === 'Output' && cell.target.pinType === 'Output')) {
-        /* console.log('Wire Information')
-        console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
-        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style) */
         ++stypes
-
-      }
-      // (cell.source.pinType === 'Ouput' && cell.target.pinType === 'Input') {
-      else {
+      } else {
         console.log('Wire Information')
         console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
         console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
-      } /* else {
-        graph.setSelectionCell(cell)
-        // alert('Same pintypes are connected together')
-        ++stypes
-        ++errorCount
-      } */
+      }
     }
   }
   if (vertexCount === 0) {

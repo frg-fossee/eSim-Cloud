@@ -15,7 +15,6 @@ export default function (state = InitialState, action) {
       action.payload.forEach(element => {
         collapse[element.id] = false
         components[element.id] = []
-
       })
       return { ...state, libraries: action.payload, collapse: collapse, components: components }
     }
@@ -31,9 +30,9 @@ export default function (state = InitialState, action) {
     case actions.FETCH_COMPONENTS: {
       const newComponents = state.components
       newComponents[action.payload.id] = action.payload.components
-      console.log('Fetched and added ', newComponents[action.payload.id].length , 'Components')
+      console.log('Fetched and added ', newComponents[action.payload.id].length, 'Components')
       Object.assign(state.components, newComponents)
-      return {...state, components: {...state.components, newComponents } }
+      return { ...state, components: { ...state.components, newComponents } }
     }
 
     default:
