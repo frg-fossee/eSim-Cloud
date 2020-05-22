@@ -76,7 +76,9 @@ function getMetadataXML(path, graph, parent, evt, target, x, y) {
         'shape=image;image=' + path + ';'
       )
       v1.Component = true
-      v1.CellType = 'Component'
+      var newsource = path
+      var prefix = newsource.split('/')
+      v1.CellType = prefix[0]
       v1.setConnectable(false)
       for (let i = 0; i < pinData.length; i++) {
         currentPin = pinData[i]
