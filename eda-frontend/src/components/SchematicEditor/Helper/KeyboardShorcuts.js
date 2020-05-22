@@ -19,42 +19,42 @@ export default function KeyboardShortcuts (graph) {
     return null
   }
 
-  // Delete
+  // Delete - Del
   keyHandler.bindKey(46, function (evt) {
     if (graph.isEnabled()) {
       graph.removeCells()
     }
   })
 
-  // Undo
+  // Undo - Ctrl + Z
   keyHandler.bindControlKey(90, function (evt) {
     if (graph.isEnabled()) {
       Undo()
     }
   })
 
-  // Redo
+  // Redo - Ctrl + A
   keyHandler.bindControlKey(65, function (evt) {
     if (graph.isEnabled()) {
       Redo()
     }
   })
 
-  // Zoom In
+  // Zoom In - Ctrl + I
   keyHandler.bindControlKey(73, function (evt) {
     if (graph.isEnabled()) {
       ZoomIn()
     }
   })
 
-  // Zoom Out
+  // Zoom Out - Ctrl + O
   keyHandler.bindControlKey(79, function (evt) {
     if (graph.isEnabled()) {
       ZoomOut()
     }
   })
 
-  // Zoom Out
+  // Zoom Out - Ctrl + Y
   keyHandler.bindControlKey(89, function (evt) {
     if (graph.isEnabled()) {
       ZoomAct()

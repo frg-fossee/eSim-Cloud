@@ -18,7 +18,7 @@ import RotateRightIcon from '@material-ui/icons/RotateRight'
 import BorderClearIcon from '@material-ui/icons/BorderClear'
 import { makeStyles } from '@material-ui/core/styles'
 
-import { NetlistModal } from './ToolbarExtension'
+import { NetlistModal, HelpScreen } from './ToolbarExtension'
 import MenuButton from './MenuButton'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
 
@@ -47,7 +47,9 @@ export default function SchematicToolbar ({ mobileClose }) {
   const classes = useStyles()
 
   const [open, setOpen] = React.useState(false)
+  const [helpOpen, setHelpOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
+
   const handleClickOpen = () => {
     genNetlist(GenerateNetList())
     setOpen(true)
@@ -55,6 +57,14 @@ export default function SchematicToolbar ({ mobileClose }) {
 
   const handleClose = () => {
     setOpen(false)
+  }
+
+  const handleHelpOpen = () => {
+    setHelpOpen(true)
+  }
+
+  const handleHelpClose = () => {
+    setHelpOpen(false)
   }
 
   return (
@@ -122,10 +132,11 @@ export default function SchematicToolbar ({ mobileClose }) {
         </IconButton>
       </Tooltip>
       <Tooltip title="Help">
-        <IconButton color="inherit" className={classes.tools} size="small">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleHelpOpen}>
           <HelpOutlineIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      <HelpScreen open={helpOpen} close={handleHelpClose} />
 
       <IconButton
         color='inherit'
