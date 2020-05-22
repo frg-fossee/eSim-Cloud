@@ -50,7 +50,7 @@ export class CodeEditorComponent implements OnInit {
       Description: 'Communicating with devices using the Serial Peripheral Interface (SPI) Bus',
       url: 'https://www.arduino.cc/en/Reference/SPI'
     }
-  ]
+  ];
   code = 's';
   names: string[] = [];
   arduinos: ArduinoUno[] = [];
@@ -1103,13 +1103,12 @@ export class CodeEditorComponent implements OnInit {
     this.code = this.arduinos[this.selectedIndex].code;
   }
   openFolder() {
-    var folder = document.getElementById('lib');
+    const folder = document.getElementById('lib');
     console.log(folder.style.display);
 
     if (folder.style.display === 'none') {
       folder.style.display = 'flex';
-    }
-    else {
+    } else {
       folder.style.display = 'none';
     }
   }

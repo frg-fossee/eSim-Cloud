@@ -283,8 +283,8 @@
 <div id="console" style="display: none;">
   <div>
     <div style="display: flex; background-color: white">
-      <button class="btn" style="background-color: white;"><i class='fas fa-angle-down'></i></button>
-      <button class="btn" style="background-color: white;"><i class='fas fa-expand-alt'></i></button>
+      <button class="btn" style="background-color: white;" (click)="closeConsole()"><i class='fas fa-angle-down'></i></button>
+      <button class="btn" style="background-color: white;" (click)="expandConsole()"><i [ngClass]="toggle1 ? 'fas fa-expand-alt' : 'fas fa-compress-alt'"></i></button>
     </div>
   </div>
 

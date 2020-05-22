@@ -43,8 +43,7 @@ export abstract class CircuitElement {
         })
         .catch(err => {
           // TODO: Show Toast failed to load
-          window['showToast']("Failed to load");
-           
+          window['showToast']('Failed to load');
         });
     }
   }

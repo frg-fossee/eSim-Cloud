@@ -124,7 +124,7 @@ export class Workspace {
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
       const ele = document.getElementById('ToastMessage');
-      
+
       ele.style.display = 'block';
       ele.innerText = message;
       ele.style.padding = '15px 25px 15px 25px';
@@ -354,9 +354,7 @@ export class Workspace {
       }
       window.hideProperties();
     } else {
-      // TODO: Show Toast
-      window['showToast']("No Element Selected");
-     // console.log('No Element Selected');
+      window['showToast']('No Element Selected');
     }
   }
   static copyComponent() {
