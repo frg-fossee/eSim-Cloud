@@ -25,6 +25,6 @@ class LibraryComponentSerializer(serializers.ModelSerializer):
             'data_link',
             'full_name',
             'keyword',
-            'part',
-            'dmg'
+        #     'part',
+        #     'dmg'
              )
