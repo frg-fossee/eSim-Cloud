@@ -49,10 +49,14 @@ class SvgGenerator:
         """ save svg"""
         # print(pin_number_positions)
         # check if symbols directory is present or not.
-
+        isVirtualComponent = "false"
         if run == 0:
             return
         else:
+            if '#' in name_of_symbol:
+                isVirtualComponent = "true"
+                name_of_symbol = name_of_symbol.replace('#', '')
+
             path_to_svg = f"{save_path}/{name_of_symbol}.svg"
             d.saveSvg(path_to_svg)
             # after saving svg open it again and embedd metadata.
@@ -79,7 +83,7 @@ class SvgGenerator:
             for i in range(len(s)):
                 fd.write(s[i])
             fd.write(
-                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">') # noqa
+                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}" isVirtual="{isVirtualComponent}">') # noqa
             fd.write(elem)
             fd.write("</metadata></svg>")
             fd.close()
