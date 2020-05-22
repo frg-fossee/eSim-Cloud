@@ -49,13 +49,13 @@ class SvgGenerator:
         """ save svg"""
         # print(pin_number_positions)
         # check if symbols directory is present or not.
-        isVirtualComponent = "false"
+        # isVirtualComponent = "false"
         if run == 0:
             return
         else:
-            if '#' in name_of_symbol:
-                isVirtualComponent = "true"
-                name_of_symbol = name_of_symbol.replace('#', '')
+            # if '#' in name_of_symbol:
+            #     isVirtualComponent = "true"
+            #     name_of_symbol = name_of_symbol.replace('#', '')
 
             path_to_svg = f"{save_path}/{name_of_symbol}.svg"
             d.saveSvg(path_to_svg)
@@ -480,6 +480,8 @@ class SvgGenerator:
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
                             cmp_data = {}
+                            if '#' in symbol_prefix:
+                                symbol_prefix = symbol_prefix.replace('#', '')
                             for co in range(0, len(dcm_data)):
                                 comp = dcm_data[co]
                                 if(name_of_symbol == comp["name"]):
