@@ -267,7 +267,7 @@ class SvgPlotter:
                             **kwargs))
         return d
 
-    def draw_pin_shape(self, d, x, y, pin_orientation, shape_of_pin):
+    def draw_pin_shape(self, d, x, y, ox, oy, pin_orientation, shape_of_pin, pen=5):
 
         # inverted pin draw a circle of radius 10 at the end of the pin.
 
@@ -278,10 +278,155 @@ class SvgPlotter:
             )
         elif shape_of_pin == "C":
             # clock
-            pass
+            # ox oy are original values
+            x = ox
+            y = oy
+            clock_pin_padding = 30
+            if pin_orientation == "R":
+                # add in x direction
+
+                x1 = x + clock_pin_padding
+                y1 = y
+                x2 = x
+                y2 = y + clock_pin_padding
+                x3 = x
+                y3 = y - clock_pin_padding
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    fill_opacity=0
+                                    ))
+
+            elif pin_orientation == "L":
+                # sub in x direction
+                x1 = x - clock_pin_padding
+                y1 = y
+                x2 = x
+                y2 = y + clock_pin_padding
+                x3 = x
+                y3 = y - clock_pin_padding
+                arg = [x1, y1, x2, y2, x3, y3]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    ))
+
+            elif pin_orientation == "U":
+                # add in y direction
+                x1 = x
+                y1 = y + clock_pin_padding
+                x2 = x + clock_pin_padding
+                y2 = y
+                x3 = x - clock_pin_padding
+                y3 = y
+                arg = [x1, y1, x2, y2, x3, y3]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    ))
+
+            elif pin_orientation == "D":
+                # sub in y direction
+                x1 = x
+                y1 = y - clock_pin_padding
+                x2 = x + clock_pin_padding
+                y2 = y
+                x3 = x - clock_pin_padding
+                y3 = y
+                arg = [x1, y1, x2, y2, x3, y3]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    ))
+            else:
+                pass
+
         elif shape_of_pin == "CI":
             # clock inverted
-            pass
+            x = ox
+            y = oy
+            clock_pin_padding = 30
+            inverted_clock_radius = 10
+            if pin_orientation == "R":
+                # add in x direction
+
+                x1 = x + clock_pin_padding
+                y1 = y
+                x2 = x
+                y2 = y + clock_pin_padding
+                x3 = x
+                y3 = y - clock_pin_padding
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    fill_opacity=0
+                                    ))
+                d.append(draw.Circle(x+inverted_clock_radius, y, inverted_clock_radius, stroke_width=pen,
+                                     stroke=self.STROKE_COLOR,
+                                     fill_opacity=0))
+
+            elif pin_orientation == "L":
+                # sub in x direction
+                x1 = x - clock_pin_padding
+                y1 = y
+                x2 = x
+                y2 = y + clock_pin_padding
+                x3 = x
+                y3 = y - clock_pin_padding
+                arg = [x1, y1, x2, y2, x3, y3]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    ))
+                d.append(draw.Circle(x-inverted_clock_radius, y, inverted_clock_radius, stroke_width=pen,
+                                     stroke=self.STROKE_COLOR,
+                                     fill_opacity=0))
+
+            elif pin_orientation == "U":
+                # add in y direction
+                x1 = x
+                y1 = y + clock_pin_padding
+                x2 = x + clock_pin_padding
+                y2 = y
+                x3 = x - clock_pin_padding
+                y3 = y
+                arg = [x1, y1, x2, y2, x3, y3]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    ))
+                d.append(draw.Circle(x, y+inverted_clock_radius, inverted_clock_radius, stroke_width=pen,
+                                     stroke=self.STROKE_COLOR,
+                                     fill_opacity=0))
+
+            elif pin_orientation == "D":
+                # sub in y direction
+                x1 = x
+                y1 = y - clock_pin_padding
+                x2 = x + clock_pin_padding
+                y2 = y
+                x3 = x - clock_pin_padding
+                y3 = y
+                arg = [x1, y1, x2, y2, x3, y3]
+                d.append(draw.Lines(*arg,
+                                    close=False,
+                                    stroke_width=pen,
+                                    stroke=self.STROKE_COLOR,
+                                    ))
+                d.append(draw.Circle(x, y-inverted_clock_radius, inverted_clock_radius, stroke_width=pen,
+                                     stroke=self.STROKE_COLOR,
+                                     fill_opacity=0))
+            else:
+                pass
         elif shape_of_pin == "L":
             # input low
             pass
@@ -349,7 +494,7 @@ class SvgPlotter:
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
-                d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
                                         shape_of_pin)
                 if pinName != "~":
                     d = self.draw_text(
@@ -384,7 +529,7 @@ class SvgPlotter:
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
-                d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
                                         shape_of_pin)
 
                 if pinName != "~":
@@ -409,7 +554,7 @@ class SvgPlotter:
 
                 shape_x = x2
                 shape_y = y2 - self.RADIUS_OF_NOT_GATE
-                d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
                                         shape_of_pin)
 
                 # to position pin number properly
@@ -423,7 +568,8 @@ class SvgPlotter:
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
-                d = self.draw_pin_shape(d, x2, y2, orientation, shape_of_pin)
+                d = self.draw_pin_shape(
+                    d, x2, y2, x2, y2, orientation, shape_of_pin)
 
                 if pinName != "~":
                     d = self.draw_text(
@@ -460,7 +606,7 @@ class SvgPlotter:
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
-                d = self.draw_pin_shape(d, shape_x, shape_y, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
                                         shape_of_pin)
 
                 if pinName != "~":
