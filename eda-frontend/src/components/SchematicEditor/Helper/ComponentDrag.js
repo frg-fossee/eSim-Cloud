@@ -52,6 +52,7 @@ export default function LoadGrid (container, sidebar, outline) {
     // Parent component of a pin, default is null
     mxCell.prototype.ParentComponent = null
     mxCell.prototype.symbol = null
+    mxCell.prototype.node = mxCell.prototype.id
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
@@ -68,8 +69,8 @@ export default function LoadGrid (container, sidebar, outline) {
 
     graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
       var cell = evt.getProperty('cell')
-      mxUtils.alert('Doubleclick: ' + ((cell != null) ? 'Cell' : 'Graph'))
-      console.log(cell)
+      mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
+      console.log(cell.CellType)
       evt.consume()
     })
 

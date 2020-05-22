@@ -189,10 +189,12 @@ export function GenerateNetList () {
   var list = graph.getModel().cells
   var k = ''
   for (var property in list) {
-    if (list[property].Component === true) {
+    if (list[property].Component === true && list[property].symbol !== 'G') {
+      k = ''
       // alert('Component is present')
-      k = k + 'Component /'
       var component = list[property]
+      // console.log(component)
+      k = k + component.symbol
       if (component.children !== null) {
         for (var child in component.children) {
           var pin = component.children[child]
@@ -200,12 +202,21 @@ export function GenerateNetList () {
             // alert(pin.id)
             if (pin.edges !== null || pin.edges.length !== 0) {
               for (var wire in pin.edges) {
-                k = k + ' Wire id:' + pin.edges[wire].id
+                if (pin.edges[wire].source.ParentComponent.symbol === 'G' || pin.edges[wire].target.ParentComponent.symbol === 'G') {
+                  // console.log('Found ground')
+                  pin.edges[wire].node = 0
+                  k = k + ' ' + pin.edges[wire].node
+                } else {
+                  // console.log(pin.edges[wire])
+                  pin.edges[wire].node = pin.edges[wire].id
+                  k = k + '  ' + pin.edges[wire].node
+                }
               }
             }
           }
         }
       }
+      console.log(k)
     }
   }
   return k
