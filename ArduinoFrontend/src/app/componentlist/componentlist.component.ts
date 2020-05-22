@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 
 declare var window;
 
@@ -9,7 +11,7 @@ declare var window;
 })
 export class ComponentlistComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
   data: any = {};
   noComponets = true;
 
@@ -35,6 +37,12 @@ export class ComponentlistComponent implements OnInit {
     console.log(this.data);
   }
   OpenInfo(key: string) {
-    console.log(key);
+    window.Selected = window.scope[key][0];
+    const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
+      width: '500px'
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      window.Selected = null;
+    });
   }
 }

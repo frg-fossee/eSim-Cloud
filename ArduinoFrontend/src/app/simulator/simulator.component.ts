@@ -28,7 +28,7 @@ export class SimulatorComponent implements OnInit {
   stoggle = true;
   status = 'Start Simulation';
   toggle1 = true;
-  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
+  constructor(private aroute: ActivatedRoute, public dialog: MatDialog) {
     Workspace.initializeGlobalFunctions();
   }
 
