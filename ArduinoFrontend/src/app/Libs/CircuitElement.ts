@@ -271,6 +271,7 @@ export abstract class CircuitElement {
     this.delete();
   }
   delete() { }
+  getName() { return this.title; }
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box
