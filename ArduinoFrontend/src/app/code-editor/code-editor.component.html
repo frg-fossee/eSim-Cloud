@@ -1,8 +1,8 @@
 <div [style.width.px]=width [style.minHeight]="height+'vh'">
 
-  <div class=" text text-center" style="background-color: whitesmoke; height:100vh; font-size: medium;"
+  <div class=" text text-center" style="display:flex; background-color: whitesmoke; height:100vh; font-size: 1.4em;"
     *ngIf="names.length == 0">
-    No Programmable Component in this Circuit
+    <p style="margin:auto auto;">No Programmable Component in this Circuit</p>
   </div>
 
   <div *ngIf="names.length>0">

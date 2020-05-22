@@ -111,11 +111,7 @@ export class SimulatorComponent implements OnInit {
   }
 
 
-  /**
-   * Hide/Show (toggle) Code Editor
-   * @param elem Code Editor Parent Div
-   */
-  simulate() {
+  StartSimulation() {
     this.stoggle = !this.stoggle;
     this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
 
@@ -127,7 +123,10 @@ export class SimulatorComponent implements OnInit {
     }
   }
 
-
+  /**
+   * Hide/Show (toggle) Code Editor
+   * @param elem Code Editor Parent Div
+   */
   toggleCodeEditor(elem: HTMLElement) {
     elem.classList.toggle('show-code-editor');
     this.toggle = !this.toggle;
@@ -146,7 +145,7 @@ export class SimulatorComponent implements OnInit {
     close.style.display = 'none';
   }
 
-  expandConsole(num: number) {
+  expandConsole(num: number = 0) {
 
     const console = document.getElementById('console');
     if (console.style.top === '500px' || console.style.minHeight === '230px' || num === 1) {

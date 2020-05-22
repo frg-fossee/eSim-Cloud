@@ -149,8 +149,14 @@
 }
 
 #secondary-header>button {
-    font-size: 20px;
+    font-size: smaller;
+    margin-left: 10px;
     background-color: #fff;
+}
+
+.btn-fst i{
+  font-size: 25px;
+  margin-right: 10px;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -176,10 +182,12 @@
     #sidebar-wrapper {
         margin-left: 0;
     }
+
     #page-content-wrapper {
         min-width: 0;
         width: 100%;
     }
+
     #wrapper.toggled #sidebar-wrapper {
         margin-left: -15rem;
     }
@@ -187,7 +195,8 @@
 
 /*context-menu*/
 
-html, body {
+html,
+body {
     height: 100%;
 }
 
@@ -255,13 +264,14 @@ html, body {
     justify-content: space-between;
     background-color: black;
     animation: mymove 0.2s;
-    animation-iteration-count: 1s
+    animation-iteration-count: 1s;
 }
 
 @keyframes mymove {
     from {
         top: 600px;
     }
+
     to {
         bottom: 700px;
     }

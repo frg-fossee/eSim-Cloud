@@ -52,11 +52,11 @@
 
 <!-- start of icon block -->
 <div id="secondary-header">
-  <button mat-raised-button class="ml-2 mb-1 mt-1 mr-1" style="font-size: smaller;" (click)="toggleCodeEditor(codeDiv)"
+  <button mat-raised-button class="ml-2 mb-1 mt-1 mr-1 btn-fst" (click)="toggleCodeEditor(codeDiv)"
     [style.background-color]="toggle ? 'white' : 'lightblue'">
-    <i class='far fa-file-code' style="font-size: initial;"> Code</i></button>
+    <i class='far fa-file-code'></i>Code</button>
 
-  <button mat-raised-button id="simulate" class="mb-1 mt-1" style="font-size: smaller;" (click)="simulate()">
+  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" (click)="StartSimulation()">
     <i class='fas fa-caret-right'></i>
     {{status}}</button>
 
@@ -272,11 +272,7 @@
 <!--/context menu-->
 <!--toast message-->
 <div id="ToastMessage" class="toast text-white" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="toast-body">
-    Slide switches are mechanical switches using a slider that moves (slides) from the open (off) position to the closed
-    (on) position. They allow control over current flow in a circuit without having to manually cut or splice wire. This
-    type of switch is best used for controlling current flow in small projects.
-  </div>
+  <div class="toast-body"></div>
 </div>
 <!--/toast message-->
 <!--console ui-->
