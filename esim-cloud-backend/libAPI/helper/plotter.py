@@ -118,15 +118,15 @@ class SvgPlotter:
         else:
             kwargs = {"fill_opacity": 0}
 
+        x = int(x)
+        y = int(y)
+        r = int(r)
+
         d.append(
             draw.Circle(x, y, r, stroke_width=pen,
                         stroke=self.STROKE_COLOR,
                         **kwargs)
         )
-
-        x = int(x)
-        y = int(y)
-        r = int(r)
 
         v_list = [(x, y+r),  (x, y-r), (x + r, y), (x - r, y)]
 
@@ -181,7 +181,7 @@ class SvgPlotter:
         return d
 
     # A X Y radius start end part dmg pen fill Xstart Ystart Xend Yend
-    def drawArc(self, d, cx, cy, r, start_deg, end_deg, pen=5, fill="f",
+    def drawArc(self, d, cx, cy, r, start_deg, end_deg, x_start, y_start, x_end, y_end, pen=5, fill="f",
                 ):
 
         cx = int(cx)
@@ -190,6 +190,10 @@ class SvgPlotter:
         pen = int(pen)
         start_deg = int(start_deg) * 0.1
         end_deg = int(end_deg) * 0.1
+        start_end_points = [(int(x_start), int(y_start)),
+                            (int(x_end), int(y_end))]
+
+        self.update_svg_boundary(start_end_points)
 
         if start_deg < 0:
             start_deg = self.normalize_angle(start_deg)
@@ -250,7 +254,7 @@ class SvgPlotter:
         if fill == 'f':
             # dont fill the shape
             kwargs["fill_opacity"] = 0
-        print(kwargs)
+
         arg = []
         for i in range(0, len(vertices_list)):
             for index in range(0, 2):

@@ -17,12 +17,13 @@ class SvgGenerator:
         self.PIN_NAME_PADDING = 13
         self.SHOW_TEXT = False
         self.SHOW_PIN_NUMBER = True
-        self.SHOW_PIN_NAME = True
+        self.SHOW_PIN_NAME = False
         self.SHOW_PIN_NOT_CONNECTED = False
         self.SVG_SCALE = 1
 
         # set PIN_NAME_TEXT_SIZE = 0 to use default text_size
         self.PIN_NAME_TEXT_SIZE = 35
+        self.NAME_OF_LIBS_TO_IGNORE_PIN_NAME = ["power"]
 
         # some symbols dont have dmg 2.
         # assuming dmg 2 is present.
@@ -87,7 +88,8 @@ class SvgGenerator:
         dcm_path = file_path.rsplit(".", 1)
         dcm_path = dcm_path[0] + ".dcm"
         folder_name = file_path.split('/')[-1].split(".")[0]
-
+        if(folder_name in self.NAME_OF_LIBS_TO_IGNORE_PIN_NAME):
+            self.SHOW_PIN_NAME = False
         dcm_data = self.parser.extract_data_from_dcm(dcm_path)
         # folder_name is also same as the file name without extension
 
@@ -336,7 +338,10 @@ class SvgGenerator:
 
                                 part = current_instruction[6]
                                 dmg = current_instruction[7]
-
+                                x_start = current_instruction[10]
+                                y_start = current_instruction[11]
+                                x_end = current_instruction[12]
+                                y_end = current_instruction[13]
                                 if dmg == "2":
                                     self.IS_DMG_2_PRESENT = True
 
@@ -347,6 +352,7 @@ class SvgGenerator:
                                     continue
                                 d = self.plotter.drawArc(
                                     d, cx, cy, r, start_deg, end_deg,
+                                    x_start, y_start, x_end, y_end,
                                     pen_width,
                                     fill
                                 )
