@@ -79,7 +79,7 @@ class SvgGenerator:
             for i in range(len(s)):
                 fd.write(s[i])
             fd.write(
-                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">')
+                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">') # noqa
             fd.write(elem)
             fd.write("</metadata></svg>")
             fd.close()
@@ -259,7 +259,8 @@ class SvgGenerator:
 
                                     if not self.SHOW_PIN_NUMBER:
                                         pinNumber = ""
-                                    if not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED:
+                                    if (not self.SHOW_PIN_NAME
+                                       and not self.SHOW_PIN_NOT_CONNECTED):
                                         pinName = ""
 
                                     if pinName == "NC":
@@ -304,7 +305,8 @@ class SvgGenerator:
                                         continue
 
                                     d = self.plotter.drawRec(
-                                        d, x1, y1, x2, y2, fill_shape, pen_width
+                                        d, x1, y1, x2, y2, fill_shape,
+                                        pen_width
                                     )
 
                                 # d,x,y,r,fill="red",pen=2,stroke="black"
@@ -333,7 +335,6 @@ class SvgGenerator:
                                         pen=pen_width
                                     )
 
-                                # (d,cx,cy,r,start_deg,end_deg,pen = 5,fill='f')
                                 elif shape == "A":
                                     # its an arc
                                     cx = current_instruction[1]
@@ -392,7 +393,8 @@ class SvgGenerator:
 
                                     vertices_list = []
                                     for j in range(5,
-                                                   len(current_instruction) - 1,
+                                                   (len(current_instruction)
+                                                    - 1),
                                                    2):
                                         point = (
                                             current_instruction[j],

@@ -181,7 +181,8 @@ class SvgPlotter:
         return d
 
     # A X Y radius start end part dmg pen fill Xstart Ystart Xend Yend
-    def drawArc(self, d, cx, cy, r, start_deg, end_deg, x_start, y_start, x_end, y_end, pen=5, fill="f",
+    def drawArc(self, d, cx, cy, r, start_deg, end_deg, x_start, y_start,
+                x_end, y_end, pen=5, fill="f",
                 ):
 
         cx = int(cx)
@@ -267,7 +268,8 @@ class SvgPlotter:
                             **kwargs))
         return d
 
-    def draw_pin_shape(self, d, x, y, ox, oy, pin_orientation, shape_of_pin, pen=5):
+    def draw_pin_shape(self, d, x, y, ox, oy, pin_orientation, shape_of_pin,
+                       pen=5):
 
         # inverted pin draw a circle of radius 10 at the end of the pin.
 
@@ -368,7 +370,8 @@ class SvgPlotter:
                                     stroke=self.STROKE_COLOR,
                                     fill_opacity=0
                                     ))
-                d.append(draw.Circle(x+inverted_clock_radius, y, inverted_clock_radius, stroke_width=pen,
+                d.append(draw.Circle(x+inverted_clock_radius, y,
+                                     inverted_clock_radius, stroke_width=pen,
                                      stroke=self.STROKE_COLOR,
                                      fill_opacity=0))
 
@@ -386,7 +389,8 @@ class SvgPlotter:
                                     stroke_width=pen,
                                     stroke=self.STROKE_COLOR,
                                     ))
-                d.append(draw.Circle(x-inverted_clock_radius, y, inverted_clock_radius, stroke_width=pen,
+                d.append(draw.Circle(x-inverted_clock_radius, y,
+                                     inverted_clock_radius, stroke_width=pen,
                                      stroke=self.STROKE_COLOR,
                                      fill_opacity=0))
 
@@ -404,7 +408,8 @@ class SvgPlotter:
                                     stroke_width=pen,
                                     stroke=self.STROKE_COLOR,
                                     ))
-                d.append(draw.Circle(x, y+inverted_clock_radius, inverted_clock_radius, stroke_width=pen,
+                d.append(draw.Circle(x, y+inverted_clock_radius,
+                                     inverted_clock_radius, stroke_width=pen,
                                      stroke=self.STROKE_COLOR,
                                      fill_opacity=0))
 
@@ -422,7 +427,8 @@ class SvgPlotter:
                                     stroke_width=pen,
                                     stroke=self.STROKE_COLOR,
                                     ))
-                d.append(draw.Circle(x, y-inverted_clock_radius, inverted_clock_radius, stroke_width=pen,
+                d.append(draw.Circle(x, y-inverted_clock_radius,
+                                     inverted_clock_radius, stroke_width=pen,
                                      stroke=self.STROKE_COLOR,
                                      fill_opacity=0))
             else:
@@ -490,11 +496,13 @@ class SvgPlotter:
                 # x = x1
                 d.append(
                     draw.Text(
-                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
+                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x,
+                        y, center=0.6,
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
-                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2,
+                                        orientation,
                                         shape_of_pin)
                 if pinName != "~":
                     d = self.draw_text(
@@ -525,11 +533,13 @@ class SvgPlotter:
 
                 d.append(
                     draw.Text(
-                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
+                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x,
+                        y, center=0.6,
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
-                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2,
+                                        orientation,
                                         shape_of_pin)
 
                 if pinName != "~":
@@ -554,7 +564,8 @@ class SvgPlotter:
 
                 shape_x = x2
                 shape_y = y2 - self.RADIUS_OF_NOT_GATE
-                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2,
+                                        orientation,
                                         shape_of_pin)
 
                 # to position pin number properly
@@ -564,7 +575,8 @@ class SvgPlotter:
                 # y = y1
                 d.append(
                     draw.Text(
-                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
+                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x,
+                        y, center=0.6,
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
@@ -602,11 +614,13 @@ class SvgPlotter:
                 y = y2 + (length / 3)
                 d.append(
                     draw.Text(
-                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x, y, center=0.6,
+                        pinNumber, text_size/self.TEXT_SIZE_REDUCE_RATION, x,
+                        y, center=0.6,
                         fill=self.PIN_NUMBER_COLOR
                     )
                 )
-                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2, orientation,
+                d = self.draw_pin_shape(d, shape_x, shape_y, x2, y2,
+                                        orientation,
                                         shape_of_pin)
 
                 if pinName != "~":
