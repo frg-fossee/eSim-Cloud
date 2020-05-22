@@ -1,5 +1,5 @@
-from .plotter import SvgPlotter
-from .parser import Parser
+from plotter import SvgPlotter
+from parser import Parser
 import os
 import sys
 
@@ -49,6 +49,7 @@ class SvgGenerator:
         """ save svg"""
         # print(pin_number_positions)
         # check if symbols directory is present or not.
+
         isVirtualComponent = "false"
         if run == 0:
             return
@@ -68,8 +69,13 @@ class SvgGenerator:
                 x = pin['x']
                 y = pin['y']
                 pin_type = pin['type']
+                pinName = pin["pinName"]
+                pinLength = pin["pinLength"]
+                pinOrientation = pin["pinOrientation"]
                 elem += f"""<p-{pin_number}><x>{x}</x><y>{y}</y><type>{pin_type}
-                        </type></p-{pin_number}>"""
+                        </type><name>{pinName}</name><orientation>{pinOrientation}</orientation>
+                        <length>{pinLength}</length>
+                        </p-{pin_number}>"""
 
             # save the above elem in the same svg file.
             fd = open(path_to_svg, 'r')
@@ -83,7 +89,7 @@ class SvgGenerator:
             for i in range(len(s)):
                 fd.write(s[i])
             fd.write(
-                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}" isVirtual="{isVirtualComponent}">') # noqa
+                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}" isVirtual="{isVirtualComponent}">')  # noqa
             fd.write(elem)
             fd.write("</metadata></svg>")
             fd.close()
@@ -170,6 +176,10 @@ class SvgGenerator:
 
                         for run in range(0, 2):
 
+                            # all_pin_numbers = []
+                            # all_pin_names = []
+                            # all_pin_orientations = []
+                            # all_pin_length = []
                             # initialize canvas here.
                             d = draw.Drawing(
                                 my_width,
@@ -235,6 +245,12 @@ class SvgGenerator:
 
                                     type_of_pin = current_instruction[11]  # noqa
 
+                                    # all_pin_numbers.append(pinNumber)
+                                    # all_pin_names.append(pinName)
+                                    # all_pin_orientations.append(
+                                    #     pin_orientation)
+                                    # all_pin_length.append(pin_length)
+
                                     if dmg == "2":
                                         is_dmg_2 = True
                                     # The 12th index may or maynot be present
@@ -259,12 +275,15 @@ class SvgGenerator:
                                             "x": x_pos,
                                             "y": y_pos,
                                             "type": type_of_pin,
+                                            "pinName": pinName,
+                                            "pinOrientation": pin_orientation,
+                                            "pinLength": pin_length,
                                         })
 
                                     if not self.SHOW_PIN_NUMBER:
                                         pinNumber = ""
                                     if (not self.SHOW_PIN_NAME
-                                       and not self.SHOW_PIN_NOT_CONNECTED):
+                                            and not self.SHOW_PIN_NOT_CONNECTED):
                                         pinName = ""
 
                                     if pinName == "NC":
@@ -476,7 +495,8 @@ class SvgGenerator:
                                           save_path, pin_number_positions,
                                           symbol_prefix,
                                           (my_width, my_height), run,
-                                          chr(64+z), dm)
+                                          chr(64+z), dm,
+                                          )
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
                             cmp_data = {}
@@ -526,8 +546,11 @@ def generate_svg_and_save_to_folder(input_file, output_folder):
 if __name__ == "__main__":
     # Takes Libraries as command line arguments,
     # Only if script is run on command line
-    if(len(sys.argv)) != 3:
-        print("Usage: script.py <Path to library> <Output Directory>")
-        sys.exit(1)
-    generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
-    print('Processed', sys.argv[1])
+    # if(len(sys.argv)) != 3:
+    #     print("Usage: script.py <Path to library> <Output Directory>")
+    #     sys.exit(1)
+    # generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
+    # print('Processed', sys.argv[1])
+    print("plotting")
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
+    print("done")
