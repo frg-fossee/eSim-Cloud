@@ -11,8 +11,7 @@ const {
   mxRectangle,
   mxUtils,
   mxUndoManager,
-  mxEvent,
-  mxCodec
+  mxEvent
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -142,6 +141,7 @@ export function ErcCheck () {
     var cell = list[property]
     if (cell.Component === true) {
       console.log(cell)
+      cell.value = 'Checked'
       for (var child in cell.children) {
         console.log(cell.children[child])
         var childVertex = cell.children[child]
@@ -159,6 +159,7 @@ export function ErcCheck () {
       if ((cell.source.pinType === 'Input' && cell.target.pinType === 'Input') || (cell.source.pinType === 'Output' && cell.target.pinType === 'Output')) {
         ++stypes
       } else {
+        cell.value = 'Node Number : ' + cell.id
         console.log('Wire Information')
         console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
         console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
@@ -181,8 +182,31 @@ export function ErcCheck () {
 
 // GENERATE NETLIST
 export function GenerateNetList () {
-  var enc = new mxCodec(mxUtils.createXmlDocument())
+  /* var enc = new mxCodec(mxUtils.createXmlDocument())
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
-  return value
+  return value */
+  var list = graph.getModel().cells
+  var k = ''
+  for (var property in list) {
+    if (list[property].Component === true) {
+      // alert('Component is present')
+      k = k + 'Component /'
+      var component = list[property]
+      if (component.children !== null) {
+        for (var child in component.children) {
+          var pin = component.children[child]
+          if (pin.vertex === true) {
+            // alert(pin.id)
+            if (pin.edges !== null || pin.edges.length !== 0) {
+              for (var wire in pin.edges) {
+                k = k + ' Wire id:' + pin.edges[wire].id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return k
 }
