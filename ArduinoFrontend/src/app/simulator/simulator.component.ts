@@ -203,7 +203,9 @@ export class SimulatorComponent implements OnInit {
     });
   }
   openview() {
-    const viewref = this.dialog.open(ComponentlistComponent);
+    const viewref = this.dialog.open(ComponentlistComponent, {
+      width: '600px'
+    });
     viewref.afterClosed().subscribe(result => {
 
       console.log(`Dialog result: ${result}`);

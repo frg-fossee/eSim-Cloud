@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+declare var window;
+
 @Component({
   selector: 'app-componentlist',
   templateUrl: './componentlist.component.html',
@@ -11,5 +13,7 @@ export class ComponentlistComponent implements OnInit {
 
   ngOnInit() {
   }
+  OpenInfo(key: string) {
 
+  }
 }
