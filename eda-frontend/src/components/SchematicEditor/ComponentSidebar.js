@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-// import AddSideBarComponentDOM from './Helper/SidebarDom.js'
 import {
   Hidden,
   List,
   ListItem,
   Collapse,
-  ListItemText,
   ListItemIcon
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -16,8 +14,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
-import Popover from '@material-ui/core/Popover'
+import SideComp from './SideComp.js'
 const COMPONENTS_PER_ROW = 3
 
 const useStyles = makeStyles((theme) => ({
@@ -72,51 +69,6 @@ export default function ComponentSidebar ({ compRef }) {
     }, [])
   }
 
-  // Generates Component Listing and It's Pop Over
-  const generateComponent = (component) => {
-    return (
-      <PopupState variant="popover" popupId={component.full_name}>
-        {popupState => (
-          <div>
-            <ListItemIcon key={component.full_name} {...bindTrigger(popupState)}>
-              <img src={'../' + component.svg_path} alt="Component"/>
-            </ListItemIcon>
-
-            <Popover
-              {...bindPopover(popupState)}
-              anchorOrigin={{
-                vertical: 'center',
-                horizontal: 'right'
-              }}
-              transformOrigin={{
-                vertical: 'center',
-                horizontal: 'left'
-              }}
-            >
-              <List component="div" disablePadding dense >
-                <ListItemText>
-                  <b>Description:</b> {component.description}
-                </ListItemText>
-
-                <ListItemText>
-                  <b>Keywords:</b> {component.keyword}
-                </ListItemText>
-
-                <ListItemText>
-                  <b>Datasheet:</b> <a href={component.data_link}>{component.data_link}</a>
-                </ListItemText>
-
-                <ListItemText>
-                  <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
-                </ListItemText>
-              </List>
-            </Popover>
-          </div>
-        )}
-      </PopupState>
-    )
-  }
-
   return (
     <>
       <Hidden smDown>
@@ -151,7 +103,7 @@ export default function ComponentSidebar ({ compRef }) {
                                 componentChunk.map((component) => {
                                   console.log(component)
                                   return (<ListItemIcon key={component.component_name}>
-                                    {generateComponent(component)}
+                                    <SideComp component={component} />
                                   </ListItemIcon>)
                                 }
                                 )

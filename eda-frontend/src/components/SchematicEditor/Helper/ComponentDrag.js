@@ -9,12 +9,12 @@ import comp5 from '../../../static/CircuitComp/U-4011-1_B.svg'
 import comp6 from '../../../static/CircuitComp/U-4051-1_A.svg'
 import comp7 from '../../../static/CircuitComp/GND-0-1_A.svg'
 
-import AddSideBarComponent from './SideBar.js'
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
 import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
+import { SideBar, AddSidebarComponent } from './SideBar.js'
 var paths = [comp1, comp2, comp3, comp4, comp5, comp6, comp7]
 var graph
 
@@ -64,13 +64,14 @@ export default function LoadGrid (container, sidebar, outline) {
     outln.outline.labelsVisible = true
     outln.outline.setHtmlLabels(true)
 
+    SideBar(graph, sidebar)
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
     NetlistInfoFunct(graph)
     ToolbarTools(graph)
     for (var i = 0; i < paths.length; i++) {
-      AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
+      AddSidebarComponent(paths[i]) // Adds the component to the sidebar and makes it draggable
       if (((i + 1) % 3 === 0)) {
         sidebar.appendChild(document.createElement('br'))
       }
