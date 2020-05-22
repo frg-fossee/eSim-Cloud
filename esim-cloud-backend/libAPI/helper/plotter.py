@@ -307,7 +307,7 @@ class SvgPlotter:
                 y2 = y + clock_pin_padding
                 x3 = x
                 y3 = y - clock_pin_padding
-                arg = [x1, y1, x2, y2, x3, y3]
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
                 d.append(draw.Lines(*arg,
                                     close=False,
                                     stroke_width=pen,
@@ -322,7 +322,7 @@ class SvgPlotter:
                 y2 = y
                 x3 = x - clock_pin_padding
                 y3 = y
-                arg = [x1, y1, x2, y2, x3, y3]
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
                 d.append(draw.Lines(*arg,
                                     close=False,
                                     stroke_width=pen,
@@ -337,7 +337,7 @@ class SvgPlotter:
                 y2 = y
                 x3 = x - clock_pin_padding
                 y3 = y
-                arg = [x1, y1, x2, y2, x3, y3]
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
                 d.append(draw.Lines(*arg,
                                     close=False,
                                     stroke_width=pen,
@@ -380,7 +380,7 @@ class SvgPlotter:
                 y2 = y + clock_pin_padding
                 x3 = x
                 y3 = y - clock_pin_padding
-                arg = [x1, y1, x2, y2, x3, y3]
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
                 d.append(draw.Lines(*arg,
                                     close=False,
                                     stroke_width=pen,
@@ -398,7 +398,7 @@ class SvgPlotter:
                 y2 = y
                 x3 = x - clock_pin_padding
                 y3 = y
-                arg = [x1, y1, x2, y2, x3, y3]
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
                 d.append(draw.Lines(*arg,
                                     close=False,
                                     stroke_width=pen,
@@ -416,7 +416,7 @@ class SvgPlotter:
                 y2 = y
                 x3 = x - clock_pin_padding
                 y3 = y
-                arg = [x1, y1, x2, y2, x3, y3]
+                arg = [x1, y1, x2, y2, x3, y3, x1, y1]
                 d.append(draw.Lines(*arg,
                                     close=False,
                                     stroke_width=pen,
