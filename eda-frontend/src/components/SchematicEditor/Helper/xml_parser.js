@@ -1,12 +1,12 @@
-/* eslint-disable camelcase */
-let pinData, metadata, pinList
+/* eslint-disable*/
+let pinData, metadata, pinList, pinName, pinOrientation, pinLength
 let currentPin, x_pos, y_pos
 let width, height
 
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
 const fixed_number = 5
 
-function extractData (xml) {
+function extractData(xml) {
   pinData = []
   metadata = xml.getElementsByTagName('metadata')
   const width = metadata[0].attributes[0].nodeValue
@@ -21,7 +21,15 @@ function extractData (xml) {
     const pinX = pin.getElementsByTagName('x')[0].innerHTML
     const pinY = pin.getElementsByTagName('y')[0].innerHTML
     const pinType = pin.getElementsByTagName('type')[0].innerHTML.trim()
-    pinData.push({ pinNumber: pinNumber, pinX: pinX, pinY: pinY, type: pinType })
+    const pinName = pin.getElementsByTagName('name')[0].innerHTML.trim()
+    const pinOrientation = pin.getElementsByTagName('orientation')[0].innerHTML.trim()
+    const pinLength = pin.getElementsByTagName('length')[0].innerHTML.trim()
+
+
+    pinData.push({
+      pinNumber: pinNumber, pinX: pinX, pinY: pinY, type: pinType, pinName: pinName,
+      pinOrientation: pinOrientation, pinLength: pinLength
+    })
     // console.log(pinNumber, pinX, pinY, pinType)
   })
   return {
@@ -31,7 +39,7 @@ function extractData (xml) {
   }
 }
 
-function getMetadataXML (path, graph, parent, evt, target, x, y) {
+function getMetadataXML(path, graph, parent, evt, target, x, y) {
   fetch(path)
     .then(function (response) {
       return response.text()
@@ -49,6 +57,10 @@ function getMetadataXML (path, graph, parent, evt, target, x, y) {
       width = data.width
       height = data.height
       pinData = data.pinData
+
+
+      console.log(pinData)
+
 
       width = width / fixed_number
       height = height / fixed_number
@@ -80,7 +92,23 @@ function getMetadataXML (path, graph, parent, evt, target, x, y) {
 
         // move this to another file
         // eslint-disable-next-line
-        pins[i] = graph.insertVertex(v1, null, '', x_pos, y_pos, 3, 3, 'align=top;verticalAlign=top;' + 'fontColor=' + 'black' + ';strokeColor=' + 'black');
+        if (currentPin.pinOrientation == "L") {
+          pins[i] = graph.insertVertex(v1, null, currentPin.pinName, x_pos, y_pos, 3, 3, 'align=right;verticalAlign=bottom;rotation=0;' + 'fontColor=' + 'black' + ";fontSize=10" + ';strokeColor=' + 'black');
+
+        }
+        else if (currentPin.pinOrientation == "R") {
+          pins[i] = graph.insertVertex(v1, null, currentPin.pinName, x_pos, y_pos, 3, 3, 'align=left;verticalAlign=bottom;rotation=0;' + 'fontColor=' + 'black' + ";fontSize=10" + ';strokeColor=' + 'black');
+
+        }
+        else if (currentPin.pinOrientation == "U") {
+          pins[i] = graph.insertVertex(v1, null, currentPin.pinName, x_pos, y_pos, 3, 3, 'align=right;verticalAlign=bottom;rotation=90;' + 'fontColor=' + 'black' + ";fontSize=10" + ';strokeColor=' + 'black');
+
+        }
+        else {
+          pins[i] = graph.insertVertex(v1, null, currentPin.pinName, x_pos, y_pos, 3, 3, 'align=left;verticalAlign=bottom;rotation=90;' + 'fontColor=' + 'black' + ";fontSize=10" + ';strokeColor=' + 'black');
+
+
+        }
         pins[i].geometry.relative = false
         pins[i].Pin = true
         if (currentPin.type === 'I') {
