@@ -15,6 +15,7 @@ import { ViewComponentInfoComponent } from './view-component-info/view-component
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
 import { ComponentlistComponent } from './componentlist/componentlist.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ComponentlistComponent } from './componentlist/componentlist.component'
     MatInputModule,
     MatButtonModule,
     MatTableModule,
-    HttpClientModule
+    HttpClientModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent],

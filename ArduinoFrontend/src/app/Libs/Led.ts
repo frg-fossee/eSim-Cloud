@@ -10,7 +10,10 @@ export class LED extends CircuitElement {
     super('LED', x, y, 'LED.json', canvas);
   }
   init() {
-
+  }
+  getName() {
+    // TODO: Change Accordingly to Color
+    return `LED Red`;
   }
   save() {
   }

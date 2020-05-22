@@ -28,7 +28,7 @@ export class SimulatorComponent implements OnInit {
   stoggle = true;
   status = 'Start Simulation';
   toggle1 = false;
-  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
+  constructor(private aroute: ActivatedRoute, public dialog: MatDialog) {
     Workspace.initializeGlobalFunctions();
   }
 
@@ -210,7 +210,9 @@ export class SimulatorComponent implements OnInit {
     });
   }
   openview() {
-    const viewref = this.dialog.open(ComponentlistComponent);
+    const viewref = this.dialog.open(ComponentlistComponent, {
+      width: '600px'
+    });
     viewref.afterClosed().subscribe(result => {
 
       console.log(`Dialog result: ${result}`);

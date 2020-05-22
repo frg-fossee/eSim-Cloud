@@ -7,21 +7,7 @@ export class Motor extends CircuitElement {
   static pointHalf = 4;
 
   constructor(public canvas: any, x: number, y: number) {
-    super('Motor', x, y);
-    this.elements.push(
-      this.canvas.image('assets/images/components/Motor.svg', this.x, this.y, 69, 56),
-      this.canvas.image('assets/images/components/MotorAbove.svg', this.x + 24, this.y + 17.5, 21, 21),
-    );
-    this.nodes = [
-      new Point(canvas, x + 24, y + 51, 'NEGATIVE', Motor.pointHalf, this),
-      new Point(canvas, x + 40, y + 51, 'POSITIVE', Motor.pointHalf, this),
-    ];
-    this.setClickListener(null);
-    this.setDragListeners();
-    this.setHoverListener();
-
-    // const anim = Raphael.animation({transform: 'r360'}, 2500).repeat(Infinity);
-    // this.elements[1].animate(anim);
+    super('Motor', x, y, 'Motor.json', canvas);
   }
   save() {
   }
