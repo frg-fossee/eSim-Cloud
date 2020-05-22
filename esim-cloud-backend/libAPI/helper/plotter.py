@@ -13,12 +13,12 @@ class SvgPlotter:
         self.STROKE_COLOR = "black"
         self.PIN_NAME_COLOR = "black"
         self.PIN_NUMBER_COLOR = "black"
-        self.PIN_NUMBER_OFFSET = 20
+        self.PIN_NUMBER_OFFSET = 17
         self.RADIUS_OF_NOT_GATE = 25
         self.FILL_NOT_GATE = "F"
 
         # increase ratio to reduce pin Number size
-        self.TEXT_SIZE_REDUCE_RATION = 1
+        self.TEXT_SIZE_REDUCE_RATION = 1.5
 
     # def update_svg_boundary(self,value,axis):
     #     # axis can be 'x' or 'y'
