@@ -1,6 +1,7 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
 import { ArduinoUno } from './Arduino';
+import { text } from '@angular/core/src/render3';
 
 declare var window;
 declare var $; // For Jquery
@@ -132,6 +133,27 @@ export class Workspace {
         ele.style.display = 'none';
       }, 10000);
 
+    };
+    window['printConsole'] = (textmsg: string, type: any) => {
+      const msg = document.getElementById('msg');
+      const container = document.createElement('div');
+      if (type === 'error') {
+        const txt = document.createTextNode(textmsg);
+        container.appendChild(txt);
+        container.style.color = 'red';
+        msg.appendChild(container);
+      } else if (type === 'warn') {
+        const txt = document.createTextNode(textmsg);
+        container.appendChild(txt);
+        container.style.color = 'yellow';
+        msg.appendChild(container);
+      } else if (type === 'info') {
+        const txt = document.createTextNode(textmsg);
+        container.appendChild(txt);
+        container.style.color = 'white';
+        msg.appendChild(container);
+
+      }
     };
   }
   /**
@@ -374,7 +396,8 @@ export class Workspace {
     if (window['Selected']) {
       if (window['Selected'] instanceof Wire) {
         // TODO: Show Toast
-        console.log('You Can\'t Copy Wire');
+        window['showToast']('You Can\'t Copy Wire');
+        // console.log('You Can\'t Copy Wire');
         return;
       }
       Workspace.copiedItem = window.Selected;

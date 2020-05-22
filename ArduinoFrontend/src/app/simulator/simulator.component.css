@@ -131,6 +131,10 @@
     background-color: lightskyblue;
 }
 
+.lightgreen{
+    background-color: lightgreen;
+}
+
 #project-title {
     color: black !important;
     background-color: transparent;
@@ -231,7 +235,7 @@ body {
 #ToastMessage {
     top: 100px;
     left: 1230px;
-    z-index: 100;
+    z-index: 1000;
     position: fixed;
     width: 300px;
     height: auto;
@@ -253,12 +257,12 @@ body {
 
 #console {
     position: fixed;
-    min-width: 1015px;
-    min-height: 230px;
+    width: 900px;
+    height: 230px;
     z-index: 100;
     background: #fff;
     right: calc(72.7vw - 1100px);
-    top: 500px;
+    top: 495px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
     padding: 1px;
     justify-content: space-between;
@@ -275,4 +279,12 @@ body {
     to {
         bottom: 700px;
     }
+}
+
+#msg{
+    
+    overflow-y: hidden;
+    text-overflow: ellipsis;
+    white-space: pre-wrap;  
+    word-wrap: break-word;
 }

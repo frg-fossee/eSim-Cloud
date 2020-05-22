@@ -27,7 +27,7 @@ export class SimulatorComponent implements OnInit {
   toggle = true;
   stoggle = true;
   status = 'Start Simulation';
-  toggle1 = true;
+  toggle1 = false;
   constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
     Workspace.initializeGlobalFunctions();
   }
@@ -118,9 +118,8 @@ export class SimulatorComponent implements OnInit {
     const sim = document.getElementById('console');
     if (sim.style.display === 'none') {
       sim.style.display = 'block';
-    } else {
-      sim.style.display = 'none';
     }
+    window['printConsole']('Start Simualtion', 'info');
   }
 
   /**
@@ -145,18 +144,26 @@ export class SimulatorComponent implements OnInit {
     close.style.display = 'none';
   }
 
-  expandConsole(num: number = 0) {
+  expandConsole() {
 
     const console = document.getElementById('console');
-    if (console.style.top === '500px' || console.style.minHeight === '230px' || num === 1) {
+    this.toggle1 = !this.toggle1;
+    if (console.style.top === '495px') {
       console.style.top = '300px';
-      console.style.minHeight = '600px';
-      this.toggle1 = !this.toggle1;
+      console.style.height = '450px';
     } else {
-      console.style.top = '500px';
-      console.style.minHeight = '230px';
+      console.style.top = '495px';
+      console.style.height = '230px';
     }
   }
+  clearConsole() {
+
+    const clear = document.getElementById('msg');
+    clear.innerHTML = '';
+
+  }
+
+
 
 
   /**
