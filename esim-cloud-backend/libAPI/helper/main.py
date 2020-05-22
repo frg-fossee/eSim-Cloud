@@ -45,7 +45,7 @@ class SvgGenerator:
         return False
 
     def save_svg(self, d, name_of_symbol, save_path, pin_number_positions,
-                 dimension):
+                 symbol_prefix, dimension):
         """ save svg"""
         # print(pin_number_positions)
         # check if symbols directory is present or not.
@@ -74,7 +74,8 @@ class SvgGenerator:
         fd = open(path_to_svg, 'w')
         for i in range(len(s)):
             fd.write(s[i])
-        fd.write(f'<metadata width="{dimension[0]}" height="{dimension[1]}">')
+        fd.write(
+            f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbol_prefix="{symbol_prefix}">')
         fd.write(elem)
         fd.write("</metadata></svg>")
         fd.close()
@@ -85,6 +86,7 @@ class SvgGenerator:
         """
 
         data = self.parser.extract_data_from_lib(file_path)
+
         dcm_path = file_path.rsplit(".", 1)
         dcm_path = dcm_path[0] + ".dcm"
         folder_name = file_path.split('/')[-1].split(".")[0]
@@ -99,7 +101,7 @@ class SvgGenerator:
 
             # initialize the drawing canvas.we need to initialize and save svg
             # for each components.
-
+            print(data[i]["alias"])
             DEF_LINE = data[i]["def"]
 
             F0_LINE = data[i]["fn"][0]  # noqa
@@ -460,6 +462,7 @@ class SvgGenerator:
                                           f"-{name_of_symbol}-{dm}-" +
                                           f"{chr(64+z)}",
                                           save_path, pin_number_positions,
+                                          symbol_prefix,
                                           (my_width, my_height))
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
@@ -494,6 +497,7 @@ class SvgGenerator:
                                         cmp_data["data_link"] = ""
 
                                     cmp_data["symbol_prefix"] = symbol_prefix
+                                    cmp_data["alias"] = data[i]["alias"]
                                     cmp_data["dmg"] = dm
                                     cmp_data["part"] = chr(64+z)
                                     component_data[cmp_data["full_name"]] = cmp_data  # noqa
@@ -516,5 +520,5 @@ if __name__ == "__main__":
     # print('Processed', sys.argv[1])
 
     print("running")
-    generate_svg_and_save_to_folder("./sample_lib/power.lib", './symbols/')
+    generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", './symbols/')
     print("done")
