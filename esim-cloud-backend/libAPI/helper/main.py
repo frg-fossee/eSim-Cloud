@@ -16,8 +16,8 @@ class SvgGenerator:
         self.DEFAULT_PEN_WIDTH = "6"
         self.PIN_NAME_PADDING = 13
         self.SHOW_TEXT = False
-        self.SHOW_PIN_NUMBER = True
-        self.SHOW_PIN_NAME = True
+        self.SHOW_PIN_NUMBER = False
+        self.SHOW_PIN_NAME = False
         self.SHOW_PIN_NOT_CONNECTED = False
         self.SVG_SCALE = 1
 
