@@ -9,6 +9,7 @@ export class Label extends CircuitElement {
   fontStyle = 'normal';
   // normal | bold | bolder | lighter
   fontWeight = 'normal';
+  getName = null;
   constructor(public canvas: any, x: number, y: number) {
     super('Label', x, y);
     this.elements.push(
