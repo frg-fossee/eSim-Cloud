@@ -255,7 +255,7 @@ class SvgPlotter:
         for i in range(0, len(vertices_list)):
             for index in range(0, 2):
                 arg.append(int(vertices_list[i][index]))
-
+            self.update_svg_boundary(vertices_list)
         d.append(draw.Lines(*arg,
                             close=False,
                             stroke_width=pen,
