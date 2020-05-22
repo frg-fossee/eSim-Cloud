@@ -14,11 +14,18 @@ class Parser:
                 if line.strip() != "":
 
                     if line.find("DEF") == 0:
-                        instruction = {"def": [], "fn": [], "draw": []}
+                        instruction = {"def": [], "fn": [],
+                                       "alias": [], "draw": []}
 
                         instruction["def"] = line.strip().split(" ")
 
                         def_flag = True
+
+                    elif line.find("ALIAS") == 0:
+                        instruction["alias"] = line.strip().split(" ")
+                        if len(instruction["alias"]) > 0:
+                            # remove the first element which is text ALIAS
+                            instruction["alias"].pop(0)
 
                     elif line.find("ENDDEF") == 0:
                         data.append(instruction)
@@ -76,6 +83,6 @@ class Parser:
 if __name__ == "__main__":
     parser = Parser()
     # data = parser.extract_data_from_lib("./sample_lib/4002.lib")
-    data = parser.extract_data_from_dcm("./sample_lib/4002.dcm")
+    data = parser.extract_data_from_lib("./sample_lib/4xxx.lib")
     # print(data)
     print(data)
