@@ -9,7 +9,7 @@ import { AddComponent } from './Helper/SideBar.js'
 const useStyles = makeStyles((theme) => ({
   popupInfo: {
     margin: theme.spacing(1.5),
-    padding: theme.spacing(2),
+    padding: theme.spacing(1.5),
     border: '1px solid blue',
     borderRadius: '5px'
   },

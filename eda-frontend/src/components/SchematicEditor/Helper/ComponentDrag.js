@@ -1,13 +1,14 @@
 /* eslint-disable no-new */
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
-import comp1 from '../../../static/CircuitComp/V-VSOURCE-1_A.svg'
-import comp2 from '../../../static/CircuitComp/R-R-1_A.svg'
-import comp3 from '../../../static/CircuitComp/C-CAP-1_A.svg'
-import comp4 from '../../../static/CircuitComp/U-4001-1_A.svg'
-import comp5 from '../../../static/CircuitComp/U-4011-1_B.svg'
-import comp6 from '../../../static/CircuitComp/U-4051-1_A.svg'
-import comp7 from '../../../static/CircuitComp/GND-0-1_A.svg'
+import comp1 from '../../../static/CircuitComp/V-VSOURCE-1-A.svg'
+import comp2 from '../../../static/CircuitComp/R-R-1-A.svg'
+import comp3 from '../../../static/CircuitComp/C-CAP-1-A.svg'
+import comp4 from '../../../static/CircuitComp/PWR-GND-1-A.svg'
+import comp5 from '../../../static/CircuitComp/U-OPAMP-1-A.svg'
+import comp6 from '../../../static/CircuitComp/D-DIODE-1-A.svg'
+import comp7 from '../../../static/CircuitComp/L-INDUCTOR-1-A.svg'
+import comp8 from '../../../static/CircuitComp/Q-QNPN-1-A.svg'
 
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
@@ -16,7 +17,7 @@ import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
 import KeyboardShorcuts from './KeyboardShorcuts.js'
 import { SideBar, AddSidebarComponent } from './SideBar.js'
-var paths = [comp1, comp2, comp3, comp4, comp5, comp6, comp7]
+var paths = [comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8]
 var graph
 
 const {
