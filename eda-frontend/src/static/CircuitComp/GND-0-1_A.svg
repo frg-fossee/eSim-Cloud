@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1000" height="1900" viewBox="-500.0 -950.0 1000 1900">
+<defs>
+</defs>
+<text x="0" y="70" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">0</text>
+<path d="M0,50 L-50,0" stroke="black" stroke-width="6" />
+<path d="M50,0 L0,50" stroke="black" stroke-width="6" />
+<path d="M-50,0 L50,0" stroke="black" stroke-width="6" />
+<text x="0.0" y="-40" font-size="25.0" fill="black" text-anchor="middle" transform="translate(0,7.5)">1</text>
+<text x="13" y="0" font-size="50.0" text-anchor="middle" transform="translate(0,15.0)">0</text>
+<path d="M0,0 L0,0" stroke="black" stroke-width="5" />
+<metadata width="1000" height="1900"><p-1><x>0</x><y>0</y><type>W
+                     </type></p-1></metadata></svg>

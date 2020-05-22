@@ -1,0 +1,57 @@
+- name: Configure Docker
+  hosts: all
+  become: true
+  tasks:
+      - name: Stop service httpd, if running
+        service:
+          name: httpd
+          state: stopped
+          enabled: no
+        ignore_errors: yes
+
+      - name: Stop service apache2, if running
+        service:
+          name: apache2
+          state: stopped
+          enabled: no
+        ignore_errors: yes
+
+      - name: Clone eSim Repo
+        git:
+          repo: https://github.com/frg-fossee/eSim-Cloud.git
+          dest: /home/{{ansible_user_id}}/eSim-Cloud
+          version: develop
+
+      # - name: Run First Run Script
+      #   shell: cd /home/{{ansible_user_id}}/eSim-Cloud && ./first_run.dev.sh
+      - name: Stop Existing Containers
+        docker_compose:
+          project_src: /home/{{ansible_user_id}}/eSim-Cloud
+          files: docker-compose.dev.yml
+          state: absent
+        register: docker_output
+      - name: Check State
+        debug:
+         var: docker_output
+
+      - name: Start DB Container
+        docker_compose:
+          project_src: /home/{{ansible_user_id}}/eSim-Cloud
+          files: docker-compose.dev.yml
+          services: db
+          state: present
+      - name: Check db running
+        assert:
+          that:
+            - "db['esim-cloud_db_1'].state.running"
+
+      - name: Start Django Container
+        docker_compose:
+          project_src: /home/{{ansible_user_id}}/eSim-Cloud
+          files: docker-compose.dev.yml
+          services: django
+          state: present
+      - name: Check django running
+        assert:
+          that:
+            - "django['esim-cloud_django_1'].state.running"

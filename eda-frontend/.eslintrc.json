@@ -1,7 +1,9 @@
 {
+    "parser": "babel-eslint",
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+        "commonjs": true
     },
     "extends": [
         "plugin:react/recommended",
@@ -15,12 +17,19 @@
         "ecmaFeatures": {
             "jsx": true
         },
-        "ecmaVersion": 11,
+        "ecmaVersion": 2018,
         "sourceType": "module"
     },
     "plugins": [
         "react"
     ],
     "rules": {
+        "react/prop-types": "warn"
+    },
+
+    "settings": {
+        "react": {
+            "version": "latest"
+        }
     }
 }

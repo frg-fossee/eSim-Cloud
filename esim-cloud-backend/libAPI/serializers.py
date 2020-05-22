@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 class LibrarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Library
-        fields = ('library_name', 'saved_on')
+        fields = ('library_name', 'saved_on', 'id')
 
 
 class LibraryComponentSerializer(serializers.ModelSerializer):
@@ -16,6 +16,7 @@ class LibraryComponentSerializer(serializers.ModelSerializer):
     class Meta:
         model = LibraryComponent
         fields = (
+            'id',
             'name',
             'svg_path',
             'symbol_prefix',

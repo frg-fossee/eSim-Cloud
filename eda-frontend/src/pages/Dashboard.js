@@ -1,27 +1,27 @@
-import React from "react";
-import { Switch, Route } from "react-router-dom";
-import { CssBaseline } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React from 'react'
+import { Switch, Route } from 'react-router-dom'
+import { CssBaseline } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 
-import Header from "../components/Dashboard/Header";
-import Layout from "../components/Shared/Layout";
-import LayoutMain from "../components/Shared/LayoutMain";
-import DashboardSidebar from "../components/Dashboard/DashboardSidebar";
-import DashboardHome from "../components/Dashboard/DashboardHome";
-import SchematicsList from "../components/Dashboard/SchematicsList";
+import Header from '../components/Dashboard/Header'
+import Layout from '../components/Shared/Layout'
+import LayoutMain from '../components/Shared/LayoutMain'
+import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
+import DashboardHome from '../components/Dashboard/DashboardHome'
+import SchematicsList from '../components/Dashboard/SchematicsList'
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
-    minHeight: "100vh",
+    display: 'flex',
+    minHeight: '100vh'
   },
   toolbar: {
-    minHeight: "40px",
-  },
-}));
+    minHeight: '40px'
+  }
+}))
 
-export default function Dashboard() {
-  const classes = useStyles();
+export default function Dashboard () {
+  const classes = useStyles()
 
   return (
     <div className={classes.root}>
@@ -44,5 +44,5 @@ export default function Dashboard() {
         </Switch>
       </LayoutMain>
     </div>
-  );
+  )
 }

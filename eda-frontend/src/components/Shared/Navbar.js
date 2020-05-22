@@ -1,26 +1,26 @@
-import React from "react";
+import React from 'react'
 
-import { AppBar, Button, Toolbar, Typography, Link } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { Link as RouterLink} from "react-router-dom";
+import { AppBar, Button, Toolbar, Typography, Link } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
+    borderBottom: `1px solid ${theme.palette.divider}`
   },
   toolbar: {
-    flexWrap: "wrap",
+    flexWrap: 'wrap'
   },
   toolbarTitle: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   link: {
-    margin: theme.spacing(1, 1.5),
-  },
-}));
+    margin: theme.spacing(1, 1.5)
+  }
+}))
 
-export default function Navbar() {
-  const classes = useStyles();
+export default function Navbar () {
+  const classes = useStyles()
 
   return (
     <AppBar
@@ -92,6 +92,6 @@ export default function Navbar() {
           Login
         </Button>
       </Toolbar>
-     </AppBar>
-  );
+    </AppBar>
+  )
 }

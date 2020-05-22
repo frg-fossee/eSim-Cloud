@@ -1,19 +1,19 @@
-import React from "react";
+import React from 'react'
 
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import { Link as RouterLink } from "react-router-dom";
+import Button from '@material-ui/core/Button'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+import Container from '@material-ui/core/Container'
+import { Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(23, 0, 6),
-  },
-}));
+    padding: theme.spacing(23, 0, 6)
+  }
+}))
 
-export default function Home() {
-  const classes = useStyles();
+export default function Home () {
+  const classes = useStyles()
 
   return (
     <Container maxWidth="sm" component="main" className={classes.header}>
@@ -46,5 +46,5 @@ export default function Home() {
         </Button>
       </Typography>
     </Container>
-  );
+  )
 }

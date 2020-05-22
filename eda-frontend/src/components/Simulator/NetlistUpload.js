@@ -1,97 +1,97 @@
-import React, { Component } from "react";
-import { Grid, Button, Paper } from "@material-ui/core";
-import { withStyles } from "@material-ui/core/styles";
+import React, { Component } from 'react'
+import { Grid, Button, Paper } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 
-import Graph from "../Shared/Graph";
-import api from "../../utils/Api";
+import Graph from '../Shared/Graph'
+import api from '../../utils/Api'
 
 const styles = (theme) => ({
   paper: {
     padding: theme.spacing(2),
-    textAlign: "center",
-    backgroundColor: "#404040",
-    color: "#fff",
+    textAlign: 'center',
+    backgroundColor: '#404040',
+    color: '#fff'
   },
   finlabel: {
-    cursor: "pointer",
-    color: "#9feaf9",
+    cursor: 'pointer',
+    color: '#9feaf9',
     padding: theme.spacing(1),
-    border: "2px solid #9feaf9",
+    border: '2px solid #9feaf9'
   },
   finput: {
     opacity: 0,
-    position: "absolute",
-    zIndex: -1,
-  },
-});
+    position: 'absolute',
+    zIndex: -1
+  }
+})
 
 class NetlistUpload extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       file: null,
-      filename: "Choose Netlist",
+      filename: 'Choose Netlist',
       x_1: [],
       y1_1: [],
-      y2_1: [],
-    };
-    this.onFormSubmit = this.onFormSubmit.bind(this);
-    this.onChange = this.onChange.bind(this);
-    this.netlistUpload = this.netlistUpload.bind(this);
+      y2_1: []
+    }
+    this.onFormSubmit = this.onFormSubmit.bind(this)
+    this.onChange = this.onChange.bind(this)
+    this.netlistUpload = this.netlistUpload.bind(this)
   }
 
-  onChange(e) {
+  onChange (e) {
     this.setState({
       file: e.target.files[0],
-      filename: e.target.files[0].name,
-    });
+      filename: e.target.files[0].name
+    })
   }
 
-  onFormSubmit(e) {
+  onFormSubmit (e) {
     // Stop default form submit
-    e.preventDefault();
+    e.preventDefault()
     this.netlistUpload(this.state.file)
       .then((response) => {
-        let res = response.data;
-        const getUrl = "simulation/status/".concat(res.details.task_id);
-        this.simulationResult(getUrl);
+        const res = response.data
+        const getUrl = 'simulation/status/'.concat(res.details.task_id)
+        this.simulationResult(getUrl)
       })
       .catch(function (error) {
-        console.log(error);
-      });
+        console.log(error)
+      })
   }
 
   // Upload the nelist
-  netlistUpload(file) {
-    const formData = new FormData();
-    formData.append("file", file);
+  netlistUpload (file) {
+    const formData = new FormData()
+    formData.append('file', file)
     const config = {
       headers: {
-        "content-type": "multipart/form-data",
-      },
-    };
-    return api.post("simulation/upload", formData, config);
+        'content-type': 'multipart/form-data'
+      }
+    }
+    return api.post('simulation/upload', formData, config)
   }
 
   // Get the simulation result with task_Id
-  simulationResult(url) {
+  simulationResult (url) {
     api
       .get(url)
       .then((res) => {
-        if (res.data.state === "PROGRESS" || res.data.state === "PENDING") {
-          setTimeout(this.simulationResult(url), 1000);
+        if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
+          setTimeout(this.simulationResult(url), 1000)
         } else {
           this.setState({
             x_1: res.data.details.data[0].x,
             y1_1: res.data.details.data[0].y[0],
-            y2_1: res.data.details.data[0].y[1],
-          });
+            y2_1: res.data.details.data[0].y[1]
+          })
         }
       })
       .then((res) => {})
       .catch(function (error) {
-        console.log(error);
-      });
+        console.log(error)
+      })
   }
 
   fileData = () => {
@@ -102,24 +102,24 @@ class NetlistUpload extends Component {
           <p>File Name: {this.state.file.name}</p>
           <p>File Type: Ngspice Netlist</p>
         </div>
-      );
+      )
     } else {
       return (
         <div>
           <h4>Choose Netlist before pressing UPLOAD button</h4>
         </div>
-      );
+      )
     }
   };
 
-  render() {
-    const { classes } = this.props;
+  render () {
+    const { classes } = this.props
     return (
       <>
         <Grid item xs={12} sm={5}>
           <Paper className={classes.paper}>
             <h2>SUBMIT NETLIST</h2>
-            <form onSubmit={this.onFormSubmit} style={{ marginTop: "45px" }}>
+            <form onSubmit={this.onFormSubmit} style={{ marginTop: '45px' }}>
               <label htmlFor="netlist" className={classes.finlabel}>
                 {this.state.filename}
               </label>
@@ -134,7 +134,7 @@ class NetlistUpload extends Component {
                 type="submit"
                 variant="contained"
                 color="primary"
-                style={{ marginTop: "30px" }}
+                style={{ marginTop: '30px' }}
               >
                 Upload
               </Button>
@@ -154,8 +154,8 @@ class NetlistUpload extends Component {
           </Paper>
         </Grid>
       </>
-    );
+    )
   }
 }
 
-export default withStyles(styles, { withTheme: true })(NetlistUpload);
+export default withStyles(styles, { withTheme: true })(NetlistUpload)
