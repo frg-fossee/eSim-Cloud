@@ -2,9 +2,7 @@ name: ESLint eda-frontend
 
 on:
   push:
-    branches: [ 'eda-frontend', 'develop' ]
-  pull_request:
-    branches: [ 'eda-frontend', 'develop' ]
+    paths: [ 'eda-frontend/**' ]
 
 jobs:
   eslint:
