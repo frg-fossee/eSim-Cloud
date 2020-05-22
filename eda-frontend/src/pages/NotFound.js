@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react'
 
-import { Container, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { Container, Typography } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(8, 0, 6),
-  },
-}));
+    padding: theme.spacing(8, 0, 6)
+  }
+}))
 
-export default function NotFound() {
-  const classes = useStyles();
+export default function NotFound () {
+  const classes = useStyles()
 
   return (
     <Container maxWidth="lg" className={classes.header}>
@@ -26,5 +26,5 @@ export default function NotFound() {
         Sorry, Requested page not found
       </Typography>
     </Container>
-  );
+  )
 }

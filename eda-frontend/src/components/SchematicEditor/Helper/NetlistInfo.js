@@ -17,5 +17,4 @@ export default function NetlistInfoFunct (graph) {
   if (taponhold == true) {
     alert(true)
   }
-
 }

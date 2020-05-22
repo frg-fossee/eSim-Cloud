@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import SimulationProperties from './SimulationProperties'
+
+import './Helper/SchematicEditor.css'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -101,6 +104,7 @@ function GridProperties ({ gridRef }) {
           ))}
         </TextField>
       </ListItem>
+
     </>
   )
 }
@@ -108,7 +112,7 @@ GridProperties.propTypes = {
   gridRef: PropTypes.object.isRequired
 }
 
-export default function PropertiesSidebar ({ gridRef }) {
+export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const classes = useStyles()
 
   return (
@@ -122,11 +126,20 @@ export default function PropertiesSidebar ({ gridRef }) {
         </ListItem>
 
         <GridProperties gridRef={gridRef} />
+
+        <ListItem>
+          <ListItemText primary="Components Position" />
+        </ListItem>
+        <ListItem style={{ padding: '0px' }} divider>
+          <div className="outline-container" ref={outlineRef} id="outlineContainer" />
+        </ListItem>
       </List>
+      <SimulationProperties />
     </>
   )
 }
 
 PropertiesSidebar.propTypes = {
-  gridRef: PropTypes.object.isRequired
+  gridRef: PropTypes.object.isRequired,
+  outlineRef: PropTypes.object.isRequired
 }

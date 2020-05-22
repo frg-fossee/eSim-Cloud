@@ -9,11 +9,11 @@ const {
   mxDragSource
 } = new MxGraphFactory()
 
-export default function AddSideBarComponent(graph, sidebar, src) {
+export default function AddSideBarComponent (graph, sidebar, src) {
   var img = document.createElement('img')
   img.setAttribute('src', src)
-  img.style.width = '48px'
-  img.style.height = '48px'
+  img.style.width = '70px'
+  img.style.height = '70px'
   img.title = 'Drag this to the diagram to create a new vertex'
   sidebar.appendChild(img)
 
@@ -40,7 +40,7 @@ export default function AddSideBarComponent(graph, sidebar, src) {
       // pt.x, pt.y, 120, 120, 'image=' + image);
 
       // ***IMP
-      // GET THE SIZE OF SVG FOROM METADATA AND THEN DIVIDE BOTH WIDTH AND HEIGHT BE SAME RATIO 
+      // GET THE SIZE OF SVG FOROM METADATA AND THEN DIVIDE BOTH WIDTH AND HEIGHT BE SAME RATIO
       // THEN USE THAT VALUE BELOW
 
       getMetadataXML(src, graph, parent, evt, target, x, y)
