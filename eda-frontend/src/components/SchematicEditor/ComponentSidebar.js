@@ -78,12 +78,9 @@ export default function ComponentSidebar ({ compRef }) {
       <PopupState variant="popover" popupId={component.full_name}>
         {popupState => (
           <div>
-            <ListItem key={component.full_name} {...bindTrigger(popupState)}>
-              {component.full_name}
-              <ListItemIcon>
-                <img src={'../' + component.svg_path} alt="Component"/>
-              </ListItemIcon>
-            </ListItem>
+            <ListItemIcon key={component.full_name} {...bindTrigger(popupState)}>
+              <img src={'../' + component.svg_path} alt="Component"/>
+            </ListItemIcon>
 
             <Popover
               {...bindPopover(popupState)}
@@ -154,7 +151,7 @@ export default function ComponentSidebar ({ compRef }) {
                                 componentChunk.map((component) => {
                                   console.log(component)
                                   return (<ListItemIcon key={component.component_name}>
-                                    <img src={'../' + component.svg_path} alt="Logo"/>
+                                    {generateComponent(component)}
                                   </ListItemIcon>)
                                 }
                                 )
