@@ -14,6 +14,7 @@ import EdgeWireFunct from './EdgeWire.js'
 import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
+import KeyboardShorcuts from './KeyboardShorcuts.js'
 import { SideBar, AddSidebarComponent } from './SideBar.js'
 var paths = [comp1, comp2, comp3, comp4, comp5, comp6, comp7]
 var graph
@@ -65,6 +66,7 @@ export default function LoadGrid (container, sidebar, outline) {
     outln.outline.setHtmlLabels(true)
 
     SideBar(graph, sidebar)
+    KeyboardShorcuts(graph)
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
