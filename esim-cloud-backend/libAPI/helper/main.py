@@ -50,6 +50,7 @@ class SvgGenerator:
         # print(pin_number_positions)
         # check if symbols directory is present or not.
         # isVirtualComponent = "false"
+
         if run == 0:
             return
         else:
@@ -92,6 +93,29 @@ class SvgGenerator:
             fd.write(elem)
             fd.write("</metadata></svg>")
             fd.close()
+
+            if part == "A" and dmg == 1:
+                path_to_svg = f"{save_path}/{name_of_symbol}_thumbnail.svg"
+                d.saveSvg(path_to_svg)
+                # after saving svg open it again and embedd metadata.
+                # print(pin_number_positions)
+
+                # save the above elem in the same svg file.
+                fd = open(path_to_svg, 'r')
+                s = fd.readlines()
+                if(s[-1].strip('\n') != '</svg>'):
+                    while s[-1].strip("\n") != '</svg>':
+                        s.pop(-1)
+                s.pop(-1)
+
+                fd = open(path_to_svg, 'w')
+                for i in range(len(s)):
+                    fd.write(s[i])
+                fd.write(
+                    f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">')  # noqa
+                fd.write(elem)
+                fd.write("</metadata></svg>")
+                fd.close()
 
     def generate_svg_from_lib(self, file_path, output_path):
         """ Takes .lib file as input and generates
@@ -552,6 +576,3 @@ if __name__ == "__main__":
         sys.exit(1)
     generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
     print('Processed', sys.argv[1])
-    # print("plotting")
-    # generate_svg_and_save_to_folder("./sample_lib/4xxx.lib", "./symbols/")
-    # print("done")
