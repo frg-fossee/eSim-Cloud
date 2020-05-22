@@ -527,5 +527,5 @@ if __name__ == "__main__":
     # print('Processed', sys.argv[1])
 
     print("running")
-    generate_svg_and_save_to_folder("./sample_lib/power.lib", './symbols/')
+    generate_svg_and_save_to_folder("./sample_lib/74xGxx.lib", './symbols/')
     print("done")
