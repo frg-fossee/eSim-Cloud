@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable*/
 let pinData, metadata, pinList, pinName, pinOrientation, pinLength
 let currentPin, x_pos, y_pos
 let width, height
