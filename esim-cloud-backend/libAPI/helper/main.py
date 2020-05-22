@@ -16,8 +16,8 @@ class SvgGenerator:
         self.DEFAULT_PEN_WIDTH = "6"
         self.PIN_NAME_PADDING = 13
         self.SHOW_TEXT = False
-        self.SHOW_PIN_NUMBER = True
-        self.SHOW_PIN_NAME = True
+        self.SHOW_PIN_NUMBER = False
+        self.SHOW_PIN_NAME = False
         self.SHOW_PIN_NOT_CONNECTED = False
         self.SVG_SCALE = 1
 
@@ -50,6 +50,7 @@ class SvgGenerator:
         # print(pin_number_positions)
         # check if symbols directory is present or not.
         # isVirtualComponent = "false"
+
         if run == 0:
             return
         else:
@@ -68,8 +69,13 @@ class SvgGenerator:
                 x = pin['x']
                 y = pin['y']
                 pin_type = pin['type']
+                pinName = pin["pinName"]
+                pinLength = pin["pinLength"]
+                pinOrientation = pin["pinOrientation"]
                 elem += f"""<p-{pin_number}><x>{x}</x><y>{y}</y><type>{pin_type}
-                        </type></p-{pin_number}>"""
+                        </type><name>{pinName}</name><orientation>{pinOrientation}</orientation>
+                        <length>{pinLength}</length>
+                        </p-{pin_number}>"""
 
             # save the above elem in the same svg file.
             fd = open(path_to_svg, 'r')
@@ -87,6 +93,29 @@ class SvgGenerator:
             fd.write(elem)
             fd.write("</metadata></svg>")
             fd.close()
+
+            if part == "A" and dmg == 1:
+                path_to_svg = f"{save_path}/{name_of_symbol}_thumbnail.svg"
+                d.saveSvg(path_to_svg)
+                # after saving svg open it again and embedd metadata.
+                # print(pin_number_positions)
+
+                # save the above elem in the same svg file.
+                fd = open(path_to_svg, 'r')
+                s = fd.readlines()
+                if(s[-1].strip('\n') != '</svg>'):
+                    while s[-1].strip("\n") != '</svg>':
+                        s.pop(-1)
+                s.pop(-1)
+
+                fd = open(path_to_svg, 'w')
+                for i in range(len(s)):
+                    fd.write(s[i])
+                fd.write(
+                    f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">')  # noqa
+                fd.write(elem)
+                fd.write("</metadata></svg>")
+                fd.close()
 
     def generate_svg_from_lib(self, file_path, output_path):
         """ Takes .lib file as input and generates
@@ -170,6 +199,10 @@ class SvgGenerator:
 
                         for run in range(0, 2):
 
+                            # all_pin_numbers = []
+                            # all_pin_names = []
+                            # all_pin_orientations = []
+                            # all_pin_length = []
                             # initialize canvas here.
                             d = draw.Drawing(
                                 my_width,
@@ -235,6 +268,12 @@ class SvgGenerator:
 
                                     type_of_pin = current_instruction[11]  # noqa
 
+                                    # all_pin_numbers.append(pinNumber)
+                                    # all_pin_names.append(pinName)
+                                    # all_pin_orientations.append(
+                                    #     pin_orientation)
+                                    # all_pin_length.append(pin_length)
+
                                     if dmg == "2":
                                         is_dmg_2 = True
                                     # The 12th index may or maynot be present
@@ -259,12 +298,15 @@ class SvgGenerator:
                                             "x": x_pos,
                                             "y": y_pos,
                                             "type": type_of_pin,
+                                            "pinName": pinName,
+                                            "pinOrientation": pin_orientation,
+                                            "pinLength": pin_length,
                                         })
 
                                     if not self.SHOW_PIN_NUMBER:
                                         pinNumber = ""
                                     if (not self.SHOW_PIN_NAME
-                                       and not self.SHOW_PIN_NOT_CONNECTED):
+                                            and not self.SHOW_PIN_NOT_CONNECTED):
                                         pinName = ""
 
                                     if pinName == "NC":
@@ -476,7 +518,8 @@ class SvgGenerator:
                                           save_path, pin_number_positions,
                                           symbol_prefix,
                                           (my_width, my_height), run,
-                                          chr(64+z), dm)
+                                          chr(64+z), dm,
+                                          )
                             # reset svg_boundary set all paramerers to 0
                             self.plotter.reset_svg_boundary()
                             cmp_data = {}

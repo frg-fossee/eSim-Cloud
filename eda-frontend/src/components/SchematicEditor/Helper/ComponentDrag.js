@@ -51,6 +51,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.PinNumber = 0
     // Parent component of a pin, default is null
     mxCell.prototype.ParentComponent = null
+    mxCell.prototype.symbol = null
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
@@ -64,6 +65,13 @@ export default function LoadGrid (container, sidebar, outline) {
     // To show the images in the outline, uncomment the following code
     outln.outline.labelsVisible = true
     outln.outline.setHtmlLabels(true)
+
+    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+      var cell = evt.getProperty('cell')
+      mxUtils.alert('Doubleclick: ' + ((cell != null) ? 'Cell' : 'Graph'))
+      console.log(cell)
+      evt.consume()
+    })
 
     SideBar(graph, sidebar)
     KeyboardShorcuts(graph)
