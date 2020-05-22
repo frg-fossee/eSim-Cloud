@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
-
 declare var window;
 
 @Component({
@@ -11,7 +10,7 @@ declare var window;
 })
 export class ComponentlistComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, public dialogRef: MatDialogRef<ComponentlistComponent>) { }
   data: any = {};
   noComponets = true;
 
@@ -44,5 +43,36 @@ export class ComponentlistComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       window.Selected = null;
     });
+  }
+
+  exportCSV(filename: string, data: string) {
+    const blob = new Blob(['\ufeff' + data], {
+      type: 'text/csv;charset=utf-8;'
+    });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.target = '_blank';
+    a.setAttribute('download', `${filename}.csv`);
+    a.style.visibility = 'hidden';
+    document.body.append(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  DownloadCSV() {
+    if (this.noComponets) {
+      window.showToast('No Components On Workspace');
+      return;
+    }
+    let csv = `S.No,Name,Quantity\n`;
+    let sno = 1;
+    for (const key in this.data) {
+      if (this.data[key]) {
+        csv += `${sno},${key},${this.data[key].cnt}\n`;
+        ++sno;
+      }
+    }
+    this.exportCSV('download', csv);
+    this.dialogRef.close();
   }
 }
