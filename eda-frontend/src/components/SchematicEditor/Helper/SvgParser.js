@@ -1,4 +1,6 @@
-/* eslint-disable*/
+/* eslint-disable new-cap */
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import mxGraphFactory from 'mxgraph'
 
 const {
@@ -12,7 +14,7 @@ let width, height
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
 const fixed_number = 5
 
-function extractData(xml) {
+function extractData (xml) {
   pinData = []
   metadata = xml.getElementsByTagName('metadata')
   const width = metadata[0].attributes[0].nodeValue
@@ -31,10 +33,14 @@ function extractData(xml) {
     const pinOrientation = pin.getElementsByTagName('orientation')[0].innerHTML.trim()
     const pinLength = pin.getElementsByTagName('length')[0].innerHTML.trim()
 
-
     pinData.push({
-      pinNumber: pinNumber, pinX: pinX, pinY: pinY, type: pinType, pinName: pinName,
-      pinOrientation: pinOrientation, pinLength: pinLength
+      pinNumber: pinNumber,
+      pinX: pinX,
+      pinY: pinY,
+      type: pinType,
+      pinName: pinName,
+      pinOrientation: pinOrientation,
+      pinLength: pinLength
     })
     // console.log(pinNumber, pinX, pinY, pinType)
   })
@@ -45,7 +51,8 @@ function extractData(xml) {
   }
 }
 
-function getMetadataXML(path, graph, parent, evt, target, x, y) {
+export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
+  var path = '../' + component.svg_path
   fetch(path)
     .then(function (response) {
       return response.text()
@@ -63,7 +70,6 @@ function getMetadataXML(path, graph, parent, evt, target, x, y) {
       width = data.width
       height = data.height
       pinData = data.pinData
-
 
       // console.log(pinData)
 
@@ -92,12 +98,12 @@ function getMetadataXML(path, graph, parent, evt, target, x, y) {
       const v1 = graph.insertVertex(
         parent,
         null,
-        '',
+        component.name,
         x,
         y,
         width,
         height,
-        'shape=image;image=' + path + ';'
+        'shape=image;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
       )
       v1.Component = true
       var newsource = path
@@ -112,7 +118,7 @@ function getMetadataXML(path, graph, parent, evt, target, x, y) {
         // move this to another file
 
         x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / fixed_number)
-        y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / fixed_number)
+        y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / fixed_number) - 1
 
         // move this to another file
         // eslint-disable-next-line
@@ -135,11 +141,6 @@ function getMetadataXML(path, graph, parent, evt, target, x, y) {
         // pins[i].pinType = currentPin['type']
         pins[i].ParentComponent = v1
         pins[i].PinNumber = currentPin.pinNumber
-        if( currentPin.pinName !== null) {
-          pins[i].PinName = currentPin.pinName
-        }
       }
     })
 }
-
-export default getMetadataXML

@@ -36,7 +36,7 @@ export default function SideComp ({ component }) {
   const id = open ? 'simple-popover' : undefined
 
   useEffect(() => {
-    AddComponent(imageRef.current, '../' + component.svg_path)
+    AddComponent(component, imageRef.current)
   }, [imageRef, component])
 
   return (
