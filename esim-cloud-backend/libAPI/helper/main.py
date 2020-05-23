@@ -49,15 +49,10 @@ class SvgGenerator:
         """ save svg"""
         # print(pin_number_positions)
         # check if symbols directory is present or not.
-        # isVirtualComponent = "false"
 
         if run == 0:
             return
         else:
-            # if '#' in name_of_symbol:
-            #     isVirtualComponent = "true"
-            #     name_of_symbol = name_of_symbol.replace('#', '')
-
             path_to_svg = f"{save_path}/{name_of_symbol}.svg"
             d.saveSvg(path_to_svg)
             # after saving svg open it again and embedd metadata.
@@ -93,29 +88,6 @@ class SvgGenerator:
             fd.write(elem)
             fd.write("</metadata></svg>")
             fd.close()
-
-            if part == "A" and dmg == 1:
-                path_to_svg = f"{save_path}/{name_of_symbol}_thumbnail.svg"
-                d.saveSvg(path_to_svg)
-                # after saving svg open it again and embedd metadata.
-                # print(pin_number_positions)
-
-                # save the above elem in the same svg file.
-                fd = open(path_to_svg, 'r')
-                s = fd.readlines()
-                if(s[-1].strip('\n') != '</svg>'):
-                    while s[-1].strip("\n") != '</svg>':
-                        s.pop(-1)
-                s.pop(-1)
-
-                fd = open(path_to_svg, 'w')
-                for i in range(len(s)):
-                    fd.write(s[i])
-                fd.write(
-                    f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">')  # noqa
-                fd.write(elem)
-                fd.write("</metadata></svg>")
-                fd.close()
 
     def generate_svg_from_lib(self, file_path, output_path):
         """ Takes .lib file as input and generates
@@ -166,21 +138,6 @@ class SvgGenerator:
             # this tells the number of parts in the symbol.
             number_of_parts_in_symbol = DEF_LINE[7]
 
-            # ['F0', '"U"', '-300', '750', '50', 'H', 'V', 'C', 'CNN']
-            # if ref starts with a '#' then its a virtual symbol/
-            # is_power_symbol = F0_LINE[1].startswith('#')
-            # position of text field in milli.
-            # posx = F0_LINE[2]
-            # posy = F0_LINE[3]
-            # text_size = F0_LINE[4]
-            # orientation - 'H' horizontal, 'V' - vertical
-            # orientation = F0_LINE[5]
-            # isVisible = F0_LINE[6] == "V"
-            # hjustify = F0_LINE[7]
-            # vjustify = F0_LINE[8][0]
-            # isItalic   = F0_LINE[8][1] == "I"
-            # isBold     = F0_LINE[8][2] == "B"
-
             is_dmg_2 = False
 
             draw_instructions = data[i]["draw"]
@@ -199,10 +156,6 @@ class SvgGenerator:
 
                         for run in range(0, 2):
 
-                            # all_pin_numbers = []
-                            # all_pin_names = []
-                            # all_pin_orientations = []
-                            # all_pin_length = []
                             # initialize canvas here.
                             d = draw.Drawing(
                                 my_width,
@@ -210,13 +163,6 @@ class SvgGenerator:
                                 origin="center",
                                 displayInline=False,
                             )
-
-                            # d = draw.Drawing(
-                            #     1500,
-                            #     2000,
-                            #     origin="center",
-                            #     displayInline=False,
-                            # )
 
                             d.setPixelScale(s=self.SVG_SCALE)
 
@@ -266,13 +212,7 @@ class SvgGenerator:
                                     part = current_instruction[9]
                                     dmg = current_instruction[10]
 
-                                    type_of_pin = current_instruction[11]  # noqa
-
-                                    # all_pin_numbers.append(pinNumber)
-                                    # all_pin_names.append(pinName)
-                                    # all_pin_orientations.append(
-                                    #     pin_orientation)
-                                    # all_pin_length.append(pin_length)
+                                    type_of_pin = current_instruction[11]
 
                                     if dmg == "2":
                                         is_dmg_2 = True
@@ -305,8 +245,7 @@ class SvgGenerator:
 
                                     if not self.SHOW_PIN_NUMBER:
                                         pinNumber = ""
-                                    if (not self.SHOW_PIN_NAME
-                                            and not self.SHOW_PIN_NOT_CONNECTED):
+                                    if (not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED): # noqa
                                         pinName = ""
 
                                     if pinName == "NC":
@@ -328,7 +267,6 @@ class SvgGenerator:
                                         shape_of_pin=shape_of_pin,
                                     )
 
-                                # (d,x1,y1,x2,y2,fill="f",pen='5',stroke='black')
                                 elif shape == "S":
                                     # its a rectangle
                                     x1 = current_instruction[1]
@@ -355,7 +293,6 @@ class SvgGenerator:
                                         pen_width
                                     )
 
-                                # d,x,y,r,fill="red",pen=2,stroke="black"
                                 elif shape == "C":
                                     # its a circle
                                     cx = current_instruction[1]
@@ -459,8 +396,8 @@ class SvgGenerator:
 
                                 else:
                                     pass
-                                # check if user inputed path exists or not
 
+                                # check if user inputed path exists or not
                                 if not os.path.exists(output_path):
                                     try:
                                         os.mkdir(output_path)
@@ -511,55 +448,113 @@ class SvgGenerator:
                                         width = 200
                                     my_width = width
 
-                            self.save_svg(d,
-                                          f"{symbol_prefix}" +
-                                          f"-{name_of_symbol}-{dm}-" +
-                                          f"{chr(64+z)}",
-                                          save_path, pin_number_positions,
-                                          symbol_prefix,
-                                          (my_width, my_height), run,
-                                          chr(64+z), dm,
-                                          )
-                            # reset svg_boundary set all paramerers to 0
-                            self.plotter.reset_svg_boundary()
-                            cmp_data = {}
-                            if '#' in symbol_prefix:
-                                symbol_prefix = symbol_prefix.replace('#', '')
-                            for co in range(0, len(dcm_data)):
-                                comp = dcm_data[co]
-                                if(name_of_symbol == comp["name"]):
-                                    cmp_data["name"] = comp["name"]
-                                    cmp_data["full_name"] = (f"{symbol_prefix}-"  # noqa
-                                                            +
-                                                            f"{name_of_symbol}"
-                                                            f"-{dm}-" +
-                                                            f"{chr(64+z)}")
-                                    if 'K' in comp.keys():
-                                        cmp_data["keyword"] = comp["K"]
-                                    else:
-                                        cmp_data["keyword"] = ""
+                            name = (f"{symbol_prefix}" +
+                                    f"-{name_of_symbol}-{dm}-" +
+                                    f"{chr(64+z)}")
+                            if dm == 1 and z == 1:
+                                # run twice to save a thumbnail image
+                                for sav_svg in range(0, 2):
 
-                                    if 'D' in comp.keys():
-                                        cmp_data["description"] = comp["D"]
-                                    else:
-                                        cmp_data["description"] = ""
+                                    if sav_svg == 1:
+                                        # change name as thumbnail
+                                        name = (f"{symbol_prefix}" +
+                                                f"-{name_of_symbol}-{dm}-" +
+                                                f"{chr(64+z)}_thumbnail")
 
-                                    if 'F' in comp.keys():
-                                        cmp_data["data_link"] = comp["F"]
-                                    else:
-                                        cmp_data["data_link"] = ""
+                                    self.save_svg(d, name,
+                                                  save_path,
+                                                  pin_number_positions,
+                                                  symbol_prefix,
+                                                  (my_width, my_height), run,
+                                                  chr(64+z), dm,
+                                                  )
+                                    # reset svg_boundary set all
+                                    # paramerers to 0
+                                    self.plotter.reset_svg_boundary()
+                                    cmp_data = {}
+                                    if '#' in symbol_prefix:
+                                        symbol_prefix = symbol_prefix.replace(
+                                            '#', '')
+                                    for co in range(0, len(dcm_data)):
+                                        comp = dcm_data[co]
+                                        if(name_of_symbol == comp["name"]):
+                                            cmp_data["name"] = comp["name"]
+                                            cmp_data["full_name"] = name
+                                            if 'K' in comp.keys():
+                                                cmp_data["keyword"] = comp["K"]
+                                            else:
+                                                cmp_data["keyword"] = ""
 
-                                    if 'F' in comp.keys():
-                                        cmp_data["data_link"] = comp["F"]
-                                    else:
-                                        cmp_data["data_link"] = ""
+                                            if 'D' in comp.keys():
+                                                cmp_data["description"] \
+                                                    = comp["D"]
+                                            else:
+                                                cmp_data["description"] = ""
 
-                                    cmp_data["symbol_prefix"] = symbol_prefix
-                                    cmp_data["alias"] = data[i]["alias"]
-                                    cmp_data["dmg"] = dm
-                                    cmp_data["part"] = chr(64+z)
-                                    component_data[cmp_data["full_name"]] = cmp_data  # noqa
-        # print(component_data)
+                                            if 'F' in comp.keys():
+                                                cmp_data["data_link"] \
+                                                    = comp["F"]
+                                            else:
+                                                cmp_data["data_link"] = ""
+
+                                            if 'F' in comp.keys():
+                                                cmp_data["data_link"] \
+                                                    = comp["F"]
+                                            else:
+                                                cmp_data["data_link"] = ""
+
+                                            cmp_data["symbol_prefix"] \
+                                                = symbol_prefix
+                                            cmp_data["alias"] \
+                                                = data[i]["alias"]
+                                            cmp_data["dmg"] = dm
+                                            cmp_data["part"] = chr(64+z)
+                                            component_data[cmp_data["full_name"]] = cmp_data  # noqa
+                            else:
+                                self.save_svg(d, name,
+                                              save_path, pin_number_positions,
+                                              symbol_prefix,
+                                              (my_width, my_height), run,
+                                              chr(64+z), dm,
+                                              )
+                                # reset svg_boundary set all paramerers to 0
+                                self.plotter.reset_svg_boundary()
+                                cmp_data = {}
+                                if '#' in symbol_prefix:
+                                    symbol_prefix = symbol_prefix.replace(
+                                        '#', '')
+                                for co in range(0, len(dcm_data)):
+                                    comp = dcm_data[co]
+                                    if(name_of_symbol == comp["name"]):
+                                        cmp_data["name"] = comp["name"]
+                                        cmp_data["full_name"] = name
+                                        if 'K' in comp.keys():
+                                            cmp_data["keyword"] = comp["K"]
+                                        else:
+                                            cmp_data["keyword"] = ""
+
+                                        if 'D' in comp.keys():
+                                            cmp_data["description"] = comp["D"]
+                                        else:
+                                            cmp_data["description"] = ""
+
+                                        if 'F' in comp.keys():
+                                            cmp_data["data_link"] = comp["F"]
+                                        else:
+                                            cmp_data["data_link"] = ""
+
+                                        if 'F' in comp.keys():
+                                            cmp_data["data_link"] = comp["F"]
+                                        else:
+                                            cmp_data["data_link"] = ""
+
+                                        cmp_data["symbol_prefix"] \
+                                            = symbol_prefix
+                                        cmp_data["alias"] = data[i]["alias"]
+                                        cmp_data["dmg"] = dm
+                                        cmp_data["part"] = chr(64+z)
+                                        component_data[cmp_data["full_name"]] = cmp_data  # noqa
+        print(component_data)
         return component_data
 
 
