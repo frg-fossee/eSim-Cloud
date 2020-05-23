@@ -199,13 +199,19 @@ export function GenerateNetList () {
       var component = list[property]
       // console.log(component)
       if (component.symbol === 'R') {
+        // component.symbol = component.symbol + r.toString()
         k = k + component.symbol + r.toString()
+        component.value = component.symbol + r.toString()
         ++r
       } else if (component.symbol === 'V') {
+        // component.symbol = component.symbol + v.toString()
         k = k + component.symbol + v.toString()
+        // component.value = component.symbol
         ++v
       } else {
-        c = c + component.symbol + c.toString()
+        // component.symbol = component.symbol + c.toString()
+        k = k + component.symbol + c.toString()
+        // component.value = component.symbol
         ++c
       }
 
@@ -232,7 +238,7 @@ export function GenerateNetList () {
           }
         }
       }
-      if (component.symbol === 'R') {
+      if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
       } else {
         k = k + ' 10'
