@@ -7,7 +7,7 @@ class LibraryComponentAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'image_tag', 'svg_path', 'keyword',
                     'description')
     list_filter = ('symbol_prefix', 'component_library__library_name')
-    search_fields = ('keyword', 'full_name')
+    search_fields = ('keyword', 'name')
 
 
 class ComponentInline(admin.TabularInline):
