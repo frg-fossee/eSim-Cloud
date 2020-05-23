@@ -42,8 +42,9 @@ export abstract class CircuitElement {
           this.init();
         })
         .catch(err => {
-          // TODO: Show Toast failed to load
+          console.error(err);
           window['showToast']('Failed to load');
+          // TODO: Delete the Component
         });
     }
   }

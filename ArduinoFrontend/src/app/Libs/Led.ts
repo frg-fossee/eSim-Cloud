@@ -3,13 +3,27 @@ import { Point } from './Point';
 
 export class LED extends CircuitElement {
   static pointHalf = 4;
-  static colors: string[]; // Color of LED
-  static glowColors: string[];
-
+  static colors: string[] = []; // Color of LED
+  static glowColors: string[] = [];
+  static colorNames: string[] = [];
+  selectedIndex = 0;
   constructor(public canvas: any, x: number, y: number) {
     super('LED', x, y, 'LED.json', canvas);
   }
   init() {
+    if (LED.glowColors.length === 0) {
+      // LED
+      console.log(this.data);
+      LED.colors = this.data.colors;
+      LED.colorNames = this.data.colorNames;
+      LED.glowColors = this.data.glowcolors;
+    }
+    this.data = null;
+  }
+  anim() {
+    this.elements[3].attr({
+      fill: `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`
+    });
   }
   getName() {
     // TODO: Change Accordingly to Color
@@ -24,6 +38,23 @@ export class LED extends CircuitElement {
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
+    const select = document.createElement('select');
+    const label = document.createElement('label');
+    label.innerText = 'LED Color';
+    let tmp = '';
+    for (const name of LED.colorNames) {
+      tmp += `<option>${name}</option>`;
+    }
+    select.innerHTML = tmp;
+    select.selectedIndex = this.selectedIndex;
+    select.onchange = () => {
+      this.elements[0].attr({
+        fill: LED.colors[select.selectedIndex]
+      });
+      this.selectedIndex = select.selectedIndex;
+    };
+    body.append(label);
+    body.append(select);
     return {
       keyName: this.keyName,
       id: this.id,
