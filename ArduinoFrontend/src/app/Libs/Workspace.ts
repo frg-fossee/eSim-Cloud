@@ -154,6 +154,10 @@ export class Workspace {
 
       }
     };
+    window.addEventListener('beforeunload', (event) => {
+      event.preventDefault();
+      event.returnValue = 'did you save the stuff?';
+    });
   }
   /**
    * Event Listener for mousemove on html body

@@ -146,14 +146,17 @@ export class SimulatorComponent implements OnInit {
 
   expandConsole() {
 
+    const msg = document.getElementById('msg');
     const console = document.getElementById('console');
     this.toggle1 = !this.toggle1;
-    if (console.style.top === '495px') {
+    if (this.toggle1 || console.style.top === '495px') {
       console.style.top = '300px';
       console.style.height = '450px';
+      msg.style.height = '370px';
     } else {
       console.style.top = '495px';
       console.style.height = '230px';
+      msg.style.height = '150px';
     }
   }
   clearConsole() {
