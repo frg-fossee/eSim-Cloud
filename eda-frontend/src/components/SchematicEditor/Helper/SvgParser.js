@@ -125,7 +125,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         if (currentPin.pinOrientation === "L") {
           pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0.5, 'align=right;verticalAlign=bottom;rotation=0')
         } else if (currentPin.pinOrientation === 'R') {
-          pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0,5, 'align=left;verticalAlign=bottom;rotation=0')
+          pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0.5, 'align=left;verticalAlign=bottom;rotation=0')
         } else if (currentPin.pinOrientation === 'U') {
           pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0.5, 'align=right;verticalAlign=bottom;rotation=0')
         } else {

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { Component } from 'react'
 import { Grid, Button, Paper } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
