@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   Toolbar,
   Typography,
@@ -6,34 +6,35 @@ import {
   Button,
   Input,
   Hidden,
-  Link,
-} from "@material-ui/core";
-import Description from "@material-ui/icons/Description";
-import ShareIcon from "@material-ui/icons/Share";
-import { makeStyles } from "@material-ui/core/styles";
+  Link
+} from '@material-ui/core'
+import Description from '@material-ui/icons/Description'
+import ShareIcon from '@material-ui/icons/Share'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
-    marginRight: theme.spacing(2),
+    marginRight: theme.spacing(2)
   },
   form: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   input: {
     marginLeft: theme.spacing(1),
     flex: 1,
-    color: "#595959",
+    color: '#595959'
   },
   rightBlock: {
-    marginLeft: "auto",
+    marginLeft: 'auto'
   },
   button: {
-    marginRight: theme.spacing(1),
-  },
-}));
+    marginRight: theme.spacing(1)
+  }
+}))
 
-function Header() {
-  const classes = useStyles();
+function Header () {
+  const classes = useStyles()
 
   return (
     <Toolbar variant="dense" color="default">
@@ -46,7 +47,7 @@ function Header() {
         noWrap
         className={classes.toolbarTitle}
       >
-        <Link color="inherit" target="_blank" href="/">
+        <Link color="inherit" component={RouterLink} to="/">
           EDA
         </Link>
       </Typography>
@@ -57,7 +58,7 @@ function Header() {
             className={classes.input}
             defaultValue="Untitled_Schematic"
             color="secondary"
-            inputProps={{ "aria-label": "SchematicTitle" }}
+            inputProps={{ 'aria-label': 'SchematicTitle' }}
           />
         </form>
       </Hidden>
@@ -75,7 +76,8 @@ function Header() {
 
         <Button
           size="small"
-          href="/login"
+          component={RouterLink}
+          to="/login"
           color="primary"
           variant="outlined"
           className={classes.button}
@@ -84,7 +86,7 @@ function Header() {
         </Button>
       </div>
     </Toolbar>
-  );
+  )
 }
 
-export default Header;
+export default Header

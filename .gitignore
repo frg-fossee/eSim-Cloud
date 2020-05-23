@@ -11,3 +11,4 @@ symbols/*
 .DS_Store
 migrations
 symbol_svgs
+postgres_data

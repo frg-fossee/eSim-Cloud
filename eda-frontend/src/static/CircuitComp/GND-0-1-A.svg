@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1000" height="2000" viewBox="-500.0 -1000.0 1000 2000">
+<defs>
+</defs>
+<path d="M-50,0 L0,50 L50,0 L-50,0" stroke-width="6" stroke="black" fill-opacity="0" />
+<metadata width="100" height="100" symbolPrefix="GND" cmpPartDmgLabel="1:A" nameOfSymbol="GND-0-1-A"><p-1><x>0</x><y>0</y><type>W
+                        </type><name>0</name><orientation>R</orientation>
+                        <length>0</length>
+                        </p-1></metadata></svg>
