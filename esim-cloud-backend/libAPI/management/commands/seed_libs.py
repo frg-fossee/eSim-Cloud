@@ -77,8 +77,7 @@ def seed_libraries(self, location):
                     name=svg_desc['name'],
                     svg_path=os.path.join(
                         library_svg_folder, component_svg),
-                    thumbnail_path=os.path.join(
-                        library_svg_folder, thumbnail_path),
+                    thumbnail_path=thumbnail_path,
                     symbol_prefix=svg_desc['symbol_prefix'],
                     full_name=svg_desc['full_name'],
                     keyword=svg_desc['keyword'],
@@ -91,6 +90,8 @@ def seed_libraries(self, location):
 
             # Seed Alternate Components
             for component_svg in glob.glob(library_svg_folder+'/*[B-Z].svg'):  # noqa , EdgeCase here
+                component_svg = os.path.split(component_svg)[-1]
+                svg_desc = component_details[component_svg[:-4]]
                 alternate_component = ComponentAlternate(
                     part=svg_desc['part'],
                     dmg=svg_desc['dmg'],
