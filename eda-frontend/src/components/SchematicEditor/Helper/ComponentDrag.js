@@ -4,7 +4,7 @@ import mxGraphFactory from 'mxgraph'
 import comp1 from '../../../static/CircuitComp/V-VSOURCE-1-A.svg'
 import comp2 from '../../../static/CircuitComp/R-R-1-A.svg'
 import comp3 from '../../../static/CircuitComp/C-CAP-1-A.svg'
-import comp4 from '../../../static/CircuitComp/PWR-GND-1-A.svg'
+import comp4 from '../../../static/CircuitComp/GPWR-GND-1-A.svg'
 import comp5 from '../../../static/CircuitComp/U-OPAMP-1-A.svg'
 import comp6 from '../../../static/CircuitComp/D-DIODE-1-A.svg'
 import comp7 from '../../../static/CircuitComp/L-INDUCTOR-1-A.svg'
@@ -54,6 +54,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.ParentComponent = null
     mxCell.prototype.symbol = null
     mxCell.prototype.node = mxCell.prototype.id
+    mxCell.prototype.PinName = ''
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)

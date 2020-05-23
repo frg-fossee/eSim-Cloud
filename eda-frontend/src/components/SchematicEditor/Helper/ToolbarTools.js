@@ -186,6 +186,9 @@ export function GenerateNetList () {
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
   return value */
+  var r = 1
+  var v = 1
+  var c = 1
   var list = graph.getModel().cells
   var k = ''
   for (var property in list) {
@@ -194,7 +197,17 @@ export function GenerateNetList () {
       // alert('Component is present')
       var component = list[property]
       // console.log(component)
-      k = k + component.symbol
+      if (component.symbol === 'R') {
+        k = k + component.symbol + r.toString()
+        ++r
+      } else if (component.symbol === 'V') {
+        k = k + component.symbol + v.toString()
+        ++v
+      } else {
+        c = c + component.symbol + c.toString()
+        ++c
+      }
+
       if (component.children !== null) {
         for (var child in component.children) {
           var pin = component.children[child]

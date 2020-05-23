@@ -58,7 +58,6 @@ function getMetadataXML(path, graph, parent, evt, target, x, y) {
       height = data.height
       pinData = data.pinData
 
-
       console.log(pinData)
 
 
@@ -119,6 +118,9 @@ function getMetadataXML(path, graph, parent, evt, target, x, y) {
         // pins[i].pinType = currentPin['type']
         pins[i].ParentComponent = v1
         pins[i].PinNumber = currentPin.pinNumber
+        if( currentPin.pinName !== null) {
+          pins[i].PinName = currentPin.pinName
+        }
       }
     })
 }
