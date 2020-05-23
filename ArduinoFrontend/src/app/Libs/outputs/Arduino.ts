@@ -1,5 +1,5 @@
-import { CircuitElement } from './CircuitElement';
-import { Point } from './Point';
+import { CircuitElement } from '../CircuitElement';
+import { Point } from '../Point';
 import { isUndefined } from 'util';
 
 export class ArduinoUno extends CircuitElement {

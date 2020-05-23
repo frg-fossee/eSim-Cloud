@@ -1,7 +1,6 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
 import { ShowOnDirtyErrorStateMatcher } from '@angular/material';
-import { Workspace } from './Workspace';
 
 export class Resistor extends CircuitElement {
   static colorTable: string[] = [];

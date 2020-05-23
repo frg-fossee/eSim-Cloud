@@ -1,6 +1,6 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
-import { ArduinoUno } from './Arduino';
+import { ArduinoUno } from './outputs/Arduino';
 
 declare var window;
 declare var $; // For Jquery

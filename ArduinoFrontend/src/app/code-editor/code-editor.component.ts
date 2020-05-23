@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ArduinoUno } from '../Libs/Arduino';
+import { ArduinoUno } from '../Libs/outputs/Arduino';
 
 declare var monaco: any;
 

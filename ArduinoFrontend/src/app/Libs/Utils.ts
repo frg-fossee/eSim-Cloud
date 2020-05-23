@@ -1,12 +1,12 @@
-import { Buzzer } from './Buzzer';
+import { Buzzer } from './outputs/Buzzer';
 import { Battery9v, CoinCell } from './Battery';
 import { PushButton, SlideSwitch } from './inputs/Buttons';
-import { ArduinoUno } from './Arduino';
-import { LED, RGBLED } from './Led';
+import { ArduinoUno } from './outputs/Arduino';
+import { LED, RGBLED } from './outputs/Led';
 import { UltrasonicSensor } from './inputs/UltrasonicSensor';
 import { PIRSensor } from './inputs/PIRSensor';
-import { Motor, L298N, ServoMotor } from './Motors';
-import { LCD16X2, SevenSegment } from './Display';
+import { Motor, L298N, ServoMotor } from './outputs/Motors';
+import { LCD16X2, SevenSegment } from './outputs/Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
 import { LM35 } from './inputs/TemperatureSensors';

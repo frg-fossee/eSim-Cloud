@@ -1,5 +1,5 @@
-import { CircuitElement } from './CircuitElement';
-import { Point } from './Point';
+import { CircuitElement } from '../CircuitElement';
+import { Point } from '../Point';
 
 export class LCD16X2 extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
