@@ -554,7 +554,7 @@ class SvgGenerator:
                                         cmp_data["dmg"] = dm
                                         cmp_data["part"] = chr(64+z)
                                         component_data[cmp_data["full_name"]] = cmp_data  # noqa
-        print(component_data)
+        # print(component_data)
         return component_data
 
 
