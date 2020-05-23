@@ -7,19 +7,17 @@ declare var window;
  * Class For Circuit Node ie. Point wires can connect with nodes
  */
 export class Point {
-  body: any; // Body of the Circuit Node
-
   // Hide node on creation
-  defaultAttr: any = {
+  static defaultAttr: any = {
     fill: 'rgba(0,0,0,0)',
     stroke: 'rgba(0,0,0,0)'
   };
-
   // Show red color with black stroke on hover
-  nodeAttr: any = {
+  static nodeAttr: any = {
     fill: 'rgba(255,0,0,1)',
     stroke: 'rgba(0,0,0,1)'
   };
+  body: any; // Body of the Circuit Node
 
   // Stores the reference of wire which is connected to it
   connectedTo: Wire = null;
@@ -49,7 +47,7 @@ export class Point {
     // Create a rectangle of 4x4 and set default color and stroke
     this.body = this.canvas.rect(x, y, 2 * this.half, 2 * this.half);
 
-    this.body.attr(this.defaultAttr);
+    this.body.attr(Point.defaultAttr);
 
     // Set Hover callback
     this.body.hover(() => {
@@ -156,7 +154,7 @@ export class Point {
    */
   hide() {
     window.hideBubble();
-    this.body.attr(this.defaultAttr);
+    this.body.attr(Point.defaultAttr);
   }
 
   remainHidden() {
@@ -172,7 +170,7 @@ export class Point {
    */
   show() {
     if (this.connectedTo) { return; }
-    this.body.attr(this.nodeAttr);
+    this.body.attr(Point.nodeAttr);
   }
 
   /**
