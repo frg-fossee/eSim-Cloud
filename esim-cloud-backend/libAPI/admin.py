@@ -1,4 +1,6 @@
 from django.contrib import admin
+from libAPI.models import LibraryComponent, Library
+
 
 @admin.register(LibraryComponent)
 class LibraryComponentAdmin(admin.ModelAdmin):
@@ -16,4 +18,3 @@ class ComponentInline(admin.TabularInline):
 @admin.register(Library)
 class LibraryAdmin(admin.ModelAdmin):
     inlines = (ComponentInline, )
-

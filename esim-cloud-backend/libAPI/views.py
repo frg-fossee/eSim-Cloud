@@ -46,4 +46,3 @@ class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LibraryComponentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LibraryComponentFilterSet
-
