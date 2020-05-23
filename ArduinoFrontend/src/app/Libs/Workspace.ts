@@ -301,13 +301,13 @@ export class Workspace {
   }
 
   static keyDown(event: KeyboardEvent) {
-    // event.preventDefault();
+    event.preventDefault();
   }
   static keyPress(event: KeyboardEvent) {
-    // event.preventDefault();
+    event.preventDefault();
   }
   static keyUp(event: KeyboardEvent) {
-    // event.preventDefault();
+    event.preventDefault();
     // console.log([event.ctrlKey, event.key]);
     if (event.key === 'Delete') {
       // Backspace or Delete
@@ -320,6 +320,20 @@ export class Workspace {
     if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
       // paste
       Workspace.pasteComponent();
+    }
+    if (event.ctrlKey && (event.key === '+')) {
+      // CTRL + +
+      Workspace.zoomIn();
+    }
+    if (event.ctrlKey && (event.key === '-')) {
+      // CTRL + -
+      Workspace.zoomIn();
+    }
+    if (event.ctrlKey && (event.key === 'k' || event.key === 'K')) {
+      // TODO: Open Code Editor
+    }
+    if (event.key === 'F5') {
+      // TODO: Start Simulation
     }
   }
   static mouseWheel(event: WheelEvent) {
