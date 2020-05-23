@@ -49,7 +49,6 @@ class SvgGenerator:
         """ save svg"""
         # print(pin_number_positions)
         # check if symbols directory is present or not.
- 
 
         if run == 0:
             return
@@ -246,8 +245,7 @@ class SvgGenerator:
 
                                     if not self.SHOW_PIN_NUMBER:
                                         pinNumber = ""
-                                    if (not self.SHOW_PIN_NAME
-                                            and not self.SHOW_PIN_NOT_CONNECTED):
+                                    if (not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED): # noqa
                                         pinName = ""
 
                                     if pinName == "NC":
@@ -451,8 +449,8 @@ class SvgGenerator:
                                     my_width = width
 
                             name = (f"{symbol_prefix}" +
-                                   f"-{name_of_symbol}-{dm}-" +
-                                   f"{chr(64+z)}")
+                                    f"-{name_of_symbol}-{dm}-" +
+                                    f"{chr(64+z)}")
                             if dm == 1 and z == 1:
                                 # run twice to save a thumbnail image
                                 for sav_svg in range(0, 2):
@@ -460,16 +458,18 @@ class SvgGenerator:
                                     if sav_svg == 1:
                                         # change name as thumbnail
                                         name = (f"{symbol_prefix}" +
-                                        f"-{name_of_symbol}-{dm}-" +
-                                        f"{chr(64+z)}_thumbnail")
+                                                f"-{name_of_symbol}-{dm}-" +
+                                                f"{chr(64+z)}_thumbnail")
 
                                     self.save_svg(d, name,
-                                                  save_path, pin_number_positions,
+                                                  save_path,
+                                                  pin_number_positions,
                                                   symbol_prefix,
                                                   (my_width, my_height), run,
                                                   chr(64+z), dm,
                                                   )
-                                    # reset svg_boundary set all paramerers to 0
+                                    # reset svg_boundary set all
+                                    # paramerers to 0
                                     self.plotter.reset_svg_boundary()
                                     cmp_data = {}
                                     if '#' in symbol_prefix:
@@ -486,33 +486,38 @@ class SvgGenerator:
                                                 cmp_data["keyword"] = ""
 
                                             if 'D' in comp.keys():
-                                                cmp_data["description"] = comp["D"]
+                                                cmp_data["description"] \
+                                                    = comp["D"]
                                             else:
                                                 cmp_data["description"] = ""
 
                                             if 'F' in comp.keys():
-                                                cmp_data["data_link"] = comp["F"]
+                                                cmp_data["data_link"] \
+                                                    = comp["F"]
                                             else:
                                                 cmp_data["data_link"] = ""
 
                                             if 'F' in comp.keys():
-                                                cmp_data["data_link"] = comp["F"]
+                                                cmp_data["data_link"] \
+                                                    = comp["F"]
                                             else:
                                                 cmp_data["data_link"] = ""
 
-                                            cmp_data["symbol_prefix"] = symbol_prefix
-                                            cmp_data["alias"] = data[i]["alias"]
+                                            cmp_data["symbol_prefix"] \
+                                                = symbol_prefix
+                                            cmp_data["alias"] \
+                                                = data[i]["alias"]
                                             cmp_data["dmg"] = dm
                                             cmp_data["part"] = chr(64+z)
                                             component_data[cmp_data["full_name"]] = cmp_data  # noqa
                             else:
                                 self.save_svg(d, name,
-                                                  save_path, pin_number_positions,
-                                                  symbol_prefix,
-                                                  (my_width, my_height), run,
-                                                  chr(64+z), dm,
-                                                  )
-                                    # reset svg_boundary set all paramerers to 0
+                                              save_path, pin_number_positions,
+                                              symbol_prefix,
+                                              (my_width, my_height), run,
+                                              chr(64+z), dm,
+                                              )
+                                # reset svg_boundary set all paramerers to 0
                                 self.plotter.reset_svg_boundary()
                                 cmp_data = {}
                                 if '#' in symbol_prefix:
@@ -543,11 +548,12 @@ class SvgGenerator:
                                         else:
                                             cmp_data["data_link"] = ""
 
-                                        cmp_data["symbol_prefix"] = symbol_prefix
+                                        cmp_data["symbol_prefix"] \
+                                            = symbol_prefix
                                         cmp_data["alias"] = data[i]["alias"]
                                         cmp_data["dmg"] = dm
                                         cmp_data["part"] = chr(64+z)
-                                        component_data[cmp_data["full_name"]] = cmp_data  # noqa          
+                                        component_data[cmp_data["full_name"]] = cmp_data  # noqa
         print(component_data)
         return component_data
 

@@ -1,6 +1,7 @@
 from djongo import models
 from django.utils.safestring import mark_safe
 
+
 class Library(models.Model):
     library_name = models.CharField(max_length=200)
     saved_on = models.DateTimeField(auto_now=True)
@@ -24,7 +25,7 @@ class LibraryComponent(models.Model):
 
     def image_tag(self):
         if self.svg_path:
-            return mark_safe('<img src="/%s" style="width: 45px; height:45px;" />' % self.svg_path)
+            return mark_safe('<img src="/%s" style="width: 45px; height:45px;" />' % self.svg_path) # noqa
         else:
             return 'No Image Found'
     image_tag.short_description = 'Image'
