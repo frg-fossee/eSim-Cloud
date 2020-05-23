@@ -54,6 +54,7 @@ function extractData (xml) {
 
 export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
   var path = '../' + component.svg_path
+
   fetch(path)
     .then(function (response) {
       return response.text()
@@ -93,8 +94,18 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       delete style[mxConstants.STYLE_STROKECOLOR] // transparent
       // delete style[mxConstants.STYLE_FILLCOLOR] // transparent
 
-      width = width / fixed_number
-      height = height / fixed_number
+      if(width <= 200 && height <= 200){
+        width = width / 2.5
+        height = height / 2.5
+      }
+      else{
+        width = width / fixed_number
+        height = height / fixed_number
+
+      }
+
+
+
 
       const v1 = graph.insertVertex(
         parent,
@@ -104,14 +115,14 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         y,
         width,
         height,
-        'shape=image;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
+        'shape=image;fontColor=blue;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
       )
       v1.Component = true
       var newsource = path
       var prefix = newsource.split('/')
       var symboltype = prefix[3].split('')
       v1.CellType = 'Component'
-      v1.symbol = symboltype[0]
+      v1.symbol = component.symbol_prefix
       v1.setConnectable(false)
 
       for (let i = 0; i < pinData.length; i++) {
