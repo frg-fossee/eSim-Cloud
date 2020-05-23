@@ -85,7 +85,7 @@ class SvgGenerator:
             for i in range(len(s)):
                 fd.write(s[i])
             fd.write(
-                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">') # noqa
+                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">')  # noqa
             fd.write(elem)
             fd.write("</metadata></svg>")
             fd.close()
@@ -247,7 +247,7 @@ class SvgGenerator:
 
                                     if not self.SHOW_PIN_NUMBER:
                                         pinNumber = ""
-                                    if (not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED): # noqa
+                                    if (not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED):  # noqa
                                         pinName = ""
 
                                     if pinName == "NC":
