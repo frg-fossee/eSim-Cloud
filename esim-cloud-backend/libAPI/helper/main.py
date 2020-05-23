@@ -247,7 +247,7 @@ class SvgGenerator:
 
                                     if not self.SHOW_PIN_NUMBER:
                                         pinNumber = ""
-                                    if (not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED): # noqa
+                                    if (not self.SHOW_PIN_NAME and not self.SHOW_PIN_NOT_CONNECTED):  # noqa
                                         pinName = ""
 
                                     if pinName == "NC":
@@ -556,6 +556,7 @@ class SvgGenerator:
                                         cmp_data["dmg"] = dm
                                         cmp_data["part"] = chr(64+z)
                                         component_data[cmp_data["full_name"]] = cmp_data  # noqa
+
         return component_data
 
 

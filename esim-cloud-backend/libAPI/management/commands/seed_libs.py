@@ -1,8 +1,9 @@
 import os
-from libAPI.models import Library, LibraryComponent
+from libAPI.models import Library, LibraryComponent, ComponentAlternate
 from django.core.management.base import BaseCommand
 from libAPI.helper.main import generate_svg_and_save_to_folder
 import logging
+import glob
 logger = logging.getLogger(__name__)
 
 
@@ -57,19 +58,49 @@ def seed_libraries(self, location):
             library.save()
             logger.info('Created Library Object')
             library_svg_folder = os.path.join(lib_output_location, file[:-4])
-            for component_svg in os.listdir(library_svg_folder):
+            thumbnails = glob.glob(library_svg_folder+'/*_thumbnail.svg')
+
+            # Seed Primary component
+            for component_svg in glob.glob(library_svg_folder+'/*-1-A.svg'):
+                thumbnail_path = component_svg[:-4]+'_thumbnail.svg'
+                if thumbnail_path not in thumbnails:
+                    raise FileNotFoundError(f'Thumbnail Does not exist for {component_svg}')  # noqa
+
+                # Get Component name
+                component_svg = os.path.split(component_svg)[-1]
+
+                # Get Corresponding Details
                 svg_desc = component_details[component_svg[:-4]]
+
+                # Seed DB
                 component = LibraryComponent(
                     name=svg_desc['name'],
-                    svg_path=os.path.join(library_svg_folder, component_svg),
+                    svg_path=os.path.join(
+                        library_svg_folder, component_svg),
+                    thumbnail_path=thumbnail_path,
                     symbol_prefix=svg_desc['symbol_prefix'],
                     full_name=svg_desc['full_name'],
                     keyword=svg_desc['keyword'],
                     description=svg_desc['description'],
                     data_link=svg_desc['data_link'],
-                    part=svg_desc['part'],
-                    dmg=svg_desc['dmg'],
                     component_library=library
                 )
                 component.save()
                 logger.info(f'Saved component {component_svg}')
+
+            # Seed Alternate Components
+            for component_svg in glob.glob(library_svg_folder+'/*[B-Z].svg'):  # noqa , EdgeCase here
+                component_svg = os.path.split(component_svg)[-1]
+                svg_desc = component_details[component_svg[:-4]]
+                alternate_component = ComponentAlternate(
+                    part=svg_desc['part'],
+                    dmg=svg_desc['dmg'],
+                    full_name=svg_desc['full_name'],
+                    svg_path=os.path.join(
+                        library_svg_folder, component_svg),
+                    parent_component=LibraryComponent.objects.get(
+                        name=svg_desc['name'],
+                    )
+                )
+                alternate_component.save()
+                logger.info(f'Saved alternate component {component_svg}')
