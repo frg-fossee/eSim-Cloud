@@ -479,11 +479,7 @@ class SvgGenerator:
                                         comp = dcm_data[co]
                                         if(name_of_symbol == comp["name"]):
                                             cmp_data["name"] = comp["name"]
-                                            cmp_data["full_name"] = (f"{symbol_prefix}-"  # noqa
-                                                                    +
-                                                                    f"{name_of_symbol}"
-                                                                    f"-{dm}-" +
-                                                                    f"{chr(64+z)}")
+                                            cmp_data["full_name"] = name
                                             if 'K' in comp.keys():
                                                 cmp_data["keyword"] = comp["K"]
                                             else:
@@ -526,11 +522,7 @@ class SvgGenerator:
                                     comp = dcm_data[co]
                                     if(name_of_symbol == comp["name"]):
                                         cmp_data["name"] = comp["name"]
-                                        cmp_data["full_name"] = (f"{symbol_prefix}-"  # noqa
-                                                                +
-                                                                f"{name_of_symbol}"
-                                                                f"-{dm}-" +
-                                                                f"{chr(64+z)}")
+                                        cmp_data["full_name"] = name
                                         if 'K' in comp.keys():
                                             cmp_data["keyword"] = comp["K"]
                                         else:
@@ -556,7 +548,7 @@ class SvgGenerator:
                                         cmp_data["dmg"] = dm
                                         cmp_data["part"] = chr(64+z)
                                         component_data[cmp_data["full_name"]] = cmp_data  # noqa          
-        # print(component_data)
+        print(component_data)
         return component_data
 
 
