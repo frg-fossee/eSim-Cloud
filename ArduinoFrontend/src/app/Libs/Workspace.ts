@@ -133,6 +133,27 @@ export class Workspace {
       }, 10000);
 
     };
+    window['printConsole'] = (textmsg: string, type: any) => {
+      const msg = document.getElementById('msg');
+      const container = document.createElement('div');
+      if (type === 'error') {
+        const txt = document.createTextNode(textmsg);
+        container.appendChild(txt);
+        container.style.color = 'red';
+        msg.appendChild(container);
+      } else if (type === 'warn') {
+        const txt = document.createTextNode(textmsg);
+        container.appendChild(txt);
+        container.style.color = 'yellow';
+        msg.appendChild(container);
+      } else if (type === 'info') {
+        const txt = document.createTextNode(textmsg);
+        container.appendChild(txt);
+        container.style.color = 'white';
+        msg.appendChild(container);
+
+      }
+    };
   }
   /**
    * Event Listener for mousemove on html body
@@ -374,7 +395,8 @@ export class Workspace {
     if (window['Selected']) {
       if (window['Selected'] instanceof Wire) {
         // TODO: Show Toast
-        console.log('You Can\'t Copy Wire');
+        window['showToast']('You Can\'t Copy Wire');
+        // console.log('You Can\'t Copy Wire');
         return;
       }
       Workspace.copiedItem = window.Selected;

@@ -56,8 +56,9 @@
     [style.background-color]="toggle ? 'white' : 'lightblue'">
     <i class='far fa-file-code'></i>Code</button>
 
-  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" (click)="StartSimulation()">
-    <i class='fas fa-caret-right'></i>
+  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" (click)="StartSimulation()"
+    [style.background-color]="stoggle ? 'white' : 'lightgreen'">
+    <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
     {{status}}</button>
 
   <span style="flex:1 1 auto;"></span>
@@ -277,13 +278,30 @@
 <!--/toast message-->
 <!--console ui-->
 <div id="console" style="display: none;">
-  <div>
-    <div style="display: flex; background-color: white">
-      <button class="btn" style="background-color: white;" (click)="closeConsole()"><i class='fas fa-angle-down'></i></button>
-      <button class="btn" style="background-color: white;" (click)="expandConsole()"><i [ngClass]="toggle1 ? 'fas fa-expand-alt' : 'fas fa-compress-alt'"></i></button>
-    </div>
+
+  <div style="display: flex; background-color: white; position: fixed; width: 900px;">
+    <button class="btn" style="background-color: white;" (click)="closeConsole()"><i
+        class='fas fa-angle-down'></i></button>
+    <button class="btn" style="background-color: white;" (click)="expandConsole()"><i
+        [ngClass]="toggle1 ? 'fas fa-expand-alt' : 'fas fa-compress-alt'"></i></button>
   </div>
+  <div id="msg" style="margin-top: 50px;"></div>
+  <div style="background-color: aliceblue; bottom: 0px; position: absolute;">
+    <form>
+      <div class="form-row" style="padding:3px;">
+        <div class="col-sm-10">
+          <input type="text" class="form-control" style="border-radius: 0px; width: 750px">
+        </div>
+        <div class="col-sm-2">
+          <button type="button" class="btn btn-light ml-auto"
+            style="border-color: darkgray; border-radius: 0px">Send</button>
+          <button type="button" class="btn btn-light ml-1 mr-auto" style="border-color: darkgray; border-radius: 0px;"
+            (click)="clearConsole()">Clear</button>
+        </div>
+      </div>
+    </form>
 
-  <div>
+  </div>
+</div>
 
-    <!--/console ui-->
+<!--/console ui-->
