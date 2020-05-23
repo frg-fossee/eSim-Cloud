@@ -1,5 +1,4 @@
 from djongo import models
-from django.utils.safestring import mark_safe
 
 
 class Library(models.Model):
@@ -22,13 +21,6 @@ class LibraryComponent(models.Model):
     dmg = models.PositiveSmallIntegerField()
     component_library = models.ForeignKey(
         Library, on_delete=models.CASCADE, null=False, related_name='library')
-
-    def image_tag(self):
-        if self.svg_path:
-            return mark_safe('<img src="/%s" style="width: 45px; height:45px;" />' % self.svg_path) # noqa
-        else:
-            return 'No Image Found'
-    image_tag.short_description = 'Image'
 
     def __str__(self):
         return self.name
