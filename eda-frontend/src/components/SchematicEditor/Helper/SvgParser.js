@@ -7,7 +7,7 @@ const {
   mxConstants
 } = new mxGraphFactory()
 
-let pinData, metadata, pinList, pinName, pinOrientation, pinLength
+let pinData, metadata, pinList, pinName, pinOrientation, pinLength , pinShape
 let currentPin, x_pos, y_pos
 let width, height
 
@@ -32,7 +32,7 @@ function extractData (xml) {
     const pinName = pin.getElementsByTagName('name')[0].innerHTML.trim()
     const pinOrientation = pin.getElementsByTagName('orientation')[0].innerHTML.trim()
     const pinLength = pin.getElementsByTagName('length')[0].innerHTML.trim()
-
+    const pinShape = pin.getElementsByTagName('pinShape')[0].innerHTML.trim()
     pinData.push({
       pinNumber: pinNumber,
       pinX: pinX,
@@ -40,7 +40,8 @@ function extractData (xml) {
       type: pinType,
       pinName: pinName,
       pinOrientation: pinOrientation,
-      pinLength: pinLength
+      pinLength: pinLength,
+      pinShape: pinShape
     })
     // console.log(pinNumber, pinX, pinY, pinType)
   })
@@ -112,11 +113,12 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       v1.CellType = 'Component'
       v1.symbol = symboltype[0]
       v1.setConnectable(false)
+
       for (let i = 0; i < pinData.length; i++) {
+
         currentPin = pinData[i]
-
+        if(currentPin.pinShape === 'N') continue;
         // move this to another file
-
         x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / fixed_number)
         y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / fixed_number) - 1
 
