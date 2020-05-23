@@ -7,7 +7,7 @@ const {
   mxConstants
 } = new mxGraphFactory()
 
-let pinData, metadata, pinList, pinName, pinOrientation, pinLength , pinShape
+let pinData, metadata, pinList, pinName, pinOrientation, pinLength, pinShape
 let currentPin, x_pos, y_pos
 let width, height
 
@@ -115,9 +115,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       v1.setConnectable(false)
 
       for (let i = 0; i < pinData.length; i++) {
-
         currentPin = pinData[i]
-        if(currentPin.pinShape === 'N') continue;
+        if (currentPin.pinShape === 'N') continue
         // move this to another file
         x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / fixed_number)
         y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / fixed_number) - 1
