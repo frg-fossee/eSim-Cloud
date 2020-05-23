@@ -9,7 +9,7 @@ import { AddComponent } from './Helper/SideBar.js'
 const useStyles = makeStyles((theme) => ({
   popupInfo: {
     margin: theme.spacing(1.5),
-    padding: theme.spacing(2),
+    padding: theme.spacing(1.5),
     border: '1px solid blue',
     borderRadius: '5px'
   },
@@ -36,7 +36,7 @@ export default function SideComp ({ component }) {
   const id = open ? 'simple-popover' : undefined
 
   useEffect(() => {
-    AddComponent(imageRef.current, '../' + component.svg_path)
+    AddComponent(component, imageRef.current)
   }, [imageRef, component])
 
   return (

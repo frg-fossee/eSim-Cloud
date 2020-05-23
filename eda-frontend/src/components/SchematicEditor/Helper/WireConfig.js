@@ -115,13 +115,13 @@ export default function WireConfigFunct (graph) {
 			
 			var style = graph.getStylesheet().getDefaultEdgeStyle();
 			delete style['endArrow'];
-			style['strokeColor'] = strokeColor;
+			style['strokeColor'] = '#4c4d4d';
 			style['labelBackgroundColor'] = labelBackground;
 			style['edgeStyle'] = 'wireEdgeStyle';
 			style['fontColor'] = fontColor;
 			style['fontSize'] = '9';
 			style['movable'] = '0';
-			//style['strokeWidth'] = strokeWidth;
+			style['strokeWidth'] = '1.5';
 			//style['rounded'] = '1';
 			
 			// Sets join node size
@@ -140,9 +140,6 @@ export default function WireConfigFunct (graph) {
 			style['resizable'] = '0';
 			style['rounded'] = '1';
             // style['strokeWidth'] = strokeWidth;
-            graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
-
-
-
-			
+			graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
+					
 }

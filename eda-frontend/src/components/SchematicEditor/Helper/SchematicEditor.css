@@ -3,6 +3,7 @@ img {
   width: 72px;
   width: 72px;
   margin-left: auto;
+  padding: 2px;
 }
 
 img:hover {

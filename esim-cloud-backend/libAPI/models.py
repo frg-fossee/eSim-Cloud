@@ -1,5 +1,4 @@
 from djongo import models
-from django.utils.safestring import mark_safe
 
 
 class Library(models.Model):

@@ -67,9 +67,10 @@ class SvgGenerator:
                 pinName = pin["pinName"]
                 pinLength = pin["pinLength"]
                 pinOrientation = pin["pinOrientation"]
+                pinShape = pin["shape_of_pin"]
                 elem += f"""<p-{pin_number}><x>{x}</x><y>{y}</y><type>{pin_type}
                         </type><name>{pinName}</name><orientation>{pinOrientation}</orientation>
-                        <length>{pinLength}</length>
+                        <length>{pinLength}</length><pinShape>{pinShape}</pinShape>
                         </p-{pin_number}>"""
 
             # save the above elem in the same svg file.
@@ -241,6 +242,7 @@ class SvgGenerator:
                                             "pinName": pinName,
                                             "pinOrientation": pin_orientation,
                                             "pinLength": pin_length,
+                                            "shape_of_pin": shape_of_pin,
                                         })
 
                                     if not self.SHOW_PIN_NUMBER:
@@ -554,7 +556,7 @@ class SvgGenerator:
                                         cmp_data["dmg"] = dm
                                         cmp_data["part"] = chr(64+z)
                                         component_data[cmp_data["full_name"]] = cmp_data  # noqa
-        # print(component_data)
+
         return component_data
 
 

@@ -186,13 +186,35 @@ export function GenerateNetList () {
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
   return value */
+  var r = 1
+  var v = 1
+  var c = 1
   var list = graph.getModel().cells
-  var k = ''
+  // console.log('Untitled netlist'
+  var k = 'Unitled netlist \n'
   for (var property in list) {
-    if (list[property].Component === true) {
+    if (list[property].Component === true && list[property].symbol !== 'G') {
+      // k = ''
       // alert('Component is present')
-      k = k + 'Component /'
       var component = list[property]
+      // console.log(component)
+      if (component.symbol === 'R') {
+        // component.symbol = component.symbol + r.toString()
+        k = k + component.symbol + r.toString()
+        component.value = component.symbol + r.toString()
+        ++r
+      } else if (component.symbol === 'V') {
+        // component.symbol = component.symbol + v.toString()
+        k = k + component.symbol + v.toString()
+        // component.value = component.symbol
+        ++v
+      } else {
+        // component.symbol = component.symbol + c.toString()
+        k = k + component.symbol + c.toString()
+        // component.value = component.symbol
+        ++c
+      }
+
       if (component.children !== null) {
         for (var child in component.children) {
           var pin = component.children[child]
@@ -200,13 +222,33 @@ export function GenerateNetList () {
             // alert(pin.id)
             if (pin.edges !== null || pin.edges.length !== 0) {
               for (var wire in pin.edges) {
-                k = k + ' Wire id:' + pin.edges[wire].id
+                if (pin.edges[wire].source.ParentComponent.symbol === 'G' || pin.edges[wire].target.ParentComponent.symbol === 'G') {
+                  // console.log('Found ground')
+                  pin.edges[wire].node = 0
+                  pin.edges[wire].value = 0
+                  k = k + ' ' + pin.edges[wire].node
+                } else {
+                  // console.log(pin.edges[wire])
+                  pin.edges[wire].node = pin.edges[wire].id
+                  pin.edges[wire].value = pin.edges[wire].node
+                  k = k + '  ' + pin.edges[wire].node
+                }
               }
             }
           }
         }
       }
+      if (component.symbol.split('')[0] === 'R') {
+        k = k + ' 1k'
+      } else {
+        k = k + ' 10'
+      }
+      // k = k + ' 10'
+      k = k + ' \n'
+      // console.log(k)
     }
   }
+  k = k + '.op \n'
+  k = k + '.end \n'
   return k
 }

@@ -49,7 +49,7 @@ export default function ComponentSidebar ({ compRef }) {
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-    console.log(collapse)
+    // console.log(collapse)
   }
 
   // For Fetching Libraries
@@ -101,8 +101,8 @@ export default function ComponentSidebar ({ compRef }) {
                             <ListItem key={componentChunk[0].svg_path} divider>
                               {
                                 componentChunk.map((component) => {
-                                  console.log(component)
-                                  return (<ListItemIcon key={component.component_name}>
+                                  // console.log(component)
+                                  return (<ListItemIcon key={component.full_name}>
                                     <SideComp component={component} />
                                   </ListItemIcon>)
                                 }

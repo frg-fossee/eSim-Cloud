@@ -1,6 +1,7 @@
 /* eslint-disable new-cap */
 import MxGraphFactory from 'mxgraph'
 import getMetadataXML from './xml_parser'
+import { getSvgMetadata } from './SvgParser.js'
 // import NetlistInfoFunct from './NetlistInfo.js'
 const {
   mxClient,
@@ -17,7 +18,7 @@ export function SideBar (getGraph, getSidebar) {
   sidebar = getSidebar
 }
 
-export function AddComponent (imgref, src) {
+export function AddComponent (component, imgref) {
   var img = imgref
 
   var graphF = function (evt) {
@@ -46,7 +47,7 @@ export function AddComponent (imgref, src) {
       // GET THE SIZE OF SVG FOROM METADATA AND THEN DIVIDE BOTH WIDTH AND HEIGHT BE SAME RATIO
       // THEN USE THAT VALUE BELOW
 
-      getMetadataXML(src, graph, parent, evt, target, x, y)
+      getSvgMetadata(graph, parent, evt, target, x, y, component)
 
       // **IMP VERTICS DRAWING IS MOVED TO xml_parser.js
       // WILL BE REFACTORED IN SOME TIME.
