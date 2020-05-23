@@ -94,18 +94,13 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       delete style[mxConstants.STYLE_STROKECOLOR] // transparent
       // delete style[mxConstants.STYLE_FILLCOLOR] // transparent
 
-      if(width <= 200 && height <= 200){
+      if (width <= 200 && height <= 200) {
         width = width / 2.5
         height = height / 2.5
-      }
-      else{
+      } else {
         width = width / fixed_number
         height = height / fixed_number
-
       }
-
-
-
 
       const v1 = graph.insertVertex(
         parent,
