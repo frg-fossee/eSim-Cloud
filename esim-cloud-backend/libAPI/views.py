@@ -35,7 +35,6 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
             'component_library__library_name': ['contains'],
             'component_library': ['exact'],
             'symbol_prefix': ['exact'],
-            'dmg': ['exact'],
         }
 
 
@@ -47,4 +46,3 @@ class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LibraryComponentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LibraryComponentFilterSet
-

@@ -1,11 +1,17 @@
 /* Sidebar Components */
 img {
   width: 72px;
+  width: 72px;
   margin-left: auto;
+  padding: 2px;
 }
 
 img:hover {
-  /* transform: scale(1.5); */
+  background-color: #f4f6f8;
+  border-radius: 5px;
+  transform: scale(1.5);
+  padding: 3px;
+  box-shadow: 0px 0px 41px 17px rgba(207,218,225,0.68);
 }
 
 /* Schematic Editer Grid */

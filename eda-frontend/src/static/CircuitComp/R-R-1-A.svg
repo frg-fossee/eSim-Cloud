@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="80" height="500" viewBox="-40.0 -250.0 80 500">
+<defs>
+</defs>
+<path d="M-40,-150 L40,-150 L40,150 L-40,150 L-40,-150" stroke-width="6" stroke="black" fill-opacity="0" />
+<text x="-17" y="-183.33333333333334" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="0" y="-137" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M0,-250 L0,-150" stroke="black" stroke-width="5" />
+<text x="-17" y="183.33333333333334" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="0" y="137" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M0,250 L0,150" stroke="black" stroke-width="5" />
+<metadata width="80" height="500" symbolPrefix="R" cmpPartDmgLabel="1:A" nameOfSymbol="R-R-1-A"><p-1><x>0</x><y>250</y><type>P
+                        </type><name>~</name><orientation>D</orientation>
+                        <length>100</length>
+                        </p-1><p-2><x>0</x><y>-250</y><type>P
+                        </type><name>~</name><orientation>U</orientation>
+                        <length>100</length>
+                        </p-2></metadata></svg>
