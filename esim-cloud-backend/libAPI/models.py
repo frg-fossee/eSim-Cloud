@@ -13,6 +13,7 @@ class Library(models.Model):
 class LibraryComponent(models.Model):
     name = models.CharField(max_length=200)
     svg_path = models.CharField(max_length=400)
+    thumbnail_path = models.CharField(max_length=400)
     description = models.CharField(max_length=400)
     data_link = models.URLField(max_length=200)
     full_name = models.CharField(max_length=200)

@@ -58,9 +58,13 @@ def seed_libraries(self, location):
             library.save()
             logger.info('Created Library Object')
             library_svg_folder = os.path.join(lib_output_location, file[:-4])
+            thumbnails = glob.glob(library_svg_folder+'/*_thumbnail.svg')
 
             # Seed Primary component
             for component_svg in glob.glob(library_svg_folder+'/*-1-A.svg'):
+                thumbnail_path = component_svg[:-4]+'_thumbnail.svg'
+                if thumbnail_path not in thumbnails:
+                    raise FileNotFoundError(f'Thumbnail Does not exist for {component_svg}')  # noqa
 
                 # Get Component name
                 component_svg = os.path.split(component_svg)[-1]
@@ -73,6 +77,8 @@ def seed_libraries(self, location):
                     name=svg_desc['name'],
                     svg_path=os.path.join(
                         library_svg_folder, component_svg),
+                    thumbnail_path=os.path.join(
+                        library_svg_folder, thumbnail_path),
                     symbol_prefix=svg_desc['symbol_prefix'],
                     full_name=svg_desc['full_name'],
                     keyword=svg_desc['keyword'],
@@ -84,7 +90,7 @@ def seed_libraries(self, location):
                 logger.info(f'Saved component {component_svg}')
 
             # Seed Alternate Components
-            for component_svg in glob.glob(library_svg_folder+'/*[!A].svg'):  # noqa
+            for component_svg in glob.glob(library_svg_folder+'/*[B-Z].svg'):  # noqa , EdgeCase here
                 alternate_component = ComponentAlternate(
                     part=svg_desc['part'],
                     dmg=svg_desc['dmg'],

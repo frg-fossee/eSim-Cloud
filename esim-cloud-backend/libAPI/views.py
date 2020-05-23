@@ -35,7 +35,6 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
             'component_library__library_name': ['contains'],
             'component_library': ['exact'],
             'symbol_prefix': ['exact'],
-            # 'dmg': ['exact'],
         }
 
 
