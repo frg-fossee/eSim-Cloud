@@ -43,7 +43,7 @@ class ComponentAlternate(models.Model):
         LibraryComponent,
         on_delete=models.CASCADE,
         null=False,
-        related_name='parent_component')
+        related_name='alternate_component')
 
     # For Django Admin Panel
     def image_tag(self):
