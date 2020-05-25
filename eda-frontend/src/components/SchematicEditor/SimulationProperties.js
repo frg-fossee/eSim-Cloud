@@ -13,6 +13,8 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 
+import { GenerateNetList } from './Helper/ToolbarTools'
+
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '90px'
@@ -85,25 +87,29 @@ export default function SimulationProperties () {
   }
 
   const startSimulate = (type) => {
+    var start = GenerateNetList()
     switch (type) {
       case 'DcSolver':
-        console.log('To be implemented')
+        // console.log('To be implemented')
+        start += '.op'
         break
       case 'DcSweep':
-        console.log(dcSweepcontrolLine)
-        console.log(`.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`)
+        // console.log(dcSweepcontrolLine)
+        start += `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
         break
       case 'Transient':
-        console.log(transientAnalysisControlLine)
-        console.log(`.trans ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`)
+        // console.log(transientAnalysisControlLine)
+        start += `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
         break
       case 'Ac':
-        console.log(acAnalysisControlLine)
-        console.log(`.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`)
+        // console.log(acAnalysisControlLine)
+        start += `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
         break
       default:
         break
     }
+    start += '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
+    console.log(start)
   }
 
   return (
