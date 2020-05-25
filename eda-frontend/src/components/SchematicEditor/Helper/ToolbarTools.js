@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
@@ -191,18 +192,18 @@ export function GenerateNetList () {
   var c = 1
   var list = graph.getModel().cells
   var netlist = []
-  
+
   // console.log('Untitled netlist'
-  var k = 'Unitled netlist \n'
+  var k = '* Unitled netlist \n'
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
       // k = ''
       // alert('Component is present')
       var compobj = {
-        name : '' ,
-        node1 : '' ,
-        node2 : '',
-        magnitude : ''
+        name: '',
+        node1: '',
+        node2: '',
+        magnitude: ''
       }
       var component = list[property]
       // console.log(component)
@@ -253,18 +254,15 @@ export function GenerateNetList () {
         compobj.name = component.symbol
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
-        compobj.magnitude = 10 
+        compobj.magnitude = 10
         netlist.push(compobj)
         console.log(compobj)
-
       }
       if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
-      }
-      else if( component.symbol === 'C') {
+      } else if (component.symbol === 'C') {
         k = k + ' 10u'
-      } 
-      else {
+      } else {
         k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
       }
       // k = k + ' 10'
@@ -287,7 +285,7 @@ function GenerateNodeList () {
   var c = 1
   var list = graph.getModel().cells
   var netlist = []
-  
+
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
   for (var property in list) {
@@ -295,14 +293,14 @@ function GenerateNodeList () {
       // k = ''
       // alert('Component is present')
       var compobj = {
-        name : '' ,
-        node1 : '' ,
-        node2 : '',
-        magnitude : ''
+        name: '',
+        node1: '',
+        node2: '',
+        magnitude: ''
       }
       var component = list[property]
       // console.log(component)
-     /* if (component.symbol === 'R') {
+      /* if (component.symbol === 'R') {
         // component.symbol = component.symbol + r.toString()
         k = k + component.symbol + r.toString()
         component.value = component.symbol + r.toString()
@@ -349,20 +347,19 @@ function GenerateNodeList () {
         compobj.name = component.symbol
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
-        compobj.magnitude = 10 
+        compobj.magnitude = 10
         netlist.push(compobj)
         console.log(compobj)
-
       }
-      /*if (component.symbol.split('')[0] === 'R') {
+      /* if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
       }
       else if( component.symbol === 'C') {
         k = k + ' 10u'
-      } 
+      }
       else {
         k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
-      }*/
+      } */
       // k = k + ' 10'
       // k = k + ' \n'
       // console.log(k)
