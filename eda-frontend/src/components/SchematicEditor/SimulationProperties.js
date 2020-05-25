@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationProperties() {
+export default function SimulationProperties () {
   const classes = useStyles()
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
@@ -383,10 +383,9 @@ export default function SimulationProperties() {
           </ExpansionPanelDetails>
         </ExpansionPanel>
 
-        <Button color="primary" variant="contained" style={{margin: '20px 40px'}} size="small" onClick={handlesimulateOpen}>
+        <Button color="primary" variant="contained" style={{ margin: '20px 40px' }} size="small" onClick={handlesimulateOpen}>
           Simulation Result
         </Button>
-
       </div>
 
     </>
