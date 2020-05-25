@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=True))
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
+    'django_filters',
     'corsheaders',
     'drf_yasg',
     'rest_framework',
@@ -45,7 +46,8 @@ INSTALLED_APPS = [
     'social_django',
     'djoser',
     'simulationAPI',
-    'authAPI'
+    'authAPI',
+    'libAPI',
 ]
 
 MIDDLEWARE = [
@@ -86,10 +88,10 @@ WSGI_APPLICATION = 'esimCloud.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("MYSQL_DATABASE",
+        "NAME": os.environ.get("SQL_DATABASE",
                                os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.environ.get("MYSQL_USER", "user"),
-        "PASSWORD": os.environ.get("MYSQL_PASSWORD", "password"),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
@@ -108,7 +110,10 @@ DATABASES = {
 }
 
 
-DATABASE_ROUTERS = ('simulationAPI.dbrouters.mongoRouter',)
+DATABASE_ROUTERS = (
+    'simulationAPI.dbrouters.mongoRouter',
+    # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
+)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

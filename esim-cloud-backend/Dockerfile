@@ -30,7 +30,9 @@ RUN curl -fSL https://github.com/imr/ngspice/archive/ngspice-$NGSPICE_VERSION.ta
     && make \
     && make install \
     && apk del .build-deps
-RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool
+
+RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev postgresql-dev
+
 COPY requirements.txt /code/
 RUN apk add --no-cache mariadb-connector-c-dev ;\
     apk add --update alpine-sdk && \

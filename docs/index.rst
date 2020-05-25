@@ -10,6 +10,7 @@ The project aims to provide a facility for a user to design different types of e
 
     schematic/index
     arduino/index
+    docker/index
 
 Indices and tables
 ==================

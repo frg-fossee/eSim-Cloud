@@ -1,28 +1,125 @@
 import { Buzzer } from './Buzzer';
-import { Battery9v } from './Battery';
-import { PushButton } from './PushButton';
+import { Battery9v, CoinCell } from './Battery';
+import { PushButton, SlideSwitch } from './inputs/Buttons';
 import { ArduinoUno } from './Arduino';
-import { LED } from './Led';
-import { UltrasonicSensor } from './UltrasonicSensor';
-import { PIRSensor } from './PIRSensor';
+import { LED, RGBLED } from './Led';
+import { UltrasonicSensor } from './inputs/UltrasonicSensor';
+import { PIRSensor } from './inputs/PIRSensor';
+import { Motor, L298N, ServoMotor } from './Motors';
+import { LCD16X2, SevenSegment } from './Display';
+import { Label } from './Miscellaneous';
+import { PhotoResistor } from './inputs/PhotoResistor';
+import { LM35 } from './inputs/TemperatureSensors';
+import { Potentiometer } from './inputs/Potentiometer';
+import { Relay } from './inputs/Relay';
+import { MQ2 } from './inputs/GasSensor';
+import { Resistor } from './General';
 
 export class Utils {
   static componentBox = {
     input: [
-      ['PushButton', 'UltrasonicSensor', 'PIRSensor']// Row
+      ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
+      ['SlideSwitch', 'PhotoResistor', 'LM35'],
+      ['PotentioMeter', 'MQ2']
     ],
     power: [
-      ['Battery9v'] // Row
+      ['Battery9v', 'CoinCell'] // Row
     ],
     controllers: [
       ['ArduinoUno'] // Row
     ],
     output: [
-      ['Buzzer', 'LED'], // Row
+      ['Buzzer', 'LED', 'Motor'], // Row
+      ['LCD16X2', 'ServoMotor', 'SevenSegment'],
+      ['RGBLED']
+    ],
+    drivers: [
+      ['L298N']
+    ],
+    misc: [
+      ['Label', 'RelayModule']
+    ],
+    general: [
+      ['Resistor']
     ]
   };
 
   static components = {
+    Resistor: {
+      name: 'Resistor',
+      image: './assets/images/components/Resistor.png',
+      className: Resistor
+    },
+    RGBLED: {
+      name: 'RGB LED',
+      image: './assets/images/components/RGBLED.png',
+      className: RGBLED
+    },
+    SevenSegment: {
+      name: 'Seven Segment Display',
+      image: './assets/images/components/SevenSegment.png',
+      className: SevenSegment
+    },
+    MQ2: {
+      name: 'Gas Sensor MQ2',
+      image: './assets/images/components/GasSensor.svg',
+      className: MQ2
+    },
+    ServoMotor: {
+      name: 'Servo Motor',
+      image: './assets/images/components/Servo.png',
+      className: ServoMotor
+    },
+    RelayModule: {
+      name: 'Relay Module',
+      image: './assets/images/components/1ChannelRelay.svg',
+      className: Relay
+    },
+    PotentioMeter: {
+      name: 'Potentiometer',
+      image: './assets/images/components/Potentiometer.png',
+      className: Potentiometer
+    },
+    LM35: {
+      name: 'Temperature Sensor LM35',
+      image: './assets/images/components/LM35.svg',
+      className: LM35
+    },
+    PhotoResistor: {
+      name: 'Photo Resistor',
+      image: './assets/images/components/PhotoResistor.svg',
+      className: PhotoResistor
+    },
+    Label: {
+      name: 'Label',
+      image: './assets/images/components/Text.png',
+      className: Label
+    },
+    CoinCell: {
+      name: 'Coin Cell 3V',
+      image: './assets/images/components/CoinCell.svg',
+      className: CoinCell
+    },
+    SlideSwitch: {
+      name: 'Slide Switch',
+      image: './assets/images/components/SlideSwitch.png',
+      className: SlideSwitch
+    },
+    LCD16X2: {
+      name: 'LCD 16x2',
+      image: './assets/images/components/LCD16X2.png',
+      className: LCD16X2
+    },
+    L298N: {
+      name: 'Motor Driver L298N',
+      image: './assets/images/components/L298N.png',
+      className: L298N
+    },
+    Motor: {
+      name: 'Motor',
+      image: './assets/images/components/Motor.png',
+      className: Motor
+    },
     PIRSensor: {
       name: 'PIR Sensor',
       image: './assets/images/components/PIRSensor.png',

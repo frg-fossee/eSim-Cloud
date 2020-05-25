@@ -2,7 +2,13 @@ redis_data/
 mysql_data/
 .vscode
 venv
+env
 *.sqlite3
 .env.prod
 mongo_data/
+sample_lib/
+symbols/*
+.DS_Store
 migrations
+symbol_svgs
+postgres_data

@@ -8,6 +8,7 @@ from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
 from authAPI.views import UserActivationView, GoogleOAuth2
+from libAPI import urls as libURLs
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -25,10 +26,11 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('api/admin/', admin.site.urls),
 
     # Simulation API Routes
     path('api/simulation/', include(simulationURLs)),
+    path('api/', include(libURLs)),
 
     # Auth API Routes
     url(r'^api/auth/', include('djoser.urls')),

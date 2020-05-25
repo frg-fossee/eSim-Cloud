@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="600" height="700" viewBox="-300.0 -350.0 600 700">
+<defs>
+</defs>
+<path d="M0,0 L150,150" stroke-width="6" stroke="black" fill-opacity="0" />
+<path d="M150,150 L150,50 L50,150 L150,150" stroke-width="6" stroke="black" fill="black" />
+<path d="M0,150 L0,-150" stroke-width="6" stroke="black" fill-opacity="0" />
+<path d="M0,0 L150,-150" stroke-width="6" stroke="black" fill-opacity="0" />
+<path d="M-100,150 L0,150 L0,150 L0,150" stroke-width="6" stroke="black" fill-opacity="0" />
+<text x="133" y="-216.66666666666669" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="150" y="-137" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M150,-350 L150,-150" stroke="black" stroke-width="5" />
+<text x="-150.0" y="-17" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="13" y="0" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M-300,0 L0,0" stroke="black" stroke-width="5" />
+<text x="133" y="216.66666666666669" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="150" y="137" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M150,350 L150,150" stroke="black" stroke-width="5" />
+<text x="-117" y="216.66666666666669" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="-100" y="46" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M-100,350 L-100,150" stroke="black" stroke-width="5" />
+<metadata width="600" height="700" symbolPrefix="Q" cmpPartDmgLabel="1:A" nameOfSymbol="Q-QNPN-1-A"><p-1><x>150</x><y>350</y><type>P
+                        </type><name>C</name><orientation>D</orientation>
+                        <length>200</length>
+                        </p-1><p-2><x>-300</x><y>0</y><type>I
+                        </type><name>B</name><orientation>R</orientation>
+                        <length>300</length>
+                        </p-2><p-3><x>150</x><y>-350</y><type>P
+                        </type><name>E</name><orientation>U</orientation>
+                        <length>200</length>
+                        </p-3><p-4><x>-100</x><y>-350</y><type>I
+                        </type><name>Substrat</name><orientation>U</orientation>
+                        <length>200</length>
+                        </p-4></metadata></svg>

@@ -1,0 +1,38 @@
+{
+    "name": "Gas Sensor MQ2",
+    "className": "MQ2",
+    "pins": [
+        {
+            "x": 24,
+            "y": 160,
+            "name": "VCC"
+        },
+        {
+            "x": 36,
+            "y": 160,
+            "name": "GND"
+        },
+        {
+            "x": 49,
+            "y": 160,
+            "name": "D0"
+        },
+        {
+            "x": 61,
+            "y": 160,
+            "name": "A0"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/GasSensor.svg",
+            "width": 96,
+            "height": 170,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {}
+}
