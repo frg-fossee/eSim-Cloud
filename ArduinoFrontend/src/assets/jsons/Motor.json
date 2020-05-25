@@ -8,12 +8,12 @@
       "name": "Negative"
     },
     {
-      "x": 24,
+      "x": 40,
       "y": 51,
       "name": "Positive"
     }
   ],
-  "nodeSize": 4,
+  "pointHalf": 4,
   "draw": [
     {
       "type": "image",

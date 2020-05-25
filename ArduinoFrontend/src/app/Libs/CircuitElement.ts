@@ -1,6 +1,5 @@
 import { Point } from './Point';
-import { element } from '@angular/core/src/render3';
-import { Workspace } from './Workspace';
+import { Wire } from './Wire';
 
 /**
  * Abstract Class Circuit Elements
@@ -239,6 +238,9 @@ export abstract class CircuitElement {
 
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
+      if (window['Selected'] && (window['Selected'] instanceof Wire)) {
+        return;
+      }
       window['isSelected'] = true;
       window['Selected'] = this;
       window['showProperty'](() => this.properties());

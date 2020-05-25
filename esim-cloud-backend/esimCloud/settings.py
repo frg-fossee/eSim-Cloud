@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'libAPI',
     'rest_framework',
     'drf_yasg',
+    'arduinoAPI',
 ]
 
 MIDDLEWARE = [
@@ -160,7 +161,8 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = (
-    'simulationAPI.tasks'
+    'simulationAPI.tasks',
+    'arduinoAPI.tasks'
 )
 
 
