@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
+    "file-saver": "^2.0.2",
     "material-ui-popup-state": "^1.5.4",
     "mxgraph": "^4.1.1",
     "react": "^16.13.1",

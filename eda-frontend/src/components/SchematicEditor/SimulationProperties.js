@@ -10,11 +10,14 @@ import {
   ExpansionPanelDetails,
   Typography
 } from '@material-ui/core'
+import { saveAs } from 'file-saver';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { GenerateNetList } from './Helper/ToolbarTools'
 
+
+var FileSaver = require('file-saver');
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '90px'
@@ -110,6 +113,8 @@ export default function SimulationProperties () {
     }
     start += '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
     console.log(start)
+    var blob = new Blob([start], {type: "text/plain;charset=utf-8"});
+    FileSaver.saveAs(blob, "netlist.txt");
   }
 
   return (

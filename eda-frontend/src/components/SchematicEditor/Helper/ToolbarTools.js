@@ -260,9 +260,9 @@ export function GenerateNetList () {
       }
       if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
-      } else if (component.symbol === 'C') {
+      } else if (component.symbol.split('')[0] === 'C') {
         k = k + ' 10u'
-      } else {
+      } else if (component.symbol.split('')[0] === 'V') {
         k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
       }
       // k = k + ' 10'
