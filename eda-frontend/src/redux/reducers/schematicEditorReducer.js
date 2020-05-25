@@ -20,8 +20,12 @@ export default function (state = InitialState, action) {
     }
 
     case actions.TOGGLE_COLLAPSE: {
-      const newCollapse = state.collapse
-      newCollapse[action.payload.id] = !newCollapse[action.payload.id]
+      const existingState = state.collapse[action.payload.id]
+      const newCollapse = Object.keys(state.collapse).reduce(function (accObj, parseObj) {
+        accObj[parseObj] = false
+        return accObj
+      }, {})
+      newCollapse[action.payload.id] = !existingState
       console.log('Updating collapse', action.payload.id)
       Object.assign(state.collapse, newCollapse)
       return { ...state, collapse: { ...state.collapse, newCollapse } }
