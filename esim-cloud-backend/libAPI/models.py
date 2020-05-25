@@ -1,4 +1,6 @@
+
 from djongo import models
+from django.utils.safestring import mark_safe
 
 
 class Library(models.Model):
@@ -24,7 +26,7 @@ class LibraryComponent(models.Model):
     # For Django Admin Panel
     def image_tag(self):
         if self.svg_path:
-            return mark_safe('<img src="/%s" style="width: 45px; height:45px;" />' % self.svg_path)  # noqa
+            return mark_safe('<img src="/%s" style="width: 45px; height:45px;" />' % self.svg_path) # noqa
         else:
             return 'No Image Found'
     image_tag.short_description = 'Image'
