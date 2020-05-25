@@ -2,10 +2,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
 from requests_oauthlib import OAuth2Session
-from rest_framework.reverse import reverse
-from django.contrib.auth import get_user_model
-import requests
-
 
 class UserActivationView(APIView):
     """
@@ -50,7 +46,7 @@ class GoogleOAuth2(APIView):
 
         google = OAuth2Session(
             client_id,
-            redirect_uri='http://localhost:8000/api/auth/google-callback',
+            redirect_uri=settings.GOOGLE_OAUTH_REDIRECT_URI,
             state=state
         )
         google.fetch_token(
