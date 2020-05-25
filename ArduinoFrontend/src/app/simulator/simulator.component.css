@@ -273,7 +273,7 @@ body {
 #console {
     position: fixed;
     width: 900px;
-    min-height:230px;
+    min-height: 230px;
     z-index: 100;
     background: #fff;
     right: calc(72.7vw - 1100px);
@@ -286,6 +286,21 @@ body {
     animation-iteration-count: 1s;
 }
 
+#msg {
+    overflow: auto;
+    text-overflow: ellipsis;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    position: relative;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+}
+
+#msg label {
+    margin-bottom: 0 !important;
+}
+
 @keyframes mymove {
     from {
         top: 600px;
@@ -294,14 +309,4 @@ body {
     to {
         bottom: 700px;
     }
-}
-
-#msg {
-    overflow: auto;
-    text-overflow: ellipsis;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    position: relative;
-    height:150px;
-    display: block;
 }
