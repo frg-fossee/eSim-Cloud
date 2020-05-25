@@ -26,6 +26,7 @@ export class SimulatorComponent implements OnInit {
   stoggle = true;
   status = 'Start Simulation';
   toggle1 = false;
+  atoggle = false;
   constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private injector: Injector) {
     Workspace.initializeGlobalFunctions();
     Workspace.injector = injector;
@@ -143,7 +144,22 @@ export class SimulatorComponent implements OnInit {
   }
   closeConsole() {
     const close = document.getElementById('console');
-    close.style.display = 'none';
+    const ft = document.getElementById('footer');
+    const msg = document.getElementById('msg');
+    this.atoggle = !this.atoggle;
+    if (this.atoggle || !this.toggle1) {
+      close.style.height = '30px';
+      msg.style.height = '0px';
+      ft.style.display = 'none';
+
+    } else {
+      msg.style.height = '150px';
+      close.style.height = '230px';
+      ft.style.display = 'block';
+
+    }
+
+
   }
 
   expandConsole() {
@@ -151,12 +167,13 @@ export class SimulatorComponent implements OnInit {
     const msg = document.getElementById('msg');
     const console = document.getElementById('console');
     this.toggle1 = !this.toggle1;
+
     if (this.toggle1 || console.style.top === '495px') {
-      console.style.top = '100px';
-      console.style.height = '650px';
-      msg.style.height = '545px';
+      console.style.bottom = '40px';
+      console.style.height = '620px';
+      msg.style.height = '565px';
     } else {
-      console.style.top = '495px';
+      console.style.bottom = '0px';
       console.style.height = '230px';
       msg.style.height = '150px';
     }
