@@ -10,6 +10,7 @@ from celery import states
 from celery.exceptions import Ignore
 import json
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -51,16 +52,31 @@ def CompileINO(filenames):
                 stderr=subprocess.PIPE
             )
             output, err = ps.communicate()
-            print(ps.returncode)
-            print(output)
-            print(err)
-            data = open(out_name, 'r').read()
-            print(data)
+            # print(ps.returncode)
+            # print(output)
+            # print(err)
+            data = ''
+            if err == '' and ps.returncode != 0:
+                err = b'Code Cannot be Compiled: Unknown Reason'
+
+            if os.path.isfile(out_name):
+                data = open(out_name, 'r').read()
+            # print(data)
+
             ret[str(filename)] = {
-                'output': output.decode("utf-8"),
-                'error': err.decode("utf-8"),
+                'output': re.sub(
+                    r'/tmp/esimCloud-temp/\d+/',
+                    '',
+                    output.decode('utf-8')
+                ),
+                'error': re.sub(
+                    r'/tmp/esimCloud-temp/\d+/',
+                    '',
+                    err.decode('utf-8')
+                ),
                 'data': data
             }
+
     except Exception:
         print(traceback.format_exc())
     finally:
