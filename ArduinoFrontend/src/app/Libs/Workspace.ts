@@ -1,9 +1,12 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
 import { ArduinoUno } from './outputs/Arduino';
+import { Injector } from '@angular/core';
+import { ApiService } from '../api.service';
 
 declare var window;
 declare var $; // For Jquery
+export enum ConsoleType { INFO, WARN, ERROR, OUTPUT }
 
 export class Workspace {
   // TODO: Add Comments
@@ -18,6 +21,7 @@ export class Workspace {
     start: false
   };
   static copiedItem: any;
+  static injector: Injector;
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -133,31 +137,25 @@ export class Workspace {
       }, 10000);
 
     };
-    window['printConsole'] = (textmsg: string, type: any) => {
+    window['printConsole'] = (textmsg: string, type: ConsoleType) => {
       const msg = document.getElementById('msg');
-      const container = document.createElement('div');
-      if (type === 'error') {
-        const txt = document.createTextNode(textmsg);
-        container.appendChild(txt);
+      const container = document.createElement('label');
+      container.innerText = textmsg;
+      if (type === ConsoleType.ERROR) {
         container.style.color = 'red';
-        msg.appendChild(container);
-      } else if (type === 'warn') {
-        const txt = document.createTextNode(textmsg);
-        container.appendChild(txt);
+      } else if (type === ConsoleType.WARN) {
         container.style.color = 'yellow';
-        msg.appendChild(container);
-      } else if (type === 'info') {
-        const txt = document.createTextNode(textmsg);
-        container.appendChild(txt);
+      } else if (type === ConsoleType.INFO) {
         container.style.color = 'white';
-        msg.appendChild(container);
-
+      } else if (type === ConsoleType.OUTPUT) {
+        container.style.color = '#03fc6b';
       }
+      msg.appendChild(container);
     };
-    window.addEventListener('beforeunload', (event) => {
-      event.preventDefault();
-      event.returnValue = 'did you save the stuff?';
-    });
+    // window.addEventListener('beforeunload', (event) => {
+    //   event.preventDefault();
+    //   event.returnValue = 'did you save the stuff?';
+    // });
   }
   /**
    * Event Listener for mousemove on html body
@@ -442,5 +440,9 @@ export class Workspace {
       window['scope'][key].push(obj);
       // obj.copy(Workspace.copiedItem)
     }
+  }
+  static ClearConsole() {
+    const clear = document.getElementById('msg');
+    clear.innerHTML = '';
   }
 }

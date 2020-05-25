@@ -1,21 +1,19 @@
-import { Component, OnInit, wtfLeave } from '@angular/core';
+import { Component, OnInit, wtfLeave, Injector, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Workspace } from '../Libs/Workspace';
+import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
 import { MatDialog, MatRadioModule } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
-import { ApiService } from '../api.service';
-import { $ } from 'protractor';
-import { style } from '@angular/animations';
 declare var Raphael;
 
 
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
-  styleUrls: ['./simulator.component.css']
+  styleUrls: ['./simulator.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
@@ -28,8 +26,9 @@ export class SimulatorComponent implements OnInit {
   stoggle = true;
   status = 'Start Simulation';
   toggle1 = false;
-  constructor(private aroute: ActivatedRoute, public dialog: MatDialog) {
+  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private injector: Injector) {
     Workspace.initializeGlobalFunctions();
+    Workspace.injector = injector;
   }
 
   makeSVGg() {
@@ -77,6 +76,7 @@ export class SimulatorComponent implements OnInit {
     Workspace.initProperty(v => {
       this.showProperty = v;
     });
+    // this.StartSimulation();
   }
   /**
    * Enable Move on Property Box
@@ -112,14 +112,16 @@ export class SimulatorComponent implements OnInit {
 
 
   StartSimulation() {
+    Workspace.ClearConsole();
+    window['printConsole']('Starting Simulation', ConsoleType.INFO);
     this.stoggle = !this.stoggle;
     this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
-
     const sim = document.getElementById('console');
-    if (sim.style.display === 'none') {
+    if (!this.stoggle) {
       sim.style.display = 'block';
+    } else {
+      sim.style.display = 'none';
     }
-    window['printConsole']('Start Simualtion', 'info');
   }
 
   /**
@@ -160,10 +162,7 @@ export class SimulatorComponent implements OnInit {
     }
   }
   clearConsole() {
-
-    const clear = document.getElementById('msg');
-    clear.innerHTML = '';
-
+    Workspace.ClearConsole();
   }
 
 
