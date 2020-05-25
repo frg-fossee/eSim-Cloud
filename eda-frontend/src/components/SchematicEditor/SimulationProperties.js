@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
 import {
   List,
@@ -10,14 +11,14 @@ import {
   ExpansionPanelDetails,
   Typography
 } from '@material-ui/core'
-import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { GenerateNetList } from './Helper/ToolbarTools'
+import { SimulationScreen } from './ToolbarExtension'
 
-
-var FileSaver = require('file-saver');
+var FileSaver = require('file-saver')
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '90px'
@@ -89,6 +90,16 @@ export default function SimulationProperties () {
     })
   }
 
+  const [simulateOpen, setSimulateOpen] = React.useState(false)
+
+  const handlesimulateOpen = () => {
+    setSimulateOpen(true)
+  }
+
+  const handleSimulateClose = () => {
+    setSimulateOpen(false)
+  }
+
   const startSimulate = (type) => {
     var start = GenerateNetList()
     switch (type) {
@@ -113,13 +124,16 @@ export default function SimulationProperties () {
     }
     start += '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
     console.log(start)
-    var blob = new Blob([start], {type: "text/plain;charset=utf-8"});
-    FileSaver.saveAs(blob, "netlist.cir");
+    var blob = new Blob([start], { type: 'text/plain;charset=utf-8' })
+    FileSaver.saveAs(blob, 'netlist.cir')
+    setTimeout(function () { }, 2000)
+    handlesimulateOpen()
   }
 
   return (
     <>
       <div className={classes.SimulationOptions}>
+        <SimulationScreen open={simulateOpen} close={handleSimulateClose} />
         <ExpansionPanel>
           <ExpansionPanelSummary
             expandIcon={<ExpandMoreIcon />}

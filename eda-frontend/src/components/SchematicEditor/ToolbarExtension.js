@@ -20,6 +20,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 
+import Simulator from '../../pages/Simulator.js'
+
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
@@ -113,6 +115,35 @@ export function HelpScreen ({ open, close }) {
 }
 
 HelpScreen.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.func
+}
+
+export function SimulationScreen ({ open, close }) {
+  const classes = useStyles()
+  return (
+    <div>
+      <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition}>
+        <AppBar className={classes.appBar}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={close} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+            <Typography variant="h6" className={classes.title}>
+              Simulation Result
+            </Typography>
+            <Button autoFocus color="inherit" onClick={close}>
+              close
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Simulator />
+      </Dialog>
+    </div>
+  )
+}
+
+SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func
 }
