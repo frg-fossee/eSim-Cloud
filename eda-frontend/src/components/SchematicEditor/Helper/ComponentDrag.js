@@ -21,8 +21,7 @@ const {
   mxEvent,
   mxOutline,
   mxCell,
-  mxConstants,
-  mxGraphModel
+  mxConstants
 } = new mxGraphFactory()
 
 export default function LoadGrid (container, sidebar, outline) {
