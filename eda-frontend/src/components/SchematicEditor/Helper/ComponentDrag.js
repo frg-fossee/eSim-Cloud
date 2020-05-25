@@ -21,7 +21,8 @@ const {
   mxEvent,
   mxOutline,
   mxCell,
-  mxConstants
+  mxConstants,
+  mxGraphModel
 } = new mxGraphFactory()
 
 export default function LoadGrid (container, sidebar, outline) {
@@ -50,6 +51,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.node = mxCell.prototype.id
     mxCell.prototype.PinName = ''
     mxCell.prototype.CompObject = null
+    mxCell.prototype.properties = {}
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
@@ -67,7 +69,7 @@ export default function LoadGrid (container, sidebar, outline) {
     graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
       var cell = evt.getProperty('cell')
       mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
-      console.log(cell.CellType)
+      console.log(cell.properties)
       evt.consume()
     })
 
