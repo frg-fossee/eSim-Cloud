@@ -57,6 +57,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.symbol = null
     mxCell.prototype.node = mxCell.prototype.id
     mxCell.prototype.PinName = ''
+    mxCell.prototype.CompObject = null
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)

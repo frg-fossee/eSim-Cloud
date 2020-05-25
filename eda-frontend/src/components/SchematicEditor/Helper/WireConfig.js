@@ -43,7 +43,7 @@ export default function WireConfigFunct (graph) {
 				else
 				{
 					var geo = (cell != null) ? this.graph.getCellGeometry(cell) : null;
-					
+
 					return (geo != null) ? geo.relative : false;
 				}
 			};
@@ -51,35 +51,35 @@ export default function WireConfigFunct (graph) {
 			{
 				return graph.connectionHandler.isConnectableCell(cell);
 			};
-			
+
 			// Adds a special tooltip for edges
             graph.setTooltips(true);
-            
+
             var getTooltipForCell = graph.getTooltipForCell;
 			graph.getTooltipForCell = function(cell)
 			{
 				var tip = '';
-				
+
 				if (cell != null)
 				{
 					var src = this.getModel().getTerminal(cell, true);
-					
+
 					if (src != null)
 					{
 						tip += this.getTooltipForCell(src) + ' ';
 					}
-					
+
 					var parent = this.getModel().getParent(cell);
-					
+
 					if (this.getModel().isVertex(parent))
 					{
 						tip += this.getTooltipForCell(parent) + '.';
 					}
-	
+
 					tip += getTooltipForCell.apply(this, arguments);
-					
+
 					var trg = this.getModel().getTerminal(cell, false);
-					
+
 					if (trg != null)
 					{
 						tip += ' ' + this.getTooltipForCell(trg);
@@ -89,30 +89,30 @@ export default function WireConfigFunct (graph) {
 				return tip;
 			};
 			var invert = false;
-			
+
 			if (invert)
 			{
 				container.style.backgroundColor = 'black';
-				
+
 				// White in-place editor text color
 				var mxCellEditorStartEditing = mxCellEditor.prototype.startEditing;
 				mxCellEditor.prototype.startEditing = function (cell, trigger)
 				{
 					mxCellEditorStartEditing.apply(this, arguments);
-					
+
 					if (this.textarea != null)
 					{
-						this.textarea.style.color = '#FFFFFF';					
+						this.textarea.style.color = '#FFFFFF';
 					}
 				};
-				
+
 				mxGraphHandler.prototype.previewColor = 'white';
             }
             var labelBackground = (invert) ? '#000000' : '#FFFFFF';
 			var fontColor = (invert) ? '#FFFFFF' : '#000000';
 			var strokeColor = (invert) ? '#C0C0C0' : '#000000';
 			//var fillColor = (invert) ? 'none' : '#FFFFFF';
-			
+
 			var style = graph.getStylesheet().getDefaultEdgeStyle();
 			delete style['endArrow'];
 			style['strokeColor'] = '#4c4d4d';
@@ -123,11 +123,11 @@ export default function WireConfigFunct (graph) {
 			style['movable'] = '0';
 			style['strokeWidth'] = '1.5';
 			//style['rounded'] = '1';
-			
+
 			// Sets join node size
 			//style['startSize'] = joinNodeSize;
 			//style['endSize'] = joinNodeSize;
-			
+
 			style = graph.getStylesheet().getDefaultVertexStyle();
 			style['gradientDirection'] = 'south';
 			style['gradientColor'] = '#909090';
@@ -141,5 +141,5 @@ export default function WireConfigFunct (graph) {
 			style['rounded'] = '1';
             // style['strokeWidth'] = strokeWidth;
 			graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
-					
+
 }
