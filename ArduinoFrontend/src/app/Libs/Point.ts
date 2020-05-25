@@ -27,13 +27,15 @@ export class Point {
 
   // Hover Close Callback called if hover is removed
   hoverCloseCallback: any = null;
+
+  connectCallback: any = null;
   /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper
    * @param x x position of node
    * @param y y position of node
    * @param label label to be shown when hover
-   * @param half The Half width of Rectangle
+   * @param half The Half width of Square
    * @param parent parent of the circuit node
    */
   constructor(
@@ -112,6 +114,9 @@ export class Point {
         // select the wire and insert into the scope of circuit
         window.Selected = tmp;
         window['scope']['wires'].push(tmp);
+      }
+      if (this.connectCallback) {
+        this.connectCallback(this);
       }
     });
 
