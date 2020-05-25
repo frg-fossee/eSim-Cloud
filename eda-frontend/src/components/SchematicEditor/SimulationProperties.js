@@ -114,7 +114,7 @@ export default function SimulationProperties () {
     start += '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
     console.log(start)
     var blob = new Blob([start], {type: "text/plain;charset=utf-8"});
-    FileSaver.saveAs(blob, "netlist.txt");
+    FileSaver.saveAs(blob, "netlist.cir");
   }
 
   return (
