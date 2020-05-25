@@ -193,7 +193,7 @@ export function GenerateNetList () {
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
   for (var property in list) {
-    if (list[property].Component === true && list[property].symbol !== 'G') {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
       // k = ''
       // alert('Component is present')
       var component = list[property]
@@ -222,7 +222,7 @@ export function GenerateNetList () {
             // alert(pin.id)
             if (pin.edges !== null || pin.edges.length !== 0) {
               for (var wire in pin.edges) {
-                if (pin.edges[wire].source.ParentComponent.symbol === 'G' || pin.edges[wire].target.ParentComponent.symbol === 'G') {
+                if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                   // console.log('Found ground')
                   pin.edges[wire].node = 0
                   pin.edges[wire].value = 0
@@ -248,7 +248,7 @@ export function GenerateNetList () {
       // console.log(k)
     }
   }
-  k = k + '.op \n'
-  k = k + '.end \n'
+  // k = k + '.op \n'
+  // k = k + '.end \n'
   return k
 }
