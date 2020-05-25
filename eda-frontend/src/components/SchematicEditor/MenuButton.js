@@ -49,7 +49,7 @@ class MenuButton extends React.Component {
     const listItems = this.props.items.map((link) =>
       <MenuItem onClick={this.handleFileSelect} key={link}>{link}</MenuItem>
     )
-    console.log(listItems.id)
+    // console.log(listItems.id)
     return (
       <>
         <Tooltip title={this.props.title} >
