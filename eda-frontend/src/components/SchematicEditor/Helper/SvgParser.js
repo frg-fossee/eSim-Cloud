@@ -9,7 +9,7 @@ const {
 
 let pinData, metadata, pinList, pinName, pinOrientation, pinLength, pinShape
 let currentPin, x_pos, y_pos
-let width, height,symbolName
+let width, height, symbolName
 
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
 const fixed_number = 5
@@ -122,58 +122,106 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       v1.symbol = component.symbol_prefix
       v1.CompObject = component
 
-
       var props = {}
-      switch(v1.symbol){
-
+      switch (v1.symbol) {
         case 'C':
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = "0F"
+          props.VALUE = '0F'
           props.NAME = 'C'
-          break;
+          break
+
         case 'D':
           props.N1 = ''
           props.N2 = ''
-          props.MNAME = data.symbolName
+          props.MNAME = component.name
           props.NAME = 'D'
-          break;
+          break
+
         case 'I':
           props.N1 = ''
           props.N2 = ''
           props.NC1 = ''
           props.NC2 = ''
-          props.VALUE = "0"
+          props.VALUE = '0'
           props.NAME = 'I'
-          break;
+          break
 
         case 'G':
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = "0mhos"
+          props.VALUE = '0mhos'
           props.NAME = 'I'
-          break;
+          break
 
         case 'F':
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = ""
-          props.VNAM = ""
+          props.VALUE = ''
+          props.VNAM = ''
           props.NAME = 'F'
-          break;
+          break
 
         case 'J':
           props.ND = ''
           props.NG = ''
-          props.NS = ""
-          props.MNAME = ""
+          props.NS = ''
+          props.MNAME = ''
           props.NAME = 'J'
-          break;
+          break
 
+        case 'L':
+          props.NAME = 'L'
+          props.N1 = ''
+          props.N2 = ''
+          props.VALUE = ''
+          break
+
+        case 'M':
+          props.NAME = 'M'
+          props.ND = ''
+          props.NG = ''
+          props.NS = ''
+          props.NB = ''
+          props.VALUE = ''
+          break
+
+        case 'Q':
+          props.NAME = 'Q'
+          props.NC = ''
+          props.NB = ''
+          props.NE = ''
+          props.MNAME = ''
+          break
+
+        case 'V':
+          props.NAME = 'V'
+          props.N1 = ''
+          props.N2 = ''
+          props.TYPE = ''
+          props.VALUE = ''
+          break
+
+        case 'R':
+          props.NAME = 'R'
+          props.N1 = ''
+          props.N2 = ''
+          props.VALUE = ''
+          break
+
+        case 'Z':
+          props.NAME = 'Z'
+          props.ND = ''
+          props.NG = ''
+          props.NS = ''
+          props.MNAME = ''
+          break
+
+        default:
+          break
       }
       // console.log(props)
-      v1.properties = props;
-
+      v1.properties = props
 
       v1.setConnectable(false)
 
