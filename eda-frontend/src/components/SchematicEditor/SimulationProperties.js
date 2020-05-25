@@ -84,15 +84,27 @@ export default function SimulationProperties () {
     })
   }
 
-  // const simulate = (evt) => {
-  //  console.log(evt.target.id)
-  //   if(evt.target.id === "dcSweepSimulate"){
-  //     console.log(dcSweepcontrolLine)
-  //   }
-  //   // else if(evt.target.id === "transientAnalysisSimulate"){
-  //   //   console.log(transientAnalysisControlLine)
-  //   // }
-  // }
+  const startSimulate = (type) => {
+    switch (type) {
+      case 'DcSolver':
+        console.log('To be implemented')
+        break
+      case 'DcSweep':
+        console.log(dcSweepcontrolLine)
+        console.log(`.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`)
+        break
+      case 'Transient':
+        console.log(transientAnalysisControlLine)
+        console.log(`.trans ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`)
+        break
+      case 'Ac':
+        console.log(acAnalysisControlLine)
+        console.log(`.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`)
+        break
+      default:
+        break
+    }
+  }
 
   return (
     <>
@@ -110,10 +122,9 @@ export default function SimulationProperties () {
             {/* Simulation modes list */}
             <List>
 
+              {/* DC Solver */}
               <ListItem className={classes.simulationOptions} divider>
-
                 <div className={classes.propertiesBox}>
-
                   <ExpansionPanel>
                     <ExpansionPanelSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -127,22 +138,18 @@ export default function SimulationProperties () {
                         <List>
                           <ListItem>
                             <Button size='small' variant="contained" color="primary"
-                              onClick={(e) => {
-                                console.log('To be implemented')
-                              }
-                              }>
-                            Run dc solver
+                              onClick={(e) => { startSimulate('DcSolver') }}>
+                              Run dc solver
                             </Button>
                           </ListItem>
                         </List>
                       </form>
                     </ExpansionPanelDetails>
                   </ExpansionPanel>
-
                 </div>
-
               </ListItem>
 
+              {/* DC Sweep */}
               <ListItem className={classes.simulationOptions} divider>
                 <ExpansionPanel>
                   <ExpansionPanelSummary
@@ -210,16 +217,8 @@ export default function SimulationProperties () {
                           <Button size='small' variant="contained">Add Expression</Button>
                         </ListItem>
                         <ListItem>
-                          <Button id="dcSweepSimulate" size='small' variant="contained" color="primary"
-                            onClick={(e) => {
-                              console.log(dcSweepcontrolLine)
-                              console.log(`.dc ${dcSweepcontrolLine.parameter} ` +
-                              `${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}
-                            `)
-                            }}
-                          >
+                          <Button id="dcSweepSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('DcSweep') }}>
                             Simulate
-
                           </Button>
                         </ListItem>
                       </List>
@@ -228,6 +227,7 @@ export default function SimulationProperties () {
                 </ExpansionPanel>
               </ListItem>
 
+              {/* Transient Analysis */}
               <ListItem className={classes.simulationOptions} divider>
                 <ExpansionPanel>
                   <ExpansionPanelSummary
@@ -289,13 +289,7 @@ export default function SimulationProperties () {
                           <Button size='small' variant="contained">Add Expression</Button>
                         </ListItem>
                         <ListItem>
-                          <Button id="transientAnalysisSimulate" size='small' variant="contained" color="primary"
-                            onClick={(e) => {
-                              console.log(transientAnalysisControlLine)
-                              console.log(`.trans ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop}` +
-                            ` ${transientAnalysisControlLine.start}`)
-                            }}
-                          >
+                          <Button id="transientAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Transient') }}>
                             Simulate
                           </Button>
                         </ListItem>
@@ -305,6 +299,7 @@ export default function SimulationProperties () {
                 </ExpansionPanel>
               </ListItem>
 
+              {/* AC Analysis */}
               <ListItem className={classes.simulationOptions} divider>
                 <ExpansionPanel>
                   <ExpansionPanelSummary
@@ -349,12 +344,7 @@ export default function SimulationProperties () {
                           <Button size='small' variant="contained">Add Expression</Button>
                         </ListItem>
                         <ListItem>
-                          <Button size='small' variant="contained" color="primary"
-                            onClick={(e) => {
-                              console.log(acAnalysisControlLine)
-                              console.log(`.ac dec ${acAnalysisControlLine.pointsBydecade} ` +
-                            `${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`)
-                            }}>
+                          <Button size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Ac') }}>
                             Simulate
                           </Button>
                         </ListItem>
