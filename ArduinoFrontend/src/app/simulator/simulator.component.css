@@ -273,7 +273,7 @@ body {
 #console {
     position: fixed;
     width: 900px;
-    height: 230px;
+    min-height:230px;
     z-index: 100;
     background: #fff;
     right: calc(72.7vw - 1100px);
@@ -297,8 +297,11 @@ body {
 }
 
 #msg {
-    overflow-y: hidden;
+    overflow: auto;
     text-overflow: ellipsis;
     white-space: pre-wrap;
     word-wrap: break-word;
+    position: relative;
+    height:150px;
+    display: block;
 }

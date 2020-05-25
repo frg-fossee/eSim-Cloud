@@ -28,7 +28,7 @@
         <div class="name">{{record.name}}</div>
         <div class="description">{{record.Description}}</div>
         <span style="flex:1 1 auto;"></span>
-        <button class="btn btn-sm icon"><a href={{record.url}}><i class="fas fa-external-link-alt"></i></a></button>
+        <button class="btn btn-sm icon"><a href={{record.url}} target="_blank"><i class="fas fa-external-link-alt"></i></a></button>
       </div>
     </div>
     <ngx-monaco-editor style="height: 100vh" [options]="editorOptions" [(ngModel)]="code"
