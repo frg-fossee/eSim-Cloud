@@ -305,13 +305,13 @@ export class Workspace {
   }
 
   static keyDown(event: KeyboardEvent) {
-    event.preventDefault();
+    // event.preventDefault();
   }
   static keyPress(event: KeyboardEvent) {
-    event.preventDefault();
+    // event.preventDefault();
   }
   static keyUp(event: KeyboardEvent) {
-    event.preventDefault();
+    // event.preventDefault();
     // console.log([event.ctrlKey, event.key]);
     if (event.key === 'Delete') {
       // Backspace or Delete
@@ -393,6 +393,7 @@ export class Workspace {
         }
       }
       const uid = window.Selected.id;
+      // console.log(window.)
       const items = window.scope[window.Selected.keyName];
       for (let i = 0; i < items.length; ++i) {
         if (items[i].id === uid) {

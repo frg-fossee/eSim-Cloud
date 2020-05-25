@@ -13,7 +13,7 @@ import { LM35 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
-import { Resistor } from './General';
+import { Resistor, BreadBoard } from './General';
 
 export class Utils {
   static componentBox = {
@@ -40,11 +40,16 @@ export class Utils {
       ['Label', 'RelayModule']
     ],
     general: [
-      ['Resistor']
+      ['Resistor', 'BreadBoard']
     ]
   };
 
   static components = {
+    BreadBoard: {
+      name: 'BreadBoard',
+      image: './assets/images/components/Breadboard.svg',
+      className: BreadBoard
+    },
     Resistor: {
       name: 'Resistor',
       image: './assets/images/components/Resistor.png',
