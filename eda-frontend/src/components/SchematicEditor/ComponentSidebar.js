@@ -120,11 +120,6 @@ export default function ComponentSidebar ({ compRef }) {
             }
           )
         }
-
-        <ListItem>
-          <div ref={compRef}>
-          </div>
-        </ListItem>
       </List>
     </>
   )
