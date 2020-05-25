@@ -118,6 +118,8 @@ export class SimulatorComponent implements OnInit {
     const sim = document.getElementById('console');
     if (sim.style.display === 'none') {
       sim.style.display = 'block';
+    } else {
+      sim.style.display = 'none';
     }
     window['printConsole']('Start Simualtion', 'info');
   }
@@ -150,9 +152,9 @@ export class SimulatorComponent implements OnInit {
     const console = document.getElementById('console');
     this.toggle1 = !this.toggle1;
     if (this.toggle1 || console.style.top === '495px') {
-      console.style.top = '300px';
-      console.style.height = '450px';
-      msg.style.height = '370px';
+      console.style.top = '100px';
+      console.style.height = '650px';
+      msg.style.height = '545px';
     } else {
       console.style.top = '495px';
       console.style.height = '230px';
@@ -165,9 +167,12 @@ export class SimulatorComponent implements OnInit {
     clear.innerHTML = '';
 
   }
-
-
-
+  /* openProject(){
+     const openproject = document.getElementById('openproject');
+     if(openproject.style.display === 'none'){
+       openproject.style.display = 'block';
+     }
+   }*/
 
   /**
    * Project Title input focus out callback
