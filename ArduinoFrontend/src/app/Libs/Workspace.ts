@@ -445,4 +445,55 @@ export class Workspace {
     const clear = document.getElementById('msg');
     clear.innerHTML = '';
   }
+
+
+  static CompileCode() {
+    const toSend = {};
+    const nameMap = {};
+    const isProgrammable = window.scope.ArduinoUno.length > 0;
+    if (!isProgrammable) {
+      window.printConsole('No Programmable Device Found', ConsoleType.INFO);
+      return;
+    }
+    for (const arduino of window.scope.ArduinoUno) {
+      toSend[arduino.id] = arduino.code;
+      nameMap[arduino.id] = arduino;
+    }
+    // console.log(JSON.stringify(toSend));
+
+    if (Workspace.injector) {
+      window.printConsole('Compiling Source Code', ConsoleType.INFO);
+      const api = Workspace.injector.get(ApiService);
+      api.compileCode(toSend).subscribe(v => {
+        // console.log(v)
+        //     "state": "SUCCESS",
+        const taskid = v.uuid;
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            console.log(hex);
+            if (hex.state === 'SUCCESS') {
+              clearInterval(temp);
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                  }
+                  if (d.error) {
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
+                }
+              }
+            } else if (hex.state === 'FAILED') {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+            }
+          });
+        }, 2000);
+      });
+    } else {
+      window.showToast('Something Went Wrong! Please Refresh Browser');
+    }
+  }
 }

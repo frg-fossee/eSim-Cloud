@@ -119,6 +119,7 @@ export class SimulatorComponent implements OnInit {
     const sim = document.getElementById('console');
     if (!this.stoggle) {
       sim.style.display = 'block';
+      Workspace.CompileCode();
     } else {
       sim.style.display = 'none';
     }
