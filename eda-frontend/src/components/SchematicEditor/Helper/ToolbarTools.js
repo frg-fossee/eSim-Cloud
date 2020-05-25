@@ -211,20 +211,20 @@ export function GenerateNetList () {
         // component.symbol = component.symbol + r.toString()
         k = k + component.symbol + r.toString()
         component.value = component.symbol + r.toString()
-        component.symbol = component.value
+        // component.symbol = component.value
 
         ++r
       } else if (component.symbol === 'V') {
         // component.symbol = component.symbol + v.toString()
         k = k + component.symbol + v.toString()
         component.value = component.symbol + v.toString()
-        component.symbol = component.value
+        // component.symbol = component.value
         ++v
       } else {
         // component.symbol = component.symbol + c.toString()
         k = k + component.symbol + c.toString()
         component.value = component.symbol + c.toString()
-        component.symbol = component.value
+        // component.symbol = component.value
         ++c
       }
       // compobj.name = component.symbol
