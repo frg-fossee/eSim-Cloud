@@ -88,7 +88,7 @@ export default function ComponentSidebar ({ compRef }) {
               return (
                 <div key={library.id}>
                   <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
-                    <span className={classes.head}>{library.library_name}</span>
+                    <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
                     {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
                   <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
