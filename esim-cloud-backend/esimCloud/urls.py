@@ -7,6 +7,7 @@ esimCloud URL Configuration
 from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
+from arduinoAPI import urls as arduinoURLs
 from libAPI import urls as libURLs
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -31,7 +32,7 @@ urlpatterns = [
     path('api/simulation/', include(simulationURLs)),
     path('api/', include(libURLs)),
 
-
+    path('api/arduino/', include(arduinoURLs)),
 
     # For API Documentation
     url(r'^api/docs(?P<format>\.json|\.yaml)$',
