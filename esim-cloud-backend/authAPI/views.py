@@ -2,6 +2,12 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
 from requests_oauthlib import OAuth2Session
+from django.contrib.auth import get_user_model
+from djoser.conf import settings as djoser_settings
+from random import randint
+import requests
+Token = djoser_settings.TOKEN_MODEL
+
 
 class UserActivationView(APIView):
     """
@@ -27,6 +33,16 @@ class UserActivationView(APIView):
 class GoogleOAuth2(APIView):
     """
     Login with Google OAuth2
+
+        1. Use the following route to get authorization_url:
+           http://localhost/api/auth/o/google-oauth2/?redirect_uri=http://localhost/api/auth/google-callback
+        2. This is the callback route
+           returns
+            {
+                "auth_token": "1503a622f9bb9ef705d6f8a4921bf83cc5a9872c"
+            }
+            Creates user if not already existing
+
     """
 
     def get(self, request):
@@ -57,13 +73,16 @@ class GoogleOAuth2(APIView):
 
         user_info = google.get(
             'https://www.googleapis.com/oauth2/v1/userinfo').json()
-        print(user_info)
-        email = user_info['email']
-        print(email)
 
-        # try:
-        #     user = get_user_model().objects.get(email=email)
-        # except get_user_model().DoesNotExist:
-        #     user = get_user_model().objects.create_user()
-
-        return Response(user_info)
+        if user_info['email']:
+            user, created = get_user_model().objects.get_or_create(
+                email=user_info['email'])
+            if created:
+                # If User was created
+                # Set name to firstname_lastname1209
+                username = user_info['name'].strip().replace(
+                    ' ', '_') + str(randint(0, 9999))
+                user.username = username
+                user.save()
+            token, created = Token.objects.get_or_create(user=user)
+        return Response({'auth_token': token.key})
