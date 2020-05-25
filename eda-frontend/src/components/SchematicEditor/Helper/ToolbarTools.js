@@ -190,18 +190,28 @@ export function GenerateNetList () {
   var v = 1
   var c = 1
   var list = graph.getModel().cells
+  var netlist = []
+  
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
       // k = ''
       // alert('Component is present')
+      var compobj = {
+        name : '' ,
+        node1 : '' ,
+        node2 : '',
+        magnitude : ''
+      }
       var component = list[property]
       // console.log(component)
       if (component.symbol === 'R') {
         // component.symbol = component.symbol + r.toString()
         k = k + component.symbol + r.toString()
         component.value = component.symbol + r.toString()
+        component.symbol = component.value
+
         ++r
       } else if (component.symbol === 'V') {
         // component.symbol = component.symbol + v.toString()
@@ -214,6 +224,7 @@ export function GenerateNetList () {
         // component.value = component.symbol
         ++c
       }
+      // compobj.name = component.symbol
 
       if (component.children !== null) {
         for (var child in component.children) {
@@ -237,11 +248,21 @@ export function GenerateNetList () {
             }
           }
         }
+        compobj.name = component.symbol
+        compobj.node1 = component.children[0].edges[0].node
+        compobj.node2 = component.children[1].edges[0].node
+        compobj.magnitude = 10 
+        console.log(compobj)
+
       }
       if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
-      } else {
-        k = k + ' 10'
+      }
+      else if( component.symbol === 'C') {
+        k = k + ' 10u'
+      } 
+      else {
+        k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
       }
       // k = k + ' 10'
       k = k + ' \n'
@@ -250,5 +271,6 @@ export function GenerateNetList () {
   }
   // k = k + '.op \n'
   // k = k + '.end \n'
+  // console.log(netlist)
   return k
 }

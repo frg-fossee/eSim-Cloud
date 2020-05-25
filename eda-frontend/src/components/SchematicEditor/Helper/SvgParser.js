@@ -113,11 +113,12 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         'shape=image;fontColor=blue;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
       )
       v1.Component = true
-      var newsource = path
+      /* var newsource = path
       var prefix = newsource.split('/')
-      var symboltype = prefix[3].split('')
+      var symboltype = prefix[3].split('') */
       v1.CellType = 'Component'
       v1.symbol = component.symbol_prefix
+      v1.CompObject = component
       v1.setConnectable(false)
 
       for (let i = 0; i < pinData.length; i++) {
