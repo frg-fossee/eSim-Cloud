@@ -6,8 +6,6 @@ import { ListItem, ListItemText, Button, TextField } from '@material-ui/core'
 export default function ComponentProperties () {
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
   const id = useSelector(state => state.componentPropertiesReducer.id)
-  // var a = Object.assign({}, properties);
-
   const [val, setVal] = useState(properties)
 
   const dispatch = useDispatch()
@@ -26,13 +24,15 @@ export default function ComponentProperties () {
 
   const setProps = () => {
     dispatch(setCompProperties(id, val))
+    // setVal({})
   }
 
   return (
+
     <div>
+
       <ListItem>
-        <ListItemText primary='Component Properties' secondary={properties.FNAME} />
-        {/* <ListItemText primary={properties.FNAME} /> */}
+        <ListItemText primary='Component Properties' secondary={properties.NAME} />
       </ListItem>
       {
         Object.keys(properties).map((keyName, i) => (
