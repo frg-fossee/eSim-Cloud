@@ -1,6 +1,8 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 
+declare var window;
+
 export class LED extends CircuitElement {
   static pointHalf = 4;
   static colors: string[] = []; // Color of LED
@@ -13,12 +15,28 @@ export class LED extends CircuitElement {
   init() {
     if (LED.glowColors.length === 0) {
       // LED
-      console.log(this.data);
+      // console.log(this.data);
       LED.colors = this.data.colors;
       LED.colorNames = this.data.colorNames;
       LED.glowColors = this.data.glowcolors;
     }
     this.data = null;
+    this.nodes[0].addValueListener((v) => this.logic(v));
+    this.nodes[1].addValueListener((v) => this.logic(v));
+  }
+  logic(val: number) {
+    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
+      console.log(this.nodes[0].value);
+      if (val === 5) {
+        this.anim();
+        this.nodes[1].setValue(5, null);
+      } else {
+        this.elements[3].attr({ fill: 'none' });
+      }
+    } else {
+      // TODO: Show Toast
+      window.showToast('LED is not Connected properly');
+    }
   }
   anim() {
     this.elements[3].attr({
@@ -65,6 +83,7 @@ export class LED extends CircuitElement {
   initSimulation(): void {
   }
   closeSimulation(): void {
+    this.elements[3].attr({ fill: 'none' });
   }
   simulate(): void {
   }
