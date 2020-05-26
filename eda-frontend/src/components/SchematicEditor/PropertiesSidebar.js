@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: '90px'
   },
   pages: {
-    margin: theme.spacing(0, 1)
+    margin: theme.spacing(0, 0.7)
   }
 }))
 
