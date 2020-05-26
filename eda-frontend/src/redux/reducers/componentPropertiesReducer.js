@@ -2,6 +2,7 @@ import * as actions from '../actions/actions'
 
 const InitialState = {
   id: '',
+  isPropertiesWindowOpen: false,
   compProperties: {}
 }
 
@@ -11,6 +12,7 @@ export default function (state = InitialState, action) {
       return {
         ...state,
         id: action.payload.id,
+        isPropertiesWindowOpen: true,
         compProperties: action.payload.compProperties
       }
     }
@@ -19,6 +21,7 @@ export default function (state = InitialState, action) {
       return {
         ...state,
         id: action.payload.id,
+        isPropertiesWindowOpen: false,
         compProperties: action.payload.compProperties
       }
     }

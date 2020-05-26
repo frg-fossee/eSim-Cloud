@@ -5,6 +5,7 @@ import { ListItem, ListItemText, Button, TextField } from '@material-ui/core'
 
 export default function ComponentProperties () {
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
+  const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
   const id = useSelector(state => state.componentPropertiesReducer.id)
   const [val, setVal] = useState(properties)
 
@@ -29,7 +30,7 @@ export default function ComponentProperties () {
 
   return (
 
-    <div>
+    <div style={isOpen ? {} : { display: 'none' }}>
 
       <ListItem>
         <ListItemText primary='Component Properties' secondary={properties.NAME} />
