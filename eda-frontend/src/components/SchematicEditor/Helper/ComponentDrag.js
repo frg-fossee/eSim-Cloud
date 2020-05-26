@@ -2,6 +2,8 @@
 /* eslint-disable no-new */
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
+import * as actions from '../../../redux/actions/actions'
+import store from '../../../redux/store'
 
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
@@ -67,8 +69,15 @@ export default function LoadGrid (container, sidebar, outline) {
 
     graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
       var cell = evt.getProperty('cell')
-      mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
-      console.log(cell.properties)
+      // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
+      // console.log(store.getState())
+      store.dispatch({
+        type: actions.GET_COMP_PROPERTIES,
+        payload: {
+          compProperties: cell.properties
+        }
+      })
+      // console.log(cell.properties)
       evt.consume()
     })
 
