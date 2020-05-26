@@ -62,10 +62,24 @@ export class ArduinoUno extends CircuitElement {
     delete window['ArduinoUno_name'][this.name];
   }
   initSimulation(): void {
+    this.builtinLED = this.elements[1].glow({
+      color: '#ffff00'
+    });
+    this.builtinLED.hide();
+    this.powerLed = this.elements[2].glow({
+      color: '#00ff00'
+    });
+
+
     this.runner = new ArduinoRunner(this.hex);
     // console.log(this.runner);
     this.runner.portB.addListener((value) => {
-      console.log(value);
+      // console.log(value);
+      if ((value >> 5) & 1) {
+        this.builtinLED.show();
+      } else {
+        this.builtinLED.hide();
+      }
     });
     this.runner.portC.addListener((value) => {
       console.log(value);
@@ -80,6 +94,11 @@ export class ArduinoUno extends CircuitElement {
   }
   closeSimulation(): void {
     this.runner.delete();
+    this.runner = null;
+    this.builtinLED.remove();
+    this.builtinLED = null;
+    this.powerLed.remove();
+    this.powerLed = null;
   }
   simulate(): void {
   }
