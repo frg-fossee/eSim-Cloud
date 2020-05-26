@@ -4,9 +4,7 @@ from rest_framework.parsers import FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.exceptions import ValidationError
 from drf_yasg.utils import swagger_auto_schema
-from django.shortcuts import get_object_or_404
 from saveAPI.models import StateSave
 import uuid
 import logging
@@ -65,8 +63,9 @@ class StateFetchView(APIView):
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
 
-            if self.request.user != saved_state.owner:
-                return Response({'error': 'Not the owner'},
+            # Verifies owner
+            if self.request.user != saved_state.owner and not saved_state.shared:  # noqa
+                return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             try:
                 serialized = StateSaveSerializer(saved_state)
@@ -74,4 +73,47 @@ class StateFetchView(APIView):
             except Exception:
                 return Response(serialized.error)
         else:
-            raise ValidationError('Invalid uuid format')
+            return Response({'error': 'Invalid sharing state'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class StateShareView(APIView):
+    """
+    Enables sharing for the given saved state
+    Note: Only authorized user can do this
+
+    """
+    permission_classes = (AllowAny,)
+    methods = ['GET']
+
+    @swagger_auto_schema(responses={200: StateSaveSerializer})
+    def post(self, request, save_id, sharing):
+
+        if isinstance(save_id, uuid.UUID):
+            # Check for permissions and sharing settings here
+            try:
+                saved_state = StateSave.objects.get(save_id=save_id)
+            except StateSave.DoesNotExist:
+                return Response({'error': 'Does not Exist'},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            # Verifies owner
+            if self.request.user != saved_state.owner:  # noqa
+                return Response({'error': 'Not the owner'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+            try:
+                if sharing == 'on':
+                    saved_state.shared = True
+                elif sharing == 'off':
+                    saved_state.shared = False
+                else:
+                    return Response({'error': 'Invalid sharing state'},
+                                    status=status.HTTP_400_BAD_REQUEST)
+                saved_state.save()
+                serialized = StateSaveSerializer(saved_state)
+                return Response(serialized.data)
+            except Exception:
+                return Response(serialized.error)
+        else:
+            return Response({'error': 'Invalid sharing state'},
+                            status=status.HTTP_400_BAD_REQUEST)

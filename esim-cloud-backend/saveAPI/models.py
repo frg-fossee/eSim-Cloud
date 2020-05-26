@@ -10,6 +10,7 @@ class StateSave(models.Model):
     save_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
     data_dump = models.TextField()
+    shared = models.BooleanField(default=False)
     owner = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.CASCADE)
 
