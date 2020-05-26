@@ -279,26 +279,20 @@
 <!--console ui-->
 <div id="console" style="display: none;">
 
-  <div style="display: flex; background-color: white; position: relative; width: 1020px;">
+  <div id="displayheader" style="display: flex; background-color: white; position: relative; width: 100%;">
     <button class="btn" style="background-color: white;" (click)="closeConsole()"><i
-        class='fas fa-angle-down'></i></button>
+        [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
     <button class="btn" style="background-color: white;" (click)="expandConsole()"><i
         [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
   </div>
   <div id="msg"></div>
-  <div style="bottom: 0px; position: relative;">
+  <div id="footer" style="bottom: 0px; position: relative; display: block;">
     <form>
-      <div class="form-row" style="padding:0px;">
-        <div class="col-sm-10">
-          <input type="text" class="form-control mr-1" style="border-radius: 0px; width: 900px">
-        </div>
-        <div class="col-sm-2">
-          <button type="button" class="btn btn-light ml-auto"
-            style="border-color: darkgray; border-radius: 0px">Send</button>
-          <button type="button" class="btn btn-light ml-1 mr-auto" style="border-color: darkgray; border-radius: 0px;"
+          <input type="text" style="border-radius: 0px; width: 89.5%;">
+          <button type="button" 
+            style="border-color: darkgray; border-radius: 0px;">Send</button>
+          <button type="button"  style="border-color: darkgray; border-radius: 0px;"
             (click)="clearConsole()">Clear</button>
-        </div>
-      </div>
     </form>
 
   </div>

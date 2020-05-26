@@ -272,13 +272,12 @@ body {
 
 #console {
     position: fixed;
-    width: 1020px;
-    min-height: 230px;
-    z-index: 100;
+    width: calc(100% - 500px);
+    height: 30%;
+    z-index: 1000;
     background: #fff;
-    right: calc(72.7vw - 1100px);
-    top: 495px;
-    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+    right:0px;
+    bottom: 5px;
     padding: 1px;
     justify-content: space-between;
     background-color: black;
@@ -303,10 +302,10 @@ body {
 
 @keyframes mymove {
     from {
-        top: 600px;
+        bottom: 0px;
     }
 
     to {
-        bottom: 700px;
+        top:500px;
     }
 }
