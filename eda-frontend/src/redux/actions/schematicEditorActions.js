@@ -72,3 +72,9 @@ export const toggleCollapse = (id) => (dispatch) => {
     payload: { id: id }
   })
 }
+
+export const toggleSimulate = () => (dispatch) => {
+  dispatch({
+    type: actions.TOGGLE_SIMULATE
+  })
+}
