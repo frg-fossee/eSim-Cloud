@@ -1,5 +1,6 @@
 import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
+import { isNull } from 'util';
 
 declare var window;
 
@@ -29,6 +30,10 @@ export class Point {
   hoverCloseCallback: any = null;
 
   connectCallback: any = null;
+
+  value = -1;
+  listener: (val: number) => void = null;
+  gid = -1;
   /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper
@@ -202,6 +207,29 @@ export class Point {
       this.connectedTo.remove();
       this.connectedTo = null;
       this.parent = null;
+    }
+  }
+  addValueListener(listener: (val: number) => void) {
+    this.listener = listener;
+  }
+  setValue(value: number, calledby: Point) {
+    this.value = value;
+    if (calledby && this.listener) {
+      this.listener(this.value);
+    }
+    if (isNull(calledby)) {
+      calledby = this;
+    }
+    // console.log(this.connectedTo);
+    if (this.connectedTo && this.connectedTo.end) {
+      if (this.connectedTo.end.gid !== calledby.gid && this.connectedTo.end.gid !== this.gid) {
+        this.connectedTo.end.setValue(this.value, this);
+      }
+    }
+    if (this.connectedTo && this.connectedTo.start) {
+      if (this.connectedTo.start.gid !== calledby.gid && this.connectedTo.start.gid !== this.gid) {
+        this.connectedTo.start.setValue(this.value, this);
+      }
     }
   }
 }
