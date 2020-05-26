@@ -500,6 +500,11 @@ export class Workspace {
   }
 
   static startArduino() {
+    let gid = 0;
+    for (const wire of window.scope.wires) {
+      wire.start.gid = gid++;
+      wire.end.gid = gid++;
+    }
     for (const comp of window.scope.ArduinoUno) {
       // comp.runner.execute();
       // console.log("s")
