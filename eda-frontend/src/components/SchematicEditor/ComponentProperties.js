@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setCompProperties } from '../../redux/actions/componentPropertiesActions'
 import { ListItem, ListItemText, Button, TextField } from '@material-ui/core'
 
 export default function ComponentProperties () {
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
-
+  const id = useSelector(state => state.componentPropertiesReducer.id)
   const [val, setVal] = useState(properties)
+  const dispatch = useDispatch()
 
   const getInputValues = (evt) => {
-    console.log(evt.target.value)
     const value = evt.target.value
 
     setVal({
@@ -16,6 +17,13 @@ export default function ComponentProperties () {
       [evt.target.id]: value
     })
   }
+
+  const setProps = () => {
+    console.log('pressed')
+    dispatch(setCompProperties(id, val))
+  }
+
+  console.log(val)
   return (
     <div>
       <ListItem>
@@ -34,7 +42,7 @@ export default function ComponentProperties () {
       }
 
       <ListItem>
-        <Button size='small' variant="contained" color="primary">ADD</Button>
+        <Button size='small' variant="contained" color="primary" onClick={setProps}>ADD</Button>
       </ListItem>
 
     </div>

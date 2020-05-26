@@ -1,6 +1,6 @@
 import * as actions from './actions'
 
-export const getCompPropertiess = (id, compProperties) => (dispatch) => {
+export const getCompProperties = (id, compProperties) => (dispatch) => {
   dispatch({
     type: actions.GET_COMP_PROPERTIES,
     payload: {
@@ -10,7 +10,7 @@ export const getCompPropertiess = (id, compProperties) => (dispatch) => {
   })
 }
 
-export const setCompPropertiess = (id, compProperties) => (dispatch) => {
+export const setCompProperties = (id, compProperties) => (dispatch) => {
   dispatch({
     type: actions.SET_COMP_PROPERTIES,
     payload: {

@@ -8,7 +8,6 @@ const InitialState = {
 export default function (state = InitialState, action) {
   switch (action.type) {
     case actions.GET_COMP_PROPERTIES: {
-      console.log(action.payload.compProperties)
       return {
         ...state,
         id: action.payload.id,
@@ -17,8 +16,11 @@ export default function (state = InitialState, action) {
     }
 
     case actions.SET_COMP_PROPERTIES: {
+      console.log(action.payload.compProperties)
       return {
-        ...state
+        ...state,
+        id: action.payload.id,
+        compProperties: action.payload.compProperties
       }
     }
 
