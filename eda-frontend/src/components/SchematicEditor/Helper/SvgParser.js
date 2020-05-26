@@ -220,6 +220,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         default:
           break
       }
+      props.FNAME = component.name
       // console.log(props)
       v1.properties = props
 
