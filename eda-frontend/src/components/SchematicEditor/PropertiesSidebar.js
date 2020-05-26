@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import SimulationProperties from './SimulationProperties'
 import ComponentProperties from './ComponentProperties'
 
 import './Helper/SchematicEditor.css'
@@ -137,8 +136,6 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
       </List>
 
       <ComponentProperties />
-
-      <SimulationProperties />
     </>
   )
 }

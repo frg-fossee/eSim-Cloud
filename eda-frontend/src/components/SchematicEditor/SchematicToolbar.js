@@ -21,6 +21,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { NetlistModal, HelpScreen } from './ToolbarExtension'
 import MenuButton from './MenuButton'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
+import { useDispatch } from 'react-redux'
+import { toggleSimulate } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -45,6 +47,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SchematicToolbar ({ mobileClose }) {
   const classes = useStyles()
+
+  const dispatch = useDispatch()
 
   const [open, setOpen] = React.useState(false)
   const [helpOpen, setHelpOpen] = React.useState(false)
@@ -71,7 +75,11 @@ export default function SchematicToolbar ({ mobileClose }) {
     <>
       <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} />
       <MenuButton title={'Edit'} iconType={EditIcon} items={['Cut', 'Copy', 'Paste']} />
-      <MenuButton title={'Simulate'} iconType={PlayCircleOutlineIcon} items={['DC Simulation', 'DC Sweep', 'Time Domain Simulation', 'Frequency Domain Simulation']} />
+      <Tooltip title="Simulate">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { dispatch(toggleSimulate()) }}>
+          <PlayCircleOutlineIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">

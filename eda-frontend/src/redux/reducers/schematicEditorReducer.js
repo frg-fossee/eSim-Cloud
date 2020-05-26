@@ -1,6 +1,7 @@
 import * as actions from '../actions/actions'
 
 const InitialState = {
+  isSimulate: false,
   libraries: [],
   collapse: {},
   components: {}
@@ -37,6 +38,10 @@ export default function (state = InitialState, action) {
       // console.log('Fetched and added ', newComponents[action.payload.id].length, 'Components')
       Object.assign(state.components, newComponents)
       return { ...state, components: { ...state.components, newComponents } }
+    }
+
+    case actions.TOGGLE_SIMULATE: {
+      return { ...state, isSimulate: !state.isSimulate }
     }
 
     default:
