@@ -29,10 +29,10 @@ export class LED extends CircuitElement {
       console.log(this.nodes[0].value);
       if (val === 5) {
         this.anim();
-        this.nodes[1].setValue(5, null);
       } else {
         this.elements[3].attr({ fill: 'none' });
       }
+      this.nodes[1].setValue(val, null);
     } else {
       // TODO: Show Toast
       window.showToast('LED is not Connected properly');
