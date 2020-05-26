@@ -25,10 +25,9 @@ Development branch status
 #### Setting up docker containers
 * Install docker-ce and docker-compose for your OS
 
-* Configure docker with github packages for pulling pre built images
-```echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin```
 * To build and run migrations ( Pulls latest dev image from github)
 ``` /bin/bash first_run.dev.sh ``` ( for the first time only )
+
 * To Start all containers
 ``` docker-compose -f docker-compose.dev.yml --env-file .env up ```
 ------------------------------------------------------------------------------
@@ -97,7 +96,7 @@ Development branch status
 
 * Alternatively docker images can be directly pulled from github instead of building on system
 ```
-   echo <GITHUB_TOKEN> | sudo docker login docker.pkg.github.com --username darshkpatel --password-stdin
+   echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin
    sudo docker-compose -f docker-compose.dev.yml pull
    sudo docker-compose -f docker-compose.dev.yml up -d db
    ----WAIT FOR DB TO FINISH INITIALIZING-----
