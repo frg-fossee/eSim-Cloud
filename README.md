@@ -12,6 +12,7 @@ Development branch status
 ![Angular Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Angular%20Build%20and%20Tests/badge.svg?branch=develop)
 ![React Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/React%20Build%20and%20Tests/badge.svg?branch=develop)
 ![Containers](https://github.com/frg-fossee/eSim-Cloud/workflows/Containers/badge.svg)
+![ESLint eda-frontend](https://github.com/frg-fossee/eSim-Cloud/workflows/ESLint%20eda-frontend/badge.svg?branch=develop)
 ### Configuring Production Environment
 * Install Docker and docker-compose for server OS
 * ``` git clone git@github.com:frg-fossee/eSim-Cloud.git && cd eSim-Cloud```
@@ -24,17 +25,15 @@ Development branch status
 #### Setting up docker containers
 * Install docker-ce and docker-compose for your OS
 
-* Configure docker with github packages for pulling pre built images
-```echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin```
 * To build and run migrations ( Pulls latest dev image from github)
 ``` /bin/bash first_run.dev.sh ``` ( for the first time only )
-* To generate libraries and seed them
-``` docker-compose -f docker-compose.dev.yml run --rm django python manage.py seed_libs --location kicad-symbols ```
-* To Start all containers
-``` docker-compose -f docker-compose.dev.yml --env-file .env up ```
 
+* To Start all containers
+``` docker-compose -f docker-compose.dev.yml --env-file .env up ```  do note it might take a while to initialize / throw some errors if they're initialized in the wrong order , running the command again will most likely fix the issue.
+
+------------------------------------------------------------------------------
 * To manually build containers
-```docker-compose -f docker-compose.dev.yml --env-file .env build --pull ```
+```docker-compose -f docker-compose.dev.yml --env-file .env build```
 
 ##### For Setting up Backend containers only
 
@@ -51,5 +50,59 @@ Development branch status
 * To run arduino-frontend along with all backend containers
 
 ``` docker-compose -f docker-compose.dev.yml --env-file .env up arduino-frontend ```
+
+##### DB Switching Instructions
+* To switch between databases, follow the instructions below
+* Please note *all data in the database will be lost*
+* Turn off existing containers ```docker-compose -f docker-compose.dev.yml down```
+* Switch to the needed config inside .env then copy it to prod config ``` cp .env .env.prod ``` , make needed changes ( if required) in the prod config
+* Uncomment the appropriate DB Block inside docker-compse.(dev/prod).yml , please note only one db block should be present
+* Build Containers and run db migrations again ``` ./first_run.dev.sh ```
+
+##### Ubuntu Installation Dump
+* Note: These are all commands being executed to setup the project's development environment on a fresh ubuntu system with username ``` ubuntu ```
+
+```
+
+   git clone https://github.com/frg-fossee/eSim-Cloud/
+
+   cd eSim-Cloud/
+
+   git checkout develop
+
+   sudo curl -L "https://github.com/docker/compose/releases/download/1.25.5/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+   sudo chmod +x /usr/local/bin/docker-compose
+
+   sudo apt-get remove docker docker-engine docker.io containerd runc
+
+   curl -fsSL https://get.docker.com -o get-docker.sh
+
+   sudo sh get-docker.sh
+
+   sudo usermod -aG docker ubuntu
+
+   sudo systemctl start docker
+
+   sudo systemctl status docker
+
+   sudo docker ps
+
+   sudo ./first_run.dev.sh
+
+```
+
+* If you notice ``` ERROR: UnixHTTPConnectionPool(host='localhost', port=None): Read timed out. ``` or ``` Exited with code 137```, it means docker / host system ran out of memory
+
+
+* Alternatively docker images can be directly pulled from github instead of building on system
+```
+   echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin
+   sudo docker-compose -f docker-compose.dev.yml pull
+   sudo docker-compose -f docker-compose.dev.yml up --env-file .env -d db
+   ----WAIT FOR DB TO FINISH INITIALIZING-----
+   sudo docker-compose -f docker-compose.dev.yml --env-file .env up
+```
+
 
 ![Docker Containers](docs/images/docker.png)

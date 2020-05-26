@@ -40,10 +40,14 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django_filters',
     'corsheaders',
-    'simulationAPI',
-    'libAPI',
-    'rest_framework',
     'drf_yasg',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'social_django',
+    'djoser',
+    'simulationAPI',
+    'authAPI',
+    'libAPI',
     'arduinoAPI',
 ]
 
@@ -85,10 +89,10 @@ WSGI_APPLICATION = 'esimCloud.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.environ.get("MYSQL_DATABASE",
+        "NAME": os.environ.get("SQL_DATABASE",
                                os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.environ.get("MYSQL_USER", "user"),
-        "PASSWORD": os.environ.get("MYSQL_PASSWORD", "password"),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
@@ -107,8 +111,10 @@ DATABASES = {
 }
 
 
-DATABASE_ROUTERS = ('simulationAPI.dbrouters.mongoRouter',
-                    'libAPI.dbrouters.mongoRouter')
+DATABASE_ROUTERS = (
+    'simulationAPI.dbrouters.mongoRouter',
+    # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
+)
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -126,6 +132,34 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", "")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "")
+GOOGLE_OAUTH_REDIRECT_URI = os.environ.get(
+    "GOOGLE_OAUTH_REDIRECT_URI", "http://localhost/api/auth/google-callback")
+DJOSER = {
+    'SEND_ACTIVATION_EMAIL': True,
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'api/auth/users/activate/{uid}/{token}',
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
+    'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy'
+    # 'LOGIN_FIELD': 'email'   For using email only
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.google.GoogleOAuth2',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
