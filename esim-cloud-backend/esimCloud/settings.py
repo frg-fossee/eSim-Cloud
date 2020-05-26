@@ -144,7 +144,7 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'api/auth/users/activate/{uid}/{token}',
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI], # noqa
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy'
     # 'LOGIN_FIELD': 'email'   For using email only
 }
