@@ -116,7 +116,7 @@ GridProperties.propTypes = {
 export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const classes = useStyles()
 
-  const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
+  const compObj = useSelector(state => state.componentPropertiesReducer.compObj)
 
   return (
     <>
@@ -139,7 +139,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
       </List>
       <SimulationProperties />
       <div>
-        <h1>{properties.FNAME}</h1>
+        <h1>{compObj.id}</h1>
       </div>
     </>
   )
