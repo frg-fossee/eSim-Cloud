@@ -29,13 +29,11 @@ Development branch status
 ```echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin```
 * To build and run migrations ( Pulls latest dev image from github)
 ``` /bin/bash first_run.dev.sh ``` ( for the first time only )
-* To generate libraries and seed them
-``` docker-compose -f docker-compose.dev.yml run --rm django python manage.py seed_libs --location kicad-symbols ```
 * To Start all containers
 ``` docker-compose -f docker-compose.dev.yml --env-file .env up ```
-
+------------------------------------------------------------------------------
 * To manually build containers
-```docker-compose -f docker-compose.dev.yml --env-file .env build --pull ```
+```docker-compose -f docker-compose.dev.yml --env-file .env build```
 
 ##### For Setting up Backend containers only
 
