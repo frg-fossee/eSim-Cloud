@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="400" height="200" viewBox="-200.0 -100.0 400 200">
+<defs>
+</defs>
+<path d="M75,-100 L75,100" stroke-width="6" stroke="black" fill-opacity="0" />
+<path d="M-75,-100 L-75,100 L75,0" stroke-width="6" stroke="black" fill="black" />
+<text x="-125.0" y="-17" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="3" y="0" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M-200,0 L-50,0" stroke="black" stroke-width="5" />
+<text x="125.0" y="-17" font-size="23.333333333333332" fill="black" text-anchor="middle" transform="translate(0,6.999999999999999)"></text>
+<text x="-3" y="0" font-size="35.0" text-anchor="middle" transform="translate(0,10.5)"></text>
+<path d="M200,0 L50,0" stroke="black" stroke-width="5" />
+<metadata width="400" height="200" symbolPrefix="D" cmpPartDmgLabel="1:A" nameOfSymbol="D-DIODE-1-A"><p-1><x>-200</x><y>0</y><type>I
+                        </type><name>K</name><orientation>R</orientation>
+                        <length>150</length>
+                        </p-1><p-2><x>200</x><y>0</y><type>I
+                        </type><name>A</name><orientation>L</orientation>
+                        <length>150</length>
+                        </p-2></metadata></svg>

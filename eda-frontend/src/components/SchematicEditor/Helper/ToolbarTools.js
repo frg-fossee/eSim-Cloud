@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
@@ -11,8 +12,7 @@ const {
   mxRectangle,
   mxUtils,
   mxUndoManager,
-  mxEvent,
-  mxCodec
+  mxEvent
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -136,16 +136,19 @@ export function ErcCheck () {
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0
+  var PinNC = 0
+  var stypes = 0
   for (var property in list) {
     var cell = list[property]
     if (cell.Component === true) {
-      // console.log(cell.CellType)
+      console.log(cell)
+      cell.value = 'Checked'
       for (var child in cell.children) {
         console.log(cell.children[child])
         var childVertex = cell.children[child]
         if (childVertex.Pin === true && childVertex.edges === null) {
-          // console.log('Wires not Connected')
-          alert('Wires not connected')
+          graph.getSelectionCell(childVertex)
+          ++PinNC
           ++errorCount
         }
       }
@@ -154,37 +157,216 @@ export function ErcCheck () {
     // Setting a rule check that only input and output ports can be connected
     if (cell.edge === true) {
       // eslint-disable-next-line no-constant-condition
-      if (cell.source.pinType === 'Input' && cell.target.pinType === 'Output') {
-        console.log('Wire Information')
-        console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
-        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
-      } else if (cell.source.pinType === 'Ouput' && cell.target.pinType === 'Input') {
-        console.log('Wire Information')
-        console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
-        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
+      if ((cell.source.pinType === 'Input' && cell.target.pinType === 'Input') || (cell.source.pinType === 'Output' && cell.target.pinType === 'Output')) {
+        ++stypes
       } else {
-        // Automatically remove wire if same pintype are connected
-        /* cell.source.removeFromTerminal(true)
-                        cell.target.removeFromTerminal(false) */
-        graph.setSelectionCell(cell)
-        alert('Same pintypes are connected together')
-        ++errorCount
+        cell.value = 'Node Number : ' + cell.id
+        console.log('Wire Information')
+        console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
+        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
       }
     }
   }
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount
-  }
-  if (errorCount === 0) {
-    alert('ERC Check completed')
+  } else if (PinNC !== 0) {
+    alert('Pins not connected')
+  } else if (stypes !== 0) {
+    alert('Same pintypes connected')
+  } else {
+    if (errorCount === 0) {
+      alert('ERC Check completed')
+    }
   }
 }
 
 // GENERATE NETLIST
 export function GenerateNetList () {
-  var enc = new mxCodec(mxUtils.createXmlDocument())
+  /* var enc = new mxCodec(mxUtils.createXmlDocument())
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
-  return value
+  return value */
+  var r = 1
+  var v = 1
+  var c = 1
+  var list = graph.getModel().cells
+  var netlist = []
+
+  // console.log('Untitled netlist'
+  var k = '* Unitled netlist \n'
+  for (var property in list) {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      // k = ''
+      // alert('Component is present')
+      var compobj = {
+        name: '',
+        node1: '',
+        node2: '',
+        magnitude: ''
+      }
+      var component = list[property]
+      // console.log(component)
+      if (component.symbol === 'R') {
+        // component.symbol = component.symbol + r.toString()
+        k = k + component.symbol + r.toString()
+        component.value = component.symbol + r.toString()
+        // component.symbol = component.value
+
+        ++r
+      } else if (component.symbol === 'V') {
+        // component.symbol = component.symbol + v.toString()
+        k = k + component.symbol + v.toString()
+        component.value = component.symbol + v.toString()
+        // component.symbol = component.value
+        ++v
+      } else {
+        // component.symbol = component.symbol + c.toString()
+        k = k + component.symbol + c.toString()
+        component.value = component.symbol + c.toString()
+        // component.symbol = component.value
+        ++c
+      }
+      // compobj.name = component.symbol
+
+      if (component.children !== null) {
+        for (var child in component.children) {
+          var pin = component.children[child]
+          if (pin.vertex === true) {
+            // alert(pin.id)
+            if (pin.edges !== null || pin.edges.length !== 0) {
+              for (var wire in pin.edges) {
+                if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                  // console.log('Found ground')
+                  pin.edges[wire].node = 0
+                  pin.edges[wire].value = 0
+                  k = k + ' ' + pin.edges[wire].node
+                } else {
+                  // console.log(pin.edges[wire])
+                  pin.edges[wire].node = pin.edges[wire].id
+                  pin.edges[wire].value = pin.edges[wire].node
+                  k = k + '  ' + pin.edges[wire].node
+                }
+              }
+            }
+          }
+        }
+        compobj.name = component.symbol
+        compobj.node1 = component.children[0].edges[0].node
+        compobj.node2 = component.children[1].edges[0].node
+        compobj.magnitude = 10
+        netlist.push(compobj)
+        console.log(compobj)
+      }
+      if (component.symbol.split('')[0] === 'R') {
+        k = k + ' 1k'
+      } else if (component.symbol.split('')[0] === 'C') {
+        k = k + ' 10u'
+      } else if (component.symbol.split('')[0] === 'V') {
+        k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
+      }
+      // k = k + ' 10'
+      k = k + ' \n'
+      // console.log(k)
+    }
+  }
+  // k = k + '.op \n'
+  // k = k + '.end \n'
+  console.log(netlist)
+  return k
+}
+function GenerateNodeList () {
+  /* var enc = new mxCodec(mxUtils.createXmlDocument())
+  var node = enc.encode(graph.getModel())
+  var value = mxUtils.getPrettyXml(node)
+  return value */
+  var r = 1
+  var v = 1
+  var c = 1
+  var list = graph.getModel().cells
+  var netlist = []
+
+  // console.log('Untitled netlist'
+  var k = 'Unitled netlist \n'
+  for (var property in list) {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      // k = ''
+      // alert('Component is present')
+      var compobj = {
+        name: '',
+        node1: '',
+        node2: '',
+        magnitude: ''
+      }
+      var component = list[property]
+      // console.log(component)
+      /* if (component.symbol === 'R') {
+        // component.symbol = component.symbol + r.toString()
+        k = k + component.symbol + r.toString()
+        component.value = component.symbol + r.toString()
+        component.symbol = component.value
+
+        ++r
+      } else if (component.symbol === 'V') {
+        // component.symbol = component.symbol + v.toString()
+        k = k + component.symbol + v.toString()
+        component.value = component.symbol + v.toString()
+        component.symbol = component.value
+        ++v
+      } else {
+        // component.symbol = component.symbol + c.toString()
+        k = k + component.symbol + c.toString()
+        component.value = component.symbol + c.toString()
+        component.symbol = component.value
+        ++c
+      } */
+      // compobj.name = component.symbol
+
+      if (component.children !== null) {
+        for (var child in component.children) {
+          var pin = component.children[child]
+          if (pin.vertex === true) {
+            // alert(pin.id)
+            if (pin.edges !== null || pin.edges.length !== 0) {
+              for (var wire in pin.edges) {
+                if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                  // console.log('Found ground')
+                  pin.edges[wire].node = 0
+                  pin.edges[wire].value = 0
+                  k = k + ' ' + pin.edges[wire].node
+                } else {
+                  // console.log(pin.edges[wire])
+                  pin.edges[wire].node = pin.edges[wire].id
+                  pin.edges[wire].value = pin.edges[wire].node
+                  k = k + '  ' + pin.edges[wire].node
+                }
+              }
+            }
+          }
+        }
+        compobj.name = component.symbol
+        compobj.node1 = component.children[0].edges[0].node
+        compobj.node2 = component.children[1].edges[0].node
+        compobj.magnitude = 10
+        netlist.push(compobj)
+        console.log(compobj)
+      }
+      /* if (component.symbol.split('')[0] === 'R') {
+        k = k + ' 1k'
+      }
+      else if( component.symbol === 'C') {
+        k = k + ' 10u'
+      }
+      else {
+        k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
+      } */
+      // k = k + ' 10'
+      // k = k + ' \n'
+      // console.log(k)
+    }
+  }
+  // k = k + '.op \n'
+  // k = k + '.end \n'
+  // console.log(netlist)
+  return netlist
 }

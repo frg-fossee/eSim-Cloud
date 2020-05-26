@@ -1,7 +1,6 @@
 import api from '../../utils/Api'
 import * as actions from './actions'
 
-
 export const fetchLibraries = () => (dispatch) => {
 // SAMPLE Response from API
 // [
@@ -22,30 +21,45 @@ export const fetchLibraries = () => (dispatch) => {
     )
     .catch((err) => { console.error(err) })
 }
-export const fetchComponents = (library_id) => (dispatch) => {
+export const fetchComponents = (libraryId) => (dispatch) => {
 // SAMPLE Response from API
 //   [
-//   {
-//     "id": 1
-//     "name": "AD630ARZ",
-//     "svg_path": "kicad-symbols/symbol_svgs/Analog/U-AD630ARZ-1-A.svg",
-//     "symbol_prefix": "U",
-//     "component_library": 9,
-//     "description": "High precision Balanced Modulator/Demodulator, 2 MHz, SOIC-20W",
-//     "data_link": "https://www.analog.com/media/en/technical-documentation/data-sheets/ad630.pdf",
-//     "full_name": "U-AD630ARZ-1-A",
-//     "keyword": "modulator demodulator",
-//     "part": "A",
-//     "dmg": 1
-//   },
+  // {
+  //   "id": 14221,
+  //   "name": "BAT54ADW",
+  //   "svg_path": "kicad-symbols/symbol_svgs/Diode/D-BAT54ADW-1-A.svg",
+  //   "thumbnail_path": "kicad-symbols/symbol_svgs/Diode/D-BAT54ADW-1-A_thumbnail.svg",
+  //   "symbol_prefix": "D",
+  //   "component_library": "http://localhost/api/libraries/193/",
+  //   "description": "Schottky diode array 2 pair Com A",
+  //   "data_link": "http://www.diodes.com/datasheets/ds30152.pdf",
+  //   "full_name": "D-BAT54ADW-1-A",
+  //   "keyword": "diode",
+  //   "alternate_component": [
+  //     {
+  //       "dmg": 1,
+  //       "part": "C",
+  //       "full_name": "D-BAT54ADW-1-C",
+  //       "svg_path": "kicad-symbols/symbol_svgs/Diode/D-BAT54ADW-1-C.svg",
+  //       "id": 2326
+  //     },
+  //     {
+  //       "dmg": 1,
+  //       "part": "B",
+  //       "full_name": "D-BAT54ADW-1-B",
+  //       "svg_path": "kicad-symbols/symbol_svgs/Diode/D-BAT54ADW-1-B.svg",
+  //       "id": 2327
+  //     },
+  //   ]
+  // },
 // ] -- Multiple dicts in array
-  const url = 'components/?component_library='+parseInt(library_id)
+  const url = 'components/?component_library=' + parseInt(libraryId)
   api.get(url)
     .then(
       (res) => {
         dispatch({
           type: actions.FETCH_COMPONENTS,
-          payload: {components: res.data, id: library_id}
+          payload: { components: res.data, id: libraryId }
         })
       }
     )

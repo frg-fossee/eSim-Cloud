@@ -8,7 +8,6 @@ rm -rf mongo_data
 
 echo 'Deleting Existing Migrations'
 find ./esim-cloud-backend -name "migrations" -type d -prune -exec rm -rf '{}' +
-find ./esim-cloud-backend -name "symbol_svgs" -type d -prune -exec rm -rf '{}' +
 
 #For Slow Systems / Systems with less memory
 export DOCKER_CLIENT_TIMEOUT=120

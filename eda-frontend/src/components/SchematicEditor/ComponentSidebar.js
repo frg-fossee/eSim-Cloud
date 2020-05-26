@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-// import AddSideBarComponentDOM from './Helper/SidebarDom.js'
 import {
   Hidden,
   List,
   ListItem,
   Collapse,
-  ListItemText,
-  ListItemIcon,
+  ListItemIcon
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
@@ -16,8 +14,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state'
-import Popover from '@material-ui/core/Popover'
+import SideComp from './SideComp.js'
+const COMPONENTS_PER_ROW = 3
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -51,7 +49,7 @@ export default function ComponentSidebar ({ compRef }) {
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-    console.log(collapse)
+    // console.log(collapse)
   }
 
   // For Fetching Libraries
@@ -59,53 +57,16 @@ export default function ComponentSidebar ({ compRef }) {
     dispatch(fetchLibraries())
   }, [dispatch])
 
-
-// Generates Component Listing and It's Pop Over
-const generateComponent = (component) => {
-  return (
-    <PopupState variant="popover" popupId={component.full_name}>
-    {popupState => (
-      <div>
-    <ListItem key={component.full_name} {...bindTrigger(popupState)}>
-      {component.full_name}
-    </ListItem>
-
-    <Popover
-              {...bindPopover(popupState)}
-              anchorOrigin={{
-                vertical: 'center',
-                horizontal: 'right'
-              }}
-              transformOrigin={{
-                vertical: 'center',
-                horizontal: 'left'
-              }}
-    >
-      <List component="div" disablePadding dense >
-        <ListItemText>
-          <b>Description:</b> {component.description}
-        </ListItemText>
-
-        <ListItemText>
-        <b>Keywords:</b> {component.keyword}
-        </ListItemText>
-
-        <ListItemText>
-        <b>Datasheet:</b> <a href={component.data_link}>{component.data_link}</a>
-        </ListItemText>
-
-        <ListItemText>
-        <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
-        </ListItemText>
-        <ListItemIcon>
-        <img src={'../'+component.svg_path} alt="Logo"/>
-        </ListItemIcon>
-     </List>
-     </Popover>
-    </div>
-        )}
-      </PopupState>
-    )
+  // Used to chunk array
+  const chunk = (array, size) => {
+    return array.reduce((chunks, item, i) => {
+      if (i % size === 0) {
+        chunks.push([item])
+      } else {
+        chunks[chunks.length - 1].push(item)
+      }
+      return chunks
+    }, [])
   }
 
   return (
@@ -127,26 +88,30 @@ const generateComponent = (component) => {
               return (
                 <div key={library.id}>
                   <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
-                    <span className={classes.head}>{library.library_name}</span>
+                    <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
                     {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
                   </ListItem>
-                  <Collapse in={collapse[library.id]} timeout="auto" unmountOnExit>
+                  <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
                     <List component="div" disablePadding dense >
 
-                {/* Chunked Components of Library */}
-                {
-                components[library.id].map((component)=>{
-                 return(
-                  <ListItem key={component.full_name} divider>
-                    <ListItemText component="div">
-                  {
-                      generateComponent(component)
-                  }
-                   </ListItemText>
-                  </ListItem>
-                      )
-                 })
-                 }
+                      {/* Chunked Components of Library */}
+                      {
+                        chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
+                          return (
+                            <ListItem key={componentChunk[0].svg_path} divider>
+                              {
+                                componentChunk.map((component) => {
+                                  // console.log(component)
+                                  return (<ListItemIcon key={component.full_name}>
+                                    <SideComp component={component} />
+                                  </ListItemIcon>)
+                                }
+                                )
+                              }
+                            </ListItem>
+                          )
+                        })
+                      }
 
                     </List>
                   </Collapse>

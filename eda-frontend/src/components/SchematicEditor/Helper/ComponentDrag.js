@@ -1,21 +1,24 @@
+/* eslint-disable no-inner-declarations */
 /* eslint-disable no-new */
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
-import comp1 from '../../../static/CircuitComp/V-VSOURCE-1_A.svg'
-import comp2 from '../../../static/CircuitComp/R-R-1_A.svg'
-import comp3 from '../../../static/CircuitComp/C-CAP-1_A.svg'
-import comp4 from '../../../static/CircuitComp/U-4001-1_A.svg'
-import comp5 from '../../../static/CircuitComp/U-4011-1_B.svg'
-import comp6 from '../../../static/CircuitComp/U-4051-1_A.svg'
-import comp7 from '../../../static/CircuitComp/GND-0-1_A.svg'
+import comp1 from '../../../static/CircuitComp/V-VSOURCE-1-A.svg'
+import comp2 from '../../../static/CircuitComp/R-R-1-A.svg'
+import comp3 from '../../../static/CircuitComp/C-CAP-1-A.svg'
+import comp4 from '../../../static/CircuitComp/GPWR-GND-1-A.svg'
+import comp5 from '../../../static/CircuitComp/U-OPAMP-1-A.svg'
+import comp6 from '../../../static/CircuitComp/D-DIODE-1-A.svg'
+import comp7 from '../../../static/CircuitComp/L-INDUCTOR-1-A.svg'
+import comp8 from '../../../static/CircuitComp/Q-QNPN-1-A.svg'
 
-import AddSideBarComponent from './SideBar.js'
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
 import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
-var paths = [comp1, comp2, comp3, comp4, comp5, comp6, comp7]
+import KeyboardShorcuts from './KeyboardShorcuts.js'
+import { SideBar, AddSidebarComponent } from './SideBar.js'
+var paths = [comp1, comp2, comp3, comp4, comp5, comp6, comp7, comp8]
 var graph
 
 const {
@@ -25,7 +28,8 @@ const {
   mxUtils,
   mxEvent,
   mxOutline,
-  mxCell
+  mxCell,
+  mxConstants
 } = new mxGraphFactory()
 
 export default function LoadGrid (container, sidebar, outline) {
@@ -50,6 +54,10 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.PinNumber = 0
     // Parent component of a pin, default is null
     mxCell.prototype.ParentComponent = null
+    mxCell.prototype.symbol = null
+    mxCell.prototype.node = mxCell.prototype.id
+    mxCell.prototype.PinName = ''
+    mxCell.prototype.CompObject = null
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
@@ -64,17 +72,104 @@ export default function LoadGrid (container, sidebar, outline) {
     outln.outline.labelsVisible = true
     outln.outline.setHtmlLabels(true)
 
+    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+      var cell = evt.getProperty('cell')
+      mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
+      console.log(cell.CellType)
+      evt.consume()
+    })
+
+    SideBar(graph, sidebar)
+    KeyboardShorcuts(graph)
     WireConfigFunct(graph)
     EdgeWireFunct()
     ClipBoardFunct(graph)
     NetlistInfoFunct(graph)
     ToolbarTools(graph)
     for (var i = 0; i < paths.length; i++) {
-      AddSideBarComponent(graph, sidebar, paths[i]) // Adds the component to the sidebar and makes it draggable
+      AddSidebarComponent(paths[i]) // Adds the component to the sidebar and makes it draggable
       if (((i + 1) % 3 === 0)) {
         sidebar.appendChild(document.createElement('br'))
       }
     }
+
+    function updateStyle (state, hover) {
+      if (hover) {
+        state.style[mxConstants.STYLE_FILLCOLOR] = '#ff0000'
+      }
+
+      // Sets rounded style for both cases since the rounded style
+      // is not set in the default style and is therefore inherited
+      // once it is set, whereas the above overrides the default value
+      state.style[mxConstants.STYLE_ROUNDED] = (hover) ? '1' : '0'
+      state.style[mxConstants.STYLE_STROKEWIDTH] = (hover) ? '4' : '1'
+      state.style[mxConstants.STYLE_FONTSTYLE] = (hover) ? mxConstants.FONT_BOLD : '0'
+    };
+
+    // Changes fill color to red on mouseover
+    graph.addMouseListener(
+      {
+        currentState: null,
+        previousStyle: null,
+        mouseDown: function (sender, me) {
+          if (this.currentState != null) {
+            this.dragLeave(me.getEvent(), this.currentState)
+            this.currentState = null
+          }
+        },
+        mouseMove: function (sender, me) {
+          if (this.currentState != null && me.getState() === this.currentState) {
+            return
+          }
+
+          var tmp = graph.view.getState(me.getCell())
+
+          // Ignores everything but vertices
+          if (graph.isMouseDown || (tmp != null && !graph.getModel().isVertex(tmp.cell))) {
+            tmp = null
+          }
+
+          if (tmp !== this.currentState) {
+            if (this.currentState != null) {
+              this.dragLeave(me.getEvent(), this.currentState)
+            }
+
+            this.currentState = tmp
+
+            if (this.currentState !== null) {
+              this.dragEnter(me.getEvent(), this.currentState)
+            }
+          }
+        },
+        mouseUp: function (sender, me) { },
+        dragEnter: function (evt, state) {
+          if (state != null) {
+            this.previousStyle = state.style
+            state.style = mxUtils.clone(state.style)
+            updateStyle(state, true)
+            state.shape.apply(state)
+            state.shape.redraw()
+
+            if (state.text != null) {
+              state.text.apply(state)
+              state.text.redraw()
+            }
+          }
+        },
+        dragLeave: function (evt, state) {
+          if (state != null) {
+            state.style = this.previousStyle
+            updateStyle(state, false)
+            state.shape.apply(state)
+            state.shape.redraw()
+
+            if (state.text != null) {
+              state.text.apply(state)
+              state.text.redraw()
+            }
+          }
+        }
+      })
 
     // var state = mxCellState
     // graph.autoSizeCellsOnAdd = true

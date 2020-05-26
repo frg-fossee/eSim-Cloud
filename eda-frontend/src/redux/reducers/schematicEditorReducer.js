@@ -15,14 +15,17 @@ export default function (state = InitialState, action) {
       action.payload.forEach(element => {
         collapse[element.id] = false
         components[element.id] = []
-
       })
       return { ...state, libraries: action.payload, collapse: collapse, components: components }
     }
 
     case actions.TOGGLE_COLLAPSE: {
-      const newCollapse = state.collapse
-      newCollapse[action.payload.id] = !newCollapse[action.payload.id]
+      const existingState = state.collapse[action.payload.id]
+      const newCollapse = Object.keys(state.collapse).reduce(function (accObj, parseObj) {
+        accObj[parseObj] = false
+        return accObj
+      }, {})
+      newCollapse[action.payload.id] = !existingState
       console.log('Updating collapse', action.payload.id)
       Object.assign(state.collapse, newCollapse)
       return { ...state, collapse: { ...state.collapse, newCollapse } }
@@ -31,9 +34,9 @@ export default function (state = InitialState, action) {
     case actions.FETCH_COMPONENTS: {
       const newComponents = state.components
       newComponents[action.payload.id] = action.payload.components
-      console.log('Fetched and added ', newComponents[action.payload.id].length , 'Components')
+      console.log('Fetched and added ', newComponents[action.payload.id].length, 'Components')
       Object.assign(state.components, newComponents)
-      return {...state, components: {...state.components, newComponents } }
+      return { ...state, components: { ...state.components, newComponents } }
     }
 
     default:
