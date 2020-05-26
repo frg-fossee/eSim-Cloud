@@ -22,6 +22,7 @@ export class Workspace {
   };
   static copiedItem: any;
   static injector: Injector;
+  static simulating = false;
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -384,7 +385,6 @@ export class Workspace {
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {
-        // TODO: Show Alert
         const ans = confirm('The Respective code will also be lost!');
         if (!ans) {
           return;
@@ -411,9 +411,7 @@ export class Workspace {
   static copyComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof Wire) {
-        // TODO: Show Toast
         window['showToast']('You Can\'t Copy Wire');
-        // console.log('You Can\'t Copy Wire');
         return;
       }
       Workspace.copiedItem = window.Selected;
@@ -479,12 +477,14 @@ export class Workspace {
                   window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
                   if (d.output) {
                     window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
                   }
                   if (d.error) {
                     window.printConsole(d.error, ConsoleType.ERROR);
                   }
                 }
               }
+              Workspace.startArduino();
             } else if (hex.state === 'FAILED') {
               clearInterval(temp);
               window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
@@ -494,6 +494,30 @@ export class Workspace {
       });
     } else {
       window.showToast('Something Went Wrong! Please Refresh Browser');
+    }
+    Workspace.simulating = true;
+    // Workspace.startArduino();
+  }
+
+  static startArduino() {
+    for (const comp of window.scope.ArduinoUno) {
+      // comp.runner.execute();
+      // console.log("s")
+      comp.initSimulation();
+    }
+  }
+
+  static stopSimulation() {
+    // TODO: Show Loading Animation
+    Workspace.simulating = false;
+    for (const key in window.scope) {
+      if (window.scope[key]) {
+        for (const ele of window.scope[key]) {
+          if (ele.closeSimulation) {
+            ele.closeSimulation();
+          }
+        }
+      }
     }
   }
 }
