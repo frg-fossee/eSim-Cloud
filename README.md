@@ -29,7 +29,8 @@ Development branch status
 ``` /bin/bash first_run.dev.sh ``` ( for the first time only )
 
 * To Start all containers
-``` docker-compose -f docker-compose.dev.yml --env-file .env up ```
+``` docker-compose -f docker-compose.dev.yml --env-file .env up ```  do note it might take a while to initialize / throw some errors if they're initialized in the wrong order , running the command again will most likely fix the issue.
+
 ------------------------------------------------------------------------------
 * To manually build containers
 ```docker-compose -f docker-compose.dev.yml --env-file .env build```
@@ -98,9 +99,9 @@ Development branch status
 ```
    echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin
    sudo docker-compose -f docker-compose.dev.yml pull
-   sudo docker-compose -f docker-compose.dev.yml up -d db
+   sudo docker-compose -f docker-compose.dev.yml up --env-file .env -d db
    ----WAIT FOR DB TO FINISH INITIALIZING-----
-   sudo docker-compose -f docker-compose.dev.yml up
+   sudo docker-compose -f docker-compose.dev.yml --env-file .env up
 ```
 
 
