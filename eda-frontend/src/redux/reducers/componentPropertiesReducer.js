@@ -1,17 +1,18 @@
 import * as actions from '../actions/actions'
 
 const InitialState = {
-  compObj: {}
+  id: '',
+  compProperties: {}
 }
 
 export default function (state = InitialState, action) {
   switch (action.type) {
     case actions.GET_COMP_PROPERTIES: {
-      console.log(action.payload.compObj)
+      console.log(action.payload.compProperties)
       return {
         ...state,
-
-        compObj:action.payload.compObj
+        id: action.payload.id,
+        compProperties: action.payload.compProperties
       }
     }
 

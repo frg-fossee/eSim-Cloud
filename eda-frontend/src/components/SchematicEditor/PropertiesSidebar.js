@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import SimulationProperties from './SimulationProperties'
-import { useSelector } from 'react-redux'
+import ComponentProperties from './ComponentProperties'
 
 import './Helper/SchematicEditor.css'
 
@@ -116,8 +116,6 @@ GridProperties.propTypes = {
 export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const classes = useStyles()
 
-  const compObj = useSelector(state => state.componentPropertiesReducer.compObj)
-
   return (
     <>
       <Hidden mdDown>
@@ -137,10 +135,10 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           <div className="outline-container" ref={outlineRef} id="outlineContainer" />
         </ListItem>
       </List>
+
+      <ComponentProperties />
+
       <SimulationProperties />
-      <div>
-        <h1>{compObj.id}</h1>
-      </div>
     </>
   )
 }
