@@ -152,6 +152,24 @@
       "height": 334,
       "x": 0,
       "y": 0
+    },
+    {
+      "type": "rectangle",
+      "width": 13,
+      "height": 7,
+      "x": 202,
+      "y": 81,
+      "radius": 0,
+      "fill": "rgba(255,255,0,0.38297873)"
+    },
+    {
+      "type": "rectangle",
+      "width": 13,
+      "height": 7,
+      "x": 380,
+      "y": 108,
+      "radius": 0,
+      "fill": "rgba(0,255,0,0.38297873)"
     }
   ],
   "simulation": {},
