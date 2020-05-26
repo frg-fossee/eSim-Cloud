@@ -1,11 +1,16 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 import { isUndefined } from 'util';
+import { ArduinoRunner } from '../AVR8/Execute';
 
 export class ArduinoUno extends CircuitElement {
   static prefix = 'Arduino UNO R3 ';
   public name: string;
   public code = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}';
+  public runner: ArduinoRunner;
+  public hex: string;
+  public powerLed: any;
+  public builtinLED: any;
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
     let start = window['scope']['ArduinoUno'].length + 1;
@@ -15,6 +20,8 @@ export class ArduinoUno extends CircuitElement {
       this.name = ArduinoUno.prefix + start;
     }
     window['ArduinoUno_name'][this.name] = this;
+  }
+  init() {
   }
   save() {
   }
@@ -55,8 +62,24 @@ export class ArduinoUno extends CircuitElement {
     delete window['ArduinoUno_name'][this.name];
   }
   initSimulation(): void {
+    this.runner = new ArduinoRunner(this.hex);
+    // console.log(this.runner);
+    this.runner.portB.addListener((value) => {
+      console.log(value);
+    });
+    this.runner.portC.addListener((value) => {
+      console.log(value);
+    });
+    this.runner.portD.addListener((value) => {
+      console.log(value);
+    });
+    this.runner.usart.onByteTransmit = (value) => {
+      /// TODO: Show On Console
+    };
+    this.runner.execute();
   }
   closeSimulation(): void {
+    this.runner.delete();
   }
   simulate(): void {
   }
