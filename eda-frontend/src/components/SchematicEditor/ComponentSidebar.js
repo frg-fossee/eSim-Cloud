@@ -15,6 +15,7 @@ import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
 import SideComp from './SideComp.js'
+import SimulationProperties from './SimulationProperties'
 const COMPONENTS_PER_ROW = 3
 
 const useStyles = makeStyles((theme) => ({
@@ -35,6 +36,7 @@ export default function ComponentSidebar ({ compRef }) {
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
   const components = useSelector(state => state.schematicEditorReducer.components)
+  const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
 
   const dispatch = useDispatch()
 
@@ -75,52 +77,62 @@ export default function ComponentSidebar ({ compRef }) {
         <div className={classes.toolbar} />
       </Hidden>
 
-      {/* Display List of categorized components */}
-      <List>
-        <ListItem button divider>
-          <h2 style={{ margin: '5px' }}>Components List</h2>
-        </ListItem>
+      <div style={isSimulate ? { display: 'none' } : {}}>
+        {/* Display List of categorized components */}
+        <List>
+          <ListItem button divider>
+            <h2 style={{ margin: '5px' }}>Components List</h2>
+          </ListItem>
 
-        {/* Collapsing List Mapped by Libraries fetched by the API */}
-        {
-          libraries.map(
-            (library) => {
-              return (
-                <div key={library.id}>
-                  <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
-                    <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
-                    {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
-                  </ListItem>
-                  <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
-                    <List component="div" disablePadding dense >
+          {/* Collapsing List Mapped by Libraries fetched by the API */}
+          {
+            libraries.map(
+              (library) => {
+                return (
+                  <div key={library.id}>
+                    <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
+                      <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
+                      {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
+                      <List component="div" disablePadding dense >
 
-                      {/* Chunked Components of Library */}
-                      {
-                        chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
-                          return (
-                            <ListItem key={componentChunk[0].svg_path} divider>
-                              {
-                                componentChunk.map((component) => {
-                                  // console.log(component)
-                                  return (<ListItemIcon key={component.full_name}>
-                                    <SideComp component={component} />
-                                  </ListItemIcon>)
+                        {/* Chunked Components of Library */}
+                        {
+                          chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
+                            return (
+                              <ListItem key={componentChunk[0].svg_path} divider>
+                                {
+                                  componentChunk.map((component) => {
+                                    // console.log(component)
+                                    return (<ListItemIcon key={component.full_name}>
+                                      <SideComp component={component} />
+                                    </ListItemIcon>)
+                                  }
+                                  )
                                 }
-                                )
-                              }
-                            </ListItem>
-                          )
-                        })
-                      }
+                              </ListItem>
+                            )
+                          })
+                        }
 
-                    </List>
-                  </Collapse>
-                </div>
-              )
-            }
-          )
-        }
-      </List>
+                      </List>
+                    </Collapse>
+                  </div>
+                )
+              }
+            )
+          }
+        </List>
+      </div>
+      <div style={isSimulate ? {} : { display: 'none' }}>
+        <List>
+          <ListItem button divider>
+            <h2 style={{ margin: '5px' }}>Simulation Modes</h2>
+          </ListItem>
+          <SimulationProperties />
+        </List>
+      </div>
     </>
   )
 }
