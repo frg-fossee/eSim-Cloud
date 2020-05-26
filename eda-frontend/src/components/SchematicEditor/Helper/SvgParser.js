@@ -123,105 +123,104 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       v1.CompObject = component
 
       var props = {}
+      props.NAME = component.name
       switch (v1.symbol) {
         case 'C':
+          props.REFDES = 'C'
+          props.VALUE = ''
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = ''
-          props.NAME = 'C'
           break
 
         case 'D':
+          props.REFDES = 'D'
+          props.MNAME = ''
           props.N1 = ''
           props.N2 = ''
-          props.MNAME = ''
-          props.NAME = 'D'
           break
 
         case 'I':
+          props.REFDES = 'I'
+          props.VALUE = ''
           props.N1 = ''
           props.N2 = ''
           props.NC1 = ''
           props.NC2 = ''
-          props.VALUE = ''
-          props.NAME = 'I'
           break
 
         case 'G':
+          props.REFDES = 'I'
+          props.VALUE = ''
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = ''
-          props.NAME = 'I'
           break
 
         case 'F':
-          props.N1 = ''
-          props.N2 = ''
+          props.REFDES = 'F'
           props.VALUE = ''
           props.VNAM = ''
-          props.NAME = 'F'
+          props.N1 = ''
+          props.N2 = ''
           break
 
         case 'J':
+          props.REFDES = 'J'
+          props.MNAME = ''
           props.ND = ''
           props.NG = ''
           props.NS = ''
-          props.MNAME = ''
-          props.NAME = 'J'
           break
 
         case 'L':
-          props.NAME = 'L'
+          props.REFDES = 'L'
+          props.VALUE = ''
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = ''
           break
 
         case 'M':
-          props.NAME = 'M'
+          props.REFDES = 'M'
+          props.VALUE = ''
           props.ND = ''
           props.NG = ''
           props.NS = ''
           props.NB = ''
-          props.VALUE = ''
           break
 
         case 'Q':
-          props.NAME = 'Q'
+          props.REFDES = 'Q'
+          props.MNAME = ''
           props.NC = ''
           props.NB = ''
           props.NE = ''
-          props.MNAME = ''
           break
 
         case 'V':
-          props.NAME = 'V'
-          props.N1 = ''
-          props.N2 = ''
+          props.REFDES = 'V'
           props.TYPE = ''
           props.VALUE = ''
+          props.N1 = ''
+          props.N2 = ''
           break
 
         case 'R':
-          props.NAME = 'R'
+          props.REFDES = 'R'
+          props.VALUE = ''
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = ''
           break
 
         case 'Z':
-          props.NAME = 'Z'
+          props.REFDES = 'Z'
+          props.MNAME = ''
           props.ND = ''
           props.NG = ''
           props.NS = ''
-          props.MNAME = ''
           break
 
         default:
           break
       }
-      props.FNAME = component.name
-      // console.log(props)
       v1.properties = props
 
       v1.setConnectable(false)
