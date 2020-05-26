@@ -31,16 +31,14 @@ export default function ComponentProperties () {
   return (
     <div>
       <ListItem>
-        <ListItemText primary='Component Properties' />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary={properties.FNAME} />
+        <ListItemText primary='Component Properties' secondary={properties.FNAME} />
+        {/* <ListItemText primary={properties.FNAME} /> */}
       </ListItem>
       {
         Object.keys(properties).map((keyName, i) => (
 
           <ListItem key={i}>
-            <TextField id={keyName} label={keyName} value={val[keyName]} size='small' variant="outlined" onChange={getInputValues} />
+            <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
           </ListItem>
         ))
       }

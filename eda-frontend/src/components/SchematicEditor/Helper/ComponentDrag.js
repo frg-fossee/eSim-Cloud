@@ -66,18 +66,18 @@ export default function LoadGrid (container, sidebar, outline) {
     outln.outline.labelsVisible = true
     outln.outline.setHtmlLabels(true)
 
-    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+    graph.addListener(mxEvent.SINGLE_CLICK, function (sender, evt) {
       var cell = evt.getProperty('cell')
       // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
-      // console.log(store.getState())
-      store.dispatch({
-        type: actions.GET_COMP_PROPERTIES,
-        payload: {
-          id: cell.id,
-          compProperties: cell.properties
-        }
-      })
-      // console.log(cell.properties)
+      if (cell !== undefined) {
+        store.dispatch({
+          type: actions.GET_COMP_PROPERTIES,
+          payload: {
+            id: cell.id,
+            compProperties: cell.properties
+          }
+        })
+      }
       evt.consume()
     })
 
