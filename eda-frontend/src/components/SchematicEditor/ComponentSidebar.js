@@ -39,11 +39,11 @@ export default function ComponentSidebar ({ compRef }) {
   const dispatch = useDispatch()
 
   const handleCollapse = (id) => {
-    console.log('Current: ', collapse[id], components[id].length)
+    // console.log('Current: ', collapse[id], components[id].length)
 
     // Fetches Components for given library if not already fetched
     if (collapse[id] === false && components[id].length === 0) {
-      console.log('Components not fetched earlier, fetching.')
+      // console.log('Components not fetched earlier, fetching.')
       dispatch(fetchComponents(id))
     }
 

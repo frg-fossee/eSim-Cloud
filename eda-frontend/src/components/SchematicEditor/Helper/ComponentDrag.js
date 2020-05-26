@@ -89,6 +89,16 @@ export default function LoadGrid (container, sidebar, outline) {
     NetlistInfoFunct(graph)
     ToolbarTools(graph)
 
+    store.subscribe(() => {
+      var id = store.getState().componentPropertiesReducer.id
+      var props = store.getState().componentPropertiesReducer.compProperties
+      var cellList = graph.getModel().cells
+      var c = cellList[id]
+      if (c !== undefined) {
+        c.properties = props
+      }
+    })
+
     // var state = mxCellState
     // graph.autoSizeCellsOnAdd = true
     // var view = graph.getView()
