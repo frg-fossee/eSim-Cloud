@@ -74,10 +74,8 @@ export default function LoadGrid (container, sidebar, outline) {
       store.dispatch({
         type: actions.GET_COMP_PROPERTIES,
         payload: {
-          compObj: {
-            id: cell.id,
-            properties: cell.properties
-          }
+          id: cell.id,
+          compProperties: cell.properties
         }
       })
       // console.log(cell.properties)
