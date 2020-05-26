@@ -127,14 +127,14 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         case 'C':
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = '0F'
+          props.VALUE = ''
           props.NAME = 'C'
           break
 
         case 'D':
           props.N1 = ''
           props.N2 = ''
-          props.MNAME = component.name
+          props.MNAME = ''
           props.NAME = 'D'
           break
 
@@ -143,14 +143,14 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
           props.N2 = ''
           props.NC1 = ''
           props.NC2 = ''
-          props.VALUE = '0'
+          props.VALUE = ''
           props.NAME = 'I'
           break
 
         case 'G':
           props.N1 = ''
           props.N2 = ''
-          props.VALUE = '0mhos'
+          props.VALUE = ''
           props.NAME = 'I'
           break
 
