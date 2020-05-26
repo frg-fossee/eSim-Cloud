@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from saveAPI.models import esimSave
+from saveAPI.models import StateSave
 
 
-class esimSaveSerializer(serializers.ModelSerializer):
+class StateSaveSerializer(serializers.ModelSerializer):
     class Meta:
-        model = esimSave
-        fields = ('save_time', 'save_id', 'xml_dump')
+        model = StateSave
+        fields = ('save_time', 'save_id', 'data_dump')
