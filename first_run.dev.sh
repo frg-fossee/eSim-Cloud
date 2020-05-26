@@ -2,7 +2,6 @@
 
 #Clear old db files
 echo 'Removing old files'
-rm -rf redis_data
 rm -rf mysql_data
 rm -rf postgres_data
 rm -rf mongo_data
