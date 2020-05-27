@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock } from '../../redux/actions/netlistActions'
 import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
+import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -101,13 +102,56 @@ export default function SimulationProperties () {
     setSimulateOpen(false)
   }
 
+  function onFormSubmit (file) {
+    // Stop default form submit
+    netlistUpload(file)
+      .then((response) => {
+        const res = response.data
+        const getUrl = 'simulation/status/'.concat(res.details.task_id)
+        console.log(getUrl)
+        simulationResult(getUrl)
+      })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
+  // Upload the nelist
+  function netlistUpload (file) {
+    const formData = new FormData()
+    formData.append('file', file)
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    }
+    return api.post('simulation/upload', formData, config)
+  }
+
+  // Get the simulation result with task_Id
+  function simulationResult (url) {
+    api
+      .get(url)
+      .then((res) => {
+        if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
+          setTimeout(simulationResult(url), 1000)
+        } else {
+          console.log(res.data)
+        }
+      })
+      .then((res) => { })
+      .catch(function (error) {
+        console.log(error)
+      })
+  }
+
   const prepareNetlist = () => {
     console.log(netfile)
     var netlist = netfile.title + '\n' +
-    netfile.model + '\n' +
-    netfile.netlist + '\n' +
-    netfile.controlLine + '\n' +
-    netfile.controlBlock + '\n'
+      netfile.model + '\n' +
+      netfile.netlist + '\n' +
+      netfile.controlLine + '\n' +
+      netfile.controlBlock + '\n'
 
     var titleA = netfile.title.split(' ')[1]
     var myblob = new Blob([netlist], {
@@ -115,6 +159,7 @@ export default function SimulationProperties () {
     })
     var file = new File([myblob], `${titleA}.cir`, { type: 'text/plain', lastModified: Date.now() })
     console.log(file)
+    onFormSubmit(file)
   }
 
   const startSimulate = (type) => {
