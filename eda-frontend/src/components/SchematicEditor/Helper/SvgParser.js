@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import mxGraphFactory from 'mxgraph'
-
+import componentParameters from '../componentParametersData'
 const {
   mxConstants
 } = new mxGraphFactory()
@@ -122,105 +122,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       v1.symbol = component.symbol_prefix
       v1.CompObject = component
 
-      var props = {}
+      var props = Object.assign({}, componentParameters[v1.symbol])
       props.NAME = component.name
-      switch (v1.symbol) {
-        case 'C':
-          props.REFDES = 'C'
-          props.VALUE = ''
-          props.N1 = ''
-          props.N2 = ''
-          break
-
-        case 'D':
-          props.REFDES = 'D'
-          props.MNAME = ''
-          props.N1 = ''
-          props.N2 = ''
-          break
-
-        case 'I':
-          props.REFDES = 'I'
-          props.VALUE = ''
-          props.N1 = ''
-          props.N2 = ''
-          props.NC1 = ''
-          props.NC2 = ''
-          break
-
-        case 'G':
-          props.REFDES = 'I'
-          props.VALUE = ''
-          props.N1 = ''
-          props.N2 = ''
-          break
-
-        case 'F':
-          props.REFDES = 'F'
-          props.VALUE = ''
-          props.VNAM = ''
-          props.N1 = ''
-          props.N2 = ''
-          break
-
-        case 'J':
-          props.REFDES = 'J'
-          props.MNAME = ''
-          props.ND = ''
-          props.NG = ''
-          props.NS = ''
-          break
-
-        case 'L':
-          props.REFDES = 'L'
-          props.VALUE = ''
-          props.N1 = ''
-          props.N2 = ''
-          break
-
-        case 'M':
-          props.REFDES = 'M'
-          props.VALUE = ''
-          props.ND = ''
-          props.NG = ''
-          props.NS = ''
-          props.NB = ''
-          break
-
-        case 'Q':
-          props.REFDES = 'Q'
-          props.MNAME = ''
-          props.NC = ''
-          props.NB = ''
-          props.NE = ''
-          break
-
-        case 'V':
-          props.REFDES = 'V'
-          props.TYPE = ''
-          props.VALUE = ''
-          props.N1 = ''
-          props.N2 = ''
-          break
-
-        case 'R':
-          props.REFDES = 'R'
-          props.VALUE = ''
-          props.N1 = ''
-          props.N2 = ''
-          break
-
-        case 'Z':
-          props.REFDES = 'Z'
-          props.MNAME = ''
-          props.ND = ''
-          props.NG = ''
-          props.NS = ''
-          break
-
-        default:
-          break
-      }
       v1.properties = props
 
       v1.setConnectable(false)
