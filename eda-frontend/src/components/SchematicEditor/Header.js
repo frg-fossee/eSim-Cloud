@@ -14,7 +14,7 @@ import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
-import setTitle from '../../redux/actions/netlistActions'
+import { setTitle } from '../../redux/actions'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
