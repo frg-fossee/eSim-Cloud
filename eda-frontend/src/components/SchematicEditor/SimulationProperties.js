@@ -14,12 +14,12 @@ import {
 import { saveAs } from 'file-saver'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
-import { useDispatch } from 'react-redux'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { setControlLine, setControlBlock } from '../../redux/actions/netlistActions'
 import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
+import { generatePath } from 'react-router-dom'
 
-const dispatch = useDispatch()
 var FileSaver = require('file-saver')
 
 var blobToFile = function (theBlob, fileName) {
@@ -51,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function SimulationProperties () {
+  const netfile = useSelector(state => state.netlistReducer)
+  const dispatch = useDispatch()
   const classes = useStyles()
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
@@ -111,32 +113,38 @@ export default function SimulationProperties () {
   }
 
   const startSimulate = (type) => {
-    var start = GenerateNetList()
+    GenerateNetList()
+    var controlLine = ''
+    var controlBlock = ''
     switch (type) {
       case 'DcSolver':
         // console.log('To be implemented')
-        start += '.op'
+        controlLine = '.op'
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
-        start += `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
+        controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
-        start += `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
+        controlLine = `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
-        start += `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+        controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
         break
       default:
         break
     }
-    start += '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
-    console.log(start)
-    var blob = new Blob([start], { type: 'text/plain;charset=utf-8' })
+    controlBlock = '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
+    console.log(controlLine)
+    // dispatch controlLine
+    dispatch(setControlLine(controlLine))
+    dispatch(setControlBlock(controlBlock))
+    // var blob = new Blob([start], { type: 'text/plain;charset=utf-8' })
     // FileSaver.saveAs(blob, 'netlist.cir')
     setTimeout(function () { }, 2000)
+    console.log(netfile)
     handlesimulateOpen()
   }
 
