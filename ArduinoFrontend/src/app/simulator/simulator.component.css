@@ -286,18 +286,25 @@ body {
 }
 
 #msg {
-    overflow: auto;
+    overflow-y: scroll;
+    overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: pre-wrap;
     word-wrap: break-word;
     position: relative;
     height: 65%;
     display: flex;
+    color: #fff;
     flex-direction: column;
 }
 
 #msg label {
     margin-bottom: 0 !important;
+}
+
+#msg pre{
+  color: #fff !important;
+  overflow: initial;
 }
 
 @keyframes mymove {

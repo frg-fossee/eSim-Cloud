@@ -122,8 +122,11 @@ export class SimulatorComponent implements OnInit {
     if (!this.stoggle) {
       sim.style.display = 'block';
       simload.style.display = 'block';
+      Workspace.CompileCode();
     } else {
       sim.style.display = 'none';
+      Workspace.simulating = false;
+      Workspace.stopSimulation();
       this.hidesimload();
     }
   }

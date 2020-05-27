@@ -1,11 +1,19 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 import { isUndefined } from 'util';
+import { ArduinoRunner } from '../AVR8/Execute';
+
+declare var AVR8;
 
 export class ArduinoUno extends CircuitElement {
   static prefix = 'Arduino UNO R3 ';
   public name: string;
   public code = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}';
+  public runner: ArduinoRunner;
+  public hex: string;
+  public powerLed: any;
+  public builtinLED: any;
+  public pinNameMap: any = {};
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
     let start = window['scope']['ArduinoUno'].length + 1;
@@ -15,6 +23,11 @@ export class ArduinoUno extends CircuitElement {
       this.name = ArduinoUno.prefix + start;
     }
     window['ArduinoUno_name'][this.name] = this;
+  }
+  init() {
+    for (const node of this.nodes) {
+      this.pinNameMap[node.label] = node;
+    }
   }
   save() {
   }
@@ -55,8 +68,49 @@ export class ArduinoUno extends CircuitElement {
     delete window['ArduinoUno_name'][this.name];
   }
   initSimulation(): void {
+    this.builtinLED = this.elements[1].glow({
+      color: '#ffff00'
+    });
+    this.builtinLED.hide();
+    this.powerLed = this.elements[2].glow({
+      color: '#00ff00'
+    });
+
+
+    this.runner = new ArduinoRunner(this.hex);
+    // console.log(this.runner);
+    this.runner.portB.addListener((value) => {
+      for (let i = 0; i <= 5; ++i) {
+        if (
+          this.runner.portB.pinState(i) !== AVR8.PinState.Input ||
+          this.runner.portB.pinState(i) !== AVR8.PinState.InputPullUp
+        ) {
+          this.pinNameMap[`D${i + 8}`].setValue(((value >> i) & 1) * 5.0, null);
+        }
+      }
+      if ((value >> 5) & 1) {
+        this.builtinLED.show();
+      } else {
+        this.builtinLED.hide();
+      }
+    });
+    this.runner.portC.addListener((value) => {
+      console.log(value);
+    });
+    this.runner.portD.addListener((value) => {
+    });
+    this.runner.usart.onByteTransmit = (value) => {
+      /// TODO: Show On Console
+    };
+    this.runner.execute();
   }
   closeSimulation(): void {
+    this.runner.delete();
+    this.runner = null;
+    this.builtinLED.remove();
+    this.builtinLED = null;
+    this.powerLed.remove();
+    this.powerLed = null;
   }
   simulate(): void {
   }
