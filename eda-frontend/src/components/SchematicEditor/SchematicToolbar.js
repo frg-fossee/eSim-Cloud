@@ -21,7 +21,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { NetlistModal, HelpScreen } from './ToolbarExtension'
 import MenuButton from './MenuButton'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate } from '../../redux/actions/index'
 import { closeCompProperties } from '../../redux/actions/componentPropertiesActions'
 
@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SchematicToolbar ({ mobileClose }) {
   const classes = useStyles()
+  const netfile = useSelector(state => state.netlistReducer)
 
   const dispatch = useDispatch()
 
@@ -56,7 +57,13 @@ export default function SchematicToolbar ({ mobileClose }) {
   const [netlist, genNetlist] = React.useState('')
 
   const handleClickOpen = () => {
-    genNetlist(GenerateNetList())
+    GenerateNetList()
+    var netlist = netfile.title + '\n' +
+      netfile.model + '\n' +
+      netfile.netlist + '\n' +
+      netfile.controlLine + '\n' +
+      netfile.controlBlock + '\n'
+    genNetlist(netlist)
     setOpen(true)
   }
 

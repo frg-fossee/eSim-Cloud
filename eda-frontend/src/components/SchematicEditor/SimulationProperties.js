@@ -136,16 +136,20 @@ export default function SimulationProperties () {
       default:
         break
     }
-    controlBlock = '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
+    controlBlock = '\n.control \nrun \nprint all > data.txt \n.endc \n.end'
     console.log(controlLine)
-    // dispatch controlLine
     dispatch(setControlLine(controlLine))
     dispatch(setControlBlock(controlBlock))
-    // var blob = new Blob([start], { type: 'text/plain;charset=utf-8' })
+    var netlist = netfile.title + '\n' +
+      netfile.model + '\n' +
+      netfile.netlist + '\n' +
+      netfile.controlLine + '\n' +
+      netfile.controlBlock + '\n'
+    console.log(netlist)
+    // var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
     // FileSaver.saveAs(blob, 'netlist.cir')
-    setTimeout(function () { }, 2000)
-    console.log(netfile)
-    handlesimulateOpen()
+    // setTimeout(function () { }, 2000)
+    // handlesimulateOpen()
   }
 
   return (
