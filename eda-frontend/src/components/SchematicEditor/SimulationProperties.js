@@ -16,7 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { GenerateNetList } from './Helper/ToolbarTools'
-import { SimulationScreen } from './ToolbarExtension'
+import SimulationScreen from './SimulationScreen'
 
 var FileSaver = require('file-saver')
 const useStyles = makeStyles((theme) => ({
@@ -125,7 +125,7 @@ export default function SimulationProperties () {
     start += '\n\n.control \nrun \nprint all > data.txt \n.endc \n.end'
     console.log(start)
     var blob = new Blob([start], { type: 'text/plain;charset=utf-8' })
-    FileSaver.saveAs(blob, 'netlist.cir')
+    // FileSaver.saveAs(blob, 'netlist.cir')
     setTimeout(function () { }, 2000)
     handlesimulateOpen()
   }
