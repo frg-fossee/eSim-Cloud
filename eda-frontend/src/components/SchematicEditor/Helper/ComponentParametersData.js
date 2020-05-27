@@ -6,175 +6,174 @@ const ComponentParameters = {
     N2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   D: {
     PREFIX: 'D',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   I: {
     PREFIX: 'I',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   G: {
     PREFIX: 'G',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     NC1: '',
     NC2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   F: {
     PREFIX: 'F',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     VNAM: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
-  H:{
+  H: {
     PREFIX: 'H',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     VNAM: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   J: {
     PREFIX: 'J',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     N3: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   O: {
     PREFIX: 'O',
-    NAME : '',
-    N1: '',
-    N2: '',
-    N3:'',
-    N4:'',
-    EXTRA_EXPRESSION: '',
-    MODEL:'',
-  },
-
-  T:{
-    PREFIX: 'T',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     N3: '',
     N4: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
-//Inductor
+
+  T: {
+    PREFIX: 'T',
+    NAME: '',
+    N1: '',
+    N2: '',
+    N3: '',
+    N4: '',
+    EXTRA_EXPRESSION: '',
+    MODEL: ''
+  },
+  // Inductor
   L: {
     PREFIX: 'L',
     N1: '',
     N2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   M: {
     PREFIX: 'M',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     N3: '',
     N4: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   Q: {
     PREFIX: 'Q',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     N3: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   V: {
     PREFIX: 'V',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
 
   },
-//resistor
+  // resistor
   R: {
     PREFIX: 'R',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     VALUE: '1K',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
   Z: {
     PREFIX: 'Z',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     N3: '',
     EXTRA_EXPRESSION: '',
-    MODEL:'',
+    MODEL: ''
   },
 
-  S:{
+  S: {
     PREFIX: 'S',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
     NC1: '',
     NC2: '',
-    MODEL:'',
-    EXTRA_EXPRESSION: '',
-
+    MODEL: '',
+    EXTRA_EXPRESSION: ''
 
   },
-  W:{
+  W: {
     PREFIX: 'W',
-    NAME : '',
+    NAME: '',
     N1: '',
     N2: '',
-    VNAM :'',
-    MODEL:'',
-    EXTRA_EXPRESSION: '',
+    VNAM: '',
+    MODEL: '',
+    EXTRA_EXPRESSION: ''
 
   }
 
