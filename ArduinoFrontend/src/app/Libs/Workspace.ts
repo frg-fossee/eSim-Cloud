@@ -495,16 +495,28 @@ export class Workspace {
     } else {
       window.showToast('Something Went Wrong! Please Refresh Browser');
     }
-    Workspace.simulating = true;
     // Workspace.startArduino();
   }
 
   static startArduino() {
+    Workspace.simulating = true;
+    // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
       wire.start.gid = gid++;
       wire.end.gid = gid++;
     }
+    // Call init simulation
+    for (const key in window.scope) {
+      if (window.scope[key] && key !== 'ArduinoUno') {
+        for (const ele of window.scope[key]) {
+          if (ele.initSimulation) {
+            ele.initSimulation();
+          }
+        }
+      }
+    }
+
     for (const comp of window.scope.ArduinoUno) {
       // comp.runner.execute();
       // console.log("s")
