@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { Container, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -11,6 +11,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NotFound () {
   const classes = useStyles()
+
+  useEffect(() => {
+    document.title = 'Not Found - EDA '
+  })
 
   return (
     <Container maxWidth="lg" className={classes.header}>
