@@ -259,12 +259,12 @@ export function GenerateNetList () {
         netlist.push(compobj)
         // console.log(compobj)
       }
-      if (component.symbol.split('')[0] === 'R') {
-        k = k + ' 1k'
-      } else if (component.symbol.split('')[0] === 'C') {
-        k = k + ' 10u'
-      } else if (component.symbol.split('')[0] === 'V') {
-        k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
+      k = k + ' ' + component.properties['VALUE']
+      if(component.properties['EXTRA_EXPRESSION'].length > 0) { 
+        k = k + ' ' + component.properties['EXTRA_EXPRESSION']
+      }
+      if(component.properties['MODEL'].length > 0) {
+        k = k + ' ' + component.properties['MODEL'].split(' ')[1]
       }
       // k = k + ' 10'
       k = k + ' \n'
