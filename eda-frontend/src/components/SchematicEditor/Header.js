@@ -6,12 +6,13 @@ import {
   Button,
   Input,
   Hidden,
-  Link
+  Link,
+  Avatar
 } from '@material-ui/core'
-import Description from '@material-ui/icons/Description'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import logo from '../../static/logo.png'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -30,6 +31,10 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginRight: theme.spacing(1)
+  },
+  small: {
+    width: theme.spacing(3.7),
+    height: theme.spacing(3.7)
   }
 }))
 
@@ -39,7 +44,7 @@ function Header () {
   return (
     <Toolbar variant="dense" color="default">
       <IconButton edge="start" className={classes.button} color="primary">
-        <Description />
+        <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
       <Typography
         variant="h6"
