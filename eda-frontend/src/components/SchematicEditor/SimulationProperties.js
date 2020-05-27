@@ -18,13 +18,6 @@ import { setControlLine, setControlBlock } from '../../redux/actions/netlistActi
 import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
 
-var blobToFile = function (theBlob, fileName) {
-  // A Blob() is almost a File() - it's just missing the two properties below which we will add
-  theBlob.lastModifiedDate = new Date()
-  theBlob.name = fileName
-  return theBlob
-}
-
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '90px'
@@ -108,6 +101,22 @@ export default function SimulationProperties () {
     setSimulateOpen(false)
   }
 
+  const prepareNetlist = () => {
+    console.log(netfile)
+    var netlist = netfile.title + '\n' +
+    netfile.model + '\n' +
+    netfile.netlist + '\n' +
+    netfile.controlLine + '\n' +
+    netfile.controlBlock + '\n'
+
+    var titleA = netfile.title.split(' ')[1]
+    var myblob = new Blob([netlist], {
+      type: 'text/plain'
+    })
+    var file = new File([myblob], `${titleA}.cir`, { type: 'text/plain', lastModified: Date.now() })
+    console.log(file)
+  }
+
   const startSimulate = (type) => {
     GenerateNetList()
     var controlLine = ''
@@ -134,9 +143,13 @@ export default function SimulationProperties () {
     }
     controlBlock = '\n.control \nrun \nprint all > data.txt \n.endc \n.end'
     console.log(controlLine)
+
     dispatch(setControlLine(controlLine))
     dispatch(setControlBlock(controlBlock))
     // setTimeout(function () { }, 2000)
+
+    prepareNetlist()
+
     // handlesimulateOpen()
   }
 

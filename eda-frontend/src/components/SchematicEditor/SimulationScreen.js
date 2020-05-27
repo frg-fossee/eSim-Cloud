@@ -47,6 +47,7 @@ export default function SimulationScreen ({ open, close }) {
   const x1 = []
   const y11 = []
   const y21 = []
+
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition}>
