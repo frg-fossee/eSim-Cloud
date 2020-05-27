@@ -1,7 +1,7 @@
-import * as actions from '../actions/netlistActions'
+import * as actions from '../actions/actions'
 
 const initialState = {
-  title: '',
+  title: '* Untitled_Schematic',
   model: '',
   netlist: '',
   controlLine: '',

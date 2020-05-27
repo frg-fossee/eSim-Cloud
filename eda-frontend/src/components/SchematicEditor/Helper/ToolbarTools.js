@@ -196,7 +196,7 @@ export function GenerateNetList () {
   var netlist = []
 
   // console.log('Untitled netlist'
-  var k = '* Unitled netlist \n'
+  var k = ''
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
       // k = ''
