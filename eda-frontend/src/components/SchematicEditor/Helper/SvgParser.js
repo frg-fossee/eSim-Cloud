@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import mxGraphFactory from 'mxgraph'
-import componentParameters from '../componentParametersData'
+import ComponentParameters from './ComponentParametersData'
 const {
   mxConstants
 } = new mxGraphFactory()
@@ -122,7 +122,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       v1.symbol = component.symbol_prefix
       v1.CompObject = component
 
-      var props = Object.assign({}, componentParameters[v1.symbol])
+      var props = Object.assign({}, ComponentParameters[v1.symbol])
       props.NAME = component.name
       v1.properties = props
 

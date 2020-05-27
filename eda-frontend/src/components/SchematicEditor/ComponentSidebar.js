@@ -5,15 +5,18 @@ import {
   List,
   ListItem,
   Collapse,
-  ListItemIcon
+  ListItemIcon,
+  IconButton,
+  Tooltip
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
+import CloseIcon from '@material-ui/icons/Close'
 
 import './Helper/SchematicEditor.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchLibraries, toggleCollapse, fetchComponents } from '../../redux/actions/index'
+import { fetchLibraries, toggleCollapse, fetchComponents, toggleSimulate } from '../../redux/actions/index'
 import SideComp from './SideComp.js'
 import SimulationProperties from './SimulationProperties'
 const COMPONENTS_PER_ROW = 3
@@ -128,7 +131,12 @@ export default function ComponentSidebar ({ compRef }) {
       <div style={isSimulate ? {} : { display: 'none' }}>
         <List>
           <ListItem button divider>
-            <h2 style={{ margin: '5px' }}>Simulation Modes</h2>
+            <h2 style={{ margin: '5px auto 5px 5px' }}>Simulation Modes</h2>
+            <Tooltip title="close">
+              <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { dispatch(toggleSimulate()) }}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </ListItem>
           <SimulationProperties />
         </List>
