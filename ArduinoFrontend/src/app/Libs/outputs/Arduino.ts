@@ -75,7 +75,7 @@ export class ArduinoUno extends CircuitElement {
       color: '#00ff00'
     });
 
-
+    const myOutput = document.createElement('pre');
     this.runner = new ArduinoRunner(this.hex);
     // console.log(this.runner);
     this.runner.portB.addListener((value) => {
@@ -124,8 +124,10 @@ export class ArduinoUno extends CircuitElement {
 
     this.runner.usart.onByteTransmit = (value) => {
       /// TODO: Show On Console
+      myOutput.textContent += String.fromCharCode(value);
     };
 
+    document.getElementById('msg').append(myOutput);
 
     this.runner.execute();
   }
