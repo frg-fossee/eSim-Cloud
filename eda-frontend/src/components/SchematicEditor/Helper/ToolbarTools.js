@@ -259,7 +259,11 @@ export function GenerateNetList () {
         netlist.push(compobj)
         // console.log(compobj)
       }
-      k = k + ' ' + component.properties['VALUE']
+      console.log(component)
+      if( component.properties['VALUE'] !== undefined) {
+        k = k + ' ' + component.properties['VALUE']
+      }
+      
       if(component.properties['EXTRA_EXPRESSION'].length > 0) { 
         k = k + ' ' + component.properties['EXTRA_EXPRESSION']
       }
