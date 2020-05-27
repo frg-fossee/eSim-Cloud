@@ -13,6 +13,7 @@ services:
     depends_on:
       - django
       - eda-frontend
+      - arduino-frontend
 
 
   eda-frontend:
