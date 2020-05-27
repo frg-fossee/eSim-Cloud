@@ -22,8 +22,7 @@ import { NetlistModal, HelpScreen } from './ToolbarExtension'
 import MenuButton from './MenuButton'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSimulate } from '../../redux/actions/index'
-import { closeCompProperties } from '../../redux/actions/componentPropertiesActions'
+import { toggleSimulate, closeCompProperties } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {

@@ -11,16 +11,12 @@ import {
   ExpansionPanelDetails,
   Typography
 } from '@material-ui/core'
-import { saveAs } from 'file-saver'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock } from '../../redux/actions/netlistActions'
 import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
-import { generatePath } from 'react-router-dom'
-
-var FileSaver = require('file-saver')
 
 var blobToFile = function (theBlob, fileName) {
   // A Blob() is almost a File() - it's just missing the two properties below which we will add
@@ -140,14 +136,6 @@ export default function SimulationProperties () {
     console.log(controlLine)
     dispatch(setControlLine(controlLine))
     dispatch(setControlBlock(controlBlock))
-    var netlist = netfile.title + '\n' +
-      netfile.model + '\n' +
-      netfile.netlist + '\n' +
-      netfile.controlLine + '\n' +
-      netfile.controlBlock + '\n'
-    console.log(netlist)
-    // var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
-    // FileSaver.saveAs(blob, 'netlist.cir')
     // setTimeout(function () { }, 2000)
     // handlesimulateOpen()
   }
