@@ -36,6 +36,7 @@ export default function SchematiEditor () {
   }
 
   useEffect(() => {
+    document.title = 'Schematic Editor - EDA '
     var container = gridRef.current
     var sidebar = compRef.current
     var outline = outlineRef.current
