@@ -10,41 +10,53 @@ def extract_data_from_ngspice_output(pathToFile):
     try:
         with open(pathToFile, 'r') as f:
             f_contents = f.readlines()
-            json_data = {"total_number_of_tables": 0, "data": []}
+            graph = True
+
             curernt_headers = []
             total_number_of_tables = 0
+            if('=' in f_contents[0]):
+                graph = False
 
-            for line in f_contents:
-                contents_of_line = line.split()
 
-                if('Index' in contents_of_line):
-                    line_set = remove_duplicate_items_from_list(
-                        contents_of_line)
+            if(not graph):
+                json_data = {"total_number_of_tables": 0, "data": [], "graph":"false"}
+                for line in f_contents:
+                    contents_of_line = line.split()
+                    json_data["data"].append(contents_of_line)
 
-                    if(line_set != curernt_headers):
-                        curernt_headers = line_set
-                        json_data["data"].append(
-                            {"labels": [], "x": [], "y": []})
-                        index = len(json_data["data"]) - 1
-                        for x in range(2, len(curernt_headers)):
-                            json_data["data"][index]["y"].append([])
+            else:
+                json_data = {"total_number_of_tables": 0, "data": [], "graph":"true"}
+                for line in f_contents:
+                    contents_of_line = line.split()
 
-                        for x in range(1, len(curernt_headers)):
-                            json_data["data"][index]["labels"].append(
-                                curernt_headers[x])
-                            total_number_of_tables += 1
+                    if('Index' in contents_of_line):
+                        line_set = remove_duplicate_items_from_list(
+                            contents_of_line)
 
-                else:
-                    m = re.match('[0-9]+', line)
-                    if(m):
-                        index = len(json_data["data"]) - 1
-                        data = json_data["data"][index]
-                        data["x"].append(contents_of_line[1])
+                        if(line_set != curernt_headers):
+                            curernt_headers = line_set
+                            json_data["data"].append(
+                                {"labels": [], "x": [], "y": []})
+                            index = len(json_data["data"]) - 1
+                            for x in range(2, len(curernt_headers)):
+                                json_data["data"][index]["y"].append([])
 
-                        for x in range(len(data["y"])):
-                            data["y"][x].append(contents_of_line[x+2])
-        json_data["total_number_of_tables"] = total_number_of_tables - \
-            len(json_data["data"])
+                            for x in range(1, len(curernt_headers)):
+                                json_data["data"][index]["labels"].append(
+                                    curernt_headers[x])
+                                total_number_of_tables += 1
+
+                    else:
+                        m = re.match('[0-9]+', line)
+                        if(m):
+                            index = len(json_data["data"]) - 1
+                            data = json_data["data"][index]
+                            data["x"].append(contents_of_line[1])
+
+                            for x in range(len(data["y"])):
+                                data["y"][x].append(contents_of_line[x+2])
+                json_data["total_number_of_tables"] = total_number_of_tables - \
+                    len(json_data["data"])
         return json_data
 
     except IOError as e:
@@ -65,3 +77,4 @@ if __name__ == "__main__":
 
     filePath = sys.argv[1]
     print(extract_data_from_ngspice_output(filePath))
+
