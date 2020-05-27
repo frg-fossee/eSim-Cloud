@@ -1,16 +1,18 @@
-const componentParameters = {
+const ComponentParameters = {
   C: {
     REFDES: 'C',
     VALUE: '',
     N1: '',
     N2: ''
   },
+
   D: {
     REFDES: 'D',
     MNAME: '',
     N1: '',
     N2: ''
   },
+
   I: {
     REFDES: 'I',
     VALUE: '',
@@ -19,24 +21,23 @@ const componentParameters = {
     NC1: '',
     NC2: ''
   },
-  G: {
 
+  G: {
     REFDES: 'I',
     VALUE: '',
     N1: '',
     N2: ''
   },
+
   F: {
     REFDES: 'F',
     VALUE: '',
     VNAM: '',
     N1: '',
     N2: ''
-
   },
 
   J: {
-
     REFDES: 'J',
     MNAME: '',
     ND: '',
@@ -45,7 +46,6 @@ const componentParameters = {
   },
 
   L: {
-
     REFDES: 'L',
     VALUE: '',
     N1: '',
@@ -53,7 +53,6 @@ const componentParameters = {
   },
 
   M: {
-
     REFDES: 'M',
     VALUE: '',
     ND: '',
@@ -63,7 +62,6 @@ const componentParameters = {
   },
 
   Q: {
-
     REFDES: 'Q',
     MNAME: '',
     NC: '',
@@ -81,7 +79,6 @@ const componentParameters = {
   },
 
   R: {
-
     REFDES: 'R',
     VALUE: '',
     N1: '',
@@ -94,9 +91,8 @@ const componentParameters = {
     ND: '',
     NG: '',
     NS: ''
-
   }
 
 }
 
-export default componentParameters
+export default ComponentParameters
