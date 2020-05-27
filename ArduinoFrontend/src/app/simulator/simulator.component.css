@@ -292,7 +292,7 @@ body {
     white-space: pre-wrap;
     word-wrap: break-word;
     position: relative;
-    height: 150px;
+    height: 65%;
     display: flex;
     color: #fff;
     flex-direction: column;

@@ -73,7 +73,7 @@
   width: 100%;
   min-height: 180%;
   background-color: rgba(0, 0, 0, 0.4);
-  display: none;
+  
 }
 
 #innerdialog {
@@ -82,7 +82,7 @@
   color: black;
   top: 80px;
   width: 70%;
-  min-height: 700px;
+  min-height: 800px;
   margin-left:15%;
   border-radius: 5px;
   box-sizing: border-box;

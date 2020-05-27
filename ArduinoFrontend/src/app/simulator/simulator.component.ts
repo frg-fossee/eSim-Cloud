@@ -118,16 +118,23 @@ export class SimulatorComponent implements OnInit {
     this.stoggle = !this.stoggle;
     this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
     const sim = document.getElementById('console');
+    const simload = document.getElementById('simload');
     if (!this.stoggle) {
       sim.style.display = 'block';
+      simload.style.display = 'block';
       Workspace.CompileCode();
     } else {
       sim.style.display = 'none';
       Workspace.simulating = false;
       Workspace.stopSimulation();
+      this.hidesimload();
     }
   }
 
+  hidesimload() {
+    const simload = document.getElementById('simload');
+    simload.style.display = 'none';
+  }
   /**
    * Hide/Show (toggle) Code Editor
    * @param elem Code Editor Parent Div
@@ -150,7 +157,7 @@ export class SimulatorComponent implements OnInit {
     const ft = document.getElementById('footer');
     const msg = document.getElementById('msg');
     this.atoggle = !this.atoggle;
-    if (this.atoggle || !this.toggle1) {
+    if (this.atoggle) {
       close.style.height = '30px';
       msg.style.height = '0px';
       ft.style.display = 'none';
@@ -161,8 +168,6 @@ export class SimulatorComponent implements OnInit {
       ft.style.display = 'block';
 
     }
-
-
   }
 
   expandConsole() {

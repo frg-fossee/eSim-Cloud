@@ -1,7 +1,6 @@
 <!-- As a heading -->
 <div class="bg-light" style="display: flex; height:60px;">
-    <div style="flex-basis: 1500px; line-height: 60px;font-weight: bold; padding-left: 55px; font-size: x-large;"><i
-            class="fa fa-credit-card" style="padding-right: 4px;"></i>Dashboard</div>
+    <div style="flex-basis: 1500px; line-height: 60px;font-weight: bold; padding-left: 60px; font-size: x-large;">Dashboard</div>
     <div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Help
     </div>
     <div style="flex-basis: 100px; line-height: 60px;">
@@ -10,6 +9,8 @@
         </a>
     </div>
 </div>
+<!--<div style="position:absolute; background-color: pink; width: 13%;height: 48%; float: left;margin-left: 87%;">
+</div>-->
 <!--sidebar-->
 <div id="sidebar">
     <div class="card" style="width: 80%;position: relative">
@@ -172,31 +173,68 @@
     </div>
 </div>
 <!--open project-->
-<div id="openproject" >
+<div id="openproject">
     <div id="innerdialog">
         <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
             <div
-                style="flex-basis: 780px;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
+                style="flex-basis: 80%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
                 Project name</div>
-            <div style="flex-basis: 50px; padding: 10px">
-                <button style="position: relative; padding-top: 10px;background-color: transparent; border: none"><i
+            <div style="flex-basis: 20%; padding: 10px;float: right;">
+                <button
+                    style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"><i
                         class="fa fa-close"></i></button>
             </div>
         </div>
         <hr>
-        <div id="projectimage" style="height: 370px;position: relative;">
+        <div id="projectimage" style="height: 470px;position: relative;">
             <div
-                style="position: relative; float: left;background-color: white; width: 50%;height: 350px; top: 10px; left: 15px">
+                style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
                 <img style="position: absolute; left: 80px" src="" alt="" width="300" height="300">
-                <button id="clsbtn" [routerLink]="['/simulator']">Tinker This</button>
+
+                <button mat-raised-button color="warn" style="margin-top: 70%;margin-left:23%">Delete Circuit</button>
+                <button mat-raised-button color="primary" [routerLink]="['/simulator']"
+                    style=" margin-top: 5%;margin-left:13%">Edit circuit</button>
             </div>
-            <div
-                style="position: relative; margin-top: 10px;margin-left: 20px; width: 40%;height: 350px;background-color: white; float: left; overflow: auto">
-                <h5 style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
-                    Description</h5>
-                <p style="margin-left: 10px">This circuit shows the simplest thing you can do with an Arduino or Genuino to see physical output: it blinks the on-board LED.</p>
+            <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%;">
+                <div
+                    style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 230px;background-color:white; float: left; overflow: auto">
+                    <h5
+                        style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
+                        Description</h5>
+                    <p style="margin-left: 10px">This circuit shows the simplest thing you can do with an Arduino or
+                        Genuino to see physical output: it blinks the on-board LED.</p>
+                </div>
+                <div
+                    style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
+                    <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name:</h6>
+                    <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6>
+                    <h6 style="margin-left: 15px;font-family: cursive">Created At:</h6>
+                    <h6 style="margin-left: 15px;font-family: cursive">Edited At:</h6>
+                    <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6>
+                    <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px">
+                        <i class="fab fa-facebook-f" style="color:white; font-size: medium;"></i>
+                    </button>
+
+                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF;">
+                        <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
+                    </button>
+                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;">
+                        <i class='fab fa-reddit-alien' style='font-size:24px;'></i>
+                    </button>
+
+                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
+                        <i class="fa fa-envelope" style="font-size: medium;"></i>
+                    </button>
+                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)= "share()" >
+                        <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
+                    </button>
+
+                </div>
             </div>
+
+
         </div>
+
         <hr>
         <div style="height: 185px; width: 100%;">
             <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
