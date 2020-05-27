@@ -4,13 +4,17 @@ textarea:active,
 input:active,
 textarea:focus,
 input:focus,
-button:focus,
-button:active,
-button:hover,
 label:focus {
     outline: 0px !important;
     -webkit-appearance: none;
-    box-shadow: none !important;
+    /* box-shadow: none !important; */
+}
+
+button:focus,
+button:active,
+button:hover {
+    outline: 0px !important;
+    -webkit-appearance: none;
 }
 
 .grabbing {
@@ -276,7 +280,7 @@ body {
     height: 30%;
     z-index: 1000;
     background: #fff;
-    right:0px;
+    right: 0px;
     bottom: 5px;
     padding: 1px;
     justify-content: space-between;
@@ -302,9 +306,13 @@ body {
     margin-bottom: 0 !important;
 }
 
-#msg pre{
-  color: #fff !important;
-  overflow: initial;
+#msg pre {
+    color: #fff !important;
+    overflow: initial;
+}
+
+.navbar-brand:focus {
+    outline: 0;
 }
 
 @keyframes mymove {
@@ -313,6 +321,6 @@ body {
     }
 
     to {
-        top:500px;
+        top: 500px;
     }
 }

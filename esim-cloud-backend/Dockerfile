@@ -31,19 +31,7 @@ RUN curl -fSL https://github.com/imr/ngspice/archive/ngspice-$NGSPICE_VERSION.ta
     && make install \
     && apk del .build-deps
 
-RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev postgresql-dev
-
-COPY requirements.txt /code/
-RUN apk add --no-cache mariadb-connector-c-dev ;\
-    apk add --update alpine-sdk && \
-    apk add libffi-dev openssl-dev && \
-    apk --no-cache --update add build-base ;\
-    apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev\
-    && pip install --upgrade pip\
-    && pip install --trusted-host pypi.python.org -r requirements.txt \
-    && apk del .build-deps
-
-
+# Arduino Cli and Compiling tools
 RUN apk add \
         wget \
         tar \
@@ -71,4 +59,14 @@ RUN arduino-cli core update-index \
     && cd /root/.arduino15/ \
     && find / -name platform.txt -exec sed -i "s/^compiler.path=.*$/compiler.path=/g" {} \; \
     && find . -name ctags -exec ln -nsf /usr/bin/ctags {} \;
+
+
+# Django
+
+RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev
+COPY requirements.txt /code/
+RUN apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev\
+    && pip install --upgrade pip\
+    && pip install --trusted-host pypi.python.org -r requirements.txt \
+    && apk del .build-deps
 

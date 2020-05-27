@@ -1,6 +1,6 @@
 <!-- As a heading -->
 <nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #999;height: 50px;">
-  <span class="navbar-brand mb-0 font-weight-bold text-dark h1">Simulator</span>
+  <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span>
   <form class="form-inline my-2 my-lg-0">
     <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
       id="project-title" (focusout)="onFocusOut($event)">
@@ -61,11 +61,12 @@
     <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
     {{status}}</button>
 
-    <!--simulation loading svg-->
-    <div  id="simload" style="display:none; z-index: 100;position: relative;width: 20%; height:20%;background: transparent;padding: 10px;">
-      <img src="../assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
-      </div> 
-    <!--/simulation loading svg-->
+  <!--simulation loading svg-->
+  <div id="simload"
+    style="display:none; z-index: 100;position: relative;width: 20%; height:20%;background: transparent;padding: 10px;">
+    <img src="../assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
+  </div>
+  <!--/simulation loading svg-->
 
   <span style="flex:1 1 auto;"></span>
 
@@ -294,14 +295,11 @@
   <div id="msg"></div>
   <div id="footer" style="bottom: 0px; position: relative; display: block; top: 10px; padding: 0px; margin: 0px;">
     <form style="bottom: 0px; position: relative; padding: 0px; background-color: pink; height: auto;">
-          <input type="text" style="border-radius: 0px; width: 89.5%;">
-          <button type="button" 
-            style="border-color: darkgray; border-radius: 0px;">Send</button>
-          <button type="button"  style="border-color: darkgray; border-radius: 0px;"
-            (click)="clearConsole()">Clear</button>
+      <input type="text" style="border-radius: 0px; width: 89.5%;">
+      <button type="button" style="border-color: darkgray; border-radius: 0px;">Send</button>
+      <button type="button" style="border-color: darkgray; border-radius: 0px;" (click)="clearConsole()">Clear</button>
     </form>
 
   </div>
 </div>
-
 <!--/console ui-->
