@@ -1,98 +1,188 @@
 const ComponentParameters = {
+  // capacitor
   C: {
-    REFDES: 'C',
-    VALUE: '',
+    PREFIX: 'C',
     N1: '',
-    N2: ''
+    N2: '',
+    VALUE: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   D: {
-    REFDES: 'D',
-    MNAME: '',
+    PREFIX: 'D',
+    NAME : '',
     N1: '',
-    N2: ''
+    N2: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   I: {
-    REFDES: 'I',
-    VALUE: '',
+    PREFIX: 'I',
+    NAME : '',
     N1: '',
     N2: '',
-    NC1: '',
-    NC2: ''
+    VALUE: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   G: {
-    REFDES: 'I',
-    VALUE: '',
+    PREFIX: 'G',
+    NAME : '',
     N1: '',
-    N2: ''
+    N2: '',
+    NC1: '',
+    NC2: '',
+    VALUE: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   F: {
-    REFDES: 'F',
-    VALUE: '',
-    VNAM: '',
+    PREFIX: 'F',
+    NAME : '',
     N1: '',
-    N2: ''
+    N2: '',
+    VNAM: '',
+    VALUE: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
+  },
+
+  H:{
+    PREFIX: 'H',
+    NAME : '',
+    N1: '',
+    N2: '',
+    VNAM: '',
+    VALUE: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   J: {
-    REFDES: 'J',
-    MNAME: '',
-    ND: '',
-    NG: '',
-    NS: ''
+    PREFIX: 'J',
+    NAME : '',
+    N1: '',
+    N2: '',
+    N3: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
-  L: {
-    REFDES: 'L',
-    VALUE: '',
+  O: {
+    PREFIX: 'O',
+    NAME : '',
     N1: '',
-    N2: ''
+    N2: '',
+    N3:'',
+    N4:'',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
+  },
+
+  T:{
+    PREFIX: 'T',
+    NAME : '',
+    N1: '',
+    N2: '',
+    N3: '',
+    N4: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
+  },
+//Inductor
+  L: {
+    PREFIX: 'L',
+    N1: '',
+    N2: '',
+    VALUE: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   M: {
-    REFDES: 'M',
-    VALUE: '',
-    ND: '',
-    NG: '',
-    NS: '',
-    NB: ''
+    PREFIX: 'M',
+    NAME : '',
+    N1: '',
+    N2: '',
+    N3: '',
+    N4: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   Q: {
-    REFDES: 'Q',
-    MNAME: '',
-    NC: '',
-    NB: '',
-    NE: ''
+    PREFIX: 'Q',
+    NAME : '',
+    N1: '',
+    N2: '',
+    N3: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   V: {
-    REFDES: 'V',
-    TYPE: '',
-    VALUE: '',
+    PREFIX: 'V',
+    NAME : '',
     N1: '',
-    N2: ''
+    N2: '',
+    VALUE: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
 
   },
-
+//resistor
   R: {
-    REFDES: 'R',
-    VALUE: '',
+    PREFIX: 'R',
+    NAME : '',
     N1: '',
-    N2: ''
+    N2: '',
+    VALUE: '1K',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
   },
 
   Z: {
-    REFDES: 'Z',
-    MNAME: '',
-    ND: '',
-    NG: '',
-    NS: ''
+    PREFIX: 'Z',
+    NAME : '',
+    N1: '',
+    N2: '',
+    N3: '',
+    EXTRA_EXPRESSION: '',
+    MODEL:'',
+  },
+
+  S:{
+    PREFIX: 'S',
+    NAME : '',
+    N1: '',
+    N2: '',
+    NC1: '',
+    NC2: '',
+    MODEL:'',
+    EXTRA_EXPRESSION: '',
+
+
+  },
+  W:{
+    PREFIX: 'W',
+    NAME : '',
+    N1: '',
+    N2: '',
+    VNAM :'',
+    MODEL:'',
+    EXTRA_EXPRESSION: '',
+
   }
 
 }
 
 export default ComponentParameters
+
+// K coupled inductor
+// SWITCHES
+
+// IF S,W show model
