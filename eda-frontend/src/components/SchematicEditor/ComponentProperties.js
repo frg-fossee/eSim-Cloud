@@ -55,6 +55,8 @@ export default function ComponentProperties () {
             return <span key={i}/>
           } else if (keyName === 'EXTRA_EXPRESSION') {
             return <span key={i}/>
+          } else if (keyName.charAt(0) === 'N') {
+            return <span key={i}/>
           }
           return <ListItem key={i}>
             <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
