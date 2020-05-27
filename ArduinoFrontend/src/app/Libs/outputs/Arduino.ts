@@ -1,6 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
-import { isUndefined } from 'util';
 import { ArduinoRunner } from '../AVR8/Execute';
 
 declare var AVR8;
@@ -97,11 +96,37 @@ export class ArduinoUno extends CircuitElement {
     this.runner.portC.addListener((value) => {
       console.log(value);
     });
+
     this.runner.portD.addListener((value) => {
+      if (
+        this.runner.portB.pinState(0) !== AVR8.PinState.Input ||
+        this.runner.portB.pinState(0) !== AVR8.PinState.InputPullUp
+      ) {
+        this.pinNameMap[`RX0`].setValue((value & 1) * 5.0, null);
+      }
+
+      if (
+        this.runner.portB.pinState(1) !== AVR8.PinState.Input ||
+        this.runner.portB.pinState(1) !== AVR8.PinState.InputPullUp
+      ) {
+        this.pinNameMap[`TX0`].setValue(((value >> 1) & 1) * 5.0, null);
+      }
+
+      for (let i = 2; i <= 7; ++i) {
+        if (
+          this.runner.portB.pinState(i) !== AVR8.PinState.Input ||
+          this.runner.portB.pinState(i) !== AVR8.PinState.InputPullUp
+        ) {
+          this.pinNameMap[`D${i}`].setValue(((value >> i) & 1) * 5.0, null);
+        }
+      }
     });
+
     this.runner.usart.onByteTransmit = (value) => {
       /// TODO: Show On Console
     };
+
+
     this.runner.execute();
   }
   closeSimulation(): void {
