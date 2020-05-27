@@ -291,7 +291,7 @@ body {
     white-space: pre-wrap;
     word-wrap: break-word;
     position: relative;
-    height: 150px;
+    height: 65%;
     display: flex;
     flex-direction: column;
 }

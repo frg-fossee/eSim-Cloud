@@ -61,6 +61,12 @@
     <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
     {{status}}</button>
 
+    <!--simulation loading svg-->
+    <div  id="simload" style="display:none; z-index: 100;position: relative;width: 20%; height:20%;background: transparent;padding: 10px;">
+      <img src="../assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
+      </div> 
+    <!--/simulation loading svg-->
+
   <span style="flex:1 1 auto;"></span>
 
   <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1" (click)="delete()"><i class="fa fa-trash"></i></button>
@@ -286,8 +292,8 @@
         [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
   </div>
   <div id="msg"></div>
-  <div id="footer" style="bottom: 0px; position: relative; display: block;">
-    <form>
+  <div id="footer" style="bottom: 0px; position: relative; display: block; top: 10px; padding: 0px; margin: 0px;">
+    <form style="bottom: 0px; position: relative; padding: 0px; background-color: pink; height: auto;">
           <input type="text" style="border-radius: 0px; width: 89.5%;">
           <button type="button" 
             style="border-color: darkgray; border-radius: 0px;">Send</button>

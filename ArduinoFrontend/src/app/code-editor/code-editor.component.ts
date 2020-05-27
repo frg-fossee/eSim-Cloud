@@ -111,15 +111,20 @@ export class CodeEditorComponent implements OnInit {
               kind: monaco.languages.CompletionItemKind.Function,
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
               documentation: 'Read Anolog Value',
-
               insertText: 'analogRead(${1:pin});',
+            },
+            {
+              label: 'analogWrite',
+              kind: monaco.languages.CompletionItemKind.Function,
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Writes an analog value (PWM wave) to a pin.',
+              insertText: 'analogWrite(${1:pin}, ${2:value});',
             },
             {
               label: 'analogReference',
               kind: monaco.languages.CompletionItemKind.Function,
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
               documentation: 'Configures the reference voltage',
-
               insertText: 'analogReference(${1:type});',
             },
             {
@@ -127,7 +132,6 @@ export class CodeEditorComponent implements OnInit {
               kind: monaco.languages.CompletionItemKind.Function,
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
               documentation: 'Sets the size of analogRead value',
-
               insertText: 'analogReadResolution(${1:bits});',
             },
             {

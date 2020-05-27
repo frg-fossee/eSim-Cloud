@@ -156,6 +156,16 @@ export class Workspace {
     //   event.preventDefault();
     //   event.returnValue = 'did you save the stuff?';
     // });
+
+    window['showloading'] = () => {
+      const showloader = document.getElementById('loadanim');
+      showloader.style.display = 'flex';
+    };
+
+    window['hideloading'] = () => {
+      const hideloader = document.getElementById('loadanim');
+      hideloader.style.display = 'none';
+    };
   }
   /**
    * Event Listener for mousemove on html body
@@ -445,4 +455,11 @@ export class Workspace {
     const clear = document.getElementById('msg');
     clear.innerHTML = '';
   }
+
+   /*exportPng() {
+     const cnvas = document.getElementById('canvas') as HTMLCanvasElement;
+     const img = cnvas.toDataURL("image/png");
+     document.write('<img src="' + img + '"/>');
+   }*/
+
 }
