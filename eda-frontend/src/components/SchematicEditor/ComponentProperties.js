@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCompProperties } from '../../redux/actions/componentPropertiesActions'
-import { ListItem, ListItemText, Button, TextField, Dialog, DialogTitle, DialogContent, Typography, TextareaAutosize, Slide, DialogActions } from '@material-ui/core'
-
-const Transition = React.forwardRef(function Transition (props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
+import { ListItem, ListItemText, Button, TextField, TextareaAutosize } from '@material-ui/core'
 
 export default function ComponentProperties () {
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
@@ -32,16 +28,6 @@ export default function ComponentProperties () {
     setVal({})
   }
 
-  const [open, setOpen] = React.useState(false)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   return (
 
     <div style={isOpen ? {} : { display: 'none' }}>
@@ -52,11 +38,15 @@ export default function ComponentProperties () {
       {
         Object.keys(properties).map((keyName, i) => {
           if (keyName === 'MODEL') {
-            return <span key={i}/>
+            return <ListItem key={i}>
+              <TextareaAutosize rowsMax={4} aria-label={keyName} defaultValue={val[keyName] || ''} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
+            </ListItem>
           } else if (keyName === 'EXTRA_EXPRESSION') {
-            return <span key={i}/>
+            return <ListItem key={i}>
+              <TextareaAutosize rowsMax={4} aria-label={keyName} defaultValue={val[keyName] || ''} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
+            </ListItem>
           } else if (keyName.charAt(0) === 'N' && keyName !== 'NAME') {
-            return <span key={i}/>
+            return <span key={i} />
           }
           return <ListItem key={i}>
             <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
@@ -66,36 +56,6 @@ export default function ComponentProperties () {
 
       <ListItem>
         <Button size='small' variant="contained" color="primary" onClick={setProps}>ADD</Button>
-        <Button size='small' variant="contained" color="primary" style={{ marginLeft: 'auto' }} onClick={handleClickOpen}>EXTRA PARAM</Button>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          style={{ padding: '30px' }}
-          TransitionComponent={Transition}
-          keepMounted
-          aria-labelledby="params-dialog-title"
-          aria-describedby="params-dialog-description"
-        >
-          <DialogTitle id="params-dialog-title">{'Componenent Extra Parameters'}</DialogTitle>
-          <DialogContent dividers>
-            <Typography variant="subtitle1" gutterBottom>
-              {'Enter Extra Parameters'}
-            </Typography>
-            <TextareaAutosize aria-label="ExtraParameters" rowsMin={5} rowsMax={8} style={{ minWidth: '400px' }} />
-            <Typography variant="subtitle1" gutterBottom>
-              Enter Model
-            </Typography>
-            <TextareaAutosize aria-label="SpiceModel" rowsMin={5} rowsMax={8} style={{ minWidth: '400px' }} />
-          </DialogContent>
-          <DialogActions>
-            <Button color="primary">
-              ADD
-            </Button>
-            <Button onClick={handleClose} color="primary" autoFocus>
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
       </ListItem>
 
     </div>
