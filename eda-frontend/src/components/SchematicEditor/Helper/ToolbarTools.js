@@ -2,7 +2,8 @@
 /* eslint-disable camelcase */
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
-
+// import store from '../../../redux/store'
+// import setNetlist from '../../../redux/actions/netlistActions'
 var graph
 var undoManager
 
@@ -272,7 +273,9 @@ export function GenerateNetList () {
   }
   // k = k + '.op \n'
   // k = k + '.end \n'
+
   console.log(netlist)
+  // store.dispatch(setNetlist(netlist))
   return k
 }
 function GenerateNodeList () {

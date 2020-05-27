@@ -14,11 +14,21 @@ import {
 import { saveAs } from 'file-saver'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
+import { useDispatch } from 'react-redux'
 
 import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
 
+const dispatch = useDispatch()
 var FileSaver = require('file-saver')
+
+var blobToFile = function (theBlob, fileName) {
+  // A Blob() is almost a File() - it's just missing the two properties below which we will add
+  theBlob.lastModifiedDate = new Date()
+  theBlob.name = fileName
+  return theBlob
+}
+
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '90px'
