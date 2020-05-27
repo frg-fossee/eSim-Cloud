@@ -17,14 +17,23 @@ import {
   ListItem,
   ListItemText
 } from '@material-ui/core'
+
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
-
+import { useSelector } from 'react-redux'
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
+var FileSaver = require('file-saver')
+
 export function NetlistModal ({ open, close, netlist }) {
+  const netfile = useSelector(state => state.netlistReducer)
+  const createNetlistFile = () => {
+    var titleA = netfile.title.split(' ')[1]
+    var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
+    FileSaver.saveAs(blob, `${titleA}.cir`)
+  }
   return (
     <Dialog
       open={open}
@@ -42,7 +51,7 @@ export function NetlistModal ({ open, close, netlist }) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button color="primary">
+        <Button color="primary" onClick={createNetlistFile}>
           Download
         </Button>
         <Button onClick={close} color="primary" autoFocus>
