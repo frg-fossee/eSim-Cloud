@@ -9,10 +9,12 @@ import {
   Link,
   Avatar
 } from '@material-ui/core'
+import { useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
+import setTitle from '../../redux/actions/netlistActions'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -39,8 +41,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Header () {
+  const dispatch = useDispatch()
   const classes = useStyles()
-
+  const titleHandler = (e) => {
+    dispatch(setTitle(`* ${e.target.value}`))
+  }
   return (
     <Toolbar variant="dense" color="default">
       <IconButton edge="start" className={classes.button} color="primary">
@@ -63,6 +68,7 @@ function Header () {
             className={classes.input}
             defaultValue="Untitled_Schematic"
             color="secondary"
+            onChange={titleHandler}
             inputProps={{ 'aria-label': 'SchematicTitle' }}
           />
         </form>

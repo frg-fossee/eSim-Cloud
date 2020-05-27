@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCompProperties } from '../../redux/actions/componentPropertiesActions'
 import { ListItem, ListItemText, Button, TextField, TextareaAutosize } from '@material-ui/core'
-
+import setModel from '../../redux/actions/netlistActions'
 export default function ComponentProperties () {
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
   const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
@@ -25,6 +25,7 @@ export default function ComponentProperties () {
 
   const setProps = () => {
     dispatch(setCompProperties(id, val))
+    dispatch(setModel(val.MODEL))
     // setVal({})
   }
 
