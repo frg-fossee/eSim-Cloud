@@ -34,7 +34,7 @@ export class SevenSegment extends CircuitElement {
   static barGlowColor: string;
   static mapping: number[] = [];
   glows = [];
-
+  pinNamedMap: any = {};
   constructor(public canvas: any, x: any, y: any) {
     super('SevenSegment', x, y, 'SevenSegment.json', canvas);
   }
@@ -60,6 +60,28 @@ export class SevenSegment extends CircuitElement {
     this.data.barColor = null;
     this.data.barGlowColor = null;
     this.data = null;
+    // let x = 0;
+    for (const node of this.nodes) {
+      // console.log([x++, node.label]);
+      if (node.label !== 'COMMON') {
+        this.pinNamedMap[node.label] = node;
+        node.addValueListener((v) => this.logic(v));
+      }
+    }
+  }
+  logic(_) {
+    // console.log(k)
+    let byte = 0;
+    byte |= (this.pinNamedMap['a'].value > 0) ? 1 : 0;
+    byte |= (this.pinNamedMap['b'].value > 0) ? 2 : 0;
+    byte |= (this.pinNamedMap['C'].value > 0) ? 4 : 0;
+    byte |= (this.pinNamedMap['d'].value > 0) ? 8 : 0;
+    byte |= (this.pinNamedMap['e'].value > 0) ? 16 : 0;
+    byte |= (this.pinNamedMap['f'].value > 0) ? 32 : 0;
+    byte |= (this.pinNamedMap['g'].value > 0) ? 64 : 0;
+    byte |= (this.pinNamedMap['DP'].value > 0) ? 128 : 0;
+    // console.log(byte);
+    this.animate(byte);
   }
   animate(value: number) {
     value = value & 0xFF;
@@ -89,6 +111,7 @@ export class SevenSegment extends CircuitElement {
   initSimulation(): void {
   }
   closeSimulation(): void {
+    this.animate(0);
   }
   simulate(): void {
   }
