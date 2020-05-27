@@ -16,7 +16,7 @@ export default function Home () {
   const classes = useStyles()
 
   useEffect(() => {
-    document.title = 'EDA'
+    document.title = 'eSim'
   })
 
   return (
@@ -28,7 +28,7 @@ export default function Home () {
         color="textPrimary"
         gutterBottom
       >
-        EDA on Cloud
+        eSim on Cloud
       </Typography>
       <Typography
         variant="h5"

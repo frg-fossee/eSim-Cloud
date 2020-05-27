@@ -53,7 +53,7 @@ function Header () {
         className={classes.toolbarTitle}
       >
         <Link color="inherit" component={RouterLink} to="/">
-          EDA
+        eSim
         </Link>
       </Typography>
 
