@@ -1,4 +1,5 @@
 import * as actions from '../actions/actions'
+import { ZoomAct } from '../../components/SchematicEditor/Helper/ToolbarTools.js'
 
 const InitialState = {
   id: '',
@@ -28,6 +29,7 @@ export default function (state = InitialState, action) {
     }
 
     case actions.CLOSE_COMP_PROPERTIES: {
+      ZoomAct()
       return {
         ...state,
         isPropertiesWindowOpen: false
