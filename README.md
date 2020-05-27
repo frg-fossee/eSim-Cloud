@@ -19,7 +19,7 @@ Development branch status
 * ``` cp .env .env.prod ```
  **PLEASE CHANGE DEFAULT CREDENTIALS IN THE .env.prod FILE**
 * ``` docker-compose -f docker-compose.prod.yml --env-file .env.prod up --scale django=2 --scale celery=3 -d```
-
+* Please run ``` sh migrations.sh ``` inside the django container after DB and django has finished initializing for applying database migrations, and generating and seeding SVGs
 ### Configuring Development Environment
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Ffrg-fossee%2FeSim-Cloud&cloudshell_git_branch=develop&cloudshell_print=first_run.dev.sh&cloudshell_tutorial=README.md)
 #### Setting up docker containers
