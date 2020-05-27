@@ -39,11 +39,11 @@ export default function ComponentProperties () {
         Object.keys(properties).map((keyName, i) => {
           if (keyName === 'MODEL') {
             return <ListItem key={i}>
-              <TextareaAutosize id={keyName}  label={keyName} value={val[keyName] || ''} rowsMax={4} aria-label={keyName} defaultValue={val[keyName] || ''} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
+              <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} defaultValue={val[keyName] || ''} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
             </ListItem>
           } else if (keyName === 'EXTRA_EXPRESSION') {
             return <ListItem key={i}>
-              <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMax={4} aria-label={keyName} defaultValue={val[keyName] || ''} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
+              <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} defaultValue={val[keyName] || ''} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
             </ListItem>
           } else if (keyName.charAt(0) === 'N' && keyName !== 'NAME') {
             return <span key={i} />

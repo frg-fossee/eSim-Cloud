@@ -66,7 +66,7 @@ export default function LoadGrid (container, sidebar, outline) {
     outln.outline.labelsVisible = true
     outln.outline.setHtmlLabels(true)
 
-    graph.addListener(mxEvent.SINGLE_CLICK, function (sender, evt) {
+    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
       var cell = evt.getProperty('cell')
       // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
       if (cell !== undefined && cell.CellType === 'Component') {
@@ -78,6 +78,10 @@ export default function LoadGrid (container, sidebar, outline) {
           }
         })
       } else if (cell !== undefined && cell.CellType === 'This is where you say what the vertex is') {
+        store.dispatch({
+          type: actions.CLOSE_COMP_PROPERTIES
+        })
+      } else if (cell === undefined) {
         store.dispatch({
           type: actions.CLOSE_COMP_PROPERTIES
         })
@@ -111,7 +115,7 @@ export default function LoadGrid (container, sidebar, outline) {
     graph.getModel().beginUpdate()
     try {
     } finally {
-      // Updates the display
+    // Updates the display
       graph.getModel().endUpdate()
     }
   }
