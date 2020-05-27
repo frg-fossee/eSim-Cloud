@@ -65,12 +65,12 @@ def CompileINO(filenames):
 
             ret[str(filename)] = {
                 'output': re.sub(
-                    r'/tmp/esimCloud-temp/\d+/',
+                    rf'{settings.MEDIA_ROOT}/\d+/',
                     '',
                     output.decode('utf-8')
                 ),
                 'error': re.sub(
-                    r'/tmp/esimCloud-temp/\d+/',
+                    rf'{settings.MEDIA_ROOT}/\d+/',
                     '',
                     err.decode('utf-8')
                 ),
