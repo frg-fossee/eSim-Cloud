@@ -3,7 +3,6 @@
 /* eslint-disable new-cap */
 import mxGraphFactory from 'mxgraph'
 import store from '../../../redux/store'
-import setNetlist from '../../../redux/actions/netlistActions'
 import * as actions from '../../../redux/actions/actions'
 var graph
 var undoManager
@@ -258,7 +257,7 @@ export function GenerateNetList () {
         compobj.node2 = component.children[1].edges[0].node
         compobj.magnitude = 10
         netlist.push(compobj)
-        console.log(compobj)
+        // console.log(compobj)
       }
       if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
@@ -275,7 +274,7 @@ export function GenerateNetList () {
   // k = k + '.op \n'
   // k = k + '.end \n'
 
-  console.log(netlist)
+  // console.log(netlist)
 
   store.dispatch({
     type: actions.SET_NETLIST,
