@@ -55,7 +55,7 @@ export default function ComponentProperties () {
             return <span key={i}/>
           } else if (keyName === 'EXTRA_EXPRESSION') {
             return <span key={i}/>
-          } else if (keyName.charAt(0) === 'N') {
+          } else if (keyName.charAt(0) === 'N' && keyName !== 'NAME') {
             return <span key={i}/>
           }
           return <ListItem key={i}>
