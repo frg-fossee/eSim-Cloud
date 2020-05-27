@@ -17,15 +17,16 @@ def extract_data_from_ngspice_output(pathToFile):
             if('=' in f_contents[0]):
                 graph = False
 
-
             if(not graph):
-                json_data = {"total_number_of_tables": 0, "data": [], "graph":"false"}
+                json_data = {"total_number_of_tables": 0, "data": [],
+                             "graph": "false"}
                 for line in f_contents:
                     contents_of_line = line.split()
                     json_data["data"].append(contents_of_line)
 
             else:
-                json_data = {"total_number_of_tables": 0, "data": [], "graph":"true"}
+                json_data = {"total_number_of_tables": 0, "data": [],
+                             "graph": "true"}
                 for line in f_contents:
                     contents_of_line = line.split()
 
@@ -55,8 +56,7 @@ def extract_data_from_ngspice_output(pathToFile):
 
                             for x in range(len(data["y"])):
                                 data["y"][x].append(contents_of_line[x+2])
-                json_data["total_number_of_tables"] = total_number_of_tables - \
-                    len(json_data["data"])
+                json_data["total_number_of_tables"] = total_number_of_tables - len(json_data["data"]) # noqa
         return json_data
 
     except IOError as e:
@@ -77,4 +77,3 @@ if __name__ == "__main__":
 
     filePath = sys.argv[1]
     print(extract_data_from_ngspice_output(filePath))
-
