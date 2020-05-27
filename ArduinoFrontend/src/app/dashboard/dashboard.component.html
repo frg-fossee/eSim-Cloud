@@ -1,16 +1,27 @@
 <!-- As a heading -->
 <div class="bg-light" style="display: flex; height:60px;">
     <div style="flex-basis: 1500px; line-height: 60px;font-weight: bold; padding-left: 60px; font-size: x-large;">Dashboard</div>
-    <div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Help
+    <div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
     </div>
-    <div style="flex-basis: 100px; line-height: 60px;">
-        <a href="#">
-            <img  src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="">
-        </a>
+    <div style=" flex-basis: 100px;line-height: 60px;">
+        <a mat-stroked-button href="#" target="_blank">Login</a>
     </div>
+    <!--<div class="dropdown" style="flex-basis: 100px; line-height: 60px;">
+        <div class="w3-dropdown-hover">
+            <img  src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="" (click)="open">
+            <div class="dropdown-content" style="display: none;">
+                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;margin-top: 5px;"><i class="fas fa-user" style="margin-left: 5px;"></i> Meet Shah</div>
+                <hr style="margin-top: 5px;">
+                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fa fa-plus" style="margin-left: 5px;"></i> New</div>
+                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fa fa-tasks" style="margin-left: 5px;"></i> Designs</div>
+                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fa fa-envelope" style="margin-left: 5px;"></i> Notification</div>
+                <hr style="margin-top: 5px;">
+                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> logout</div>    
+            </div>
+        </div> 
+    </div>-->
 </div>
-<!--<div style="position:absolute; background-color: pink; width: 13%;height: 48%; float: left;margin-left: 87%;">
-</div>-->
+
 <!--sidebar-->
 <div id="sidebar">
     <div class="card" style="width: 80%;position: relative">
@@ -41,7 +52,7 @@
     <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New Circuit</a>
     <div class="box">
         <!--First Card-->
-        <div class="subbox">
+        <div class="subbox" (click)="openProject()">
             <div>
                 <img style="border-radius: 5px;" src="../assets/images/arduino.JPG" width="260" height="180" alt="">
                 <div style="box-sizing: border-box; padding: 15px;">
@@ -173,15 +184,14 @@
     </div>
 </div>
 <!--open project-->
-<div id="openproject">
+<div id="openproject" style="display: none;">
     <div id="innerdialog">
         <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
             <div
                 style="flex-basis: 80%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
                 Project name</div>
             <div style="flex-basis: 20%; padding: 10px;float: right;">
-                <button
-                    style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"><i
+                <button style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;" (click) ="closeProject()"><i
                         class="fa fa-close"></i></button>
             </div>
         </div>
@@ -239,14 +249,18 @@
         <div style="height: 185px; width: 100%;">
             <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
                 <h3 style="padding-left: 10px;font-weight: bolder; font-size: 22px;font-family: monospace">Comments</h3>
-                <form style="padding-left:10px; padding-top: 5px;width:97%;position:relative">
+             <!--<form style="padding-left:10px; padding-top: 5px;width:97%;position:relative">
                     <textarea id="text" placeholder="Add your Comments" style="height: 80px; width: 90%"></textarea>
                     <input type="submit" value="Post Comment">
+                </form>-->
+                <form class ="form-group">
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"  style="width: 97%;"></textarea>
                 </form>
+                <button mat-raised-button disabled>Post Comment</button>
             </div>
         </div>
         <div style="background-color:rgba(192,192,192,0.3); height: 30px;width: 100%;border-radius: 0px 0px 5px 0px">
-            <button style="background: transparent; border: none; float: right; font-weight: bold">close</button>
+            <button style="background: transparent; border: none; float: right; font-weight: bold" (click)= "closeProject()">close</button>
         </div>
     </div>
 </div>

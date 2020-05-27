@@ -10,6 +10,16 @@ export class DashboardComponent implements OnInit {
     confirm('Enable Sharing the circuit will  become public');
   }
 
+  closeProject() {
+      const closeProject = document.getElementById('openproject');
+      closeProject.style.display = 'none';
+  }
+
+  openProject() {
+    const openProject = document.getElementById('openproject');
+    openProject.style.display = 'block';
+  }
+
   constructor() {
 
   }
