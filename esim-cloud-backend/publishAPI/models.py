@@ -13,7 +13,7 @@ class CircuitTag(models.Model):
 
 class Circuit(models.Model):
 
-    curcit_id = models.UUIDField(
+    circuit_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False)
 
     # Circuit Details
