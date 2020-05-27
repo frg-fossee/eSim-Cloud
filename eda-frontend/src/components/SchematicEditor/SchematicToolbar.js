@@ -23,6 +23,7 @@ import MenuButton from './MenuButton'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
 import { useDispatch } from 'react-redux'
 import { toggleSimulate } from '../../redux/actions/index'
+import { closeCompProperties } from '../../redux/actions/componentPropertiesActions'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -69,6 +70,11 @@ export default function SchematicToolbar ({ mobileClose }) {
 
   const handleHelpClose = () => {
     setHelpOpen(false)
+  }
+
+  const handleDeleteComp = () => {
+    DeleteComp()
+    dispatch(closeCompProperties())
   }
 
   return (
@@ -135,7 +141,7 @@ export default function SchematicToolbar ({ mobileClose }) {
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Delete">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={DeleteComp}>
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleDeleteComp}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </Tooltip>

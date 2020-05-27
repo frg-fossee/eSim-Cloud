@@ -19,3 +19,9 @@ export const setCompProperties = (id, compProperties) => (dispatch) => {
     }
   })
 }
+
+export const closeCompProperties = () => (dispatch) => {
+  dispatch({
+    type: actions.CLOSE_COMP_PROPERTIES
+  })
+}
