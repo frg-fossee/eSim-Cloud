@@ -192,6 +192,7 @@ export function GenerateNetList () {
   var v = 1
   var c = 1
   var list = graph.getModel().cells
+  var n = 1
   var netlist = []
 
   // console.log('Untitled netlist'
@@ -244,7 +245,11 @@ export function GenerateNetList () {
                   k = k + ' ' + pin.edges[wire].node
                 } else {
                   // console.log(pin.edges[wire])
-                  pin.edges[wire].node = pin.edges[wire].id
+                  if(pin.edges[wire].node === null) {
+                    pin.edges[wire].node = n
+                    ++n
+                  }
+                  
                   pin.edges[wire].value = pin.edges[wire].node
                   k = k + '  ' + pin.edges[wire].node
                 }

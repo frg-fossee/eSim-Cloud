@@ -48,7 +48,7 @@ export default function LoadGrid (container, sidebar, outline) {
     // Parent component of a pin, default is null
     mxCell.prototype.ParentComponent = null
     mxCell.prototype.symbol = null
-    mxCell.prototype.node = mxCell.prototype.id
+    mxCell.prototype.node = null
     mxCell.prototype.PinName = ''
     mxCell.prototype.CompObject = null
     mxCell.prototype.properties = {}
