@@ -26,6 +26,13 @@ export default function (state = InitialState, action) {
       }
     }
 
+    case actions.CLOSE_COMP_PROPERTIES: {
+      return {
+        ...state,
+        isPropertiesWindowOpen: false
+      }
+    }
+
     default:
       return state
   }

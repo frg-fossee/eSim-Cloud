@@ -69,13 +69,17 @@ export default function LoadGrid (container, sidebar, outline) {
     graph.addListener(mxEvent.SINGLE_CLICK, function (sender, evt) {
       var cell = evt.getProperty('cell')
       // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
-      if (cell !== undefined) {
+      if (cell !== undefined && cell.CellType === 'Component') {
         store.dispatch({
           type: actions.GET_COMP_PROPERTIES,
           payload: {
             id: cell.id,
             compProperties: cell.properties
           }
+        })
+      } else if (cell !== undefined && cell.CellType === 'This is where you say what the vertex is') {
+        store.dispatch({
+          type: actions.CLOSE_COMP_PROPERTIES
         })
       }
       evt.consume()
