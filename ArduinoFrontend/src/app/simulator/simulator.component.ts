@@ -243,7 +243,6 @@ export class SimulatorComponent implements OnInit {
       width: '600px'
     });
     viewref.afterClosed().subscribe(result => {
-
       console.log(`Dialog result: ${result}`);
     });
   }
@@ -259,9 +258,7 @@ export class SimulatorComponent implements OnInit {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
   }
-  /* exportPng() {
-     const cnvas = document.getElementById('canvas') as HTMLCanvasElement;
-     const img = cnvas.toDataURL("image/png");
-     document.write('<img src="' + img + '"/>');
-   }*/
+  SaveProject() {
+    Workspace.SaveCircuit();
+  }
 }

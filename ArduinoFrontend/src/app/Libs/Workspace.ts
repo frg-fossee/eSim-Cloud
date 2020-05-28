@@ -158,12 +158,12 @@ export class Workspace {
     //   event.returnValue = 'did you save the stuff?';
     // });
 
-    window['showloading'] = () => {
+    window['showLoading'] = () => {
       const showloader = document.getElementById('loadanim');
       showloader.style.display = 'flex';
     };
 
-    window['hideloading'] = () => {
+    window['hideLoading'] = () => {
       const hideloader = document.getElementById('loadanim');
       hideloader.style.display = 'none';
     };
@@ -394,7 +394,13 @@ export class Workspace {
   }
 
   static SaveCircuit() {
-    const saveObj = {};
+    const saveObj = {
+      canvas: {
+        x: Workspace.translateX,
+        y: Workspace.translateY,
+        scale: Workspace.scale
+      }
+    };
     for (const key in window.scope) {
       if (window.scope[key] && window.scope[key].length > 0) {
         saveObj[key] = [];
