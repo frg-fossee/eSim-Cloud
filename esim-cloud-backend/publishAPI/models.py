@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
 import uuid
 
 
@@ -17,7 +16,8 @@ class Circuit(models.Model):
         primary_key=True, default=uuid.uuid4, editable=False)
 
     # Circuit Details
-    title = models.CharField(max_length=200, required=True)  # Search
+    title = models.CharField(
+        max_length=200, required=True, unique=True)  # Search
 
     sub_title = models.CharField(max_length=200, required=False)  # Search
 
@@ -36,8 +36,21 @@ class Circuit(models.Model):
 
     publish_request_time = models.DateTimeField(auto_now_add=True)
 
+    # For Django Admin Panel
+    def image_tag(self):
+        if self.svg_path:
+            return mark_safe('<img src="/%s" style="width: 45px; height:45px;" />' % self.base64_image)  # noqa
+        else:
+            return 'No Image Found'
+    image_tag.short_description = 'Image'
+
+    def __str__(self):
+        return self.title
+
 
 class Publish(models.Model):
+    circuit_id = models.ForeignKey(
+        Circuit, on_delete=models.CASCADE, null=False, required=True)
 
     publish_time = models.DateTimeField(auto_now=False, null=True)
 
@@ -48,5 +61,7 @@ class Publish(models.Model):
     reviewed_by = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.SET_NULL)
 
-    class Meta:
-        permissions = []
+    # For Django Admin Panel
+    def __str__(self):
+        return 'Review - ' + self.circuit_id.title
+
