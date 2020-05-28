@@ -1,4 +1,3 @@
-import { Point } from '../Point';
 import { CircuitElement } from '../CircuitElement';
 
 declare var window; // Declare window so that custom created function don't throw error
@@ -40,7 +39,7 @@ export class Buzzer extends CircuitElement {
       this.nodes[1].setValue(val, null);
     } else {
       // TODO: Show Toast
-      window.showToast('LED is not Connected properly');
+      window.showToast('Buzzer is not Connected properly');
     }
   }
   // return propeties object
