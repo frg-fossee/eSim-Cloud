@@ -4,7 +4,8 @@ const initialState = {
   title: '',
   isGraph: 'false',
   text: '',
-  graph: {}
+  graph: {},
+  isSimRes: false
 }
 
 export default function (state = initialState, action) {
@@ -18,6 +19,7 @@ export default function (state = initialState, action) {
     case actions.SET_RESULT_GRAPH: {
       return {
         ...state,
+        isSimRes: true,
         isGraph: 'true',
         graph: action.payload.graph
       }
@@ -26,6 +28,7 @@ export default function (state = initialState, action) {
     case actions.SET_RESULT_TEXT: {
       return {
         ...state,
+        isSimRes: true,
         isGraph: 'false',
         text: action.payload.text
       }

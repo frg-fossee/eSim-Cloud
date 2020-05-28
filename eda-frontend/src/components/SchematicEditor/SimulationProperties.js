@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimulationProperties () {
   const netfile = useSelector(state => state.netlistReducer)
+  const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const dispatch = useDispatch()
   const classes = useStyles()
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
@@ -146,10 +147,11 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          // console.log(res.data)
+          console.log(res.data)
           var temp = res.data.details.data
           if (res.data.details.graph === 'true') {
             var simResultGraph = {}
+            simResultGraph.labels = temp[0].labels
             simResultGraph.x1 = temp[0].x
             simResultGraph.y11 = temp[0].y[0]
             simResultGraph.y21 = temp[0].y[1]
@@ -455,6 +457,12 @@ export default function SimulationProperties () {
                 </form>
               </ExpansionPanelDetails>
             </ExpansionPanel>
+          </ListItem>
+
+          <ListItem style={isSimRes ? {} : { display: 'none' }} onClick={handlesimulateOpen} >
+            <Button size='small' variant="contained" color="primary" style={{ margin: '10px auto' }} onClick={handlesimulateOpen}>
+              Simulation Result
+            </Button>
           </ListItem>
         </List>
       </div>
