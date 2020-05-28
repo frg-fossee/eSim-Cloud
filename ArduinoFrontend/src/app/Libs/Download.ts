@@ -17,6 +17,21 @@ export class Download {
     a.dispatchEvent(evt);
   }
 
+  static DownloadText(filename: string, data: any[], options: any) {
+    const blob = new Blob(data, options);
+    const evt = new MouseEvent('click', {
+      view: window,
+      bubbles: false,
+      cancelable: true
+    });
+    const a = document.createElement('a');
+    a.setAttribute('download', `${filename}`);
+    a.href = URL.createObjectURL(blob);
+    a.target = '_blank';
+    a.setAttribute('target', '_blank');
+    a.dispatchEvent(evt);
+  }
+
   static async ExportImage(type: ImageType) {
     const svg = (document.querySelector('#holder > svg').cloneNode(true) as SVGSVGElement);
     svg.getElementsByTagName('g')[0].removeAttribute('transform');
