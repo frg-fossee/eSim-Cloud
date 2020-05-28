@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
 import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
+import {GenerateNodeList} from './Helper/ToolbarTools'
 import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -45,6 +46,7 @@ export default function SimulationProperties () {
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const dispatch = useDispatch()
   const classes = useStyles()
+  const [nodeList,setNodeList] = useState([])
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
     sweepType: 'Linear',
@@ -65,6 +67,17 @@ export default function SimulationProperties () {
     stop: '',
     pointsBydecade: ''
   })
+
+  const onDcSweepTabExpand = () => {
+    try{
+      setNodeList([...GenerateNodeList()])
+    }catch(err){
+      setNodeList([])
+      alert("Circuit not complete. Please Check Connectons.")
+    }
+
+
+  }
 
   const handleDcSweepControlLine = (evt) => {
     const value = evt.target.value
@@ -256,7 +269,7 @@ export default function SimulationProperties () {
 
           {/* DC Sweep */}
           <ListItem className={classes.simulationOptions} divider>
-            <ExpansionPanel>
+            <ExpansionPanel onClick={onDcSweepTabExpand}>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
@@ -268,12 +281,37 @@ export default function SimulationProperties () {
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
                     <ListItem>
-                      <TextField size='small' variant="outlined" id="parameter" label="Parameter"
+                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
                         value={dcSweepcontrolLine.parameter}
                         onChange={handleDcSweepControlLine}
-                      />
+                      /> */}
+
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="parameter"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Node"
+                        value={dcSweepcontrolLine.parameter}
+                        onChange={handleDcSweepControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+
+                      >
+                        {
+                          nodeList.map(value => {
+                            return <option key={value} value={value}>
+                                        {value}
+                                  </option>
+                          })
+                        }
+
+                      </TextField>
                     </ListItem>
-                    <ListItem>
+
+                    {/* <ListItem>
                       <TextField
                         style={{ width: '100%' }}
                         id="sweepType"
@@ -295,7 +333,9 @@ export default function SimulationProperties () {
                           Decade
                         </option>
                       </TextField>
-                    </ListItem>
+                    </ListItem> */}
+
+
                     <ListItem>
                       <TextField id="start" label="Start" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start}
@@ -314,13 +354,16 @@ export default function SimulationProperties () {
                         onChange={handleDcSweepControlLine}
                       />
                     </ListItem>
-                    <ListItem>
+
+                    {/* <ListItem>
                       Second Parameter:
                       <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
-                    </ListItem>
-                    <ListItem>
+                    </ListItem> */}
+
+                    {/* <ListItem>
                       <Button size='small' variant="contained">Add Expression</Button>
-                    </ListItem>
+                    </ListItem> */}
+
                     <ListItem>
                       <Button id="dcSweepSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('DcSweep') }}>
                         Simulate
@@ -363,7 +406,8 @@ export default function SimulationProperties () {
                         onChange={handleTransientAnalysisControlLine}
                       />
                     </ListItem>
-                    <ListItem>
+
+                    {/* <ListItem>
                       <TextField
                         style={{ width: '100%' }}
                         id="skipInitial"
@@ -385,14 +429,17 @@ export default function SimulationProperties () {
                           Yes
                         </option>
                       </TextField>
-                    </ListItem>
-                    <ListItem>
+                    </ListItem> */}
+
+                    {/* <ListItem>
                       Sweep Parameter:
                       <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
-                    </ListItem>
-                    <ListItem>
+                    </ListItem> */}
+
+                    {/* <ListItem>
                       <Button size='small' variant="contained">Add Expression</Button>
                     </ListItem>
+                     */}
                     <ListItem>
                       <Button id="transientAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Transient') }}>
                         Simulate
@@ -417,37 +464,67 @@ export default function SimulationProperties () {
               <ExpansionPanelDetails>
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
-                    <ListItem>
+                    {/* <ListItem>
                       <TextField id="input" label="Input" size='small' variant="outlined"
                         value={acAnalysisControlLine.skipInitial}
+                        onChange={handleAcAnalysisControlLine}
+                      />
+                    </ListItem> */}
+
+                       <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="input"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Type"
+                        value={acAnalysisControlLine.input}
+                        onChange={handleAcAnalysisControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+
+                      >
+                        <option key="linear" value="lin">
+                          Linear
+                        </option>
+                        <option key="decade" value="dec">
+                          Decade
+                        </option>
+                        <option key="octave" value="oct">
+                          Octave
+                        </option>
+                      </TextField>
+                    </ListItem>
+                    <ListItem>
+                      <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"
+                        value={acAnalysisControlLine.pointsBydecade}
                         onChange={handleAcAnalysisControlLine}
                       />
                     </ListItem>
                     <ListItem>
                       <TextField id="start" label="Start" size='small' variant="outlined"
-                        value={acAnalysisControlLine.skipInitial}
+                        value={acAnalysisControlLine.start}
                         onChange={handleAcAnalysisControlLine}
                       />
                     </ListItem>
                     <ListItem>
                       <TextField id="stop" label="Stop" size='small' variant="outlined"
-                        value={acAnalysisControlLine.skipInitial}
+                        value={acAnalysisControlLine.stop}
                         onChange={handleAcAnalysisControlLine}
                       />
                     </ListItem>
-                    <ListItem>
-                      <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"
-                        value={acAnalysisControlLine.skipInitial}
-                        onChange={handleAcAnalysisControlLine}
-                      />
-                    </ListItem>
-                    <ListItem>
+
+                    {/* <ListItem>
                       Sweep Parameter:
                       <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
-                    </ListItem>
-                    <ListItem>
+                    </ListItem> */}
+
+                    {/* <ListItem>
                       <Button size='small' variant="contained">Add Expression</Button>
-                    </ListItem>
+                    </ListItem> */}
+
                     <ListItem>
                       <Button size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Ac') }}>
                         Simulate
