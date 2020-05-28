@@ -2,6 +2,21 @@ export enum ImageType { PNG, JPG, SVG }
 declare var canvg;
 
 export class Download {
+
+  static DownloadImage(data: any, filename: string, type: ImageType) {
+    const evt = new MouseEvent('click', {
+      view: window,
+      bubbles: false,
+      cancelable: true
+    });
+    const a = document.createElement('a');
+    const ext = (type === ImageType.PNG) ? 'png' : 'jpg';
+    a.setAttribute('download', `${filename}.${ext}`);
+    a.setAttribute('href', data);
+    a.setAttribute('target', '_blank');
+    a.dispatchEvent(evt);
+  }
+
   static async ExportImage(type: ImageType) {
     const svg = (document.querySelector('#holder > svg').cloneNode(true) as SVGSVGElement);
     svg.getElementsByTagName('g')[0].removeAttribute('transform');
