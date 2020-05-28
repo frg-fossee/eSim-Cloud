@@ -140,6 +140,76 @@ export function ErcCheck () {
   var PinNC = 0
   var stypes = 0
   var ground = 0
+  var wirec = 0
+  for (var property in list) {
+    var cell = list[property]
+    if (cell.Component === true) {
+      console.log(cell)
+      // cell.value = 'Checked'
+      for (var child in cell.children) {
+        console.log(cell.children[child])
+        var childVertex = cell.children[child]
+        if (childVertex.Pin === true && childVertex.edges === null) {
+          graph.getSelectionCell(childVertex)
+          console.log('This pin is not connected')
+          console.log(childVertex)
+          ++PinNC
+          ++errorCount
+        } else {
+          for (var w in childVertex.edges) {
+            if (childVertex.edges[w].source === null || childVertex.edges[w].target === null) {
+              ++PinNC
+            } else {
+              if (childVertex.edges[w].source.edge === true || childVertex.edges[w].target.edge === true) {
+                ++wirec
+              }
+            }
+          }
+          console.log(childVertex)
+        }
+      }
+      ++vertexCount
+    }
+    if (cell.symbol === 'PWR') {
+      console.log('Ground is present')
+      console.log(cell)
+      ++ground
+    }
+    // Setting a rule check that only input and output ports can be connected
+    /* if (cell.edge === true) {
+      // eslint-disable-next-line no-constant-condition
+      if ((cell.source.pinType === 'Input' && cell.target.pinType === 'Input') || (cell.source.pinType === 'Output' && cell.target.pinType === 'Output')) {
+        ++stypes
+      } else {
+        cell.value = 'Node Number : ' + cell.id
+        console.log('Wire Information')
+        console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
+        console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
+      }
+    } */
+  }
+  if (vertexCount === 0) {
+    alert('No Component added')
+    ++errorCount
+  } else if (PinNC !== 0) {
+    alert('Pins not connected')
+  } else if (ground === 0) {
+    alert('Ground not connected')
+  } else if (wirec !== 0) {
+    alert('Do not connect pins to wires')
+  } else {
+    if (errorCount === 0) {
+      alert('ERC Check completed')
+    }
+  }
+}
+function ErcCheckNets () {
+  var list = graph.getModel().cells // mapping the grid
+  var vertexCount = 0
+  var errorCount = 0
+  var PinNC = 0
+  var stypes = 0
+  var ground = 0
   for (var property in list) {
     var cell = list[property]
     if (cell.Component === true) {
@@ -179,13 +249,17 @@ export function ErcCheck () {
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount
+    return false
   } else if (PinNC !== 0) {
     alert('Pins not connected')
+    return false
   } else if (ground === 0) {
     alert('Ground not connected')
+    return false
   } else {
     if (errorCount === 0) {
       alert('ERC Check completed')
+      return true
     }
   }
 }
@@ -202,95 +276,100 @@ export function GenerateNetList () {
   var list = graph.getModel().cells
   var n = 1
   var netlist = new Set()
-
-  // console.log('Untitled netlist'
+  var erc = ErcCheckNets()
   var k = ''
-  for (var property in list) {
-    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+  if (erc === false) {
+    alert('ERC check failed')
+  } else {
+    for (var property in list) {
+      if (list[property].Component === true && list[property].symbol !== 'PWR') {
       // k = ''
       // alert('Component is present')
-      var compobj = {
-        name: '',
-        node1: '',
-        node2: '',
-        magnitude: ''
-      }
-      var component = list[property]
-      // console.log(component)
-      if (component.symbol === 'R') {
-        // component.symbol = component.symbol + r.toString()
-        k = k + component.symbol + r.toString()
-        component.value = component.symbol + r.toString()
+        var compobj = {
+          name: '',
+          node1: '',
+          node2: '',
+          magnitude: ''
+        }
+        var component = list[property]
         // console.log(component)
-        component.properties.PREFIX = component.value
-        // component.symbol = component.value
+        if (component.symbol === 'R') {
+        // component.symbol = component.symbol + r.toString()
+          k = k + component.symbol + r.toString()
+          component.value = component.symbol + r.toString()
+          // console.log(component)
+          component.properties.PREFIX = component.value
+          // component.symbol = component.value
 
-        ++r
-      } else if (component.symbol === 'V') {
+          ++r
+        } else if (component.symbol === 'V') {
         // component.symbol = component.symbol + v.toString()
-        k = k + component.symbol + v.toString()
-        component.value = component.symbol + v.toString()
-        component.properties.PREFIX = component.value
-        // component.symbol = component.value
-        ++v
-      } else {
+          k = k + component.symbol + v.toString()
+          component.value = component.symbol + v.toString()
+          component.properties.PREFIX = component.value
+          // component.symbol = component.value
+          ++v
+        } else {
         // component.symbol = component.symbol + c.toString()
-        k = k + component.symbol + c.toString()
-        component.value = component.symbol + c.toString()
-        component.properties.PREFIX = component.value
-        // component.symbol = component.value
-        ++c
-      }
-      // compobj.name = component.symbol
+          k = k + component.symbol + c.toString()
+          component.value = component.symbol + c.toString()
+          component.properties.PREFIX = component.value
+          // component.symbol = component.value
+          ++c
+        }
+        // compobj.name = component.symbol
 
-      if (component.children !== null) {
-        for (var child in component.children) {
-          var pin = component.children[child]
-          if (pin.vertex === true) {
+        if (component.children !== null) {
+          for (var child in component.children) {
+            var pin = component.children[child]
+            if (pin.vertex === true) {
             // alert(pin.id)
-            if (pin.edges !== null || pin.edges.length !== 0) {
-              for (var wire in pin.edges) {
-                if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                  // console.log('Found ground')
-                  pin.edges[wire].node = 0
-                  pin.edges[wire].value = 0
-                  k = k + ' ' + pin.edges[wire].node
-                } else {
-                  // console.log(pin.edges[wire])
-                  // if (pin.edges[wire].node === null) {
-                  pin.edges[wire].node = pin.edges[wire].id
-                  // ++n
-                  // }
+              if (pin.edges !== null || pin.edges.length !== 0) {
+                for (var wire in pin.edges) {
+                  if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
+                    if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                    // console.log('Found ground')
+                      pin.edges[wire].node = 0
+                      pin.edges[wire].value = 0
+                      k = k + ' ' + pin.edges[wire].node
+                    } else {
+                    // console.log(pin.edges[wire])
+                    // if (pin.edges[wire].node === null) {
+                      pin.edges[wire].node = pin.edges[wire].id
+                      // ++n
+                      // }
 
-                  pin.edges[wire].value = pin.edges[wire].node
-                  k = k + '  ' + pin.edges[wire].node
+                      pin.edges[wire].value = pin.edges[wire].node
+                      k = k + '  ' + pin.edges[wire].node
+                    }
+                  }
                 }
               }
             }
           }
-        }
-        compobj.name = component.symbol
-        compobj.node1 = component.children[0].edges[0].node
-        compobj.node2 = component.children[1].edges[0].node
-        compobj.magnitude = 10
-        netlist.add(compobj.node1)
-        netlist.add(compobj.node2)
+          compobj.name = component.symbol
+          compobj.node1 = component.children[0].edges[0].node
+          compobj.node2 = component.children[1].edges[0].node
+          compobj.magnitude = 10
+          netlist.add(compobj.node1)
+          netlist.add(compobj.node2)
         // console.log(compobj)
-      }
-      // console.log(component)
-      if (component.properties.VALUE !== undefined) {
-        k = k + ' ' + component.properties.VALUE
-      }
+        }
+        // console.log(component)
+        if (component.properties.VALUE !== undefined) {
+          k = k + ' ' + component.properties.VALUE
+        }
 
-      if (component.properties.EXTRA_EXPRESSION.length > 0) {
-        k = k + ' ' + component.properties.EXTRA_EXPRESSION
-      }
-      if (component.properties.MODEL.length > 0) {
-        k = k + ' ' + component.properties.MODEL.split(' ')[1]
-      }
-      // k = k + ' 10'
-      k = k + ' \n'
+        if (component.properties.EXTRA_EXPRESSION.length > 0) {
+          k = k + ' ' + component.properties.EXTRA_EXPRESSION
+        }
+        if (component.properties.MODEL.length > 0) {
+          k = k + ' ' + component.properties.MODEL.split(' ')[1]
+        }
+        // k = k + ' 10'
+        k = k + ' \n'
       // console.log(k)
+      }
     }
   }
   // k = k + '.op \n'
