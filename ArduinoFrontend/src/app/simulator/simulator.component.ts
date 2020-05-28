@@ -162,6 +162,11 @@ export class SimulatorComponent implements OnInit {
       msg.style.height = '0px';
       ft.style.display = 'none';
 
+    } else if (!this.atoggle || !this.toggle1) {
+      close.style.bottom = '40px';
+      close.style.height = '620px';
+      msg.style.height = '565px';
+      ft.style.display = 'block';
     } else {
       msg.style.height = '150px';
       close.style.height = '230px';
@@ -189,12 +194,6 @@ export class SimulatorComponent implements OnInit {
   clearConsole() {
     Workspace.ClearConsole();
   }
-  /* openProject(){
-     const openproject = document.getElementById('openproject');
-     if(openproject.style.display === 'none'){
-       openproject.style.display = 'block';
-     }
-   }*/
 
   /**
    * Project Title input focus out callback

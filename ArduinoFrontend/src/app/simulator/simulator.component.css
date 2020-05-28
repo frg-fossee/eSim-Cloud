@@ -168,7 +168,7 @@ button:hover {
     display: flex;
     background-color: whitesmoke;
     justify-content: space-between;
-    max-height: 50px;
+    height: 50px;
 }
 
 #secondary-header>button {
