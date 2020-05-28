@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
 import { ComponentlistComponent } from './componentlist/componentlist.component';
 import { MatIconModule } from '@angular/material/icon';
+import { FrontPageComponent } from './front-page/front-page.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
     ViewComponentInfoComponent,
     ExportfileComponent,
     ComponentlistComponent,
+    FrontPageComponent,
   ],
   imports: [
     BrowserModule,

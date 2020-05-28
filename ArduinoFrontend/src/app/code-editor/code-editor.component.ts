@@ -1107,13 +1107,16 @@ export class CodeEditorComponent implements OnInit {
     this.code = this.arduinos[this.selectedIndex].code;
   }
   openFolder() {
+   // const editor = document.getElementById('editor')
     const folder = document.getElementById('lib');
-    console.log(folder.style.display);
+   // console.log(folder.style.display);
 
     if (folder.style.display === 'none') {
       folder.style.display = 'flex';
+     // editor.style.display = 'none';
     } else {
       folder.style.display = 'none';
+     // editor.style.display = 'block';
     }
   }
 
