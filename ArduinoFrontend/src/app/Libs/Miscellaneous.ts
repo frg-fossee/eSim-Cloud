@@ -1,6 +1,5 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
-import { Workspace } from './Workspace';
 
 export class Label extends CircuitElement {
   text = 'Label';
@@ -19,6 +18,15 @@ export class Label extends CircuitElement {
     this.setClickListener(null);
     this.setDragListeners();
     this.setHoverListener();
+  }
+  SaveData() {
+    return {
+      text: this.text,
+      size: this.fontSize,
+      color: this.fontColor,
+      weight: this.fontWeight,
+      style: this.fontStyle
+    };
   }
   update() {
     this.elements[0]
@@ -113,7 +121,6 @@ export class Label extends CircuitElement {
       this.fontWeight = weights[weightSelect.selectedIndex];
       this.update();
     };
-
     tmp = document.createElement('label');
     tmp.innerText = 'Text';
     body.appendChild(tmp);
@@ -148,5 +155,4 @@ export class Label extends CircuitElement {
   }
   simulate(): void {
   }
-
 }
