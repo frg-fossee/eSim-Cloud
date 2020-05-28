@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { CssBaseline } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -22,6 +22,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard () {
   const classes = useStyles()
+
+  useEffect(() => {
+    document.title = 'Dashboard - EDA '
+  })
 
   return (
     <div className={classes.root}>

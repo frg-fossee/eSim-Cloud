@@ -19,7 +19,7 @@ class Graph extends Component {
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y1, y2 } = this.props
+    const { x, y1, y2, labels } = this.props
 
     if (typeof lineGraph !== 'undefined') lineGraph.destroy()
 
@@ -29,13 +29,13 @@ class Graph extends Component {
         labels: x,
         datasets: [
           {
-            label: 'V (IN)',
+            label: labels[1],
             data: y1,
             fill: false,
             borderColor: '#9feaf9'
           },
           {
-            label: 'V (OP)',
+            label: labels[2],
             data: y2,
             fill: false,
             borderColor: '#556cd6'
@@ -66,7 +66,7 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                labelString: 'Time ( sec )'
+                labelString: labels[0] + ' ( sec )'
               },
               ticks: {
                 display: true

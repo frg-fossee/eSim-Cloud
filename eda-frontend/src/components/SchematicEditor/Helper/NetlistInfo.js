@@ -12,7 +12,7 @@ export default function NetlistInfoFunct (graph) {
   console.log(root)
   console.log(portsEnabled) */
   var taponhold = graph.tapAndHoldInProgress
-  console.log(taponhold)
+  // console.log(taponhold)
   // eslint-disable-next-line eqeqeq
   if (taponhold == true) {
     alert(true)

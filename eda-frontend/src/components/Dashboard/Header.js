@@ -6,11 +6,13 @@ import {
   Hidden,
   Menu,
   MenuItem,
-  Fade
+  Fade,
+  Avatar
 } from '@material-ui/core'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import logo from '../../static/logo.png'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -18,6 +20,13 @@ const useStyles = makeStyles((theme) => ({
   },
   link: {
     margin: theme.spacing(1, 1.5)
+  },
+  button: {
+    marginRight: theme.spacing(0.7)
+  },
+  small: {
+    width: theme.spacing(3.7),
+    height: theme.spacing(3.7)
   }
 }))
 
@@ -35,6 +44,9 @@ export default function Header () {
 
   return (
     <>
+      <IconButton edge="start" className={classes.button} color="primary">
+        <Avatar alt="esim logo" src={logo} className={classes.small} />
+      </IconButton>
       <Typography
         variant="h6"
         color="inherit"
@@ -42,7 +54,7 @@ export default function Header () {
         className={classes.toolbarTitle}
       >
         <Link color="inherit" component={RouterLink} to="/">
-          EDA Cloud
+          eSim
         </Link>
       </Typography>
       <Hidden smDown>

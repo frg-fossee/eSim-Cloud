@@ -33,7 +33,15 @@ urlpatterns = [
 
     # Simulation API Routes
     path('api/simulation/', include(simulationURLs)),
+
+    # libAPI routes
     path('api/', include(libURLs)),
+
+    # libAPI routes
+    path('api/', include(saveURLs)),
+
+    # publishAPI routes
+    path('api/', include(publishURLs)),
 
     # Auth API Routes
     url(r'^api/auth/', include('djoser.urls')),
