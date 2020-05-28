@@ -56,7 +56,7 @@ def extract_data_from_ngspice_output(pathToFile):
 
                             for x in range(len(data["y"])):
                                 data["y"][x].append(contents_of_line[x+2])
-                json_data["total_number_of_tables"] = total_number_of_tables - len(json_data["data"]) # noqa
+                json_data["total_number_of_tables"] = total_number_of_tables - len(json_data["data"])  # noqa
         return json_data
 
     except IOError as e:
