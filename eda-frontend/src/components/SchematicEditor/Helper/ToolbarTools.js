@@ -330,6 +330,7 @@ export function GenerateNetList () {
                     if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                     // console.log('Found ground')
                       pin.edges[wire].node = 0
+                      // pin.edges[wire].node = '0'
                       pin.edges[wire].value = 0
                       k = k + ' ' + pin.edges[wire].node
                     } else {
@@ -448,7 +449,8 @@ export function GenerateNodeList () {
               for (var wire in pin.edges) {
                 if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                   // console.log('Found ground')
-                  pin.edges[wire].node = 0
+                  // pin.edges[wire].node = 0
+                  pin.edges[wire].node = '0'
                   pin.edges[wire].value = 0
                   k = k + ' ' + pin.edges[wire].node
                 } else {
