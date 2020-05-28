@@ -6,7 +6,14 @@ from django.contrib.auth import get_user_model
 from djoser.conf import settings as djoser_settings
 from random import randint
 import requests
+from django.shortcuts import render
 Token = djoser_settings.TOKEN_MODEL
+
+
+def activate_user(request, uid, token):
+    return render(request,
+                  'authAPI/activate_user.html',
+                  {'uid': uid, 'token': token})
 
 
 class UserActivationView(APIView):

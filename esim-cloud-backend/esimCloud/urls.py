@@ -9,6 +9,9 @@ from django.urls import path
 from simulationAPI import urls as simulationURLs
 from authAPI.views import UserActivationView, GoogleOAuth2
 from libAPI import urls as libURLs
+from saveAPI import urls as saveURLs
+from publishAPI import urls as publishURLs
+from authAPI import urls as authURLs
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -36,9 +39,8 @@ urlpatterns = [
     url(r'^api/auth/', include('djoser.urls')),
     url(r'^api/auth/', include('djoser.urls.authtoken')),
     url(r'^api/auth/', include("djoser.social.urls")),
-    url(r'^api/auth/google-callback', GoogleOAuth2.as_view()),
-    url(r'^api/auth/users/activate/(?P<uid>[\w-]+)/(?P<token>[\w-]+)/$',
-        UserActivationView.as_view()),
+    url(r'^api/auth/', include(authURLs)),
+
 
     # For API Documentation
     url(r'^api/docs(?P<format>\.json|\.yaml)$',
