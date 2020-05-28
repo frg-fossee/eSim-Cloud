@@ -83,6 +83,7 @@ export default function SimulationScreen ({ open, close }) {
                 ? <Grid item xs={12} sm={12}>
                   <Paper className={classes.paper}>
                     <h2>GRAPH OUTPUT</h2><Graph
+                      labels={result.graph.labels}
                       x={result.graph.x1}
                       y1={result.graph.y11}
                       y2={result.graph.y21}
