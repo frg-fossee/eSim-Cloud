@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import {
   Container,
-  Grid,
   Button,
   Typography,
-  Link,
   Checkbox,
   FormControlLabel,
   TextField,
@@ -14,10 +12,10 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { Link as RouterLink } from 'react-router-dom'
-import axios from "axios"
+
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(27),
+    marginTop: theme.spacing(10),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -33,68 +31,59 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  checkboxText: {
+    color: 'red',
+    marginLeft: theme.spacing(5)
   }
 }))
 
 export default function SignUp () {
   const classes = useStyles()
 
-    const [userCredentials,setUserCredentials] = useState({email:"",username:"",password:"",password2:""})
-    const [error,setError] = useState({eemail:false,eusername:false,epassword:false,epassword2:false})
+  const [userCredentials, setUserCredentials] = useState({ email: '', username: '', password: '', password2: '' })
+  const [error, setError] = useState({ eemail: false, eusername: false, epassword: false, epassword2: false, checkbox: false })
+  const [checkbox, setCheckbox] = useState(false)
+  const changeHandler = (e) => {
+    setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value })
+  }
 
-const changeHandler = (e) => {
-    setUserCredentials({...userCredentials,[e.target.name]: e.target.value })
-}
+  const validate = () => {
+    let isError = false
+    const errors = {}
 
-const submitHandler = (e) => {
-    e.preventDefault()
-    console.log(userCredentials)
-    console.log("HELLO")
-
-}
-
-
-const validate = () => {
-    let isError = false;
-    let errors = {}
-
-    if (userCredentials.username.length < 5){
-        isError = true;
-        errors["eusername"] = true
-    }else{
-        errors["eusername"] = false
+    if (!checkbox) {
+      isError = true
+      errors.checkbox = true
+    } else {
+      errors.checkbox = false
     }
 
-    if(isError){
-        setError(Object.assign(error,errors))
+    if (!userCredentials.email.match(/.+@.+/) || userCredentials.email === '') {
+      isError = true
+      errors.eemail = true
+    } else {
+      errors.eemail = false
     }
-    console.log(error)
+
+    if (userCredentials.username.length < 5 || userCredentials.username === '') {
+      isError = true
+      errors.eusername = true
+    } else {
+      errors.eusername = false
+    }
+
+    if (userCredentials.password !== userCredentials.password2 || userCredentials.password === '' || userCredentials.password === '') {
+      isError = true
+      errors.epassword = true
+    } else {
+      errors.epassword = false
+    }
+
+    setError(Object.assign(error, errors))
 
     return isError
-}
-
-const submit = () => {
-    console.log(userCredentials)
-
-
-    const err = validate();
-
-    if(!err){
-        const cred = userCredentials
-        delete cred.password2
-
-        axios.post('http://localhost/api/auth/users/', cred)
-        .then(response => {
-            console.log(response)
-        })
-        .catch(error => {
-            console.log(error)
-        })
-    }else{
-        console.log("error")
-    }
-
-}
+  }
 
   useEffect(() => {
     document.title = 'Sign Up - EDA '
@@ -111,8 +100,8 @@ const submit = () => {
           Register | Sign Up
         </Typography>
 
-        <form className={classes.form} onSubmit={submitHandler}>
-        <TextField
+        <form className={classes.form}>
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -120,9 +109,10 @@ const submit = () => {
             id="email"
             label="Email"
             name="email"
+            type="email"
             autoComplete="email"
             error = {error.eemail}
-            helperText={error.eemail ? "invalid email": ""}
+            helperText={error.eemail ? 'invalid email' : ''}
             autoFocus
             value={userCredentials.email}
             onChange={changeHandler}
@@ -136,7 +126,7 @@ const submit = () => {
             label="Username"
             name="username"
             error={error.eusername}
-            helperText={error.eusername ? "invalid username": ""}
+            helperText={error.eusername ? 'invalid username' : ''}
             autoComplete="Username"
             value={userCredentials.username}
             onChange={changeHandler}
@@ -151,6 +141,7 @@ const submit = () => {
             type="password"
             id="password"
             error={error.epassword}
+            helperText={error.epassword ? "password did'nt match" : ''}
             value={userCredentials.password}
             onChange={changeHandler}
             autoComplete="current-password"
@@ -164,15 +155,17 @@ const submit = () => {
             label="Confirm password"
             type="password"
             id="Confirm_password"
-            error={error.epassword2}
+            error={error.epassword}
+            helperText={error.epassword ? "password did'nt match" : ''}
             value={userCredentials.password2}
             onChange={changeHandler}
             autoComplete="current-password"
           />
-          {/* <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" checked={checkbox} onChange={() => setCheckbox(!checkbox)} />}
             label="I accept the Terms of Use & Privacy Policy"
-          /> */}
+          />
+          {error.checkbox && <div className={classes.checkboxText}>please read the terms and conditions</div>}
           <Button
             component={RouterLink}
             // to="/dashboard"
@@ -180,15 +173,15 @@ const submit = () => {
             fullWidth
             variant="contained"
             color="primary"
-            // onClick={submit}
+            onClick={validate}
             className={classes.submit}
           >
-            Login
+            Sign Up
           </Button>
-
         </form>
+
       </Card>
-      {/* <Button
+      <Button
         component={RouterLink}
         to="/"
         type="Sign Up"
@@ -197,7 +190,7 @@ const submit = () => {
         className={classes.submit}
       >
         Back to home
-      </Button> */}
+      </Button>
     </Container>
   )
 }
