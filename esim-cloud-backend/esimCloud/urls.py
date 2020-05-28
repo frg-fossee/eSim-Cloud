@@ -10,6 +10,7 @@ from simulationAPI import urls as simulationURLs
 from authAPI.views import UserActivationView, GoogleOAuth2
 from libAPI import urls as libURLs
 from saveAPI import urls as saveURLs
+from publishAPI import urls as publishURLs
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -37,6 +38,9 @@ urlpatterns = [
 
     # libAPI routes
     path('api/', include(saveURLs)),
+
+    # publishAPI routes
+    path('api/', include(publishURLs)),
 
     # Auth API Routes
     url(r'^api/auth/', include('djoser.urls')),
