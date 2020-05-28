@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'authAPI',
     'libAPI',
     'saveAPI',
+    'publishAPI'
 ]
 
 MIDDLEWARE = [
