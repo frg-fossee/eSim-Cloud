@@ -79,7 +79,7 @@ export default function SimulationScreen ({ open, close, simResult }) {
               </Paper>
             </Grid>
 
-            {simResult.graph === true
+            {simResult.graph === 'true'
               ? <Grid item xs={12} sm={12}>
                 <Paper className={classes.paper}>
                   <h2>GRAPH OUTPUT</h2>
@@ -93,7 +93,14 @@ export default function SimulationScreen ({ open, close, simResult }) {
               : <Grid item xs={12} sm={7}>
                 <Paper className={classes.paper}>
                   <h2>OUTPUT</h2>
-                  <h2>{simResult.st}</h2>
+                  <h1>{simResult.st}</h1>
+                  {/* {
+                    simResult.st.map((res) => {
+                      return (
+                        <h1 key={res}>{res}</h1>
+                      )
+                    })
+                  } */}
                 </Paper>
               </Grid>
             }
