@@ -392,7 +392,7 @@ export function GenerateNetList () {
   console.log(netlist)
   return k
 }
-function GenerateNodeList () {
+export function GenerateNodeList () {
   /* var enc = new mxCodec(mxUtils.createXmlDocument())
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
