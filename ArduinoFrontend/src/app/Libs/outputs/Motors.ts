@@ -4,8 +4,6 @@ import { Point } from '../Point';
 declare var Raphael;
 
 export class Motor extends CircuitElement {
-  static pointHalf = 4;
-
   constructor(public canvas: any, x: number, y: number) {
     super('Motor', x, y, 'Motor.json', canvas);
   }
@@ -61,8 +59,6 @@ export class L298N extends CircuitElement {
 }
 
 export class ServoMotor extends CircuitElement {
-  static pointHalf = 6;
-
   constructor(public canvas: any, x: number, y: number) {
     super('ServoMotor', x, y, 'ServoMotor.json', canvas);
   }

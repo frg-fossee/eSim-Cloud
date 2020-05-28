@@ -4,7 +4,6 @@ import { Point } from '../Point';
 declare var Raphael;
 
 export class Potentiometer extends CircuitElement {
-  static pointHalf = 5;
   constructor(public canvas: any, x: number, y: number) {
     super('Potentiometer', x, y, 'Potentiometer.json', canvas);
     // const anim = Raphael.animation({transform: 'r360'}, 2500).repeat(Infinity);
