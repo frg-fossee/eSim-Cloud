@@ -72,19 +72,33 @@ export default function SimulationScreen ({ open, close, simResult }) {
             justify="center"
             alignItems="stretch"
           >
-            <Grid item xs={12} sm={7}>
+            <Grid item xs={12} sm={12}>
               <Paper className={classes.paper}>
-                <h2>GRAPH OUTPUT</h2>
-                <Graph
-                  x={simResult.x1}
-                  y1={simResult.y11}
-                  y2={simResult.y21}
-                />
+                <h1>{simResult.type}</h1>
+                <p>Simulation Result for {simResult.type}</p>
               </Paper>
             </Grid>
+
+            {simResult.graph === true
+              ? <Grid item xs={12} sm={12}>
+                <Paper className={classes.paper}>
+                  <h2>GRAPH OUTPUT</h2>
+                  <Graph
+                    x={simResult.x1}
+                    y1={simResult.y11}
+                    y2={simResult.y21}
+                  />
+                </Paper>
+              </Grid>
+              : <Grid item xs={12} sm={7}>
+                <Paper className={classes.paper}>
+                  <h2>OUTPUT</h2>
+                  <h2>{simResult.st}</h2>
+                </Paper>
+              </Grid>
+            }
           </Grid>
         </Container>
-
       </Dialog>
     </div>
   )
