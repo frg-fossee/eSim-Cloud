@@ -94,7 +94,7 @@ function Header () {
 
       <div className={classes.rightBlock}>
         <Button
-          size="small"
+          size="Large"
           variant="contained"
           color="primary"
           className={classes.button}
@@ -150,7 +150,6 @@ function Header () {
                 >
             My Schematics
                 </MenuItem>
-                <MenuItem onClick={handleClose}>Settings</MenuItem>
                 <MenuItem component={RouterLink} to="/login" onClick={handleClose}>
             Logout
                 </MenuItem>

@@ -131,7 +131,6 @@ export default function Header () {
         >
           My Schematics
         </MenuItem>
-        <MenuItem onClick={handleClose}>Settings</MenuItem>
         <MenuItem component={RouterLink} to="/login" onClick={handleClose}>
           Logout
         </MenuItem>
