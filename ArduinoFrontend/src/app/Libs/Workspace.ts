@@ -392,6 +392,22 @@ export class Workspace {
       }
     }
   }
+
+  static SaveCircuit() {
+    const saveObj = {};
+    for (const key in window.scope) {
+      if (window.scope[key] && window.scope[key].length > 0) {
+        saveObj[key] = [];
+        for (const item of window.scope[key]) {
+          if (item.save) {
+            saveObj[key].push(item.save());
+          }
+        }
+      }
+    }
+    console.log(saveObj);
+  }
+
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {
