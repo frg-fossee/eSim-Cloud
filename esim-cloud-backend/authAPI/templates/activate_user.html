@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+    <title>Activate Account</title>
+    <meta name="description" content="">
+
+    <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/skeleton.css">
+    <style>
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        .button {
+            border-color: #33C3F0;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            min-width: 100%;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #clickhere {
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- Script
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+
+
+    <script>
+        function sendData() {
+            $.ajax({
+                url: "{{ activation_url }}",
+                data: { uid: '{{ uid }}', token: '{{ token }}' },
+                type: "POST",
+                dataType: "json",
+                //on success
+                success: function (data) {
+                    window.location.replace('{{ redirect_url }}');
+                },
+                //on error
+                error: function (err) {
+                    // ToDo: Error message popup
+                    console.log(err)
+                    $('#error-text').text(err.statusText)
+
+                }
+            });
+        }
+
+    </script>
+
+    <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <!-- <link rel="icon" type="image/png" href="images/favicon.png"> -->
+
+</head>
+
+<body>
+
+
+    <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <div class="container">
+        <div class="row">
+
+            <div style="padding-top: 30%; align-content: center;">
+                <h1 style="text-align: center;">To Activate Your Account
+                    <a id="clickhere" onClick="sendData();"><strong><u>Click Here</u><strong></a></h1>
+            </div>
+            <div style="padding-top: 30%; align-content: center;">
+                <h1 style="text-align: center; color: #e25555;" id="error-text"> </h1>
+            </div>
+        </div>
+    </div>
+    <div class="container footer">
+        <footer class="twelve columns">
+            Made with <span style="color: #e25555;">&hearts;</span> by <a
+                href="https://github.com/frg-fossee">frg-fossee</a>
+        </footer>
+    </div> <!-- end footer div.container -->
+    </div>
+    <!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+
+</html>
