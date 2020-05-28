@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'authAPI',
     'libAPI',
     'arduinoAPI',
+    'saveAPI',
 ]
 
 MIDDLEWARE = [
@@ -113,6 +114,7 @@ DATABASES = {
 
 DATABASE_ROUTERS = (
     'simulationAPI.dbrouters.mongoRouter',
+    # 'saveAPI.dbrouters.mongoRouter',<- to Store saveAPI models in mongodb
     # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
 )
 

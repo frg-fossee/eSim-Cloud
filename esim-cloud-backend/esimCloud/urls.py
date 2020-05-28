@@ -10,6 +10,7 @@ from simulationAPI import urls as simulationURLs
 from arduinoAPI import urls as arduinoURLs
 from authAPI.views import UserActivationView, GoogleOAuth2
 from libAPI import urls as libURLs
+from saveAPI import urls as saveURLs
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -31,9 +32,14 @@ urlpatterns = [
 
     # Simulation API Routes
     path('api/simulation/', include(simulationURLs)),
+
+    # libAPI routes
     path('api/', include(libURLs)),
 
     path('api/arduino/', include(arduinoURLs)),
+    # libAPI routes
+    path('api/', include(saveURLs)),
+
     # Auth API Routes
     url(r'^api/auth/', include('djoser.urls')),
     url(r'^api/auth/', include('djoser.urls.authtoken')),

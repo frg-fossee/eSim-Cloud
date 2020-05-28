@@ -63,10 +63,14 @@ RUN arduino-cli core update-index \
 
 # Django
 
-RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev
+RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev postgresql-dev
+
 COPY requirements.txt /code/
-RUN apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev\
+RUN apk add --no-cache mariadb-connector-c-dev ;\
+    apk add --update alpine-sdk && \
+    apk add libffi-dev openssl-dev && \
+    apk --no-cache --update add build-base ;\
+    apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev\
     && pip install --upgrade pip\
     && pip install --trusted-host pypi.python.org -r requirements.txt \
     && apk del .build-deps
-

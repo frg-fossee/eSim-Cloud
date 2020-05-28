@@ -4,12 +4,8 @@ import { Point } from '../Point';
 declare var Raphael;
 
 export class Motor extends CircuitElement {
-  static pointHalf = 4;
-
   constructor(public canvas: any, x: number, y: number) {
     super('Motor', x, y, 'Motor.json', canvas);
-  }
-  save() {
   }
   load(data: any): void {
   }
@@ -36,11 +32,8 @@ export class Motor extends CircuitElement {
 
 
 export class L298N extends CircuitElement {
-  static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
     super('L298N', x, y, 'L298N.json', canvas);
-  }
-  save() {
   }
   load(data: any): void {
   }
@@ -66,16 +59,12 @@ export class L298N extends CircuitElement {
 }
 
 export class ServoMotor extends CircuitElement {
-  static pointHalf = 6;
-
   constructor(public canvas: any, x: number, y: number) {
     super('ServoMotor', x, y, 'ServoMotor.json', canvas);
   }
   animate(angle: number) {
     const anim = Raphael.animation({ transform: `r${angle}` }, 2500);
     this.elements[1].animate(anim);
-  }
-  save() {
   }
   load(data: any): void {
   }

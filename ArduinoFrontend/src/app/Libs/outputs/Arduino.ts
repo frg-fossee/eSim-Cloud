@@ -5,9 +5,9 @@ import { ArduinoRunner } from '../AVR8/Execute';
 declare var AVR8;
 
 export class ArduinoUno extends CircuitElement {
-  static prefix = 'Arduino UNO R3 ';
+  static prefix = 'Arduino UNO R3 '; // TODO: fetch from json
   public name: string;
-  public code = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}';
+  public code = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}'; // TODO: fetch from json
   public runner: ArduinoRunner;
   public hex: string;
   public powerLed: any;
@@ -28,7 +28,11 @@ export class ArduinoUno extends CircuitElement {
       this.pinNameMap[node.label] = node;
     }
   }
-  save() {
+  SaveData() {
+    return {
+      name: this.name,
+      code: this.code
+    };
   }
   load(data: any): void {
   }

@@ -1,6 +1,5 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
-import { ShowOnDirtyErrorStateMatcher } from '@angular/material';
 
 export class Resistor extends CircuitElement {
   static colorTable: string[] = [];
@@ -29,6 +28,12 @@ export class Resistor extends CircuitElement {
     delete this.data;
     this.data = null;
   }
+  SaveData() {
+    return {
+      value: this.value,
+      tolerance: this.toleranceIndex
+    };
+  }
   updateColors() {
     const cur = this.getValue();
     this.elements[1].attr({
@@ -46,8 +51,6 @@ export class Resistor extends CircuitElement {
     this.elements[4].attr({
       fill: Resistor.colorTable[this.toleranceIndex]
     }); // Tolerance
-  }
-  save() {
   }
   load(data: any): void {
   }
@@ -241,8 +244,6 @@ export class BreadBoard extends CircuitElement {
       this.x += this.tx;
       this.y += this.ty;
     });
-  }
-  save() {
   }
   load(data: any): void {
   }
