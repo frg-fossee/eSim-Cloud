@@ -102,9 +102,20 @@ export default function SimulationProperties () {
     setSimulateOpen(false)
   }
 
-  function onFormSubmit (file) {
-    // Stop default form submit
-    netlistUpload(file)
+  const [simResult, setsimResult] = useState({})
+  // Prepare Netlist to file
+  const prepareNetlist = (netlist) => {
+    var titleA = netfile.title.split(' ')[1]
+    var myblob = new Blob([netlist], {
+      type: 'text/plain'
+    })
+    var file = new File([myblob], `${titleA}.cir`, { type: 'text/plain', lastModified: Date.now() })
+    // console.log(file)
+    sendNetlist(file)
+  }
+
+  function sendNetlist (file) {
+    netlistConfig(file)
       .then((response) => {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
@@ -117,7 +128,7 @@ export default function SimulationProperties () {
   }
 
   // Upload the nelist
-  function netlistUpload (file) {
+  function netlistConfig (file) {
     const formData = new FormData()
     formData.append('file', file)
     const config = {
@@ -137,6 +148,13 @@ export default function SimulationProperties () {
           setTimeout(simulationResult(url), 1000)
         } else {
           console.log(res.data)
+          var simresult = {}
+          simresult.x1 = res.data.details.data[0].x
+          simresult.y11 = res.data.details.data[0].y[0]
+          simresult.y21 = res.data.details.data[0].y[1]
+          console.log(simresult)
+          setsimResult(simresult)
+          handlesimulateOpen()
         }
       })
       .then((res) => { })
@@ -145,25 +163,8 @@ export default function SimulationProperties () {
       })
   }
 
-  const prepareNetlist = () => {
-    console.log(netfile)
-    var netlist = netfile.title + '\n' +
-      netfile.model + '\n' +
-      netfile.netlist + '\n' +
-      netfile.controlLine + '\n' +
-      netfile.controlBlock + '\n'
-
-    var titleA = netfile.title.split(' ')[1]
-    var myblob = new Blob([netlist], {
-      type: 'text/plain'
-    })
-    var file = new File([myblob], `${titleA}.cir`, { type: 'text/plain', lastModified: Date.now() })
-    console.log(file)
-    onFormSubmit(file)
-  }
-
   const startSimulate = (type) => {
-    GenerateNetList()
+    var compNetlist = GenerateNetList()
     var controlLine = ''
     var controlBlock = ''
     switch (type) {
@@ -187,13 +188,19 @@ export default function SimulationProperties () {
         break
     }
     controlBlock = '\n.control \nrun \nprint all > data.txt \n.endc \n.end'
-    console.log(controlLine)
+    // console.log(controlLine)
 
     dispatch(setControlLine(controlLine))
     dispatch(setControlBlock(controlBlock))
     // setTimeout(function () { }, 2000)
 
-    prepareNetlist()
+    var netlist = netfile.title + '\n' +
+      netfile.model + '\n' +
+      compNetlist + '\n' +
+      controlLine + '\n' +
+      controlBlock + '\n'
+
+    prepareNetlist(netlist)
 
     // handlesimulateOpen()
   }
@@ -201,7 +208,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} close={handleSimulateClose} />
+        <SimulationScreen open={simulateOpen} close={handleSimulateClose} simResult={simResult}/>
 
         {/* Simulation modes list */}
         <List>

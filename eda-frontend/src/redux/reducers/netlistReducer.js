@@ -26,7 +26,7 @@ export default function (state = initialState, action) {
     case actions.SET_MODEL: {
       return {
         ...state,
-        model: state.model + '\n' + action.payload.model
+        model: state.model + action.payload.model + '\n'
       }
     }
     case actions.SET_CONTROL_LINE: {
