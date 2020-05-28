@@ -32,17 +32,21 @@ class Circuit(models.Model):
 
     description = models.TextField()
 
-    tags = models.ManyToManyField(CircuitTag)  # Filter
-
     last_updated = models.DateTimeField(auto_now=True)
 
     publish_request_time = models.DateTimeField(auto_now_add=True)
 
-    publish_time = models.DateTimeField(auto_now=False, null=True)
 
-    # Review Mechanism
+class Publish(models.Model):
+
+    publish_time = models.DateTimeField(auto_now=False, null=True)
 
     published = models.BooleanField(default=False)
 
+    tags = models.ManyToManyField(CircuitTag)  # Filter
+
     reviewed_by = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        permissions = []
