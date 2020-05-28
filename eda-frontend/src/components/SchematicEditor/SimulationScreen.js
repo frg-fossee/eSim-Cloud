@@ -41,12 +41,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationScreen ({ open, close }) {
+export default function SimulationScreen ({ open, close, simResult }) {
   const classes = useStyles()
 
-  const x1 = []
-  const y11 = []
-  const y21 = []
+  // const x1 = []
+  // const y11 = []
+  // const y21 = []
 
   return (
     <div>
@@ -76,9 +76,9 @@ export default function SimulationScreen ({ open, close }) {
               <Paper className={classes.paper}>
                 <h2>GRAPH OUTPUT</h2>
                 <Graph
-                  x={x1}
-                  y1={y11}
-                  y2={y21}
+                  x={simResult.x1}
+                  y1={simResult.y11}
+                  y2={simResult.y21}
                 />
               </Paper>
             </Grid>
@@ -92,5 +92,6 @@ export default function SimulationScreen ({ open, close }) {
 
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
-  close: PropTypes.func
+  close: PropTypes.func,
+  simResult: PropTypes.object
 }

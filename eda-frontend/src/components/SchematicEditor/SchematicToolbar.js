@@ -56,10 +56,10 @@ export default function SchematicToolbar ({ mobileClose }) {
   const [netlist, genNetlist] = React.useState('')
 
   const handleClickOpen = () => {
-    GenerateNetList()
+    var compNetlist = GenerateNetList()
     var netlist = netfile.title + '\n' +
       netfile.model + '\n' +
-      netfile.netlist + '\n' +
+      compNetlist + '\n' +
       netfile.controlLine + '\n' +
       netfile.controlBlock + '\n'
     genNetlist(netlist)
