@@ -22,6 +22,7 @@ def populate_models(sender, **kwargs):
         'Reviewers': {
             models.Publish: ['add', 'change', 'delete', 'view'],
             models.Circuit: ['view', 'add', 'delete'],
+            models.CircuitTag: ['add', 'view', 'change', 'delete'],
         },
     }
 
