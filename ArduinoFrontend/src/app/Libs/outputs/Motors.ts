@@ -9,8 +9,6 @@ export class Motor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('Motor', x, y, 'Motor.json', canvas);
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {
@@ -36,11 +34,8 @@ export class Motor extends CircuitElement {
 
 
 export class L298N extends CircuitElement {
-  static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
     super('L298N', x, y, 'L298N.json', canvas);
-  }
-  save() {
   }
   load(data: any): void {
   }
@@ -74,8 +69,6 @@ export class ServoMotor extends CircuitElement {
   animate(angle: number) {
     const anim = Raphael.animation({ transform: `r${angle}` }, 2500);
     this.elements[1].animate(anim);
-  }
-  save() {
   }
   load(data: any): void {
   }

@@ -5,8 +5,6 @@ export class PIRSensor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('PIRSensor', x, y, 'PIRSensor.json', canvas);
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {

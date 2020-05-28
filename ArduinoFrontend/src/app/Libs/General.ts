@@ -47,8 +47,6 @@ export class Resistor extends CircuitElement {
       fill: Resistor.colorTable[this.toleranceIndex]
     }); // Tolerance
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {
@@ -241,8 +239,6 @@ export class BreadBoard extends CircuitElement {
       this.x += this.tx;
       this.y += this.ty;
     });
-  }
-  save() {
   }
   load(data: any): void {
   }

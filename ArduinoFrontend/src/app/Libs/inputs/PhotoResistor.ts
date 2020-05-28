@@ -2,11 +2,8 @@ import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 
 export class PhotoResistor extends CircuitElement {
-  static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
     super('PhotoResistor', x, y, 'PhotoResistor.json', canvas);
-  }
-  save() {
   }
   load(data: any): void {
   }

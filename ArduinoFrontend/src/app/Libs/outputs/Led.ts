@@ -47,8 +47,6 @@ export class LED extends CircuitElement {
     // TODO: Change Accordingly to Color
     return `LED Red`;
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {
@@ -102,8 +100,6 @@ export class RGBLED extends CircuitElement {
     this.elements[1].glow({
       color: 'rgb(255,0,0)'
     });
-  }
-  save() {
   }
   load(data: any): void {
   }

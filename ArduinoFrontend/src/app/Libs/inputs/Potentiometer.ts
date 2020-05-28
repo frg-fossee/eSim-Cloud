@@ -37,8 +37,6 @@ export class Potentiometer extends CircuitElement {
       // console.log();
     });
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {

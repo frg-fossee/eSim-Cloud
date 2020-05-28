@@ -254,7 +254,21 @@ export abstract class CircuitElement {
   /**
    * Save Circuit Component
    */
-  abstract save(): any;
+  save(): any {
+    const data = this.SaveData();
+    const ret = {
+      x: this.x,
+      y: this.y,
+      id: this.id
+    };
+    if (data) {
+      ret['data'] = data;
+    }
+    return ret;
+  }
+  SaveData() {
+    return null;
+  }
   /**
    * Load Circuit Component
    */

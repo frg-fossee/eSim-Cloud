@@ -31,8 +31,6 @@ export class Label extends CircuitElement {
         fill: this.fontColor
       });
   }
-  save() {
-  }
   load(data: any): void {
   }
   changeLabel(value: string) {

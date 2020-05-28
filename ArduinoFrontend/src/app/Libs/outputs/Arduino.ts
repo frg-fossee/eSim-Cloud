@@ -28,8 +28,6 @@ export class ArduinoUno extends CircuitElement {
       this.pinNameMap[node.label] = node;
     }
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {

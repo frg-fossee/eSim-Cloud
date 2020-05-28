@@ -53,14 +53,6 @@ export class Buzzer extends CircuitElement {
       body
     };
   }
-  // return save object
-  save() {
-    return {
-      x: this.x,
-      y: this.y,
-      id: this.id
-    };
-  }
   // load data from saved object
   load(data: any) {
     this.x = data.x;

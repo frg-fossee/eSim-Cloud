@@ -5,8 +5,6 @@ export class LCD16X2 extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('LCD16X2', x, y, 'LCD16X2.json', canvas);
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {
@@ -37,8 +35,6 @@ export class SevenSegment extends CircuitElement {
   pinNamedMap: any = {};
   constructor(public canvas: any, x: any, y: any) {
     super('SevenSegment', x, y, 'SevenSegment.json', canvas);
-  }
-  save() {
   }
   load(data: any): void {
   }

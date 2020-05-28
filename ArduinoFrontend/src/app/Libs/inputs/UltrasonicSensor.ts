@@ -5,8 +5,6 @@ export class UltrasonicSensor extends CircuitElement {
   constructor(public canvas: any, public x: number, y: number) {
     super('UltrasonicSensor', x, y, 'UltrasonicSensor.json', canvas);
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {

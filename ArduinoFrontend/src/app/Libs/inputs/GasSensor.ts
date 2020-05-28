@@ -6,8 +6,6 @@ export class MQ2 extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('MQ2', x, y, 'MQ2.json', canvas);
   }
-  save() {
-  }
   load(data: any): void {
   }
   getNode(x: number, y: number) {
