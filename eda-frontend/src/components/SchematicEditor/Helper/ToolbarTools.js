@@ -139,24 +139,32 @@ export function ErcCheck () {
   var errorCount = 0
   var PinNC = 0
   var stypes = 0
+  var ground = 0 
   for (var property in list) {
     var cell = list[property]
     if (cell.Component === true) {
       console.log(cell)
-      cell.value = 'Checked'
+      // cell.value = 'Checked'
       for (var child in cell.children) {
         console.log(cell.children[child])
         var childVertex = cell.children[child]
         if (childVertex.Pin === true && childVertex.edges === null) {
           graph.getSelectionCell(childVertex)
+          console.log('This pin is not connected')
+          console.log(childVertex)
           ++PinNC
           ++errorCount
         }
       }
       ++vertexCount
     }
+    if (cell.symbol === 'PWR') {
+      console.log('Ground is present')
+      console.log(cell)
+      ++ground
+    }
     // Setting a rule check that only input and output ports can be connected
-    if (cell.edge === true) {
+    /* if (cell.edge === true) {
       // eslint-disable-next-line no-constant-condition
       if ((cell.source.pinType === 'Input' && cell.target.pinType === 'Input') || (cell.source.pinType === 'Output' && cell.target.pinType === 'Output')) {
         ++stypes
@@ -166,15 +174,15 @@ export function ErcCheck () {
         console.log('source : Pin' + cell.source.PinNumber + ' ' + cell.source.pinType + ' of ' + cell.source.ParentComponent.style)
         console.log('taget : Pin' + cell.target.PinNumber + ' ' + cell.target.pinType + ' of ' + cell.source.ParentComponent.style)
       }
-    }
+    } */
   }
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount
   } else if (PinNC !== 0) {
     alert('Pins not connected')
-  } else if (stypes !== 0) {
-    alert('Same pintypes connected')
+  } else if (ground === 0) {
+    alert('Ground not connected')
   } else {
     if (errorCount === 0) {
       alert('ERC Check completed')
