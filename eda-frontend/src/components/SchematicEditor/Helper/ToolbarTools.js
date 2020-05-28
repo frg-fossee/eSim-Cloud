@@ -213,6 +213,8 @@ export function GenerateNetList () {
         // component.symbol = component.symbol + r.toString()
         k = k + component.symbol + r.toString()
         component.value = component.symbol + r.toString()
+        // console.log(component)
+        component.properties.PREFIX = component.value
         // component.symbol = component.value
 
         ++r
@@ -220,12 +222,14 @@ export function GenerateNetList () {
         // component.symbol = component.symbol + v.toString()
         k = k + component.symbol + v.toString()
         component.value = component.symbol + v.toString()
+        component.properties.PREFIX = component.value
         // component.symbol = component.value
         ++v
       } else {
         // component.symbol = component.symbol + c.toString()
         k = k + component.symbol + c.toString()
         component.value = component.symbol + c.toString()
+        component.properties.PREFIX = component.value
         // component.symbol = component.value
         ++c
       }
@@ -291,6 +295,12 @@ export function GenerateNetList () {
       netlist: k
     }
   })
+  graph.getModel().beginUpdate()
+  try {
+  } finally {
+    // Updates the display
+    graph.getModel().endUpdate()
+  }
   return k
 }
 function GenerateNodeList () {
