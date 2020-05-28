@@ -1,6 +1,6 @@
 from saveAPI.serializers import StateSaveSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.parsers import FormParser
+from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -34,15 +34,15 @@ class StateSaveView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class StateFetchView(APIView):
+class StateFetchUpdateView(APIView):
     """
     Returns Saved data for given save id ,
-    Only user who saved the state can access it
+    Only user who saved the state can access / update it
     THIS WILL ESCAPE DOUBLE QUOTES
 
     """
     permission_classes = (AllowAny,)
-    parser_classes = (FormParser,)
+    parser_classes = (FormParser, JSONParser)
     methods = ['GET']
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
@@ -83,13 +83,17 @@ class StateFetchView(APIView):
             if self.request.user != saved_state.owner:  # noqa
                 return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
-            print(request.data)
-            if not request.data['data_dump']:
+
+            if not request.data['data_dump'] and not request.data['shared']:
                 return Response({'error': 'not a valid PUT request'},
                                 status=status.HTTP_406_NOT_ACCEPTABLE)
 
             try:
-                saved_state.data_dump = request.data['data_dump']
+                if 'data_dump' in request.data:
+                    saved_state.data_dump = request.data['data_dump']
+                print(request.data)
+                if 'shared' in request.data:
+                    saved_state.shared = bool(request.data['shared'])
                 saved_state.save()
                 serialized = StateSaveSerializer(saved_state)
                 return Response(serialized.data)

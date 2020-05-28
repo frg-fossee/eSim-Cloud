@@ -12,7 +12,7 @@ urlpatterns = [
          name='saveState'),
 
     path('save/<uuid:save_id>',
-         saveAPI_views.StateFetchView.as_view(), name='fetchState'),
+         saveAPI_views.StateFetchUpdateView.as_view(), name='fetchState'),
 
     path('save/<uuid:save_id>/sharing/<str:sharing>',
          saveAPI_views.StateShareView.as_view(), name='shareState'),
