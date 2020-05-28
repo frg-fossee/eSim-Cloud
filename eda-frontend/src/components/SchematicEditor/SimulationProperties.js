@@ -50,12 +50,12 @@ export default function SimulationProperties () {
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
     sweepType: 'Linear',
-    start: '0',
+    start: '',
     stop: '',
     step: ''
   })
   const [transientAnalysisControlLine, setTransientAnalysisControlLine] = useState({
-    start: '0',
+    start: '',
     stop: '',
     step: '',
     skipInitial: 'No'
@@ -337,13 +337,13 @@ export default function SimulationProperties () {
 
 
                     <ListItem>
-                      <TextField id="start" label="Start" size='small' variant="outlined"
+                      <TextField id="start" label="Start Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start}
                         onChange={handleDcSweepControlLine}
                       />
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop" label="Stop" size='small' variant="outlined"
+                      <TextField id="stop" label="Stop Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.stop}
                         onChange={handleDcSweepControlLine}
                       />
@@ -504,13 +504,13 @@ export default function SimulationProperties () {
                       />
                     </ListItem>
                     <ListItem>
-                      <TextField id="start" label="Start" size='small' variant="outlined"
+                      <TextField id="start" label="Start Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.start}
                         onChange={handleAcAnalysisControlLine}
                       />
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop" label="Stop" size='small' variant="outlined"
+                      <TextField id="stop" label="Stop Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.stop}
                         onChange={handleAcAnalysisControlLine}
                       />
