@@ -12,10 +12,12 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { Link as RouterLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { signUp } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(10),
+    marginTop: theme.spacing(15),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -47,6 +49,8 @@ export default function SignUp () {
   const changeHandler = (e) => {
     setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value })
   }
+
+  const dispatch = useDispatch()
 
   const validate = () => {
     let isError = false
@@ -81,11 +85,16 @@ export default function SignUp () {
     }
 
     setError(Object.assign(error, errors))
+
+    if (isError !== true) {
+      dispatch(signUp(userCredentials))
+    }
+
     return isError
   }
 
   useEffect(() => {
-    document.title = 'Sign Up - EDA '
+    document.title = 'Sign Up - eSim '
   })
 
   return (
@@ -140,7 +149,7 @@ export default function SignUp () {
             type="password"
             id="password"
             error={error.epassword}
-            helperText={error.epassword ? "password did'nt match" : ''}
+            helperText={error.epassword ? "password didn't match" : ''}
             value={userCredentials.password}
             onChange={changeHandler}
             autoComplete="current-password"
@@ -155,7 +164,7 @@ export default function SignUp () {
             type="password"
             id="Confirm_password"
             error={error.epassword}
-            helperText={error.epassword ? "password did'nt match" : ''}
+            helperText={error.epassword ? "password didn't match" : ''}
             value={userCredentials.password2}
             onChange={changeHandler}
             autoComplete="current-password"
@@ -166,9 +175,6 @@ export default function SignUp () {
           />
           {error.checkbox && <div className={classes.checkboxText}>please read the terms and conditions</div>}
           <Button
-            component={RouterLink}
-            // to="/dashboard"
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
@@ -183,7 +189,6 @@ export default function SignUp () {
       <Button
         component={RouterLink}
         to="/"
-        type="Sign Up"
         fullWidth
         color="default"
         className={classes.submit}
