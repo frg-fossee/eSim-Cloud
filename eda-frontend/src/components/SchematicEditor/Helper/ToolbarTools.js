@@ -196,7 +196,7 @@ export function ErcCheck () {
   } else if (ground === 0) {
     alert('Ground not connected')
   } else if (wirec !== 0) {
-    alert('Do not connect pins to wires')
+    alert('Pins connected to wire')
   } else {
     if (errorCount === 0) {
       alert('ERC Check completed')
