@@ -4,13 +4,17 @@ import { Point } from '../Point';
 declare var window;
 
 export class LED extends CircuitElement {
-  static pointHalf = 4;
   static colors: string[] = []; // Color of LED
   static glowColors: string[] = [];
   static colorNames: string[] = [];
   selectedIndex = 0;
   constructor(public canvas: any, x: number, y: number) {
     super('LED', x, y, 'LED.json', canvas);
+  }
+  SaveData() {
+    return {
+      color: this.selectedIndex
+    };
   }
   init() {
     if (LED.glowColors.length === 0) {
@@ -88,7 +92,6 @@ export class LED extends CircuitElement {
 }
 
 export class RGBLED extends CircuitElement {
-  static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
     super('RGBLED', x, y, 'RGBLED.json', canvas);
   }
