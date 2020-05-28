@@ -139,7 +139,7 @@ export function ErcCheck () {
   var errorCount = 0
   var PinNC = 0
   var stypes = 0
-  var ground = 0 
+  var ground = 0
   for (var property in list) {
     var cell = list[property]
     if (cell.Component === true) {
@@ -201,7 +201,7 @@ export function GenerateNetList () {
   var c = 1
   var list = graph.getModel().cells
   var n = 1
-  var netlist = []
+  var netlist = new Set()
 
   // console.log('Untitled netlist'
   var k = ''
@@ -257,10 +257,10 @@ export function GenerateNetList () {
                   k = k + ' ' + pin.edges[wire].node
                 } else {
                   // console.log(pin.edges[wire])
-                  if (pin.edges[wire].node === null) {
-                    pin.edges[wire].node = n
-                    ++n
-                  }
+                  // if (pin.edges[wire].node === null) {
+                  pin.edges[wire].node = pin.edges[wire].id
+                  // ++n
+                  // }
 
                   pin.edges[wire].value = pin.edges[wire].node
                   k = k + '  ' + pin.edges[wire].node
@@ -273,7 +273,8 @@ export function GenerateNetList () {
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
         compobj.magnitude = 10
-        netlist.push(compobj)
+        netlist.add(compobj.node1)
+        netlist.add(compobj.node2)
         // console.log(compobj)
       }
       // console.log(component)
@@ -309,6 +310,7 @@ export function GenerateNetList () {
     // Updates the display
     graph.getModel().endUpdate()
   }
+  console.log(netlist)
   return k
 }
 function GenerateNodeList () {
@@ -316,11 +318,11 @@ function GenerateNodeList () {
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
   return value */
-  var r = 1
+  /* var r = 1
   var v = 1
-  var c = 1
+  var c = 1 */
   var list = graph.getModel().cells
-  var netlist = []
+  var netlist = new Set()
 
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
@@ -383,9 +385,10 @@ function GenerateNodeList () {
         compobj.name = component.symbol
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
-        compobj.magnitude = 10
-        netlist.push(compobj)
-        console.log(compobj)
+        // compobj.magnitude = 10
+        netlist.add(compobj.node1)
+        netlist.add(compobj.node2)
+        // console.log(compobj)
       }
       /* if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
