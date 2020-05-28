@@ -14,12 +14,10 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import { setControlLine, setControlBlock } from '../../redux/actions/netlistActions'
+import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
 import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
 import api from '../../utils/Api'
-
-var simType
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -104,8 +102,6 @@ export default function SimulationProperties () {
     setSimulateOpen(false)
   }
 
-  // const [simType, setsimType] = useState('')
-  const [simResult, setsimResult] = useState({})
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
     var titleA = netfile.title.split(' ')[1]
@@ -150,26 +146,26 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          console.log(res.data)
+          // console.log(res.data)
           var temp = res.data.details.data
-          var simresult = {}
-          simResult.type = simType
-          simResult.graph = res.data.details.graph
           if (res.data.details.graph === 'true') {
-            simresult.x1 = temp[0].x
-            simresult.y11 = temp[0].y[0]
-            simresult.y21 = temp[0].y[1]
+            var simResultGraph = {}
+            simResultGraph.x1 = temp[0].x
+            simResultGraph.y11 = temp[0].y[0]
+            simResultGraph.y21 = temp[0].y[1]
+            console.log(simResultGraph)
+            dispatch(setResultGraph(simResultGraph))
           } else {
+            var simResultText = ''
             for (var i = 0; i < temp.length; i++) {
-              simResult.st += temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n'
+              simResultText += temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n'
             }
+            console.log(simResultText)
+            dispatch(setResultText(simResultText))
           }
-          console.log(simResult)
-          setsimResult(simresult)
-          handlesimulateOpen()
         }
       })
-      .then((res) => { })
+      .then((res) => { handlesimulateOpen() })
       .catch(function (error) {
         console.log(error)
       })
@@ -183,26 +179,22 @@ export default function SimulationProperties () {
       case 'DcSolver':
         // console.log('To be implemented')
         controlLine = '.op'
-        // setsimType('DC Solver')
-        simType = 'DC Solver'
+        dispatch(setResultTitle('DC Solver Output'))
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
         controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
-        // setsimType('DC Sweep')
-        simType = 'DC Sweep'
+        dispatch(setResultTitle('DC Sweep Output'))
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
         controlLine = `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
-        // setsimType('Transient Analysis')
-        simType = 'Transient Analysis'
+        dispatch(setResultTitle('Transient Analysis Output'))
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
         controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
-        // setsimType('AC Analysis')
-        simType = 'AC Analysis'
+        dispatch(setResultTitle('AC Analysis Output'))
         break
       default:
         break
@@ -228,7 +220,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} close={handleSimulateClose} simResult={simResult} />
+        <SimulationScreen open={simulateOpen} close={handleSimulateClose} />
 
         {/* Simulation modes list */}
         <List>
