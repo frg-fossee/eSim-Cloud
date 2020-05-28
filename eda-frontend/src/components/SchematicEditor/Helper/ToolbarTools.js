@@ -245,11 +245,11 @@ export function GenerateNetList () {
                   k = k + ' ' + pin.edges[wire].node
                 } else {
                   // console.log(pin.edges[wire])
-                  if(pin.edges[wire].node === null) {
+                  if (pin.edges[wire].node === null) {
                     pin.edges[wire].node = n
                     ++n
                   }
-                  
+
                   pin.edges[wire].value = pin.edges[wire].node
                   k = k + '  ' + pin.edges[wire].node
                 }
@@ -264,16 +264,16 @@ export function GenerateNetList () {
         netlist.push(compobj)
         // console.log(compobj)
       }
-      console.log(component)
-      if( component.properties['VALUE'] !== undefined) {
-        k = k + ' ' + component.properties['VALUE']
+      // console.log(component)
+      if (component.properties.VALUE !== undefined) {
+        k = k + ' ' + component.properties.VALUE
       }
-      
-      if(component.properties['EXTRA_EXPRESSION'].length > 0) { 
-        k = k + ' ' + component.properties['EXTRA_EXPRESSION']
+
+      if (component.properties.EXTRA_EXPRESSION.length > 0) {
+        k = k + ' ' + component.properties.EXTRA_EXPRESSION
       }
-      if(component.properties['MODEL'].length > 0) {
-        k = k + ' ' + component.properties['MODEL'].split(' ')[1]
+      if (component.properties.MODEL.length > 0) {
+        k = k + ' ' + component.properties.MODEL.split(' ')[1]
       }
       // k = k + ' 10'
       k = k + ' \n'
@@ -291,7 +291,7 @@ export function GenerateNetList () {
       netlist: k
     }
   })
-  // return k
+  return k
 }
 function GenerateNodeList () {
   /* var enc = new mxCodec(mxUtils.createXmlDocument())
