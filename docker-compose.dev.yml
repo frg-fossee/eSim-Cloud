@@ -8,11 +8,13 @@ services:
     volumes:
       - tmp_vol:/tmp
       - ./Nginx/dev.conf.d:/etc/nginx/conf.d
+      - ./Nginx/index:/usr/share/nginx/index
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
       - django
       - eda-frontend
+      - arduino-frontend
 
 
   eda-frontend:
