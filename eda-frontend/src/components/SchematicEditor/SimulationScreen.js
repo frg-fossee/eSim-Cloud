@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
+import { useSelector } from 'react-redux'
 
 import Graph from '../Shared/Graph'
 
@@ -41,12 +42,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationScreen ({ open, close, simResult }) {
+export default function SimulationScreen ({ open, close }) {
   const classes = useStyles()
 
-  // const x1 = []
-  // const y11 = []
-  // const y21 = []
+  const result = useSelector((state) => state.simulationReducer)
 
   return (
     <div>
@@ -74,36 +73,36 @@ export default function SimulationScreen ({ open, close, simResult }) {
           >
             <Grid item xs={12} sm={12}>
               <Paper className={classes.paper}>
-                <h1>{simResult.type}</h1>
-                <p>Simulation Result for {simResult.type}</p>
+                <h1>{result.title}</h1>
+                <p>Simulation Result for {result.title}</p>
               </Paper>
             </Grid>
 
-            {simResult.graph === 'true'
-              ? <Grid item xs={12} sm={12}>
-                <Paper className={classes.paper}>
-                  <h2>GRAPH OUTPUT</h2>
-                  <Graph
-                    x={simResult.x1}
-                    y1={simResult.y11}
-                    y2={simResult.y21}
-                  />
-                </Paper>
-              </Grid>
-              : <Grid item xs={12} sm={7}>
-                <Paper className={classes.paper}>
-                  <h2>OUTPUT</h2>
-                  <h1>{simResult.st}</h1>
-                  {/* {
-                    simResult.st.map((res) => {
-                      return (
-                        <h1 key={res}>{res}</h1>
-                      )
-                    })
-                  } */}
-                </Paper>
-              </Grid>
+            {
+              (result.graph !== {} && result.isGraph === 'true')
+                ? <Grid item xs={12} sm={12}>
+                  <Paper className={classes.paper}>
+                    <h2>GRAPH OUTPUT</h2><Graph
+                      x={result.graph.x1}
+                      y1={result.graph.y11}
+                      y2={result.graph.y21}
+                    />
+                  </Paper>
+                </Grid>
+                : <h1>No graph</h1>
             }
+
+            {
+              (result.isGraph === 'false')
+                ? <Grid item xs={12} sm={8}>
+                  <Paper className={classes.paper}>
+                    <h2>OUTPUT</h2>
+                    <h2>{result.text}</h2>
+                  </Paper>
+                </Grid>
+                : <h1>No output</h1>
+            }
+
           </Grid>
         </Container>
       </Dialog>
@@ -113,6 +112,5 @@ export default function SimulationScreen ({ open, close, simResult }) {
 
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
-  close: PropTypes.func,
-  simResult: PropTypes.object
+  close: PropTypes.func
 }
