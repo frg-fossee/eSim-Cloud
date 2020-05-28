@@ -176,7 +176,6 @@ export class SimulatorComponent implements OnInit {
   }
 
   expandConsole() {
-
     const msg = document.getElementById('msg');
     const console = document.getElementById('console');
     this.toggle1 = !this.toggle1;
@@ -191,6 +190,7 @@ export class SimulatorComponent implements OnInit {
       msg.style.height = '150px';
     }
   }
+
   clearConsole() {
     Workspace.ClearConsole();
   }
@@ -227,24 +227,17 @@ export class SimulatorComponent implements OnInit {
     const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
       width: '500px'
     });
-    dialogRef.afterClosed().subscribe(result => {
-      // console.log(result);
-    });
+    dialogRef.afterClosed();
   }
   openDailog() {
     const exportref = this.dialog.open(ExportfileComponent);
-    exportref.afterClosed().subscribe(result => {
-
-      console.log(`Dialog result: ${result}`);
-    });
+    exportref.afterClosed();
   }
   openview() {
     const viewref = this.dialog.open(ComponentlistComponent, {
       width: '600px'
     });
-    viewref.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
-    });
+    viewref.afterClosed();
   }
   delete() {
     Workspace.DeleteComponent();
