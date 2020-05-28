@@ -8,7 +8,6 @@ from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
 import uuid
 import logging
-from django.contrib.auth.models import AnonymousUser
 logger = logging.getLogger(__name__)
 
 
