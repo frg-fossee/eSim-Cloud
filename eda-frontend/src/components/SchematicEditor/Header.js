@@ -7,15 +7,19 @@ import {
   Input,
   Hidden,
   Link,
-  Avatar
+  Avatar,
+  Menu,
+  Fade,
+  MenuItem
 } from '@material-ui/core'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import { setTitle } from '../../redux/actions/index'
 
+import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     marginRight: theme.spacing(2)
@@ -43,8 +47,22 @@ const useStyles = makeStyles((theme) => ({
 function Header () {
   const dispatch = useDispatch()
   const classes = useStyles()
+  const [anchorEl, setAnchorEl] = React.useState(null)
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   const titleHandler = (e) => {
     dispatch(setTitle(`* ${e.target.value}`))
+  }
+  const isAuthenticated = () => {
+    const stateData = useSelector(state => state.authReducer)
+    return stateData.isAuthenticated
   }
   return (
     <Toolbar variant="dense" color="default">
@@ -85,16 +103,64 @@ function Header () {
           <Hidden xsDown>Share</Hidden>
         </Button>
 
-        <Button
-          size="small"
-          component={RouterLink}
-          to="/login"
-          color="primary"
-          variant="outlined"
-          className={classes.button}
-        >
-          Login
-        </Button>
+        {
+          (!isAuthenticated() ? (<Button
+            size="small"
+            component={RouterLink}
+            to="/login"
+            color="primary"
+            variant="outlined"
+            className={classes.button}
+          >
+        Login
+          </Button>)
+            : (<>
+
+              <IconButton
+                edge="start"
+                className={classes.button}
+                style={{ marginLeft: 'auto' }}
+                color="primary"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                <AccountCircleRoundedIcon />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                TransitionComponent={Fade}
+                style={{ marginTop: '25px' }}
+              >
+                <MenuItem
+                  component={RouterLink}
+                  to="/dashboard/profile"
+                  onClick={handleClose}
+                >
+            My Profile
+                </MenuItem>
+                <MenuItem
+                  component={RouterLink}
+                  to="/dashboard/schematics"
+                  onClick={handleClose}
+                >
+            My Schematics
+                </MenuItem>
+                <MenuItem onClick={handleClose}>Settings</MenuItem>
+                <MenuItem component={RouterLink} to="/login" onClick={handleClose}>
+            Logout
+                </MenuItem>
+              </Menu>
+            </>
+            )
+
+          )
+        }
+
       </div>
     </Toolbar>
   )

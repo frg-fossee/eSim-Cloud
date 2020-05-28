@@ -81,7 +81,6 @@ export default function SignUp () {
     }
 
     setError(Object.assign(error, errors))
-
     return isError
   }
 
