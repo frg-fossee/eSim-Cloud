@@ -7,7 +7,6 @@ esimCloud URL Configuration
 from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
-from authAPI.views import UserActivationView, GoogleOAuth2
 from libAPI import urls as libURLs
 from saveAPI import urls as saveURLs
 from publishAPI import urls as publishURLs

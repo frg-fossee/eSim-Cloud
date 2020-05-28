@@ -3,12 +3,11 @@
 esimCloud URL Configuration
 
 """
-from django.urls import path
-from django.conf.urls import url, include
+from django.conf.urls import url
 from authAPI import views as authAPI_views
 
 urlpatterns = [
     url(r'^google-callback', authAPI_views.GoogleOAuth2.as_view()),
     url(r'^users/activate/(?P<uid>[\w-]+)/(?P<token>[\w-]+)/$',
-        authAPI_views.UserActivationView.as_view()),
+        authAPI_views.activate_user),
 ]
