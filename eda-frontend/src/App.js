@@ -8,6 +8,7 @@ import NotFound from './pages/NotFound'
 import SchematicEditor from './pages/SchematiEditor'
 import Simulator from './pages/Simulator'
 import Dashboard from './pages/Dashboard'
+import SignUp from './pages/signUp'
 
 function App () {
   // Routes For SchematicEditor
@@ -42,6 +43,7 @@ function App () {
         <Route path="/login" component={Login} />
         <Route path="/editor" component={SchematicRoute} />
         <Route path="/dashboard" component={UserRoute} />
+        <Route exact path="/signup" component={SignUp} />
         <Route component={DefaultRoute} />
       </Switch>
     </BrowserRouter>
