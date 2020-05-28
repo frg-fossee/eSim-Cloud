@@ -2,6 +2,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def add_staff_status(sender, instance, action, **kwargs):
+    logger.info('Group add/remove hook called')
+    if action == 'post_add':
+        instance.is_staff = True
+        instance.save()
+        logger.info('Added is_staff flag for ' + str(instance))
+    if action == 'post_remove':
+        instance.is_staff = False
+        instance.save()
+        logger.info('Removed is_staff flag for ' + str(instance))
+
+
 def populate_models(sender, **kwargs):
     from django.contrib.auth.models import Group, Permission
     from publishAPI import models
