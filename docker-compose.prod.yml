@@ -130,7 +130,8 @@ services:
   db:
     image: postgres
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data/
+      - /var/lib/docker/basedata:/var/lib/postgresql/data
+      - ./postgres_data:/mnt/largedb
     env_file:
       - .env.prod
 
