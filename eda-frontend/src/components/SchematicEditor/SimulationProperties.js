@@ -19,6 +19,8 @@ import { GenerateNetList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
 import api from '../../utils/Api'
 
+var simType
+
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '90px'
@@ -102,7 +104,7 @@ export default function SimulationProperties () {
     setSimulateOpen(false)
   }
 
-  const [simType, setsimType] = useState('')
+  // const [simType, setsimType] = useState('')
   const [simResult, setsimResult] = useState({})
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
@@ -159,8 +161,7 @@ export default function SimulationProperties () {
             simresult.y21 = temp[0].y[1]
           } else {
             for (var i = 0; i < temp.length; i++) {
-              var st = 'r' + toString(i)
-              simResult.st = temp[i][0] + temp[i][1] + temp[i][2]
+              simResult.st += temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n'
             }
           }
           console.log(simResult)
@@ -182,22 +183,26 @@ export default function SimulationProperties () {
       case 'DcSolver':
         // console.log('To be implemented')
         controlLine = '.op'
-        setsimType('DC Solver')
+        // setsimType('DC Solver')
+        simType = 'DC Solver'
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
         controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
-        setsimType('DC Sweep')
+        // setsimType('DC Sweep')
+        simType = 'DC Sweep'
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
         controlLine = `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
-        setsimType('Transient Analysis')
+        // setsimType('Transient Analysis')
+        simType = 'Transient Analysis'
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
         controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
-        setsimType('AC Analysis')
+        // setsimType('AC Analysis')
+        simType = 'AC Analysis'
         break
       default:
         break
