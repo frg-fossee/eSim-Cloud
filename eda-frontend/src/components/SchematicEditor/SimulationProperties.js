@@ -102,6 +102,7 @@ export default function SimulationProperties () {
     setSimulateOpen(false)
   }
 
+  const [simType, setsimType] = useState('')
   const [simResult, setsimResult] = useState({})
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
@@ -148,11 +149,21 @@ export default function SimulationProperties () {
           setTimeout(simulationResult(url), 1000)
         } else {
           console.log(res.data)
+          var temp = res.data.details.data
           var simresult = {}
-          simresult.x1 = res.data.details.data[0].x
-          simresult.y11 = res.data.details.data[0].y[0]
-          simresult.y21 = res.data.details.data[0].y[1]
-          console.log(simresult)
+          simResult.type = simType
+          simResult.graph = res.data.details.graph
+          if (res.data.details.graph === 'true') {
+            simresult.x1 = temp[0].x
+            simresult.y11 = temp[0].y[0]
+            simresult.y21 = temp[0].y[1]
+          } else {
+            for (var i = 0; i < temp.length; i++) {
+              var st = 'r' + toString(i)
+              simResult.st = temp[i][0] + temp[i][1] + temp[i][2]
+            }
+          }
+          console.log(simResult)
           setsimResult(simresult)
           handlesimulateOpen()
         }
@@ -171,18 +182,22 @@ export default function SimulationProperties () {
       case 'DcSolver':
         // console.log('To be implemented')
         controlLine = '.op'
+        setsimType('DC Solver')
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
         controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
+        setsimType('DC Sweep')
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
         controlLine = `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
+        setsimType('Transient Analysis')
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
         controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+        setsimType('AC Analysis')
         break
       default:
         break
@@ -208,7 +223,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} close={handleSimulateClose} simResult={simResult}/>
+        <SimulationScreen open={simulateOpen} close={handleSimulateClose} simResult={simResult} />
 
         {/* Simulation modes list */}
         <List>
