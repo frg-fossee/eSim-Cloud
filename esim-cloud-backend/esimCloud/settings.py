@@ -134,7 +134,19 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Mail server config
+
+# use this for console emails
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Note SMTP is slow
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "email@gmail.com")
+# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "gmailpassword")
+# EMAIL_PORT = os.environ.get("EMAIL_PORT", 587)
+# EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", True)
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get(
     "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", "")
