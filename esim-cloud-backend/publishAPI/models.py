@@ -6,8 +6,8 @@ import uuid
 class CircuitTag(models.Model):
 
     tag = models.CharField(null=False, max_length=100,
-                           required=True, unique=True)
-    description = models.CharField(max_length=200, required=True)
+                           blank=False, unique=True)
+    description = models.CharField(max_length=200, blank=False)
 
 
 class Circuit(models.Model):
@@ -17,16 +17,16 @@ class Circuit(models.Model):
 
     # Circuit Details
     title = models.CharField(
-        max_length=200, required=True, unique=True)  # Search
+        max_length=200, blank=False, unique=True)  # Search
 
-    sub_title = models.CharField(max_length=200, required=False)  # Search
+    sub_title = models.CharField(max_length=200, blank=True)  # Search
 
-    data_dump = models.TextField(required=True)
+    data_dump = models.TextField(blank=False)
 
-    base64_image = models.TextField(required=True)
+    base64_image = models.TextField(blank=False)
 
     author = models.ForeignKey(
-        get_user_model(), null=False, on_delete=models.SET_NULL)
+        get_user_model(), null=True, on_delete=models.SET_NULL)
 
     # Meta Data
 
@@ -50,7 +50,7 @@ class Circuit(models.Model):
 
 class Publish(models.Model):
     circuit_id = models.ForeignKey(
-        Circuit, on_delete=models.CASCADE, null=False, required=True)
+        Circuit, on_delete=models.CASCADE, null=False, blank=False)
 
     publish_time = models.DateTimeField(auto_now=False, null=True)
 
@@ -64,4 +64,3 @@ class Publish(models.Model):
     # For Django Admin Panel
     def __str__(self):
         return 'Review - ' + self.circuit_id.title
-
