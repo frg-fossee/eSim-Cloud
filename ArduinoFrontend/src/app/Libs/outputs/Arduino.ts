@@ -1,6 +1,6 @@
 import { CircuitElement } from '../CircuitElement';
-import { Point } from '../Point';
 import { ArduinoRunner } from '../AVR8/Execute';
+import { isUndefined, isNull } from 'util';
 
 declare var AVR8;
 
@@ -27,6 +27,17 @@ export class ArduinoUno extends CircuitElement {
     for (const node of this.nodes) {
       this.pinNameMap[node.label] = node;
     }
+    this.pinNameMap['D7'].addValueListener((v) => {
+      if (isUndefined(this.runner) || isNull(this.runner)) {
+        setTimeout(() => {
+          this.pinNameMap['D7'].setValue(v, this.pinNameMap['D7']);
+        }, 300);
+        return;
+      }
+      if (this.runner.portD.pinState(7) === AVR8.PinState.Input) {
+        this.runner.portD.setPin(7, v > 0 ? 1 : 0);
+      }
+    });
   }
   SaveData() {
     return {
@@ -75,7 +86,8 @@ export class ArduinoUno extends CircuitElement {
     this.powerLed = this.elements[2].glow({
       color: '#00ff00'
     });
-
+    this.pinNameMap['5V'].setValue(5, null);
+    this.pinNameMap['3.3V'].setValue(3.3, null);
     const myOutput = document.createElement('pre');
     this.runner = new ArduinoRunner(this.hex);
     // console.log(this.runner);
@@ -100,23 +112,23 @@ export class ArduinoUno extends CircuitElement {
 
     this.runner.portD.addListener((value) => {
       if (
-        this.runner.portB.pinState(0) !== AVR8.PinState.Input ||
-        this.runner.portB.pinState(0) !== AVR8.PinState.InputPullUp
+        this.runner.portD.pinState(0) !== AVR8.PinState.Input ||
+        this.runner.portD.pinState(0) !== AVR8.PinState.InputPullUp
       ) {
         this.pinNameMap[`RX0`].setValue((value & 1) * 5.0, null);
       }
 
       if (
-        this.runner.portB.pinState(1) !== AVR8.PinState.Input ||
-        this.runner.portB.pinState(1) !== AVR8.PinState.InputPullUp
+        this.runner.portD.pinState(1) !== AVR8.PinState.Input ||
+        this.runner.portD.pinState(1) !== AVR8.PinState.InputPullUp
       ) {
         this.pinNameMap[`TX0`].setValue(((value >> 1) & 1) * 5.0, null);
       }
 
       for (let i = 2; i <= 7; ++i) {
         if (
-          this.runner.portB.pinState(i) !== AVR8.PinState.Input ||
-          this.runner.portB.pinState(i) !== AVR8.PinState.InputPullUp
+          this.runner.portD.pinState(i) !== AVR8.PinState.Input ||
+          this.runner.portD.pinState(i) !== AVR8.PinState.InputPullUp
         ) {
           this.pinNameMap[`D${i}`].setValue(((value >> i) & 1) * 5.0, null);
         }
@@ -133,12 +145,18 @@ export class ArduinoUno extends CircuitElement {
     this.runner.execute();
   }
   closeSimulation(): void {
-    this.runner.delete();
-    this.runner = null;
-    this.builtinLED.remove();
-    this.builtinLED = null;
-    this.powerLed.remove();
-    this.powerLed = null;
+    if (this.runner) {
+      this.runner.delete();
+      this.runner = null;
+    }
+    if (this.builtinLED) {
+      this.builtinLED.remove();
+      this.builtinLED = null;
+    }
+    if (this.powerLed) {
+      this.powerLed.remove();
+      this.powerLed = null;
+    }
   }
   simulate(): void {
   }
