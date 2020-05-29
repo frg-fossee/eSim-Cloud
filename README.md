@@ -19,23 +19,21 @@ Development branch status
 * ``` cp .env .env.prod ```
  **PLEASE CHANGE DEFAULT CREDENTIALS IN THE .env.prod FILE**
 * ``` docker-compose -f docker-compose.prod.yml --env-file .env.prod up --scale django=2 --scale celery=3 -d```
-
+* Please run ``` sh migrations.sh ``` inside the django container after DB and django has finished initializing for applying database migrations, and generating and seeding SVGs
 ### Configuring Development Environment
 [![Open in Cloud Shell](https://gstatic.com/cloudssh/images/open-btn.svg)](https://ssh.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Ffrg-fossee%2FeSim-Cloud&cloudshell_git_branch=develop&cloudshell_print=first_run.dev.sh&cloudshell_tutorial=README.md)
 #### Setting up docker containers
 * Install docker-ce and docker-compose for your OS
 
-* Configure docker with github packages for pulling pre built images
-```echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin```
 * To build and run migrations ( Pulls latest dev image from github)
 ``` /bin/bash first_run.dev.sh ``` ( for the first time only )
-* To generate libraries and seed them
-``` docker-compose -f docker-compose.dev.yml run --rm django python manage.py seed_libs --location kicad-symbols ```
-* To Start all containers
-``` docker-compose -f docker-compose.dev.yml --env-file .env up ```
 
+* To Start all containers
+``` docker-compose -f docker-compose.dev.yml --env-file .env up ```  do note it might take a while to initialize / throw some errors if they're initialized in the wrong order , running the command again will most likely fix the issue.
+
+------------------------------------------------------------------------------
 * To manually build containers
-```docker-compose -f docker-compose.dev.yml --env-file .env build --pull ```
+```docker-compose -f docker-compose.dev.yml --env-file .env build```
 
 ##### For Setting up Backend containers only
 
@@ -99,11 +97,11 @@ Development branch status
 
 * Alternatively docker images can be directly pulled from github instead of building on system
 ```
-   echo <GITHUB_TOKEN> | sudo docker login docker.pkg.github.com --username darshkpatel --password-stdin
+   echo $GITHUB_TOKEN | docker login docker.pkg.github.com --username [github_username] --password-stdin
    sudo docker-compose -f docker-compose.dev.yml pull
-   sudo docker-compose -f docker-compose.dev.yml up -d db
+   sudo docker-compose -f docker-compose.dev.yml up --env-file .env -d db
    ----WAIT FOR DB TO FINISH INITIALIZING-----
-   sudo docker-compose -f docker-compose.dev.yml up
+   sudo docker-compose -f docker-compose.dev.yml --env-file .env up
 ```
 
 

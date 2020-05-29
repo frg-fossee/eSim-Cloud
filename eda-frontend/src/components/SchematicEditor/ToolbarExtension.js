@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export function TermsAndConditions({ open, close }) {
+export function TermsAndConditions ({ open, close }) {
   const Transition = React.forwardRef(function Transition (props, ref) {
     return <Slide direction="down" ref={ref} {...props} />
   })
@@ -86,14 +86,14 @@ export function TermsAndConditions({ open, close }) {
     <div>
       <Dialog
 
-      open={open}
-      onClose={close}
-      TransitionComponent={Transition}
-      keepMounted
-      aria-labelledby="Terms and conditions"
-      aria-describedby="Terms and conditions"
+        open={open}
+        onClose={close}
+        TransitionComponent={Transition}
+        keepMounted
+        aria-labelledby="Terms and conditions"
+        aria-describedby="Terms and conditions"
       >
-        <DialogTitle id="alert-dialog-slide-title">{"I confirm that i understand the following terms."}</DialogTitle>
+        <DialogTitle id="alert-dialog-slide-title">{'I confirm that i understand the following terms.'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
             <ul>
@@ -103,10 +103,10 @@ export function TermsAndConditions({ open, close }) {
         </DialogContent>
         <DialogActions>
           <Button
-              component={RouterLink}
-              to="/"
-              color="primary"
-            >
+            component={RouterLink}
+            to="/"
+            color="primary"
+          >
               No
           </Button>
 
@@ -116,12 +116,12 @@ export function TermsAndConditions({ open, close }) {
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }
 
 TermsAndConditions.propTypes = {
   open: PropTypes.bool,
-  close: PropTypes.func,
+  close: PropTypes.func
 }
 
 export function HelpScreen ({ open, close }) {
