@@ -91,15 +91,22 @@ export function Header () {
         >
           Simulator
         </Link>
-        <Link
-          variant="button"
-          color="textPrimary"
-          to="/dashboard"
-          component={RouterLink}
-          className={classes.link}
-        >
-          Dashboard
-        </Link>
+        {
+          (auth.isAuthenticated ? (<Link
+            variant="button"
+            color="textPrimary"
+            to="/dashboard"
+            component={RouterLink}
+            className={classes.link}
+          >
+            Dashboard
+          </Link>)
+            : (<>
+              <span />
+            </>
+            )
+          )
+        }
       </nav>
       {
         (!auth.isAuthenticated ? (<Button
@@ -154,7 +161,6 @@ export function Header () {
             </Menu>
           </>
           )
-
         )
       }
     </>

@@ -1,5 +1,6 @@
-import React from 'react'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+/* eslint-disable react/prop-types */
+import React, { useEffect } from 'react'
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 
 import Navbar from './components/Shared/Navbar'
 import Home from './pages/Home'
@@ -10,11 +11,31 @@ import Simulator from './pages/Simulator'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 
+import { useSelector, useDispatch } from 'react-redux'
+import { loadUser } from './redux/actions/index'
+
+function PrivateRoute ({ component: Component, ...rest }) {
+  const auth = useSelector(state => state.authReducer)
+  const dispatch = useDispatch()
+
+  useEffect(() => dispatch(loadUser()), [dispatch])
+
+  return <Route {...rest} render={props => {
+    if (auth.isLoading) {
+      return <em>Loading...</em>
+    } else if (!auth.isAuthenticated) {
+      return <Redirect to="/login" />
+    } else {
+      return <Component {...props} />
+    }
+  }} />
+}
+
 function App () {
   // Routes For SchematicEditor
   const SchematicRoute = () => (
     <>
-      <Route exact path="/editor"component={SchematicEditor} />
+      <Route exact path="/editor" component={SchematicEditor} />
     </>
   )
 
@@ -41,9 +62,9 @@ function App () {
     <BrowserRouter basename={'/eda'}>
       <Switch>
         <Route path="/login" component={Login} />
-        <Route path="/editor" component={SchematicRoute} />
-        <Route path="/dashboard" component={UserRoute} />
         <Route exact path="/signup" component={SignUp} />
+        <Route path="/editor" component={SchematicRoute} />
+        <PrivateRoute component={UserRoute} path="/dashboard" />
         <Route component={DefaultRoute} />
       </Switch>
     </BrowserRouter>

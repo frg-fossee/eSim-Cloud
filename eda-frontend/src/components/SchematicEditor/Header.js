@@ -148,7 +148,7 @@ function Header () {
                 >
                   My Schematics
                 </MenuItem>
-                <MenuItem component={RouterLink} to="/login" onClick={handleClose}>
+                <MenuItem onClick={handleClose}>
                   Logout
                 </MenuItem>
               </Menu>
