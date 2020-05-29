@@ -301,10 +301,11 @@ export default function SimulationProperties () {
                       >
                         {
                           componentsList.map((value, i) => {
-                            if(value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' )
-                            return <option key={i} value={value}>
-                              {value}
-                            </option>
+                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i') {
+                              return <option key={i} value={value}>
+                                {value}
+                              </option>
+                            }
                           })
                         }
 
@@ -341,18 +342,21 @@ export default function SimulationProperties () {
                         value={dcSweepcontrolLine.start}
                         onChange={handleDcSweepControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="stop" label="Stop Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.stop}
                         onChange={handleDcSweepControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="step" label="Step" size='small' variant="outlined"
                         value={dcSweepcontrolLine.step}
                         onChange={handleDcSweepControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
 
                     {/* <ListItem>
@@ -393,18 +397,21 @@ export default function SimulationProperties () {
                         value={transientAnalysisControlLine.start}
                         onChange={handleTransientAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="stop" label="Stop Time" size='small' variant="outlined"
                         value={transientAnalysisControlLine.stop}
                         onChange={handleTransientAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="step" label="Time Step" size='small' variant="outlined"
                         value={transientAnalysisControlLine.step}
                         onChange={handleTransientAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
 
                     {/* <ListItem>
@@ -508,12 +515,14 @@ export default function SimulationProperties () {
                         value={acAnalysisControlLine.start}
                         onChange={handleAcAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>Hz</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="stop" label="Stop Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.stop}
                         onChange={handleAcAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>Hz</span>
                     </ListItem>
 
                     {/* <ListItem>
