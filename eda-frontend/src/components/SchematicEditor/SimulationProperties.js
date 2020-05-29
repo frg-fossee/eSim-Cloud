@@ -15,9 +15,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
-import { GenerateNetList } from './Helper/ToolbarTools'
+import { GenerateNetList, GenerateNodeList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
-import {GenerateNodeList} from './Helper/ToolbarTools'
+
 import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -46,16 +46,16 @@ export default function SimulationProperties () {
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const dispatch = useDispatch()
   const classes = useStyles()
-  const [nodeList,setNodeList] = useState([])
+  const [nodeList, setNodeList] = useState([])
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
     sweepType: 'Linear',
-    start: '0',
+    start: '',
     stop: '',
     step: ''
   })
   const [transientAnalysisControlLine, setTransientAnalysisControlLine] = useState({
-    start: '0',
+    start: '',
     stop: '',
     step: '',
     skipInitial: 'No'
@@ -69,14 +69,12 @@ export default function SimulationProperties () {
   })
 
   const onDcSweepTabExpand = () => {
-    try{
+    try {
       setNodeList([...GenerateNodeList()])
-    }catch(err){
+    } catch (err) {
       setNodeList([])
-      alert("Circuit not complete. Please Check Connectons.")
+      alert('Circuit not complete. Please Check Connectons.')
     }
-
-
   }
 
   const handleDcSweepControlLine = (evt) => {
@@ -281,12 +279,12 @@ export default function SimulationProperties () {
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
                     <ListItem>
-                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
+                      <TextField size='small' variant="outlined" id="parameter" label="Select Node"
                         value={dcSweepcontrolLine.parameter}
                         onChange={handleDcSweepControlLine}
-                      /> */}
+                      />
 
-                      <TextField
+                      {/* <TextField
                         style={{ width: '100%' }}
                         id="parameter"
                         size='small'
@@ -308,7 +306,8 @@ export default function SimulationProperties () {
                           })
                         }
 
-                      </TextField>
+                      </TextField> */}
+
                     </ListItem>
 
                     {/* <ListItem>
@@ -335,15 +334,14 @@ export default function SimulationProperties () {
                       </TextField>
                     </ListItem> */}
 
-
                     <ListItem>
-                      <TextField id="start" label="Start" size='small' variant="outlined"
+                      <TextField id="start" label="Start Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start}
                         onChange={handleDcSweepControlLine}
                       />
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop" label="Stop" size='small' variant="outlined"
+                      <TextField id="stop" label="Stop Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.stop}
                         onChange={handleDcSweepControlLine}
                       />
@@ -471,7 +469,7 @@ export default function SimulationProperties () {
                       />
                     </ListItem> */}
 
-                       <ListItem>
+                    <ListItem>
                       <TextField
                         style={{ width: '100%' }}
                         id="input"
@@ -504,13 +502,13 @@ export default function SimulationProperties () {
                       />
                     </ListItem>
                     <ListItem>
-                      <TextField id="start" label="Start" size='small' variant="outlined"
+                      <TextField id="start" label="Start Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.start}
                         onChange={handleAcAnalysisControlLine}
                       />
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop" label="Stop" size='small' variant="outlined"
+                      <TextField id="stop" label="Stop Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.stop}
                         onChange={handleAcAnalysisControlLine}
                       />
