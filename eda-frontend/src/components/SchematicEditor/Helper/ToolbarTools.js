@@ -444,7 +444,8 @@ function annotate (graph) {
     componentlist: [],
     nodelist: []
   }
-  var erc = ErcCheckNets()
+  // var erc = ErcCheckNets()
+  var erc = true
   var k = ''
   if (erc === false) {
     alert('ERC check failed')
