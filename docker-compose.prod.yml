@@ -8,10 +8,11 @@ services:
     volumes:
       - tmp_vol:/tmp
       - ./Nginx/conf.d:/etc/nginx/conf.d
-      - ./Nginx/index:/usr/share/nginx/index
+      - ./Nginx/static_pages:/usr/share/nginx/static_pages
       - ./eda-frontend/build:/usr/share/nginx/eda
       - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino-build
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/file_storage:/usr/share/nginx/django_file_storage
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
       - django
@@ -48,9 +49,7 @@ services:
     image: "docker.pkg.github.com/frg-fossee/esim-cloud/django:master"
     build: ./esim-cloud-backend/
     command: >
-      sh -c "python manage.py collectstatic --noinput &&
-             python manage.py migrate --noinput &&
-             gunicorn -w ${GUNICORN_WORKERS} --reload -b 0.0.0.0:8000 --log-level info esimCloud.wsgi"
+      sh -c "gunicorn -w ${GUNICORN_WORKERS} --reload -b 0.0.0.0:8000 --log-level info esimCloud.wsgi"
     volumes:
       - ./esim-cloud-backend:/code
       - run_vol:/var/run
