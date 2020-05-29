@@ -9,7 +9,8 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-  Typography
+  Typography,
+  Select
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
@@ -71,7 +72,7 @@ export default function SimulationProperties () {
 
   const onDcSweepTabExpand = () => {
     try {
-      setComponentsList([...GenerateCompList()])
+      setComponentsList(['', ...GenerateCompList()])
     } catch (err) {
       setComponentsList([])
       alert('Circuit not complete. Please Check Connectons.')
@@ -299,9 +300,10 @@ export default function SimulationProperties () {
                         }}
 
                       >
+
                         {
                           componentsList.map((value, i) => {
-                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i') {
+                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
                               return <option key={i} value={value}>
                                 {value}
                               </option>
