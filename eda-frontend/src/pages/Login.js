@@ -117,7 +117,6 @@ export default function SignIn () {
       <Button
         component={RouterLink}
         to="/"
-        type="submit"
         fullWidth
         color="default"
         className={classes.submit}

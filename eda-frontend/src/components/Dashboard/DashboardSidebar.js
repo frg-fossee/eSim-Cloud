@@ -101,13 +101,13 @@ export default function DashSidebar (props) {
         >
           My Schematics
         </ListItem>
-        <List className={classes.nestedSearch} dense="true">
+        <List className={classes.nestedSearch} >
           <InputBase
             className={classes.input}
             placeholder="Find your schematic..."
           />
         </List>
-        <List className={classes.nested} dense="true">
+        <List className={classes.nested} >
           {[0, 1, 2, 4, 5, 6, 7, 8].map((item) => (
             <ListItem key={`item-${item}`} button>
               <ListItemText primary={`Schematic ${item}`} />

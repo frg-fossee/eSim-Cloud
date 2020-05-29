@@ -48,6 +48,7 @@ function Header () {
   const dispatch = useDispatch()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const auth = useSelector(state => state.authReducer)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -60,10 +61,7 @@ function Header () {
   const titleHandler = (e) => {
     dispatch(setTitle(`* ${e.target.value}`))
   }
-  const isAuthenticated = () => {
-    const stateData = useSelector(state => state.authReducer)
-    return stateData.isAuthenticated
-  }
+
   return (
     <Toolbar variant="dense" color="default">
       <IconButton edge="start" className={classes.button} color="primary">
@@ -76,7 +74,7 @@ function Header () {
         className={classes.toolbarTitle}
       >
         <Link color="inherit" component={RouterLink} to="/">
-        eSim
+          eSim
         </Link>
       </Typography>
 
@@ -94,7 +92,7 @@ function Header () {
 
       <div className={classes.rightBlock}>
         <Button
-          size="Large"
+          size="small"
           variant="contained"
           color="primary"
           className={classes.button}
@@ -104,7 +102,7 @@ function Header () {
         </Button>
 
         {
-          (!isAuthenticated() ? (<Button
+          (!auth.isAuthenticated ? (<Button
             size="small"
             component={RouterLink}
             to="/login"
@@ -112,7 +110,7 @@ function Header () {
             variant="outlined"
             className={classes.button}
           >
-        Login
+            Login
           </Button>)
             : (<>
 
@@ -141,25 +139,23 @@ function Header () {
                   to="/dashboard/profile"
                   onClick={handleClose}
                 >
-            My Profile
+                  My Profile
                 </MenuItem>
                 <MenuItem
                   component={RouterLink}
                   to="/dashboard/schematics"
                   onClick={handleClose}
                 >
-            My Schematics
+                  My Schematics
                 </MenuItem>
                 <MenuItem component={RouterLink} to="/login" onClick={handleClose}>
-            Logout
+                  Logout
                 </MenuItem>
               </Menu>
             </>
             )
-
           )
         }
-
       </div>
     </Toolbar>
   )
