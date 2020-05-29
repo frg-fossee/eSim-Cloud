@@ -37,11 +37,11 @@ export class Download {
     svg.getElementsByTagName('g')[0].removeAttribute('transform');
     const images = (svg.getElementsByTagName('image') as any);
     for (const image of images) {
-      const data = await fetch(image.getAttribute('href'))
+      let data = await fetch(image.getAttribute('href'))
         .then((v) => {
           return v.text();
         });
-      // data = (data.replace('<svg ', `<svg width="${image.getAttribute('width')}" height="${image.getAttribute('height')}" `));
+      data = (data.replace('<svg ', `<svg width="${image.getAttribute('width')}" height="${image.getAttribute('height')}" `));
       image.setAttribute(
         'href',
         'data:image/svg+xml;base64,' + window.btoa(data)
