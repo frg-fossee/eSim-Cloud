@@ -13,7 +13,8 @@ const {
   mxRectangle,
   mxUtils,
   mxUndoManager,
-  mxEvent
+  mxEvent,
+  mxCell
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -270,6 +271,7 @@ export function GenerateNetList () {
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
   return value */
+
   var r = 1
   var v = 1
   var c = 1
@@ -291,6 +293,7 @@ export function GenerateNetList () {
           node2: '',
           magnitude: ''
         }
+        mxCell.prototype.ConnectedNode = null
         var component = list[property]
         // console.log(component)
         if (component.symbol === 'R') {
@@ -331,19 +334,26 @@ export function GenerateNetList () {
                     // console.log('Found ground')
                       pin.edges[wire].node = 0
                       pin.edges[wire].value = 0
-                      k = k + ' ' + pin.edges[wire].node
+                      // k = k + ' ' + pin.edges[wire].node
                     } else {
                     // console.log(pin.edges[wire])
                     // if (pin.edges[wire].node === null) {
-                      pin.edges[wire].node = pin.edges[wire].id
+                      pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                      pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+
                       // ++n
                       // }
 
                       pin.edges[wire].value = pin.edges[wire].node
-                      k = k + '  ' + pin.edges[wire].node
+                      // k = k + '  ' + pin.edges[wire].node
                     }
                   }
                 }
+                // console.log()
+                console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
+                k = k + ' ' + pin.edges[0].node
+
+                console.log(k)
               }
             }
           }
