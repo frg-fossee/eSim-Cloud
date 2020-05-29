@@ -573,10 +573,7 @@ export function GenerateNodeList () {
   var list = graph.getModel().cells
   var a = []
   // var netlist = []
-  var netlist = {
-    componentlist: [],
-    nodelist: new Set()
-  }
+  var netlist = []
 
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
@@ -641,9 +638,9 @@ export function GenerateNodeList () {
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
         // compobj.magnitude = 10
-        netlist.componentlist.push(component.properties.PREFIX)
+        // netlist.componentlist.push(component.properties.PREFIX)
         // netlist.nodelist.add(compobj.node2)
-        a.push(compobj.node1, compobj.node2)
+        netlist.push(compobj.node1, compobj.node2)
         // console.log(compobj)
       }
       /* if (component.symbol.split('')[0] === 'R') {
@@ -663,6 +660,6 @@ export function GenerateNodeList () {
   // k = k + '.op \n'
   // k = k + '.end \n'
   // console.log(netlist)
-  netlist.nodelist = new Set(a)
+  // netlist.nodelist = new Set(a)
   return netlist
 }
