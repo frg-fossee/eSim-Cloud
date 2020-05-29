@@ -663,3 +663,104 @@ export function GenerateNodeList () {
   // netlist.nodelist = new Set(a)
   return netlist
 }
+export function GenerateCompList () {
+  /* var enc = new mxCodec(mxUtils.createXmlDocument())
+  var node = enc.encode(graph.getModel())
+  var value = mxUtils.getPrettyXml(node)
+  return value */
+  /* var r = 1
+  var v = 1
+  var c = 1 */
+  var list = graph.getModel().cells
+  var a = []
+  // var netlist = []
+  var netlist = []
+
+  // console.log('Untitled netlist'
+  var k = 'Unitled netlist \n'
+  for (var property in list) {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      // k = ''
+      // alert('Component is present')
+      var compobj = {
+        name: '',
+        node1: '',
+        node2: '',
+        magnitude: ''
+      }
+      var component = list[property]
+      // console.log(component)
+      /* if (component.symbol === 'R') {
+        // component.symbol = component.symbol + r.toString()
+        k = k + component.symbol + r.toString()
+        component.value = component.symbol + r.toString()
+        component.symbol = component.value
+
+        ++r
+      } else if (component.symbol === 'V') {
+        // component.symbol = component.symbol + v.toString()
+        k = k + component.symbol + v.toString()
+        component.value = component.symbol + v.toString()
+        component.symbol = component.value
+        ++v
+      } else {
+        // component.symbol = component.symbol + c.toString()
+        k = k + component.symbol + c.toString()
+        component.value = component.symbol + c.toString()
+        component.symbol = component.value
+        ++c
+      } */
+      // compobj.name = component.symbol
+
+      if (component.children !== null) {
+        for (var child in component.children) {
+          var pin = component.children[child]
+          if (pin.vertex === true) {
+            // alert(pin.id)
+            if (pin.edges !== null || pin.edges.length !== 0) {
+              for (var wire in pin.edges) {
+                if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                  // console.log('Found ground')
+                  // pin.edges[wire].node = 0
+                  pin.edges[wire].node = '0'
+                  pin.edges[wire].value = 0
+                  k = k + ' ' + pin.edges[wire].node
+                } else {
+                  // console.log(pin.edges[wire])
+                  pin.edges[wire].node = pin.edges[wire].id
+                  pin.edges[wire].value = pin.edges[wire].node
+                  k = k + '  ' + pin.edges[wire].node
+                }
+              }
+            }
+          }
+        }
+        compobj.name = component.symbol
+        compobj.node1 = component.children[0].edges[0].node
+        compobj.node2 = component.children[1].edges[0].node
+        // compobj.magnitude = 10
+        // netlist.componentlist.push(component.properties.PREFIX)
+        // netlist.nodelist.add(compobj.node2)
+        netlist.push(component.properties.PREFIX)
+        // console.log(compobj)
+      }
+      /* if (component.symbol.split('')[0] === 'R') {
+        k = k + ' 1k'
+      }
+      else if( component.symbol === 'C') {
+        k = k + ' 10u'
+      }
+      else {
+        k = k + ' pwl(0m 0 0,5m 5 50m 5 50.5m 0 100m 0)'
+      } */
+      // k = k + ' 10'
+      // k = k + ' \n'
+      // console.log(k)
+    }
+  }
+  // k = k + '.op \n'
+  // k = k + '.end \n'
+  // console.log(netlist)
+  // netlist.nodelist = new Set(a)
+  return netlist
+}
