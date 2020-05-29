@@ -16,6 +16,7 @@ export abstract class CircuitElement {
   public simulationData: any = {}; // Store Values That are required during simulation
   public data: any = {}; // Store Values that are additionaly require by class
   public info: any;
+  public pointHalf: number;
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
@@ -30,6 +31,7 @@ export abstract class CircuitElement {
         .then(v => v.json())
         .then(obj => {
           this.title = obj.name;
+          this.pointHalf = obj.pointHalf;
           this.DrawElement(canvas, obj.draw);
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
           // console.log(obj);
@@ -277,6 +279,14 @@ export abstract class CircuitElement {
    * Returns the Circuit Node based on the x,y Position
    */
   getNode(x: number, y: number): Point {
+    for (const node of this.nodes) {
+      if (
+        Math.floor(node.x + this.pointHalf) === Math.floor(x) &&
+        Math.floor(node.y + this.pointHalf) === Math.floor(y)
+      ) {
+        return node;
+      }
+    }
     return null;
   }
   /**
