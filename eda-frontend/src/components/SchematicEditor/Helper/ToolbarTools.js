@@ -412,7 +412,7 @@ export function GenerateNodeList () {
   var v = 1
   var c = 1 */
   var list = graph.getModel().cells
-  var netlist = new Set()
+  var netlist = []
 
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
@@ -477,7 +477,7 @@ export function GenerateNodeList () {
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
         // compobj.magnitude = 10
-        netlist.add(component.properties.PREFIX)
+        netlist.push(component.properties.PREFIX)
         // netlist.add(compobj.node2)
         // console.log(compobj)
       }
