@@ -10,6 +10,7 @@ services:
       - ./Nginx/dev.conf.d:/etc/nginx/conf.d
       - ./Nginx/static_pages:/usr/share/nginx/static_pages
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/file_storage:/usr/share/nginx/django_file_storage
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
       - django

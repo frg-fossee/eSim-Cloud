@@ -1,7 +1,13 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.safestring import mark_safe
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
 import uuid
+
+# For handling file uploads to a permenant direcrory
+file_storage = FileSystemStorage(
+    location=settings.FILE_STORAGE_ROOT, base_url=settings.FILE_STORAGE_URL)
 
 
 class CircuitTag(models.Model):
@@ -28,7 +34,8 @@ class Circuit(models.Model):
 
     data_dump = models.TextField(blank=False)
 
-    base64_image = models.TextField(blank=False)
+    base64_image = models.ImageField(
+        upload_to='circuit_images', storage=file_storage)
 
     author = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.SET_NULL)

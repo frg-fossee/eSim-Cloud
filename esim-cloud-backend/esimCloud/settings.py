@@ -204,9 +204,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/django_static/'
 
 
-# For Netlist handling netlist uploads ( Netlists are not stored here )
+# noqa For Netlist handling netlist uploads and other temp uploads
 MEDIA_URL = '/_files/'
 MEDIA_ROOT = os.path.join("/tmp", "esimCloud-temp")
+
+# File Storage
+FILE_STORAGE_ROOT = os.path.join(BASE_DIR, 'file_storage')
+FILE_STORAGE_URL = '/files'
 
 # celery
 CELERY_BROKER_URL = 'redis://redis:6379'
