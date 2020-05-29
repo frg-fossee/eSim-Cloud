@@ -14,7 +14,6 @@
 .button {
     --border-size: 2px;
     margin-left: 5px;
-    position: absolute;
     padding: 1.5em 3em;
     appearance: none;
     border: 0;
