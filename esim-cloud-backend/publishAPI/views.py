@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from publishAPI.models import Publish, CircuitTag, Circuit
 from publishAPI.serializers import CircuitTagSerializer, PublishSerializer, CircuitSerializer  # noqa
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, AllowAny, DjangoModelPermissions # noqa
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, AllowAny, DjangoModelPermissions  # noqa
 from rest_framework.parsers import JSONParser, MultiPartParser
 import logging
 logger = logging.getLogger(__name__)
