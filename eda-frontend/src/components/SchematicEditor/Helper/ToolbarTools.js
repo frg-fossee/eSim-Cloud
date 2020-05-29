@@ -266,7 +266,7 @@ function ErcCheckNets () {
     return false
   } else {
     if (errorCount === 0) {
-      alert('ERC Check completed')
+      // alert('ERC Check completed')
       return true
     }
   }
