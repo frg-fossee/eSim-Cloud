@@ -143,3 +143,24 @@ class StateShareView(APIView):
         else:
             return Response({'error': 'Invalid sharing state'},
                             status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserSavesView(APIView):
+    """
+    Returns Saved data for given username,
+    Only user who saved the state can access it
+    THIS WILL ESCAPE DOUBLE QUOTES
+
+    """
+    permission_classes = (IsAuthenticated,)
+    parser_classes = (FormParser, JSONParser)
+    methods = ['GET']
+
+    @swagger_auto_schema(responses={200: StateSaveSerializer})
+    def get(self, request):
+        saved_state = StateSave.objects.filter(owner=self.request.user)
+        try:
+            serialized = StateSaveSerializer(saved_state, many=True)
+            return Response(serialized.data)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
