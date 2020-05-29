@@ -10,7 +10,8 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   Typography,
-  Select
+  Select,
+  Divider
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
@@ -54,7 +55,11 @@ export default function SimulationProperties () {
     sweepType: 'Linear',
     start: '',
     stop: '',
-    step: ''
+    step: '',
+    parameter2: '',
+    start2: '',
+    stop2: '',
+    step2: ''
   })
   const [transientAnalysisControlLine, setTransientAnalysisControlLine] = useState({
     start: '',
@@ -185,6 +190,166 @@ export default function SimulationProperties () {
         console.log(error)
       })
   }
+  // const SecondaryParamaterForDcSweep = (props) => {
+  //   const prefix = props.prefix
+  //   if (prefix === 'R' || prefix === 'r') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Resistance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>K</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Resistance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>K</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Resistance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>K</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'C' || prefix === 'c') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Capacitance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>F</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Capacitance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>F</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Capacitance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>F</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'L' || prefix === 'l') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Inductance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>H</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Inductance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>H</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Inductance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>H</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'V' || prefix === 'v') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Voltage" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>V</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Voltage" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>V</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step InductVoltageance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>V</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'I' || prefix === 'i') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Current" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>A</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Current" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>A</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Current" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>A</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Value" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Value" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Value" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+
+  //         </ListItem>
+  //       </>
+  //     )
+  //   }
+  // }
 
   const startSimulate = (type) => {
     var compNetlist = GenerateNetList()
@@ -198,12 +363,12 @@ export default function SimulationProperties () {
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
-        controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
+        controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
         dispatch(setResultTitle('DC Sweep Output'))
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
-        controlLine = `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
+        controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`
         dispatch(setResultTitle('Transient Analysis Output'))
         break
       case 'Ac':
@@ -292,7 +457,7 @@ export default function SimulationProperties () {
                         size='small'
                         variant="outlined"
                         select
-                        label="Select Node"
+                        label="Select Component"
                         value={dcSweepcontrolLine.parameter}
                         onChange={handleDcSweepControlLine}
                         SelectProps={{
@@ -369,6 +534,92 @@ export default function SimulationProperties () {
                     {/* <ListItem>
                       <Button size='small' variant="contained">Add Expression</Button>
                     </ListItem> */}
+
+                    {/* SECONDARY PARAMETER FOR SWEEP */}
+                    <Divider/>
+                    <ListItem>
+
+                      <h4 style={{ marginLeft: '10px' }}>Secondary Parameters</h4>
+                    </ListItem>
+
+                    <ListItem>
+                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
+                        value={dcSweepcontrolLine.parameter}
+                        onChange={handleDcSweepControlLine}
+                      /> */}
+
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="parameter2"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Component"
+                        value={dcSweepcontrolLine.parameter2}
+                        onChange={handleDcSweepControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+
+                      >
+
+                        {
+                          componentsList.map((value, i) => {
+                            return <option key={i} value={value}>
+                              {value}
+                            </option>
+                          })
+                        }
+
+                      </TextField>
+
+                    </ListItem>
+
+                    {/* <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="sweepType"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Sweep Type"
+                        value={dcSweepcontrolLine.sweepType}
+                        onChange={handleDcSweepControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+
+                      >
+                        <option key="linear" value="linear">
+                          Linear
+                        </option>
+                        <option key="decade" value="decade">
+                          Decade
+                        </option>
+                      </TextField>
+                    </ListItem> */}
+
+                    <ListItem>
+                      <TextField id="start2" label="Start Value" size='small' variant="outlined"
+                        value={dcSweepcontrolLine.start2}
+                        onChange={handleDcSweepControlLine}
+                      />
+
+                    </ListItem>
+                    <ListItem>
+                      <TextField id="stop2" label="Stop Value" size='small' variant="outlined"
+                        value={dcSweepcontrolLine.stop2}
+                        onChange={handleDcSweepControlLine}
+                      />
+
+                    </ListItem>
+                    <ListItem>
+                      <TextField id="step2" label="Step Value" size='small' variant="outlined"
+                        value={dcSweepcontrolLine.step2}
+                        onChange={handleDcSweepControlLine}
+                      />
+
+                    </ListItem>
 
                     <ListItem>
                       <Button id="dcSweepSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('DcSweep') }}>
