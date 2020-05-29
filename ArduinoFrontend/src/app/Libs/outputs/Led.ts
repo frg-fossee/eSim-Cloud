@@ -35,7 +35,7 @@ export class LED extends CircuitElement {
     }
     this.prev = val;
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
-      console.log(this.nodes[0].value);
+      // console.log(this.nodes[0].value);
       if (val >= 5) {
         this.anim();
       } else {
@@ -87,6 +87,7 @@ export class LED extends CircuitElement {
   initSimulation(): void {
   }
   closeSimulation(): void {
+    this.prev = -2;
     this.elements[3].attr({ fill: 'none' });
   }
   simulate(): void {
