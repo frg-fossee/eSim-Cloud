@@ -11,7 +11,8 @@ import {
   ExpansionPanelDetails,
   Typography,
   Select,
-  Divider
+  Divider,
+  Popover
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
@@ -74,6 +75,12 @@ export default function SimulationProperties () {
     stop: '',
     pointsBydecade: ''
   })
+
+  const [controlBlockParam, setControlBlockParam] = useState('')
+
+  const handleControlBlockParam = (evt) => {
+    setControlBlockParam(evt.target.value)
+  }
 
   const onDcSweepTabExpand = () => {
     try {
@@ -379,7 +386,9 @@ export default function SimulationProperties () {
       default:
         break
     }
-    controlBlock = '\n.control \nrun \nprint all > data.txt \n.endc \n.end'
+    let cblockline
+    if (controlBlockParam.length <= 0) { cblockline = 'all' } else { cblockline = controlBlockParam }
+    controlBlock = `\n.control \nrun \nprint ${cblockline} > data.txt \n.endc \n.end`
     // console.log(controlLine)
 
     dispatch(setControlLine(controlLine))
@@ -396,6 +405,19 @@ export default function SimulationProperties () {
 
     // handlesimulateOpen()
   }
+
+  // simulation properties add expression input box
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const handleAddExpressionClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleAddExpressionClose = () => {
+    setAnchorEl(null)
+  }
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
 
   return (
     <>
@@ -420,15 +442,45 @@ export default function SimulationProperties () {
                   <form>
                     <List>
                       <ListItem>
+
+                        <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+                         Add Expression
+                        </Button>
+                        <Popover
+                          id={id}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleAddExpressionClose}
+
+                          anchorOrigin={{
+                            vertical: 'center',
+                            horizontal: 'left'
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left'
+                          }}
+                        >
+
+                          <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                            value={controlBlockParam}
+                            onChange={handleControlBlockParam}
+                          />
+
+                        </Popover>
+
+                      </ListItem>
+                      <ListItem>
                         <Button size='small' variant="contained" color="primary"
                           onClick={(e) => { startSimulate('DcSolver') }}>
-                          Run dc solver
+            Run dc solver
                         </Button>
                       </ListItem>
                     </List>
                   </form>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
+
             </div>
           </ListItem>
 
@@ -620,6 +672,35 @@ export default function SimulationProperties () {
                       />
 
                     </ListItem>
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+   Add Expression
+                      </Button>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
 
                     <ListItem>
                       <Button id="dcSweepSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('DcSweep') }}>
@@ -700,6 +781,35 @@ export default function SimulationProperties () {
                       <Button size='small' variant="contained">Add Expression</Button>
                     </ListItem>
                      */}
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+   Add Expression
+                      </Button>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
                     <ListItem>
                       <Button id="transientAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Transient') }}>
                         Simulate
@@ -786,6 +896,35 @@ export default function SimulationProperties () {
                     {/* <ListItem>
                       <Button size='small' variant="contained">Add Expression</Button>
                     </ListItem> */}
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+   Add Expression
+                      </Button>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
 
                     <ListItem>
                       <Button size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Ac') }}>
