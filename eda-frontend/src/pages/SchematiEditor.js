@@ -49,7 +49,7 @@ export default function SchematiEditor () {
   return (
 
     <div className={classes.root}>
-        {/* <TermsAndConditions open={tAc} close={handletAcOpen}/> */}
+      {/* <TermsAndConditions open={tAc} close={handletAcOpen}/> */}
 
       <CssBaseline />
 
