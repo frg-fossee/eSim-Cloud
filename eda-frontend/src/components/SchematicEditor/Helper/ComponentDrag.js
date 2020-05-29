@@ -94,7 +94,7 @@ export default function LoadGrid (container, sidebar, outline) {
     KeyboardShorcuts(graph)
     WireConfigFunct(graph)
     EdgeWireFunct()
-    ClipBoardFunct(graph)
+    // ClipBoardFunct(graph)
     NetlistInfoFunct(graph)
     ToolbarTools(graph)
 

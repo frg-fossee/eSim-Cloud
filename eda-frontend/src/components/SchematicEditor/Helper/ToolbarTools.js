@@ -570,7 +570,7 @@ export function GenerateNodeList () {
   /* var r = 1
   var v = 1
   var c = 1 */
-  var list = graph.getModel().cells
+  var list = annotate(graph)
   var a = []
   // var netlist = []
   var netlist = new Set()
