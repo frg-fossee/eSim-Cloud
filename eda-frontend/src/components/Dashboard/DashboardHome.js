@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 import ProgressPanel from './ProgressPanel'
 
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MainCard () {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
 
   return (
     <Card className={classes.mainHead}>
@@ -34,7 +36,7 @@ function MainCard () {
           Welcome to your EDA Dashboard
         </Typography>
         <Typography variant="h5" component="h2">
-          Welcome Username...
+          Welcome {(auth.user === null) ? 'Username' : auth.user.username}...
         </Typography>
       </CardContent>
       <CardActions>
@@ -72,7 +74,7 @@ export default function DashboardHome () {
         <Grid item xs={12}>
           <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
             <Typography variant="subtitle1" gutterBottom>
-              Hey Username , Track your schematics status here...
+              Hey User , Track your schematics status here...
             </Typography>
           </Card>
         </Grid>

@@ -31,6 +31,21 @@ function PrivateRoute ({ component: Component, ...rest }) {
   }} />
 }
 
+function ProtectedRoute ({ component: Component, ...rest }) {
+  const auth = useSelector(state => state.authReducer)
+  const dispatch = useDispatch()
+
+  useEffect(() => dispatch(loadUser()), [dispatch])
+
+  return <Route {...rest} render={props => {
+    if (auth.isAuthenticated) {
+      return <Redirect to="/dashboard" />
+    } else {
+      return <Component {...props} />
+    }
+  }} />
+}
+
 function App () {
   // Routes For User
   const UserRoute = () => (
@@ -54,7 +69,7 @@ function App () {
   return (
     <BrowserRouter basename='/eda'>
       <Switch>
-        <Route path="/login" component={Login} />
+        <ProtectedRoute path="/login" component={Login} />
         <Route exact path="/signup" component={SignUp} />
         <Route exact path="/editor" component={SchematicEditor} />
         <PrivateRoute component={UserRoute} path="/dashboard" />

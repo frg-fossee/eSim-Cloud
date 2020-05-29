@@ -13,6 +13,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DashSidebar (props) {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
 
   return (
     <>
@@ -65,7 +67,7 @@ export default function DashSidebar (props) {
           <Avatar className={classes.purple}>U</Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary="User Name"
+          primary={(auth.user !== null) ? auth.user.username : 'Username'}
           secondary={
             <React.Fragment>
               <Typography
