@@ -8,6 +8,7 @@ export class LED extends CircuitElement {
   static glowColors: string[] = [];
   static colorNames: string[] = [];
   selectedIndex = 0;
+  prev = -2;
   constructor(public canvas: any, x: number, y: number) {
     super('LED', x, y, 'LED.json', canvas);
   }
@@ -29,9 +30,13 @@ export class LED extends CircuitElement {
     this.nodes[1].addValueListener((v) => this.logic(v));
   }
   logic(val: number) {
+    if (this.prev === val) {
+      return;
+    }
+    this.prev = val;
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
       console.log(this.nodes[0].value);
-      if (val === 5) {
+      if (val >= 5) {
         this.anim();
       } else {
         this.elements[3].attr({ fill: 'none' });
