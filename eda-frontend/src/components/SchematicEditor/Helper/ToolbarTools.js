@@ -362,8 +362,8 @@ export function GenerateNetList () {
           compobj.node1 = component.children[0].edges[0].node
           compobj.node2 = component.children[1].edges[0].node
           compobj.magnitude = 10
-          netlist.add(compobj.node1)
-          netlist.add(compobj.node2)
+          netlist.add(component.properties.PREFIX)
+          // netlist.add(compobj.node2)
         // console.log(compobj)
         }
         // console.log(component)
@@ -477,8 +477,8 @@ export function GenerateNodeList () {
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
         // compobj.magnitude = 10
-        netlist.add(compobj.node1)
-        netlist.add(compobj.node2)
+        netlist.add(component.properties.PREFIX)
+        // netlist.add(compobj.node2)
         // console.log(compobj)
       }
       /* if (component.symbol.split('')[0] === 'R') {
