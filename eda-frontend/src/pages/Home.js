@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -15,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Home () {
   const classes = useStyles()
 
+  useEffect(() => {
+    document.title = 'eSim'
+  })
+
   return (
     <Container maxWidth="sm" component="main" className={classes.header}>
       <Typography
@@ -24,7 +28,7 @@ export default function Home () {
         color="textPrimary"
         gutterBottom
       >
-        EDA on Cloud
+        eSim on Cloud
       </Typography>
       <Typography
         variant="h5"
