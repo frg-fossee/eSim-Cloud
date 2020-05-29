@@ -9,7 +9,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
-import { useSelector } from 'react-redux'
+import store from '../../redux/store'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 export function Header () {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const auth = useSelector(state => state.authReducer)
+  const auth = store.getState().authReducer
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)

@@ -13,12 +13,13 @@ import {
   MenuItem,
   ListItemText
 } from '@material-ui/core'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import { setTitle } from '../../redux/actions/index'
+import store from '../../redux/store'
 
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 const useStyles = makeStyles((theme) => ({
@@ -47,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Header () {
   const classes = useStyles()
-  const auth = useSelector(state => state.authReducer)
+  const auth = store.getState().authReducer
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const dispatch = useDispatch()
