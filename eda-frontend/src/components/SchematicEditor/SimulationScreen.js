@@ -46,6 +46,7 @@ export default function SimulationScreen ({ open, close }) {
   const classes = useStyles()
 
   const result = useSelector((state) => state.simulationReducer)
+  const stitle = useSelector((state) => state.netlistReducer.title)
 
   return (
     <div>
@@ -69,12 +70,16 @@ export default function SimulationScreen ({ open, close }) {
             spacing={3}
             direction="row"
             justify="center"
-            alignItems="stretch"
+            alignItems="center"
           >
             <Grid item xs={12} sm={12}>
               <Paper className={classes.paper}>
-                <h1>{result.title}</h1>
-                <p>Simulation Result for {result.title}</p>
+                <Typography variant="h2" align="center" gutterBottom>
+                  {result.title}
+                </Typography>
+                <Typography variant="h5" align="center" color="error" component="p" gutterBottom>
+                  Simulation Result for {stitle} *
+                </Typography>
               </Paper>
             </Grid>
 
@@ -90,20 +95,25 @@ export default function SimulationScreen ({ open, close }) {
                     />
                   </Paper>
                 </Grid>
-                : <h1>No graph</h1>
+                : <span></span>
             }
 
             {
               (result.isGraph === 'false')
-                ? <Grid item xs={12} sm={8}>
+                ? <Grid item xs={12} sm={12}>
                   <Paper className={classes.paper}>
-                    <h2>OUTPUT</h2>
-                    <h2>{result.text}</h2>
+                    <Typography variant="h4" align="center" gutterBottom>
+                      OUTPUT
+                    </Typography>
+                    {result.text.map((line, index) => {
+                      return <Typography variant="h5" align="center" key={index} gutterBottom>
+                        {line}
+                      </Typography>
+                    })}
                   </Paper>
                 </Grid>
-                : <h1>No output</h1>
+                : <span></span>
             }
-
           </Grid>
         </Container>
       </Dialog>

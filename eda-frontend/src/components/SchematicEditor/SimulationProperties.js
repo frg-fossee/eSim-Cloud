@@ -176,9 +176,9 @@ export default function SimulationProperties () {
             console.log(simResultGraph)
             dispatch(setResultGraph(simResultGraph))
           } else {
-            var simResultText = ''
+            var simResultText = []
             for (var i = 0; i < temp.length; i++) {
-              simResultText += temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n'
+              simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n')
             }
             console.log(simResultText)
             dispatch(setResultText(simResultText))
