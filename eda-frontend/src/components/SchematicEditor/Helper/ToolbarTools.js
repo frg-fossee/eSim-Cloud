@@ -146,6 +146,13 @@ export function ErcCheck () {
     var cell = list[property]
     if (cell.Component === true) {
       console.log(cell)
+      graph.getModel().beginUpdate()
+      try {
+        cell.value = 'Checked'
+      } finally {
+      // Updates the display
+        graph.getModel().endUpdate()
+      }
       // cell.value = 'Checked'
       for (var child in cell.children) {
         console.log(cell.children[child])
@@ -333,8 +340,19 @@ export function GenerateNetList () {
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                    if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                    if (pin.edges[wire].source.edge === true) {
+                      console.log('wire')
+                      console.log(pin.edges[wire].source)
+                      console.log(pin.edges[wire].source.node)
+                      pin.edges[wire].node = pin.edges[wire].source.node
+                    } else if (pin.edges[wire].target.edge === true) {
+                      console.log('wire')
+                      console.log(pin.edges[wire].target)
+                      console.log(pin.edges[wire].target.node)
+                      pin.edges[wire].node = pin.edges[wire].target.node
+                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                     // console.log('Found ground')
+                      // console.log('ground')
                       pin.edges[wire].node = 0
                       // pin.edges[wire].node = '0'
                       pin.edges[wire].value = 0
@@ -344,7 +362,7 @@ export function GenerateNetList () {
                     // if (pin.edges[wire].node === null) {
                       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-
+                      console.log('comp')
                       // ++n
                       // }
 
@@ -354,10 +372,10 @@ export function GenerateNetList () {
                   }
                 }
                 // console.log()
-                console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
+                // console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
                 k = k + ' ' + pin.edges[0].node
 
-                console.log(k)
+                // console.log(k)
               }
             }
           }
