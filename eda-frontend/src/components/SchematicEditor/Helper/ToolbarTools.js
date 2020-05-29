@@ -277,7 +277,10 @@ export function GenerateNetList () {
   var c = 1
   var list = graph.getModel().cells
   var n = 1
-  var netlist = new Set()
+  var netlist = {
+    componentlist: [],
+    nodelist: []
+  }
   var erc = ErcCheckNets()
   var k = ''
   if (erc === false) {
@@ -362,8 +365,9 @@ export function GenerateNetList () {
           compobj.node1 = component.children[0].edges[0].node
           compobj.node2 = component.children[1].edges[0].node
           compobj.magnitude = 10
-          netlist.add(component.properties.PREFIX)
-          // netlist.add(compobj.node2)
+          netlist.componentlist.push(component.properties.PREFIX)
+          netlist.nodelist.push(compobj.node2, compobj.node1)
+
         // console.log(compobj)
         }
         // console.log(component)
@@ -400,7 +404,9 @@ export function GenerateNetList () {
     // Updates the display
     graph.getModel().endUpdate()
   }
-  console.log(netlist)
+  var a = new Set(netlist.nodelist)
+  console.log(netlist.nodelist)
+  console.log(a)
   return k
 }
 export function GenerateNodeList () {
@@ -412,7 +418,12 @@ export function GenerateNodeList () {
   var v = 1
   var c = 1 */
   var list = graph.getModel().cells
-  var netlist = []
+  var a = []
+  // var netlist = []
+  var netlist = {
+    componentlist: [],
+    nodelist: new Set()
+  }
 
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
@@ -477,8 +488,9 @@ export function GenerateNodeList () {
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
         // compobj.magnitude = 10
-        netlist.push(component.properties.PREFIX)
-        // netlist.add(compobj.node2)
+        netlist.componentlist.push(component.properties.PREFIX)
+        // netlist.nodelist.add(compobj.node2)
+        a.push(compobj.node1, compobj.node2)
         // console.log(compobj)
       }
       /* if (component.symbol.split('')[0] === 'R') {
@@ -498,5 +510,6 @@ export function GenerateNodeList () {
   // k = k + '.op \n'
   // k = k + '.end \n'
   // console.log(netlist)
+  netlist.nodelist = new Set(a)
   return netlist
 }
