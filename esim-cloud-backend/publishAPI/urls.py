@@ -14,6 +14,8 @@ router.register(r'publish/publishing', publishAPI_views.PublishViewSet,
                 basename='publish')
 router.register(r'publish/circuit', publishAPI_views.CircuitViewSet,
                 basename='circuit')
+router.register(r'circuits', publishAPI_views.PublicCircuitViewSet,
+                basename='circuit')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

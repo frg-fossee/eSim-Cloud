@@ -59,7 +59,7 @@ class Circuit(models.Model):
 
 
 class Publish(models.Model):
-    circuit = models.ForeignKey(
+    circuit = models.OneToOneField(
         Circuit, on_delete=models.CASCADE, null=False, blank=False,
         related_name='circuit')
 

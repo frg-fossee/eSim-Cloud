@@ -38,5 +38,5 @@ class PublicCircuitViewSet(viewsets.ReadOnlyModelViewSet):
      Listing Published Circuits
     """
     permission_classes = (AllowAny,)
-    queryset = Circuit.objects.all()
+    queryset = Circuit.objects.filter(circuit__published=True)
     serializer_class = CircuitSerializer
