@@ -7,7 +7,7 @@ import store from '../../../redux/store'
 
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
-import ClipBoardFunct from './ClipBoard.js'
+// import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
 import KeyboardShorcuts from './KeyboardShorcuts.js'

@@ -736,15 +736,15 @@ export function GenerateCompList () {
             }
           }
         } */
-        compobj.name = component.symbol
-        compobj.node1 = component.children[0].edges[0].node
-        compobj.node2 = component.children[1].edges[0].node
-        // compobj.magnitude = 10
-        // netlist.componentlist.push(component.properties.PREFIX)
-        // netlist.nodelist.add(compobj.node2)
-        netlist.push(component.properties.PREFIX)
-        // console.log(compobj)
-      }
+      compobj.name = component.symbol
+      compobj.node1 = component.children[0].edges[0].node
+      compobj.node2 = component.children[1].edges[0].node
+      // compobj.magnitude = 10
+      // netlist.componentlist.push(component.properties.PREFIX)
+      // netlist.nodelist.add(compobj.node2)
+      netlist.push(component.properties.PREFIX)
+      // console.log(compobj)
+
       /* if (component.symbol.split('')[0] === 'R') {
         k = k + ' 1k'
       }
@@ -759,9 +759,10 @@ export function GenerateCompList () {
       // console.log(k)
     }
   }
+
+  return netlist
   // k = k + '.op \n'
   // k = k + '.end \n'
   // console.log(netlist)
   // netlist.nodelist = new Set(a)
-  return netlist
 }
