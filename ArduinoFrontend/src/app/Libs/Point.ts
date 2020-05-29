@@ -32,7 +32,7 @@ export class Point {
   connectCallback: any = null;
 
   value = -1;
-  listener: (val: number) => void = null;
+  listener: (val: number, calledby: Point, current: Point) => void = null;
   gid = -1;
   /**
    * Constructor for Circuit Node
@@ -209,13 +209,13 @@ export class Point {
       this.parent = null;
     }
   }
-  addValueListener(listener: (val: number) => void) {
+  addValueListener(listener: (val: number, calledby: Point, parent: Point) => void) {
     this.listener = listener;
   }
   setValue(value: number, calledby: Point) {
     this.value = value;
     if (calledby && this.listener) {
-      this.listener(this.value);
+      this.listener(this.value, calledby, this);
     }
     if (isNull(calledby)) {
       calledby = this;
