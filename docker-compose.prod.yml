@@ -12,6 +12,7 @@ services:
       - ./eda-frontend/build:/usr/share/nginx/eda
       - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino-build
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
+      - ./esim-cloud-backend/file_storage:/usr/share/nginx/django_file_storage
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
     depends_on:
       - django
