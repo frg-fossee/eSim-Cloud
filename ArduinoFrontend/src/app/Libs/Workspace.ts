@@ -483,6 +483,7 @@ export class Workspace {
     const isProgrammable = window.scope.ArduinoUno.length > 0;
     if (!isProgrammable) {
       window.printConsole('No Programmable Device Found', ConsoleType.INFO);
+      Workspace.startArduino();
       return;
     }
     for (const arduino of window.scope.ArduinoUno) {
