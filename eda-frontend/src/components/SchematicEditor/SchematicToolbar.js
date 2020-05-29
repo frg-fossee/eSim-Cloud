@@ -23,7 +23,6 @@ import MenuButton from './MenuButton'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties } from '../../redux/actions/index'
-
 const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginLeft: 'auto',
@@ -54,6 +53,8 @@ export default function SchematicToolbar ({ mobileClose }) {
   const [open, setOpen] = React.useState(false)
   const [helpOpen, setHelpOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
+
+
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
