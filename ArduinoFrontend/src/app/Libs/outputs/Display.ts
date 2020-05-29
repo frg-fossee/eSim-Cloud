@@ -7,9 +7,6 @@ export class LCD16X2 extends CircuitElement {
   }
   load(data: any): void {
   }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -37,9 +34,6 @@ export class SevenSegment extends CircuitElement {
     super('SevenSegment', x, y, 'SevenSegment.json', canvas);
   }
   load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   init() {
     if (SevenSegment.mapping.length === 0) {

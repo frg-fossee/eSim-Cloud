@@ -58,11 +58,6 @@ export class Buzzer extends CircuitElement {
     this.y = data.y;
     this.id = data.id;
   }
-  // returns node pointer on basis of x,y position
-  getNode(x: number, y: number) {
-    return null;
-  }
-
   initSimulation() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioCtx = new AudioContext();

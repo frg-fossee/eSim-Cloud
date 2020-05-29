@@ -8,9 +8,6 @@ export class MQ2 extends CircuitElement {
   }
   load(data: any): void {
   }
-  getNode(x: number, y: number) {
-    return null;
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

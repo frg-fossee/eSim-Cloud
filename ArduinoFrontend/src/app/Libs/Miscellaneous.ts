@@ -50,9 +50,6 @@ export class Label extends CircuitElement {
     this.text = value;
     this.update();
   }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     let tmp;
     const body = document.createElement('div');

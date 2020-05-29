@@ -276,7 +276,9 @@ export abstract class CircuitElement {
   /**
    * Returns the Circuit Node based on the x,y Position
    */
-  abstract getNode(x: number, y: number): Point;
+  getNode(x: number, y: number): Point {
+    return null;
+  }
   /**
    * Removes Component from Canvas and memory
    */

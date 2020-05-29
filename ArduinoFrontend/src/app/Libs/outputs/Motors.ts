@@ -9,9 +9,6 @@ export class Motor extends CircuitElement {
   }
   load(data: any): void {
   }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -36,9 +33,6 @@ export class L298N extends CircuitElement {
     super('L298N', x, y, 'L298N.json', canvas);
   }
   load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
@@ -67,9 +61,6 @@ export class ServoMotor extends CircuitElement {
     this.elements[1].animate(anim);
   }
   load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');

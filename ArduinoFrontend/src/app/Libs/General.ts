@@ -54,9 +54,6 @@ export class Resistor extends CircuitElement {
   }
   load(data: any): void {
   }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
   getValue() {
     const l = `${this.value}`.length;
     const tmp = `${this.value}`;
@@ -246,9 +243,6 @@ export class BreadBoard extends CircuitElement {
     });
   }
   load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');

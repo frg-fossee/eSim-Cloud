@@ -7,9 +7,6 @@ export class PIRSensor extends CircuitElement {
   }
   load(data: any): void {
   }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('body');
     return {

@@ -249,10 +249,6 @@ export class Wire {
     this.start = null;
     this.end = null;
   }
-  // No need of this function as it is inherited from CircuitElement class
-  getNode(x: number, y: number) {
-    return null;
-  }
   initSimulation() {
   }
   simulate() {

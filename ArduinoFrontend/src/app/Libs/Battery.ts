@@ -7,9 +7,6 @@ export class Battery9v extends CircuitElement {
   }
   load(data: any): void {
   }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -34,9 +31,6 @@ export class CoinCell extends CircuitElement {
     super('CoinCell', x, y, 'CoinCell.json', canvas);
   }
   load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
