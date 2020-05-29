@@ -573,7 +573,7 @@ export function GenerateNodeList () {
   var list = graph.getModel().cells
   var a = []
   // var netlist = []
-  var netlist = []
+  var netlist = new Set()
 
   // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
@@ -612,7 +612,7 @@ export function GenerateNodeList () {
       // compobj.name = component.symbol
 
       if (component.children !== null) {
-        for (var child in component.children) {
+        /* for (var child in component.children) {
           var pin = component.children[child]
           if (pin.vertex === true) {
             // alert(pin.id)
@@ -633,14 +633,14 @@ export function GenerateNodeList () {
               }
             }
           }
-        }
+        } */
         compobj.name = component.symbol
         compobj.node1 = component.children[0].edges[0].node
         compobj.node2 = component.children[1].edges[0].node
         // compobj.magnitude = 10
         // netlist.componentlist.push(component.properties.PREFIX)
         // netlist.nodelist.add(compobj.node2)
-        netlist.push(compobj.node1, compobj.node2)
+        netlist.add(compobj.node1, compobj.node2)
         // console.log(compobj)
       }
       /* if (component.symbol.split('')[0] === 'R') {

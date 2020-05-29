@@ -70,6 +70,7 @@ export default function SimulationProperties () {
 
   const onDcSweepTabExpand = () => {
     try {
+      console.log(GenerateNodeList())
       setNodeList([...GenerateNodeList()])
     } catch (err) {
       setNodeList([])
