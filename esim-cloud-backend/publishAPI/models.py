@@ -55,32 +55,30 @@ class Circuit(models.Model):
     # Auto create entry in publish field
     def save(self, **kwargs):
         super(Circuit, self).save(**kwargs)
-        publish, created = Publish.objects.get_or_create(circuit_id=self)
+        publish, created = Publish.objects.get_or_create(circuit=self)
 
 
 class Publish(models.Model):
-    circuit_id = models.ForeignKey(
-        Circuit, on_delete=models.CASCADE, null=False, blank=False)
+    circuit = models.ForeignKey(
+        Circuit, on_delete=models.CASCADE, null=False, blank=False,
+        related_name='circuit')
 
     publish_time = models.DateTimeField(auto_now=False, null=True)
 
     published = models.BooleanField(default=False)
 
-    tags = models.ManyToManyField(CircuitTag)  # Filter
+    tags = models.ManyToManyField(CircuitTag, related_name='tags')  # Filter
 
     reviewed_by = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.SET_NULL)
 
+    # For Django Admin
     def circuit_title(self):
-        return self.circuit_id.title
+        return self.circuit.title
 
     def image_tag(self):
-        if self.circuit_id:
-            return mark_safe('<img src="%s" style="width: 45px; height:45px;" />' % self.circuit_id.base64_image)  # noqa
+        if self.circuit:
+            return mark_safe('<img src="%s" style="width: 45px; height:45px;" />' % self.circuit.base64_image)  # noqa
         else:
             return 'No Image Found'
     image_tag.short_description = 'Image'
-
-    # For Django Admin Panel
-    def __str__(self):
-        return 'Review - ' + self.circuit_id.title
