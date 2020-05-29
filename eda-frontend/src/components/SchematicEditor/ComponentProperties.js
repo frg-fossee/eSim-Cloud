@@ -1,3 +1,4 @@
+/* eslint-disable brace-style */
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCompProperties, setModel } from '../../redux/actions/index'
@@ -52,6 +53,7 @@ export default function ComponentProperties () {
             return <ListItem key={i}>
               <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
             </ListItem>
+          // eslint-disable-next-line brace-style
           }
           // if (keyName === 'MODEL') {
           //   return (
