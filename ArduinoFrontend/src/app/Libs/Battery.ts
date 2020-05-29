@@ -1,9 +1,16 @@
 import { CircuitElement } from './CircuitElement';
-import { Point } from './Point';
 
 export class Battery9v extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('Battery9v', x, y, 'Battery9v.json', canvas);
+  }
+  init() {
+    this.nodes[1].addValueListener((_, calledby, __) => {
+      if (calledby.parent.id === this.id) {
+        /// TODO: Show Toast and Stop Simulation
+        console.log('Short Circuit');
+      }
+    });
   }
   load(data: any): void {
   }
@@ -17,6 +24,7 @@ export class Battery9v extends CircuitElement {
     };
   }
   initSimulation(): void {
+    this.nodes[0].setValue(9, null);
   }
   closeSimulation(): void {
   }
