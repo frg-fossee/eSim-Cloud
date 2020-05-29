@@ -15,7 +15,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
-import { GenerateNetList, GenerateNodeList } from './Helper/ToolbarTools'
+import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
 
 import api from '../../utils/Api'
@@ -47,6 +47,7 @@ export default function SimulationProperties () {
   const dispatch = useDispatch()
   const classes = useStyles()
   const [nodeList, setNodeList] = useState([])
+  const [componentsList, setComponentsList] = useState([])
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
     sweepType: 'Linear',
@@ -70,10 +71,9 @@ export default function SimulationProperties () {
 
   const onDcSweepTabExpand = () => {
     try {
-      console.log(GenerateNodeList())
-      setNodeList([...GenerateNodeList()])
+      setComponentsList([...GenerateCompList()])
     } catch (err) {
-      setNodeList([])
+      setComponentsList([])
       alert('Circuit not complete. Please Check Connectons.')
     }
   }
@@ -280,12 +280,12 @@ export default function SimulationProperties () {
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
                     <ListItem>
-                      <TextField size='small' variant="outlined" id="parameter" label="Select Node"
+                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
                         value={dcSweepcontrolLine.parameter}
                         onChange={handleDcSweepControlLine}
-                      />
+                      /> */}
 
-                      {/* <TextField
+                      <TextField
                         style={{ width: '100%' }}
                         id="parameter"
                         size='small'
@@ -300,14 +300,14 @@ export default function SimulationProperties () {
 
                       >
                         {
-                          nodeList.map(value => {
-                            return <option key={value} value={value}>
-                                        {value}
-                                  </option>
+                          componentsList.map((value, i) => {
+                            return <option key={i} value={value}>
+                              {value}
+                            </option>
                           })
                         }
 
-                      </TextField> */}
+                      </TextField>
 
                     </ListItem>
 

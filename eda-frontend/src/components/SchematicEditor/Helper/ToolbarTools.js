@@ -759,9 +759,10 @@ export function GenerateCompList () {
       // console.log(k)
     }
   }
+
+  return netlist
   // k = k + '.op \n'
   // k = k + '.end \n'
   // console.log(netlist)
   // netlist.nodelist = new Set(a)
-  return netlist
 }
