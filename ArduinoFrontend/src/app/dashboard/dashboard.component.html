@@ -1,24 +1,35 @@
 <!-- As a heading -->
 <div class="bg-light" style="display: flex; height:60px;">
-    <div style="flex-basis: 1500px; line-height: 60px;font-weight: bold; padding-left: 60px; font-size: x-large;">Dashboard</div>
-    <div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
+    <div style="flex-basis: 1500px; line-height: 60px;font-weight: bold; padding-left: 60px; font-size: x-large;">
+        Dashboard</div>
+    <div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px; font-weight: 900;"><button mat-flat-button class="bg-light" [routerLink]="['/gallery']">Gallery</button>
     </div>
-  <!--<div style="flex-basis: 100px; line-height: 60px;">
+    <!--<div style="flex-basis: 100px; line-height: 60px;">
         <a mat-stroked-button href="#" target="_blank">Login</a>
     </div>-->
     <div class="dropdown" style="flex-basis: 100px; line-height: 60px;">
         <div class="w3-dropdown-hover">
-            <img  src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="">
-            <div class="dropdown-content" style="display: none;">
-                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;margin-top: 5px;"><i class="fas fa-user" style="margin-left: 5px;"></i> Meet Shah</div>
+            <img src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="">
+            <div class="dropdown-content">
+                <div
+                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;margin-top: 5px;">
+                    <i class="fas fa-user" style="margin-left: 5px;"></i> Username</div>
                 <hr style="margin-top: 5px;">
-                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fa fa-plus" style="margin-left: 5px;"></i> New</div>
-                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fa fa-tasks" style="margin-left: 5px;"></i> Designs</div>
-                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fa fa-envelope" style="margin-left: 5px;"></i> Notification</div>
+                <div
+                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;" [routerLink]="['/simulator']">
+                    <i class="fa fa-plus" style="margin-left: 5px;"></i> New</div>
+                <div
+                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
+                    <i class="fa fa-tasks" style="margin-left: 5px;"></i> Designs</div>
+                <div
+                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
+                    <i class="fa fa-envelope" style="margin-left: 5px;"></i> Notification</div>
                 <hr style="margin-top: 5px;">
-                <div style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;"><i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> logout</div>    
+                <div
+                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
+                    <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> logout</div>
             </div>
-        </div> 
+        </div>
     </div>
 </div>
 
@@ -58,11 +69,6 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
@@ -75,11 +81,6 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
@@ -91,11 +92,6 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
@@ -107,11 +103,6 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
@@ -123,11 +114,6 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
@@ -139,11 +125,6 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
@@ -155,15 +136,9 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
-
         </div>
         <div class="subbox">
             <div>
@@ -171,11 +146,6 @@
                 <div style="box-sizing: border-box; padding: 15px;">
                     <h4>Project Name</h4>
                     <p>Test1</p>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star checked"></span>
-                    <span class="fa fa-star"></span>
-                    <span class="fa fa-star"></span>
                     <p>2hours</p>
                 </div>
             </div>
@@ -191,8 +161,9 @@
                 style="flex-basis: 80%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
                 Project name</div>
             <div style="flex-basis: 20%; padding: 10px;float: right;">
-                <button style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;" (click) ="closeProject()"><i
-                        class="fa fa-close"></i></button>
+                <button
+                    style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"
+                    (click)="closeProject()"><i class="fa fa-close"></i></button>
             </div>
         </div>
         <hr>
@@ -235,7 +206,8 @@
                     <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
                         <i class="fa fa-envelope" style="font-size: medium;"></i>
                     </button>
-                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)= "share()" >
+                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;"
+                        (click)="share()">
                         <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
                     </button>
 
@@ -249,18 +221,20 @@
         <div style="height: 185px; width: 100%;">
             <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
                 <h3 style="padding-left: 10px;font-weight: bolder; font-size: 22px;font-family: monospace">Comments</h3>
-             <!--<form style="padding-left:10px; padding-top: 5px;width:97%;position:relative">
+                <!--<form style="padding-left:10px; padding-top: 5px;width:97%;position:relative">
                     <textarea id="text" placeholder="Add your Comments" style="height: 80px; width: 90%"></textarea>
                     <input type="submit" value="Post Comment">
                 </form>-->
-                <form class ="form-group">
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"  style="width: 97%;"></textarea>
+                <form class="form-group">
+                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                        style="width: 97%;"></textarea>
                 </form>
                 <button mat-raised-button disabled>Post Comment</button>
             </div>
         </div>
         <div style="background-color:rgba(192,192,192,0.3); height: 30px;width: 100%;border-radius: 0px 0px 5px 0px">
-            <button style="background: transparent; border: none; float: right; font-weight: bold" (click)= "closeProject()">close</button>
+            <button style="background: transparent; border: none; float: right; font-weight: bold"
+                (click)="closeProject()">close</button>
         </div>
     </div>
 </div>
