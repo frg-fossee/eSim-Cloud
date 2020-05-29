@@ -1,8 +1,9 @@
 import React from 'react'
 
-import { AppBar, Button, Toolbar, Typography, Link } from '@material-ui/core'
+import { AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import logo from '../../static/logo.png'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -16,6 +17,13 @@ const useStyles = makeStyles((theme) => ({
   },
   link: {
     margin: theme.spacing(1, 1.5)
+  },
+  button: {
+    marginRight: theme.spacing(0.7)
+  },
+  small: {
+    width: theme.spacing(3.7),
+    height: theme.spacing(3.7)
   }
 }))
 
@@ -31,6 +39,9 @@ export default function Navbar () {
     >
 
       <Toolbar variant="dense" color="default" className={classes.toolbar}>
+        <IconButton edge="start" className={classes.button} color="primary">
+          <Avatar alt="esim logo" src={logo} className={classes.small} />
+        </IconButton>
         <Typography
           variant="h6"
           color="inherit"
@@ -38,7 +49,7 @@ export default function Navbar () {
           className={classes.toolbarTitle}
         >
           <Link color="inherit" to="/" component={RouterLink}>
-            EDA Cloud
+            eSim
           </Link>
         </Typography>
         <nav>

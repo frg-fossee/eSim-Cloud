@@ -20,11 +20,11 @@ export default function KeyboardShortcuts (graph) {
   }
 
   // Delete - Del
-  keyHandler.bindKey(46, function (evt) {
-    if (graph.isEnabled()) {
-      graph.removeCells()
-    }
-  })
+  // keyHandler.bindKey(46, function (evt) {
+  //   if (graph.isEnabled()) {
+  //     graph.removeCells()
+  //   }
+  // })
 
   // Undo - Ctrl + Z
   keyHandler.bindControlKey(90, function (evt) {

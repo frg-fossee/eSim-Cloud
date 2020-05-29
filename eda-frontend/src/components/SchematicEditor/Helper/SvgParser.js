@@ -2,14 +2,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import mxGraphFactory from 'mxgraph'
-
+import ComponentParameters from './ComponentParametersData'
 const {
   mxConstants
 } = new mxGraphFactory()
 
 let pinData, metadata, pinList, pinName, pinOrientation, pinLength, pinShape
 let currentPin, x_pos, y_pos
-let width, height
+let width, height, symbolName
 
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
 const fixed_number = 5
@@ -19,7 +19,7 @@ function extractData (xml) {
   metadata = xml.getElementsByTagName('metadata')
   const width = metadata[0].attributes[0].nodeValue
   const height = metadata[0].attributes[1].nodeValue
-
+  const symbolName = metadata[0].attributes[4].nodeValue
   pinList = metadata[0].childNodes
   // console.log(metadata)
   // console.log(xmlDoc)
@@ -33,6 +33,7 @@ function extractData (xml) {
     const pinOrientation = pin.getElementsByTagName('orientation')[0].innerHTML.trim()
     const pinLength = pin.getElementsByTagName('length')[0].innerHTML.trim()
     const pinShape = pin.getElementsByTagName('pinShape')[0].innerHTML.trim()
+
     pinData.push({
       pinNumber: pinNumber,
       pinX: pinX,
@@ -48,6 +49,7 @@ function extractData (xml) {
   return {
     width: width,
     height: height,
+    symbolName: symbolName,
     pinData: pinData
   }
 }
@@ -119,6 +121,11 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       v1.CellType = 'Component'
       v1.symbol = component.symbol_prefix
       v1.CompObject = component
+
+      var props = Object.assign({}, ComponentParameters[v1.symbol])
+      props.NAME = component.name
+      v1.properties = props
+
       v1.setConnectable(false)
 
       for (let i = 0; i < pinData.length; i++) {

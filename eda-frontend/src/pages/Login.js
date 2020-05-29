@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Container,
   Grid,
@@ -38,6 +38,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn () {
   const classes = useStyles()
+
+  useEffect(() => {
+    document.title = 'Login - EDA '
+  })
 
   return (
     <Container component="main" maxWidth="xs">

@@ -6,10 +6,11 @@ from django.contrib.auth import get_user_model
 from djoser.conf import settings as djoser_settings
 from random import randint
 import requests
+from django.shortcuts import render
 Token = djoser_settings.TOKEN_MODEL
 
 
-class UserActivationView(APIView):
+def activate_user(request, uid, token):
     """
     Used to activate accounts,
     sends POST request to /api/auth/users/activation/ route
@@ -17,17 +18,14 @@ class UserActivationView(APIView):
     Link to this route is sent via email to user for verification
     """
 
-    def get(self, request, uid, token):
-        protocol = 'https://' if request.is_secure() else 'http://'
-        web_url = protocol + request.get_host()
-        post_url = web_url + "/api/auth/users/activation/"
-        post_data = {'uid': uid, 'token': token}
-        resp = requests.post(post_url, data=post_data)
-        response_status = resp.status_code
-        if response_status == 204:
-            return Response({'status': 'Activated'}, status=201)
-        else:
-            return Response(resp.json(), status=response_status)
+    protocol = 'https://' if request.is_secure() else 'http://'
+    web_url = protocol + request.get_host() + '/api/auth/users/activation/'  # noqa URL comes from Djoser library
+    return render(request, 'activate_user.html',
+                  {'uid': uid,
+                   'token': token,
+                   'activation_url': web_url,
+                   'redirect_url': settings.POST_ACTIVATE_REDIRECT_URL
+                   })
 
 
 class GoogleOAuth2(APIView):
@@ -56,9 +54,6 @@ class GoogleOAuth2(APIView):
 
         state = request.query_params.get('state')
         code = request.query_params.get('code')
-        # redirect_uri = request.query_params.get('redirect_uri')
-        print('GOT STATE: ', state)
-        print('GOT CODE: ', code)
 
         google = OAuth2Session(
             client_id,
