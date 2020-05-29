@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {
-  AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar, Menu,
+  AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar, Menu, ListItemText,
   Fade,
   MenuItem
 } from '@material-ui/core'
@@ -141,6 +141,13 @@ export function Header () {
               TransitionComponent={Fade}
               style={{ marginTop: '25px' }}
             >
+              <MenuItem
+                component={RouterLink}
+                to="/dashboard"
+                onClick={handleClose}
+              >
+                <ListItemText primary={auth.user.username} secondary={auth.user.email} />
+              </MenuItem>
               <MenuItem
                 component={RouterLink}
                 to="/dashboard/profile"

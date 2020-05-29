@@ -10,7 +10,8 @@ import {
   Avatar,
   Menu,
   Fade,
-  MenuItem
+  MenuItem,
+  ListItemText
 } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
@@ -45,10 +46,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Header () {
-  const dispatch = useDispatch()
   const classes = useStyles()
-  const [anchorEl, setAnchorEl] = React.useState(null)
   const auth = useSelector(state => state.authReducer)
+  const [anchorEl, setAnchorEl] = React.useState(null)
+
+  const dispatch = useDispatch()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -134,6 +136,13 @@ function Header () {
                 TransitionComponent={Fade}
                 style={{ marginTop: '25px' }}
               >
+                <MenuItem
+                  component={RouterLink}
+                  to="/dashboard"
+                  onClick={handleClose}
+                >
+                  <ListItemText primary={auth.user.username} secondary={auth.user.email}/>
+                </MenuItem>
                 <MenuItem
                   component={RouterLink}
                   to="/dashboard/profile"

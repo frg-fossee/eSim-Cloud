@@ -32,13 +32,6 @@ function PrivateRoute ({ component: Component, ...rest }) {
 }
 
 function App () {
-  // Routes For SchematicEditor
-  const SchematicRoute = () => (
-    <>
-      <Route exact path="/editor" component={SchematicEditor} />
-    </>
-  )
-
   // Routes For User
   const UserRoute = () => (
     <>
@@ -59,11 +52,11 @@ function App () {
   )
 
   return (
-    <BrowserRouter basename={'/eda'}>
+    <BrowserRouter basename='/eda'>
       <Switch>
         <Route path="/login" component={Login} />
         <Route exact path="/signup" component={SignUp} />
-        <Route path="/editor" component={SchematicRoute} />
+        <Route exact path="/editor" component={SchematicEditor} />
         <PrivateRoute component={UserRoute} path="/dashboard" />
         <Route component={DefaultRoute} />
       </Switch>
