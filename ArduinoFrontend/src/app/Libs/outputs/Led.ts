@@ -17,6 +17,9 @@ export class LED extends CircuitElement {
       color: this.selectedIndex
     };
   }
+  LoadData(data: any) {
+    this.selectedIndex = data.data.color;
+  }
   init() {
     if (LED.glowColors.length === 0) {
       // LED
@@ -28,7 +31,10 @@ export class LED extends CircuitElement {
     this.data = null;
     this.nodes[0].addValueListener((v) => this.logic(v));
     this.nodes[1].addValueListener((v) => this.logic(v));
-  }
+    this.elements[0].attr({
+      fill: LED.colors[this.selectedIndex]
+    });
+}
   logic(val: number) {
     if (this.prev === val) {
       return;
