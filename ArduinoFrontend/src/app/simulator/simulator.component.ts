@@ -49,6 +49,12 @@ export class SimulatorComponent implements OnInit {
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
       // console.log(v);
+      this.projectId = v.id;
+      if (this.projectId) {
+        Workspace.readIDB(this.projectId, (data) => {
+          this.LoadProject(data);
+        });
+      }
     });
 
     const gtag = this.makeSVGg();
@@ -265,5 +271,9 @@ export class SimulatorComponent implements OnInit {
   ClearProject() {
   }
   LoadProject(data: any) {
+    console.log(data);
+    this.projectTitle = data.project.name;
+    this.description = data.project.description;
+    this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
   }
 }
