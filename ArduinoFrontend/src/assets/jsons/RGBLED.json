@@ -39,5 +39,16 @@
       "stroke": "#8C8C8C"
     }
   ],
-  "simulation": {}
+  "simulation": {},
+  "info": {
+    "name": "RGB LED",
+    "image": "https://commons.wikimedia.org/wiki/File:RGB_LED.jpg",
+    "description": "RGB LED contains all three colors Red, Green, Blue. These 5mm size LEDs have four pins - Cathode is the longest pin. One for each color and a common cathode. Use this one LED for three status indicators or pulse width modulate all three and get mixed colors. So any combination of color can be generated.",
+    "properties": {
+      "Size": "5mm LED RGB - Common Cathode",
+      "Lens Type": "Diffused",
+      "Emitting Color": "Red, Green and Blue",
+      "Voltage Rated": "3V-5V"
+    }
+  }
 }

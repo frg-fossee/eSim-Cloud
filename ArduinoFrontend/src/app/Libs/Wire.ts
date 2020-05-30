@@ -10,7 +10,6 @@ export class Wire {
   keyName = 'wires';
   points: number[][] = []; // stores array of position [x,y]
   joints: any[] = [];
-  value = -1; // Value of the wire (5,0 -> GND)
   end: Point = null; // End circuit node of wire
   element: any; // body of the wire
   color: any = '#000'; // color of the wire
@@ -238,6 +237,8 @@ export class Wire {
     for (const joint of this.joints) {
       joint.remove();
     }
+    this.glow.remove();
+    this.glow = null;
     this.joints = [];
     this.joints = null;
     this.points = [];
@@ -247,10 +248,6 @@ export class Wire {
     this.end.connectedTo = null;
     this.start = null;
     this.end = null;
-  }
-  // No need of this function as it is inherited from CircuitElement class
-  getNode(x: number, y: number) {
-    return null;
   }
   initSimulation() {
   }

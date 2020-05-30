@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ArduinoUno } from '../Libs/outputs/Arduino';
 
 declare var monaco: any;
 
@@ -12,10 +13,72 @@ export class CodeEditorComponent implements OnInit {
     theme: 'vs',
     language: 'c'
   };
-  code = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}';
+  records = [
+    {
+      include: '#include <EEPROM.h>',
+      name: 'EEPROM',
+      Description: 'Reading and writing to permanent storage',
+      url: 'https://www.arduino.cc/en/Reference/EEPROM'
+    },
+    {
+      include: '#include <LiquidCrystal.h>',
+      name: 'LiquidCrystal',
+      Description: 'Controlling liquid crystal displays (LCDs)',
+      url: 'https://www.arduino.cc/en/Reference/LiquidCrystal'
+    },
+    {
+      include: '#include <Servo.h>',
+      name: 'Servo',
+      Description: 'Controlling Servo motor',
+      url: 'https://www.arduino.cc/en/Reference/Servo'
+    },
+    {
+      include: '#include <SoftwareSerial.h>',
+      name: 'SoftwareSerial',
+      Description: 'Allow serial communication on other digital pins of the Arduino',
+      url: 'https://www.arduino.cc/en/Reference/SoftwareSerial'
+    },
+    {
+      include: '#include <Wire.h>',
+      name: 'Wire',
+      Description: 'This library allows you to communicate with I2C / TWI devices',
+      url: 'https://www.arduino.cc/en/Reference/Wire'
+    },
+    {
+      include: '#include <SPI.h>',
+      name: 'SPI',
+      Description: 'Communicating with devices using the Serial Peripheral Interface (SPI) Bus',
+      url: 'https://www.arduino.cc/en/Reference/SPI'
+    }
+  ];
+  code = 's';
+  names: string[] = [];
+  arduinos: ArduinoUno[] = [];
+  selectedIndex = 0;
+
   @Input() width = 500;
   @Input() height = 80;
 
+  @Input('reinit')
+  set reinit(value: boolean) {
+    if (value) {
+      this.names = [];
+      this.arduinos = [];
+      // console.log(window['ArduinoUno_name']);
+      for (const key in window['ArduinoUno_name']) {
+        if (window['ArduinoUno_name'][key]) {
+          this.names.push(key);
+          this.arduinos.push(window['ArduinoUno_name'][key]);
+        }
+      }
+      if (this.selectedIndex >= this.arduinos.length) {
+        this.selectedIndex = 0;
+      }
+      if (this.arduinos.length > 0) {
+        this.code = this.arduinos[this.selectedIndex].code;
+      }
+    }
+  }
   onInit(_) {
     (window as any).monaco.languages.registerCompletionItemProvider('c', {
       provideCompletionItems: () => {
@@ -48,15 +111,20 @@ export class CodeEditorComponent implements OnInit {
               kind: monaco.languages.CompletionItemKind.Function,
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
               documentation: 'Read Anolog Value',
-
               insertText: 'analogRead(${1:pin});',
+            },
+            {
+              label: 'analogWrite',
+              kind: monaco.languages.CompletionItemKind.Function,
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+              documentation: 'Writes an analog value (PWM wave) to a pin.',
+              insertText: 'analogWrite(${1:pin}, ${2:value});',
             },
             {
               label: 'analogReference',
               kind: monaco.languages.CompletionItemKind.Function,
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
               documentation: 'Configures the reference voltage',
-
               insertText: 'analogReference(${1:type});',
             },
             {
@@ -64,7 +132,6 @@ export class CodeEditorComponent implements OnInit {
               kind: monaco.languages.CompletionItemKind.Function,
               insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
               documentation: 'Sets the size of analogRead value',
-
               insertText: 'analogReadResolution(${1:bits});',
             },
             {
@@ -1031,6 +1098,26 @@ export class CodeEditorComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+  codeChanged() {
+    this.arduinos[this.selectedIndex].code = this.code;
+  }
+  chooseArduino(item: HTMLSelectElement) {
+    this.selectedIndex = item.selectedIndex;
+    this.code = this.arduinos[this.selectedIndex].code;
+  }
+  openFolder() {
+   // const editor = document.getElementById('editor')
+    const folder = document.getElementById('lib');
+   // console.log(folder.style.display);
+
+    if (folder.style.display === 'none') {
+      folder.style.display = 'flex';
+     // editor.style.display = 'none';
+    } else {
+      folder.style.display = 'none';
+     // editor.style.display = 'block';
+    }
   }
 
 }

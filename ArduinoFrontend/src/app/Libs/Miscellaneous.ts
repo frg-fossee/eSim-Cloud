@@ -1,6 +1,5 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
-import { Workspace } from './Workspace';
 
 export class Label extends CircuitElement {
   text = 'Label';
@@ -9,6 +8,7 @@ export class Label extends CircuitElement {
   fontStyle = 'normal';
   // normal | bold | bolder | lighter
   fontWeight = 'normal';
+  getName = null;
   constructor(public canvas: any, x: number, y: number) {
     super('Label', x, y);
     this.elements.push(
@@ -18,6 +18,15 @@ export class Label extends CircuitElement {
     this.setClickListener(null);
     this.setDragListeners();
     this.setHoverListener();
+  }
+  SaveData() {
+    return {
+      text: this.text,
+      size: this.fontSize,
+      color: this.fontColor,
+      weight: this.fontWeight,
+      style: this.fontStyle
+    };
   }
   update() {
     this.elements[0]
@@ -30,20 +39,16 @@ export class Label extends CircuitElement {
         fill: this.fontColor
       });
   }
-  save() {
-  }
   load(data: any): void {
   }
   changeLabel(value: string) {
     if (value === '') {
       // TODO: Show Toast
+      window['showToast']('Label cannot be empty');
       return;
     }
     this.text = value;
     this.update();
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     let tmp;
@@ -113,7 +118,6 @@ export class Label extends CircuitElement {
       this.fontWeight = weights[weightSelect.selectedIndex];
       this.update();
     };
-
     tmp = document.createElement('label');
     tmp.innerText = 'Text';
     body.appendChild(tmp);
@@ -148,5 +152,4 @@ export class Label extends CircuitElement {
   }
   simulate(): void {
   }
-
 }

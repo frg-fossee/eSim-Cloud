@@ -11,21 +11,29 @@ export class ViewComponentInfoComponent implements OnInit {
   tableData = [];
   data: any = {};
   columns = ['Name', 'Value'];
+  noData = false;
 
   constructor(public dialogRef: MatDialogRef<ViewComponentInfoComponent>) { }
 
   ngOnInit() {
-    const key = document.getElementById('propertybox').getAttribute('key');
-    this.data = window['suggestion_json'][key];
+    const item = window['Selected'];
 
-    for (const propName in this.data.properties) {
-      if (this.data.properties[propName]) {
-        this.tableData.push({
-          Name: propName,
-          Value: this.data.properties[propName]
-        });
+    if (item) {
+      this.data = item.info;
+      for (const propName in this.data.properties) {
+        if (this.data.properties[propName]) {
+          this.tableData.push({
+            Name: propName,
+            Value: this.data.properties[propName]
+          });
+        }
       }
+      this.noData = false;
+    } else {
+      this.noData = true;
     }
+    // const key = document.getElementById('propertybox').getAttribute('key');
+    // this.data = window['suggestion_json'][key];
   }
 
 

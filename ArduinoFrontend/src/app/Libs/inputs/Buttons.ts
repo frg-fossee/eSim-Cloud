@@ -4,16 +4,10 @@ import { Point } from '../Point';
 declare var Raphael;
 
 export class PushButton extends CircuitElement {
-  static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
     super('PushButton', x, y, 'PushButton.json', canvas);
   }
-  save() {
-  }
   load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
@@ -35,7 +29,6 @@ export class PushButton extends CircuitElement {
 
 
 export class SlideSwitch extends CircuitElement {
-  static pointHalf = 4;
   private reverseAnim = true;
 
   constructor(public canvas: any, x: number, y: number) {
@@ -51,12 +44,7 @@ export class SlideSwitch extends CircuitElement {
     this.elements[1].animate(anim);
     this.reverseAnim = !this.reverseAnim;
   }
-  save() {
-  }
   load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');

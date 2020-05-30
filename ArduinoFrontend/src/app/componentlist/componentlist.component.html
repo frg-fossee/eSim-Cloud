@@ -1,39 +1,30 @@
 <h1 mat-dialog-title style="margin:10px">Component List</h1>
-   <mat-divider></mat-divider>
+<mat-divider></mat-divider>
 <div style="overflow-x:auto;">
-  
-        <table class="table">
-            <thead>
-                <th>Name</th>
-                <th>Quantity</th>
-                <th>Component</th>
-                <th>Info</th>
-            </thead>
-            <tbody class="bg-white">
-             <tr>
-                <td>Arduino</td>
-                <td>1</td>
-                <td>controller</td>
-                <td>Info</td> 
-             </tr>  
-             <tr>
-                <td>LED</td>
-                <td>1</td>
-                <td>Output</td>
-                <td>Info</td> 
-             </tr>
-             <tr>
-                <td>L298N MotorDriver</td>
-                <td>1</td>
-                <td>Driver</td>
-                <td>Info</td> 
-             </tr>
-            </tbody>
-        </table>
+
+  <p *ngIf="noComponets">No Component are Present</p>
+
+  <table class="table" *ngIf="!noComponets">
+    <thead>
+      <th>Name</th>
+      <th>Quantity</th>
+      <th>Info</th>
+    </thead>
+    <tbody class="bg-white">
+      <tr *ngFor="let item of data | keyvalue">
+        <td>{{ item.key }}</td>
+        <td>{{ item.value.cnt }}</td>
+        <td>
+          <button mat-icon-button (click)="OpenInfo(item.value.key)">
+            <mat-icon>info</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 <mat-divider></mat-divider>
 <mat-dialog-actions>
-  <button color="primary" mat-button mat-dialog-close mat-dialog-close="true" style="margin-left: auto;">Download CSV</button>
+  <button color="primary" mat-button (click)="DownloadCSV()">Download CSV</button>
   <button color="primary" mat-button mat-dialog-close mat-dialog-close="true">OK</button>
 </mat-dialog-actions>
-

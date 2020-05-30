@@ -1,4 +1,5 @@
 import { Point } from './Point';
+import { Wire } from './Wire';
 
 /**
  * Abstract Class Circuit Elements
@@ -14,6 +15,7 @@ export abstract class CircuitElement {
   public title: string;
   public simulationData: any = {}; // Store Values That are required during simulation
   public data: any = {}; // Store Values that are additionaly require by class
+  public info: any;
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
@@ -31,6 +33,7 @@ export abstract class CircuitElement {
           this.DrawElement(canvas, obj.draw);
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
           // console.log(obj);
+          this.info = obj.info;
           this.data = obj.data;
           this.setDragListeners();
           this.setClickListener(null);
@@ -38,7 +41,9 @@ export abstract class CircuitElement {
           this.init();
         })
         .catch(err => {
-          // TODO: Show Toast failed to load
+          console.error(err);
+          window['showToast']('Failed to load');
+          // TODO: Delete the Component
         });
     }
   }
@@ -213,6 +218,8 @@ export abstract class CircuitElement {
       // }
       this.tx = tmpx;
       this.ty = tmpy;
+      this.x += this.tx;
+      this.y += this.ty;
     });
   }
 
@@ -231,6 +238,9 @@ export abstract class CircuitElement {
 
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
+      if (window['Selected'] && (window['Selected'] instanceof Wire)) {
+        return;
+      }
       window['isSelected'] = true;
       window['Selected'] = this;
       window['showProperty'](() => this.properties());
@@ -244,7 +254,21 @@ export abstract class CircuitElement {
   /**
    * Save Circuit Component
    */
-  abstract save(): any;
+  save(): any {
+    const data = this.SaveData();
+    const ret = {
+      x: this.x,
+      y: this.y,
+      id: this.id
+    };
+    if (data) {
+      ret['data'] = data;
+    }
+    return ret;
+  }
+  SaveData() {
+    return null;
+  }
   /**
    * Load Circuit Component
    */
@@ -252,7 +276,9 @@ export abstract class CircuitElement {
   /**
    * Returns the Circuit Node based on the x,y Position
    */
-  abstract getNode(x: number, y: number): Point;
+  getNode(x: number, y: number): Point {
+    return null;
+  }
   /**
    * Removes Component from Canvas and memory
    */
@@ -261,7 +287,10 @@ export abstract class CircuitElement {
     for (const n of this.nodes) {
       n.remove();
     }
+    this.delete();
   }
+  delete() { }
+  getName() { return this.title; }
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box
