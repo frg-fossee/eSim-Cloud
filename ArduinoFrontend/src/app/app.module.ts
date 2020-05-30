@@ -16,7 +16,8 @@ import {
   MatButtonModule,
   MatTableModule,
   MatRadioModule,
-  MatDividerModule
+  MatDividerModule,
+  MatTabsModule
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -24,6 +25,7 @@ import { ExportfileComponent } from './exportfile/exportfile.component';
 import { ComponentlistComponent } from './componentlist/componentlist.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FrontPageComponent } from './front-page/front-page.component';
+import { GalleryComponent } from './gallery/gallery.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,7 @@ import { FrontPageComponent } from './front-page/front-page.component';
     ExportfileComponent,
     ComponentlistComponent,
     FrontPageComponent,
+    GalleryComponent,
   ],
   imports: [
     BrowserModule,
@@ -49,7 +52,8 @@ import { FrontPageComponent } from './front-page/front-page.component';
     MatButtonModule,
     MatTableModule,
     HttpClientModule,
-    MatIconModule
+    MatIconModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -2,10 +2,6 @@
   background-color: #ddd;
 }
 
-.checked {
-  color: orange;
-}
-
 #sidebar {
   width: 25%;
   float: left;
@@ -126,6 +122,7 @@ input[type=submit]:hover {
 }
 
 .dropdown-content {
+  display: none;
   position: absolute;
   background-color: whitesmoke;
   width: 150px;
@@ -134,3 +131,7 @@ input[type=submit]:hover {
   right: 30%;
   height: auto;
 }
+
+.dropdown-content div:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}

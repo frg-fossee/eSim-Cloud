@@ -148,6 +148,7 @@ class NetlistUpload extends Component {
           <Paper className={classes.paper}>
             <h2>GRAPH OUTPUT</h2>
             <Graph
+              labels= {['time', 'V (In)', 'V (OP)']}
               x={this.state.x_1}
               y1={this.state.y1_1}
               y2={this.state.y2_1}
