@@ -17,7 +17,7 @@ import {
   ListItem,
   ListItemText
 } from '@material-ui/core'
-
+import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
@@ -77,6 +77,52 @@ const useStyles = makeStyles((theme) => ({
     flex: 1
   }
 }))
+
+export function TermsAndConditions ({ open, close }) {
+  const Transition = React.forwardRef(function Transition (props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />
+  })
+  return (
+    <div>
+      <Dialog
+
+        open={open}
+        onClose={close}
+        TransitionComponent={Transition}
+        keepMounted
+        aria-labelledby="Terms and conditions"
+        aria-describedby="Terms and conditions"
+      >
+        <DialogTitle id="alert-dialog-slide-title">{'I confirm that i understand the following terms.'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            <ul>
+              <li>Resource will not collect any sensitive data or personal information about users,such as name</li>
+            </ul>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            component={RouterLink}
+            to="/"
+            color="primary"
+          >
+              No
+          </Button>
+
+          <Button onClick={close} color="primary">
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  )
+}
+
+TermsAndConditions.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.func
+}
 
 export function HelpScreen ({ open, close }) {
   const classes = useStyles()
