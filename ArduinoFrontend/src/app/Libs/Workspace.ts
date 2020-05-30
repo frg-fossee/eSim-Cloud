@@ -3,6 +3,8 @@ import { Wire } from './Wire';
 import { ArduinoUno } from './outputs/Arduino';
 import { Injector } from '@angular/core';
 import { ApiService } from '../api.service';
+import { Download, ImageType } from './Download';
+import { isNull } from 'util';
 
 declare var window;
 declare var $; // For Jquery
@@ -393,12 +395,22 @@ export class Workspace {
     }
   }
 
-  static SaveCircuit() {
+  static SaveCircuit(name: string = '', description: string = '', id: number = null) {
+    if (isNull(id)) {
+      id = Date.now();
+    }
     const saveObj = {
+      id,
       canvas: {
         x: Workspace.translateX,
         y: Workspace.translateY,
         scale: Workspace.scale
+      },
+      project: {
+        name,
+        description,
+        created_at: Date.now(),
+        updated_at: Date.now()
       }
     };
     for (const key in window.scope) {
@@ -411,7 +423,10 @@ export class Workspace {
         }
       }
     }
-    console.log(saveObj);
+    Download.ExportImage(ImageType.PNG).then(v => {
+      saveObj.project['image'] = v;
+      console.log(saveObj);
+    });
   }
 
   static DeleteComponent() {
@@ -497,7 +512,7 @@ export class Workspace {
       const api = Workspace.injector.get(ApiService);
       api.compileCode(toSend).subscribe(v => {
         // console.log(v)
-        //     "state": "SUCCESS",
+        //     'state': 'SUCCESS',
         const taskid = v.uuid;
         const temp = setInterval(() => {
           api.getHex(taskid).subscribe(hex => {
@@ -552,7 +567,7 @@ export class Workspace {
 
     for (const comp of window.scope.ArduinoUno) {
       // comp.runner.execute();
-      // console.log("s")
+      // console.log('s')
       comp.initSimulation();
     }
   }
