@@ -71,7 +71,7 @@
           <div style="box-sizing: border-box; padding: 15px;">
             <h4>{{item.project.name}}</h4>
             <p>{{item.project.description}}</p>
-            <p>2hours</p>
+            <p>2 hours ago</p>
           </div>
         </div>
       </div>
@@ -96,7 +96,7 @@
     <div id="projectimage" style="height: 470px;position: relative;">
       <div
         style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
-        <img style="position: absolute; left: 80px" src={{selected.project.image}} alt="" width="300" height="300">
+        <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.project.image}} alt="">
 
         <button mat-raised-button color="warn" style="margin-top: 70%;margin-left:23%"
           (click)="DeleteCircuit(selected.id)">Delete Circuit</button>
