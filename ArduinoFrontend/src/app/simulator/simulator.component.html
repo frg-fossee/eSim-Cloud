@@ -14,7 +14,7 @@
         </a>
         <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
           <a class="dropdown-item text-dark" href="#">New Project</a>
-          <a class="dropdown-item text-dark" href="#">Clear Project</a>
+          <a class="dropdown-item text-dark" (click)="ClearProject()">Clear Project</a>
           <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a>
 
         </div>
@@ -252,7 +252,7 @@
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Description</mat-label>
-      <textarea matInput></textarea>
+      <textarea matInput [(ngModel)]="description"></textarea>
     </mat-form-field>
   </div>
   <div *ngIf="!showProperty" style="display: flex;margin-top: 10px;">
