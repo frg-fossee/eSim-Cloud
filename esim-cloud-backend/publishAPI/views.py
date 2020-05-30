@@ -6,6 +6,8 @@ from rest_framework.parsers import JSONParser, MultiPartParser
 import logging
 logger = logging.getLogger(__name__)
 
+# ToDo: Adding Update Views
+
 
 class TagsViewSet(viewsets.ModelViewSet):
     """

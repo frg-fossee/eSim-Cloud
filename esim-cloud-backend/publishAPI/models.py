@@ -89,3 +89,16 @@ class Publish(models.Model):
         else:
             return 'No Image Found'
     image_tag.short_description = 'Image'
+
+
+class Comment(models.Model):
+    circuit = models.ForeignKey(
+        Circuit, on_delete=models.CASCADE, null=False, blank=False,
+        related_name='circuit')
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    author = models.ForeignKey(
+        get_user_model(), null=True, on_delete=models.SET_NULL)
+
+    comment = models.TextField()
