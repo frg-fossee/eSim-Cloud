@@ -367,16 +367,5 @@
     ],
     "barColor": "#B2B2B2",
     "barGlowColor": "#FFA500"
-  },
-  "info": {
-    "name": "Seven Segment Module",
-    "image": "https://cdn-reichelt.de/bilder/web/artikel_ws/A500/LCD_4_0-13.jpg",
-    "description": "LCD modules are very commonly used in most embedded projects, the reason being its cheap price, availability and programmer friendly. Most of us would have come across these displays in our day to day life, either at PCO’s or calculators. The appearance and the pinouts have already been visualized above now let us get a bit technical.",
-    "properties": {
-      "sizes": "9.14mm,14.20mm,20.40mm,38.10mm,57.0mm and 100mm (Commonly used/available size is 14.20mm)",
-      "Current consumption": "30mA / segment",
-      "Peak current ": "70mA",
-      "Voltage Rated": "3V-5V"
-    }
   }
 }

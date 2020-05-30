@@ -1,8 +1,5 @@
 {
   "compileOnSave": false,
-  "exclude": [
-    "./src/assets/**/*.ts"
-  ],
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",

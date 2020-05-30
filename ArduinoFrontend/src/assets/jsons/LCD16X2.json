@@ -94,16 +94,5 @@
             "y": 0
         }
     ],
-    "simulation": {},
-    "info": {
-        "name": "LCD(16X8)",
-        "image": "https://commons.wikimedia.org/wiki/File:16x2_Character_LCD_Display.jpg",
-        "description": "LCD modules are very commonly used in most embedded projects, the reason being its cheap price, availability and programmer friendly. Most of us would have come across these displays in our day to day life, either at PCO’s or calculators. The appearance and the pinouts have already been visualized above now let us get a bit technical.",
-        "properties": {
-            "Operating Voltage": "4.7V to 5.3V",
-            "Current consumption": "1mA (without backlight)",
-            "Work Mode": " 8-bit and 4-bit mode",
-            "Voltage Rated": "3V-5V"
-        }
-    }
+    "simulation": {}
 }

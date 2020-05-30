@@ -1,27 +1,9 @@
-textarea:hover,
-input:hover,
-textarea:active,
-input:active,
-textarea:focus,
-input:focus,
-label:focus {
-    outline: 0px !important;
-    -webkit-appearance: none;
-    /* box-shadow: none !important; */
-}
-
-button:focus,
-button:active,
-button:hover {
-    outline: 0px !important;
-    -webkit-appearance: none;
-}
-
 .grabbing {
-    cursor: grabbing !important;
-    cursor: -moz-grabbing !important;
-    cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
 }
+
 
 .component-card {
     max-width: 32%;
@@ -40,6 +22,7 @@ button:hover {
     max-width: 100%;
     height: 50px;
 }
+
 
 .component-card label {
     margin: 0 auto 0 auto;
@@ -109,6 +92,7 @@ button:hover {
     transition: max-height .5s ease-in-out;
 }
 
+
 .show-div {
     max-height: 1000vh;
     transition: max-height .5s ease-in-out;
@@ -119,7 +103,7 @@ button:hover {
     overflow: scroll;
     width: 100%;
     height: calc(100vh - 101px);
-    background-color: white;
+    background-color:white;
     padding-left: 0.525px;
 }
 
@@ -146,14 +130,6 @@ button:hover {
     left: 0;
 }
 
-.lightblue {
-    background-color: lightskyblue;
-}
-
-.lightgreen {
-    background-color: lightgreen;
-}
-
 #project-title {
     color: black !important;
     background-color: transparent;
@@ -168,18 +144,12 @@ button:hover {
     display: flex;
     background-color: whitesmoke;
     justify-content: space-between;
-    height: 50px;
+    max-height: 50px;
 }
 
-#secondary-header>button {
-    font-size: smaller;
-    margin-left: 10px;
+#secondary-header > button {
+    font-size: 20px;
     background-color: #fff;
-}
-
-.btn-fst i {
-    font-size: 25px;
-    margin-right: 10px;
 }
 
 #sidebar-wrapper .sidebar-heading {
@@ -192,6 +162,7 @@ button:hover {
     font-size: 20px;
     padding-left: 5px;
 }
+
 
 #page-content-wrapper {
     min-width: 100vw;
@@ -215,112 +186,57 @@ button:hover {
         margin-left: -15rem;
     }
 }
-
 /*context-menu*/
 
-html,
-body {
-    height: 100%;
-}
+html,body{
+    height:100%;
 
-.context-menu {
-    width: 160px;
-    height: 140px;
+}
+.context-menu{
+    width:160px;
+    height:140px;
     box-shadow: 0 0 5px 0 #ccc;
     position: absolute;
     display: none;
     background-color: white;
-}
 
-.context-menu ul {
-    list-style: none;
-    /*show no bullets*/
+}
+.context-menu ul{
+    list-style: none; /*show no bullets*/
     padding: 5px 0px 5px 0px;
+
 }
 
-.context-menu ul li {
+.context-menu ul li{
     padding: 10px 5px 10px 5px;
     border-left: 4px solid transparent;
     cursor: pointer;
     z-index: 5000 !important;
     overflow: visible !important;
 }
-
-.context-menu ul li:hover {
-    background-color: rgb(245, 207, 161);
+.context-menu ul li:hover{
+    background-color:rgb(245, 207, 161);
     border-left: 4px solid #666;
+
 }
 
 #ToastMessage {
     top: 100px;
-    left: 1230px;
-    z-index: 1000;
+    left: 500px;
+    z-index: 100;
     position: fixed;
     width: 300px;
-    height: auto;
+    height: 100px;
     box-shadow: 0 0 20px 0 #ccc;
-    border-radius: 5px;
-    background-color: black;
-    display: none;
+    display: block;
+    background-color: #eee;
 }
 
-.toast {
+.toast  {
     text-align: left;
 }
 
-.toast-body {
-    padding: 15px 15px 15px 15px;
-    margin-top: 5px;
-    font-family: Arial, Helvetica, sans-serif;
-}
 
-#console {
-    position: fixed;
-    width: calc(100% - 500px);
-    height: 30%;
-    z-index: 1000;
-    background: #fff;
-    right: 0px;
-    bottom: 5px;
-    padding: 1px;
-    justify-content: space-between;
-    background-color: black;
-    animation: mymove 0.2s;
-    animation-iteration-count: 1s;
-}
 
-#msg {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    position: relative;
-    height: 65%;
-    display: flex;
-    color: #fff;
-    flex-direction: column;
-}
 
-#msg label {
-    margin-bottom: 0 !important;
-}
 
-#msg pre {
-    color: #fff !important;
-    overflow: initial;
-}
-
-.navbar-brand:focus {
-    outline: 0;
-}
-
-@keyframes mymove {
-    from {
-        bottom: 0px;
-    }
-
-    to {
-        top: 500px;
-    }
-}

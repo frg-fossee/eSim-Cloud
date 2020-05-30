@@ -1,6 +1,5 @@
 import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
-import { isNull } from 'util';
 
 declare var window;
 
@@ -8,17 +7,19 @@ declare var window;
  * Class For Circuit Node ie. Point wires can connect with nodes
  */
 export class Point {
+  body: any; // Body of the Circuit Node
+
   // Hide node on creation
-  static defaultAttr: any = {
+  defaultAttr: any = {
     fill: 'rgba(0,0,0,0)',
     stroke: 'rgba(0,0,0,0)'
   };
+
   // Show red color with black stroke on hover
-  static nodeAttr: any = {
+  nodeAttr: any = {
     fill: 'rgba(255,0,0,1)',
     stroke: 'rgba(0,0,0,1)'
   };
-  body: any; // Body of the Circuit Node
 
   // Stores the reference of wire which is connected to it
   connectedTo: Wire = null;
@@ -28,19 +29,13 @@ export class Point {
 
   // Hover Close Callback called if hover is removed
   hoverCloseCallback: any = null;
-
-  connectCallback: any = null;
-
-  value = -1;
-  listener: (val: number) => void = null;
-  gid = -1;
   /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper
    * @param x x position of node
    * @param y y position of node
    * @param label label to be shown when hover
-   * @param half The Half width of Square
+   * @param half The Half width of Rectangle
    * @param parent parent of the circuit node
    */
   constructor(
@@ -54,7 +49,7 @@ export class Point {
     // Create a rectangle of 4x4 and set default color and stroke
     this.body = this.canvas.rect(x, y, 2 * this.half, 2 * this.half);
 
-    this.body.attr(Point.defaultAttr);
+    this.body.attr(this.defaultAttr);
 
     // Set Hover callback
     this.body.hover(() => {
@@ -120,9 +115,6 @@ export class Point {
         window.Selected = tmp;
         window['scope']['wires'].push(tmp);
       }
-      if (this.connectCallback) {
-        this.connectCallback(this);
-      }
     });
 
   }
@@ -164,7 +156,7 @@ export class Point {
    */
   hide() {
     window.hideBubble();
-    this.body.attr(Point.defaultAttr);
+    this.body.attr(this.defaultAttr);
   }
 
   remainHidden() {
@@ -180,7 +172,7 @@ export class Point {
    */
   show() {
     if (this.connectedTo) { return; }
-    this.body.attr(Point.nodeAttr);
+    this.body.attr(this.nodeAttr);
   }
 
   /**
@@ -207,29 +199,6 @@ export class Point {
       this.connectedTo.remove();
       this.connectedTo = null;
       this.parent = null;
-    }
-  }
-  addValueListener(listener: (val: number) => void) {
-    this.listener = listener;
-  }
-  setValue(value: number, calledby: Point) {
-    this.value = value;
-    if (calledby && this.listener) {
-      this.listener(this.value);
-    }
-    if (isNull(calledby)) {
-      calledby = this;
-    }
-    // console.log(this.connectedTo);
-    if (this.connectedTo && this.connectedTo.end) {
-      if (this.connectedTo.end.gid !== calledby.gid && this.connectedTo.end.gid !== this.gid) {
-        this.connectedTo.end.setValue(this.value, this);
-      }
-    }
-    if (this.connectedTo && this.connectedTo.start) {
-      if (this.connectedTo.start.gid !== calledby.gid && this.connectedTo.start.gid !== this.gid) {
-        this.connectedTo.start.setValue(this.value, this);
-      }
     }
   }
 }
