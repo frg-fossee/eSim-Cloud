@@ -203,8 +203,6 @@ export function ErcCheck () {
     alert('Pins not connected')
   } else if (ground === 0) {
     alert('Ground not connected')
-  } else if (wirec !== 0) {
-    alert('Pins connected to wire')
   } else {
     if (errorCount === 0) {
       alert('ERC Check completed')
@@ -438,6 +436,10 @@ function annotate (graph) {
   var r = 1
   var v = 1
   var c = 1
+  var l = 1
+  var d = 1
+  var q = 1 
+  var w = 1
   var list = graph.getModel().cells
   var n = 1
   var netlist = {
@@ -479,13 +481,37 @@ function annotate (graph) {
           component.properties.PREFIX = component.value
           // component.symbol = component.value
           ++v
-        } else {
+        } else if (component.symbol === 'C') {
+          // component.symbol = component.symbol + v.toString()
+            k = k + component.symbol + v.toString()
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            // component.symbol = component.value
+            ++c
+          } 
+          else if (component.symbol === 'D') {
+            // component.symbol = component.symbol + v.toString()
+              k = k + component.symbol + v.toString()
+              component.value = component.symbol + v.toString()
+              component.properties.PREFIX = component.value
+              // component.symbol = component.value
+              ++d
+            } 
+            else if (component.symbol === 'Q') {
+              // component.symbol = component.symbol + v.toString()
+                k = k + component.symbol + v.toString()
+                component.value = component.symbol + v.toString()
+                component.properties.PREFIX = component.value
+                // component.symbol = component.value
+                ++q
+              } 
+         else {
         // component.symbol = component.symbol + c.toString()
           k = k + component.symbol + c.toString()
           component.value = component.symbol + c.toString()
           component.properties.PREFIX = component.value
           // component.symbol = component.value
-          ++c
+          ++w
         }
         // compobj.name = component.symbol
 
