@@ -18,6 +18,7 @@ export class Label extends CircuitElement {
     this.setClickListener(null);
     this.setDragListeners();
     this.setHoverListener();
+    window['queue'] -= 1;
   }
   SaveData() {
     return {
@@ -27,6 +28,15 @@ export class Label extends CircuitElement {
       weight: this.fontWeight,
       style: this.fontStyle
     };
+  }
+  LoadData(data: any) {
+    this.text = data.data.text;
+    this.fontSize = data.data.size;
+    this.fontColor = data.data.color;
+    this.fontWeight = data.data.weight;
+    this.fontStyle = data.data.style;
+    this.elements.transform(`t${this.tx},${this.ty}`);
+    this.update();
   }
   update() {
     this.elements[0]
