@@ -94,7 +94,7 @@ class Publish(models.Model):
 class Comment(models.Model):
     circuit = models.ForeignKey(
         Circuit, on_delete=models.CASCADE, null=False, blank=False,
-        related_name='circuit')
+        related_name='comment_circuit')
 
     last_updated = models.DateTimeField(auto_now=True)
 
