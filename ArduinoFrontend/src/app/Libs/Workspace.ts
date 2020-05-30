@@ -430,7 +430,7 @@ export class Workspace {
       saveObj.project['image'] = v;
       console.log(saveObj);
       if (toUpdate) {
-        // TODO: Update Circuit
+        Workspace.UpdateIDB(saveObj);
       } else {
         Workspace.SaveIDB(saveObj);
       }
@@ -510,7 +510,29 @@ export class Workspace {
 
     };
   }
+  static UpdateIDB(mydata, callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = (_) => {
+      console.log('error: ');
+    };
 
+    request.onsuccess = (__) => {
+      db = request.result;
+
+      const ok = db.transaction(['project'], 'readwrite')
+        .objectStore('project')
+        .put(mydata);
+
+      ok.onsuccess = (_) => {
+        alert('Done Updating');
+        if (callback) {
+          callback();
+        }
+      };
+
+    };
+  }
 
   static readIDB(id, callback: any = null) {
     let db;
