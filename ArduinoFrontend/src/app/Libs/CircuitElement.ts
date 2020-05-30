@@ -41,6 +41,11 @@ export abstract class CircuitElement {
           this.setClickListener(null);
           this.setHoverListener();
           this.init();
+          this.elements.transform(`t${this.tx},${this.ty}`);
+          for (const node of this.nodes) {
+            node.relativeMove(this.tx, this.ty);
+          }
+          window['queue'] -= 1;
         })
         .catch(err => {
           console.error(err);
@@ -220,8 +225,6 @@ export abstract class CircuitElement {
       // }
       this.tx = tmpx;
       this.ty = tmpy;
-      this.x += this.tx;
-      this.y += this.ty;
     });
   }
 
@@ -261,6 +264,8 @@ export abstract class CircuitElement {
     const ret = {
       x: this.x,
       y: this.y,
+      tx: this.tx,
+      ty: this.ty,
       id: this.id
     };
     if (data) {
@@ -276,6 +281,8 @@ export abstract class CircuitElement {
    */
   load(data: any): void {
     this.id = data.id;
+    this.tx = data.tx;
+    this.ty = data.ty;
     this.LoadData(data);
   }
   LoadData(data: any) { }
@@ -283,6 +290,7 @@ export abstract class CircuitElement {
    * Returns the Circuit Node based on the x,y Position
    */
   getNode(x: number, y: number): Point {
+    // console.log([x, y]);
     for (const node of this.nodes) {
       if (
         Math.floor(node.x + this.pointHalf) === Math.floor(x) &&
