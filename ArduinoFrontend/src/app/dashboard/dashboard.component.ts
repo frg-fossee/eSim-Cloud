@@ -41,5 +41,9 @@ export class DashboardComponent implements OnInit {
     });
   }
   DeleteCircuit(id) {
+    console.log(id);
+    Workspace.DeleteIDB(id, () => {
+      window.location.reload();
+    });
   }
 }
