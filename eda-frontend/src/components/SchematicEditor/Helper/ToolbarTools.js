@@ -438,7 +438,7 @@ function annotate (graph) {
   var c = 1
   var l = 1
   var d = 1
-  var q = 1 
+  var q = 1
   var w = 1
   var list = graph.getModel().cells
   var n = 1
@@ -483,29 +483,26 @@ function annotate (graph) {
           ++v
         } else if (component.symbol === 'C') {
           // component.symbol = component.symbol + v.toString()
-            k = k + component.symbol + v.toString()
-            component.value = component.symbol + v.toString()
-            component.properties.PREFIX = component.value
-            // component.symbol = component.value
-            ++c
-          } 
-          else if (component.symbol === 'D') {
-            // component.symbol = component.symbol + v.toString()
-              k = k + component.symbol + v.toString()
-              component.value = component.symbol + v.toString()
-              component.properties.PREFIX = component.value
-              // component.symbol = component.value
-              ++d
-            } 
-            else if (component.symbol === 'Q') {
-              // component.symbol = component.symbol + v.toString()
-                k = k + component.symbol + v.toString()
-                component.value = component.symbol + v.toString()
-                component.properties.PREFIX = component.value
-                // component.symbol = component.value
-                ++q
-              } 
-         else {
+          k = k + component.symbol + v.toString()
+          component.value = component.symbol + v.toString()
+          component.properties.PREFIX = component.value
+          // component.symbol = component.value
+          ++c
+        } else if (component.symbol === 'D') {
+          // component.symbol = component.symbol + v.toString()
+          k = k + component.symbol + v.toString()
+          component.value = component.symbol + v.toString()
+          component.properties.PREFIX = component.value
+          // component.symbol = component.value
+          ++d
+        } else if (component.symbol === 'Q') {
+          // component.symbol = component.symbol + v.toString()
+          k = k + component.symbol + v.toString()
+          component.value = component.symbol + v.toString()
+          component.properties.PREFIX = component.value
+          // component.symbol = component.value
+          ++q
+        } else {
         // component.symbol = component.symbol + c.toString()
           k = k + component.symbol + c.toString()
           component.value = component.symbol + c.toString()
