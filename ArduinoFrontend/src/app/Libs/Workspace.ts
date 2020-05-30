@@ -454,6 +454,32 @@ export class Workspace {
     };
   }
 
+  static readAll(callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = () => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = () => {
+      db = request.result;
+      console.log('success: ' + db);
+      const objectStore = db.transaction('project').objectStore('project');
+      const data = [];
+      objectStore.openCursor().onsuccess = (event) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          data.push(cursor.value);
+          cursor.continue();
+        } else {
+          if (callback) {
+            callback(data);
+          }
+        }
+      };
+    };
+  }
+
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {
