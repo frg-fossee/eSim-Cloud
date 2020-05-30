@@ -274,7 +274,11 @@ export abstract class CircuitElement {
   /**
    * Load Circuit Component
    */
-  abstract load(data: any): void;
+  load(data: any): void {
+    this.id = data.id;
+    this.LoadData(data);
+  }
+  LoadData(data: any) { }
   /**
    * Returns the Circuit Node based on the x,y Position
    */

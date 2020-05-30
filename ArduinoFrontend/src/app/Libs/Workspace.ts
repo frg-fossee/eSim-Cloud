@@ -529,6 +529,9 @@ export class Workspace {
     };
   }
 
+  static Load(data) {
+  }
+
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {

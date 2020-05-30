@@ -275,5 +275,6 @@ export class SimulatorComponent implements OnInit {
     this.projectTitle = data.project.name;
     this.description = data.project.description;
     this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+    Workspace.Load(data);
   }
 }
