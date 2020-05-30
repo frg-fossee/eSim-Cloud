@@ -9,6 +9,7 @@ export class Battery9v extends CircuitElement {
       if (calledby.parent.id === this.id) {
         /// TODO: Show Toast and Stop Simulation
         console.log('Short Circuit');
+        window['showToast']('Short Circuit');
       }
     });
   }
