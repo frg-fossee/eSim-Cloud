@@ -520,11 +520,12 @@ export default function SimulationProperties () {
                         {
                           componentsList.map((value, i) => {
                             if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
-                              return <option key={i} value={value}>
+                              return (<option key={i} value={value}>
                                 {value}
-                              </option>
+                              </option>)
+                            } else {
+                              return null
                             }
-                            return
                           })
                         }
 
