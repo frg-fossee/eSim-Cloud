@@ -110,7 +110,9 @@ export class Point {
         if (window.Selected.start === this) { return; }
         this.connectedTo = window.Selected;
         window['Selected'].connect(this, true);
+        window.Selected.deselect();
         window['isSelected'] = false; // deselect object
+        window['Selected'] = null;
       } else {
         // if nothing is selected create a new wire object
         window.isSelected = true;
