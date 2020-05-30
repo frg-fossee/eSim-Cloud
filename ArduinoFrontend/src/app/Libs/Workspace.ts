@@ -480,6 +480,30 @@ export class Workspace {
     };
   }
 
+  static DeleteIDB(id, callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = (_) => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = (__) => {
+      db = request.result;
+
+      const ok = db.transaction(['project'], 'readwrite')
+        .objectStore('project')
+        .delete(id);
+
+      ok.onsuccess = (_) => {
+        alert('Done Deleting');
+        if (callback) {
+          callback();
+        }
+      };
+
+    };
+  }
+
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {
