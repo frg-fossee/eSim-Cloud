@@ -429,6 +429,30 @@ export class Workspace {
     });
   }
 
+  static SaveIDB(mydata, callback: any = null) {
+    // window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+
+    // window.IDBTransaction = window.IDBTransaction ||
+    //   window.webkitIDBTransaction || window.msIDBTransaction;
+    // window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = () => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = () => {
+      db = request.result;
+      db.transaction(['project'], 'readwrite')
+        .objectStore('project')
+        .add(mydata);
+      if (callback) {
+        callback(mydata);
+      }
+      alert('Done Saved');
+    };
+  }
+
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {
