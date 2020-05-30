@@ -4,7 +4,7 @@ import { ArduinoUno } from './outputs/Arduino';
 import { Injector } from '@angular/core';
 import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
-import { isNull } from 'util';
+import { isNull, isUndefined } from 'util';
 
 declare var window;
 declare var $; // For Jquery
@@ -396,8 +396,11 @@ export class Workspace {
   }
 
   static SaveCircuit(name: string = '', description: string = '', id: number = null) {
+    let toUpdate = false;
     if (isNull(id)) {
       id = Date.now();
+    } else {
+      toUpdate = true;
     }
     const saveObj = {
       id,
@@ -426,7 +429,11 @@ export class Workspace {
     Download.ExportImage(ImageType.PNG).then(v => {
       saveObj.project['image'] = v;
       console.log(saveObj);
-      this.SaveIDB(saveObj);
+      if (toUpdate) {
+        // TODO: Update Circuit
+      } else {
+        Workspace.SaveIDB(saveObj);
+      }
     });
   }
 
@@ -504,6 +511,7 @@ export class Workspace {
     };
   }
 
+
   static readIDB(id, callback: any = null) {
     let db;
     const request = window.indexedDB.open('projects', 1);
@@ -533,12 +541,84 @@ export class Workspace {
     Workspace.translateX = data.canvas.x;
     Workspace.translateY = data.canvas.y;
     Workspace.scale = data.canvas.scale;
+    window.queue = 0;
     const ele = (window['canvas'].canvas as HTMLElement);
     ele.setAttribute('transform', `scale(
       ${Workspace.scale},
       ${Workspace.scale})
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
+    for (const key in data) {
+      if (key !== 'id' && key !== 'canvas' && key !== 'project' && key !== 'wires') {
+        // console.log(key);
+        const components = data[key];
+        for (const comp of components) {
+          const myClass = Utils.components[key].className;
+          const obj = new myClass(
+            window['canvas'],
+            comp.x,
+            comp.y
+          );
+          window.queue += 1;
+          window['scope'][key].push(obj);
+          if (obj.load) {
+            obj.load(comp);
+          }
+        }
+      }
+    }
+    const interval = setInterval(() => {
+      if (window.queue === 0) {
+        clearInterval(interval);
+        Workspace.LoadWires(data.wires);
+      }
+    }, 100);
+  }
+
+  static LoadWires(wires: any[]) {
+    console.log(wires);
+    if (isNull(wires) || isUndefined(wires)) {
+      return;
+    }
+    for (const w of wires) {
+      const points = w.points;
+      // console.log(points[0]);
+      // console.log(points[0][0]);
+      // console.log(points[0][1]);
+      let start = null;
+      let end = null;
+      // console.log(w.start.keyName);
+      // console.log(window.scope[w.start.keyName]);
+      // Use Linear search to find the start circuit node
+      for (const st of window.scope[w.start.keyName]) {
+        // console.log(st.id,w.start.id);
+        if (st.id === w.start.id) {
+          start = st.getNode(points[0][0], points[0][1]);
+          break;
+        }
+      }
+      // console.log(start);
+      // Use Linear Search to find the end circuit node
+      for (const en of window.scope[w.end.keyName]) {
+        if (en.id === w.end.id) {
+          const p = points[points.length - 1];
+          end = en.getNode(p[0], p[1]);
+          break;
+        }
+      }
+      // console.log([start, end]);
+      if (start && end) {
+        const tmp = new Wire(window.canvas, start);
+        tmp.load(w);
+        start.connectedTo = tmp;
+        end.connectedTo = tmp;
+        tmp.connect(end, true, true);
+        window['scope']['wires'].push(tmp);
+        tmp.update();
+      } else {
+        alert('something went wrong');
+      }
+    }
   }
 
   static DeleteComponent() {
