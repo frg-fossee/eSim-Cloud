@@ -48,13 +48,17 @@ export class Download {
       );
     }
     return new Promise((res, _) => {
+      const pixelRatio = window.devicePixelRatio || 1;
+      const gtag = (document.querySelector('#holder > svg > g') as SVGSVGElement).getBBox();
+      if (gtag.width === 0 || gtag.height === 0) {
+        gtag.width = 100;
+        gtag.height = 100;
+      }
+      svg.getElementsByTagName('g')[0].setAttribute('transform', `scale(1,1)translate(${-gtag.x + 10},${-gtag.y + 10})`);
       if (type === ImageType.SVG) {
         res(svg.outerHTML);
         return;
       }
-      const pixelRatio = window.devicePixelRatio || 1;
-      const gtag = (document.querySelector('#holder > svg > g') as SVGSVGElement).getBBox();
-      svg.getElementsByTagName('g')[0].setAttribute('transform', `scale(1,1)translate(${-gtag.x},${-gtag.y})`);
 
       const canvas = document.createElement('canvas');
       canvas.width = (gtag.width + gtag.x) * pixelRatio;
