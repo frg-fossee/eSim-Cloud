@@ -1,68 +1,83 @@
 import * as actions from './actions'
 import api from '../../utils/Api'
-import store from '../store'
 
-export const loadUser = () => (dispatch) => {
+export const loadUser = () => (dispatch, getState) => {
+  // User Loading
   dispatch({ type: actions.USER_LOADING })
 
-  const token = store.getState().authReducer.token
+  // Get token from localstorage
+  const token = getState().authReducer.token
 
-  const headers = {
-    'Content-Type': 'application/json'
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
   }
 
+  // If token available add to headers
   if (token) {
-    headers.Authorization = `Token ${token}`
-  } else {
-    dispatch({ type: actions.LOGIN_FAILED })
-    return
+    config.headers.Authorization = `Token ${token}`
   }
 
-  api.get('auth/users/me/', { headers })
+  api.get('auth/users/me/', config)
     .then(
       (res) => {
         if (res.status === 200) {
           dispatch({
             type: actions.USER_LOADED,
-            user: res.data
+            payload: {
+              user: res.data
+            }
           })
-          return res.data
         } else if (res.status >= 400 && res.status < 500) {
           dispatch({
             type: actions.LOGIN_FAILED,
-            data: res.data
+            payload: {
+              data: res.data
+            }
           })
-          throw res.data
         }
       }
     )
-    .catch(function (error) {
-      console.log(error)
-    })
+    .catch((err) => { console.error(err) })
 }
 
-export const login = (username, password) => (dispatch) => {
+export const login = (username, password) => {
   const body = {
     password: password,
     username: username
   }
 
-  api.post('auth/token/login/', body)
-    .then((res) => {
-      if (res.status === 200) {
-        dispatch({ type: actions.LOGIN_SUCCESSFUL, data: res.data })
-        return res.data
-      } else if (res.status === 403 || res.status === 401) {
-        dispatch({ type: actions.AUTHENTICATION_ERROR, data: res.data })
-        throw res.data
-      } else {
-        dispatch({ type: actions.LOGIN_FAILED, data: res.data })
-        throw res.data
-      }
-    })
-    .catch(function (error) {
-      console.log(error)
-    })
+  return function (dispatch) {
+    api.post('auth/token/login/', body)
+      .then((res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: actions.LOGIN_SUCCESSFUL,
+            payload: {
+              data: res.data
+            }
+          })
+        } else if (res.status === 403 || res.status === 401) {
+          dispatch({
+            type: actions.AUTHENTICATION_ERROR,
+            payload: {
+              data: res.data
+            }
+          })
+        } else {
+          dispatch({
+            type: actions.LOGIN_FAILED,
+            payload: {
+              data: res.data
+            }
+          })
+        }
+      })
+      .then()
+      .catch((err) => { console.error(err) })
+  }
 }
 
 export const signUp = (userCredentials) => (dispatch) => {
@@ -76,7 +91,5 @@ export const signUp = (userCredentials) => (dispatch) => {
     .then((res) => {
       console.log(res)
     })
-    .catch(function (error) {
-      console.log(error)
-    })
+    .catch((err) => { console.error(err) })
 }
