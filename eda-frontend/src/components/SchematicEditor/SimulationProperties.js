@@ -524,6 +524,7 @@ export default function SimulationProperties () {
                                 {value}
                               </option>
                             }
+                            return
                           })
                         }
 
