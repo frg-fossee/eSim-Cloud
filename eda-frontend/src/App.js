@@ -31,15 +31,17 @@ function PrivateRoute ({ component: Component, ...rest }) {
   }} />
 }
 
-function ProtectedRoute ({ component: Component, ...rest }) {
+function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
 
   useEffect(() => dispatch(loadUser()), [dispatch])
 
   return <Route {...rest} render={props => {
-    if (auth.isAuthenticated) {
+    if (auth.isAuthenticated && restricted) {
       return <Redirect to="/dashboard" />
+    } else if (nav) {
+      return (<><Navbar /><Component {...props} /></>)
     } else {
       return <Component {...props} />
     }
@@ -47,33 +49,16 @@ function ProtectedRoute ({ component: Component, ...rest }) {
 }
 
 function App () {
-  // Routes For User
-  const UserRoute = () => (
-    <>
-      <Route component={Dashboard} />
-    </>
-  )
-
-  // Routes For DeafaultPages
-  const DefaultRoute = () => (
-    <>
-      <Navbar />
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/simulator" component={Simulator} />
-        <Route component={NotFound} />
-      </Switch>
-    </>
-  )
-
   return (
     <BrowserRouter basename='/eda'>
       <Switch>
-        <ProtectedRoute path="/login" component={Login} />
-        <Route exact path="/signup" component={SignUp} />
-        <Route exact path="/editor" component={SchematicEditor} />
-        <PrivateRoute component={UserRoute} path="/dashboard" />
-        <Route component={DefaultRoute} />
+        <PublicRoute exact path="/login" restricted={true} nav={false} component={Login} />
+        <PublicRoute exact path="/signup" restricted={true} nav={false} component={SignUp} />
+        <PublicRoute exact path="/" restricted={false} nav={true} component={Home} />
+        <PublicRoute exact path="/simulator" restricted={false} nav={true} component={Simulator} />
+        <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
+        <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
     </BrowserRouter>
   )
