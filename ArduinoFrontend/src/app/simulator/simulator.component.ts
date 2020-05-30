@@ -49,7 +49,7 @@ export class SimulatorComponent implements OnInit {
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
       // console.log(v);
-      this.projectId = v.id;
+      this.projectId = parseInt(v.id, 10);
       if (this.projectId) {
         Workspace.readIDB(this.projectId, (data) => {
           this.LoadProject(data);
@@ -135,13 +135,13 @@ export class SimulatorComponent implements OnInit {
     const simload = document.getElementById('simload');
     if (!this.stoggle) {
       sim.style.display = 'block';
-      simload.style.display = 'block';
+      // simload.style.display = 'block';
       Workspace.CompileCode();
     } else {
       sim.style.display = 'none';
       Workspace.simulating = false;
       Workspace.stopSimulation();
-      this.hidesimload();
+      // this.hidesimload();
     }
   }
 
@@ -266,9 +266,15 @@ export class SimulatorComponent implements OnInit {
     Workspace.hideContextMenu();
   }
   SaveProject() {
-    Workspace.SaveCircuit(this.projectTitle, this.description);
+    if (this.projectId) {
+      Workspace.SaveCircuit(this.projectTitle, this.description, this.projectId);
+    } else {
+      Workspace.SaveCircuit(this.projectTitle, this.description);
+    }
   }
   ClearProject() {
+    // TODO: Clear Variables instead of Reloading
+    window.location.reload();
   }
   LoadProject(data: any) {
     console.log(data);
