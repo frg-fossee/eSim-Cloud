@@ -61,8 +61,8 @@ export class Download {
       }
 
       const canvas = document.createElement('canvas');
-      canvas.width = (gtag.width + gtag.x) * pixelRatio;
-      canvas.height = (gtag.height + gtag.y) * pixelRatio;
+      canvas.width = (gtag.width + gtag.x + 20) * pixelRatio;
+      canvas.height = (gtag.height + gtag.y + 20) * pixelRatio;
       canvas.style.width = canvas.width + 'px';
       canvas.style.height = canvas.width + 'px';
       svg.setAttribute('width', '' + canvas.width);
