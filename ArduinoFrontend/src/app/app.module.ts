@@ -11,14 +11,10 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule, MatInputModule, MatButtonModule, MatTableModule, MatRadioModule, MatDividerModule } from '@angular/material';
-import { MatTabsModule} from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
 import { ComponentlistComponent } from './componentlist/componentlist.component';
-import { MatIconModule } from '@angular/material/icon';
-import { FrontPageComponent } from './front-page/front-page.component';
-import { GalleryComponent } from './gallery/gallery.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +25,6 @@ import { GalleryComponent } from './gallery/gallery.component';
     ViewComponentInfoComponent,
     ExportfileComponent,
     ComponentlistComponent,
-    FrontPageComponent,
-    GalleryComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,9 +38,7 @@ import { GalleryComponent } from './gallery/gallery.component';
     MatInputModule,
     MatButtonModule,
     MatTableModule,
-    HttpClientModule,
-    MatIconModule,
-    MatTabsModule
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],

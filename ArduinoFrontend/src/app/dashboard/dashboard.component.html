@@ -1,241 +1,155 @@
 <!-- As a heading -->
-<div class="bg-light" style="display: flex; height:60px;">
-    <div style="flex-basis: 1500px; line-height: 60px;font-weight: bold; padding-left: 60px; font-size: x-large;">
-        Dashboard</div>
-    <div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px; font-weight: 900;"><button mat-flat-button class="bg-light" [routerLink]="['/gallery']">Gallery</button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <span class="navbar-brand mb-0 font-weigth-bold h1">Arduino Simulator</span>
+    <div class="collapse navbar-collapse">
+  <ul class="navbar-nav ml-auto">
+     <li class="nav-item">
+      <a href="#" class="nav-link h4">Help</a>
+     </li>
+      <li class="nav-item">
+      <a href="#" class="nav-link">
+      <img src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+      </a>
+     </li>
+  </ul>
     </div>
-    <!--<div style="flex-basis: 100px; line-height: 60px;">
-        <a mat-stroked-button href="#" target="_blank">Login</a>
-    </div>-->
-    <div class="dropdown" style="flex-basis: 100px; line-height: 60px;">
-        <div class="w3-dropdown-hover">
-            <img src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="">
-            <div class="dropdown-content">
-                <div
-                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;margin-top: 5px;">
-                    <i class="fas fa-user" style="margin-left: 5px;"></i> Username</div>
-                <hr style="margin-top: 5px;">
-                <div
-                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;" [routerLink]="['/simulator']">
-                    <i class="fa fa-plus" style="margin-left: 5px;"></i> New</div>
-                <div
-                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
-                    <i class="fa fa-tasks" style="margin-left: 5px;"></i> Designs</div>
-                <div
-                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
-                    <i class="fa fa-envelope" style="margin-left: 5px;"></i> Notification</div>
-                <hr style="margin-top: 5px;">
-                <div
-                    style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
-                    <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> logout</div>
-            </div>
-        </div>
-    </div>
-</div>
+</nav>
 
-<!--sidebar-->
-<div id="sidebar">
-    <div class="card" style="width: 80%;position: relative">
-        <ul class="list-group list-group-flush" style="width: 100%">
-            <li class="list-group-item">
-                <img class="card-img-top" src="assets/images/login.svg" width="60" height="60" alt="Card image cap">
-                <h3 class="text-center">Username</h3>
-            </li>
-            <li class="list-group-item">
-                <form class="form-inline" action="#" style="width: 100%">
-                    <div class="form-group mb-1 mt-1" style="padding-left: 0px; position: relative;">
+<div class="container-fluid mt-3">
+<div class="row ">
+    <div class="col-md-3">
+        <div class="card" style="width: 16rem">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <img class="card-img-top" src="../assets/images/login.svg" width="60" height="60" alt="Card image cap">
+                    <h3 class="text-center">Username</h3>
+                </li>
+                <li class="list-group-item">
+                    <form class="form-inline" action="#">
+                        <div class="form-group mb-1 mt-1">
 
-                        <input type="search" class="form-control form-control-md " id="search" placeholder="Search"
-                            style="width: 100%; position: relative;">
+                                <input type="search" class="form-control form-control-md " id="search" placeholder="Search">
 
-                    </div>
-                </form>
-            </li>
-            <li class="list-group-item  btn btn-outline-secondary mb-1 text-left
+                        </div>
+                    </form>
+                </li>
+                <li class="list-group-item  btn btn-outline-secondary mb-1 text-left
                            ">EDA Design</li>
-            <li class="btn btn-primary text-left ">Arduino Circuits</li>
-        </ul>
-    </div>
-</div>
-<!--/sidebar-->
-<div id="main">
-    <h5>Arduino Circuits</h5>
-    <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New Circuit</a>
-    <div class="box">
-        <!--First Card-->
-        <div class="subbox" (click)="openProject()">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-        </div>
-        <!--/First Card-->
-        <!--Second Card-->
-        <div class="subbox">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-        </div>
-        <!--/Second Card-->
-        <div class="subbox">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-
-        </div>
-        <div class="subbox">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-
-        </div>
-        <div class="subbox">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-
-        </div>
-        <div class="subbox">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-
-        </div>
-        <div class="subbox">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-        </div>
-        <div class="subbox">
-            <div>
-                <img style="border-radius: 5px;" src="assets/images/arduino.JPG" width="260" height="180" alt="">
-                <div style="box-sizing: border-box; padding: 15px;">
-                    <h4>Project Name</h4>
-                    <p>Test1</p>
-                    <p>2hours</p>
-                </div>
-            </div>
-
+                <li class="btn btn-primary text-left ">Arduino Circuits</li>
+            </ul>
         </div>
     </div>
-</div>
-<!--open project-->
-<div id="openproject" style="display: none;">
-    <div id="innerdialog">
-        <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
-            <div
-                style="flex-basis: 80%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
-                Project name</div>
-            <div style="flex-basis: 20%; padding: 10px;float: right;">
-                <button
-                    style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"
-                    (click)="closeProject()"><i class="fa fa-close"></i></button>
-            </div>
-        </div>
-        <hr>
-        <div id="projectimage" style="height: 470px;position: relative;">
-            <div
-                style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
-                <img style="position: absolute; left: 80px" src="" alt="" width="300" height="300">
-
-                <button mat-raised-button color="warn" style="margin-top: 70%;margin-left:23%">Delete Circuit</button>
-                <button mat-raised-button color="primary" [routerLink]="['/simulator']"
-                    style=" margin-top: 5%;margin-left:13%">Edit circuit</button>
-            </div>
-            <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%;">
-                <div
-                    style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 230px;background-color:white; float: left; overflow: auto">
-                    <h5
-                        style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
-                        Description</h5>
-                    <p style="margin-left: 10px">This circuit shows the simplest thing you can do with an Arduino or
-                        Genuino to see physical output: it blinks the on-board LED.</p>
-                </div>
-                <div
-                    style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
-                    <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name:</h6>
-                    <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6>
-                    <h6 style="margin-left: 15px;font-family: cursive">Created At:</h6>
-                    <h6 style="margin-left: 15px;font-family: cursive">Edited At:</h6>
-                    <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6>
-                    <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px">
-                        <i class="fab fa-facebook-f" style="color:white; font-size: medium;"></i>
-                    </button>
-
-                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF;">
-                        <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
-                    </button>
-                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;">
-                        <i class='fab fa-reddit-alien' style='font-size:24px;'></i>
-                    </button>
-
-                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
-                        <i class="fa fa-envelope" style="font-size: medium;"></i>
-                    </button>
-                    <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;"
-                        (click)="share()">
-                        <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
-                    </button>
-
+    <div class="col-md-9">
+        <div class="row ">
+            <!-- first card-->
+            <div class="col mt-auto">
+                <h5>Arduino Circuits</h5>
+                <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New Circuit</a>
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                    <h5 class="card-title">Project Name</h5>
+                    <p class="card-text">Test1</p>
+                    <p class="card-text">2 hours</p>
+                    </div>
                 </div>
             </div>
-
-
-        </div>
-
-        <hr>
-        <div style="height: 185px; width: 100%;">
-            <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
-                <h3 style="padding-left: 10px;font-weight: bolder; font-size: 22px;font-family: monospace">Comments</h3>
-                <!--<form style="padding-left:10px; padding-top: 5px;width:97%;position:relative">
-                    <textarea id="text" placeholder="Add your Comments" style="height: 80px; width: 90%"></textarea>
-                    <input type="submit" value="Post Comment">
-                </form>-->
-                <form class="form-group">
-                    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                        style="width: 97%;"></textarea>
-                </form>
-                <button mat-raised-button disabled>Post Comment</button>
+            <!--/end firstcard -->
+            <!--second card-->
+            <div class="col mt-auto ">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Project Name</h5>
+                            <p class="card-text">Test1</p>
+                            <p class="card-text">2 hours</p>
+                        </div>
+                </div>
             </div>
+            <!--/ end second card -->
+            <!-- third card -->
+            <div class="col mt-auto">
+                <div class="card" style="width:15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!-- /end third card -->
+            <!-- fourth card -->
+            <div class="col mt-auto">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!--/end fourth card -->
         </div>
-        <div style="background-color:rgba(192,192,192,0.3); height: 30px;width: 100%;border-radius: 0px 0px 5px 0px">
-            <button style="background: transparent; border: none; float: right; font-weight: bold"
-                (click)="closeProject()">close</button>
+        <!--end of row1 -->
+        <div style="height: 30px;"></div>
+        <!--start of row 2 -->
+        <div class="row">
+            <!-- first card-->
+            <div class="col mt-auto">
+
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                    <h5 class="card-title">Project Name</h5>
+                    <p class="card-text">Test1</p>
+                    <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!--/end firstcard -->
+            <!--second card-->
+            <div class="col mt-auto ">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">Project Name</h5>
+                            <p class="card-text">Test1</p>
+                            <p class="card-text">2 hours</p>
+                        </div>
+                </div>
+            </div>
+            <!--/ end second card -->
+            <!-- third card -->
+            <div class="col mt-auto">
+                <div class="card" style="width:15rem;">
+                    <img class="card-img-top " src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!-- /end third card -->
+            <!-- fourth card -->
+            <div class="col mt-auto">
+                <div class="card" style="width: 15rem;">
+                    <img class="card-img-top" src="../assets/images/arduino.JPG" width="150" height="150" alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">Project Name</h5>
+                        <p class="card-text">Test1</p>
+                        <p class="card-text">2 hours</p>
+                    </div>
+                </div>
+            </div>
+            <!--/end fourth card -->
+
+
         </div>
+        <div style="height: 30px;"></div>
+
     </div>
 </div>
-<!--/open project-->
+</div>

@@ -1,12 +1,8 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
-import { ArduinoUno } from './outputs/Arduino';
-import { Injector } from '@angular/core';
-import { ApiService } from '../api.service';
 
 declare var window;
 declare var $; // For Jquery
-export enum ConsoleType { INFO, WARN, ERROR, OUTPUT }
 
 export class Workspace {
   // TODO: Add Comments
@@ -21,8 +17,6 @@ export class Workspace {
     start: false
   };
   static copiedItem: any;
-  static injector: Injector;
-  static simulating = false;
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -60,7 +54,6 @@ export class Workspace {
     window['test'] = Workspace.zoomIn;
     window['holder'] = document.getElementById('holder').getBoundingClientRect();
     window['holder_svg'] = document.querySelector('#holder > svg');
-    window['ArduinoUno_name'] = {};
     // Stores all the Circuit Information
     window['scope'] = {
       wires: []
@@ -128,44 +121,10 @@ export class Workspace {
     };
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
-      const ele = document.getElementById('ToastMessage');
-
-      ele.style.display = 'block';
-      ele.innerText = message;
-      ele.style.padding = '15px 25px 15px 25px';
+      const toastele = document.getElementById('ToastMessage');
       setTimeout(() => {
-        ele.style.display = 'none';
-      }, 10000);
-
-    };
-    window['printConsole'] = (textmsg: string, type: ConsoleType) => {
-      const msg = document.getElementById('msg');
-      const container = document.createElement('label');
-      container.innerText = textmsg;
-      if (type === ConsoleType.ERROR) {
-        container.style.color = 'red';
-      } else if (type === ConsoleType.WARN) {
-        container.style.color = 'yellow';
-      } else if (type === ConsoleType.INFO) {
-        container.style.color = 'white';
-      } else if (type === ConsoleType.OUTPUT) {
-        container.style.color = '#03fc6b';
-      }
-      msg.appendChild(container);
-    };
-    // window.addEventListener('beforeunload', (event) => {
-    //   event.preventDefault();
-    //   event.returnValue = 'did you save the stuff?';
-    // });
-
-    window['showLoading'] = () => {
-      const showloader = document.getElementById('loadanim');
-      showloader.style.display = 'flex';
-    };
-
-    window['hideLoading'] = () => {
-      const hideloader = document.getElementById('loadanim');
-      hideloader.style.display = 'none';
+        toastele.style.display = 'block';
+      }, 6000);
     };
   }
   /**
@@ -275,7 +234,6 @@ export class Workspace {
   static hideContextMenu() {
     const element = document.getElementById('contextMenu');
     element.style.display = 'none';
-
   }
   static copy(event: ClipboardEvent) {
   }
@@ -314,40 +272,13 @@ export class Workspace {
   }
 
   static keyDown(event: KeyboardEvent) {
-    // event.preventDefault();
+
   }
   static keyPress(event: KeyboardEvent) {
-    // event.preventDefault();
+
   }
   static keyUp(event: KeyboardEvent) {
-    // event.preventDefault();
-    // console.log([event.ctrlKey, event.key]);
-    if (event.key === 'Delete') {
-      // Backspace or Delete
-      Workspace.DeleteComponent();
-    }
-    if (event.ctrlKey && (event.key === 'c' || event.key === 'C')) {
-      // Copy
-      Workspace.copyComponent();
-    }
-    if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
-      // paste
-      Workspace.pasteComponent();
-    }
-    if (event.ctrlKey && (event.key === '+')) {
-      // CTRL + +
-      Workspace.zoomIn();
-    }
-    if (event.ctrlKey && (event.key === '-')) {
-      // CTRL + -
-      Workspace.zoomIn();
-    }
-    if (event.ctrlKey && (event.key === 'k' || event.key === 'K')) {
-      // TODO: Open Code Editor
-    }
-    if (event.key === 'F5') {
-      // TODO: Start Simulation
-    }
+
   }
   static mouseWheel(event: WheelEvent) {
     event.preventDefault();
@@ -392,38 +323,9 @@ export class Workspace {
       }
     }
   }
-
-  static SaveCircuit() {
-    const saveObj = {
-      canvas: {
-        x: Workspace.translateX,
-        y: Workspace.translateY,
-        scale: Workspace.scale
-      }
-    };
-    for (const key in window.scope) {
-      if (window.scope[key] && window.scope[key].length > 0) {
-        saveObj[key] = [];
-        for (const item of window.scope[key]) {
-          if (item.save) {
-            saveObj[key].push(item.save());
-          }
-        }
-      }
-    }
-    console.log(saveObj);
-  }
-
   static DeleteComponent() {
     if (window['Selected']) {
-      if (window['Selected'] instanceof ArduinoUno) {
-        const ans = confirm('The Respective code will also be lost!');
-        if (!ans) {
-          return;
-        }
-      }
       const uid = window.Selected.id;
-      // console.log(window.)
       const items = window.scope[window.Selected.keyName];
       for (let i = 0; i < items.length; ++i) {
         if (items[i].id === uid) {
@@ -437,15 +339,12 @@ export class Workspace {
       }
       window.hideProperties();
     } else {
-      window['showToast']('No Element Selected');
+      // TODO: Show Toast
+      console.log('No Element Selected');
     }
   }
   static copyComponent() {
     if (window['Selected']) {
-      if (window['Selected'] instanceof Wire) {
-        window['showToast']('You Can\'t Copy Wire');
-        return;
-      }
       Workspace.copiedItem = window.Selected;
     } else {
       Workspace.copiedItem = null;
@@ -455,118 +354,16 @@ export class Workspace {
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
       const ele = document.getElementById('contextMenu');
-      let x = +ele.style.left.replace('px', '');
-      let y = +ele.style.top.replace('px', '');
+      const x = +ele.style.left.replace('px', '');
+      const y = +ele.style.top.replace('px', '');
       // console.log([x, y]);
       const key = Workspace.copiedItem.keyName;
-      if (x === 0 && y === 0) {
-        x = Workspace.copiedItem.x + 100;
-        y = Workspace.copiedItem.y + 100;
-      }
       const pt = Workspace.svgPoint(x, y);
       // Workspace.addComponent(Workspace.copiedItem, pt.x, pt.y, 0, 0);
       const myClass = Utils.components[key].className;
       const obj = new myClass(window['canvas'], pt.x, pt.y);
       window['scope'][key].push(obj);
       // obj.copy(Workspace.copiedItem)
-    }
-  }
-  static ClearConsole() {
-    const clear = document.getElementById('msg');
-    clear.innerHTML = '';
-  }
-
-
-  static CompileCode() {
-    const toSend = {};
-    const nameMap = {};
-    const isProgrammable = window.scope.ArduinoUno.length > 0;
-    if (!isProgrammable) {
-      window.printConsole('No Programmable Device Found', ConsoleType.INFO);
-      return;
-    }
-    for (const arduino of window.scope.ArduinoUno) {
-      toSend[arduino.id] = arduino.code;
-      nameMap[arduino.id] = arduino;
-    }
-    // console.log(JSON.stringify(toSend));
-
-    if (Workspace.injector) {
-      window.printConsole('Compiling Source Code', ConsoleType.INFO);
-      const api = Workspace.injector.get(ApiService);
-      api.compileCode(toSend).subscribe(v => {
-        // console.log(v)
-        //     "state": "SUCCESS",
-        const taskid = v.uuid;
-        const temp = setInterval(() => {
-          api.getHex(taskid).subscribe(hex => {
-            console.log(hex);
-            if (hex.state === 'SUCCESS') {
-              clearInterval(temp);
-              for (const k in hex.details) {
-                if (hex.details[k]) {
-                  const d = hex.details[k];
-                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
-                  if (d.output) {
-                    window.printConsole(d.output, ConsoleType.OUTPUT);
-                    nameMap[k].hex = d.data;
-                  }
-                  if (d.error) {
-                    window.printConsole(d.error, ConsoleType.ERROR);
-                  }
-                }
-              }
-              Workspace.startArduino();
-            } else if (hex.state === 'FAILED') {
-              clearInterval(temp);
-              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
-            }
-          });
-        }, 2000);
-      });
-    } else {
-      window.showToast('Something Went Wrong! Please Refresh Browser');
-    }
-    // Workspace.startArduino();
-  }
-
-  static startArduino() {
-    Workspace.simulating = true;
-    // Assign id
-    let gid = 0;
-    for (const wire of window.scope.wires) {
-      wire.start.gid = gid++;
-      wire.end.gid = gid++;
-    }
-    // Call init simulation
-    for (const key in window.scope) {
-      if (window.scope[key] && key !== 'ArduinoUno') {
-        for (const ele of window.scope[key]) {
-          if (ele.initSimulation) {
-            ele.initSimulation();
-          }
-        }
-      }
-    }
-
-    for (const comp of window.scope.ArduinoUno) {
-      // comp.runner.execute();
-      // console.log("s")
-      comp.initSimulation();
-    }
-  }
-
-  static stopSimulation() {
-    // TODO: Show Loading Animation
-    Workspace.simulating = false;
-    for (const key in window.scope) {
-      if (window.scope[key]) {
-        for (const ele of window.scope[key]) {
-          if (ele.closeSimulation) {
-            ele.closeSimulation();
-          }
-        }
-      }
     }
   }
 }

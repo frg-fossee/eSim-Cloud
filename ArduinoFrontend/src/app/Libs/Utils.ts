@@ -1,19 +1,19 @@
-import { Buzzer } from './outputs/Buzzer';
+import { Buzzer } from './Buzzer';
 import { Battery9v, CoinCell } from './Battery';
 import { PushButton, SlideSwitch } from './inputs/Buttons';
-import { ArduinoUno } from './outputs/Arduino';
-import { LED, RGBLED } from './outputs/Led';
+import { ArduinoUno } from './Arduino';
+import { LED, RGBLED } from './Led';
 import { UltrasonicSensor } from './inputs/UltrasonicSensor';
 import { PIRSensor } from './inputs/PIRSensor';
-import { Motor, L298N, ServoMotor } from './outputs/Motors';
-import { LCD16X2, SevenSegment } from './outputs/Display';
+import { Motor, L298N, ServoMotor } from './Motors';
+import { LCD16X2, SevenSegment } from './Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
 import { LM35 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
-import { Resistor, BreadBoard } from './General';
+import { Resistor } from './General';
 
 export class Utils {
   static componentBox = {
@@ -40,16 +40,11 @@ export class Utils {
       ['Label', 'RelayModule']
     ],
     general: [
-      ['Resistor', 'BreadBoard']
+      ['Resistor']
     ]
   };
 
   static components = {
-    BreadBoard: {
-      name: 'BreadBoard',
-      image: './assets/images/components/Breadboard.svg',
-      className: BreadBoard
-    },
     Resistor: {
       name: 'Resistor',
       image: './assets/images/components/Resistor.png',

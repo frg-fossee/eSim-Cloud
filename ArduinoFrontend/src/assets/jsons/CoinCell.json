@@ -24,15 +24,5 @@
             "y": 0
         }
     ],
-    "simulation": {},
-    "info": {
-        "name": "3V Coincell",
-        "image": "https://components101.com/sites/default/files/components/CR2032-Lithium-Coin-Cell.jpg",
-        "Datasheet": "http://www.ti.com/lit/ds/symlink/bq29312.pdf?ts=1588678253793",
-        "description": "Coin cell batteries like CR2032 are generally used for small portable electronics devices such as wrist watches, pocket calculators, automobile key less entry transmitter and hearing aids. Typically they are of compact size, 5-25mm in diameter and 1-6mm in height. The name defines the size of the battery like for CR2032, the first two digits stands for diameter and second for height or thickness in tenths of mm.",
-        "properties": {
-            "Voltage - Rated": "3V",
-            "Capacity": "240mAh @ 190µA"
-        }
-    }
+    "simulation": {}
 }

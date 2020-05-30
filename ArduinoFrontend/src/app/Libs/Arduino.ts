@@ -1,9 +1,9 @@
-import { CircuitElement } from '../CircuitElement';
-import { Point } from '../Point';
+import { CircuitElement } from './CircuitElement';
+import { Point } from './Point';
 
-export class PIRSensor extends CircuitElement {
+export class ArduinoUno extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
-    super('PIRSensor', x, y, 'PIRSensor.json', canvas);
+    super('ArduinoUno', x, y, 'Arduino.json', canvas);
   }
   save() {
   }
@@ -13,12 +13,12 @@ export class PIRSensor extends CircuitElement {
     return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
-    const body = document.createElement('body');
+    const body = document.createElement('div');
     return {
       keyName: this.keyName,
-      body,
-      title: 'PIR Sensor',
-      id: this.id
+      id: this.id,
+      title: 'Arduino Uno',
+      body
     };
   }
   initSimulation(): void {
@@ -27,4 +27,5 @@ export class PIRSensor extends CircuitElement {
   }
   simulate(): void {
   }
+
 }

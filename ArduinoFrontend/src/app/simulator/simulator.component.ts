@@ -1,19 +1,18 @@
-import { Component, OnInit, wtfLeave, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, wtfLeave } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Workspace, ConsoleType } from '../Libs/Workspace';
+import { Workspace } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
 import { MatDialog, MatRadioModule } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
+import { ApiService } from '../api.service';
 declare var Raphael;
-
 
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
-  styleUrls: ['./simulator.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./simulator.component.css']
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
@@ -21,15 +20,9 @@ export class SimulatorComponent implements OnInit {
   showProperty = true;
   componentsBox = Utils.componentBox;
   components = Utils.components;
-  openCodeEditor = false;
-  toggle = true;
-  stoggle = true;
-  status = 'Start Simulation';
-  toggle1 = false;
-  atoggle = false;
-  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private injector: Injector) {
+
+  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
     Workspace.initializeGlobalFunctions();
-    Workspace.injector = injector;
   }
 
   makeSVGg() {
@@ -65,19 +58,18 @@ export class SimulatorComponent implements OnInit {
     holder.addEventListener('dragleave', Workspace.dragLeave, true);
     holder.addEventListener('dragover', Workspace.dragOver, true);
     holder.addEventListener('drop', Workspace.drop, true);
+    holder.addEventListener('keydown', Workspace.keyDown, true);
+    holder.addEventListener('keypress', Workspace.keyPress, true);
+    holder.addEventListener('keyup', Workspace.keyUp, true);
     holder.addEventListener('wheel', Workspace.mouseWheel, true);
     holder.addEventListener('paste', Workspace.paste, true);
     document.body.addEventListener('mousemove', Workspace.bodyMouseMove);
     document.body.addEventListener('mouseup', Workspace.bodyMouseUp);
-    document.body.addEventListener('keydown', Workspace.keyDown, true);
-    document.body.addEventListener('keypress', Workspace.keyPress, true);
-    document.body.addEventListener('keyup', Workspace.keyUp, true);
 
     // Initialize Property Box
     Workspace.initProperty(v => {
       this.showProperty = v;
     });
-    // this.StartSimulation();
   }
   /**
    * Enable Move on Property Box
@@ -111,88 +103,12 @@ export class SimulatorComponent implements OnInit {
     block.classList.toggle('show-div');
   }
 
-
-  StartSimulation() {
-    Workspace.ClearConsole();
-    window['printConsole']('Starting Simulation', ConsoleType.INFO);
-    this.stoggle = !this.stoggle;
-    this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
-    const sim = document.getElementById('console');
-    const simload = document.getElementById('simload');
-    if (!this.stoggle) {
-      sim.style.display = 'block';
-      simload.style.display = 'block';
-      Workspace.CompileCode();
-    } else {
-      sim.style.display = 'none';
-      Workspace.simulating = false;
-      Workspace.stopSimulation();
-      this.hidesimload();
-    }
-  }
-
-  hidesimload() {
-    const simload = document.getElementById('simload');
-    simload.style.display = 'none';
-  }
   /**
    * Hide/Show (toggle) Code Editor
    * @param elem Code Editor Parent Div
    */
   toggleCodeEditor(elem: HTMLElement) {
     elem.classList.toggle('show-code-editor');
-    this.toggle = !this.toggle;
-    this.openCodeEditor = !this.openCodeEditor;
-    /* var div = document.getElementById('console');
-     //alert(div.style.display);
-     // console.log("meet");
-     if (div.style.display === 'none') {
-       div.style.display = 'block';
-     } else {
-       div.style.display = 'none';
-     }*/
-  }
-  closeConsole() {
-    const close = document.getElementById('console');
-    const ft = document.getElementById('footer');
-    const msg = document.getElementById('msg');
-    this.atoggle = !this.atoggle;
-    if (this.atoggle) {
-      close.style.height = '30px';
-      msg.style.height = '0px';
-      ft.style.display = 'none';
-
-    } else if (!this.atoggle || !this.toggle1) {
-      close.style.bottom = '40px';
-      close.style.height = '620px';
-      msg.style.height = '565px';
-      ft.style.display = 'block';
-    } else {
-      msg.style.height = '150px';
-      close.style.height = '230px';
-      ft.style.display = 'block';
-
-    }
-  }
-
-  expandConsole() {
-    const msg = document.getElementById('msg');
-    const console = document.getElementById('console');
-    this.toggle1 = !this.toggle1;
-
-    if (this.toggle1 || console.style.top === '495px') {
-      console.style.bottom = '40px';
-      console.style.height = '620px';
-      msg.style.height = '565px';
-    } else {
-      console.style.bottom = '0px';
-      console.style.height = '230px';
-      msg.style.height = '150px';
-    }
-  }
-
-  clearConsole() {
-    Workspace.ClearConsole();
   }
 
   /**
@@ -224,20 +140,40 @@ export class SimulatorComponent implements OnInit {
     }
   }
   openInfo() {
-    const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
-      width: '500px'
-    });
-    dialogRef.afterClosed();
+    if (window['suggestion_json']) {
+      const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
+        width: '500px'
+      });
+      dialogRef.afterClosed().subscribe(result => {
+        // console.log(result);
+      });
+    } else {
+      this.api.fetchSuggestions().subscribe(v => {
+        window['suggestion_json'] = v;
+        const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
+          width: '500px'
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+          // console.log(result);
+        });
+      });
+    }
+
   }
   openDailog() {
     const exportref = this.dialog.open(ExportfileComponent);
-    exportref.afterClosed();
+    exportref.afterClosed().subscribe(result => {
+
+      console.log(`Dialog result: ${result}`);
+    });
   }
   openview() {
-    const viewref = this.dialog.open(ComponentlistComponent, {
-      width: '600px'
+    const viewref = this.dialog.open(ComponentlistComponent);
+    viewref.afterClosed().subscribe(result => {
+
+      console.log(`Dialog result: ${result}`);
     });
-    viewref.afterClosed();
   }
   delete() {
     Workspace.DeleteComponent();
@@ -250,8 +186,5 @@ export class SimulatorComponent implements OnInit {
   copy() {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
-  }
-  SaveProject() {
-    Workspace.SaveCircuit();
   }
 }

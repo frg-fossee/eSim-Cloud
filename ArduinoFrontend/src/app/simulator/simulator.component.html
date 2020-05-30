@@ -1,6 +1,6 @@
 <!-- As a heading -->
 <nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #999;height: 50px;">
-  <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span>
+  <span class="navbar-brand mb-0 font-weight-bold text-dark h1">Simulator</span>
   <form class="form-inline my-2 my-lg-0">
     <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
       id="project-title" (focusout)="onFocusOut($event)">
@@ -15,7 +15,7 @@
         <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
           <a class="dropdown-item text-dark" href="#">New Project</a>
           <a class="dropdown-item text-dark" href="#">Clear Project</a>
-          <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a>
+          <a class="dropdown-item text-dark" href="#">Save</a>
 
         </div>
       </li>
@@ -52,25 +52,15 @@
 
 <!-- start of icon block -->
 <div id="secondary-header">
-  <button mat-raised-button class="ml-2 mb-1 mt-1 mr-1 btn-fst" (click)="toggleCodeEditor(codeDiv)"
-    [style.background-color]="toggle ? 'white' : 'lightblue'">
-    <i class='far fa-file-code'></i>Code</button>
+  <button class="btn btn-light btn-xs ml-2 mb-1 mt-1 mr-1  bg-white" style='font-size: 20px'
+    (click)="toggleCodeEditor(codeDiv)"> <i class='far fa-file-code'> Code</i></button>
 
-  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" (click)="StartSimulation()"
-    [style.background-color]="stoggle ? 'white' : 'lightgreen'">
-    <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
-    {{status}}</button>
-
-  <!--simulation loading svg-->
-  <div id="simload"
-    style="display:none; z-index: 100;position: relative;width: 20%; height:20%;background: transparent;padding: 10px;">
-    <img src="../assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
-  </div>
-  <!--/simulation loading svg-->
+  <button class="btn btn-light btn-sm mb-1 mt-1"><i class='fas fa-caret-right'></i>
+    Start Stimulation</button>
 
   <span style="flex:1 1 auto;"></span>
 
-  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1" (click)="delete()"><i class="fa fa-trash"></i></button>
+  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1"  (click)="delete()"><i class="fa fa-trash"></i></button>
 
   <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
 
@@ -89,7 +79,7 @@
 
 
 <div class="code-editor" style="z-index: 1000;" #codeDiv>
-  <app-code-editor width="500" height="100" [reinit]="openCodeEditor"></app-code-editor>
+  <app-code-editor width="500" height="100"></app-code-editor>
 </div>
 
 
@@ -255,9 +245,8 @@
       <textarea matInput></textarea>
     </mat-form-field>
   </div>
-  <div *ngIf="!showProperty" style="display: flex;margin-top: 10px;">
-    <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button>
-  </div>
+  <div *ngIf="!showProperty" style="display: flex;">
+    <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button></div>
 </div>
 
 
@@ -277,29 +266,19 @@
     </li>
   </ul>
 </div>
+
+
+
 <!--/context menu-->
 <!--toast message-->
-<div id="ToastMessage" class="toast text-white" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="toast-body"></div>
-</div>
+<!--<div id="ToastMessage" class="toast" style="margin-left: auto; background-color: white;">
+  <div class="toast-header">
+      <strong class="mr-auto text-primary">Toast Header</strong>
+      <small class="text-muted mr-auto">5 mins ago</small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+  </div>
+  <div class="toast-body">
+          Some text inside the toast body
+  </div>
+ </div>-->
 <!--/toast message-->
-<!--console ui-->
-<div id="console" style="display: none;">
-
-  <div id="displayheader" style="display: flex; background-color: white; position: relative; width: 100%;">
-    <button class="btn" style="background-color: white;" (click)="closeConsole()"><i
-        [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
-    <button class="btn" style="background-color: white;" (click)="expandConsole()"><i
-        [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
-  </div>
-  <div id="msg"></div>
-  <div id="footer" style="bottom: 0px; position: relative; display: block; top: 10px; padding: 0px; margin: 0px;">
-    <form style="bottom: 0px; position: relative; padding: 0px; background-color: pink; height: auto;">
-      <input type="text" style="border-radius: 0px; width: 89.5%;">
-      <button type="button" style="border-color: darkgray; border-radius: 0px;">Send</button>
-      <button type="button" style="border-color: darkgray; border-radius: 0px;" (click)="clearConsole()">Clear</button>
-    </form>
-
-  </div>
-</div>
-<!--/console ui-->
