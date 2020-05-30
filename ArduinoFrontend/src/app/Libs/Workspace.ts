@@ -426,6 +426,7 @@ export class Workspace {
     Download.ExportImage(ImageType.PNG).then(v => {
       saveObj.project['image'] = v;
       console.log(saveObj);
+      this.SaveIDB(saveObj);
     });
   }
 

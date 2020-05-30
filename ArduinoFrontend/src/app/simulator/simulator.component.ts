@@ -6,6 +6,7 @@ import { MatDialog, MatRadioModule } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
+import { Title } from '@angular/platform-browser';
 declare var Raphael;
 
 
@@ -17,7 +18,9 @@ declare var Raphael;
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
+  projectId: number = null;
   projectTitle = 'Untitled';
+  description = '';
   showProperty = true;
   componentsBox = Utils.componentBox;
   components = Utils.components;
@@ -27,7 +30,12 @@ export class SimulatorComponent implements OnInit {
   status = 'Start Simulation';
   toggle1 = false;
   atoggle = false;
-  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private injector: Injector) {
+
+  constructor(
+    private aroute: ActivatedRoute,
+    public dialog: MatDialog,
+    private injector: Injector,
+    private title: Title) {
     Workspace.initializeGlobalFunctions();
     Workspace.injector = injector;
   }
@@ -252,6 +260,10 @@ export class SimulatorComponent implements OnInit {
     Workspace.hideContextMenu();
   }
   SaveProject() {
-    Workspace.SaveCircuit();
+    Workspace.SaveCircuit(this.projectTitle, this.description);
+  }
+  ClearProject() {
+  }
+  LoadProject(data: any) {
   }
 }
