@@ -22,13 +22,19 @@
 }
 
 .subbox {
-  width: 260px;
-  height: 330px;
+  width: 100%;
+  max-height: 330px;
   background-color: white;
   border-radius: 5px;
   margin-bottom: 15px;
   box-shadow: 1px 1px 3px grey;
   cursor: pointer;
+}
+
+.item-img{
+  min-height: 180px;
+  max-width: 100%;
+  max-height: 180px;
 }
 
 .subbox:hover {
@@ -66,7 +72,7 @@
   top: 0px;
   left: 0px;
   width: 100%;
-  min-height: 180%;
+  min-height: 150%;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
