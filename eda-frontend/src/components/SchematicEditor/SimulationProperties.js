@@ -515,7 +515,6 @@ export default function SimulationProperties () {
                         SelectProps={{
                           native: true
                         }}
-
                       >
 
                         {

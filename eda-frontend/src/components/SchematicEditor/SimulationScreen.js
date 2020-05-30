@@ -50,9 +50,14 @@ export default function SimulationScreen ({ open, close }) {
 
   return (
     <div>
-      <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition}>
+      <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
+        style: {
+          backgroundColor: '#4d4d4d',
+          boxShadow: 'none'
+        }
+      }}>
         <AppBar position="static" elevation={0} className={classes.appBar}>
-          <Toolbar variant="dense" color="default" >
+          <Toolbar variant="dense" style={{ backgroundColor: '#404040' }} >
             <IconButton edge="start" color="inherit" onClick={close} aria-label="close">
               <CloseIcon />
             </IconButton>
@@ -77,7 +82,7 @@ export default function SimulationScreen ({ open, close }) {
                 <Typography variant="h2" align="center" gutterBottom>
                   {result.title}
                 </Typography>
-                <Typography variant="h5" align="center" color="error" component="p" gutterBottom>
+                <Typography variant="h5" align="center" component="p" gutterBottom>
                   Simulation Result for {stitle} *
                 </Typography>
               </Paper>
