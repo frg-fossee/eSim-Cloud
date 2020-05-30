@@ -34,6 +34,10 @@ export class Resistor extends CircuitElement {
       tolerance: this.toleranceIndex
     };
   }
+  LoadData(data: any) {
+    this.value = data.data.value;
+    this.toleranceIndex = data.data.tolerance;
+  }
   updateColors() {
     const cur = this.getValue();
     this.elements[1].attr({
