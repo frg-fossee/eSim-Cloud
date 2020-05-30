@@ -7,7 +7,7 @@ import store from '../../../redux/store'
 
 import WireConfigFunct from './WireConfig.js'
 import EdgeWireFunct from './EdgeWire.js'
-import ClipBoardFunct from './ClipBoard.js'
+// import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
 import KeyboardShorcuts from './KeyboardShorcuts.js'
@@ -52,6 +52,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.PinName = ''
     mxCell.prototype.CompObject = null
     mxCell.prototype.properties = {}
+    // mxCell.prototype.ConnectedNode = null
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
@@ -93,7 +94,7 @@ export default function LoadGrid (container, sidebar, outline) {
     KeyboardShorcuts(graph)
     WireConfigFunct(graph)
     EdgeWireFunct()
-    ClipBoardFunct(graph)
+    // ClipBoardFunct(graph)
     NetlistInfoFunct(graph)
     ToolbarTools(graph)
 
