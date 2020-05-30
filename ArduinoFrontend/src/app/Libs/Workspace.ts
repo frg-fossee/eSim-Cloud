@@ -530,6 +530,15 @@ export class Workspace {
   }
 
   static Load(data) {
+    Workspace.translateX = data.canvas.x;
+    Workspace.translateY = data.canvas.y;
+    Workspace.scale = data.canvas.scale;
+    const ele = (window['canvas'].canvas as HTMLElement);
+    ele.setAttribute('transform', `scale(
+      ${Workspace.scale},
+      ${Workspace.scale})
+      translate(${Workspace.translateX},
+      ${Workspace.translateY})`);
   }
 
   static DeleteComponent() {
