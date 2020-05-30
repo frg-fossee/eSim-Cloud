@@ -504,6 +504,31 @@ export class Workspace {
     };
   }
 
+  static readIDB(id, callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = () => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = () => {
+      db = request.result;
+
+      const transaction = db.transaction(['project']);
+      const objectStore = transaction.objectStore('project');
+      const ok = objectStore.get(parseInt(id, 10));
+
+      ok.onerror = () => {
+        alert('Unable to retrieve daa from database!');
+      };
+
+      ok.onsuccess = () => {
+        callback(ok.result);
+      };
+
+    };
+  }
+
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {
