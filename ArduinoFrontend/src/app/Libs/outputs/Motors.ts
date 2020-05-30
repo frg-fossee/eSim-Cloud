@@ -7,8 +7,6 @@ export class Motor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('Motor', x, y, 'Motor.json', canvas);
   }
-  load(data: any): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -31,8 +29,6 @@ export class Motor extends CircuitElement {
 export class L298N extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('L298N', x, y, 'L298N.json', canvas);
-  }
-  load(data: any): void {
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
@@ -59,8 +55,6 @@ export class ServoMotor extends CircuitElement {
   animate(angle: number) {
     const anim = Raphael.animation({ transform: `r${angle}` }, 2500);
     this.elements[1].animate(anim);
-  }
-  load(data: any): void {
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');

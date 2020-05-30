@@ -39,8 +39,6 @@ export class Label extends CircuitElement {
         fill: this.fontColor
       });
   }
-  load(data: any): void {
-  }
   changeLabel(value: string) {
     if (value === '') {
       // TODO: Show Toast

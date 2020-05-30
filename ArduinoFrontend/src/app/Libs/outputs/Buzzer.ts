@@ -52,12 +52,6 @@ export class Buzzer extends CircuitElement {
       body
     };
   }
-  // load data from saved object
-  load(data: any) {
-    this.x = data.x;
-    this.y = data.y;
-    this.id = data.id;
-  }
   initSimulation() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioCtx = new AudioContext();

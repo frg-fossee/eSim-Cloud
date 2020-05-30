@@ -5,8 +5,6 @@ export class PhotoResistor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('PhotoResistor', x, y, 'PhotoResistor.json', canvas);
   }
-  load(data: any): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

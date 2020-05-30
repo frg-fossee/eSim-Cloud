@@ -56,8 +56,6 @@ export class LED extends CircuitElement {
     // TODO: Change Accordingly to Color
     return `LED Red`;
   }
-  load(data: any): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     const select = document.createElement('select');
@@ -106,8 +104,6 @@ export class RGBLED extends CircuitElement {
     this.elements[1].glow({
       color: 'rgb(255,0,0)'
     });
-  }
-  load(data: any): void {
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');

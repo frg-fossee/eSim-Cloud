@@ -52,8 +52,6 @@ export class Resistor extends CircuitElement {
       fill: Resistor.colorTable[this.toleranceIndex]
     }); // Tolerance
   }
-  load(data: any): void {
-  }
   getValue() {
     const l = `${this.value}`.length;
     const tmp = `${this.value}`;
@@ -241,8 +239,6 @@ export class BreadBoard extends CircuitElement {
       this.x += this.tx;
       this.y += this.ty;
     });
-  }
-  load(data: any): void {
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');

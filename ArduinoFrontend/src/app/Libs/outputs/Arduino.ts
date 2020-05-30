@@ -45,8 +45,6 @@ export class ArduinoUno extends CircuitElement {
       code: this.code
     };
   }
-  load(data: any): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     const label = document.createElement('label');

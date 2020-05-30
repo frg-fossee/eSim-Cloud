@@ -36,8 +36,6 @@ export class Potentiometer extends CircuitElement {
       // console.log();
     });
   }
-  load(data: any): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

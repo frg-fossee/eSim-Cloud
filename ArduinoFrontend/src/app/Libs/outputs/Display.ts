@@ -5,8 +5,6 @@ export class LCD16X2 extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('LCD16X2', x, y, 'LCD16X2.json', canvas);
   }
-  load(data: any): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -32,8 +30,6 @@ export class SevenSegment extends CircuitElement {
   pinNamedMap: any = {};
   constructor(public canvas: any, x: any, y: any) {
     super('SevenSegment', x, y, 'SevenSegment.json', canvas);
-  }
-  load(data: any): void {
   }
   init() {
     if (SevenSegment.mapping.length === 0) {

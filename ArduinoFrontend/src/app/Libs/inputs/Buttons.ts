@@ -28,8 +28,6 @@ export class PushButton extends CircuitElement {
   logic(v) {
 
   }
-  load(data: any): void {
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -97,8 +95,6 @@ export class SlideSwitch extends CircuitElement {
     }
     this.elements[1].animate(anim);
     this.reverseAnim = !this.reverseAnim;
-  }
-  load(data: any): void {
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
