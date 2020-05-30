@@ -120,6 +120,12 @@ export default function SimulationProperties () {
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
 
+  const [simResult, setSimResult] = React.useState({})
+
+  const handleSimulationResult = (simResults) => {
+    setSimResult(simResults)
+  }
+
   const handlesimulateOpen = () => {
     setSimulateOpen(true)
   }
@@ -172,22 +178,45 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          console.log(res.data)
+          console.log('IMP', res.data)
           var temp = res.data.details.data
+          var result = res.data.details
+          var data = result.data
+          console.log('RESULT', result)
+          console.log('DATA', data)
           if (res.data.details.graph === 'true') {
-            var simResultGraph = {}
-            simResultGraph.labels = temp[0].labels
-            simResultGraph.x1 = temp[0].x
-            simResultGraph.y11 = temp[0].y[0]
-            simResultGraph.y21 = temp[0].y[1]
-            console.log(simResultGraph)
+            var simResultGraph = { labels: [], x_points: [], y_points: [] }
+            // populate the labels
+            for (var i = 0; i < data.length; i++) {
+              simResultGraph.labels[0] = data[i].labels[0]
+              var lab = data[i].labels
+              simResultGraph.x_points = data[0].x
+              for (var x = 1; x < lab.length; x++) {
+                simResultGraph.labels.push(lab[x])
+              }
+              // populate y_points
+              for (var z = 0; z < data[i].y.length; z++) {
+                simResultGraph.y_points.push(data[i].y[z])
+              }
+            }
+
+            // simResultGraph.labels = temp[0].labels
+            // simResultGraph.x1 = temp[0].x
+            // simResultGraph.y11 = temp[0].y[0]
+            // simResultGraph.y21 = temp[0].y[1]
+
+            // console.log("GRAPH",simResultGraph)
+            handleSimulationResult(simResultGraph)
+            console.log('LOG', simResultGraph)
             dispatch(setResultGraph(simResultGraph))
           } else {
             var simResultText = []
-            for (var i = 0; i < temp.length; i++) {
+            for (let i = 0; i < temp.length; i++) {
               simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n')
             }
-            console.log(simResultText)
+            // console.log(simResultText)
+
+            handleSimulationResult(res.data.details)
             dispatch(setResultText(simResultText))
           }
         }
@@ -366,6 +395,7 @@ export default function SimulationProperties () {
       case 'DcSolver':
         // console.log('To be implemented')
         controlLine = '.op'
+
         dispatch(setResultTitle('DC Solver Output'))
         break
       case 'DcSweep':
@@ -376,11 +406,13 @@ export default function SimulationProperties () {
       case 'Transient':
         // console.log(transientAnalysisControlLine)
         controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`
+
         dispatch(setResultTitle('Transient Analysis Output'))
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
         controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+
         dispatch(setResultTitle('AC Analysis Output'))
         break
       default:
@@ -422,7 +454,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} close={handleSimulateClose} />
+        <SimulationScreen open={simulateOpen} close={handleSimulateClose} simResults={simResult} />
 
         {/* Simulation modes list */}
         <List>

@@ -19,34 +19,40 @@ class Graph extends Component {
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y1, y2, labels } = this.props
+    const { x, y, labels } = this.props
 
     if (typeof lineGraph !== 'undefined') lineGraph.destroy()
+
+    const getRandomColor = () => {
+      return '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
+    }
+
+    const dataset = () => {
+      var arr = []
+      for (var i = 0; i < y.length; i++) {
+        arr.push({
+          label: labels[i + 1],
+          data: y[i],
+          fill: false,
+          borderColor: getRandomColor()
+        })
+      }
+      return arr
+    }
 
     lineGraph = new Chart(myChartRef, {
       type: 'line',
       data: {
+
         labels: x,
-        datasets: [
-          {
-            label: labels[1],
-            data: y1,
-            fill: false,
-            borderColor: '#9feaf9'
-          },
-          {
-            label: labels[2],
-            data: y2,
-            fill: false,
-            borderColor: '#556cd6'
-          }
-        ]
+        datasets: dataset()
       },
+
       options: {
         responsive: true,
         title: {
-          display: true,
-          text: 'Voltage vs Time Graph'
+          display: false,
+          text: ''
         },
         tooltips: {
           mode: 'index',
@@ -66,7 +72,7 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                labelString: labels[0] + ' ( sec )'
+                labelString: labels[0]
               },
               ticks: {
                 display: true
@@ -77,7 +83,7 @@ class Graph extends Component {
             {
               display: true,
               scaleLabel: {
-                display: true,
+                display: false,
                 labelString: 'Volatge ( V )'
               },
               gridLines: {

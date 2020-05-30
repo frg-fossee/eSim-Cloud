@@ -41,13 +41,19 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff'
   }
 }))
-
-export default function SimulationScreen ({ open, close }) {
+// {details:{},title:''} simResults
+export default function SimulationScreen ({ open, close, simResults }) {
   const classes = useStyles()
-
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
 
+  // const [simRes,setSimRes] = React.useState({})
+
+  //  const getCleanData = () => {
+
+  //   setSimRes(simResults)
+  //   console.log("hello",simRes)
+  // }
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
@@ -89,14 +95,15 @@ export default function SimulationScreen ({ open, close }) {
             </Grid>
 
             {
+
               (result.graph !== {} && result.isGraph === 'true')
                 ? <Grid item xs={12} sm={12}>
                   <Paper className={classes.paper}>
-                    <h2>GRAPH OUTPUT</h2><Graph
-                      labels={result.graph.labels}
-                      x={result.graph.x1}
-                      y1={result.graph.y11}
-                      y2={result.graph.y21}
+                    <h2>GRAPH OUTPUT</h2>
+                    <Graph
+                      labels={simResults.labels}
+                      x={simResults.x_points}
+                      y={simResults.y_points}
                     />
                   </Paper>
                 </Grid>
@@ -128,5 +135,6 @@ export default function SimulationScreen ({ open, close }) {
 
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
-  close: PropTypes.func
+  close: PropTypes.func,
+  simResults: PropTypes.object
 }
