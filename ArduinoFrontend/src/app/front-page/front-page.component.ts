@@ -49,7 +49,7 @@ export class FrontPageComponent implements OnInit {
       if (this.digit >= 17) {
         this.digit -= 17;
       }
-    }, 700);
+    }, 1000);
   }
 
 }
