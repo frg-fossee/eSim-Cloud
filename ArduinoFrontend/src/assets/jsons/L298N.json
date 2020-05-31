@@ -79,5 +79,21 @@
       "y": 0
     }
   ],
-  "simulation": {}
+  "simulation": {},
+  "info": {
+    "name": "L298N Dual H Bridge Motor Driver",
+    "image": "https://cdn.shopify.com/s/files/1/0014/4313/5560/products/1_bc581b8e-00ce-4f4a-b625-04273597fe3d_700x700.jpg?v=1577794110",
+    "Datasheet": "https://www.sparkfun.com/datasheets/Robotics/L298_H_Bridge.pdf",
+    "description": "L298N Dual H Bridge Motor Driver is a motor controller breakout board which is typically used for controlling speed and direction of motors. It can also be used to control the brightness of certain lighting projects such as high powered LED arrays.",
+    "properties": {
+      "Double H Bridge Drive Chip": "L298N",
+      "Logical Voltage": "5V",
+      "Drive Voltage": "5V-35V",
+      "Logical Current": "0-36mA",
+      "Drive current": "2A (MAX single bridge)",
+      "Max Power": "25W",
+      "Dimensions": "43 x 43 x 26mm",
+      "Weight": "26g"
+    }
+  }
 }

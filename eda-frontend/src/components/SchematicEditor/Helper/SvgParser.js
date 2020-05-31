@@ -2,14 +2,14 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 import mxGraphFactory from 'mxgraph'
-
+import ComponentParameters from './ComponentParametersData'
 const {
   mxConstants
 } = new mxGraphFactory()
 
 let pinData, metadata, pinList, pinName, pinOrientation, pinLength, pinShape
 let currentPin, x_pos, y_pos
-let width, height
+let width, height, symbolName
 
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
 const fixed_number = 5
@@ -19,7 +19,7 @@ function extractData (xml) {
   metadata = xml.getElementsByTagName('metadata')
   const width = metadata[0].attributes[0].nodeValue
   const height = metadata[0].attributes[1].nodeValue
-
+  const symbolName = metadata[0].attributes[4].nodeValue
   pinList = metadata[0].childNodes
   // console.log(metadata)
   // console.log(xmlDoc)
@@ -33,6 +33,7 @@ function extractData (xml) {
     const pinOrientation = pin.getElementsByTagName('orientation')[0].innerHTML.trim()
     const pinLength = pin.getElementsByTagName('length')[0].innerHTML.trim()
     const pinShape = pin.getElementsByTagName('pinShape')[0].innerHTML.trim()
+
     pinData.push({
       pinNumber: pinNumber,
       pinX: pinX,
@@ -48,12 +49,14 @@ function extractData (xml) {
   return {
     width: width,
     height: height,
+    symbolName: symbolName,
     pinData: pinData
   }
 }
 
 export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
   var path = '../' + component.svg_path
+
   fetch(path)
     .then(function (response) {
       return response.text()
@@ -93,8 +96,13 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       delete style[mxConstants.STYLE_STROKECOLOR] // transparent
       // delete style[mxConstants.STYLE_FILLCOLOR] // transparent
 
-      width = width / fixed_number
-      height = height / fixed_number
+      if (width <= 200 && height <= 200) {
+        width = width / 2.5
+        height = height / 2.5
+      } else {
+        width = width / fixed_number
+        height = height / fixed_number
+      }
 
       const v1 = graph.insertVertex(
         parent,
@@ -104,19 +112,25 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         y,
         width,
         height,
-        'shape=image;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
+        'shape=image;fontColor=blue;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
       )
       v1.Component = true
-      var newsource = path
+      /* var newsource = path
       var prefix = newsource.split('/')
-      var symboltype = prefix[3].split('')
+      var symboltype = prefix[3].split('') */
       v1.CellType = 'Component'
-      v1.symbol = symboltype[0]
+      v1.symbol = component.symbol_prefix
+      v1.CompObject = component
+
+      var props = Object.assign({}, ComponentParameters[v1.symbol])
+      props.NAME = component.name
+      v1.properties = props
+
       v1.setConnectable(false)
 
       for (let i = 0; i < pinData.length; i++) {
         currentPin = pinData[i]
-        if (currentPin.pinShape === 'N') continue
+        if (currentPin.pinShape === 'NC') continue
         // move this to another file
         x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / fixed_number)
         y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / fixed_number) - 1

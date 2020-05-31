@@ -7,7 +7,11 @@ esimCloud URL Configuration
 from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
+from arduinoAPI import urls as arduinoURLs
 from libAPI import urls as libURLs
+from saveAPI import urls as saveURLs
+from publishAPI import urls as publishURLs
+from authAPI import urls as authURLs
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
@@ -25,12 +29,28 @@ schema_view = get_schema_view(
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('api/admin/', admin.site.urls),
 
     # Simulation API Routes
     path('api/simulation/', include(simulationURLs)),
-    path('api/', include(libURLs)),
 
+    # libAPI routes
+    path('api/', include(libURLs)),
+    
+    # arduino routes
+    path('api/arduino/', include(arduinoURLs)),
+
+    # libAPI routes
+    path('api/', include(saveURLs)),
+
+    # publishAPI routes
+    path('api/', include(publishURLs)),
+
+    # Auth API Routes
+    url(r'^api/auth/', include('djoser.urls')),
+    url(r'^api/auth/', include('djoser.urls.authtoken')),
+    url(r'^api/auth/', include("djoser.social.urls")),
+    url(r'^api/auth/', include(authURLs)),
 
 
     # For API Documentation

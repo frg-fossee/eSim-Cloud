@@ -116,5 +116,20 @@
       "stroke": "#383838"
     }
   ],
-  "simulation": {}
+  "simulation": {},
+  "info": {
+    "name": "Push Button Switch",
+    "image": "https://www.digibay.in/image/cache/data/se/158-a-tactile-dip-push-button-switch-600x600.jpg",
+    "Datasheet": "https://www.ti.com/lit/ds/symlink/tps3420.pdf?ts=1588677114740",
+    "description": "Push-Buttons are normally-open tactile switches. Push buttons allow us to power the circuit or make any particular connection only when we press the button. Simply, it makes the circuit connected when pressed and breaks when released. A push button is also used for triggering of the SCR by gate terminal. These are the most common buttons which we see in our daily life electronic equipment’s.",
+    "properties": {
+      "Mode of Operation": "Tactile feedback",
+      "Power Rating": "MAX 50mA 24V DC",
+      "Insulation Resistance": "100Mohm at 100v",
+      "Operating Force": "2.55±0.69 N",
+      "Contact Resistance": "MAX 100 mOhm",
+      "Operating Temperature Range": " -20 to +70 ℃",
+      "Storage Temperature Range": "-20 to +70 ℃"
+    }
+  }
 }
