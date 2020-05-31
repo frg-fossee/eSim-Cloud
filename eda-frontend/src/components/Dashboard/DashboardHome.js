@@ -36,7 +36,7 @@ function MainCard () {
           Welcome to your EDA Dashboard
         </Typography>
         <Typography variant="h5" component="h2">
-          Welcome {(auth.user === null) ? 'Username' : auth.user.username}...
+          Welcome {auth.user.username}...
         </Typography>
       </CardContent>
       <CardActions>
@@ -55,6 +55,7 @@ function MainCard () {
 
 export default function DashboardHome () {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
 
   return (
     <>
@@ -74,7 +75,7 @@ export default function DashboardHome () {
         <Grid item xs={12}>
           <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
             <Typography variant="subtitle1" gutterBottom>
-              Hey User , Track your schematics status here...
+              Hey {auth.user.username} , Track your schematics status here...
             </Typography>
           </Card>
         </Grid>

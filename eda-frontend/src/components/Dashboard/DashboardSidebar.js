@@ -67,7 +67,7 @@ export default function DashSidebar (props) {
           <Avatar className={classes.purple}>U</Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary={(auth.user !== null) ? auth.user.username : 'Username'}
+          primary={auth.user.username}
           secondary={
             <React.Fragment>
               <Typography

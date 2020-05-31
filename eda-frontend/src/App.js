@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import Navbar from './components/Shared/Navbar'
 import Home from './pages/Home'
@@ -22,7 +23,7 @@ function PrivateRoute ({ component: Component, ...rest }) {
 
   return <Route {...rest} render={props => {
     if (auth.isLoading) {
-      return <em>Loading...</em>
+      return <CircularProgress style={{ margin: '50vh 50vw' }} />
     } else if (!auth.isAuthenticated) {
       return <Redirect to="/login" />
     } else {
@@ -38,7 +39,9 @@ function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
   useEffect(() => dispatch(loadUser()), [dispatch])
 
   return <Route {...rest} render={props => {
-    if (auth.isAuthenticated && restricted) {
+    if (auth.isLoading) {
+      return <CircularProgress style={{ margin: '50vh 50vw' }} />
+    } else if (auth.isAuthenticated && restricted) {
       return <Redirect to="/dashboard" />
     } else if (nav) {
       return (<><Navbar /><Component {...props} /></>)
