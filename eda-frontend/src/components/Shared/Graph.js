@@ -30,6 +30,7 @@ class Graph extends Component {
     const dataset = () => {
       var arr = []
       for (var i = 0; i < y.length; i++) {
+        if (labels[i + 1] === labels[0]) continue
         arr.push({
           label: labels[i + 1],
           data: y[i],
