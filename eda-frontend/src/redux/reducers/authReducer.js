@@ -1,7 +1,7 @@
 import * as actions from '../actions/actions'
 
 const initialState = {
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem('esim_token'),
   isAuthenticated: null,
   isLoading: false,
   user: null,
@@ -27,7 +27,7 @@ export default function (state = initialState, action) {
     }
 
     case actions.LOGIN_SUCCESSFUL: {
-      localStorage.setItem('token', action.payload.data.auth_token)
+      localStorage.setItem('esim_token', action.payload.data.auth_token)
       return {
         ...state,
         token: action.payload.data.auth_token,
@@ -48,7 +48,7 @@ export default function (state = initialState, action) {
     case actions.AUTHENTICATION_ERROR:
     case actions.LOGIN_FAILED:
     case actions.LOGOUT_SUCCESSFUL: {
-      localStorage.removeItem('token')
+      localStorage.removeItem('esim_token')
       return {
         ...state,
         errors: action.payload.data,

@@ -58,8 +58,11 @@ function App () {
         <PublicRoute exact path="/login" restricted={true} nav={false} component={Login} />
         <PublicRoute exact path="/signup" restricted={true} nav={false} component={SignUp} />
         <PublicRoute exact path="/" restricted={false} nav={true} component={Home} />
+        {localStorage.getItem('esim_token') !== null
+          ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
+          : <Route path="/editor" component={SchematicEditor} />
+        }
         <PublicRoute exact path="/simulator" restricted={false} nav={true} component={Simulator} />
-        <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
