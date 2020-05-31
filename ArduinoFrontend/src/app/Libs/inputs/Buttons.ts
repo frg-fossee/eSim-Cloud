@@ -4,15 +4,6 @@ import { Point } from '../Point';
 declare var Raphael;
 
 export class PushButton extends CircuitElement {
-<<<<<<< HEAD
-  static pointHalf = 4;
-  constructor(public canvas: any, x: number, y: number) {
-    super('PushButton', x, y, 'PushButton.json', canvas);
-  }
-  save() {
-  }
-  load(data: any): void {
-=======
   pinNamedMap: any = {};
   constructor(public canvas: any, x: number, y: number) {
     super('PushButton', x, y, 'PushButton.json', canvas);
@@ -36,7 +27,6 @@ export class PushButton extends CircuitElement {
   }
   logic(v) {
 
->>>>>>> master
   }
   getNode(x: number, y: number): Point {
     return null;
@@ -110,16 +100,6 @@ export class SlideSwitch extends CircuitElement {
     this.elements[1].animate(anim);
     this.reverseAnim = !this.reverseAnim;
   }
-<<<<<<< HEAD
-  save() {
-  }
-  load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
-=======
->>>>>>> master
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

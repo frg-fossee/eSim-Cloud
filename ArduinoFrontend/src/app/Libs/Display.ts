@@ -5,16 +5,6 @@ export class LCD16X2 extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('LCD16X2', x, y, 'LCD16X2.json', canvas);
   }
-<<<<<<< HEAD:ArduinoFrontend/src/app/Libs/Display.ts
-  save() {
-  }
-  load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
-=======
->>>>>>> master:ArduinoFrontend/src/app/Libs/outputs/Display.ts
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -41,16 +31,6 @@ export class SevenSegment extends CircuitElement {
   constructor(public canvas: any, x: any, y: any) {
     super('SevenSegment', x, y, 'SevenSegment.json', canvas);
   }
-<<<<<<< HEAD:ArduinoFrontend/src/app/Libs/Display.ts
-  save() {
-  }
-  load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
-=======
->>>>>>> master:ArduinoFrontend/src/app/Libs/outputs/Display.ts
   init() {
     if (SevenSegment.mapping.length === 0) {
       SevenSegment.mapping = this.data.mapping;

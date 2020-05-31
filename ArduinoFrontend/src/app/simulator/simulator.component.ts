@@ -6,11 +6,7 @@ import { MatDialog, MatRadioModule } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
-<<<<<<< HEAD
-import { ApiService } from '../api.service';
-=======
 import { Title } from '@angular/platform-browser';
->>>>>>> master
 declare var Raphael;
 
 @Component({
@@ -26,10 +22,6 @@ export class SimulatorComponent implements OnInit {
   showProperty = true;
   componentsBox = Utils.componentBox;
   components = Utils.components;
-<<<<<<< HEAD
-
-  constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
-=======
   openCodeEditor = false;
   toggle = true;
   stoggle = true;
@@ -42,7 +34,6 @@ export class SimulatorComponent implements OnInit {
     public dialog: MatDialog,
     private injector: Injector,
     private title: Title) {
->>>>>>> master
     Workspace.initializeGlobalFunctions();
   }
 
@@ -130,8 +121,6 @@ export class SimulatorComponent implements OnInit {
     block.classList.toggle('show-div');
   }
 
-<<<<<<< HEAD
-=======
 
   StartSimulation() {
     Workspace.ClearConsole();
@@ -156,7 +145,6 @@ export class SimulatorComponent implements OnInit {
     const simload = document.getElementById('simload');
     simload.style.display = 'none';
   }
->>>>>>> master
   /**
    * Hide/Show (toggle) Code Editor
    * @param elem Code Editor Parent Div
@@ -241,8 +229,6 @@ export class SimulatorComponent implements OnInit {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
   }
-<<<<<<< HEAD
-=======
   SaveProject() {
     if (this.projectId) {
       Workspace.SaveCircuit(this.projectTitle, this.description, this.projectId);
@@ -261,5 +247,4 @@ export class SimulatorComponent implements OnInit {
     this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
     Workspace.Load(data);
   }
->>>>>>> master
 }

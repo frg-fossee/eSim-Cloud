@@ -7,11 +7,6 @@ import { Workspace } from '../Libs/Workspace';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-<<<<<<< HEAD
-
-  constructor() { }
-
-=======
   items: any[] = [];
   selected: any = {};
 
@@ -39,7 +34,6 @@ export class DashboardComponent implements OnInit {
   constructor() {
 
   }
->>>>>>> master
   ngOnInit() {
     Workspace.readAll((v) => {
       console.log(v);

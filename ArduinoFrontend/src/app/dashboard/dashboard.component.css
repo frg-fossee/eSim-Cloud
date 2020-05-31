@@ -1,8 +1,6 @@
 .card:hover{
   background-color: #ddd;
 }
-<<<<<<< HEAD
-=======
 
 #sidebar {
   width: 25%;
@@ -137,4 +135,3 @@ input[type=submit]:hover {
 .dropdown-content div:hover {background-color: #ddd;}
 
 .dropdown:hover .dropdown-content {display: block;}
->>>>>>> master

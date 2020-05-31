@@ -14,11 +14,8 @@ export abstract class CircuitElement {
   public title: string;
   public simulationData: any = {}; // Store Values That are required during simulation
   public data: any = {}; // Store Values that are additionaly require by class
-<<<<<<< HEAD
-=======
   public info: any;
   public pointHalf: number;
->>>>>>> master
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
@@ -255,9 +252,6 @@ export abstract class CircuitElement {
   /**
    * Save Circuit Component
    */
-<<<<<<< HEAD
-  abstract save(): any;
-=======
   save(): any {
     const data = this.SaveData();
     const ret = {
@@ -275,7 +269,6 @@ export abstract class CircuitElement {
   SaveData() {
     return null;
   }
->>>>>>> master
   /**
    * Load Circuit Component
    */
@@ -289,9 +282,6 @@ export abstract class CircuitElement {
   /**
    * Returns the Circuit Node based on the x,y Position
    */
-<<<<<<< HEAD
-  abstract getNode(x: number, y: number): Point;
-=======
   getNode(x: number, y: number): Point {
     // console.log([x, y]);
     for (const node of this.nodes) {
@@ -304,7 +294,6 @@ export abstract class CircuitElement {
     }
     return null;
   }
->>>>>>> master
   /**
    * Removes Component from Canvas and memory
    */

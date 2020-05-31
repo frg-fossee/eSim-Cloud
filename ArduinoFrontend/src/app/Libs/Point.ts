@@ -29,15 +29,12 @@ export class Point {
 
   // Hover Close Callback called if hover is removed
   hoverCloseCallback: any = null;
-<<<<<<< HEAD
-=======
 
   connectCallback: any = null;
 
   value = -1;
   listener: (val: number, calledby: Point, current: Point) => void = null;
   gid = -1;
->>>>>>> master
   /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper
@@ -212,8 +209,6 @@ export class Point {
       this.parent = null;
     }
   }
-<<<<<<< HEAD
-=======
   addValueListener(listener: (val: number, calledby: Point, parent: Point) => void) {
     this.listener = listener;
   }
@@ -237,5 +232,4 @@ export class Point {
       }
     }
   }
->>>>>>> master
 }

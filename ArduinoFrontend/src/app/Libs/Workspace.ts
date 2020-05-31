@@ -1,13 +1,10 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
-<<<<<<< HEAD
-=======
 import { ArduinoUno } from './outputs/Arduino';
 import { Injector } from '@angular/core';
 import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
->>>>>>> master
 
 declare var window;
 declare var $; // For Jquery
@@ -331,8 +328,6 @@ export class Workspace {
       }
     }
   }
-<<<<<<< HEAD
-=======
 
   static SaveCircuit(name: string = '', description: string = '', id: number = null) {
     let toUpdate = false;
@@ -582,7 +577,6 @@ export class Workspace {
     }
   }
 
->>>>>>> master
   static DeleteComponent() {
     if (window['Selected']) {
       const uid = window.Selected.id;
@@ -626,8 +620,6 @@ export class Workspace {
       // obj.copy(Workspace.copiedItem)
     }
   }
-<<<<<<< HEAD
-=======
   static ClearConsole() {
     const clear = document.getElementById('msg');
     clear.innerHTML = '';
@@ -727,5 +719,4 @@ export class Workspace {
       }
     }
   }
->>>>>>> master
 }

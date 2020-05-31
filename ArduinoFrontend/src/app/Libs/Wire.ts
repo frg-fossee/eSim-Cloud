@@ -241,13 +241,10 @@ export class Wire {
     for (const joint of this.joints) {
       joint.remove();
     }
-<<<<<<< HEAD
-=======
     if (this.glow) {
       this.glow.remove();
     }
     this.glow = null;
->>>>>>> master
     this.joints = [];
     this.joints = null;
     this.points = [];

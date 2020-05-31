@@ -20,8 +20,6 @@ export class Label extends CircuitElement {
     this.setHoverListener();
     window['queue'] -= 1;
   }
-<<<<<<< HEAD
-=======
   SaveData() {
     return {
       text: this.text,
@@ -40,7 +38,6 @@ export class Label extends CircuitElement {
     this.elements.transform(`t${this.tx},${this.ty}`);
     this.update();
   }
->>>>>>> master
   update() {
     this.elements[0]
       .attr({
@@ -52,13 +49,6 @@ export class Label extends CircuitElement {
         fill: this.fontColor
       });
   }
-<<<<<<< HEAD
-  save() {
-  }
-  load(data: any): void {
-  }
-=======
->>>>>>> master
   changeLabel(value: string) {
     if (value === '') {
       // TODO: Show Toast

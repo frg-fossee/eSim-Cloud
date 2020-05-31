@@ -28,8 +28,6 @@ export class Resistor extends CircuitElement {
     delete this.data;
     this.data = null;
   }
-<<<<<<< HEAD
-=======
   SaveData() {
     return {
       value: this.value,
@@ -40,7 +38,6 @@ export class Resistor extends CircuitElement {
     this.value = data.data.value;
     this.toleranceIndex = data.data.tolerance;
   }
->>>>>>> master
   updateColors() {
     const cur = this.getValue();
     this.elements[1].attr({
@@ -59,16 +56,6 @@ export class Resistor extends CircuitElement {
       fill: Resistor.colorTable[this.toleranceIndex]
     }); // Tolerance
   }
-<<<<<<< HEAD
-  save() {
-  }
-  load(data: any): void {
-  }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
-=======
->>>>>>> master
   getValue() {
     const l = `${this.value}`.length;
     const tmp = `${this.value}`;
@@ -196,8 +183,6 @@ export class Resistor extends CircuitElement {
   }
 
 }
-<<<<<<< HEAD
-=======
 
 
 export class BreadBoard extends CircuitElement {
@@ -273,4 +258,3 @@ export class BreadBoard extends CircuitElement {
   simulate(): void {
   }
 }
->>>>>>> master
