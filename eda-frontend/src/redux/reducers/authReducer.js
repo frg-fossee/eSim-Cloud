@@ -30,10 +30,18 @@ export default function (state = initialState, action) {
       localStorage.setItem('token', action.payload.data.auth_token)
       return {
         ...state,
-        ...action.payload.data,
-        isAuthenticated: true,
-        isLoading: false,
+        token: action.payload.data.auth_token,
+        // ...action.payload.data,
+        // isAuthenticated: true,
+        // isLoading: false,
         errors: null
+      }
+    }
+
+    case actions.LOADING_FAILED: {
+      return {
+        ...state,
+        isLoading: false
       }
     }
 

@@ -18,6 +18,9 @@ export const loadUser = () => (dispatch, getState) => {
   // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
   }
 
   api.get('auth/users/me/', config)
@@ -59,6 +62,7 @@ export const login = (username, password) => {
               data: res.data
             }
           })
+          dispatch(loadUser())
         } else if (res.status === 403 || res.status === 401) {
           dispatch({
             type: actions.AUTHENTICATION_ERROR,
@@ -75,7 +79,6 @@ export const login = (username, password) => {
           })
         }
       })
-      .then()
       .catch((err) => { console.error(err) })
   }
 }
