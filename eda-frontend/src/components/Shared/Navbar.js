@@ -10,6 +10,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 import store from '../../redux/store'
+import { logout } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -162,7 +163,9 @@ export function Header () {
               >
                 My Schematics
               </MenuItem>
-              <MenuItem onClick={handleClose}>
+              <MenuItem onClick={() => {
+                store.dispatch(logout())
+              }}>
                 Logout
               </MenuItem>
             </Menu>

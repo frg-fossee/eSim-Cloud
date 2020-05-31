@@ -18,7 +18,7 @@ import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
-import { setTitle } from '../../redux/actions/index'
+import { setTitle, logout } from '../../redux/actions/index'
 import store from '../../redux/store'
 
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
@@ -158,7 +158,9 @@ function Header () {
                 >
                   My Schematics
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={() => {
+                  store.dispatch(logout())
+                }}>
                   Logout
                 </MenuItem>
               </Menu>

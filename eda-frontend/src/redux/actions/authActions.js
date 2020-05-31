@@ -96,3 +96,35 @@ export const signUp = (userCredentials) => (dispatch) => {
     })
     .catch((err) => { console.error(err) })
 }
+
+export const logout = () => (dispatch, getState) => {
+  const token = getState().authReducer.token
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+  api.post('auth/token/logout/', {}, config)
+    .then(
+      (res) => {
+        if (res.status === 200 || res.status === 204) {
+          console.log(res)
+          dispatch({
+            type: actions.LOGOUT_SUCCESSFUL,
+            payload: {
+              user: res.data
+            }
+          })
+        }
+      }
+    )
+    .catch((err) => { console.error(err) })
+}
