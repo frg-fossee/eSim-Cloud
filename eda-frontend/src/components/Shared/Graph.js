@@ -1,115 +1,115 @@
 /* eslint-disable react/prop-types */
-import React, { Component } from 'react'
-import Chart from 'chart.js'
-let lineGraph
+import React from 'react'
 
-// Chart Style Options
-Chart.defaults.global.defaultFontColor = '#e6e6e6'
+import { Line } from 'react-chartjs-2'
 
-class Graph extends Component {
-  chartRef = React.createRef();
-
-  componentDidMount () {
-    this.buildChart()
+const Graph = (props) => {
+  const { x, y, labels } = props
+  const getRandomColor = () => {
+    return '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
   }
 
-  componentDidUpdate () {
-    this.buildChart()
+  const dataset = () => {
+    var arr = []
+    for (var i = 0; i < y.length; i++) {
+      if (labels[i + 1] === labels[0]) continue
+      arr.push({
+        label: labels[i + 1],
+        data: y[i],
+        fill: false,
+        borderColor: getRandomColor()
+      })
+    }
+    return arr
   }
 
-  buildChart = () => {
-    const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y, labels } = this.props
+  return (
+    <div>
 
-    if (typeof lineGraph !== 'undefined') lineGraph.destroy()
+      <Line
+        data={{
+          labels: x,
+          datasets: dataset()
+        }}
+        options={{
 
-    const getRandomColor = () => {
-      return '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
-    }
+          responsive: true,
+          title: {
+            display: false,
+            text: ''
+          },
+          plugins: {
+            zoom: {
+              // Container for pan options
+              pan: {
+                // Boolean to enable panning
+                enabled: true,
 
-    const dataset = () => {
-      var arr = []
-      for (var i = 0; i < y.length; i++) {
-        if (labels[i + 1] === labels[0]) continue
-        arr.push({
-          label: labels[i + 1],
-          data: y[i],
-          fill: false,
-          borderColor: getRandomColor()
-        })
-      }
-      return arr
-    }
-
-    lineGraph = new Chart(myChartRef, {
-      type: 'line',
-      data: {
-
-        labels: x,
-        datasets: dataset()
-      },
-
-      options: {
-        responsive: true,
-        title: {
-          display: false,
-          text: ''
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-          backgroundColor: '#39604d'
-        },
-        hover: {
-          mode: 'nearest',
-          intersect: true
-        },
-        scales: {
-          xAxes: [
-            {
-              display: true,
-              gridLines: {
-                color: '#67737e'
+                // Panning directions. Remove the appropriate direction to disable
+                // Eg. 'y' would only allow panning in the y direction
+                mode: 'xy'
               },
-              scaleLabel: {
+
+              // Container for zoom options
+              zoom: {
+                // Boolean to enable zooming
+                enabled: true,
+
+                // Zooming directions. Remove the appropriate direction to disable
+                // Eg. 'y' would only allow zooming in the y direction
+                mode: 'xy'
+              }
+            }
+          },
+          tooltips: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: '#39604d'
+          },
+          hover: {
+            mode: 'nearest',
+            intersect: true
+          },
+          scales: {
+            xAxes: [
+              {
                 display: true,
-                labelString: labels[0]
-              },
-              ticks: {
-                display: true
+                gridLines: {
+                  color: '#67737e'
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: labels[0]
+                },
+                ticks: {
+                  display: true
+                }
               }
-            }
-          ],
-          yAxes: [
-            {
-              display: true,
-              scaleLabel: {
-                display: false,
-                labelString: 'Volatge ( V )'
-              },
-              gridLines: {
-                color: '#67737e'
-              },
-              ticks: {
-                beginAtZero: true,
-                fontSize: 15,
-                // maxTicksLimit: 10, //Set Y axes points
-                padding: 25
+            ],
+            yAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: false,
+                  labelString: 'Volatge ( V )'
+                },
+                gridLines: {
+                  color: '#67737e'
+                },
+                ticks: {
+                  beginAtZero: true,
+                  fontSize: 15,
+                  // maxTicksLimit: 10, //Set Y axes points
+                  padding: 25
+                }
               }
-            }
-          ]
-        }
-      }
-    })
-  };
+            ]
+          }
 
-  render () {
-    return (
-      <div>
-        <canvas id="myChart" ref={this.chartRef} />
-      </div>
-    )
-  }
+        }}
+      />
+    </div>
+  )
 }
 
 export default Graph

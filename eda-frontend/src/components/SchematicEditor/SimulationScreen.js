@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, simResults }) {
+export default function SimulationScreen ({ open, close }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -101,13 +101,13 @@ export default function SimulationScreen ({ open, close, simResults }) {
                   <Paper className={classes.paper}>
                     <h2>GRAPH OUTPUT</h2>
                     <Graph
-                      labels={simResults.labels}
-                      x={simResults.x_points}
-                      y={simResults.y_points}
+                      labels={result.graph.labels}
+                      x={result.graph.x_points}
+                      y={result.graph.y_points}
                     />
                   </Paper>
                 </Grid>
-                : <span></span>
+                : <span>SOMETHING WENT WRONG PLEASE CHECK THE CIRCUIT</span>
             }
 
             {
@@ -135,6 +135,6 @@ export default function SimulationScreen ({ open, close, simResults }) {
 
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
-  close: PropTypes.func,
-  simResults: PropTypes.object
+  close: PropTypes.func
+  // simResults: PropTypes.object
 }
