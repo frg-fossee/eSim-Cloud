@@ -1,5 +1,13 @@
 import { Utils } from './Utils';
 import { Wire } from './Wire';
+<<<<<<< HEAD
+=======
+import { ArduinoUno } from './outputs/Arduino';
+import { Injector } from '@angular/core';
+import { ApiService } from '../api.service';
+import { Download, ImageType } from './Download';
+import { isNull, isUndefined } from 'util';
+>>>>>>> master
 
 declare var window;
 declare var $; // For Jquery
@@ -323,6 +331,258 @@ export class Workspace {
       }
     }
   }
+<<<<<<< HEAD
+=======
+
+  static SaveCircuit(name: string = '', description: string = '', id: number = null) {
+    let toUpdate = false;
+    if (isNull(id)) {
+      id = Date.now();
+    } else {
+      toUpdate = true;
+    }
+    const saveObj = {
+      id,
+      canvas: {
+        x: Workspace.translateX,
+        y: Workspace.translateY,
+        scale: Workspace.scale
+      },
+      project: {
+        name,
+        description,
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+    };
+    for (const key in window.scope) {
+      if (window.scope[key] && window.scope[key].length > 0) {
+        saveObj[key] = [];
+        for (const item of window.scope[key]) {
+          if (item.save) {
+            saveObj[key].push(item.save());
+          }
+        }
+      }
+    }
+    Download.ExportImage(ImageType.PNG).then(v => {
+      saveObj.project['image'] = v;
+      console.log(saveObj);
+      if (toUpdate) {
+        Workspace.UpdateIDB(saveObj);
+      } else {
+        Workspace.SaveIDB(saveObj);
+      }
+    });
+  }
+
+  static SaveIDB(mydata, callback: any = null) {
+    // window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+
+    // window.IDBTransaction = window.IDBTransaction ||
+    //   window.webkitIDBTransaction || window.msIDBTransaction;
+    // window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = () => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = () => {
+      db = request.result;
+      db.transaction(['project'], 'readwrite')
+        .objectStore('project')
+        .add(mydata);
+      if (callback) {
+        callback(mydata);
+      }
+      alert('Done Saved');
+    };
+  }
+
+  static readAll(callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = () => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = () => {
+      db = request.result;
+      console.log('success: ' + db);
+      const objectStore = db.transaction('project').objectStore('project');
+      const data = [];
+      objectStore.openCursor().onsuccess = (event) => {
+        const cursor = event.target.result;
+        if (cursor) {
+          data.push(cursor.value);
+          cursor.continue();
+        } else {
+          if (callback) {
+            callback(data);
+          }
+        }
+      };
+    };
+  }
+
+  static DeleteIDB(id, callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = (_) => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = (__) => {
+      db = request.result;
+
+      const ok = db.transaction(['project'], 'readwrite')
+        .objectStore('project')
+        .delete(id);
+
+      ok.onsuccess = (_) => {
+        alert('Done Deleting');
+        if (callback) {
+          callback();
+        }
+      };
+
+    };
+  }
+  static UpdateIDB(mydata, callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = (_) => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = (__) => {
+      db = request.result;
+
+      const ok = db.transaction(['project'], 'readwrite')
+        .objectStore('project')
+        .put(mydata);
+
+      ok.onsuccess = (_) => {
+        alert('Done Updating');
+        if (callback) {
+          callback();
+        }
+      };
+
+    };
+  }
+
+  static readIDB(id, callback: any = null) {
+    let db;
+    const request = window.indexedDB.open('projects', 1);
+    request.onerror = () => {
+      console.log('error: ');
+    };
+
+    request.onsuccess = () => {
+      db = request.result;
+
+      const transaction = db.transaction(['project']);
+      const objectStore = transaction.objectStore('project');
+      const ok = objectStore.get(parseInt(id, 10));
+
+      ok.onerror = () => {
+        alert('Unable to retrieve daa from database!');
+      };
+
+      ok.onsuccess = () => {
+        callback(ok.result);
+      };
+
+    };
+  }
+
+  static Load(data) {
+    Workspace.translateX = data.canvas.x;
+    Workspace.translateY = data.canvas.y;
+    Workspace.scale = data.canvas.scale;
+    window.queue = 0;
+    const ele = (window['canvas'].canvas as HTMLElement);
+    ele.setAttribute('transform', `scale(
+      ${Workspace.scale},
+      ${Workspace.scale})
+      translate(${Workspace.translateX},
+      ${Workspace.translateY})`);
+    for (const key in data) {
+      if (key !== 'id' && key !== 'canvas' && key !== 'project' && key !== 'wires') {
+        // console.log(key);
+        const components = data[key];
+        for (const comp of components) {
+          const myClass = Utils.components[key].className;
+          const obj = new myClass(
+            window['canvas'],
+            comp.x,
+            comp.y
+          );
+          window.queue += 1;
+          window['scope'][key].push(obj);
+          if (obj.load) {
+            obj.load(comp);
+          }
+        }
+      }
+    }
+    const interval = setInterval(() => {
+      if (window.queue === 0) {
+        clearInterval(interval);
+        Workspace.LoadWires(data.wires);
+      }
+    }, 100);
+  }
+
+  static LoadWires(wires: any[]) {
+    console.log(wires);
+    if (isNull(wires) || isUndefined(wires)) {
+      return;
+    }
+    for (const w of wires) {
+      const points = w.points;
+      // console.log(points[0]);
+      // console.log(points[0][0]);
+      // console.log(points[0][1]);
+      let start = null;
+      let end = null;
+      // console.log(w.start.keyName);
+      // console.log(window.scope[w.start.keyName]);
+      // Use Linear search to find the start circuit node
+      for (const st of window.scope[w.start.keyName]) {
+        // console.log(st.id,w.start.id);
+        if (st.id === w.start.id) {
+          start = st.getNode(points[0][0], points[0][1]);
+          break;
+        }
+      }
+      // console.log(start);
+      // Use Linear Search to find the end circuit node
+      for (const en of window.scope[w.end.keyName]) {
+        if (en.id === w.end.id) {
+          const p = points[points.length - 1];
+          end = en.getNode(p[0], p[1]);
+          break;
+        }
+      }
+      // console.log([start, end]);
+      if (start && end) {
+        const tmp = new Wire(window.canvas, start);
+        tmp.load(w);
+        start.connectedTo = tmp;
+        end.connectedTo = tmp;
+        tmp.connect(end, true, true);
+        window['scope']['wires'].push(tmp);
+        tmp.update();
+      } else {
+        alert('something went wrong');
+      }
+    }
+  }
+
+>>>>>>> master
   static DeleteComponent() {
     if (window['Selected']) {
       const uid = window.Selected.id;
@@ -366,4 +626,106 @@ export class Workspace {
       // obj.copy(Workspace.copiedItem)
     }
   }
+<<<<<<< HEAD
+=======
+  static ClearConsole() {
+    const clear = document.getElementById('msg');
+    clear.innerHTML = '';
+  }
+
+
+  static CompileCode() {
+    const toSend = {};
+    const nameMap = {};
+    const isProgrammable = window.scope.ArduinoUno.length > 0;
+    if (!isProgrammable) {
+      window.printConsole('No Programmable Device Found', ConsoleType.INFO);
+      Workspace.startArduino();
+      return;
+    }
+    for (const arduino of window.scope.ArduinoUno) {
+      toSend[arduino.id] = arduino.code;
+      nameMap[arduino.id] = arduino;
+    }
+    // console.log(JSON.stringify(toSend));
+
+    if (Workspace.injector) {
+      window.printConsole('Compiling Source Code', ConsoleType.INFO);
+      const api = Workspace.injector.get(ApiService);
+      api.compileCode(toSend).subscribe(v => {
+        // console.log(v)
+        //     'state': 'SUCCESS',
+        const taskid = v.uuid;
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            console.log(hex);
+            if (hex.state === 'SUCCESS') {
+              clearInterval(temp);
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
+                  }
+                  if (d.error) {
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
+                }
+              }
+              Workspace.startArduino();
+            } else if (hex.state === 'FAILED') {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+            }
+          });
+        }, 2000);
+      });
+    } else {
+      window.showToast('Something Went Wrong! Please Refresh Browser');
+    }
+    // Workspace.startArduino();
+  }
+
+  static startArduino() {
+    Workspace.simulating = true;
+    // Assign id
+    let gid = 0;
+    for (const wire of window.scope.wires) {
+      wire.start.gid = gid++;
+      wire.end.gid = gid++;
+    }
+    // Call init simulation
+    for (const key in window.scope) {
+      if (window.scope[key] && key !== 'ArduinoUno') {
+        for (const ele of window.scope[key]) {
+          if (ele.initSimulation) {
+            ele.initSimulation();
+          }
+        }
+      }
+    }
+
+    for (const comp of window.scope.ArduinoUno) {
+      // comp.runner.execute();
+      // console.log('s')
+      comp.initSimulation();
+    }
+  }
+
+  static stopSimulation() {
+    // TODO: Show Loading Animation
+    Workspace.simulating = false;
+    for (const key in window.scope) {
+      if (window.scope[key]) {
+        for (const ele of window.scope[key]) {
+          if (ele.closeSimulation) {
+            ele.closeSimulation();
+          }
+        }
+      }
+    }
+  }
+>>>>>>> master
 }

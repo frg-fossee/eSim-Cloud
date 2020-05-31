@@ -29,6 +29,15 @@ export class Point {
 
   // Hover Close Callback called if hover is removed
   hoverCloseCallback: any = null;
+<<<<<<< HEAD
+=======
+
+  connectCallback: any = null;
+
+  value = -1;
+  listener: (val: number, calledby: Point, current: Point) => void = null;
+  gid = -1;
+>>>>>>> master
   /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper
@@ -105,7 +114,9 @@ export class Point {
         if (window.Selected.start === this) { return; }
         this.connectedTo = window.Selected;
         window['Selected'].connect(this, true);
+        window.Selected.deselect();
         window['isSelected'] = false; // deselect object
+        window['Selected'] = null;
       } else {
         // if nothing is selected create a new wire object
         window.isSelected = true;
@@ -201,4 +212,30 @@ export class Point {
       this.parent = null;
     }
   }
+<<<<<<< HEAD
+=======
+  addValueListener(listener: (val: number, calledby: Point, parent: Point) => void) {
+    this.listener = listener;
+  }
+  setValue(value: number, calledby: Point) {
+    this.value = value;
+    if (calledby && this.listener) {
+      this.listener(this.value, calledby, this);
+    }
+    if (isNull(calledby)) {
+      calledby = this;
+    }
+    // console.log(this.connectedTo);
+    if (this.connectedTo && this.connectedTo.end) {
+      if (this.connectedTo.end.gid !== calledby.gid && this.connectedTo.end.gid !== this.gid) {
+        this.connectedTo.end.setValue(this.value, this);
+      }
+    }
+    if (this.connectedTo && this.connectedTo.start) {
+      if (this.connectedTo.start.gid !== calledby.gid && this.connectedTo.start.gid !== this.gid) {
+        this.connectedTo.start.setValue(this.value, this);
+      }
+    }
+  }
+>>>>>>> master
 }

@@ -6,7 +6,11 @@ import { MatDialog, MatRadioModule } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
+<<<<<<< HEAD
 import { ApiService } from '../api.service';
+=======
+import { Title } from '@angular/platform-browser';
+>>>>>>> master
 declare var Raphael;
 
 @Component({
@@ -16,12 +20,29 @@ declare var Raphael;
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
+  projectId: number = null;
   projectTitle = 'Untitled';
+  description = '';
   showProperty = true;
   componentsBox = Utils.componentBox;
   components = Utils.components;
+<<<<<<< HEAD
 
   constructor(private aroute: ActivatedRoute, public dialog: MatDialog, private api: ApiService) {
+=======
+  openCodeEditor = false;
+  toggle = true;
+  stoggle = true;
+  status = 'Start Simulation';
+  toggle1 = false;
+  atoggle = false;
+
+  constructor(
+    private aroute: ActivatedRoute,
+    public dialog: MatDialog,
+    private injector: Injector,
+    private title: Title) {
+>>>>>>> master
     Workspace.initializeGlobalFunctions();
   }
 
@@ -34,6 +55,12 @@ export class SimulatorComponent implements OnInit {
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
       // console.log(v);
+      this.projectId = parseInt(v.id, 10);
+      if (this.projectId) {
+        Workspace.readIDB(this.projectId, (data) => {
+          this.LoadProject(data);
+        });
+      }
     });
 
     const gtag = this.makeSVGg();
@@ -103,6 +130,33 @@ export class SimulatorComponent implements OnInit {
     block.classList.toggle('show-div');
   }
 
+<<<<<<< HEAD
+=======
+
+  StartSimulation() {
+    Workspace.ClearConsole();
+    window['printConsole']('Starting Simulation', ConsoleType.INFO);
+    this.stoggle = !this.stoggle;
+    this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
+    const sim = document.getElementById('console');
+    const simload = document.getElementById('simload');
+    if (!this.stoggle) {
+      sim.style.display = 'block';
+      // simload.style.display = 'block';
+      Workspace.CompileCode();
+    } else {
+      sim.style.display = 'none';
+      Workspace.simulating = false;
+      Workspace.stopSimulation();
+      // this.hidesimload();
+    }
+  }
+
+  hidesimload() {
+    const simload = document.getElementById('simload');
+    simload.style.display = 'none';
+  }
+>>>>>>> master
   /**
    * Hide/Show (toggle) Code Editor
    * @param elem Code Editor Parent Div
@@ -187,4 +241,25 @@ export class SimulatorComponent implements OnInit {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
   }
+<<<<<<< HEAD
+=======
+  SaveProject() {
+    if (this.projectId) {
+      Workspace.SaveCircuit(this.projectTitle, this.description, this.projectId);
+    } else {
+      Workspace.SaveCircuit(this.projectTitle, this.description);
+    }
+  }
+  ClearProject() {
+    // TODO: Clear Variables instead of Reloading
+    window.location.reload();
+  }
+  LoadProject(data: any) {
+    console.log(data);
+    this.projectTitle = data.project.name;
+    this.description = data.project.description;
+    this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+    Workspace.Load(data);
+  }
+>>>>>>> master
 }

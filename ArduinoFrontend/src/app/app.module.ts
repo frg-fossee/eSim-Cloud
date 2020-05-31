@@ -10,7 +10,15 @@ import { SimulatorComponent } from './simulator/simulator.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatDialogModule, MatInputModule, MatButtonModule, MatTableModule, MatRadioModule, MatDividerModule } from '@angular/material';
+import {
+  MatDialogModule,
+  MatInputModule,
+  MatButtonModule,
+  MatTableModule,
+  MatRadioModule,
+  MatDividerModule,
+  MatTabsModule
+} from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';

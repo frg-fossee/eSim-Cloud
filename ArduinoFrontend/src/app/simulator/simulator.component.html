@@ -13,9 +13,15 @@
           Project
         </a>
         <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
+<<<<<<< HEAD
           <a class="dropdown-item text-dark" href="#">New Project</a>
           <a class="dropdown-item text-dark" href="#">Clear Project</a>
           <a class="dropdown-item text-dark" href="#">Save</a>
+=======
+          <a class="dropdown-item text-dark" href="/simulator" target="_blank">New Project</a>
+          <a class="dropdown-item text-dark" (click)="ClearProject()">Clear Project</a>
+          <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a>
+>>>>>>> master
 
         </div>
       </li>
@@ -242,7 +248,7 @@
     </mat-form-field>
     <mat-form-field class="example-full-width">
       <mat-label>Description</mat-label>
-      <textarea matInput></textarea>
+      <textarea matInput [(ngModel)]="description"></textarea>
     </mat-form-field>
   </div>
   <div *ngIf="!showProperty" style="display: flex;">

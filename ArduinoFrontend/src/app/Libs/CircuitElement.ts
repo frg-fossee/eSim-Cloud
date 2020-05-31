@@ -14,6 +14,11 @@ export abstract class CircuitElement {
   public title: string;
   public simulationData: any = {}; // Store Values That are required during simulation
   public data: any = {}; // Store Values that are additionaly require by class
+<<<<<<< HEAD
+=======
+  public info: any;
+  public pointHalf: number;
+>>>>>>> master
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
@@ -28,6 +33,7 @@ export abstract class CircuitElement {
         .then(v => v.json())
         .then(obj => {
           this.title = obj.name;
+          this.pointHalf = obj.pointHalf;
           this.DrawElement(canvas, obj.draw);
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
           // console.log(obj);
@@ -36,6 +42,11 @@ export abstract class CircuitElement {
           this.setClickListener(null);
           this.setHoverListener();
           this.init();
+          this.elements.transform(`t${this.tx},${this.ty}`);
+          for (const node of this.nodes) {
+            node.relativeMove(this.tx, this.ty);
+          }
+          window['queue'] -= 1;
         })
         .catch(err => {
           // TODO: Show Toast failed to load
@@ -244,15 +255,56 @@ export abstract class CircuitElement {
   /**
    * Save Circuit Component
    */
+<<<<<<< HEAD
   abstract save(): any;
+=======
+  save(): any {
+    const data = this.SaveData();
+    const ret = {
+      x: this.x,
+      y: this.y,
+      tx: this.tx,
+      ty: this.ty,
+      id: this.id
+    };
+    if (data) {
+      ret['data'] = data;
+    }
+    return ret;
+  }
+  SaveData() {
+    return null;
+  }
+>>>>>>> master
   /**
    * Load Circuit Component
    */
-  abstract load(data: any): void;
+  load(data: any): void {
+    this.id = data.id;
+    this.tx = data.tx;
+    this.ty = data.ty;
+    this.LoadData(data);
+  }
+  LoadData(data: any) { }
   /**
    * Returns the Circuit Node based on the x,y Position
    */
+<<<<<<< HEAD
   abstract getNode(x: number, y: number): Point;
+=======
+  getNode(x: number, y: number): Point {
+    // console.log([x, y]);
+    for (const node of this.nodes) {
+      if (
+        Math.floor(node.x + this.pointHalf) === Math.floor(x) &&
+        Math.floor(node.y + this.pointHalf) === Math.floor(y)
+      ) {
+        return node;
+      }
+    }
+    return null;
+  }
+>>>>>>> master
   /**
    * Removes Component from Canvas and memory
    */

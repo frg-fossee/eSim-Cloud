@@ -117,7 +117,7 @@ export class Wire {
    * @param t End point / END circuit node
    * @param removeLast remove previously inserted item
    */
-  connect(t: Point, removeLast: boolean = false) {
+  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false) {
     // if remove last then pop from array
     if (removeLast && this.points.length > 1) {
       this.points.pop();
@@ -145,6 +145,9 @@ export class Wire {
         }, () => {
         });
         this.joints.push(joint);
+        if (hideJoint) {
+          joint.hide();
+        }
       }
     }
     this.update();
@@ -238,6 +241,13 @@ export class Wire {
     for (const joint of this.joints) {
       joint.remove();
     }
+<<<<<<< HEAD
+=======
+    if (this.glow) {
+      this.glow.remove();
+    }
+    this.glow = null;
+>>>>>>> master
     this.joints = [];
     this.joints = null;
     this.points = [];

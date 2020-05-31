@@ -28,6 +28,19 @@ export class Resistor extends CircuitElement {
     delete this.data;
     this.data = null;
   }
+<<<<<<< HEAD
+=======
+  SaveData() {
+    return {
+      value: this.value,
+      tolerance: this.toleranceIndex
+    };
+  }
+  LoadData(data: any) {
+    this.value = data.data.value;
+    this.toleranceIndex = data.data.tolerance;
+  }
+>>>>>>> master
   updateColors() {
     const cur = this.getValue();
     this.elements[1].attr({
@@ -46,6 +59,7 @@ export class Resistor extends CircuitElement {
       fill: Resistor.colorTable[this.toleranceIndex]
     }); // Tolerance
   }
+<<<<<<< HEAD
   save() {
   }
   load(data: any): void {
@@ -53,6 +67,8 @@ export class Resistor extends CircuitElement {
   getNode(x: number, y: number): Point {
     return null;
   }
+=======
+>>>>>>> master
   getValue() {
     const l = `${this.value}`.length;
     const tmp = `${this.value}`;
@@ -180,3 +196,81 @@ export class Resistor extends CircuitElement {
   }
 
 }
+<<<<<<< HEAD
+=======
+
+
+export class BreadBoard extends CircuitElement {
+  public joined: Point[] = [];
+  constructor(public canvas: any, x: number, y: number) {
+    super('BreadBoard', x, y, 'Breadboard.json', canvas);
+  }
+  init() {
+    for (const node of this.nodes) {
+      node.connectCallback = (item) => {
+        this.joined.push(item);
+      };
+    }
+    this.elements.undrag();
+    let tmpx = 0;
+    let tmpy = 0;
+    let fdx = 0;
+    let fdy = 0;
+    let tmpar = [];
+    let tmpar2 = [];
+    this.elements.drag((dx, dy) => {
+      this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
+      tmpx = this.tx + dx;
+      tmpy = this.ty + dy;
+      fdx = dx;
+      fdy = dy;
+      for (let i = 0; i < this.joined.length; ++i) {
+        this.joined[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
+      }
+    }, () => {
+      fdx = 0;
+      fdy = 0;
+      tmpar = [];
+      tmpar2 = [];
+      for (const node of this.nodes) {
+        tmpar2.push(
+          [node.x, node.y]
+        );
+        node.remainHidden();
+      }
+      for (const node of this.joined) {
+        tmpar.push(
+          [node.x, node.y]
+        );
+        node.remainShow();
+      }
+
+    }, () => {
+      for (let i = 0; i < this.nodes.length; ++i) {
+        this.nodes[i].move(tmpar2[i][0] + fdx, tmpar2[i][1] + fdy);
+        this.nodes[i].remainShow();
+      }
+      tmpar2 = [];
+      this.tx = tmpx;
+      this.ty = tmpy;
+      this.x += this.tx;
+      this.y += this.ty;
+    });
+  }
+  properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
+    const body = document.createElement('div');
+    return {
+      keyName: this.keyName,
+      id: this.id,
+      body,
+      title: this.title
+    };
+  }
+  initSimulation(): void {
+  }
+  closeSimulation(): void {
+  }
+  simulate(): void {
+  }
+}
+>>>>>>> master

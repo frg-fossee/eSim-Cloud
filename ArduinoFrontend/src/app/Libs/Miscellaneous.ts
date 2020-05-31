@@ -18,7 +18,29 @@ export class Label extends CircuitElement {
     this.setClickListener(null);
     this.setDragListeners();
     this.setHoverListener();
+    window['queue'] -= 1;
   }
+<<<<<<< HEAD
+=======
+  SaveData() {
+    return {
+      text: this.text,
+      size: this.fontSize,
+      color: this.fontColor,
+      weight: this.fontWeight,
+      style: this.fontStyle
+    };
+  }
+  LoadData(data: any) {
+    this.text = data.data.text;
+    this.fontSize = data.data.size;
+    this.fontColor = data.data.color;
+    this.fontWeight = data.data.weight;
+    this.fontStyle = data.data.style;
+    this.elements.transform(`t${this.tx},${this.ty}`);
+    this.update();
+  }
+>>>>>>> master
   update() {
     this.elements[0]
       .attr({
@@ -30,10 +52,13 @@ export class Label extends CircuitElement {
         fill: this.fontColor
       });
   }
+<<<<<<< HEAD
   save() {
   }
   load(data: any): void {
   }
+=======
+>>>>>>> master
   changeLabel(value: string) {
     if (value === '') {
       // TODO: Show Toast

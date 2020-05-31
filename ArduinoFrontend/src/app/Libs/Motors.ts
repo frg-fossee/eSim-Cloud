@@ -25,11 +25,14 @@ export class Motor extends CircuitElement {
   }
   save() {
   }
+<<<<<<< HEAD:ArduinoFrontend/src/app/Libs/Motors.ts
   load(data: any): void {
   }
   getNode(x: number, y: number): Point {
     return null;
   }
+=======
+>>>>>>> master:ArduinoFrontend/src/app/Libs/outputs/Motors.ts
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -54,6 +57,7 @@ export class L298N extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('L298N', x, y, 'L298N.json', canvas);
   }
+<<<<<<< HEAD:ArduinoFrontend/src/app/Libs/Motors.ts
   save() {
   }
   load(data: any): void {
@@ -61,6 +65,8 @@ export class L298N extends CircuitElement {
   getNode(x: number, y: number): Point {
     return null;
   }
+=======
+>>>>>>> master:ArduinoFrontend/src/app/Libs/outputs/Motors.ts
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     body.innerText = 'If you Don\'t Connect The ENA and ENB Pins it automatically connects to the 5V suppy';
@@ -89,6 +95,7 @@ export class ServoMotor extends CircuitElement {
     const anim = Raphael.animation({ transform: `r${angle}` }, 2500);
     this.elements[1].animate(anim);
   }
+<<<<<<< HEAD:ArduinoFrontend/src/app/Libs/Motors.ts
   save() {
   }
   load(data: any): void {
@@ -96,6 +103,8 @@ export class ServoMotor extends CircuitElement {
   getNode(x: number, y: number): Point {
     return null;
   }
+=======
+>>>>>>> master:ArduinoFrontend/src/app/Libs/outputs/Motors.ts
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

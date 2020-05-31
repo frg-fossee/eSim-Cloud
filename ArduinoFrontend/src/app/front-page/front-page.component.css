@@ -1,0 +1,43 @@
+#titlepage {
+    background-color: white;
+    position: relative;
+    color: black;
+    top: 80px;
+    width: 80%;
+    min-height: 58vh;
+    margin-left: 10%;
+    border-radius: 5px;
+    box-sizing: border-box;
+    justify-content: space-around;
+}
+
+.button {
+    --border-size: 2px;
+    margin-left: 5px;
+    padding: 1.5em 3em;
+    appearance: none;
+    border: 0;
+    background: transparent;
+    color: blue;
+    text-transform: uppercase;
+    letter-spacing: .25em;
+    outline: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0;
+    box-shadow: inset 0 0 0 var(--border-size) currentcolor;
+}
+
+.button:hover{
+  color: white;
+  background: blue;
+}
+
+@media screen and (max-width: 846px) {
+    #titlepage {
+        width: 100%;
+    }
+    #demo {
+        top: 10px;
+    }
+}
