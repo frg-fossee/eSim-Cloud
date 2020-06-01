@@ -107,7 +107,7 @@ export default function SimulationScreen ({ open, close }) {
                     />
                   </Paper>
                 </Grid>
-                : <span>SOMETHING WENT WRONG PLEASE CHECK THE CIRCUIT</span>
+                : <span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span>
             }
 
             {

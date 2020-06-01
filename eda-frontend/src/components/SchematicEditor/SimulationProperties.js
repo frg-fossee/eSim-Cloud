@@ -171,20 +171,20 @@ export default function SimulationProperties () {
   }
 
   // convert exponential valuese to integers
-  function convert (n) {
-    var sign = +n < 0 ? '-' : ''
-    var toStr = n.toString()
-    if (!/e/i.test(toStr)) {
-      return n
-    }
-    var [lead, decimal, pow] = n.toString()
-      .replace(/^-/, '')
-      .replace(/^([0-9]+)(e.*)/, '$1.$2')
-      .split(/e|\./)
-    return +pow < 0
-      ? sign + '0.' + '0'.repeat(Math.max(Math.abs(pow) - 1 || 0, 0)) + lead + decimal
-      : sign + lead + (+pow >= decimal.length ? (decimal + '0'.repeat(Math.max(+pow - decimal.length || 0, 0))) : (decimal.slice(0, +pow) + '.' + decimal.slice(+pow)))
-  }
+  // function convert (n) {
+  //   var sign = +n < 0 ? '-' : ''
+  //   var toStr = n.toString()
+  //   if (!/e/i.test(toStr)) {
+  //     return n
+  //   }
+  //   var [lead, decimal, pow] = n.toString()
+  //     .replace(/^-/, '')
+  //     .replace(/^([0-9]+)(e.*)/, '$1.$2')
+  //     .split(/e|\./)
+  //   return +pow < 0
+  //     ? sign + '0.' + '0'.repeat(Math.max(Math.abs(pow) - 1 || 0, 0)) + lead + decimal
+  //     : sign + lead + (+pow >= decimal.length ? (decimal + '0'.repeat(Math.max(+pow - decimal.length || 0, 0))) : (decimal.slice(0, +pow) + '.' + decimal.slice(+pow)))
+  // }
 
   // Get the simulation result with task_Id
   function simulationResult (url) {
@@ -216,16 +216,9 @@ export default function SimulationProperties () {
               }
             }
 
-            // simResultGraph.labels = temp[0].labels
-            // simResultGraph.x1 = temp[0].x
-            // simResultGraph.y11 = temp[0].y[0]
-            // simResultGraph.y21 = temp[0].y[1]
-
-            // console.log("GRAPH",simResultGraph)
-            // handleSimulationResult(simResultGraph)
-            simResultGraph.x_points = simResultGraph.x_points.map(d => (convert(d)))
+            simResultGraph.x_points = simResultGraph.x_points.map(d => d)
             for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
-              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => (convert(d)))
+              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => d)
             }
             console.log('LOG', simResultGraph)
             dispatch(setResultGraph(simResultGraph))
