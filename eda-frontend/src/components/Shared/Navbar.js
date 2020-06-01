@@ -63,45 +63,47 @@ export function Header () {
         </Link>
       </Typography>
       <nav>
-
-        <Link
-          variant="button"
-          color="textPrimary"
-          to="/"
-          component={RouterLink}
-          className={classes.link}
-        >
-          Home
-        </Link>
-
-        <Link
-          variant="button"
-          color="textPrimary"
-          to="/editor"
-          component={RouterLink}
-          className={classes.link}
-        >
-          Editor
-        </Link>
-        <Link
-          variant="button"
-          color="textPrimary"
-          to="/simulator"
-          component={RouterLink}
-          className={classes.link}
-        >
-          Simulator
-        </Link>
         {
-          (auth.isAuthenticated ? (<Link
-            variant="button"
-            color="textPrimary"
-            to="/dashboard"
-            component={RouterLink}
-            className={classes.link}
-          >
-            Dashboard
-          </Link>)
+          (auth.isAuthenticated
+            ? (<>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Home
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Editor
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Simulator
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/dashboard"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Dashboard
+              </Link>
+            </>)
             : (<>
               <span />
             </>
