@@ -38,5 +38,22 @@
       "fill": "#8c8c8c"
     }
   ],
-  "simulation": {}
+  "simulation": {},
+  "info": {
+    "name": "SlideSwitch",
+    "image": "https://img3.exportersindia.com/product_images/bc-full/2019/12/5794909/slide-switch-1576661412-5212255.jpeg",
+    "Datasheet": "http://www.ti.com/lit/ds/symlink/sn74lvc1g3157.pdf?ts=1588676642180",
+    "description": "Slide switches are mechanical switches using a slider that moves (slides) from the open (off) position to the closed (on) position. They allow control over current flow in a circuit without having to manually cut or splice wire. This type of switch is best used for controlling current flow in small projects.",
+    "properties": {
+      "Contact rating": "12 V DC, 200 mA",
+      "Contact resistance": "<50 mOhms",
+      "Insulation resistance": "> 100 MOhms at 500 V DC",
+      "Dielectric strength": "500 V, 50 Hz for the duration of 1 minute",
+      "Operating temperature": " -10 Degree Celsius to + 60 Degree Celsius",
+      "Mechanical life": " minimum 5000 operations",
+      "Contacts": "phosphor bronze, silver-plated",
+      "Terminals": "brass silver-plated",
+      "Contact timing": "non-shorting"
+    }
+  }
 }

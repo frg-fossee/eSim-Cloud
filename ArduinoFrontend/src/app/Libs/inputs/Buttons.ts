@@ -28,9 +28,6 @@ export class PushButton extends CircuitElement {
   logic(v) {
 
   }
-  getNode(x: number, y: number): Point {
-    return null;
-  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -84,7 +81,6 @@ export class PushButton extends CircuitElement {
 
 
 export class SlideSwitch extends CircuitElement {
-  static pointHalf = 4;
   private reverseAnim = true;
 
   constructor(public canvas: any, x: number, y: number) {

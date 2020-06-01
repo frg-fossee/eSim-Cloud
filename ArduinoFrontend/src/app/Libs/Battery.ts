@@ -1,7 +1,6 @@
 import { CircuitElement } from './CircuitElement';
 
 export class Battery9v extends CircuitElement {
-  static pointHalf = 4;
   constructor(public canvas: any, x: number, y: number) {
     super('Battery9v', x, y, 'Battery9v.json', canvas);
   }
@@ -13,9 +12,6 @@ export class Battery9v extends CircuitElement {
         window['showToast']('Short Circuit');
       }
     });
-  }
-  getNode(x: number, y: number): Point {
-    return null;
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
@@ -38,7 +34,6 @@ export class Battery9v extends CircuitElement {
 
 
 export class CoinCell extends CircuitElement {
-  static pointHalf = 5;
   constructor(public canvas: any, x: number, y: number) {
     super('CoinCell', x, y, 'CoinCell.json', canvas);
   }

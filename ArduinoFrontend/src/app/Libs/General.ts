@@ -92,8 +92,7 @@ export class Resistor extends CircuitElement {
     const p = this.getPower(unitIndex);
     const tmp = parseInt((val * p).toFixed(0), 10);
     if (value.length > 12 || isNaN(tmp) || tmp === Infinity || tmp < 1.0 || `${tmp}`.length > 12) {
-      // TODO: Show Toast
-      console.log('Not Possible');
+      window['showToast']('Resistance Not possible');
       return;
     } else {
       this.value = tmp;
@@ -122,7 +121,10 @@ export class Resistor extends CircuitElement {
       ]
     };
   }
-
+  getName() {
+    const cur = this.getInputValues();
+    return `Resistor ${cur.val}${Resistor.unitLabels[cur.index]}`;
+  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     let tmp;
     const cur = this.getInputValues();

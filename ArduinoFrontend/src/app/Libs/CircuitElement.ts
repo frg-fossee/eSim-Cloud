@@ -1,4 +1,5 @@
 import { Point } from './Point';
+import { Wire } from './Wire';
 
 /**
  * Abstract Class Circuit Elements
@@ -34,6 +35,7 @@ export abstract class CircuitElement {
           this.DrawElement(canvas, obj.draw);
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
           // console.log(obj);
+          this.info = obj.info;
           this.data = obj.data;
           this.setDragListeners();
           this.setClickListener(null);
@@ -46,7 +48,9 @@ export abstract class CircuitElement {
           window['queue'] -= 1;
         })
         .catch(err => {
-          // TODO: Show Toast failed to load
+          console.error(err);
+          window['showToast']('Failed to load');
+          // TODO: Delete the Component
         });
     }
   }
@@ -239,6 +243,9 @@ export abstract class CircuitElement {
 
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
+      if (window['Selected'] && (window['Selected'] instanceof Wire)) {
+        return;
+      }
       window['isSelected'] = true;
       window['Selected'] = this;
       window['showProperty'](() => this.properties());
@@ -302,7 +309,10 @@ export abstract class CircuitElement {
     for (const n of this.nodes) {
       n.remove();
     }
+    this.delete();
   }
+  delete() { }
+  getName() { return this.title; }
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box

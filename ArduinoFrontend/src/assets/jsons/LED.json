@@ -39,11 +39,38 @@
   ],
   "simulation": {},
   "data": {
+    "colorNames": [
+      "Red",
+      "Green",
+      "Yellow",
+      "Orange",
+      "Blue",
+      "White"
+    ],
     "colors": [
-      "#802020"
+      "#802020",
+      "#208028",
+      "#806f20",
+      "#8f5100",
+      "#206080",
+      "#808080"
     ],
     "glowcolors": [
-      "rgba(255,0,0,0.7)-rgba(255,0,0,0.2)"
+      "rgba(255,0,0,0.7)-rgba(255,0,0,0.2)",
+      "rgba(8, 255, 90,0.7)-rgba(8, 255, 90,0.2)",
+      "rgba(255, 247, 8,0.7)-rgba(255, 247, 8,0.2)",
+      "rgba(255, 148, 8,0.7)-rgba(255, 148, 8,0.2)",
+      "rgba(66, 135, 245,0.7)-rgba(66, 135, 245,0.2)",
+      "rgba(214, 214, 214,0.7)-rgba(214, 214, 214,0.2)"
     ]
+  },
+  "info": {
+    "name": "LED",
+    "image": "https://static.rapidonline.com/catalogueimages/module/06/01/m060113p01wl.jpg",
+    "description": "A light-emitting diode (LED) is a semiconductor light source that emits light when current flows through it.",
+    "properties": {
+      "Light Color": "White, Yellow, Red, Green & Blue",
+      "Voltage ": "DC 3V - 5V"
+    }
   }
 }

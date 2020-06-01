@@ -37,5 +37,18 @@
             "y": 12.5
         }
     ],
-    "simulation": {}
+    "simulation": {},
+    "info": {
+        "name": "Pontientiometer",
+        "image": "https://commons.wikimedia.org/wiki/File:Electronic-Component-Potentiometer.jpg",
+        "description": "Potentiometers also known as POT, are nothing but variable resistors. They can provide a variable resistance by simply varying the knob on top of its head. It can be classified based on two main parameters. One is their Resistance (R-ohms) itself and the other is its Power (P-Watts) rating.",
+        "properties": {
+            "Type": "Rotary(Radio POT)",
+            "Resistance values": "500Ω, 1K, 2K, 5K, 10K, 22K, 47K, 50K, 100K, 220K, 470K, 500K, 1 M",
+            "Peak wavelength": "600nm",
+            "Power Rating": "0.3W",
+            "Maximum Input Voltage": "200Vdc",
+            "Rotational Life": " 2000K cycles"
+        }
+    }
 }

@@ -23,6 +23,9 @@ import { ViewComponentInfoComponent } from './view-component-info/view-component
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
 import { ComponentlistComponent } from './componentlist/componentlist.component';
+import { MatIconModule } from '@angular/material/icon';
+import { FrontPageComponent } from './front-page/front-page.component';
+import { GalleryComponent } from './gallery/gallery.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +36,8 @@ import { ComponentlistComponent } from './componentlist/componentlist.component'
     ViewComponentInfoComponent,
     ExportfileComponent,
     ComponentlistComponent,
+    FrontPageComponent,
+    GalleryComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +51,9 @@ import { ComponentlistComponent } from './componentlist/componentlist.component'
     MatInputModule,
     MatButtonModule,
     MatTableModule,
-    HttpClientModule
+    HttpClientModule,
+    MatIconModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

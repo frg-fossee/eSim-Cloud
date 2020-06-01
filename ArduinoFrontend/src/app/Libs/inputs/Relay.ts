@@ -2,8 +2,6 @@ import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 
 export class Relay extends CircuitElement {
-  static pointHalf = 5;
-
   constructor(public canvas: any, public x: number, y: number) {
     super('RelayModule', x, y, 'Relay.json', canvas);
   }

@@ -8,6 +8,7 @@ import { isNull, isUndefined } from 'util';
 
 declare var window;
 declare var $; // For Jquery
+export enum ConsoleType { INFO, WARN, ERROR, OUTPUT }
 
 export class Workspace {
   // TODO: Add Comments
@@ -22,6 +23,8 @@ export class Workspace {
     start: false
   };
   static copiedItem: any;
+  static injector: Injector;
+  static simulating = false;
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -59,6 +62,7 @@ export class Workspace {
     window['test'] = Workspace.zoomIn;
     window['holder'] = document.getElementById('holder').getBoundingClientRect();
     window['holder_svg'] = document.querySelector('#holder > svg');
+    window['ArduinoUno_name'] = {};
     // Stores all the Circuit Information
     window['scope'] = {
       wires: []
@@ -126,10 +130,44 @@ export class Workspace {
     };
     // Global Function to show Toast Message
     window['showToast'] = (message: string) => {
-      const toastele = document.getElementById('ToastMessage');
+      const ele = document.getElementById('ToastMessage');
+
+      ele.style.display = 'block';
+      ele.innerText = message;
+      ele.style.padding = '15px 25px 15px 25px';
       setTimeout(() => {
-        toastele.style.display = 'block';
-      }, 6000);
+        ele.style.display = 'none';
+      }, 10000);
+
+    };
+    window['printConsole'] = (textmsg: string, type: ConsoleType) => {
+      const msg = document.getElementById('msg');
+      const container = document.createElement('label');
+      container.innerText = textmsg;
+      if (type === ConsoleType.ERROR) {
+        container.style.color = 'red';
+      } else if (type === ConsoleType.WARN) {
+        container.style.color = 'yellow';
+      } else if (type === ConsoleType.INFO) {
+        container.style.color = 'white';
+      } else if (type === ConsoleType.OUTPUT) {
+        container.style.color = '#03fc6b';
+      }
+      msg.appendChild(container);
+    };
+    // window.addEventListener('beforeunload', (event) => {
+    //   event.preventDefault();
+    //   event.returnValue = 'did you save the stuff?';
+    // });
+
+    window['showLoading'] = () => {
+      const showloader = document.getElementById('loadanim');
+      showloader.style.display = 'flex';
+    };
+
+    window['hideLoading'] = () => {
+      const hideloader = document.getElementById('loadanim');
+      hideloader.style.display = 'none';
     };
   }
   /**
@@ -239,6 +277,7 @@ export class Workspace {
   static hideContextMenu() {
     const element = document.getElementById('contextMenu');
     element.style.display = 'none';
+
   }
   static copy(event: ClipboardEvent) {
   }
@@ -277,13 +316,40 @@ export class Workspace {
   }
 
   static keyDown(event: KeyboardEvent) {
-
+    // event.preventDefault();
   }
   static keyPress(event: KeyboardEvent) {
-
+    // event.preventDefault();
   }
   static keyUp(event: KeyboardEvent) {
-
+    // event.preventDefault();
+    // console.log([event.ctrlKey, event.key]);
+    if (event.key === 'Delete') {
+      // Backspace or Delete
+      Workspace.DeleteComponent();
+    }
+    if (event.ctrlKey && (event.key === 'c' || event.key === 'C')) {
+      // Copy
+      Workspace.copyComponent();
+    }
+    if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
+      // paste
+      Workspace.pasteComponent();
+    }
+    if (event.ctrlKey && (event.key === '+')) {
+      // CTRL + +
+      Workspace.zoomIn();
+    }
+    if (event.ctrlKey && (event.key === '-')) {
+      // CTRL + -
+      Workspace.zoomIn();
+    }
+    if (event.ctrlKey && (event.key === 'k' || event.key === 'K')) {
+      // TODO: Open Code Editor
+    }
+    if (event.key === 'F5') {
+      // TODO: Start Simulation
+    }
   }
   static mouseWheel(event: WheelEvent) {
     event.preventDefault();
@@ -579,7 +645,14 @@ export class Workspace {
 
   static DeleteComponent() {
     if (window['Selected']) {
+      if (window['Selected'] instanceof ArduinoUno) {
+        const ans = confirm('The Respective code will also be lost!');
+        if (!ans) {
+          return;
+        }
+      }
       const uid = window.Selected.id;
+      // console.log(window.)
       const items = window.scope[window.Selected.keyName];
       for (let i = 0; i < items.length; ++i) {
         if (items[i].id === uid) {
@@ -593,12 +666,15 @@ export class Workspace {
       }
       window.hideProperties();
     } else {
-      // TODO: Show Toast
-      console.log('No Element Selected');
+      window['showToast']('No Element Selected');
     }
   }
   static copyComponent() {
     if (window['Selected']) {
+      if (window['Selected'] instanceof Wire) {
+        window['showToast']('You Can\'t Copy Wire');
+        return;
+      }
       Workspace.copiedItem = window.Selected;
     } else {
       Workspace.copiedItem = null;
@@ -608,10 +684,14 @@ export class Workspace {
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
       const ele = document.getElementById('contextMenu');
-      const x = +ele.style.left.replace('px', '');
-      const y = +ele.style.top.replace('px', '');
+      let x = +ele.style.left.replace('px', '');
+      let y = +ele.style.top.replace('px', '');
       // console.log([x, y]);
       const key = Workspace.copiedItem.keyName;
+      if (x === 0 && y === 0) {
+        x = Workspace.copiedItem.x + 100;
+        y = Workspace.copiedItem.y + 100;
+      }
       const pt = Workspace.svgPoint(x, y);
       // Workspace.addComponent(Workspace.copiedItem, pt.x, pt.y, 0, 0);
       const myClass = Utils.components[key].className;
