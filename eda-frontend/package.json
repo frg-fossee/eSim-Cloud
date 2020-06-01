@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-colorschemes": "^0.4.0",
     "chartjs-plugin-zoom": "^0.7.7",
     "file-saver": "^2.0.2",
     "material-ui-popup-state": "^1.5.4",

@@ -1,13 +1,11 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
-
+import * as Zoom from 'chartjs-plugin-zoom'
+import 'chartjs-plugin-colorschemes';
 import { Line } from 'react-chartjs-2'
 
 const Graph = (props) => {
   const { x, y, labels } = props
-  const getRandomColor = () => {
-    return '#' + (Math.random() * 0xFFFFFF << 0).toString(16)
-  }
 
   const dataset = () => {
     var arr = []
@@ -17,7 +15,7 @@ const Graph = (props) => {
         label: labels[i + 1],
         data: y[i],
         fill: false,
-        borderColor: getRandomColor()
+
       })
     }
     return arr
@@ -39,6 +37,13 @@ const Graph = (props) => {
             text: ''
           },
           plugins: {
+
+
+              colorschemes: {
+
+                scheme: 'brewer.SetOne9'
+
+              },
             zoom: {
               // Container for pan options
               pan: {
@@ -82,7 +87,9 @@ const Graph = (props) => {
                   labelString: labels[0]
                 },
                 ticks: {
-                  display: true
+                  display: true,
+                  stepSize:1,
+                   padding: 25
                 }
               }
             ],
@@ -108,7 +115,9 @@ const Graph = (props) => {
 
         }}
       />
+
     </div>
+
   )
 }
 
