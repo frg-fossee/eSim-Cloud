@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { Link as RouterLink } from 'react-router-dom'
+import logo from '../static/logo.png'
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -21,6 +22,9 @@ export default function Home () {
 
   return (
     <Container maxWidth="sm" component="main" className={classes.header}>
+      <center>
+        <img src={logo} width='120' height='120' alt='Logo' />
+      </center>
       <Typography
         component="h1"
         variant="h2"

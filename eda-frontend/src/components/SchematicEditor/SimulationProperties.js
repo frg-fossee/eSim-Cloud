@@ -9,13 +9,16 @@ import {
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-  Typography
+  Typography,
+  Select,
+  Divider,
+  Popover
 } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
-import { GenerateNetList, GenerateNodeList } from './Helper/ToolbarTools'
+import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
 
 import api from '../../utils/Api'
@@ -47,12 +50,17 @@ export default function SimulationProperties () {
   const dispatch = useDispatch()
   const classes = useStyles()
   const [nodeList, setNodeList] = useState([])
+  const [componentsList, setComponentsList] = useState([])
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
     sweepType: 'Linear',
     start: '',
     stop: '',
-    step: ''
+    step: '',
+    parameter2: '',
+    start2: '',
+    stop2: '',
+    step2: ''
   })
   const [transientAnalysisControlLine, setTransientAnalysisControlLine] = useState({
     start: '',
@@ -68,11 +76,17 @@ export default function SimulationProperties () {
     pointsBydecade: ''
   })
 
+  const [controlBlockParam, setControlBlockParam] = useState('')
+
+  const handleControlBlockParam = (evt) => {
+    setControlBlockParam(evt.target.value)
+  }
+
   const onDcSweepTabExpand = () => {
     try {
-      setNodeList([...GenerateNodeList()])
+      setComponentsList(['', ...GenerateCompList()])
     } catch (err) {
-      setNodeList([])
+      setComponentsList([])
       alert('Circuit not complete. Please Check Connectons.')
     }
   }
@@ -169,9 +183,9 @@ export default function SimulationProperties () {
             console.log(simResultGraph)
             dispatch(setResultGraph(simResultGraph))
           } else {
-            var simResultText = ''
+            var simResultText = []
             for (var i = 0; i < temp.length; i++) {
-              simResultText += temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n'
+              simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n')
             }
             console.log(simResultText)
             dispatch(setResultText(simResultText))
@@ -183,6 +197,166 @@ export default function SimulationProperties () {
         console.log(error)
       })
   }
+  // const SecondaryParamaterForDcSweep = (props) => {
+  //   const prefix = props.prefix
+  //   if (prefix === 'R' || prefix === 'r') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Resistance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>K</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Resistance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>K</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Resistance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>K</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'C' || prefix === 'c') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Capacitance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>F</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Capacitance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>F</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Capacitance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>F</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'L' || prefix === 'l') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Inductance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>H</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Inductance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>H</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Inductance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>H</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'V' || prefix === 'v') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Voltage" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>V</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Voltage" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>V</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step InductVoltageance" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>V</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else if (prefix === 'I' || prefix === 'i') {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Current" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>A</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Current" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>A</span>
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Current" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+  //           <span style={{ marginLeft: '10px' }}>A</span>
+  //         </ListItem>
+  //       </>
+  //     )
+  //   } else {
+  //     return (
+  //       <>
+  //         <ListItem>
+  //           <TextField id="start2" label="Start Value" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.start2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="stop2" label="Stop Value" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.stop2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+
+  //         </ListItem>
+  //         <ListItem>
+  //           <TextField id="step2" label="Step Value" size='small' variant="outlined"
+  //             value={dcSweepcontrolLine.step2}
+  //             onChange={handleDcSweepControlLine}
+  //           />
+
+  //         </ListItem>
+  //       </>
+  //     )
+  //   }
+  // }
 
   const startSimulate = (type) => {
     var compNetlist = GenerateNetList()
@@ -196,12 +370,12 @@ export default function SimulationProperties () {
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
-        controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step}`
+        controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
         dispatch(setResultTitle('DC Sweep Output'))
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
-        controlLine = `.tran ${transientAnalysisControlLine.step}e-03 ${transientAnalysisControlLine.stop}e-03 ${transientAnalysisControlLine.start}e-03`
+        controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`
         dispatch(setResultTitle('Transient Analysis Output'))
         break
       case 'Ac':
@@ -212,7 +386,9 @@ export default function SimulationProperties () {
       default:
         break
     }
-    controlBlock = '\n.control \nrun \nprint all > data.txt \n.endc \n.end'
+    let cblockline
+    if (controlBlockParam.length <= 0) { cblockline = 'all' } else { cblockline = controlBlockParam }
+    controlBlock = `\n.control \nrun \nprint ${cblockline} > data.txt \n.endc \n.end`
     // console.log(controlLine)
 
     dispatch(setControlLine(controlLine))
@@ -229,6 +405,19 @@ export default function SimulationProperties () {
 
     // handlesimulateOpen()
   }
+
+  // simulation properties add expression input box
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const handleAddExpressionClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleAddExpressionClose = () => {
+    setAnchorEl(null)
+  }
+
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
 
   return (
     <>
@@ -253,15 +442,45 @@ export default function SimulationProperties () {
                   <form>
                     <List>
                       <ListItem>
+
+                        <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+                         Add Expression
+                        </Button>
+                        <Popover
+                          id={id}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleAddExpressionClose}
+
+                          anchorOrigin={{
+                            vertical: 'center',
+                            horizontal: 'left'
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left'
+                          }}
+                        >
+
+                          <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                            value={controlBlockParam}
+                            onChange={handleControlBlockParam}
+                          />
+
+                        </Popover>
+
+                      </ListItem>
+                      <ListItem>
                         <Button size='small' variant="contained" color="primary"
                           onClick={(e) => { startSimulate('DcSolver') }}>
-                          Run dc solver
+            Run dc solver
                         </Button>
                       </ListItem>
                     </List>
                   </form>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
+
             </div>
           </ListItem>
 
@@ -279,34 +498,38 @@ export default function SimulationProperties () {
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
                     <ListItem>
-                      <TextField size='small' variant="outlined" id="parameter" label="Select Node"
+                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
                         value={dcSweepcontrolLine.parameter}
                         onChange={handleDcSweepControlLine}
-                      />
+                      /> */}
 
-                      {/* <TextField
+                      <TextField
                         style={{ width: '100%' }}
                         id="parameter"
                         size='small'
                         variant="outlined"
                         select
-                        label="Select Node"
+                        label="Select Component"
                         value={dcSweepcontrolLine.parameter}
                         onChange={handleDcSweepControlLine}
                         SelectProps={{
                           native: true
                         }}
-
                       >
+
                         {
-                          nodeList.map(value => {
-                            return <option key={value} value={value}>
-                                        {value}
-                                  </option>
+                          componentsList.map((value, i) => {
+                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
+                              return (<option key={i} value={value}>
+                                {value}
+                              </option>)
+                            } else {
+                              return null
+                            }
                           })
                         }
 
-                      </TextField> */}
+                      </TextField>
 
                     </ListItem>
 
@@ -339,18 +562,21 @@ export default function SimulationProperties () {
                         value={dcSweepcontrolLine.start}
                         onChange={handleDcSweepControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="stop" label="Stop Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.stop}
                         onChange={handleDcSweepControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="step" label="Step" size='small' variant="outlined"
                         value={dcSweepcontrolLine.step}
                         onChange={handleDcSweepControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
 
                     {/* <ListItem>
@@ -361,6 +587,121 @@ export default function SimulationProperties () {
                     {/* <ListItem>
                       <Button size='small' variant="contained">Add Expression</Button>
                     </ListItem> */}
+
+                    {/* SECONDARY PARAMETER FOR SWEEP */}
+                    <Divider/>
+                    <ListItem>
+
+                      <h4 style={{ marginLeft: '10px' }}>Secondary Parameters</h4>
+                    </ListItem>
+
+                    <ListItem>
+                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
+                        value={dcSweepcontrolLine.parameter}
+                        onChange={handleDcSweepControlLine}
+                      /> */}
+
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="parameter2"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Component"
+                        value={dcSweepcontrolLine.parameter2}
+                        onChange={handleDcSweepControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+
+                      >
+
+                        {
+                          componentsList.map((value, i) => {
+                            return <option key={i} value={value}>
+                              {value}
+                            </option>
+                          })
+                        }
+
+                      </TextField>
+
+                    </ListItem>
+
+                    {/* <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="sweepType"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Sweep Type"
+                        value={dcSweepcontrolLine.sweepType}
+                        onChange={handleDcSweepControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+
+                      >
+                        <option key="linear" value="linear">
+                          Linear
+                        </option>
+                        <option key="decade" value="decade">
+                          Decade
+                        </option>
+                      </TextField>
+                    </ListItem> */}
+
+                    <ListItem>
+                      <TextField id="start2" label="Start Value" size='small' variant="outlined"
+                        value={dcSweepcontrolLine.start2}
+                        onChange={handleDcSweepControlLine}
+                      />
+
+                    </ListItem>
+                    <ListItem>
+                      <TextField id="stop2" label="Stop Value" size='small' variant="outlined"
+                        value={dcSweepcontrolLine.stop2}
+                        onChange={handleDcSweepControlLine}
+                      />
+
+                    </ListItem>
+                    <ListItem>
+                      <TextField id="step2" label="Step Value" size='small' variant="outlined"
+                        value={dcSweepcontrolLine.step2}
+                        onChange={handleDcSweepControlLine}
+                      />
+
+                    </ListItem>
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+   Add Expression
+                      </Button>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
 
                     <ListItem>
                       <Button id="dcSweepSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('DcSweep') }}>
@@ -391,18 +732,21 @@ export default function SimulationProperties () {
                         value={transientAnalysisControlLine.start}
                         onChange={handleTransientAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="stop" label="Stop Time" size='small' variant="outlined"
                         value={transientAnalysisControlLine.stop}
                         onChange={handleTransientAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="step" label="Time Step" size='small' variant="outlined"
                         value={transientAnalysisControlLine.step}
                         onChange={handleTransientAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
 
                     {/* <ListItem>
@@ -438,6 +782,35 @@ export default function SimulationProperties () {
                       <Button size='small' variant="contained">Add Expression</Button>
                     </ListItem>
                      */}
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+   Add Expression
+                      </Button>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
                     <ListItem>
                       <Button id="transientAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Transient') }}>
                         Simulate
@@ -506,12 +879,14 @@ export default function SimulationProperties () {
                         value={acAnalysisControlLine.start}
                         onChange={handleAcAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>Hz</span>
                     </ListItem>
                     <ListItem>
                       <TextField id="stop" label="Stop Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.stop}
                         onChange={handleAcAnalysisControlLine}
                       />
+                      <span style={{ marginLeft: '10px' }}>Hz</span>
                     </ListItem>
 
                     {/* <ListItem>
@@ -522,6 +897,35 @@ export default function SimulationProperties () {
                     {/* <ListItem>
                       <Button size='small' variant="contained">Add Expression</Button>
                     </ListItem> */}
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+   Add Expression
+                      </Button>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
 
                     <ListItem>
                       <Button size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Ac') }}>
