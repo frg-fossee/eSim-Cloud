@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import { IconButton, Tooltip } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import FolderIcon from '@material-ui/icons/Folder'
-import EditIcon from '@material-ui/icons/Edit'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import UndoIcon from '@material-ui/icons/Undo'
@@ -17,10 +16,11 @@ import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
 import BorderClearIcon from '@material-ui/icons/BorderClear'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
 
 import { NetlistModal, HelpScreen } from './ToolbarExtension'
 import MenuButton from './MenuButton'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties } from '../../redux/actions/index'
 
@@ -86,7 +86,11 @@ export default function SchematicToolbar ({ mobileClose }) {
   return (
     <>
       <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} />
-      <MenuButton title={'Edit'} iconType={EditIcon} items={['Cut', 'Copy', 'Paste']} />
+      <Tooltip title="Save">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={Save} >
+          <SaveIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Simulate">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { dispatch(toggleSimulate()) }}>
           <PlayCircleOutlineIcon fontSize="small" />

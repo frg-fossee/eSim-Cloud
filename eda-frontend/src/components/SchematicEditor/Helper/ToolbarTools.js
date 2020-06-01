@@ -14,6 +14,7 @@ const {
   mxUtils,
   mxUndoManager,
   mxEvent,
+  mxCodec,
   mxCell
 } = new mxGraphFactory()
 
@@ -26,6 +27,14 @@ export default function ToolbarTools (grid, unredo) {
   }
   graph.getModel().addListener(mxEvent.UNDO, listener)
   graph.getView().addListener(mxEvent.UNDO, listener)
+}
+
+// SAVE
+export function Save () {
+  var enc = new mxCodec(mxUtils.createXmlDocument())
+  var node = enc.encode(graph.getModel())
+  var value = mxUtils.getPrettyXml(node)
+  console.log(value)
 }
 
 // UNDO
