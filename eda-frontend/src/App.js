@@ -12,12 +12,11 @@ import Simulator from './pages/Simulator'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 
-import { useDispatch } from 'react-redux'
-import store from './redux/store'
+import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
 
 function PrivateRoute ({ component: Component, ...rest }) {
-  const auth = store.getState().authReducer
+  const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
 
   useEffect(() => dispatch(loadUser()), [dispatch])
@@ -34,7 +33,7 @@ function PrivateRoute ({ component: Component, ...rest }) {
 }
 
 function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
-  const auth = store.getState().authReducer
+  const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
 
   useEffect(() => dispatch(loadUser()), [dispatch])
