@@ -22,7 +22,10 @@ const {
   mxUtils,
   mxEvent,
   mxOutline,
-  mxCell
+  mxCell,
+  mxEdgeHandler,
+  mxGraphHandler,
+  mxVertexHandler
 } = new mxGraphFactory()
 
 export default function LoadGrid (container, sidebar, outline) {
@@ -53,6 +56,13 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.CompObject = null
     mxCell.prototype.properties = {}
     // mxCell.prototype.ConnectedNode = null
+
+    // Enables guides
+    mxGraphHandler.prototype.guidesEnabled = true
+    mxEdgeHandler.prototype.snapToTerminals = true
+
+    // Enable cell Rotation
+    mxVertexHandler.prototype.rotationEnabled = true
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
