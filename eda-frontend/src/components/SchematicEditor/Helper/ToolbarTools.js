@@ -67,7 +67,9 @@ export function Rotate () {
   var vHandler = graph.createVertexHandler(state)
   // console.log('Handler')
   // console.log(vHandler)
-  vHandler.rotateCell(cell, 90, cell.getParent())
+  if (cell != null) {
+    vHandler.rotateCell(cell, 90, cell.getParent())
+  }
 }
 
 // PRINT PREVIEW OF SCHEMATIC
@@ -150,7 +152,7 @@ export function ErcCheck () {
       try {
         cell.value = 'Checked'
       } finally {
-      // Updates the display
+        // Updates the display
         graph.getModel().endUpdate()
       }
       // cell.value = 'Checked'
@@ -294,8 +296,8 @@ export function GenerateNetList () {
     var list = annotate(graph)
     for (var property in list) {
       if (list[property].Component === true && list[property].symbol !== 'PWR') {
-      // k = ''
-      // alert('Component is present')
+        // k = ''
+        // alert('Component is present')
         var compobj = {
           name: '',
           node1: '',
@@ -306,7 +308,7 @@ export function GenerateNetList () {
         var component = list[property]
         // console.log(component)
         if (component.symbol === 'R') {
-        // component.symbol = component.symbol + r.toString()
+          // component.symbol = component.symbol + r.toString()
           k = k + component.symbol + r.toString()
           component.value = component.symbol + r.toString()
           // console.log(component)
@@ -315,14 +317,14 @@ export function GenerateNetList () {
 
           ++r
         } else if (component.symbol === 'V') {
-        // component.symbol = component.symbol + v.toString()
+          // component.symbol = component.symbol + v.toString()
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
           // component.symbol = component.value
           ++v
         } else {
-        // component.symbol = component.symbol + c.toString()
+          // component.symbol = component.symbol + c.toString()
           k = k + component.symbol + c.toString()
           component.value = component.symbol + c.toString()
           component.properties.PREFIX = component.value
@@ -335,7 +337,7 @@ export function GenerateNetList () {
           for (var child in component.children) {
             var pin = component.children[child]
             if (pin.vertex === true) {
-            // alert(pin.id)
+              // alert(pin.id)
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
@@ -350,15 +352,15 @@ export function GenerateNetList () {
                       console.log(pin.edges[wire].target.node)
                       pin.edges[wire].node = pin.edges[wire].target.node
                     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                    // console.log('Found ground')
+                      // console.log('Found ground')
                       // console.log('ground')
                       pin.edges[wire].node = 0
                       // pin.edges[wire].node = '0'
                       pin.edges[wire].value = 0
                       // k = k + ' ' + pin.edges[wire].node
                     } else {
-                    // console.log(pin.edges[wire])
-                    // if (pin.edges[wire].node === null) {
+                      // console.log(pin.edges[wire])
+                      // if (pin.edges[wire].node === null) {
                       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       console.log('comp')
@@ -386,7 +388,7 @@ export function GenerateNetList () {
           netlist.componentlist.push(component.properties.PREFIX)
           netlist.nodelist.push(compobj.node2, compobj.node1)
 
-        // console.log(compobj)
+          // console.log(compobj)
         }
         // console.log(component)
         if (component.properties.VALUE !== undefined) {
@@ -401,7 +403,7 @@ export function GenerateNetList () {
         }
         // k = k + ' 10'
         k = k + ' \n'
-      // console.log(k)
+        // console.log(k)
       }
     }
   }
@@ -454,8 +456,8 @@ function annotate (graph) {
   } else {
     for (var property in list) {
       if (list[property].Component === true && list[property].symbol !== 'PWR') {
-      // k = ''
-      // alert('Component is present')
+        // k = ''
+        // alert('Component is present')
         var compobj = {
           name: '',
           node1: '',
@@ -466,7 +468,7 @@ function annotate (graph) {
         var component = list[property]
         // console.log(component)
         if (component.symbol === 'R') {
-        // component.symbol = component.symbol + r.toString()
+          // component.symbol = component.symbol + r.toString()
           k = k + component.symbol + r.toString()
           component.value = component.symbol + r.toString()
           // console.log(component)
@@ -475,7 +477,7 @@ function annotate (graph) {
 
           ++r
         } else if (component.symbol === 'V') {
-        // component.symbol = component.symbol + v.toString()
+          // component.symbol = component.symbol + v.toString()
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
@@ -503,7 +505,7 @@ function annotate (graph) {
           // component.symbol = component.value
           ++q
         } else {
-        // component.symbol = component.symbol + c.toString()
+          // component.symbol = component.symbol + c.toString()
           k = k + component.symbol + c.toString()
           component.value = component.symbol + c.toString()
           component.properties.PREFIX = component.value
@@ -516,7 +518,7 @@ function annotate (graph) {
           for (var child in component.children) {
             var pin = component.children[child]
             if (pin.vertex === true) {
-            // alert(pin.id)
+              // alert(pin.id)
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
@@ -525,15 +527,15 @@ function annotate (graph) {
                     } else if (pin.edges[wire].target.edge === true) {
 
                     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                    // console.log('Found ground')
+                      // console.log('Found ground')
                       // console.log('ground')
                       pin.edges[wire].node = 0
                       // pin.edges[wire].node = '0'
                       pin.edges[wire].value = 0
                       // k = k + ' ' + pin.edges[wire].node
                     } else {
-                    // console.log(pin.edges[wire])
-                    // if (pin.edges[wire].node === null) {
+                      // console.log(pin.edges[wire])
+                      // if (pin.edges[wire].node === null) {
                       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       console.log('comp')
@@ -560,7 +562,7 @@ function annotate (graph) {
           netlist.componentlist.push(component.properties.PREFIX)
           netlist.nodelist.push(compobj.node2, compobj.node1)
 
-        // console.log(compobj)
+          // console.log(compobj)
         }
         // console.log(component)
         if (component.properties.VALUE !== undefined) {
@@ -575,7 +577,7 @@ function annotate (graph) {
         }
         // k = k + ' 10'
         k = k + ' \n'
-      // console.log(k)
+        // console.log(k)
       }
     }
   }
