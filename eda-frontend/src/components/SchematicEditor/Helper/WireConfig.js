@@ -122,7 +122,7 @@ export default function WireConfigFunct (graph) {
 			style['fontSize'] = '9';
 			style['movable'] = '0';
 			style['strokeWidth'] = '1.5';
-			//style['rounded'] = '1';
+			style['rounded'] = '1';
 
 			// Sets join node size
 			//style['startSize'] = joinNodeSize;
@@ -139,7 +139,7 @@ export default function WireConfigFunct (graph) {
 			style['fontSize'] = '12';
 			style['resizable'] = '0';
 			style['rounded'] = '1';
-            // style['strokeWidth'] = strokeWidth;
-			// graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
+           // style['strokeWidth'] = strokeWidth;
+			graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'wireEdgeStyle';
 
 }
