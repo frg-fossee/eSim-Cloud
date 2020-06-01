@@ -40,10 +40,16 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django_filters',
     'corsheaders',
-    'simulationAPI',
-    'libAPI',
-    'rest_framework',
     'drf_yasg',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'social_django',
+    'djoser',
+    'simulationAPI',
+    'authAPI',
+    'libAPI',
+    'saveAPI',
+    'publishAPI'
 ]
 
 MIDDLEWARE = [
@@ -108,6 +114,7 @@ DATABASES = {
 
 DATABASE_ROUTERS = (
     'simulationAPI.dbrouters.mongoRouter',
+    # 'saveAPI.dbrouters.mongoRouter',<- to Store saveAPI models in mongodb
     # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
 )
 
@@ -127,6 +134,52 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Mail server config
+
+# use this for console emails
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Note SMTP is slow
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "email@gmail.com")
+# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "gmailpassword")
+# EMAIL_PORT = os.environ.get("EMAIL_PORT", 587)
+# EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", True)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", "")
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "")
+
+GOOGLE_OAUTH_REDIRECT_URI = os.environ.get(
+    "GOOGLE_OAUTH_REDIRECT_URI", "http://localhost/api/auth/google-callback")
+
+POST_ACTIVATE_REDIRECT_URL = os.environ.get(
+    "POST_ACTIVATE_REDIRECT_URL", "http://localhost/")
+
+DJOSER = {
+    'SEND_ACTIVATION_EMAIL': True,
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'api/auth/users/activate/{uid}/{token}',
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
+    'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy'
+    # 'LOGIN_FIELD': 'email'   For using email only
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_core.backends.google.GoogleOAuth2',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -151,9 +204,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/django_static/'
 
 
-# For Netlist handling netlist uploads ( Netlists are not stored here )
+# noqa For Netlist handling netlist uploads and other temp uploads
 MEDIA_URL = '/_files/'
 MEDIA_ROOT = os.path.join("/tmp", "esimCloud-temp")
+
+# File Storage
+FILE_STORAGE_ROOT = os.path.join(BASE_DIR, 'file_storage')
+FILE_STORAGE_URL = '/files'
 
 # celery
 CELERY_BROKER_URL = 'redis://redis:6379'

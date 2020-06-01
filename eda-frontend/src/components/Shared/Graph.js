@@ -1,108 +1,124 @@
 /* eslint-disable react/prop-types */
-import React, { Component } from 'react'
-import Chart from 'chart.js'
-let lineGraph
+import React from 'react'
+import * as Zoom from 'chartjs-plugin-zoom'
+import 'chartjs-plugin-colorschemes';
+import { Line } from 'react-chartjs-2'
 
-// Chart Style Options
-Chart.defaults.global.defaultFontColor = '#e6e6e6'
+const Graph = (props) => {
+  const { x, y, labels } = props
 
-class Graph extends Component {
-  chartRef = React.createRef();
+  const dataset = () => {
+    var arr = []
+    for (var i = 0; i < y.length; i++) {
+      if (labels[i + 1] === labels[0]) continue
+      arr.push({
+        label: labels[i + 1],
+        data: y[i],
+        fill: false,
 
-  componentDidMount () {
-    this.buildChart()
+      })
+    }
+    return arr
   }
 
-  componentDidUpdate () {
-    this.buildChart()
-  }
+  return (
+    <div>
 
-  buildChart = () => {
-    const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y1, y2, labels } = this.props
+      <Line
+        data={{
+          labels: x,
+          datasets: dataset()
+        }}
+        options={{
 
-    if (typeof lineGraph !== 'undefined') lineGraph.destroy()
-
-    lineGraph = new Chart(myChartRef, {
-      type: 'line',
-      data: {
-        labels: x,
-        datasets: [
-          {
-            label: labels[1],
-            data: y1,
-            fill: false,
-            borderColor: '#9feaf9'
+          responsive: true,
+          title: {
+            display: false,
+            text: ''
           },
-          {
-            label: labels[2],
-            data: y2,
-            fill: false,
-            borderColor: '#556cd6'
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        title: {
-          display: true,
-          text: 'Voltage vs Time Graph'
-        },
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-          backgroundColor: '#39604d'
-        },
-        hover: {
-          mode: 'nearest',
-          intersect: true
-        },
-        scales: {
-          xAxes: [
-            {
-              display: true,
-              gridLines: {
-                color: '#67737e'
-              },
-              scaleLabel: {
-                display: true,
-                labelString: labels[0] + ' ( sec )'
-              },
-              ticks: {
-                display: true
-              }
-            }
-          ],
-          yAxes: [
-            {
-              display: true,
-              scaleLabel: {
-                display: true,
-                labelString: 'Volatge ( V )'
-              },
-              gridLines: {
-                color: '#67737e'
-              },
-              ticks: {
-                beginAtZero: true,
-                fontSize: 15,
-                // maxTicksLimit: 10, //Set Y axes points
-                padding: 25
-              }
-            }
-          ]
-        }
-      }
-    })
-  };
+          plugins: {
 
-  render () {
-    return (
-      <div>
-        <canvas id="myChart" ref={this.chartRef} />
-      </div>
-    )
-  }
+
+              colorschemes: {
+
+                scheme: 'brewer.SetOne9'
+
+              },
+            zoom: {
+              // Container for pan options
+              pan: {
+                // Boolean to enable panning
+                enabled: true,
+
+                // Panning directions. Remove the appropriate direction to disable
+                // Eg. 'y' would only allow panning in the y direction
+                mode: 'xy'
+              },
+
+              // Container for zoom options
+              zoom: {
+                // Boolean to enable zooming
+                enabled: true,
+
+                // Zooming directions. Remove the appropriate direction to disable
+                // Eg. 'y' would only allow zooming in the y direction
+                mode: 'xy'
+              }
+            }
+          },
+          tooltips: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: '#39604d'
+          },
+          hover: {
+            mode: 'nearest',
+            intersect: true
+          },
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                gridLines: {
+                  color: '#67737e'
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: labels[0]
+                },
+                ticks: {
+                  display: true,
+                  stepSize:1,
+                   padding: 25
+                }
+              }
+            ],
+            yAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: false,
+                  labelString: 'Volatge ( V )'
+                },
+                gridLines: {
+                  color: '#67737e'
+                },
+                ticks: {
+                  beginAtZero: true,
+                  fontSize: 15,
+                  // maxTicksLimit: 10, //Set Y axes points
+                  padding: 25
+                }
+              }
+            ]
+          }
+
+        }}
+      />
+
+    </div>
+
+  )
 }
 
 export default Graph

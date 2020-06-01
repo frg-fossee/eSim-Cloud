@@ -120,6 +120,12 @@ export default function SimulationProperties () {
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
 
+  const [simResult, setSimResult] = React.useState({})
+
+  const handleSimulationResult = (simResults) => {
+    setSimResult(simResults)
+  }
+
   const handlesimulateOpen = () => {
     setSimulateOpen(true)
   }
@@ -164,6 +170,22 @@ export default function SimulationProperties () {
     return api.post('simulation/upload', formData, config)
   }
 
+  // convert exponential valuese to integers
+  function convert (n) {
+    var sign = +n < 0 ? '-' : ''
+    var toStr = n.toString()
+    if (!/e/i.test(toStr)) {
+      return n
+    }
+    var [lead, decimal, pow] = n.toString()
+      .replace(/^-/, '')
+      .replace(/^([0-9]+)(e.*)/, '$1.$2')
+      .split(/e|\./)
+    return +pow < 0
+      ? sign + '0.' + '0'.repeat(Math.max(Math.abs(pow) - 1 || 0, 0)) + lead + decimal
+      : sign + lead + (+pow >= decimal.length ? (decimal + '0'.repeat(Math.max(+pow - decimal.length || 0, 0))) : (decimal.slice(0, +pow) + '.' + decimal.slice(+pow)))
+  }
+
   // Get the simulation result with task_Id
   function simulationResult (url) {
     api
@@ -172,22 +194,49 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          console.log(res.data)
+          console.log('IMP', res.data)
           var temp = res.data.details.data
+          var result = res.data.details
+          var data = result.data
+          console.log('RESULT', result)
+          console.log('DATA', data)
           if (res.data.details.graph === 'true') {
-            var simResultGraph = {}
-            simResultGraph.labels = temp[0].labels
-            simResultGraph.x1 = temp[0].x
-            simResultGraph.y11 = temp[0].y[0]
-            simResultGraph.y21 = temp[0].y[1]
-            console.log(simResultGraph)
+            var simResultGraph = { labels: [], x_points: [], y_points: [] }
+            // populate the labels
+            for (var i = 0; i < data.length; i++) {
+              simResultGraph.labels[0] = data[i].labels[0]
+              var lab = data[i].labels
+              simResultGraph.x_points = data[0].x
+              for (var x = 1; x < lab.length; x++) {
+                simResultGraph.labels.push(lab[x])
+              }
+              // populate y_points
+              for (var z = 0; z < data[i].y.length; z++) {
+                simResultGraph.y_points.push(data[i].y[z])
+              }
+            }
+
+            // simResultGraph.labels = temp[0].labels
+            // simResultGraph.x1 = temp[0].x
+            // simResultGraph.y11 = temp[0].y[0]
+            // simResultGraph.y21 = temp[0].y[1]
+
+            // console.log("GRAPH",simResultGraph)
+            // handleSimulationResult(simResultGraph)
+            simResultGraph.x_points = simResultGraph.x_points.map(d => (convert(d)))
+            for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
+              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => (convert(d)))
+            }
+            console.log('LOG', simResultGraph)
             dispatch(setResultGraph(simResultGraph))
           } else {
             var simResultText = []
-            for (var i = 0; i < temp.length; i++) {
+            for (let i = 0; i < temp.length; i++) {
               simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n')
             }
-            console.log(simResultText)
+            // console.log(simResultText)
+            console.log('NOGRAPH', simResultText)
+            handleSimulationResult(res.data.details)
             dispatch(setResultText(simResultText))
           }
         }
@@ -366,6 +415,7 @@ export default function SimulationProperties () {
       case 'DcSolver':
         // console.log('To be implemented')
         controlLine = '.op'
+
         dispatch(setResultTitle('DC Solver Output'))
         break
       case 'DcSweep':
@@ -376,11 +426,13 @@ export default function SimulationProperties () {
       case 'Transient':
         // console.log(transientAnalysisControlLine)
         controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`
+
         dispatch(setResultTitle('Transient Analysis Output'))
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
         controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+
         dispatch(setResultTitle('AC Analysis Output'))
         break
       default:
