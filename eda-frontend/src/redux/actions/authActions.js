@@ -83,14 +83,21 @@ export const login = (username, password) => {
   }
 }
 
-export const signUp = (userCredentials) => (dispatch) => {
+export const signUp = (email, username, password) => (dispatch) => {
   const body = {
-    email: userCredentials.email,
-    username: userCredentials.username,
-    password: userCredentials.password
+    email: email,
+    username: username,
+    password: password
   }
 
-  api.post('auth/users/', body)
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  api.post('auth/users/', body, config)
     .then((res) => {
       console.log(res)
     })

@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Container,
+  Grid,
   Button,
   Typography,
+  Link,
   Checkbox,
   FormControlLabel,
   TextField,
@@ -17,7 +19,7 @@ import { signUp } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(15),
+    marginTop: theme.spacing(20),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -33,69 +35,20 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
-  },
-  checkboxText: {
-    color: 'red',
-    marginLeft: theme.spacing(5)
   }
 }))
 
 export default function SignUp () {
   const classes = useStyles()
 
-  const [userCredentials, setUserCredentials] = useState({ email: '', username: '', password: '', password2: '' })
-  const [error, setError] = useState({ eemail: false, eusername: false, epassword: false, epassword2: false, checkbox: false })
-  const [checkbox, setCheckbox] = useState(false)
-  const changeHandler = (e) => {
-    setUserCredentials({ ...userCredentials, [e.target.name]: e.target.value })
-  }
-
-  const dispatch = useDispatch()
-
-  const validate = () => {
-    let isError = false
-    const errors = {}
-
-    if (!checkbox) {
-      isError = true
-      errors.checkbox = true
-    } else {
-      errors.checkbox = false
-    }
-
-    if (!userCredentials.email.match(/.+@.+/) || userCredentials.email === '') {
-      isError = true
-      errors.eemail = true
-    } else {
-      errors.eemail = false
-    }
-
-    if (userCredentials.username.length < 5 || userCredentials.username === '') {
-      isError = true
-      errors.eusername = true
-    } else {
-      errors.eusername = false
-    }
-
-    if (userCredentials.password !== userCredentials.password2 || userCredentials.password === '' || userCredentials.password === '') {
-      isError = true
-      errors.epassword = true
-    } else {
-      errors.epassword = false
-    }
-
-    setError(Object.assign(error, errors))
-
-    if (isError !== true) {
-      dispatch(signUp(userCredentials))
-    }
-
-    return isError
-  }
-
   useEffect(() => {
     document.title = 'Sign Up - eSim '
   })
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const dispatch = useDispatch()
 
   return (
     <Container component="main" maxWidth="xs">
@@ -108,23 +61,7 @@ export default function SignUp () {
           Register | Sign Up
         </Typography>
 
-        <form className={classes.form}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            error = {error.eemail}
-            helperText={error.eemail ? 'invalid email' : ''}
-            autoFocus
-            value={userCredentials.email}
-            onChange={changeHandler}
-          />
+        <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -133,11 +70,24 @@ export default function SignUp () {
             id="username"
             label="Username"
             name="username"
-            error={error.eusername}
-            helperText={error.eusername ? 'invalid username' : ''}
-            autoComplete="Username"
-            value={userCredentials.username}
-            onChange={changeHandler}
+            autoComplete="email"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            autoFocus
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            autoFocus
           />
           <TextField
             variant="outlined"
@@ -148,43 +98,31 @@ export default function SignUp () {
             label="Password"
             type="password"
             id="password"
-            error={error.epassword}
-            helperText={error.epassword ? "password didn't match" : ''}
-            value={userCredentials.password}
-            onChange={changeHandler}
-            autoComplete="current-password"
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password2"
-            label="Confirm password"
-            type="password"
-            id="Confirm_password"
-            error={error.epassword}
-            helperText={error.epassword ? "password didn't match" : ''}
-            value={userCredentials.password2}
-            onChange={changeHandler}
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" checked={checkbox} onChange={() => setCheckbox(!checkbox)} />}
+            control={<Checkbox value="remember" color="primary" />}
             label="I accept the Terms of Use & Privacy Policy"
           />
-          {error.checkbox && <div className={classes.checkboxText}>please read the terms and conditions</div>}
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={validate}
+            onClick={() => dispatch(signUp(email, username, password))}
             className={classes.submit}
           >
             Sign Up
           </Button>
+          <Grid container>
+            <Grid item style={{ marginLeft: 'auto' }} >
+              <Link component={RouterLink} to="/login" variant="body2">
+                {'Already have account? Login'}
+              </Link>
+            </Grid>
+          </Grid>
         </form>
-
       </Card>
       <Button
         component={RouterLink}
