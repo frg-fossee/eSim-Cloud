@@ -27,7 +27,7 @@ export abstract class CircuitElement {
     this.elements = window['canvas'].set();
 
     if (filename) {
-      fetch(`/assets/jsons/${filename}`)
+      fetch(`./assets/jsons/${filename}`)
         .then(v => v.json())
         .then(obj => {
           this.title = obj.name;
