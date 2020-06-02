@@ -120,6 +120,12 @@ export default function SimulationProperties () {
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
 
+  const [simResult, setSimResult] = React.useState({})
+
+  const handleSimulationResult = (simResults) => {
+    setSimResult(simResults)
+  }
+
   const handlesimulateOpen = () => {
     setSimulateOpen(true)
   }
@@ -164,6 +170,22 @@ export default function SimulationProperties () {
     return api.post('simulation/upload', formData, config)
   }
 
+  // convert exponential valuese to integers
+  // function convert (n) {
+  //   var sign = +n < 0 ? '-' : ''
+  //   var toStr = n.toString()
+  //   if (!/e/i.test(toStr)) {
+  //     return n
+  //   }
+  //   var [lead, decimal, pow] = n.toString()
+  //     .replace(/^-/, '')
+  //     .replace(/^([0-9]+)(e.*)/, '$1.$2')
+  //     .split(/e|\./)
+  //   return +pow < 0
+  //     ? sign + '0.' + '0'.repeat(Math.max(Math.abs(pow) - 1 || 0, 0)) + lead + decimal
+  //     : sign + lead + (+pow >= decimal.length ? (decimal + '0'.repeat(Math.max(+pow - decimal.length || 0, 0))) : (decimal.slice(0, +pow) + '.' + decimal.slice(+pow)))
+  // }
+
   // Get the simulation result with task_Id
   function simulationResult (url) {
     api
@@ -172,22 +194,54 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          console.log(res.data)
+          console.log('FULL', res.data)
           var temp = res.data.details.data
+          var result = res.data.details
+          var data = result.data
+          console.log('result.details', result)
+          console.log('result.details.data', data)
           if (res.data.details.graph === 'true') {
-            var simResultGraph = {}
-            simResultGraph.labels = temp[0].labels
-            simResultGraph.x1 = temp[0].x
-            simResultGraph.y11 = temp[0].y[0]
-            simResultGraph.y21 = temp[0].y[1]
-            console.log(simResultGraph)
+            var simResultGraph = { labels: [], x_points: [], y_points: [] }
+            // populate the labels
+            for (var i = 0; i < data.length; i++) {
+              simResultGraph.labels[0] = data[i].labels[0]
+              var lab = data[i].labels
+              // lab is an array containeing labels names ['time','abc','def']
+              simResultGraph.x_points = data[0].x
+
+              // labels
+              for (var x = 1; x < lab.length; x++) {
+                if (lab[x].includes('#branch')) {
+                  lab[x] = `I (${lab[x].replace('#branch', '')})`
+                }
+                //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
+                //  else {
+                // lab[x] = `V (${lab[x]})`
+
+                // }
+                simResultGraph.labels.push(lab[x])
+              }
+              // populate y_points
+              for (var z = 0; z < data[i].y.length; z++) {
+                simResultGraph.y_points.push(data[i].y[z])
+              }
+            }
+
+            simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
+
+            for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
+              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
+            }
+            console.log('LOG', simResultGraph)
             dispatch(setResultGraph(simResultGraph))
           } else {
             var simResultText = []
-            for (var i = 0; i < temp.length; i++) {
+            for (let i = 0; i < temp.length; i++) {
               simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n')
             }
-            console.log(simResultText)
+            // console.log(simResultText)
+            console.log('NOGRAPH', simResultText)
+            handleSimulationResult(res.data.details)
             dispatch(setResultText(simResultText))
           }
         }
@@ -197,166 +251,6 @@ export default function SimulationProperties () {
         console.log(error)
       })
   }
-  // const SecondaryParamaterForDcSweep = (props) => {
-  //   const prefix = props.prefix
-  //   if (prefix === 'R' || prefix === 'r') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Resistance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>K</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Resistance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>K</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Resistance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>K</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'C' || prefix === 'c') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Capacitance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>F</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Capacitance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>F</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Capacitance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>F</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'L' || prefix === 'l') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Inductance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>H</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Inductance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>H</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Inductance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>H</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'V' || prefix === 'v') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Voltage" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>V</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Voltage" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>V</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step InductVoltageance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>V</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'I' || prefix === 'i') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Current" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>A</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Current" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>A</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Current" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>A</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Value" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Value" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Value" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-
-  //         </ListItem>
-  //       </>
-  //     )
-  //   }
-  // }
 
   const startSimulate = (type) => {
     var compNetlist = GenerateNetList()
@@ -366,6 +260,7 @@ export default function SimulationProperties () {
       case 'DcSolver':
         // console.log('To be implemented')
         controlLine = '.op'
+
         dispatch(setResultTitle('DC Solver Output'))
         break
       case 'DcSweep':
@@ -376,11 +271,13 @@ export default function SimulationProperties () {
       case 'Transient':
         // console.log(transientAnalysisControlLine)
         controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`
+
         dispatch(setResultTitle('Transient Analysis Output'))
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
         controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+
         dispatch(setResultTitle('AC Analysis Output'))
         break
       default:

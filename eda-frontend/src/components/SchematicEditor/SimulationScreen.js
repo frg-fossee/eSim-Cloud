@@ -9,6 +9,7 @@ import {
   IconButton,
   Typography,
   Grid,
+  TextField,
   Paper,
   Container
 } from '@material-ui/core'
@@ -41,13 +42,28 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff'
   }
 }))
-
+// {details:{},title:''} simResults
 export default function SimulationScreen ({ open, close }) {
   const classes = useStyles()
-
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
+  const [scale, setScale] = React.useState('si')
+  const [precision, setPrecision] = React.useState(5)
+  const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  const handleScale = (evt) => {
+    setScale(evt.target.value)
+  }
+  const handlePrecision = (evt) => {
+    setPrecision(evt.target.value)
+  }
 
+  // const [simRes,setSimRes] = React.useState({})
+
+  //  const getCleanData = () => {
+
+  //   setSimRes(simResults)
+  //   console.log("hello",simRes)
+  // }
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
@@ -85,22 +101,84 @@ export default function SimulationScreen ({ open, close }) {
                 <Typography variant="h5" align="center" component="p" gutterBottom>
                   Simulation Result for {stitle} *
                 </Typography>
+                <div style={{ padding: '20px' }}>
+                  <TextField
+                    style={{ width: '20%' }}
+                    id="scale"
+                    size='large'
+                    variant="outlined"
+                    select
+                    label="Select Scale"
+                    value={scale}
+                    onChange={handleScale}
+                    SelectProps={{
+                      native: true
+                    }}
+                  >
+                    <option value='si'>
+                                SI UNIT
+                    </option>
+
+                    <option value='m'>
+                                Milli (m)
+                    </option>
+                    <option value='u'>
+                                Micro (u)
+                    </option>
+                    <option value='n'>
+                                Nano (n)
+                    </option>
+                    <option value='p'>
+                                Pico (p)
+                    </option>
+
+                  </TextField>
+
+                  <TextField
+                    style={{ width: '20%' }}
+                    id="precision"
+                    size='large'
+                    variant="outlined"
+                    select
+                    label="Select Precision"
+                    value={precision}
+                    onChange={handlePrecision}
+                    SelectProps={{
+                      native: true
+                    }}
+                  >
+                    {
+                      precisionArr.map((d, i) => {
+                        return (
+                          <option key={i} value={d}>
+                            {d}
+                          </option>
+                        )
+                      })
+                    }
+
+                  </TextField>
+                </div>
+
               </Paper>
             </Grid>
 
             {
+
               (result.graph !== {} && result.isGraph === 'true')
                 ? <Grid item xs={12} sm={12}>
                   <Paper className={classes.paper}>
-                    <h2>GRAPH OUTPUT</h2><Graph
+                    <h2>GRAPH OUTPUT</h2>
+                    <Graph
                       labels={result.graph.labels}
-                      x={result.graph.x1}
-                      y1={result.graph.y11}
-                      y2={result.graph.y21}
+                      x={result.graph.x_points}
+                      y={result.graph.y_points}
+                      scale={scale}
+                      precision={precision}
                     />
                   </Paper>
                 </Grid>
-                : <span></span>
+                : <span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span>
             }
 
             {
@@ -129,4 +207,5 @@ export default function SimulationScreen ({ open, close }) {
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func
+  // simResults: PropTypes.object
 }

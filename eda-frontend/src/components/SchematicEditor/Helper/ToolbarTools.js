@@ -15,7 +15,8 @@ const {
   mxUndoManager,
   mxEvent,
   mxCodec,
-  mxCell
+  mxCell,
+  mxMorphing
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -207,6 +208,7 @@ export function ErcCheck () {
       }
     } */
   }
+
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount
@@ -402,10 +404,12 @@ export function GenerateNetList () {
         // console.log(component)
         if (component.properties.VALUE !== undefined) {
           k = k + ' ' + component.properties.VALUE
+          component.value = component.value + '\n' + component.properties.VALUE
         }
 
         if (component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
+          component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
         if (component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
@@ -429,9 +433,20 @@ export function GenerateNetList () {
   })
   graph.getModel().beginUpdate()
   try {
+    /* var list = graph.getModel().cells
+    for (var property in list) {
+      if (list[property].vertex == true) {
+        list[property].value = 'checked'
+      }
+    } */
+    graph.view.refresh()
   } finally {
-    // Updates the display
-    graph.getModel().endUpdate()
+    // Arguments are number of steps, ease and delay
+    var morph = new mxMorphing(graph, 20, 1.2, 20)
+    morph.addListener(mxEvent.DONE, function () {
+      graph.getModel().endUpdate()
+    })
+    morph.startAnimation()
   }
   var a = new Set(netlist.nodelist)
   console.log(netlist.nodelist)
