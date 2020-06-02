@@ -197,7 +197,7 @@ export function ErcCheck () {
       }
     } */
   }
-  
+
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount

@@ -208,10 +208,10 @@ export default function SimulationProperties () {
               var lab = data[i].labels
               simResultGraph.x_points = data[0].x
               for (var x = 1; x < lab.length; x++) {
-                console.log("LABEL",lab[x])
-                if(lab[x].includes("#branch")){
-                  lab[x] = `I (${lab[x].replace('#branch','')})`
-                }else{
+                console.log('LABEL', lab[x])
+                if (lab[x].includes('#branch')) {
+                  lab[x] = `I (${lab[x].replace('#branch', '')})`
+                } else {
                   lab[x] = `V (${lab[x]})`
                 }
                 simResultGraph.labels.push(lab[x])

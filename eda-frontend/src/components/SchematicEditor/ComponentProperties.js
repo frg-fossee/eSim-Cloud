@@ -67,25 +67,23 @@ export default function ComponentProperties () {
           } else if (keyName === 'UNIT') {
             return <span key={i} />
           }
-          else if (keyName === 'PREFIX'){
+          else if (keyName === 'PREFIX') {
             return (
               <ListItem key={i}>
-                <TextField  id={keyName} label='LABEL' value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+                <TextField id={keyName} label='LABEL' value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
               </ListItem>)
-
           }
-          else if (keyName === 'NAME'){
+          else if (keyName === 'NAME') {
             return (
               <ListItem key={i}>
                 <TextField disabled id={keyName} label='COMPONENT NAME' value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
 
               </ListItem>)
-
           }
           else if (keyName === 'VALUE') {
             return (
               <ListItem key={i}>
-                <TextField  id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+                <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
                 <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
               </ListItem>)
           }

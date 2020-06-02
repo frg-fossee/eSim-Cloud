@@ -283,7 +283,7 @@ export default function LoadGrid (container, sidebar, outline) {
       graph.getModel().endUpdate()
     }
 
-   /* document.body.appendChild(mxUtils.button('Zoom In', function () {
+    /* document.body.appendChild(mxUtils.button('Zoom In', function () {
       graph.zoomIn()
     }))
 
