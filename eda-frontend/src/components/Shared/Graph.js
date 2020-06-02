@@ -21,7 +21,7 @@ class Graph extends Component {
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y, labels, scale } = this.props
+    const { x, y, labels, scale, precision} = this.props
     const scales = {
       si: 1,
       m: 0.001,
@@ -67,7 +67,7 @@ class Graph extends Component {
       data: {
 
         // labels: x,
-        labels: x.map(e => e * scales[scale]),
+        labels: x.map(e => (e / scales[scale]).toFixed(precision)),
         datasets: dataset()
       },
 

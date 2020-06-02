@@ -48,15 +48,13 @@ export default function SimulationScreen ({ open, close }) {
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
   const [scale, setScale] = React.useState('si')
-  // eslint-disable-next-line no-unused-vars
-  const scales = {
-    m: 0.001,
-    u: 0.000001,
-    n: 0.000000001,
-    p: 0.000000000001
-  }
+  const [precision,setPrecision] = React.useState(5)
+  const precisionArr = [1,2,3,4,5,6,7,8,9,10]
   const handleScale = (evt) => {
     setScale(evt.target.value)
+  }
+  const handlePrecision = (evt) => {
+    setPrecision(evt.target.value)
   }
 
   // const [simRes,setSimRes] = React.useState({})
@@ -103,11 +101,11 @@ export default function SimulationScreen ({ open, close }) {
                 <Typography variant="h5" align="center" component="p" gutterBottom>
                   Simulation Result for {stitle} *
                 </Typography>
-                <div style={{ backgroundColor: 'white', padding: '20px' }}>
+                <div style={{padding: '20px' }}>
                   <TextField
-                    style={{ width: '30%' }}
+                    style={{ width: '20%' }}
                     id="scale"
-                    size='small'
+                    size='large'
                     variant="outlined"
                     select
                     label="Select Scale"
@@ -135,6 +133,31 @@ export default function SimulationScreen ({ open, close }) {
                     </option>
 
                   </TextField>
+
+                  <TextField
+                    style={{ width: '20%' }}
+                    id="precision"
+                    size='large'
+                    variant="outlined"
+                    select
+                    label="Select Precision"
+                    value={precision}
+                    onChange={handlePrecision}
+                    SelectProps={{
+                      native: true
+                    }}
+                  >
+                   {
+                     precisionArr.map((d,i)=>{
+                       return(
+                        <option key={i} value={d}>
+                        {d}
+                        </option>
+                       )
+                     })
+                   }
+
+                  </TextField>
                 </div>
 
               </Paper>
@@ -151,6 +174,7 @@ export default function SimulationScreen ({ open, close }) {
                       x={result.graph.x_points}
                       y={result.graph.y_points}
                       scale={scale}
+                      precision={precision}
                     />
                   </Paper>
                 </Grid>

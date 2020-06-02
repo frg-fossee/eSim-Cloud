@@ -227,7 +227,9 @@ export default function SimulationProperties () {
               }
             }
 
+
             simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
+
             for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
               simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
             }
