@@ -237,7 +237,17 @@ export default function SimulationProperties () {
           } else {
             var simResultText = []
             for (let i = 0; i < temp.length; i++) {
-              simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + temp[i][2] + '\n')
+              let postfixUnit = ''
+              if (temp[i][0].includes('#branch')) {
+                temp[i][0] = `I(${temp[i][0].replace('#branch', '')})`
+                postfixUnit = 'A'
+              }
+              else {
+                temp[i][0] = `V(${temp[i][0]})`
+                postfixUnit = 'V'
+                }
+
+              simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2])+ ' ' + postfixUnit + '\n')
             }
             // console.log(simResultText)
             console.log('NOGRAPH', simResultText)
