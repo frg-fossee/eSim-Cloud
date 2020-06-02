@@ -393,10 +393,12 @@ export function GenerateNetList () {
         // console.log(component)
         if (component.properties.VALUE !== undefined) {
           k = k + ' ' + component.properties.VALUE
+          component.value = component.value + ' ' + component.properties.VALUE
         }
 
         if (component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
+          component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
         if (component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
