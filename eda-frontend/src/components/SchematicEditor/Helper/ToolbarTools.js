@@ -14,7 +14,8 @@ const {
   mxUtils,
   mxUndoManager,
   mxEvent,
-  mxCell
+  mxCell,
+  mxMorphing
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -196,6 +197,7 @@ export function ErcCheck () {
       }
     } */
   }
+  
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount
@@ -418,9 +420,20 @@ export function GenerateNetList () {
   })
   graph.getModel().beginUpdate()
   try {
+    /* var list = graph.getModel().cells
+    for (var property in list) {
+      if (list[property].vertex == true) {
+        list[property].value = 'checked'
+      }
+    } */
+    graph.view.refresh()
   } finally {
-    // Updates the display
-    graph.getModel().endUpdate()
+    // Arguments are number of steps, ease and delay
+    var morph = new mxMorphing(graph, 20, 1.2, 20)
+    morph.addListener(mxEvent.DONE, function () {
+      graph.getModel().endUpdate()
+    })
+    morph.startAnimation()
   }
   var a = new Set(netlist.nodelist)
   console.log(netlist.nodelist)
