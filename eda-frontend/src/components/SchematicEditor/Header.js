@@ -11,15 +11,19 @@ import {
   Menu,
   Fade,
   MenuItem,
-  ListItemText
+  ListItemText,
+  TextareaAutosize,
+  Popover,
+  Tooltip
 } from '@material-ui/core'
 import { useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
-import { setTitle, logout } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchDescription } from '../../redux/actions/index'
 import store from '../../redux/store'
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 
 import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 const useStyles = makeStyles((theme) => ({
@@ -43,12 +47,18 @@ const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(3.7),
     height: theme.spacing(3.7)
+  },
+  tools: {
+    padding: theme.spacing(1),
+    margin: theme.spacing(0, 0.8),
+    color: '#262626'
   }
 }))
 
 function Header () {
   const classes = useStyles()
   const auth = store.getState().authReducer
+  const schSave = store.getState().saveSchematicReducer
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const dispatch = useDispatch()
@@ -63,6 +73,26 @@ function Header () {
 
   const titleHandler = (e) => {
     dispatch(setTitle(`* ${e.target.value}`))
+    dispatch(setSchTitle(`${e.target.value}`))
+  }
+
+  const [anchorEd, setAnchorEd] = React.useState(null)
+  const [description, setDescription] = React.useState(schSave.description)
+
+  const handleDiscClick = (event) => {
+    setAnchorEd(event.currentTarget)
+  }
+
+  const handleDiscClose = () => {
+    setAnchorEd(null)
+    dispatch(setSchDescription(description))
+  }
+
+  const open = Boolean(anchorEd)
+  const id = open ? 'simple-popover' : undefined
+
+  const getInputValues = (evt) => {
+    setDescription(`${evt.target.value}`)
   }
 
   return (
@@ -90,6 +120,30 @@ function Header () {
             onChange={titleHandler}
             inputProps={{ 'aria-label': 'SchematicTitle' }}
           />
+
+          <Tooltip title="Add Description">
+            <IconButton aria-describedby={id} color="inherit" className={classes.tools} size="small" onClick={handleDiscClick} >
+              <InfoOutlinedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Popover
+            id={id}
+            open={open}
+            anchorEl={anchorEd}
+            onClose={handleDiscClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left'
+            }}
+          >
+            <div style={{ padding: '5px' }} >
+              <TextareaAutosize id='Description' label='Description' value={description || ''} onChange={getInputValues} rowsMin={5} aria-label='Description' placeholder={'Add Schematic Description'} style={{ width: '100%', minWidth: '250px', maxWidth: '300px' }} />
+            </div>
+          </Popover>
         </form>
       </Hidden>
 

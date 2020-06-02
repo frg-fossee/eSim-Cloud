@@ -3,7 +3,7 @@ import * as actions from '../actions/actions'
 const initialState = {
   title: 'Untitled_Schematic',
   description: '',
-  xml_data: null,
+  xmlData: null,
   isSaved: null
 }
 
@@ -33,7 +33,7 @@ export default function (state = initialState, action) {
     case actions.SET_SCH_XML_DATA: {
       return {
         ...state,
-        xml_data: action.payload.xml_data
+        xmlData: action.payload.xmlData
       }
     }
 
