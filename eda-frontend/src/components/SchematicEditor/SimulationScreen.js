@@ -48,8 +48,8 @@ export default function SimulationScreen ({ open, close }) {
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
   const [scale, setScale] = React.useState('si')
-  const [precision,setPrecision] = React.useState(5)
-  const precisionArr = [1,2,3,4,5,6,7,8,9,10]
+  const [precision, setPrecision] = React.useState(5)
+  const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   const handleScale = (evt) => {
     setScale(evt.target.value)
   }
@@ -101,7 +101,7 @@ export default function SimulationScreen ({ open, close }) {
                 <Typography variant="h5" align="center" component="p" gutterBottom>
                   Simulation Result for {stitle} *
                 </Typography>
-                <div style={{padding: '20px' }}>
+                <div style={{ padding: '20px' }}>
                   <TextField
                     style={{ width: '20%' }}
                     id="scale"
@@ -147,15 +147,15 @@ export default function SimulationScreen ({ open, close }) {
                       native: true
                     }}
                   >
-                   {
-                     precisionArr.map((d,i)=>{
-                       return(
-                        <option key={i} value={d}>
-                        {d}
-                        </option>
-                       )
-                     })
-                   }
+                    {
+                      precisionArr.map((d, i) => {
+                        return (
+                          <option key={i} value={d}>
+                            {d}
+                          </option>
+                        )
+                      })
+                    }
 
                   </TextField>
                 </div>

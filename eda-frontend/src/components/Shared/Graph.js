@@ -21,7 +21,7 @@ class Graph extends Component {
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y, labels, scale, precision} = this.props
+    const { x, y, labels, scale, precision } = this.props
     const scales = {
       si: 1,
       m: 0.001,
