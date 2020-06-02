@@ -21,13 +21,21 @@ class Graph extends Component {
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y, labels } = this.props
-
+    const { x, y, labels, scale } = this.props
+    const scales = {
+      si: 1,
+      m: 0.001,
+      u: 0.000001,
+      n: 0.000000001,
+      p: 0.000000000001
+    }
     if (typeof lineGraph !== 'undefined') lineGraph.destroy()
 
     const dataset = () => {
       var arr = []
+      console.log('scale', scale)
       for (var i = 0; i < y.length; i++) {
+        if (labels[0] === labels[i + 1]) continue
         arr.push({
           label: labels[i + 1],
           data: y[i],
@@ -37,12 +45,29 @@ class Graph extends Component {
       }
       return arr
     }
+    const selectLabel = () => {
+      if (labels[0] === 'time') {
+        if (scale === 'si') {
+          return 'Time in S'
+        } else {
+          return `Time in ${scale}S`
+        }
+      }
+      if (labels[0] === 'v-sweep') {
+        if (scale === 'si') {
+          return 'Voltage in V'
+        } else {
+          return `Voltage in ${scale}V`
+        }
+      }
+    }
 
     lineGraph = new Chart(myChartRef, {
       type: 'line',
       data: {
 
-        labels: x,
+        // labels: x,
+        labels: x.map(e => e * scales[scale]),
         datasets: dataset()
       },
 
@@ -78,7 +103,8 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                labelString: labels[0] === 'time' ? 'TIME in Seconds' : (labels[0] === 'v-sweep' ? 'VOLTAGE in Volts' : labels[0])
+                // labelString: labels[0] === 'time' ? `TIME in ${scale}s` : (labels[0] === 'v-sweep' ? `VOLTAGE in ${scale}v` : labels[0])
+                labelString: selectLabel()
               },
               // ticks:{
               //   source:'labels',

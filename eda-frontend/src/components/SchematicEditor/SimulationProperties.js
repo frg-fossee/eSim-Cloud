@@ -194,26 +194,31 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          console.log('IMP', res.data)
+          console.log('FULL', res.data)
           var temp = res.data.details.data
           var result = res.data.details
           var data = result.data
-          console.log('RESULT', result)
-          console.log('DATA', data)
+          console.log('result.details', result)
+          console.log('result.details.data', data)
           if (res.data.details.graph === 'true') {
             var simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
             for (var i = 0; i < data.length; i++) {
               simResultGraph.labels[0] = data[i].labels[0]
               var lab = data[i].labels
+              // lab is an array containeing labels names ['time','abc','def']
               simResultGraph.x_points = data[0].x
+
+              // labels
               for (var x = 1; x < lab.length; x++) {
-                console.log('LABEL', lab[x])
                 if (lab[x].includes('#branch')) {
                   lab[x] = `I (${lab[x].replace('#branch', '')})`
-                } else {
-                  lab[x] = `V (${lab[x]})`
                 }
+                //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
+                //  else {
+                // lab[x] = `V (${lab[x]})`
+
+                // }
                 simResultGraph.labels.push(lab[x])
               }
               // populate y_points
@@ -222,9 +227,9 @@ export default function SimulationProperties () {
               }
             }
 
-            simResultGraph.x_points = simResultGraph.x_points.map(d => d)
+            simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
             for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
-              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => d)
+              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
             }
             console.log('LOG', simResultGraph)
             dispatch(setResultGraph(simResultGraph))
