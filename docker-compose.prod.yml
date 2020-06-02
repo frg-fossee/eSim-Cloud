@@ -10,7 +10,7 @@ services:
       - ./Nginx/conf.d:/etc/nginx/conf.d
       - ./Nginx/static_pages:/usr/share/nginx/static_pages
       - ./eda-frontend/build:/usr/share/nginx/eda
-      - ./ArduinoFrontend/dist/ArduinoFrontend:/usr/share/nginx/arduino-build
+      - ./ArduinoFrontend/dist:/usr/share/nginx/arduino-build
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
       - ./esim-cloud-backend/file_storage:/usr/share/nginx/django_file_storage
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
@@ -37,7 +37,7 @@ services:
     build: ./ArduinoFrontend/
     command: >
       sh -c "npm install &&
-             npm run ng -- build --base-href ${ARDUINO_BASE_HREF}"
+             npm run ng -- build --prod --aot --base-href ${ARDUINO_BASE_HREF}"
     environment:
       - NODE_ENV=production
     volumes:
