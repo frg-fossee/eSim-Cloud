@@ -393,7 +393,7 @@ export function GenerateNetList () {
         // console.log(component)
         if (component.properties.VALUE !== undefined) {
           k = k + ' ' + component.properties.VALUE
-          component.value = component.value + ' ' + component.properties.VALUE
+          component.value = component.value + '\n' + component.properties.VALUE 
         }
 
         if (component.properties.EXTRA_EXPRESSION.length > 0) {

@@ -16,5 +16,7 @@ export default function NetlistInfoFunct (graph) {
   // eslint-disable-next-line eqeqeq
   if (taponhold == true) {
     alert(true)
+    alert(false)
   }
 }
+

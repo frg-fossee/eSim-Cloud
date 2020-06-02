@@ -5,8 +5,6 @@ import mxGraphFactory from 'mxgraph'
 import * as actions from '../../../redux/actions/actions'
 import store from '../../../redux/store'
 
-import WireConfigFunct from './WireConfig.js'
-import EdgeWireFunct from './EdgeWire.js'
 // import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
@@ -23,7 +21,6 @@ const {
   mxEvent,
   mxOutline,
   mxCell,
-  mxCellState,
   mxPoint,
   mxGraphView,
   mxCellEditor,
@@ -33,7 +30,6 @@ const {
   mxCellHighlight,
   mxEdgeStyle,
   mxStyleRegistry,
-  mxUndoManager,
   mxConnectionHandler,
   mxConstants,
   mxGraphHandler,
@@ -141,14 +137,11 @@ export default function LoadGrid (container, sidebar, outline) {
     // This can be extended as shown in portrefs.html example to allow for per-port
     // incoming/outgoing direction.
     graph.getAllConnectionConstraints = function (terminal) {
-			   var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null
+      var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null
 
-			   if ((geo != null ? !geo.relative : false) &&
-				   this.getModel().isVertex(terminal.cell) &&
-				   this.getModel().getChildCount(terminal.cell) == 0) {
-        return [new mxConnectionConstraint(new mxPoint(0, 0.5), false),
-				    	new mxConnectionConstraint(new mxPoint(1, 0.5), false)]
-			    }
+      if ((geo != null ? !geo.relative : false) && this.getModel().isVertex(terminal.cell) && this.getModel().getChildCount(terminal.cell) === 0) {
+        return [new mxConnectionConstraint(new mxPoint(0, 0.5), false), new mxConnectionConstraint(new mxPoint(1, 0.5), false)]
+      }
 
       return null
     }
@@ -221,7 +214,7 @@ export default function LoadGrid (container, sidebar, outline) {
     var labelBackground = (invert) ? '#000000' : '#FFFFFF'
     var fontColor = (invert) ? '#FFFFFF' : '#000000'
     var strokeColor = (invert) ? '#C0C0C0' : '#000000'
-    var fillColor = (invert) ? 'none' : '#FFFFFF'
+    // var fillColor = (invert) ? 'none' : '#FFFFFF'
 
     var style = graph.getStylesheet().getDefaultEdgeStyle()
     delete style.endArrow
@@ -251,13 +244,10 @@ export default function LoadGrid (container, sidebar, outline) {
     style.rounded = '1'
     style.strokeWidth = strokeWidth
 
-    var parent = graph.getDefaultParent()
+    // var parent = graph.getDefaultParent()
 
     SideBar(graph, sidebar)
     KeyboardShorcuts(graph)
-    // WireConfigFunct(graph)
-    // EdgeWireFunct()
-    // ClipBoardFunct(graph)
     NetlistInfoFunct(graph)
     ToolbarTools(graph)
 
@@ -271,41 +261,12 @@ export default function LoadGrid (container, sidebar, outline) {
       }
     })
 
-    // var state = mxCellState
-    // graph.autoSizeCellsOnAdd = true
-    // var view = graph.getView()
-    // var style = graph.getStylesheet()
-    // console.log(view.currentRoot)
     graph.getModel().beginUpdate()
     try {
     } finally {
     // Updates the display
       graph.getModel().endUpdate()
     }
-
-    /* document.body.appendChild(mxUtils.button('Zoom In', function () {
-      graph.zoomIn()
-    }))
-
-    document.body.appendChild(mxUtils.button('Zoom Out', function () {
-      graph.zoomOut()
-    }))
-
-    // Undo/redo
-    var undoManager = new mxUndoManager()
-    var listener = function (sender, evt) {
-      undoManager.undoableEditHappened(evt.getProperty('edit'))
-    }
-    graph.getModel().addListener(mxEvent.UNDO, listener)
-    graph.getView().addListener(mxEvent.UNDO, listener)
-
-    document.body.appendChild(mxUtils.button('Undo', function () {
-      undoManager.undo()
-    }))
-
-    document.body.appendChild(mxUtils.button('Redo', function () {
-      undoManager.redo()
-    })) */
 
     // Shows XML for debugging the actual model
     document.body.appendChild(mxUtils.button('Delete', function () {
@@ -402,7 +363,7 @@ export default function LoadGrid (container, sidebar, outline) {
           // Finds orientation of the segment
           var p0 = terminal.absolutePoints[seg]
           var pe = terminal.absolutePoints[seg + 1]
-          var horizontal = (p0.x - pe.x == 0)
+          var horizontal = (p0.x - pe.x === 0)
 
           // Stores the segment in the edge state
           var key = (source) ? 'sourceConstraint' : 'targetConstraint'
@@ -426,16 +387,6 @@ export default function LoadGrid (container, sidebar, outline) {
         pt = new mxPoint(this.getRoutingCenterX(terminal),
           this.getRoutingCenterY(terminal))
       }
-
-      // Snaps point to grid
-      /* if (pt != null)
-				{
-					var tr = this.graph.view.translate;
-					var s = this.graph.view.scale;
-
-					pt.x = (this.graph.snap(pt.x / s - tr.x) + tr.x) * s;
-					pt.y = (this.graph.snap(pt.y / s - tr.y) + tr.y) * s;
-				} */
     }
 
     edge.setAbsoluteTerminalPoint(pt, source)
@@ -506,7 +457,7 @@ export default function LoadGrid (container, sidebar, outline) {
   mxEdgeHandler.prototype.connect = function (edge, terminal, isSource, isClone, me) {
     var result = null
     var model = this.graph.getModel()
-    var parent = model.getParent(edge)
+    // var parent = model.getParent(edge)
 
     model.beginUpdate()
     try {
@@ -554,9 +505,10 @@ export default function LoadGrid (container, sidebar, outline) {
     }
 
     // Adds in-place highlighting
+    // eslint-disable-next-line no-unused-vars
     var mxCellHighlightHighlight = mxCellHighlight.prototype.highlight
     marker.highlight.highlight = function (state) {
-      if (this.state != state) {
+      if (this.state !== state) {
         if (this.state != null) {
           this.state.style = this.lastStyle
 
@@ -651,14 +603,14 @@ export default function LoadGrid (container, sidebar, outline) {
 
     // Gets the initial connection from the source terminal or edge
     if (source != null && state.view.graph.model.isEdge(source.cell)) {
-      horizontal = state.style.sourceConstraint == 'horizontal'
+      horizontal = state.style.sourceConstraint === 'horizontal'
     } else if (source != null) {
-      horizontal = source.style.portConstraint != 'vertical'
+      horizontal = source.style.portConstraint !== 'vertical'
 
       // Checks the direction of the shape and rotates
       var direction = source.style[mxConstants.STYLE_DIRECTION]
 
-      if (direction == 'north' || direction == 'south') {
+      if (direction === 'north' || direction === 'south') {
         horizontal = !horizontal
       }
     }
@@ -698,11 +650,11 @@ export default function LoadGrid (container, sidebar, outline) {
         hint = state.view.transformControlPoint(state, hints[i])
 
         if (horizontal) {
-          if (pt.y != hint.y) {
+          if (pt.y !== hint.y) {
             pt.y = hint.y
             result.push(pt.clone())
           }
-        } else if (pt.x != hint.x) {
+        } else if (pt.x !== hint.x) {
           pt.x = hint.x
           result.push(pt.clone())
         }
@@ -720,10 +672,10 @@ export default function LoadGrid (container, sidebar, outline) {
     }
 
     if (horizontal) {
-      if (pt.y != hint.y && first.x != pt.x) {
+      if (pt.y !== hint.y && first.x !== pt.x) {
         result.push(new mxPoint(pt.x, hint.y))
       }
-    } else if (pt.x != hint.x && first.y != pt.y) {
+    } else if (pt.x !== hint.x && first.y !== pt.y) {
       result.push(new mxPoint(hint.x, pt.y))
     }
   }
@@ -733,13 +685,14 @@ export default function LoadGrid (container, sidebar, outline) {
   // This connector needs an mxEdgeSegmentHandler
   var mxGraphCreateHandler = mxGraph.prototype.createHandler
   mxGraph.prototype.createHandler = function (state) {
+    // eslint-disable-next-line no-unused-vars
     var result = null
 
     if (state != null) {
       if (this.model.isEdge(state.cell)) {
         var style = this.view.getEdgeStyle(state)
 
-        if (style == mxEdgeStyle.WireConnector) {
+        if (style === mxEdgeStyle.WireConnector) {
           return new mxEdgeSegmentHandler(state)
         }
       }

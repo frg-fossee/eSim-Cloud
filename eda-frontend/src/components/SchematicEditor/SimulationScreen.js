@@ -48,6 +48,7 @@ export default function SimulationScreen ({ open, close }) {
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
   const [scale, setScale] = React.useState('si')
+  // eslint-disable-next-line no-unused-vars
   const scales = {
     m: 0.001,
     u: 0.000001,
