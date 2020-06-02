@@ -34,7 +34,7 @@ export function Save () {
   var enc = new mxCodec(mxUtils.createXmlDocument())
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getPrettyXml(node)
-  console.log(value)
+  return value
 }
 
 // UNDO
