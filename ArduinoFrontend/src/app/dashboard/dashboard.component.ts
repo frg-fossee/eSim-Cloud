@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Workspace } from '../Libs/Workspace';
+import { SaveOffline } from '../Libs/SaveOffiline';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,14 +35,14 @@ export class DashboardComponent implements OnInit {
 
   }
   ngOnInit() {
-    Workspace.readAll((v) => {
+    SaveOffline.ReadALL((v) => {
       console.log(v);
       this.items = v;
     });
   }
   DeleteCircuit(id) {
     console.log(id);
-    Workspace.DeleteIDB(id, () => {
+    SaveOffline.Delete(id, () => {
       window.location.reload();
     });
   }
