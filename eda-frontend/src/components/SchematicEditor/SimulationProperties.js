@@ -208,6 +208,12 @@ export default function SimulationProperties () {
               var lab = data[i].labels
               simResultGraph.x_points = data[0].x
               for (var x = 1; x < lab.length; x++) {
+                console.log("LABEL",lab[x])
+                if(lab[x].includes("#branch")){
+                  lab[x] = `I (${lab[x].replace('#branch','')})`
+                }else{
+                  lab[x] = `V (${lab[x]})`
+                }
                 simResultGraph.labels.push(lab[x])
               }
               // populate y_points
@@ -239,166 +245,6 @@ export default function SimulationProperties () {
         console.log(error)
       })
   }
-  // const SecondaryParamaterForDcSweep = (props) => {
-  //   const prefix = props.prefix
-  //   if (prefix === 'R' || prefix === 'r') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Resistance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>K</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Resistance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>K</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Resistance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>K</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'C' || prefix === 'c') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Capacitance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>F</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Capacitance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>F</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Capacitance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>F</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'L' || prefix === 'l') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Inductance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>H</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Inductance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>H</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Inductance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>H</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'V' || prefix === 'v') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Voltage" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>V</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Voltage" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>V</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step InductVoltageance" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>V</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else if (prefix === 'I' || prefix === 'i') {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Current" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>A</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Current" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>A</span>
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Current" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-  //           <span style={{ marginLeft: '10px' }}>A</span>
-  //         </ListItem>
-  //       </>
-  //     )
-  //   } else {
-  //     return (
-  //       <>
-  //         <ListItem>
-  //           <TextField id="start2" label="Start Value" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.start2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="stop2" label="Stop Value" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.stop2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-
-  //         </ListItem>
-  //         <ListItem>
-  //           <TextField id="step2" label="Step Value" size='small' variant="outlined"
-  //             value={dcSweepcontrolLine.step2}
-  //             onChange={handleDcSweepControlLine}
-  //           />
-
-  //         </ListItem>
-  //       </>
-  //     )
-  //   }
-  // }
 
   const startSimulate = (type) => {
     var compNetlist = GenerateNetList()

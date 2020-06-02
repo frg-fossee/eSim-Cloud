@@ -2,6 +2,8 @@
 import React, { Component } from 'react'
 import Chart from 'chart.js'
 let lineGraph
+import * as Zoom from 'chartjs-plugin-zoom'
+import 'chartjs-plugin-colorschemes';
 
 // Chart Style Options
 Chart.defaults.global.defaultFontColor = '#e6e6e6'
@@ -34,7 +36,7 @@ class Graph extends Component {
           label: labels[i + 1],
           data: y[i],
           fill: false,
-          borderColor: getRandomColor()
+          // borderColor: getRandomColor()
         })
       }
       return arr
@@ -49,6 +51,36 @@ class Graph extends Component {
       },
 
       options: {
+        plugins: {
+
+
+          colorschemes: {
+
+            scheme: 'brewer.SetOne9'
+
+          },
+        zoom: {
+          // Container for pan options
+          pan: {
+            // Boolean to enable panning
+            enabled: true,
+
+            // Panning directions. Remove the appropriate direction to disable
+            // Eg. 'y' would only allow panning in the y direction
+            mode: 'xy'
+          },
+
+          // Container for zoom options
+          zoom: {
+            // Boolean to enable zooming
+            enabled: true,
+
+            // Zooming directions. Remove the appropriate direction to disable
+            // Eg. 'y' would only allow zooming in the y direction
+            mode: 'xy'
+          }
+        }
+      },
         responsive: true,
         title: {
           display: false,
@@ -72,10 +104,13 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                labelString: labels[0] === 'time' ? 'time in seconds' : (labels[0] === 'v-sweep' ? "voltage in volts" : labels[0])
+                labelString: labels[0] === 'time' ? 'TIME in Seconds' : (labels[0] === 'v-sweep' ? "VOLTAGE in Volts" : labels[0])
               },
-              ticks:{
-                source:'labels',
+              // ticks:{
+              //   source:'labels',
+              //   maxTicksLimit: 10,
+              // }
+                ticks:{
                 maxTicksLimit: 10,
               }
             }
