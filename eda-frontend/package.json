@@ -14,6 +14,7 @@
     "file-saver": "^2.0.2",
     "material-ui-popup-state": "^1.5.4",
     "mxgraph": "^4.1.1",
+    "query-string": "^6.12.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",

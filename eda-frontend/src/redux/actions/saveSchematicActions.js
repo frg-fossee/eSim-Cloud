@@ -1,4 +1,6 @@
 import * as actions from './actions'
+import queryString from 'query-string'
+import api from '../../utils/Api'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -27,14 +29,34 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
   })
 }
 
-export const saveSchematic = (title, description, xml) => (dispatch) => {
+export const saveSchematic = (title, description, xml) => (dispatch, getState) => {
+  const dataDump = {
+    title: title,
+    description: description,
+    xmlData: xml
+  }
+
   const body = {
-    data_dump: {
-      title: title,
-      description: description,
-      xmlData: xml
+    data_dump: JSON.stringify(dataDump)
+  }
+
+  const token = getState().authReducer.token
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
 
-  console.log(body)
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+  api.post('save', queryString.stringify(body), config)
+    .then(
+      (res) => {
+        console.log(res)
+      }
+    )
+    .catch((err) => { console.error(err) })
 }
