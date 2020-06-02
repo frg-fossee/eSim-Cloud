@@ -269,17 +269,15 @@ export default function LoadGrid (container, sidebar, outline) {
       graph.getModel().endUpdate()
     }
 
-    // Shows XML for debugging the actual model
-    document.body.appendChild(mxUtils.button('Delete', function () {
-      graph.removeCells()
-    }))
+    // Shows XML for debugging the actual modelSS
 
     // Wire-mode
-    var checkbox = document.createElement('input')
-    checkbox.setAttribute('type', 'checkbox')
+    var checkbox = {
+      checked: false
+    }
 
-    document.body.appendChild(checkbox)
-    mxUtils.write(document.body, 'Wire Mode')
+    //document.body.appendChild(checkbox)
+    //mxUtils.write(document.body, 'Wire Mode')
 
     // Starts connections on the background in wire-mode
     var connectionHandlerIsStartEvent = graph.connectionHandler.isStartEvent
@@ -311,7 +309,7 @@ export default function LoadGrid (container, sidebar, outline) {
     }
 
     // Grid
-    var checkbox2 = document.createElement('input')
+    /* var checkbox2 = document.createElement('input')
     checkbox2.setAttribute('type', 'checkbox')
     checkbox2.setAttribute('checked', 'true')
 
@@ -326,7 +324,7 @@ export default function LoadGrid (container, sidebar, outline) {
       }
 
       container.style.backgroundColor = (invert) ? 'black' : 'white'
-    })
+    }) */
 
     mxEvent.disableContextMenu(container)
   };
