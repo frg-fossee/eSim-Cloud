@@ -5,6 +5,7 @@
 import mxGraphFactory from 'mxgraph'
 import * as actions from '../../../redux/actions/actions'
 import store from '../../../redux/store'
+import dot from '../../../static/dot.gif'
 
 // import ClipBoardFunct from './ClipBoard.js'
 import NetlistInfoFunct from './NetlistInfo.js'
@@ -36,7 +37,9 @@ const {
   mxGraphHandler,
   mxCylinder,
   mxCellRenderer,
-  mxVertexHandler
+  mxVertexHandler,
+  mxConstraintHandler,
+  mxImage
 } = new mxGraphFactory()
 
 export default function LoadGrid (container, sidebar, outline) {
@@ -86,10 +89,7 @@ export default function LoadGrid (container, sidebar, outline) {
     var strokeWidth = 2
 
     // Replaces the port image
-    // mxConstraintHandler.prototype.pointImage = new mxImage('images/dot.gif', 10, 10)
-
-    // Enables guides
-    // mxGraphHandler.prototype.guidesEnabled = true
+    mxConstraintHandler.prototype.pointImage = new mxImage(dot, 10, 10)
 
     // Enables rubberband selection
     new mxRubberband(graph)
