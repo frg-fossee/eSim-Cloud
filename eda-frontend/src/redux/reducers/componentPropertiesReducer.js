@@ -19,6 +19,7 @@ export default function (state = InitialState, action) {
     }
 
     case actions.SET_COMP_PROPERTIES: {
+      console.log(state)
       return {
         ...state,
         id: action.payload.id,

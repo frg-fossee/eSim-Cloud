@@ -2,11 +2,13 @@ const ComponentParameters = {
   // capacitor
   C: {
     PREFIX: 'C',
+    NAME: '',
     N1: '',
     N2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '',
+    UNIT: 'F'
   },
 
   D: {
@@ -25,7 +27,8 @@ const ComponentParameters = {
     N2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '',
+    UNIT: 'A'
   },
 
   G: {
@@ -96,11 +99,13 @@ const ComponentParameters = {
   // Inductor
   L: {
     PREFIX: 'L',
+    NAME: '',
     N1: '',
     N2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '',
+    UNIT: 'H'
   },
 
   M: {
@@ -129,9 +134,10 @@ const ComponentParameters = {
     NAME: '',
     N1: '',
     N2: '',
-    VALUE: '',
+    VALUE: '1',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '',
+    UNIT: 'V'
 
   },
   // resistor
@@ -140,9 +146,10 @@ const ComponentParameters = {
     NAME: '',
     N1: '',
     N2: '',
-    VALUE: '1K',
+    VALUE: '1',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '',
+    UNIT: 'K'
   },
 
   Z: {

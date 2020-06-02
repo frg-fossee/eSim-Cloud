@@ -37,7 +37,7 @@ services:
     build: ./ArduinoFrontend/
     command: >
       sh -c "npm install &&
-             npm run ng -- build --prod --aot --base-href ${ARDUINO_BASE_HREF}"
+             npm run ng -- build --base-href ${ARDUINO_BASE_HREF}"
     environment:
       - NODE_ENV=production
     volumes:
@@ -129,8 +129,7 @@ services:
   db:
     image: postgres
     volumes:
-      - /var/lib/docker/basedata:/var/lib/postgresql/data
-      - ./postgres_data:/mnt/largedb
+      - ./postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env.prod
 

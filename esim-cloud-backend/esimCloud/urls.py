@@ -7,7 +7,6 @@ esimCloud URL Configuration
 from django.contrib import admin
 from django.urls import path
 from simulationAPI import urls as simulationURLs
-from arduinoAPI import urls as arduinoURLs
 from libAPI import urls as libURLs
 from saveAPI import urls as saveURLs
 from publishAPI import urls as publishURLs
@@ -36,9 +35,6 @@ urlpatterns = [
 
     # libAPI routes
     path('api/', include(libURLs)),
-    
-    # arduino routes
-    path('api/arduino/', include(arduinoURLs)),
 
     # libAPI routes
     path('api/', include(saveURLs)),

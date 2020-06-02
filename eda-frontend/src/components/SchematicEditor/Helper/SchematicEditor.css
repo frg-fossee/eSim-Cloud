@@ -1,12 +1,12 @@
 /* Sidebar Components */
-img {
+.compImage {
   width: 72px;
-  width: 72px;
+  height: 72px;
   margin-left: auto;
   padding: 2px;
 }
 
-img:hover {
+.compImage:hover {
   background-color: #f4f6f8;
   border-radius: 5px;
   transform: scale(1.5);

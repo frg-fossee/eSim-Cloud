@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'simulationAPI',
     'authAPI',
     'libAPI',
-    'arduinoAPI',
     'saveAPI',
     'publishAPI'
 ]
@@ -220,8 +219,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = (
-    'simulationAPI.tasks',
-    'arduinoAPI.tasks'
+    'simulationAPI.tasks'
 )
 
 
@@ -237,4 +235,15 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     },
+}
+
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }

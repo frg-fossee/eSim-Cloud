@@ -3,7 +3,7 @@ import * as actions from '../actions/actions'
 const initialState = {
   title: '',
   isGraph: 'false',
-  text: '',
+  text: [],
   graph: {},
   isSimRes: false
 }
