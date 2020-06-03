@@ -96,9 +96,6 @@ class SvgGenerator:
         """
 
         data = self.parser.extract_data_from_lib(file_path)
-
-        print('data:',data)
-
         dcm_path = file_path.rsplit(".", 1)
         dcm_path = dcm_path[0] + ".dcm"
         folder_name = file_path.split('/')[-1].split(".")[0]
@@ -110,7 +107,6 @@ class SvgGenerator:
             isDcmPresent = False
         else:
             isDcmPresent = True
-        print('dcm_data:',dcm_data)
         # folder_name is also same as the file name without extension
 
         component_data = {}
@@ -465,7 +461,8 @@ class SvgGenerator:
                             if(not isDcmPresent):
                                 # populate dcm_data with fake info
                                 for ix in range(len(data)):
-                                    dummy_dcm = {'name': '', 'D': '', 'K': '', 'F': ''}
+                                    dummy_dcm = {'name': '', 'D': '',
+                                                 'K': '', 'F': ''}
                                     dummy_dcm['name'] = data[ix]['def'][1]
                                     dcm_data.append(dummy_dcm)
 
@@ -497,7 +494,7 @@ class SvgGenerator:
                                         comp = dcm_data[co]
                                         if(name_of_symbol == comp["name"]):
                                             cmp_data["name"] = comp["name"]
-                                            cmp_data["full_name"] = name if (name != '') else comp['name']
+                                            cmp_data["full_name"] = name if (name != '') else comp['name'] # noqa
                                             if 'K' in comp.keys():
                                                 cmp_data["keyword"] = comp["K"]
                                             else:
@@ -545,7 +542,7 @@ class SvgGenerator:
                                     comp = dcm_data[co]
                                     if(name_of_symbol == comp["name"]):
                                         cmp_data["name"] = comp["name"]
-                                        cmp_data["full_name"] = name if (name != '') else comp['name']
+                                        cmp_data["full_name"] = name if (name != '') else comp['name'] # noqa
                                         if 'K' in comp.keys():
                                             cmp_data["keyword"] = comp["K"]
                                         else:
@@ -573,7 +570,6 @@ class SvgGenerator:
                                         cmp_data["part"] = chr(64+z)
                                         component_data[cmp_data["full_name"]] = cmp_data  # noqa
 
-        print('component_data:',component_data)
         return component_data
 
 
@@ -590,8 +586,3 @@ if __name__ == "__main__":
         sys.exit(1)
     generate_svg_and_save_to_folder(sys.argv[1], sys.argv[2])
     print('Processed', sys.argv[1])
-
-    # print("processing")
-    # # generate_svg_and_save_to_folder('./sample_lib/eSim_Hybrid.dcm','./symbols/')
-    # generate_svg_and_save_to_folder('./sample_lib/eSim_Hybrid.lib', './symbols/')
-    # print("done")
