@@ -140,6 +140,6 @@ export default function WireConfigFunct (graph) {
 			style['resizable'] = '0';
 			style['rounded'] = '1';
             // style['strokeWidth'] = strokeWidth;
-			graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
+			// graph.getStylesheet().getDefaultEdgeStyle()['edgeStyle'] = 'orthogonalEdgeStyle';
 
 }

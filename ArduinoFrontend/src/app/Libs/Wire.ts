@@ -10,7 +10,6 @@ export class Wire {
   keyName = 'wires';
   points: number[][] = []; // stores array of position [x,y]
   joints: any[] = [];
-  value = -1; // Value of the wire (5,0 -> GND)
   end: Point = null; // End circuit node of wire
   element: any; // body of the wire
   color: any = '#000'; // color of the wire
@@ -117,7 +116,7 @@ export class Wire {
    * @param t End point / END circuit node
    * @param removeLast remove previously inserted item
    */
-  connect(t: Point, removeLast: boolean = false) {
+  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false) {
     // if remove last then pop from array
     if (removeLast && this.points.length > 1) {
       this.points.pop();
@@ -145,6 +144,9 @@ export class Wire {
         }, () => {
         });
         this.joints.push(joint);
+        if (hideJoint) {
+          joint.hide();
+        }
       }
     }
     this.update();
@@ -238,6 +240,10 @@ export class Wire {
     for (const joint of this.joints) {
       joint.remove();
     }
+    if (this.glow) {
+      this.glow.remove();
+    }
+    this.glow = null;
     this.joints = [];
     this.joints = null;
     this.points = [];
@@ -247,10 +253,6 @@ export class Wire {
     this.end.connectedTo = null;
     this.start = null;
     this.end = null;
-  }
-  // No need of this function as it is inherited from CircuitElement class
-  getNode(x: number, y: number) {
-    return null;
   }
   initSimulation() {
   }

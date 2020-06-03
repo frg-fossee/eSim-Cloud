@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'authAPI',
     'libAPI',
     'saveAPI',
+    'publishAPI'
 ]
 
 MIDDLEWARE = [
@@ -133,14 +134,32 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Mail server config
+
+# use this for console emails
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Note SMTP is slow
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+# EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "email@gmail.com")
+# EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "gmailpassword")
+# EMAIL_PORT = os.environ.get("EMAIL_PORT", 587)
+# EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", True)
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get(
     "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", "")
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get(
     "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET", "")
+
 GOOGLE_OAUTH_REDIRECT_URI = os.environ.get(
     "GOOGLE_OAUTH_REDIRECT_URI", "http://localhost/api/auth/google-callback")
+
+POST_ACTIVATE_REDIRECT_URL = os.environ.get(
+    "POST_ACTIVATE_REDIRECT_URL", "http://localhost/")
+
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
@@ -185,9 +204,13 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/django_static/'
 
 
-# For Netlist handling netlist uploads ( Netlists are not stored here )
+# noqa For Netlist handling netlist uploads and other temp uploads
 MEDIA_URL = '/_files/'
 MEDIA_ROOT = os.path.join("/tmp", "esimCloud-temp")
+
+# File Storage
+FILE_STORAGE_ROOT = os.path.join(BASE_DIR, 'file_storage')
+FILE_STORAGE_URL = '/files'
 
 # celery
 CELERY_BROKER_URL = 'redis://redis:6379'
@@ -212,4 +235,15 @@ LOGGING = {
         'handlers': ['console'],
         'level': 'INFO',
     },
+}
+
+
+SWAGGER_SETTINGS = {
+   'SECURITY_DEFINITIONS': {
+      'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+      }
+   }
 }

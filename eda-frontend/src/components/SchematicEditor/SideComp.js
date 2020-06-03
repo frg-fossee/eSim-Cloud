@@ -12,10 +12,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1.5),
     border: '1px solid blue',
     borderRadius: '5px'
-  },
-  compImage: {
-    height: '72px',
-    width: '72px'
   }
 }))
 
@@ -43,7 +39,7 @@ export default function SideComp ({ component }) {
     <div>
 
       <Tooltip title={component.full_name} arrow>
-        <img ref={imageRef} className={classes.compImage} src={'../' + component.svg_path} alt="Logo" aria-describedby={id} onClick={handleClick} />
+        <img ref={imageRef} className='compImage' src={'../' + component.svg_path} alt="Logo" aria-describedby={id} onClick={handleClick} />
       </Tooltip>
 
       <Popover

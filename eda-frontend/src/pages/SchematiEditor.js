@@ -11,7 +11,7 @@ import RightSidebar from '../components/SchematicEditor/RightSidebar'
 import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-
+// import {TermsAndConditions} from '../components/SchematicEditor/ToolbarExtension'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -24,18 +24,22 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SchematiEditor () {
   const classes = useStyles()
-
   const compRef = React.createRef()
   const gridRef = React.createRef()
   const outlineRef = React.createRef()
 
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
+  // const [tAc,settAc] = React.useState(true)
+  // const handletAcOpen = () => {
+  //   settAc(false)
+  // }
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
 
   useEffect(() => {
+    document.title = 'Schematic Editor - EDA '
     var container = gridRef.current
     var sidebar = compRef.current
     var outline = outlineRef.current
@@ -43,7 +47,10 @@ export default function SchematiEditor () {
   }, [compRef, gridRef, outlineRef])
 
   return (
+
     <div className={classes.root}>
+      {/* <TermsAndConditions open={tAc} close={handletAcOpen}/> */}
+
       <CssBaseline />
 
       <Layout header={<Header />} resToolbar={<SchematicToolbar mobileClose={handleDrawerToggle} />} sidebar={<ComponentSidebar compRef={compRef} />} />
