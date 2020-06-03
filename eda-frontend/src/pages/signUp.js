@@ -15,11 +15,11 @@ import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { Link as RouterLink } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { login } from '../redux/actions/index'
+import { signUp } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(27),
+    marginTop: theme.spacing(20),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -38,15 +38,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SignIn () {
+export default function SignUp () {
   const classes = useStyles()
 
   useEffect(() => {
-    document.title = 'Login - eSim '
+    document.title = 'Sign Up - eSim '
   })
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
   const dispatch = useDispatch()
 
   return (
@@ -57,7 +58,7 @@ export default function SignIn () {
         </Avatar>
 
         <Typography component="h1" variant="h5">
-          Login | Sign IN
+          Register | Sign Up
         </Typography>
 
         <form className={classes.form} noValidate>
@@ -66,12 +67,26 @@ export default function SignIn () {
             margin="normal"
             required
             fullWidth
-            id="email"
+            id="username"
             label="Username"
-            name="email"
+            name="username"
             autoComplete="email"
             value={username}
             onChange={e => setUsername(e.target.value)}
+            autoFocus
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             autoFocus
           />
           <TextField
@@ -89,26 +104,21 @@ export default function SignIn () {
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            label="I accept the Terms of Use & Privacy Policy"
           />
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(login(username, password))}
+            onClick={() => dispatch(signUp(email, username, password))}
             className={classes.submit}
           >
-            Login
+            Sign Up
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link component={RouterLink} to="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link component={RouterLink} to="/signup" variant="body2">
-                {'New User? Sign Up'}
+            <Grid item style={{ marginLeft: 'auto' }} >
+              <Link component={RouterLink} to="/login" variant="body2">
+                {'Already have account? Login'}
               </Link>
             </Grid>
           </Grid>

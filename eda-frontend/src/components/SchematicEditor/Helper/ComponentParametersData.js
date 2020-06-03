@@ -134,7 +134,7 @@ const ComponentParameters = {
     NAME: '',
     N1: '',
     N2: '',
-    VALUE: '1',
+    VALUE: '0',
     EXTRA_EXPRESSION: '',
     MODEL: '',
     UNIT: 'V'

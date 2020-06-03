@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from 'react'
 import Chart from 'chart.js'
+
+import 'chartjs-plugin-colorschemes'
 let lineGraph
 
 // Chart Style Options
@@ -19,34 +21,69 @@ class Graph extends Component {
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y1, y2, labels } = this.props
-
+    const { x, y, labels, scale, precision } = this.props
+    const scales = {
+      si: { value: 1, ticks: 3 },
+      m: { value: 0.001, ticks: 5 },
+      u: { value: 0.000001, ticks: 7 },
+      n: { value: 0.000000001, ticks: 9 },
+      p: { value: 0.000000000001, ticks: 11 }
+    }
     if (typeof lineGraph !== 'undefined') lineGraph.destroy()
+
+    const dataset = () => {
+      var arr = []
+      console.log('scale', scale)
+      for (var i = 0; i < y.length; i++) {
+        if (labels[0] === labels[i + 1]) continue
+        arr.push({
+          label: labels[i + 1],
+          data: y[i],
+          fill: false
+          // borderColor: getRandomColor()
+        })
+      }
+      return arr
+    }
+    const selectLabel = () => {
+      if (labels[0] === 'time') {
+        if (scale === 'si') {
+          return 'Time in S'
+        } else {
+          return `Time in ${scale}S`
+        }
+      }
+      if (labels[0] === 'v-sweep') {
+        if (scale === 'si') {
+          return 'Voltage in V'
+        } else {
+          return `Voltage in ${scale}V`
+        }
+      }
+    }
 
     lineGraph = new Chart(myChartRef, {
       type: 'line',
       data: {
-        labels: x,
-        datasets: [
-          {
-            label: labels[1],
-            data: y1,
-            fill: false,
-            borderColor: '#9feaf9'
-          },
-          {
-            label: labels[2],
-            data: y2,
-            fill: false,
-            borderColor: '#556cd6'
-          }
-        ]
+
+        // labels: x,
+        labels: x.map(e => (e / scales[scale].value).toFixed(precision)),
+        datasets: dataset()
       },
+
       options: {
+        plugins: {
+
+          colorschemes: {
+
+            scheme: 'brewer.SetOne9'
+
+          }
+        },
         responsive: true,
         title: {
-          display: true,
-          text: 'Voltage vs Time Graph'
+          display: false,
+          text: ''
         },
         tooltips: {
           mode: 'index',
@@ -66,10 +103,16 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                labelString: labels[0] + ' ( sec )'
+                // labelString: labels[0] === 'time' ? `TIME in ${scale}s` : (labels[0] === 'v-sweep' ? `VOLTAGE in ${scale}v` : labels[0])
+                labelString: selectLabel()
               },
+              // ticks:{
+              //   source:'labels',
+              //   maxTicksLimit: 10,
+              // }
               ticks: {
-                display: true
+                // maxTicksLimit: 10
+                maxTicksLimit: scales[scale].ticks
               }
             }
           ],
@@ -77,7 +120,7 @@ class Graph extends Component {
             {
               display: true,
               scaleLabel: {
-                display: true,
+                display: false,
                 labelString: 'Volatge ( V )'
               },
               gridLines: {

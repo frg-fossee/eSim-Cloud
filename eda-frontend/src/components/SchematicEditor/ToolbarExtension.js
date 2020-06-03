@@ -45,7 +45,7 @@ export function NetlistModal ({ open, close, netlist }) {
       aria-describedby="generate-netlist-description"
     >
       <DialogTitle id="generate-netlist-title">{'Netlist Generator'}</DialogTitle>
-      <DialogContent Dividers>
+      <DialogContent dividers>
         <DialogContentText id="generate-netlist-description">
           Current Netlist for given schematic...<br /><br />
           <TextareaAutosize aria-label="empty textarea" rowsMin={20} rowsMax={50} style={{ minWidth: '500px' }} value={netlist} />

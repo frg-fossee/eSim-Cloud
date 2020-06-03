@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { IconButton, Tooltip } from '@material-ui/core'
+import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import FolderIcon from '@material-ui/icons/Folder'
-import EditIcon from '@material-ui/icons/Edit'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import UndoIcon from '@material-ui/icons/Undo'
@@ -17,12 +16,14 @@ import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
 import BorderClearIcon from '@material-ui/icons/BorderClear'
 import { makeStyles } from '@material-ui/core/styles'
+import SaveIcon from '@material-ui/icons/Save'
+import CloseIcon from '@material-ui/icons/Close'
 
 import { NetlistModal, HelpScreen } from './ToolbarExtension'
 import MenuButton from './MenuButton'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSimulate, closeCompProperties } from '../../redux/actions/index'
+import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -45,9 +46,41 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+function SimpleSnackbar ({ open, close, message }) {
+  return (
+    <div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={close}
+        message={message}
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    </div>
+  )
+}
+
+SimpleSnackbar.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.func,
+  message: PropTypes.string
+}
+
 export default function SchematicToolbar ({ mobileClose }) {
   const classes = useStyles()
   const netfile = useSelector(state => state.netlistReducer)
+  const auth = useSelector(state => state.authReducer)
+  const schSave = useSelector(state => state.saveSchematicReducer)
 
   const dispatch = useDispatch()
 
@@ -83,10 +116,42 @@ export default function SchematicToolbar ({ mobileClose }) {
     dispatch(closeCompProperties())
   }
 
+  const [snacOpen, setSnacOpen] = React.useState(false)
+  const [message, setMessage] = React.useState('')
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
+
+  const handelSchSave = () => {
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else {
+      var xml = Save()
+      dispatch(setSchXmlData(xml))
+      var title = schSave.title
+      var description = schSave.description
+      dispatch(saveSchematic(title, description, xml))
+    }
+  }
+
   return (
     <>
       <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} />
-      <MenuButton title={'Edit'} iconType={EditIcon} items={['Cut', 'Copy', 'Paste']} />
+      <Tooltip title="Save">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
+          <SaveIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <Tooltip title="Simulate">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { dispatch(toggleSimulate()) }}>
           <PlayCircleOutlineIcon fontSize="small" />

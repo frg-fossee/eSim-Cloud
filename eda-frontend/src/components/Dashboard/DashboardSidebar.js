@@ -13,6 +13,7 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -45,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DashSidebar (props) {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
 
   return (
     <>
@@ -65,7 +67,7 @@ export default function DashSidebar (props) {
           <Avatar className={classes.purple}>U</Avatar>
         </ListItemAvatar>
         <ListItemText
-          primary="User Name"
+          primary={auth.user.username}
           secondary={
             <React.Fragment>
               <Typography
@@ -101,13 +103,13 @@ export default function DashSidebar (props) {
         >
           My Schematics
         </ListItem>
-        <List className={classes.nestedSearch} dense="true">
+        <List className={classes.nestedSearch} >
           <InputBase
             className={classes.input}
             placeholder="Find your schematic..."
           />
         </List>
-        <List className={classes.nested} dense="true">
+        <List className={classes.nested} >
           {[0, 1, 2, 4, 5, 6, 7, 8].map((item) => (
             <ListItem key={`item-${item}`} button>
               <ListItemText primary={`Schematic ${item}`} />
