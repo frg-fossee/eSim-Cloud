@@ -10,8 +10,10 @@ file_storage = FileSystemStorage(
 
 
 class StateSave(models.Model):
-
+    name = models.CharField(max_length=200, null=True)
+    description = models.CharField(max_length=400, null=True)
     save_time = models.DateTimeField(auto_now=True, db_index=True)
+    create_time = models.DateTimeField(auto_now_add=True)
     save_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4)
     data_dump = models.TextField(null=False)
