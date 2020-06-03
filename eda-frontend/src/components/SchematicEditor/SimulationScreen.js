@@ -17,7 +17,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow
 
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -125,63 +125,63 @@ export default function SimulationScreen ({ open, close }) {
                   <Paper className={classes.paper}>
                     <h2>GRAPH OUTPUT</h2>
                     <div style={{ padding: '20px' }}>
-                  <TextField
-                    style={{ width: '20%' }}
-                    id="scale"
-                    size='small'
-                    variant="outlined"
-                    select
-                    label="Select Scale"
-                    value={scale}
-                    onChange={handleScale}
-                    SelectProps={{
-                      native: true
-                    }}
-                  >
-                    <option value='si'>
+                      <TextField
+                        style={{ width: '20%' }}
+                        id="scale"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Scale"
+                        value={scale}
+                        onChange={handleScale}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+                        <option value='si'>
                                 SI UNIT
-                    </option>
+                        </option>
 
-                    <option value='m'>
+                        <option value='m'>
                                 Milli (m)
-                    </option>
-                    <option value='u'>
+                        </option>
+                        <option value='u'>
                                 Micro (u)
-                    </option>
-                    <option value='n'>
+                        </option>
+                        <option value='n'>
                                 Nano (n)
-                    </option>
-                    <option value='p'>
+                        </option>
+                        <option value='p'>
                                 Pico (p)
-                    </option>
+                        </option>
 
-                  </TextField>
+                      </TextField>
 
-                  <TextField
-                    style={{ width: '20%' }}
-                    id="precision"
-                    size='small'
-                    variant="outlined"
-                    select
-                    label="Select Precision"
-                    value={precision}
-                    onChange={handlePrecision}
-                    SelectProps={{
-                      native: true
-                    }}
-                  >
-                    {
-                      precisionArr.map((d, i) => {
-                        return (
-                          <option key={i} value={d}>
-                            {d}
-                          </option>
-                        )
-                      })
-                    }
+                      <TextField
+                        style={{ width: '20%' }}
+                        id="precision"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Precision"
+                        value={precision}
+                        onChange={handlePrecision}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+                        {
+                          precisionArr.map((d, i) => {
+                            return (
+                              <option key={i} value={d}>
+                                {d}
+                              </option>
+                            )
+                          })
+                        }
 
-                  </TextField>
-                </div>
+                      </TextField>
+                    </div>
                     <Graph
                       labels={result.graph.labels}
                       x={result.graph.x_points}
@@ -191,7 +191,7 @@ export default function SimulationScreen ({ open, close }) {
                     />
                   </Paper>
                 </Grid>
-                : (result.isGraph === 'true')?<span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span>:<span></span>
+                : (result.isGraph === 'true') ? <span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span> : <span></span>
             }
 
             {
@@ -202,88 +202,86 @@ export default function SimulationScreen ({ open, close }) {
                       OUTPUT
                     </Typography>
                     <div style={{ padding: '20px' }}>
-                  <TextField
-                    style={{ width: '20%' }}
-                    id="scale"
-                    size='small'
-                    variant="outlined"
-                    select
-                    label="Select Scale"
-                    value={scale}
-                    onChange={handleScale}
-                    SelectProps={{
-                      native: true
-                    }}
-                  >
-                    <option value='si'>
+                      <TextField
+                        style={{ width: '20%' }}
+                        id="scale"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Scale"
+                        value={scale}
+                        onChange={handleScale}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+                        <option value='si'>
                                 SI UNIT
-                    </option>
+                        </option>
 
-                    <option value='m'>
+                        <option value='m'>
                                 Milli (m)
-                    </option>
-                    <option value='u'>
+                        </option>
+                        <option value='u'>
                                 Micro (u)
-                    </option>
-                    <option value='n'>
+                        </option>
+                        <option value='n'>
                                 Nano (n)
-                    </option>
-                    <option value='p'>
+                        </option>
+                        <option value='p'>
                                 Pico (p)
-                    </option>
+                        </option>
 
-                  </TextField>
+                      </TextField>
 
-                  <TextField
-                    style={{ width: '20%' }}
-                    id="precision"
-                    size='small'
-                    variant="outlined"
-                    select
-                    label="Select Precision"
-                    value={precision}
-                    onChange={handlePrecision}
-                    SelectProps={{
-                      native: true
-                    }}
-                  >
-                    {
-                      precisionArr.map((d, i) => {
-                        return (
-                          <option key={i} value={d}>
-                            {d}
-                          </option>
-                        )
-                      })
-                    }
+                      <TextField
+                        style={{ width: '20%' }}
+                        id="precision"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Precision"
+                        value={precision}
+                        onChange={handlePrecision}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+                        {
+                          precisionArr.map((d, i) => {
+                            return (
+                              <option key={i} value={d}>
+                                {d}
+                              </option>
+                            )
+                          })
+                        }
 
-                  </TextField>
-                </div>
+                      </TextField>
+                    </div>
 
                     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="center">Node/Branch</TableCell>
-            <TableCell align="center">Value</TableCell>
-            <TableCell align="center">Unit</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {result.text.map((line, index) => (
-          <TableRow key={index}>
-          <TableCell align="center">{line.split('=')[0]}</TableCell>
-          <TableCell align="center">{(parseFloat(line.split(' ')[2])/scales[scale]).toFixed(precision)}</TableCell>
-        <TableCell align="center">{scale === 'si'? '':scale}{line.split(' ')[3]}</TableCell>
-        </TableRow>
-        ))
-      }
+                      <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">Node/Branch</TableCell>
+                            <TableCell align="center">Value</TableCell>
+                            <TableCell align="center">Unit</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {result.text.map((line, index) => (
+                            <TableRow key={index}>
+                              <TableCell align="center">{line.split('=')[0]}</TableCell>
+                              <TableCell align="center">{(parseFloat(line.split(' ')[2]) / scales[scale]).toFixed(precision)}</TableCell>
+                              <TableCell align="center">{scale === 'si' ? '' : scale}{line.split(' ')[3]}</TableCell>
+                            </TableRow>
+                          ))
+                          }
 
-
-        </TableBody>
-      </Table>
-    </TableContainer>
-
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
 
                   </Paper>
                 </Grid>
