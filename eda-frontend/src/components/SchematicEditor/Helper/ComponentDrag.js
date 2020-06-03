@@ -37,7 +37,7 @@ const {
   mxGraphHandler,
   mxCylinder,
   mxCellRenderer,
-  mxVertexHandler,
+  // mxVertexHandler,
   mxConstraintHandler,
   mxImage
 } = new mxGraphFactory()
@@ -76,7 +76,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxEdgeHandler.prototype.snapToTerminals = true
 
     // Enable cell Rotation
-    mxVertexHandler.prototype.rotationEnabled = true
+    // mxVertexHandler.prototype.rotationEnabled = true
 
     // Creates the graph inside the given container
     graph = new mxGraph(container)
