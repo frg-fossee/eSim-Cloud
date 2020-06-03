@@ -23,11 +23,11 @@ class Graph extends Component {
     const myChartRef = this.chartRef.current.getContext('2d')
     const { x, y, labels, scale, precision } = this.props
     const scales = {
-      si: {value:1,ticks:3},
-      m: {value:0.001,ticks:5},
-      u: {value:0.000001,ticks:7},
-      n: {value:0.000000001,ticks:9},
-      p: {value:0.000000000001,ticks:11}
+      si: { value: 1, ticks: 3 },
+      m: { value: 0.001, ticks: 5 },
+      u: { value: 0.000001, ticks: 7 },
+      n: { value: 0.000000001, ticks: 9 },
+      p: { value: 0.000000000001, ticks: 11 }
     }
     if (typeof lineGraph !== 'undefined') lineGraph.destroy()
 
@@ -67,7 +67,7 @@ class Graph extends Component {
       data: {
 
         // labels: x,
-        labels: x.map(e => (e / scales[scale]["value"]).toFixed(precision)),
+        labels: x.map(e => (e / scales[scale].value).toFixed(precision)),
         datasets: dataset()
       },
 
@@ -112,7 +112,7 @@ class Graph extends Component {
               // }
               ticks: {
                 // maxTicksLimit: 10
-                maxTicksLimit:scales[scale]["ticks"]
+                maxTicksLimit: scales[scale].ticks
               }
             }
           ],
