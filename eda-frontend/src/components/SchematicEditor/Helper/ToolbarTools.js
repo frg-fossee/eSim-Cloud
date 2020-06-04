@@ -815,3 +815,16 @@ export function GenerateCompList () {
   // console.log(netlist)
   // netlist.nodelist = new Set(a)
 }
+export function generateXML () {
+  var enc = new mxCodec(mxUtils.createXmlDocument())
+  var node = enc.encode(graph.getModel())
+  var xml = mxUtils.getXml(node)
+  console.log(xml)
+}
+export function renderXML () {
+  var xml = ''
+  var xmlDoc = mxUtils.parseXml(xml)
+  var node = xmlDoc.documentElement
+  var dec = new mxCodec(node)
+  dec.decode(node, graph.getModel())
+}
