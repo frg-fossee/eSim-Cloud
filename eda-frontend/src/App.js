@@ -8,7 +8,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import SchematicEditor from './pages/SchematiEditor'
-import Simulator from './pages/Simulator'
+// import Simulator from './pages/Simulator'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 
@@ -62,7 +62,7 @@ function App () {
           ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
           : <Route path="/editor" component={SchematicEditor} />
         }
-        <PublicRoute exact path="/simulator" restricted={false} nav={true} component={Simulator} />
+        {/* <PublicRoute exact path="/simulator" restricted={false} nav={true} component={Simulator} /> */}
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
