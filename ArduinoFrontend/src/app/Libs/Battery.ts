@@ -37,6 +37,14 @@ export class CoinCell extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('CoinCell', x, y, 'CoinCell.json', canvas);
   }
+  init() {
+    this.nodes[1].addValueListener((_, calledby, __) => {
+      if (calledby.parent.id === this.id) {
+        /// TODO: Show Toast and Stop Simulation
+        window['showToast']('Short Circuit');
+      }
+    });
+  }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -47,6 +55,7 @@ export class CoinCell extends CircuitElement {
     };
   }
   initSimulation(): void {
+    this.nodes[0].setValue(3, null);
   }
   closeSimulation(): void {
   }
