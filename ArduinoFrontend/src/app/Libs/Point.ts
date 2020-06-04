@@ -55,6 +55,7 @@ export class Point {
     this.body = this.canvas.rect(x, y, 2 * this.half, 2 * this.half);
 
     this.body.attr(Point.defaultAttr);
+    // this.body.node.setAttribute('class', 'mynode');
 
     // Set Hover callback
     this.body.hover(() => {
@@ -77,8 +78,9 @@ export class Point {
       window.showBubble(this.label, evt.clientX, evt.clientY);
     });
 
-    // Set mouse out popup
+    // // Set mouse out popup
     this.body.mouseout(() => {
+      window.hideBubble();
       this.hide();
     });
     // TODO: Remove The following code After Development
