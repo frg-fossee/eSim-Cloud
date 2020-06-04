@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function SimpleSnackbar({ open, close, message }) {
+function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -79,7 +79,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar({ mobileClose }) {
+export default function SchematicToolbar ({ mobileClose }) {
   const classes = useStyles()
   const netfile = useSelector(state => state.netlistReducer)
   const auth = useSelector(state => state.authReducer)
