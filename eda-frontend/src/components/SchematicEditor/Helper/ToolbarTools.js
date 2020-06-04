@@ -416,7 +416,7 @@ export function GenerateNetList () {
               component.value = component.value + '\n' + component.properties.VALUE
             }
           } else if (comp.NAME === 'PULSE') {
-            k = k + ` EXP(${comp.INITIAL_VALUE} ${comp.PULSED_VALUE} ${comp.DELAY_TIME} ${comp.RISE_TIME} ${comp.FALL_TIME} ${comp.PULSE_WIDTH} ${comp.PERIOD} ${comp.PHASE} )`
+            k = k + ` PULSE(${comp.INITIAL_VALUE} ${comp.PULSED_VALUE} ${comp.DELAY_TIME} ${comp.RISE_TIME} ${comp.FALL_TIME} ${comp.PULSE_WIDTH} ${comp.PERIOD} ${comp.PHASE} )`
           } else {
             if (component.properties.VALUE !== undefined) {
               k = k + ' ' + component.properties.VALUE
