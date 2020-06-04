@@ -640,7 +640,6 @@ export class Workspace {
   }
 
   static startArduino() {
-    Workspace.simulating = true;
     // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
@@ -651,27 +650,46 @@ export class Workspace {
         wire.end.gid = gid++;
       }
     }
-    // Call init simulation
-    for (const key in window.scope) {
-      if (window.scope[key] && key !== 'ArduinoUno') {
-        for (const ele of window.scope[key]) {
-          if (ele.initSimulation) {
-            ele.initSimulation();
+    const seqn = ['output', 'controllers', 'drivers', 'power', 'input', 'general', 'misc'];
+    for (const key of seqn) {
+      for (const items of Utils.componentBox[key]) {
+        for (const item of items) {
+          if (window.scope[item]) {
+            for (const ele of window.scope[item]) {
+              if (ele.initSimulation) {
+                ele.initSimulation();
+              }
+            }
           }
         }
       }
     }
 
-    for (const comp of window.scope.ArduinoUno) {
-      // comp.runner.execute();
-      // console.log('s')
-      comp.initSimulation();
-    }
+    // // Call init simulation
+    // for (const key in window.scope) {
+    //   if (window.scope[key] && key !== 'ArduinoUno') {
+    //     for (const ele of window.scope[key]) {
+    //       if (ele.initSimulation) {
+    //         ele.initSimulation();
+    //       }
+    //     }
+    //   }
+    // }
+
+    // for (const comp of window.scope.ArduinoUno) {
+    //   // comp.runner.execute();
+    //   // console.log('s')
+    //   comp.initSimulation();
+    // }
+
+    Workspace.simulating = true;
   }
 
   static stopSimulation() {
+    if (!Workspace.simulating) {
+      return;
+    }
     // TODO: Show Loading Animation
-    Workspace.simulating = false;
     for (const key in window.scope) {
       if (window.scope[key]) {
         for (const ele of window.scope[key]) {
@@ -681,5 +699,6 @@ export class Workspace {
         }
       }
     }
+    Workspace.simulating = false;
   }
 }
