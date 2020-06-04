@@ -37,7 +37,6 @@ const ComponentParameters = {
       NAME: '',
       N1: '',
       N2: '',
-      VALUE: '0',
 
       OFFSET: '1.0',
       AMPLITUDE: '1.0',
@@ -48,7 +47,7 @@ const ComponentParameters = {
 
       EXTRA_EXPRESSION: '',
       MODEL: '',
-      VALUE_UNIT: 'A',
+
       OFFSET_UNIT: 'A',
       AMPLITUDE_UNIT: 'A',
       FREQUENCY_UNIT: 'Hz',
@@ -62,7 +61,6 @@ const ComponentParameters = {
       NAME: '',
       N1: '',
       N2: '',
-      VALUE: '0',
 
       INITIAL_VALUE: '0',
       PULSED_VALUE: '1',
@@ -76,7 +74,6 @@ const ComponentParameters = {
       EXTRA_EXPRESSION: '',
       MODEL: '',
 
-      VALUE_UNIT: 'A',
       INITIAL_VALUE_UNIT: 'A',
       PULSED_VALUE_UNIT: 'A',
       DELAY_TIME_UNIT: 'S',
@@ -105,7 +102,6 @@ const ComponentParameters = {
       NAME: '',
       N1: '',
       N2: '',
-      VALUE: '0',
 
       INITIAL_VALUE: '0',
       PULSED_VALUE: '1',
@@ -118,7 +114,6 @@ const ComponentParameters = {
       EXTRA_EXPRESSION: '',
       MODEL: '',
 
-      VALUE_UNIT: 'A',
       INITIAL_VALUE_UNIT: 'A',
       PULSED_VALUE_UNIT: 'A',
       RISE_DELAY_TIME_UNIT: 'S',
@@ -243,7 +238,6 @@ const ComponentParameters = {
       NAME: '',
       N1: '',
       N2: '',
-      VALUE: '0',
 
       OFFSET: '1.0',
       AMPLITUDE: '1.0',
@@ -254,7 +248,7 @@ const ComponentParameters = {
 
       EXTRA_EXPRESSION: '',
       MODEL: '',
-      VALUE_UNIT: 'V',
+
       OFFSET_UNIT: 'V',
       AMPLITUDE_UNIT: 'V',
       FREQUENCY_UNIT: 'Hz',
@@ -268,7 +262,6 @@ const ComponentParameters = {
       NAME: '',
       N1: '',
       N2: '',
-      VALUE: '0',
 
       INITIAL_VALUE: '0',
       PULSED_VALUE: '1',
@@ -282,7 +275,6 @@ const ComponentParameters = {
       EXTRA_EXPRESSION: '',
       MODEL: '',
 
-      VALUE_UNIT: 'V',
       INITIAL_VALUE_UNIT: 'V',
       PULSED_VALUE_UNIT: 'V',
       DELAY_TIME_UNIT: 'S',
@@ -311,7 +303,6 @@ const ComponentParameters = {
       NAME: '',
       N1: '',
       N2: '',
-      VALUE: '0',
 
       INITIAL_VALUE: '0',
       PULSED_VALUE: '1',
@@ -324,7 +315,6 @@ const ComponentParameters = {
       EXTRA_EXPRESSION: '',
       MODEL: '',
 
-      VALUE_UNIT: 'V',
       INITIAL_VALUE_UNIT: 'v',
       PULSED_VALUE_UNIT: 'v',
       RISE_DELAY_TIME_UNIT: 'S',

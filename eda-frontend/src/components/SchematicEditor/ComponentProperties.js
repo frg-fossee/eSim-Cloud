@@ -26,6 +26,7 @@ export default function ComponentProperties () {
   }
 
   const setProps = () => {
+    console.log(val)
     dispatch(setCompProperties(id, val))
     dispatch(setModel(val.MODEL))
     // setVal({})
