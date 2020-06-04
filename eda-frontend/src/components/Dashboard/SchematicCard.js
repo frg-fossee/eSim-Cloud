@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   Typography,
@@ -15,8 +16,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Rating from '@material-ui/lab/Rating'
 import { Link as RouterLink } from 'react-router-dom'
 
-import index from '../../static/index.png'
-
 const useStyles = makeStyles((theme) => ({
   media: {
     marginTop: theme.spacing(3),
@@ -28,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SchCard (props) {
+export default function SchematicCard ({ sch }) {
   const classes = useStyles()
 
   return (
@@ -38,23 +37,20 @@ export default function SchCard (props) {
         <CardActionArea>
           <CardMedia
             className={classes.media}
-            image={index}
+            image={sch.base64_image}
             title="Contemplative Reptile"
           />
-
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              RC Circuit
+              {sch.name}
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p">
-              An RC circuit is a circuit with both a resistor (R) and a
-              capacitor (C). RC circuits are freqent element in electronic
-              devices.
+              {sch.description}
             </Typography>
             <Rating
               name="half-rating-read"
-              defaultValue={2.5}
-              precision={0.5}
+              defaultValue={Math.floor((Math.random() * 5) + 1)}
+              precision={1}
               className={classes.rating}
               readOnly
             />
@@ -91,4 +87,8 @@ export default function SchCard (props) {
       </Card>
     </>
   )
+}
+
+SchematicCard.propTypes = {
+  sch: PropTypes.object
 }
