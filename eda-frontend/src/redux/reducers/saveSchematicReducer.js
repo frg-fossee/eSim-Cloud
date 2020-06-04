@@ -4,6 +4,7 @@ const initialState = {
   title: 'Untitled_Schematic',
   description: '',
   xmlData: null,
+  details: {},
   isSaved: null
 }
 
@@ -12,7 +13,8 @@ export default function (state = initialState, action) {
     case actions.SET_SCH_SAVED: {
       return {
         ...state,
-        isSaved: true
+        isSaved: true,
+        details: action.payload
       }
     }
 
