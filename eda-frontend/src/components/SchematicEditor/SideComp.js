@@ -64,8 +64,8 @@ export default function SideComp ({ component }) {
 
           { component.description !== '' &&
             <ListItemText>
-            <b>Description:</b> {component.description}
-          </ListItemText>
+              <b>Description:</b> {component.description}
+            </ListItemText>
           }
           {
             component.keyword !== '' &&
@@ -82,11 +82,10 @@ export default function SideComp ({ component }) {
           </ListItemText>
           }
 
-
           { component.part !== '' && component.dmg !== '' &&
             <ListItemText>
-            <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
-          </ListItemText>
+              <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
+            </ListItemText>
           }
 
         </List>

@@ -14,7 +14,7 @@ export default function ComponentProperties () {
 
   useEffect(() => {
     setVal(properties)
-    console.log("properties",properties)
+    console.log('properties', properties)
   }, [properties])
 
   const getInputValues = (evt) => {
@@ -49,10 +49,8 @@ export default function ComponentProperties () {
         <ListItemText primary='Component Properties' secondary={properties.NAME} />
       </ListItem>
 
-
       {
         Object.keys(properties).map((keyName, i) => {
-
           if (keyName === 'MODEL') {
             return <ListItem key={i}>
               <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />

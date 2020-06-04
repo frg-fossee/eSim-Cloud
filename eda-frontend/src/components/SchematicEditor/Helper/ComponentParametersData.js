@@ -130,7 +130,7 @@ const ComponentParameters = {
   },
 
   V: {
-    VSOURCE:{
+    VSOURCE: {
       PREFIX: 'V',
       NAME: '',
       N1: '',
@@ -140,7 +140,7 @@ const ComponentParameters = {
       MODEL: '',
       VALUE_UNIT: 'V'
     },
-    SINE:{
+    SINE: {
       PREFIX: 'V',
       NAME: '',
       N1: '',
@@ -154,7 +154,6 @@ const ComponentParameters = {
       DAMPING_FACTOR: '0.0',
       PHASE: '0.0',
 
-
       EXTRA_EXPRESSION: '',
       MODEL: '',
       VALUE_UNIT: 'V',
@@ -163,9 +162,8 @@ const ComponentParameters = {
       FREQUENCY_UNIT: 'Hz',
       DELAY_UNIT: 'S',
       DAMPING_FACTOR_UNIT: '1/S',
-      PHASE_UNIT :"deg"
+      PHASE_UNIT: 'deg'
     }
-
 
   },
   // resistor
