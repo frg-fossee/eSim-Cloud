@@ -1,5 +1,5 @@
 =================
-Docker Containers
+Architecture and Installation
 =================
 
 The production environment consist of the following docker containers:
