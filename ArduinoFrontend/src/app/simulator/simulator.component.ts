@@ -141,7 +141,6 @@ export class SimulatorComponent implements OnInit {
       Workspace.CompileCode();
     } else {
       sim.style.display = 'none';
-      Workspace.simulating = false;
       Workspace.stopSimulation();
       // this.hidesimload();
     }
