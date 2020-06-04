@@ -20,9 +20,11 @@ import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import { Link as RouterLink } from 'react-router-dom'
+import PublishIcon from '@material-ui/icons/Publish'
+import GetAppIcon from '@material-ui/icons/GetApp'
 
 import { NetlistModal, HelpScreen } from './ToolbarExtension'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, generateXML, renderXML } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic } from '../../redux/actions/index'
 
@@ -47,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function SimpleSnackbar ({ open, close, message }) {
+function SimpleSnackbar({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -77,7 +79,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar ({ mobileClose }) {
+export default function SchematicToolbar({ mobileClose }) {
   const classes = useStyles()
   const netfile = useSelector(state => state.netlistReducer)
   const auth = useSelector(state => state.authReducer)
@@ -247,6 +249,18 @@ export default function SchematicToolbar ({ mobileClose }) {
         </IconButton>
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
+      <span className={classes.pipe}>|</span>
+
+      <Tooltip title="Generate XML">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={generateXML}>
+          <GetAppIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Render XML">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={renderXML}>
+          <PublishIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
 
       <IconButton
         color='inherit'
