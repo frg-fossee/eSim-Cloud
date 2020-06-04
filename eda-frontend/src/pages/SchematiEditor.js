@@ -39,7 +39,7 @@ export default function SchematiEditor () {
   }
 
   useEffect(() => {
-    document.title = 'Schematic Editor - EDA '
+    document.title = 'Schematic Editor - eSim '
     var container = gridRef.current
     var sidebar = compRef.current
     var outline = outlineRef.current

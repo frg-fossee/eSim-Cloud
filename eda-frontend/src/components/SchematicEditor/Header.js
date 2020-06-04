@@ -11,10 +11,7 @@ import {
   Menu,
   Fade,
   MenuItem,
-  ListItemText,
-  TextareaAutosize,
-  Popover,
-  Tooltip
+  ListItemText
 } from '@material-ui/core'
 import { useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
@@ -22,9 +19,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle, setSchDescription } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle } from '../../redux/actions/index'
 import store from '../../redux/store'
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -65,7 +61,6 @@ const useStyles = makeStyles((theme) => ({
 function Header () {
   const classes = useStyles()
   const auth = store.getState().authReducer
-  const schSave = store.getState().saveSchematicReducer
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const dispatch = useDispatch()
@@ -83,25 +78,6 @@ function Header () {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
-  const [anchorEd, setAnchorEd] = React.useState(null)
-  const [description, setDescription] = React.useState(schSave.description)
-
-  const handleDiscClick = (event) => {
-    setAnchorEd(event.currentTarget)
-  }
-
-  const handleDiscClose = () => {
-    setAnchorEd(null)
-    dispatch(setSchDescription(description))
-  }
-
-  const open = Boolean(anchorEd)
-  const id = open ? 'simple-popover' : undefined
-
-  const getInputValues = (evt) => {
-    setDescription(`${evt.target.value}`)
-  }
-
   return (
     <Toolbar variant="dense" color="default">
       <IconButton edge="start" className={classes.button} color="primary">
@@ -113,7 +89,7 @@ function Header () {
         noWrap
         className={classes.toolbarTitle}
       >
-        <Link color="inherit" component={RouterLink} to="/">
+        <Link color="inherit" target='blank' component={RouterLink} to="/">
           eSim
         </Link>
       </Typography>
@@ -127,30 +103,6 @@ function Header () {
             onChange={titleHandler}
             inputProps={{ 'aria-label': 'SchematicTitle' }}
           />
-
-          <Tooltip title="Add Description">
-            <IconButton aria-describedby={id} color="inherit" className={classes.tools} size="small" onClick={handleDiscClick} >
-              <InfoOutlinedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Popover
-            id={id}
-            open={open}
-            anchorEl={anchorEd}
-            onClose={handleDiscClose}
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left'
-            }}
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left'
-            }}
-          >
-            <div style={{ padding: '5px' }} >
-              <TextareaAutosize id='Description' label='Description' value={description || ''} onChange={getInputValues} rowsMin={5} aria-label='Description' placeholder={'Add Schematic Description'} style={{ width: '100%', minWidth: '250px', maxWidth: '300px' }} />
-            </div>
-          </Popover>
         </form>
       </Hidden>
 
@@ -201,13 +153,15 @@ function Header () {
                 style={{ marginTop: '25px' }}
               >
                 <MenuItem
+                  target='blank'
                   component={RouterLink}
                   to="/dashboard"
                   onClick={handleClose}
                 >
-                  <ListItemText primary={auth.user.username} secondary={auth.user.email}/>
+                  <ListItemText primary={auth.user.username} secondary={auth.user.email} />
                 </MenuItem>
                 <MenuItem
+                  target='blank'
                   component={RouterLink}
                   to="/dashboard/profile"
                   onClick={handleClose}
@@ -215,6 +169,7 @@ function Header () {
                   My Profile
                 </MenuItem>
                 <MenuItem
+                  target='blank'
                   component={RouterLink}
                   to="/dashboard/schematics"
                   onClick={handleClose}
