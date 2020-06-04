@@ -40,12 +40,12 @@ export abstract class CircuitElement {
           this.setDragListeners();
           this.setClickListener(null);
           this.setHoverListener();
-          this.init();
           this.elements.transform(`t${this.tx},${this.ty}`);
           for (const node of this.nodes) {
             node.relativeMove(this.tx, this.ty);
           }
           window['queue'] -= 1;
+          this.init();
         })
         .catch(err => {
           console.error(err);
