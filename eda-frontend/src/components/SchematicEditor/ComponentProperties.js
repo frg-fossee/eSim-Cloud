@@ -14,6 +14,7 @@ export default function ComponentProperties () {
 
   useEffect(() => {
     setVal(properties)
+    console.log("properties",properties)
   }, [properties])
 
   const getInputValues = (evt) => {
@@ -47,8 +48,11 @@ export default function ComponentProperties () {
       <ListItem>
         <ListItemText primary='Component Properties' secondary={properties.NAME} />
       </ListItem>
+
+
       {
         Object.keys(properties).map((keyName, i) => {
+
           if (keyName === 'MODEL') {
             return <ListItem key={i}>
               <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
@@ -64,7 +68,7 @@ export default function ComponentProperties () {
 
           else if (keyName.charAt(0) === 'N' && keyName !== 'NAME') {
             return <span key={i} />
-          } else if (keyName === 'UNIT') {
+          } else if (keyName.includes('UNIT')) {
             return <span key={i} />
           }
           else if (keyName === 'PREFIX') {
@@ -80,17 +84,18 @@ export default function ComponentProperties () {
 
               </ListItem>)
           }
-          else if (keyName === 'VALUE') {
-            return (
-              <ListItem key={i}>
-                <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
-                <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
-              </ListItem>)
-          }
+          // else if (keyName === 'VALUE') {
+          //   return (
+          //     <ListItem key={i}>
+          //       <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+          //       <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
+          //     </ListItem>)
+          // }
 
           return (
             <ListItem key={i}>
               <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+              {val[`${keyName}_UNIT`] && <span style={{ marginLeft: '10px' }}>{val[`${keyName}_UNIT`] || ''}</span>}
             </ListItem>)
         })
       }
