@@ -124,8 +124,23 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
 
       var props = {}
       if (v1.symbol === 'V') {
-        props = Object.assign({}, ComponentParameters[v1.symbol][component.name.toUpperCase()])
+        console.log('voltage')
+
+        if (ComponentParameters[v1.symbol][component.name.toUpperCase()] === undefined) {
+          props = Object.assign({}, ComponentParameters[v1.symbol].VSOURCE)
+        } else {
+          props = Object.assign({}, ComponentParameters[v1.symbol][component.name.toUpperCase()])
+        }
+      } else if (v1.symbol === 'I') {
+        console.log('CURRENT')
+        if (ComponentParameters[v1.symbol][component.name.toUpperCase()] === undefined) {
+          props = Object.assign({}, ComponentParameters[v1.symbol].ISOURCE)
+        } else {
+          props = Object.assign({}, ComponentParameters[v1.symbol][component.name.toUpperCase()])
+        }
       } else {
+        console.log('other')
+
         props = Object.assign({}, ComponentParameters[v1.symbol])
       }
       props.NAME = component.name

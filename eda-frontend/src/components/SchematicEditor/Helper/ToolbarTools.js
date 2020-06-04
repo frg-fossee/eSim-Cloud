@@ -329,6 +329,7 @@ export function GenerateNetList () {
           ++r
         } else if (component.symbol === 'V') {
           // component.symbol = component.symbol + v.toString()
+          console.log(component)
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value

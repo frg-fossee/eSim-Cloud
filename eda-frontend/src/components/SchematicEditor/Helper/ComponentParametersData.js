@@ -21,14 +21,112 @@ const ComponentParameters = {
   },
 
   I: {
-    PREFIX: 'I',
-    NAME: '',
-    N1: '',
-    N2: '',
-    VALUE: '',
-    EXTRA_EXPRESSION: '',
-    MODEL: '',
-    UNIT: 'A'
+
+    ISOURCE: {
+      PREFIX: 'I',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+      VALUE_UNIT: 'A'
+    },
+    SINE: {
+      PREFIX: 'I',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+
+      OFFSET: '1.0',
+      AMPLITUDE: '1.0',
+      FREQUENCY: '1K',
+      DELAY: '0.0',
+      DAMPING_FACTOR: '0.0',
+      PHASE: '0.0',
+
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+      VALUE_UNIT: 'A',
+      OFFSET_UNIT: 'A',
+      AMPLITUDE_UNIT: 'A',
+      FREQUENCY_UNIT: 'Hz',
+      DELAY_UNIT: 'S',
+      DAMPING_FACTOR_UNIT: '1/S',
+      PHASE_UNIT: 'DEG'
+    },
+
+    PULSE: {
+      PREFIX: 'I',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+
+      INITIAL_VALUE: '0',
+      PULSED_VALUE: '1',
+      DELAY_TIME: '1K',
+      RISE_TIME: '1u',
+      FALL_TIME: '1u',
+      PULSE_WIDTH: '1m',
+      PERIOD: '1m',
+      PHASE: '0.0',
+
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+
+      VALUE_UNIT: 'A',
+      INITIAL_VALUE_UNIT: 'A',
+      PULSED_VALUE_UNIT: 'A',
+      DELAY_TIME_UNIT: 'S',
+      RISE_TIME_UNIT: 'S',
+      FALL_TIME_UNIT: 'S',
+      PULSE_WIDTH_UNIT: 'S',
+      PERIOD_UNIT: 'S',
+      PHASE_UNIT: 'DEG'
+    },
+
+    DC: {
+      PREFIX: 'I',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+
+      VALUE_UNIT: 'A'
+    },
+
+    EXP: {
+      PREFIX: 'I',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+
+      INITIAL_VALUE: '0',
+      PULSED_VALUE: '1',
+
+      RISE_DELAY_TIME: '100u',
+      RISE_TIME_CONSTANT: '20u',
+      FALL_DELAY_TIME: '500u',
+      FALL_TIME_CONSTANT: '60u',
+
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+
+      VALUE_UNIT: 'A',
+      INITIAL_VALUE_UNIT: 'A',
+      PULSED_VALUE_UNIT: 'A',
+      RISE_DELAY_TIME_UNIT: 'S',
+      RISE_TIME_CONSTANT_UNIT: 'S',
+      FALL_DELAY_TIME_UNIT: 'S',
+      FALL_TIME_CONSTANT_UNIT: 'S'
+    }
+
   },
 
   G: {
@@ -162,7 +260,77 @@ const ComponentParameters = {
       FREQUENCY_UNIT: 'Hz',
       DELAY_UNIT: 'S',
       DAMPING_FACTOR_UNIT: '1/S',
-      PHASE_UNIT: 'deg'
+      PHASE_UNIT: 'DEG'
+    },
+
+    PULSE: {
+      PREFIX: 'V',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+
+      INITIAL_VALUE: '0',
+      PULSED_VALUE: '1',
+      DELAY_TIME: '1K',
+      RISE_TIME: '1u',
+      FALL_TIME: '1u',
+      PULSE_WIDTH: '1m',
+      PERIOD: '1m',
+      PHASE: '0.0',
+
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+
+      VALUE_UNIT: 'V',
+      INITIAL_VALUE_UNIT: 'V',
+      PULSED_VALUE_UNIT: 'V',
+      DELAY_TIME_UNIT: 'S',
+      RISE_TIME_UNIT: 'S',
+      FALL_TIME_UNIT: 'S',
+      PULSE_WIDTH_UNIT: 'S',
+      PERIOD_UNIT: 'S',
+      PHASE_UNIT: 'DEG'
+    },
+
+    DC: {
+      PREFIX: 'V',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+
+      VALUE_UNIT: 'V'
+    },
+
+    EXP: {
+      PREFIX: 'V',
+      NAME: '',
+      N1: '',
+      N2: '',
+      VALUE: '0',
+
+      INITIAL_VALUE: '0',
+      PULSED_VALUE: '1',
+
+      RISE_DELAY_TIME: '100u',
+      RISE_TIME_CONSTANT: '20u',
+      FALL_DELAY_TIME: '500u',
+      FALL_TIME_CONSTANT: '60u',
+
+      EXTRA_EXPRESSION: '',
+      MODEL: '',
+
+      VALUE_UNIT: 'V',
+      INITIAL_VALUE_UNIT: 'v',
+      PULSED_VALUE_UNIT: 'v',
+      RISE_DELAY_TIME_UNIT: 'S',
+      RISE_TIME_CONSTANT_UNIT: 'S',
+      FALL_DELAY_TIME_UNIT: 'S',
+      FALL_TIME_CONSTANT_UNIT: 'S'
     }
 
   },
