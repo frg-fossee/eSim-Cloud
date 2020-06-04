@@ -5,6 +5,7 @@ import { Injector } from '@angular/core';
 import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
+import { SaveOffline } from './SaveOffiline';
 
 declare var window;
 declare var $; // For Jquery
@@ -395,7 +396,7 @@ export class Workspace {
     }
   }
 
-  static SaveCircuit(name: string = '', description: string = '', id: number = null) {
+  static SaveCircuit(name: string = '', description: string = '', callback: any = null, id: number = null) {
     let toUpdate = false;
     if (isNull(id)) {
       id = Date.now();
@@ -430,133 +431,11 @@ export class Workspace {
       saveObj.project['image'] = v;
       console.log(saveObj);
       if (toUpdate) {
-        Workspace.UpdateIDB(saveObj);
+        SaveOffline.Update(saveObj);
       } else {
-        Workspace.SaveIDB(saveObj);
+        SaveOffline.Save(saveObj, callback);
       }
     });
-  }
-
-  static SaveIDB(mydata, callback: any = null) {
-    // window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-
-    // window.IDBTransaction = window.IDBTransaction ||
-    //   window.webkitIDBTransaction || window.msIDBTransaction;
-    // window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = () => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = () => {
-      db = request.result;
-      db.transaction(['project'], 'readwrite')
-        .objectStore('project')
-        .add(mydata);
-      if (callback) {
-        callback(mydata);
-      }
-      alert('Done Saved');
-    };
-  }
-
-  static readAll(callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = () => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = () => {
-      db = request.result;
-      console.log('success: ' + db);
-      const objectStore = db.transaction('project').objectStore('project');
-      const data = [];
-      objectStore.openCursor().onsuccess = (event) => {
-        const cursor = event.target.result;
-        if (cursor) {
-          data.push(cursor.value);
-          cursor.continue();
-        } else {
-          if (callback) {
-            callback(data);
-          }
-        }
-      };
-    };
-  }
-
-  static DeleteIDB(id, callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = (_) => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = (__) => {
-      db = request.result;
-
-      const ok = db.transaction(['project'], 'readwrite')
-        .objectStore('project')
-        .delete(id);
-
-      ok.onsuccess = (_) => {
-        alert('Done Deleting');
-        if (callback) {
-          callback();
-        }
-      };
-
-    };
-  }
-  static UpdateIDB(mydata, callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = (_) => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = (__) => {
-      db = request.result;
-
-      const ok = db.transaction(['project'], 'readwrite')
-        .objectStore('project')
-        .put(mydata);
-
-      ok.onsuccess = (_) => {
-        alert('Done Updating');
-        if (callback) {
-          callback();
-        }
-      };
-
-    };
-  }
-
-  static readIDB(id, callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = () => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = () => {
-      db = request.result;
-
-      const transaction = db.transaction(['project']);
-      const objectStore = transaction.objectStore('project');
-      const ok = objectStore.get(parseInt(id, 10));
-
-      ok.onerror = () => {
-        alert('Unable to retrieve daa from database!');
-      };
-
-      ok.onsuccess = () => {
-        callback(ok.result);
-      };
-
-    };
   }
 
   static Load(data) {
@@ -765,8 +644,12 @@ export class Workspace {
     // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
-      wire.start.gid = gid++;
-      wire.end.gid = gid++;
+      if (wire.start) {
+        wire.start.gid = gid++;
+      }
+      if (wire.end) {
+        wire.end.gid = gid++;
+      }
     }
     // Call init simulation
     for (const key in window.scope) {

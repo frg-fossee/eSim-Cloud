@@ -1,5 +1,5 @@
 import { Component, OnInit, wtfLeave, Injector, ViewEncapsulation } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
 import { MatDialog, MatRadioModule } from '@angular/material';
@@ -7,6 +7,7 @@ import { ViewComponentInfoComponent } from '../view-component-info/view-componen
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
 import { Title } from '@angular/platform-browser';
+import { SaveOffline } from '../Libs/SaveOffiline';
 declare var Raphael;
 
 
@@ -35,9 +36,10 @@ export class SimulatorComponent implements OnInit {
     private aroute: ActivatedRoute,
     public dialog: MatDialog,
     private injector: Injector,
-    private title: Title) {
+    private title: Title,
+    private router: Router) {
     Workspace.initializeGlobalFunctions();
-    Workspace.injector = injector;
+    Workspace.injector = this.injector;
   }
 
   makeSVGg() {
@@ -48,10 +50,10 @@ export class SimulatorComponent implements OnInit {
 
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
-      // console.log(v);
+      console.log(v);
       this.projectId = parseInt(v.id, 10);
       if (this.projectId) {
-        Workspace.readIDB(this.projectId, (data) => {
+        SaveOffline.Read(this.projectId, (data) => {
           this.LoadProject(data);
         });
       }
@@ -267,9 +269,21 @@ export class SimulatorComponent implements OnInit {
   }
   SaveProject() {
     if (this.projectId) {
-      Workspace.SaveCircuit(this.projectTitle, this.description, this.projectId);
+      Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
     } else {
-      Workspace.SaveCircuit(this.projectTitle, this.description);
+      Workspace.SaveCircuit(this.projectTitle, this.description, (v) => {
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: v.id,
+              offline: true
+            },
+            queryParamsHandling: 'merge'
+          }
+        );
+      });
     }
   }
   ClearProject() {
