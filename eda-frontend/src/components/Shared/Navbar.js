@@ -6,9 +6,9 @@ import {
   MenuItem
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import { deepPurple } from '@material-ui/core/colors'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
-import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 import store from '../../redux/store'
 import { logout } from '../../redux/actions/index'
 
@@ -31,6 +31,13 @@ const useStyles = makeStyles((theme) => ({
   small: {
     width: theme.spacing(3.7),
     height: theme.spacing(3.7)
+  },
+  purple: {
+    width: theme.spacing(3.75),
+    height: theme.spacing(3.75),
+    color: theme.palette.getContrastText(deepPurple[500]),
+    backgroundColor: deepPurple[500],
+    fontSize: '17px'
   }
 }))
 
@@ -85,7 +92,7 @@ export function Header () {
               >
                 Editor
               </Link>
-              <Link
+              {/* <Link
                 variant="button"
                 color="textPrimary"
                 to="/simulator"
@@ -93,7 +100,7 @@ export function Header () {
                 className={classes.link}
               >
                 Simulator
-              </Link>
+              </Link> */}
               <Link
                 variant="button"
                 color="textPrimary"
@@ -133,7 +140,9 @@ export function Header () {
               aria-haspopup="true"
               onClick={handleClick}
             >
-              <AccountCircleRoundedIcon />
+              <Avatar className={classes.purple}>
+                {auth.user.username.charAt(0).toUpperCase()}
+              </Avatar>
             </IconButton>
             <Menu
               id="simple-menu"

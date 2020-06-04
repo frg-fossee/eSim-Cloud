@@ -64,7 +64,9 @@ export default function DashSidebar (props) {
         divider
       >
         <ListItemAvatar>
-          <Avatar className={classes.purple}>U</Avatar>
+          <Avatar className={classes.purple}>
+            {auth.user.username.charAt(0).toUpperCase()}
+          </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={auth.user.username}

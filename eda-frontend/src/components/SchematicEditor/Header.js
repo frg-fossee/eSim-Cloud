@@ -19,13 +19,13 @@ import {
 import { useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
+import { deepPurple } from '@material-ui/core/colors'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchDescription } from '../../redux/actions/index'
 import store from '../../redux/store'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 
-import AccountCircleRoundedIcon from '@material-ui/icons/AccountCircleRounded'
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     marginRight: theme.spacing(2)
@@ -52,6 +52,13 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     margin: theme.spacing(0, 0.8),
     color: '#262626'
+  },
+  purple: {
+    width: theme.spacing(3.75),
+    height: theme.spacing(3.75),
+    color: theme.palette.getContrastText(deepPurple[500]),
+    backgroundColor: deepPurple[500],
+    fontSize: '17px'
   }
 }))
 
@@ -180,7 +187,9 @@ function Header () {
                 aria-haspopup="true"
                 onClick={handleClick}
               >
-                <AccountCircleRoundedIcon />
+                <Avatar className={classes.purple}>
+                  {auth.user.username.charAt(0).toUpperCase()}
+                </Avatar>
               </IconButton>
               <Menu
                 id="simple-menu"
