@@ -54,7 +54,8 @@ export default function SimulationScreen ({ open, close }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
-  const [scale, setScale] = React.useState('si')
+  const [xscale, setXScale] = React.useState('si')
+  const [yscale, setYScale] = React.useState('si')
   const [precision, setPrecision] = React.useState(5)
   const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   const scales = {
@@ -64,8 +65,12 @@ export default function SimulationScreen ({ open, close }) {
     n: 0.000000001,
     p: 0.000000000001
   }
-  const handleScale = (evt) => {
-    setScale(evt.target.value)
+  const handleXScale = (evt) => {
+    setXScale(evt.target.value)
+  }
+
+  const handleYScale = (evt) => {
+    setYScale(evt.target.value)
   }
   const handlePrecision = (evt) => {
     setPrecision(evt.target.value)
@@ -127,13 +132,44 @@ export default function SimulationScreen ({ open, close }) {
                     <div style={{ padding: '20px' }}>
                       <TextField
                         style={{ width: '20%' }}
-                        id="scale"
+                        id="xscale"
                         size='small'
                         variant="outlined"
                         select
-                        label="Select Scale"
-                        value={scale}
-                        onChange={handleScale}
+                        label="Select X Axis Scale"
+                        value={xscale}
+                        onChange={handleXScale}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+                        <option value='si'>
+                                SI UNIT
+                        </option>
+
+                        <option value='m'>
+                                Milli (m)
+                        </option>
+                        <option value='u'>
+                                Micro (u)
+                        </option>
+                        <option value='n'>
+                                Nano (n)
+                        </option>
+                        <option value='p'>
+                                Pico (p)
+                        </option>
+
+                      </TextField>
+                      <TextField
+                        style={{ width: '20%' }}
+                        id="yscale"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Y Axis Scale"
+                        value={yscale}
+                        onChange={handleYScale}
                         SelectProps={{
                           native: true
                         }}
@@ -186,7 +222,8 @@ export default function SimulationScreen ({ open, close }) {
                       labels={result.graph.labels}
                       x={result.graph.x_points}
                       y={result.graph.y_points}
-                      scale={scale}
+                      xscale={xscale}
+                      yscale={yscale}
                       precision={precision}
                     />
                   </Paper>
@@ -204,13 +241,13 @@ export default function SimulationScreen ({ open, close }) {
                     <div style={{ padding: '20px' }}>
                       <TextField
                         style={{ width: '20%' }}
-                        id="scale"
+                        id="xscale"
                         size='small'
                         variant="outlined"
                         select
                         label="Select Scale"
-                        value={scale}
-                        onChange={handleScale}
+                        value={xscale}
+                        onChange={handleXScale}
                         SelectProps={{
                           native: true
                         }}
@@ -273,8 +310,8 @@ export default function SimulationScreen ({ open, close }) {
                           {result.text.map((line, index) => (
                             <TableRow key={index}>
                               <TableCell align="center">{line.split('=')[0]}</TableCell>
-                              <TableCell align="center">{(parseFloat(line.split(' ')[2]) / scales[scale]).toFixed(precision)}</TableCell>
-                              <TableCell align="center">{scale === 'si' ? '' : scale}{line.split(' ')[3]}</TableCell>
+                              <TableCell align="center">{(parseFloat(line.split(' ')[2]) / scales[xscale]).toFixed(precision)}</TableCell>
+                              <TableCell align="center">{xscale === 'si' ? '' : xscale}{line.split(' ')[3]}</TableCell>
                             </TableRow>
                           ))
                           }

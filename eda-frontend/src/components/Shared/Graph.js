@@ -21,7 +21,7 @@ class Graph extends Component {
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
-    const { x, y, labels, scale, precision } = this.props
+    const { x, y, labels, xscale, yscale, precision } = this.props
     const scales = {
       si: { value: 1, ticks: 3 },
       m: { value: 0.001, ticks: 5 },
@@ -33,12 +33,12 @@ class Graph extends Component {
 
     const dataset = () => {
       var arr = []
-      console.log('scale', scale)
+      console.log('xscale', xscale)
       for (var i = 0; i < y.length; i++) {
         if (labels[0] === labels[i + 1]) continue
         arr.push({
           label: labels[i + 1],
-          data: y[i],
+          data: y[i].map(e => (e / scales[yscale].value).toFixed(precision)),
           fill: false
           // borderColor: getRandomColor()
         })
@@ -47,17 +47,17 @@ class Graph extends Component {
     }
     const selectLabel = () => {
       if (labels[0] === 'time') {
-        if (scale === 'si') {
+        if (xscale === 'si') {
           return 'Time in S'
         } else {
-          return `Time in ${scale}S`
+          return `Time in ${xscale}S`
         }
       }
       if (labels[0] === 'v-sweep') {
-        if (scale === 'si') {
+        if (xscale === 'si') {
           return 'Voltage in V'
         } else {
-          return `Voltage in ${scale}V`
+          return `Voltage in ${xscale}V`
         }
       }
     }
@@ -67,7 +67,7 @@ class Graph extends Component {
       data: {
 
         // labels: x,
-        labels: x.map(e => (e / scales[scale].value).toFixed(precision)),
+        labels: x.map(e => (e / scales[xscale].value).toFixed(precision)),
         datasets: dataset()
       },
 
@@ -103,7 +103,7 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                // labelString: labels[0] === 'time' ? `TIME in ${scale}s` : (labels[0] === 'v-sweep' ? `VOLTAGE in ${scale}v` : labels[0])
+                // labelString: labels[0] === 'time' ? `TIME in ${xscale}s` : (labels[0] === 'v-sweep' ? `VOLTAGE in ${xscale}v` : labels[0])
                 labelString: selectLabel()
               },
               // ticks:{
@@ -112,7 +112,7 @@ class Graph extends Component {
               // }
               ticks: {
                 // maxTicksLimit: 10
-                maxTicksLimit: scales[scale].ticks
+                maxTicksLimit: scales[xscale].ticks
               }
             }
           ],
