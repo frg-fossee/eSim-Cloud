@@ -11,6 +11,10 @@ The project aims to provide a facility for a user to design different types of e
     overview/index
     docker/index
     eSim_on_Cloud/index
+    arduino_on_Cloud/index
+    developerDocs/index
+    contribute/index
+    contributors/index
     schematic/index
     arduino/index
 
