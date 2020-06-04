@@ -1,48 +1,112 @@
 {
-    "name": "PIR Sensor",
-    "className": "PIRSensor",
-    "pins": [
-        {
-            "x": 81,
-            "y": 161,
-            "name": "SIGNAL"
-        },
-        {
-            "x": 96,
-            "y": 161,
-            "name": "VCC"
-        },
-        {
-            "x": 110,
-            "y": 161,
-            "name": "GND"
-        }
-    ],
-    "pointHalf": 4,
-    "draw": [
-        {
-            "type": "image",
-            "url": "assets/images/components/PIRSensor.svg",
-            "width": 198,
-            "height": 168,
-            "x": 0,
-            "y": 0
-        }
-    ],
-    "simulation": {},
-    "info": {
-        "name": "PIR Sensor HC-SR501",
-        "image": "https://cdn-blog.adafruit.com/uploads/2014/01/pirsensor.jpg",
-        "Datasheet": "https://www.mpja.com/download/31227sc.pdf",
-        "description": "The PIR sensor stands for Passive Infrared sensor. It is a low cost sensor which can detect the presence of Human beings or animals. This sensor has three output pins Vcc, Output and Ground as shown in the pin diagram above. Since the output pin is 3.3V TTL logic it can be used with any platforms like Arduino, Raspberry, PIC, ARM, 8051 etc..",
-        "properties": {
-            "Input voltage": "4.V to 12V (+5V recommended)",
-            "Output Voltage": "3.3V TTL",
-            "Modes": "Repeatable(H) and Non- Repeatable(H)",
-            "Covers Distance": "120° and 7 meters",
-            "Measuring angle covered": "<15°",
-            "power consumption ": "65mA",
-            "Operating Temperature": "-20° to +80° Celsius"
-        }
+  "name": "PIR Sensor",
+  "className": "PIRSensor",
+  "pins": [
+    {
+      "x": 81,
+      "y": 161,
+      "name": "SIGNAL"
+    },
+    {
+      "x": 96,
+      "y": 161,
+      "name": "VCC"
+    },
+    {
+      "x": 110,
+      "y": 161,
+      "name": "GND"
     }
+  ],
+  "pointHalf": 4,
+  "draw": [
+    {
+      "type": "image",
+      "url": "assets/images/components/PIRSensor.svg",
+      "width": 198,
+      "height": 168,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "image",
+      "url": "assets/images/hand.svg",
+      "width": 39,
+      "height": 49,
+      "x": 79,
+      "y": -120
+    }
+  ],
+  "data": {
+    "handImg": "assets/images/hand.svg",
+    "backCurve": "M-44-106a115,115 0,0,1 88,0l136,-234a385,385 0,0,0 -360,0z",
+    "curve": [
+      [
+        55,
+        -26
+      ],
+      [
+        99,
+        -36
+      ],
+      [
+        143,
+        -26
+      ],
+      [
+        279,
+        -260
+      ],
+      [
+        99,
+        -305
+      ],
+      [
+        -81,
+        -260
+      ]
+    ],
+    "hand": [
+      [
+        118,
+        -120
+      ],
+      [
+        118,
+        -71
+      ],
+      [
+        79,
+        -71
+      ],
+      [
+        79,
+        -98
+      ],
+      [
+        89,
+        -98
+      ],
+      [
+        89,
+        -120
+      ]
+    ]
+  },
+  "simulation": {},
+  "info": {
+    "name": "PIR Sensor HC-SR501",
+    "image": "https://cdn-blog.adafruit.com/uploads/2014/01/pirsensor.jpg",
+    "Datasheet": "https://www.mpja.com/download/31227sc.pdf",
+    "description": "The PIR sensor stands for Passive Infrared sensor. It is a low cost sensor which can detect the presence of Human beings or animals. This sensor has three output pins Vcc, Output and Ground as shown in the pin diagram above. Since the output pin is 3.3V TTL logic it can be used with any platforms like Arduino, Raspberry, PIC, ARM, 8051 etc..",
+    "properties": {
+      "Input voltage": "4.V to 12V (+5V recommended)",
+      "Output Voltage": "3.3V TTL",
+      "Modes": "Repeatable(H) and Non- Repeatable(H)",
+      "Covers Distance": "120° and 7 meters",
+      "Measuring angle covered": "<15°",
+      "power consumption ": "65mA",
+      "Operating Temperature": "-20° to +80° Celsius"
+    }
+  }
 }

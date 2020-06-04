@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'authAPI',
     'libAPI',
     'saveAPI',
-    'publishAPI'
+    'publishAPI',
+    'arduinoAPI'
 ]
 
 MIDDLEWARE = [
@@ -219,7 +220,8 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_IMPORTS = (
-    'simulationAPI.tasks'
+    'simulationAPI.tasks',
+    'arduinoAPI.tasks'
 )
 
 
