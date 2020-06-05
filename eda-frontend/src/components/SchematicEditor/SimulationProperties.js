@@ -119,19 +119,17 @@ export default function SimulationProperties () {
   }
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
-
-  const [simResult, setSimResult] = React.useState({})
-
-  const handleSimulationResult = (simResults) => {
-    setSimResult(simResults)
-  }
-
   const handlesimulateOpen = () => {
     setSimulateOpen(true)
   }
 
   const handleSimulateClose = () => {
     setSimulateOpen(false)
+  }
+  const [simResult, setSimResult] = React.useState({})
+
+  const handleSimulationResult = (simResults) => {
+    setSimResult(simResults)
   }
 
   // Prepare Netlist to file

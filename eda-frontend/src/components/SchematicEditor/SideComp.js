@@ -59,23 +59,29 @@ export default function SideComp ({ component }) {
       >
         <List component="div" className={classes.popupInfo} disablePadding dense >
           <ListItemText>
-            <b>Name:</b> {component.name}
-          </ListItemText>
-          <ListItemText>
-            <b>Description:</b> {component.description}
+            <b>Component Name:</b> {component.name}
           </ListItemText>
 
+          { component.description !== '' &&
+            <ListItemText>
+              <b>Description:</b> {component.description}
+            </ListItemText>
+          }
+          {
+            component.keyword !== '' &&
           <ListItemText>
             <b>Keywords:</b> {component.keyword}
           </ListItemText>
 
+          }
+
+          {
+            component.data_link !== '' &&
           <ListItemText>
             <b>Datasheet:</b> <a href={component.data_link} rel="noopener noreferrer" target='_blank' >{component.data_link}</a>
           </ListItemText>
+          }
 
-          <ListItemText>
-            <b>DMG:</b> {component.dmg}  <b> Part: </b> {component.part}
-          </ListItemText>
         </List>
       </Popover>
 

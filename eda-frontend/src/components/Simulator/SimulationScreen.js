@@ -53,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
 export default function SimulationScreen ({ open, close }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
-  const stitle = useSelector((state) => state.netlistReducer.title)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
   const [precision, setPrecision] = React.useState(5)
@@ -112,16 +111,6 @@ export default function SimulationScreen ({ open, close }) {
             justify="center"
             alignItems="center"
           >
-            <Grid item xs={12} sm={12}>
-              <Paper className={classes.paper}>
-                <Typography variant="h2" align="center" gutterBottom>
-                  {result.title}
-                </Typography>
-                <Typography variant="h5" align="center" component="p" gutterBottom>
-                  Simulation Result for {stitle} *
-                </Typography>
-              </Paper>
-            </Grid>
 
             {
 
@@ -131,7 +120,7 @@ export default function SimulationScreen ({ open, close }) {
                     <Typography variant="h4" align="center" gutterBottom>
                       GRAPH OUTPUT
                     </Typography>
-                    <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }} >
+                    <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
                       <TextField
                         style={{ width: '20%' }}
                         id="xscale"
@@ -146,20 +135,20 @@ export default function SimulationScreen ({ open, close }) {
                         }}
                       >
                         <option value='si'>
-                                SI UNIT
+                          SI UNIT
                         </option>
 
                         <option value='m'>
-                                Milli (m)
+                          Milli (m)
                         </option>
                         <option value='u'>
-                                Micro (u)
+                          Micro (u)
                         </option>
                         <option value='n'>
-                                Nano (n)
+                          Nano (n)
                         </option>
                         <option value='p'>
-                                Pico (p)
+                          Pico (p)
                         </option>
 
                       </TextField>
@@ -177,20 +166,20 @@ export default function SimulationScreen ({ open, close }) {
                         }}
                       >
                         <option value='si'>
-                                SI UNIT
+                          SI UNIT
                         </option>
 
                         <option value='m'>
-                                Milli (m)
+                          Milli (m)
                         </option>
                         <option value='u'>
-                                Micro (u)
+                          Micro (u)
                         </option>
                         <option value='n'>
-                                Nano (n)
+                          Nano (n)
                         </option>
                         <option value='p'>
-                                Pico (p)
+                          Pico (p)
                         </option>
 
                       </TextField>
@@ -255,20 +244,20 @@ export default function SimulationScreen ({ open, close }) {
                         }}
                       >
                         <option value='si'>
-                                SI UNIT
+                          SI UNIT
                         </option>
 
                         <option value='m'>
-                                Milli (m)
+                          Milli (m)
                         </option>
                         <option value='u'>
-                                Micro (u)
+                          Micro (u)
                         </option>
                         <option value='n'>
-                                Nano (n)
+                          Nano (n)
                         </option>
                         <option value='p'>
-                                Pico (p)
+                          Pico (p)
                         </option>
 
                       </TextField>
@@ -336,5 +325,6 @@ export default function SimulationScreen ({ open, close }) {
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func
+
   // simResults: PropTypes.object
 }

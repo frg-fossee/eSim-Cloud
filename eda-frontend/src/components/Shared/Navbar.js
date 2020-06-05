@@ -92,15 +92,17 @@ export function Header () {
               >
                 Editor
               </Link>
-              {/* <Link
+
+              <Link
                 variant="button"
                 color="textPrimary"
-                to="/simulator"
+                to="/simulator/ngspice"
                 component={RouterLink}
                 className={classes.link}
               >
                 Simulator
-              </Link> */}
+              </Link>
+
               <Link
                 variant="button"
                 color="textPrimary"
@@ -112,7 +114,15 @@ export function Header () {
               </Link>
             </>)
             : (<>
-              <span />
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator/ngspice"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Simulator
+              </Link>
             </>
             )
           )
