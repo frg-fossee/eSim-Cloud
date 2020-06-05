@@ -90,7 +90,7 @@ export class Wire {
     body.innerHTML = '<label>Color:</label><br>';
     const select = document.createElement('select');
     select.innerHTML = `<option>Black</option><option>Red</option><option>Yellow</option><option>Blue</option><option>Green</option>`;
-    const colors = ['#000', '#ff0000', '#ffff00', '#2593fa', '#31c404'];
+    const colors = ['#000', '#ff0000', '#e6a800', '#2593fa', '#31c404'];
     // set the current color
     for (let i = 0; i < colors.length; ++i) {
       if (colors[i] === this.color) {
@@ -217,11 +217,13 @@ export class Wire {
       color: this.color,
       start: {
         id: this.start.parent.id,
-        keyName: this.start.parent.keyName
+        keyName: this.start.parent.keyName,
+        pid: this.start.id
       },
       end: {
         id: this.end.parent.id,
-        keyName: this.end.parent.keyName
+        keyName: this.end.parent.keyName,
+        pid: this.end.id
       }
     };
   }
