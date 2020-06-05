@@ -11,8 +11,11 @@ import {
   Tooltip,
   TextField,
   InputAdornment
+
 } from '@material-ui/core'
+import Loader from 'react-loader-spinner'
 import SearchIcon from '@material-ui/icons/Search'
+
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
@@ -46,9 +49,9 @@ export default function ComponentSidebar ({ compRef }) {
   const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
 
   const dispatch = useDispatch()
-
+  const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
   const [searchText, setSearchText] = useState('')
-
+  const [loading, setLoading] = useState(false)
   const [searchedComponentList, setSearchedComponents] = useState([])
   // const searchedComponentList = React.useRef([])
 
@@ -67,12 +70,17 @@ export default function ComponentSidebar ({ compRef }) {
   const callApi = (query) => {
     // call api here. and set searchedComponentList
 
-    axios.get(`http://localhost/api/components/?name__contains=${query}`)
+    axios.get(`http://localhost/api/components/?name__contains=${query.toUpperCase()}`)
       .then(res => {
       // searchedComponentList.current = res.data
+
         console.log('LIST', res.data)
         setSearchedComponents([...res.data])
-
+        if (res.data.length === 0) {
+          setIssearchedResultsEmpty(true)
+        } else {
+          setIssearchedResultsEmpty(false)
+        }
         console.log('SEARCHED COMPONENTS', searchedComponentList)
       })
   }
@@ -90,8 +98,11 @@ export default function ComponentSidebar ({ compRef }) {
       // setQuery(inputRef.current)
 
       // call api here
+      setLoading(true)
       callApi(searchText)
+      setLoading(false)
       console.log('SEARCHED COMPONENTS2', searchedComponentList)
+
       // here we pass a callback so we get the current callCount value
       // from the useState hook's setter function
       // we use a Ref for timeoutId to avoid this same problem
@@ -160,13 +171,15 @@ export default function ComponentSidebar ({ compRef }) {
                   <InputAdornment position="start">
                     <SearchIcon/>
                   </InputAdornment>
+
                 )
+
               }}
             />
 
           </ListItem>
 
-          { searchText.length !== 0 &&
+          { searchText.length !== 0 && searchedComponentList.length !== 0 &&
 
                     searchedComponentList.map((component) => {
                       // console.log(component)
@@ -175,6 +188,20 @@ export default function ComponentSidebar ({ compRef }) {
                       </ListItemIcon>)
                     }
                     )
+
+          }
+          {
+            loading && searchText.length !== 0 &&
+          <Loader
+            type="Puff"
+            color="#00BFFF"
+            height={100}
+            width={100}
+          />
+          }
+          { !loading && searchText.length !== 0 && isSearchedResultsEmpty &&
+
+              <span style={{ margin: '20px' }}>No Components Found</span>
 
           }
 
