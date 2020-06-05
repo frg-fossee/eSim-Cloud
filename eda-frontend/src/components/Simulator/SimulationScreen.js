@@ -325,5 +325,6 @@ export default function SimulationScreen ({ open, close }) {
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func
+
   // simResults: PropTypes.object
 }

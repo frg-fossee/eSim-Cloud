@@ -4,19 +4,15 @@ import PropTypes from 'prop-types'
 import 'brace/theme/monokai'
 import 'brace/theme/github'
 
-const theme = {
-  light: 'github',
-  dark: 'monokai'
-}
-
 export default function Editor (props) {
+  console.log(props)
   return (
 
     <AceEditor
       style={{ width: '100%', marginTop: '35px' }}
       onChange = {props.onCodeChange}
       value = {props.code}
-      theme = {theme.dark}
+      theme = {props.dark.checkedA ? 'monokai' : 'github'}
       editorProps={{
         $blockScrolling: true
       }}
@@ -35,5 +31,6 @@ export default function Editor (props) {
 
 Editor.propTypes = {
   code: PropTypes.string,
-  onCodeChange: PropTypes.func
+  onCodeChange: PropTypes.func,
+  dark: PropTypes.bool
 }

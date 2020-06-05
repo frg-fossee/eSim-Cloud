@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Container, Grid, Button, Paper, Typography } from '@material-ui/core'
+import { Container, Grid, Button, Paper, Typography, Switch, FormControlLabel } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Editor from '../components/Simulator/Editor'
 // import NetlistUpload from '../components/Simulator/NetlistUpload'
@@ -28,6 +28,14 @@ export default function Simulator () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [netlistCode, setNetlistCode] = useState('')
+  const [state, setState] = React.useState({
+    checkedA: false
+
+  })
+
+  const handleChange = (event) => {
+    setState({ ...state, [event.target.name]: event.target.checked })
+  }
 
   const handleSimulationButtonClick = () => {
     prepareNetlist()
@@ -161,7 +169,7 @@ export default function Simulator () {
 
   return (
     <Container maxWidth="lg" className={classes.header}>
-      <SimulationScreen open={simulateOpen} close={handleSimulateClose} />
+      <SimulationScreen open={simulateOpen} close={handleSimulateClose} dark={state}/>
       <Grid
         container
         spacing={3}
@@ -186,9 +194,18 @@ export default function Simulator () {
 
             <Typography variant="h5" gutterBottom>
               Enter Netlist
+
             </Typography>
-            <Editor code={netlistCode} onCodeChange={onCodeChange} />
+
+            <FormControlLabel
+              style={{ marginLeft: '10px' }}
+              control={<Switch checked={state.checkedA} color="primary" onChange={handleChange} name="checkedA" />}
+              label="Dark Theme"
+            />
+
+            <Editor code={netlistCode} onCodeChange={onCodeChange} dark={state}/>
             <br />
+
             <Button variant="contained" color="primary" size="large" onClick={handleSimulationButtonClick}>
               Simulate
             </Button>
