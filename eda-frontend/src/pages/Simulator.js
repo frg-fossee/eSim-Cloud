@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     backgroundColor: '#404040',
     color: '#fff'
+
   }
 }))
 
@@ -45,8 +46,16 @@ export default function Simulator () {
     setSimulateOpen(false)
   }
 
+  const netlistCodeSanitization = (code) => {
+    var cleanCode = code.replace('plot', 'print')
+
+    return cleanCode
+  }
+
   function prepareNetlist () {
-    var file = textToFile(netlistCode)
+    var sanatizedText = netlistCodeSanitization(netlistCode)
+    console.log('cleancode', sanatizedText)
+    var file = textToFile(sanatizedText)
     sendNetlist(file)
   }
 
@@ -159,33 +168,25 @@ export default function Simulator () {
         justify="center"
         alignItems="stretch"
       >
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={12} lg={12}>
           <Paper className={classes.paper}>
             <h1>SPICE SIMULATOR</h1>
           </Paper>
         </Grid>
-        {/* <NetlistUpload /> */}
-        <>
-          <Grid item xs={12} sm={5}>
-            <Paper className={classes.paper}>
-              <h2>Enter Netlist</h2>
-              <Editor code={netlistCode} onCodeChange={onCodeChange}/>
-              <br />
-              <Button color="primary" size="large" onClick={handleSimulationButtonClick}>
+
+        {/* <> */}
+        <Grid item>
+          <Paper className={classes.paper}>
+            <h2>Enter Netlist</h2>
+            <Editor code={netlistCode} onCodeChange={onCodeChange}/>
+            <br />
+            <Button variant="contained" color="primary" size="large" onClick={handleSimulationButtonClick}>
                 Simulate
-              </Button>
-            </Paper>
-          </Grid>
+            </Button>
+          </Paper>
+        </Grid>
 
-          {/* <Grid item xs={12} sm={7}>
-            <Paper className={classes.paper}>
-              <h2>GRAPH OUTPUT</h2> */}
-
-            /> */}
-          {/* </Paper>
-          </Grid> */}
-
-        </>
+        {/* </> */}
       </Grid>
     </Container>
   )

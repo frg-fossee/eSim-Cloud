@@ -112,16 +112,6 @@ export default function SimulationScreen ({ open, close }) {
             justify="center"
             alignItems="center"
           >
-            <Grid item xs={12} sm={12}>
-              <Paper className={classes.paper}>
-                <Typography variant="h2" align="center" gutterBottom>
-                  {result.title}
-                </Typography>
-                <Typography variant="h5" align="center" component="p" gutterBottom>
-                  Simulation Result for {stitle} *
-                </Typography>
-              </Paper>
-            </Grid>
 
             {
 
