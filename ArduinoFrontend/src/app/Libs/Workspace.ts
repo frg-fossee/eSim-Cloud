@@ -6,6 +6,7 @@ import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
+import { Point } from './Point';
 
 declare var window;
 declare var $; // For Jquery
@@ -477,7 +478,6 @@ export class Workspace {
   }
 
   static LoadWires(wires: any[]) {
-    console.log(wires);
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -486,24 +486,23 @@ export class Workspace {
       // console.log(points[0]);
       // console.log(points[0][0]);
       // console.log(points[0][1]);
-      let start = null;
-      let end = null;
+      let start: Point = null;
+      let end: Point = null;
       // console.log(w.start.keyName);
       // console.log(window.scope[w.start.keyName]);
       // Use Linear search to find the start circuit node
       for (const st of window.scope[w.start.keyName]) {
         // console.log(st.id,w.start.id);
         if (st.id === w.start.id) {
-          start = st.getNode(points[0][0], points[0][1]);
+          start = st.getNode(points[0][0], points[0][1], w.start.pid);
           break;
         }
       }
-      // console.log(start);
       // Use Linear Search to find the end circuit node
       for (const en of window.scope[w.end.keyName]) {
         if (en.id === w.end.id) {
           const p = points[points.length - 1];
-          end = en.getNode(p[0], p[1]);
+          end = en.getNode(p[0], p[1], w.end.pid);
           break;
         }
       }
@@ -517,7 +516,7 @@ export class Workspace {
         window['scope']['wires'].push(tmp);
         tmp.update();
       } else {
-        alert('something went wrong');
+        // alert('something went wrong');
       }
     }
   }
