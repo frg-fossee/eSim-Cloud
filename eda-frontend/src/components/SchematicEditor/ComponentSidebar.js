@@ -63,7 +63,7 @@ export default function ComponentSidebar ({ compRef }) {
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
   const [searchedComponentList, setSearchedComponents] = useState([])
-  const [searchOption, setSearchOption] = useState('name')
+  const [searchOption, setSearchOption] = useState('NAME')
   // const searchedComponentList = React.useRef([])
 
   const timeoutId = React.useRef()
@@ -89,14 +89,14 @@ export default function ComponentSidebar ({ compRef }) {
       .then(res => {
       // searchedComponentList.current = res.data
 
-        console.log('LIST', res.data)
+
         setSearchedComponents([...res.data])
         if (res.data.length === 0) {
           setIssearchedResultsEmpty(true)
         } else {
           setIssearchedResultsEmpty(false)
         }
-        console.log('SEARCHED COMPONENTS', searchedComponentList)
+
       })
   }
 
@@ -116,7 +116,6 @@ export default function ComponentSidebar ({ compRef }) {
       setLoading(true)
       callApi(searchText)
       setLoading(false)
-      console.log('SEARCHED COMPONENTS2', searchedComponentList)
 
       // here we pass a callback so we get the current callCount value
       // from the useState hook's setter function
@@ -231,15 +230,18 @@ export default function ComponentSidebar ({ compRef }) {
                     )
 
           }
-          {
-            loading && searchText.length !== 0 &&
+
+      <ListItem>
+
           <Loader
-            type="Puff"
-            color="#00BFFF"
+            type="TailSpin"
+            color="#F44336"
             height={100}
             width={100}
+            visible={loading}
           />
-          }
+      </ListItem>
+
           { !loading && searchText.length !== 0 && isSearchedResultsEmpty &&
 
               <span style={{ margin: '20px' }}>No Components Found</span>
@@ -262,7 +264,7 @@ export default function ComponentSidebar ({ compRef }) {
                         {/* Chunked Components of Library */}
                         {
                           chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
-                            console.log('THIS IS COMPONENT CHUNK', componentChunk)
+
                             return (
                               <ListItem key={componentChunk[0].svg_path} divider>
                                 {
