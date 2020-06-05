@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import { Grid, Button, Paper } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
-import Graph from '../Shared/Graph'
 import api from '../../utils/Api'
 
 const styles = (theme) => ({

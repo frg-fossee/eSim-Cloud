@@ -53,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
 export default function SimulationScreen ({ open, close }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
-  const stitle = useSelector((state) => state.netlistReducer.title)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
   const [precision, setPrecision] = React.useState(5)

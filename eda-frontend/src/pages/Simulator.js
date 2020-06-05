@@ -5,15 +5,15 @@ import Editor from '../components/Simulator/Editor'
 // import NetlistUpload from '../components/Simulator/NetlistUpload'
 import textToFile from '../components/Simulator/textToFile'
 import SimulationScreen from '../components/Simulator/SimulationScreen'
-import { useSelector, useDispatch } from 'react-redux'
-import { setResultGraph } from '../redux/actions/index'
+import { useDispatch } from 'react-redux'
+import { setResultGraph, setResultText } from '../redux/actions/index'
 
 import api from '../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(5, 0, 6),
-    color: '#fff'
+    padding: theme.spacing(5, 0, 6)
+    // color: '#fff'
   },
   paper: {
     padding: theme.spacing(2),
@@ -132,6 +132,7 @@ export default function Simulator () {
             console.log('LOG', simResultGraph)
             dispatch(setResultGraph(simResultGraph))
           } else {
+            console.log('i am gere')
             var simResultText = []
             for (let i = 0; i < temp.length; i++) {
               let postfixUnit = ''

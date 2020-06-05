@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import AceEditor from 'react-ace'
-import * as ace from 'brace'
-
+import PropTypes from 'prop-types'
 import 'brace/theme/monokai'
 import 'brace/theme/github'
 
@@ -17,7 +16,7 @@ export default function Editor (props) {
 
       onChange = {props.onCodeChange}
       value = {props.code}
-      theme="github"
+      theme = {theme.light}
       editorProps={{
         $blockScrolling: true
       }}
@@ -32,4 +31,10 @@ export default function Editor (props) {
     />
 
   )
+}
+
+Editor.propTypes = {
+  code: PropTypes.string,
+  onCodeChange: PropTypes.func
+  // simResults: PropTypes.object
 }
