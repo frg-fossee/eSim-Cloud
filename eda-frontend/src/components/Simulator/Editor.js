@@ -12,7 +12,7 @@ export default function Editor (props) {
       style={{ width: '100%', marginTop: '35px' }}
       onChange = {props.onCodeChange}
       value = {props.code}
-      theme = {props.dark.checkedA ? 'monokai' : 'github'}
+      theme = {props.dark.checkedA ? 'github' : 'monokai'}
       editorProps={{
         $blockScrolling: true
       }}

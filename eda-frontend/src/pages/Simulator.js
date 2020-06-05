@@ -200,7 +200,7 @@ export default function Simulator () {
             <FormControlLabel
               style={{ marginLeft: '10px' }}
               control={<Switch checked={state.checkedA} color="primary" onChange={handleChange} name="checkedA" />}
-              label="Dark Theme"
+              label="Light Mode"
             />
 
             <Editor code={netlistCode} onCodeChange={onCodeChange} dark={state}/>
