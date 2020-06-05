@@ -27,6 +27,19 @@ export class ArduinoUno extends CircuitElement {
     for (const node of this.nodes) {
       this.pinNameMap[node.label] = node;
     }
+    this.pinNameMap['D12'].addValueListener((v) => {
+      if (isUndefined(this.runner) || isNull(this.runner)) {
+        setTimeout(() => {
+          this.pinNameMap['D12'].setValue(v, this.pinNameMap['D12']);
+        }, 300);
+        return;
+      } else {
+        if (this.runner.portB.pinState(4) === AVR8.PinState.Input) {
+          this.runner.portB.setPin(4, v > 0 ? 1 : 0);
+        }
+      }
+    });
+
     this.pinNameMap['D7'].addValueListener((v) => {
       if (isUndefined(this.runner) || isNull(this.runner)) {
         setTimeout(() => {
