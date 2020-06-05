@@ -43,8 +43,7 @@ export class Motor extends CircuitElement {
         this.elements[1].stop();
       } else {
         // const ok = this.elements[1].attr();
-        // console.log('sss');
-        console.log(400 / v);
+        // console.log(400 / v);
         const anim = Raphael.animation({ transform: `r360` }, 400 / v);
         this.elements[1].animate(anim.repeat(Infinity));
         // setTimeout(() => this.elements[1].stop(), 3000);
@@ -110,7 +109,7 @@ export class L298N extends CircuitElement {
     super('L298N', x, y, 'L298N.json', canvas);
   }
   init() {
-    console.log(this.nodes);
+    // console.log(this.nodes);
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');

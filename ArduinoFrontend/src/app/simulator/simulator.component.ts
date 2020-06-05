@@ -50,7 +50,7 @@ export class SimulatorComponent implements OnInit {
 
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
-      console.log(v);
+      // console.log(v);
       this.projectId = parseInt(v.id, 10);
       if (this.projectId) {
         SaveOffline.Read(this.projectId, (data) => {
@@ -290,7 +290,7 @@ export class SimulatorComponent implements OnInit {
     window.location.reload();
   }
   LoadProject(data: any) {
-    console.log(data);
+    // console.log(data);
     this.projectTitle = data.project.name;
     this.description = data.project.description;
     this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
