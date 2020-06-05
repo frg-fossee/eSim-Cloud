@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import PropTypes from 'prop-types'
+
 import {
   Hidden,
   List,
@@ -7,8 +8,11 @@ import {
   Collapse,
   ListItemIcon,
   IconButton,
-  Tooltip
+  Tooltip,
+  TextField,
+  InputAdornment
 } from '@material-ui/core'
+import SearchIcon from '@material-ui/icons/Search';
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
@@ -42,6 +46,25 @@ export default function ComponentSidebar ({ compRef }) {
   const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
 
   const dispatch = useDispatch()
+
+  const [searchText,setSearchText] = useState('')
+  // const [searchedComponents,setSearchedComponents] = useState([])
+  const searchedComponentList = React.useRef([])
+  const [callCount, setCallCount] = React.useState(0)
+  const timeoutId = React.useRef()
+
+  const handleSearchText = (evt) => {
+    setSearchText(evt.target.value)
+
+    // call api from here. and set the result to searchedComponentList.
+
+
+  }
+
+  // call this method with search api response
+  // const handleSearchedComponentList = (searchedComponentList) => {
+  //   setSearchedComponents(searchedComponentList)
+  // }
 
   const handleCollapse = (id) => {
     // console.log('Current: ', collapse[id], components[id].length)
@@ -86,11 +109,40 @@ export default function ComponentSidebar ({ compRef }) {
           <ListItem button divider>
             <h2 style={{ margin: '5px' }}>Components List</h2>
           </ListItem>
+          <ListItem>
+
+          <TextField
+          id="standard-number"
+          placeholder="Search Component"
+          variant="outlined"
+          size="small"
+          onChange={handleSearchText}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon/>
+              </InputAdornment>
+            ),
+          }}
+        />
+
+          </ListItem>
+
+          { searchText.length !== 0 &&
+
+                  <label>Searching</label>
+
+
+
+
+
+          }
 
           {/* Collapsing List Mapped by Libraries fetched by the API */}
-          {
+          {searchText.length === 0 &&
             libraries.map(
               (library) => {
+
                 return (
                   <div key={library.id}>
                     <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
@@ -103,6 +155,7 @@ export default function ComponentSidebar ({ compRef }) {
                         {/* Chunked Components of Library */}
                         {
                           chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
+                            console.log("THIS IS COMPONENT CHUNK",componentChunk)
                             return (
                               <ListItem key={componentChunk[0].svg_path} divider>
                                 {
