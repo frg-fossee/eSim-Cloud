@@ -99,7 +99,8 @@ export const signUp = (email, username, password) => (dispatch) => {
 
   api.post('auth/users/', body, config)
     .then((res) => {
-      console.log(res)
+      // console.log(res)
+      dispatch({ type: actions.SIGNUP_SUCCESSFUL })
     })
     .catch((err) => { console.error(err) })
 }

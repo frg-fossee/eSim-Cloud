@@ -329,6 +329,7 @@ export function GenerateNetList () {
           ++r
         } else if (component.symbol === 'V') {
           // component.symbol = component.symbol + v.toString()
+          console.log(component)
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
@@ -401,10 +402,32 @@ export function GenerateNetList () {
 
           // console.log(compobj)
         }
-        // console.log(component)
-        if (component.properties.VALUE !== undefined) {
-          k = k + ' ' + component.properties.VALUE
-          component.value = component.value + '\n' + component.properties.VALUE
+        console.log('component properties', component.properties)
+
+        if (component.properties.PREFIX.charAt(0) === 'V' || component.properties.PREFIX.charAt(0) === 'v' || component.properties.PREFIX.charAt(0) === 'I' || component.properties.PREFIX.charAt(0) === 'i') {
+          const comp = component.properties
+          if (comp.NAME === 'SINE') {
+            k = k + ` SIN(${comp.OFFSET} ${comp.AMPLITUDE} ${comp.FREQUENCY} ${comp.DELAY} ${comp.DAMPING_FACTOR} ${comp.PHASE} )`
+          } else if (comp.NAME === 'EXP') {
+            k = k + ` EXP(${comp.INITIAL_VALUE} ${comp.PULSED_VALUE} ${comp.FREQUENCY} ${comp.RISE_DELAY_TIME} ${comp.RISE_TIME_CONSTANT} ${comp.FALL_DELAY_TIME} ${comp.FALL_TIME_CONSTANT} )`
+          } else if (comp.NAME === 'DC') {
+            if (component.properties.VALUE !== undefined) {
+              k = k + ' DC ' + component.properties.VALUE
+              component.value = component.value + '\n' + component.properties.VALUE
+            }
+          } else if (comp.NAME === 'PULSE') {
+            k = k + ` PULSE(${comp.INITIAL_VALUE} ${comp.PULSED_VALUE} ${comp.DELAY_TIME} ${comp.RISE_TIME} ${comp.FALL_TIME} ${comp.PULSE_WIDTH} ${comp.PERIOD} ${comp.PHASE} )`
+          } else {
+            if (component.properties.VALUE !== undefined) {
+              k = k + ' ' + component.properties.VALUE
+              component.value = component.value + '\n' + component.properties.VALUE
+            }
+          }
+        } else {
+          if (component.properties.VALUE !== undefined) {
+            k = k + ' ' + component.properties.VALUE
+            component.value = component.value + '\n' + component.properties.VALUE
+          }
         }
 
         if (component.properties.EXTRA_EXPRESSION.length > 0) {
@@ -414,6 +437,7 @@ export function GenerateNetList () {
         if (component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
+
         // k = k + ' 10'
         k = k + ' \n'
         // console.log(k)

@@ -13,8 +13,8 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import { Link as RouterLink } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { Link as RouterLink, Redirect } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
 import { signUp } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +41,8 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp () {
   const classes = useStyles()
 
+  const auth = useSelector(state => state.authReducer)
+
   useEffect(() => {
     document.title = 'Sign Up - eSim '
   })
@@ -50,6 +52,9 @@ export default function SignUp () {
   const [email, setEmail] = useState('')
   const dispatch = useDispatch()
 
+  if (auth.isRegistered) {
+    return <Redirect to="/login" />
+  }
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>

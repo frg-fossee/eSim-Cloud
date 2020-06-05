@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Hidden,
   Divider,
@@ -13,7 +13,8 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchSchematics } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -47,6 +48,14 @@ const useStyles = makeStyles((theme) => ({
 export default function DashSidebar (props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
+  const schematics = useSelector(state => state.dashboardReducer.schematics)
+
+  const dispatch = useDispatch()
+
+  // For Fetching Saved Schematics
+  useEffect(() => {
+    dispatch(fetchSchematics())
+  }, [dispatch])
 
   return (
     <>
@@ -64,7 +73,9 @@ export default function DashSidebar (props) {
         divider
       >
         <ListItemAvatar>
-          <Avatar className={classes.purple}>U</Avatar>
+          <Avatar className={classes.purple}>
+            {auth.user.username.charAt(0).toUpperCase()}
+          </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={auth.user.username}
@@ -110,9 +121,9 @@ export default function DashSidebar (props) {
           />
         </List>
         <List className={classes.nested} >
-          {[0, 1, 2, 4, 5, 6, 7, 8].map((item) => (
-            <ListItem key={`item-${item}`} button>
-              <ListItemText primary={`Schematic ${item}`} />
+          {schematics.map((sch) => (
+            <ListItem key={sch.save_id} button>
+              <ListItemText primary={`${sch.name}`} />
             </ListItem>
           ))}
         </List>

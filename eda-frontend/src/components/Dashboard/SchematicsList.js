@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Card,
   Grid,
@@ -11,6 +11,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 
 import SchematicCard from './SchematicCard'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchSchematics } from '../../redux/actions/index'
 
 const useStyles = makeStyles({
   mainHead: {
@@ -56,6 +58,17 @@ function MainCard () {
 }
 
 export default function SchematicsList () {
+  const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
+  const schematics = useSelector(state => state.dashboardReducer.schematics)
+
+  const dispatch = useDispatch()
+
+  // For Fetching Saved Schematics
+  useEffect(() => {
+    dispatch(fetchSchematics())
+  }, [dispatch])
+
   return (
     <>
       <Grid
@@ -71,9 +84,26 @@ export default function SchematicsList () {
           <MainCard />
         </Grid>
 
-        <Grid item xs={12} sm={6} lg={3}>
-          <SchematicCard />
-        </Grid>
+        {schematics.length !== 0
+          ? <>
+            {schematics.map(
+              (sch) => {
+                return (
+                  <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                    <SchematicCard sch={sch} />
+                  </Grid>
+                )
+              }
+            )}
+          </>
+          : <Grid item xs={12}>
+            <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+              <Typography variant="subtitle1" gutterBottom>
+                Hey {auth.user.username} , You dont have any saved schematics...
+              </Typography>
+            </Card>
+          </Grid>
+        }
       </Grid>
     </>
   )
