@@ -3,6 +3,7 @@ import * as actions from '../actions/actions'
 const initialState = {
   token: localStorage.getItem('esim_token'),
   isAuthenticated: null,
+  isRegistered: null,
   isLoading: false,
   user: null,
   errors: {}
@@ -14,6 +15,13 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isLoading: true
+      }
+    }
+
+    case actions.SIGNUP_SUCCESSFUL: {
+      return {
+        ...state,
+        isRegistered: true
       }
     }
 

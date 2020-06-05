@@ -89,7 +89,7 @@ function Header () {
         noWrap
         className={classes.toolbarTitle}
       >
-        <Link color="inherit" target='blank' component={RouterLink} to="/">
+        <Link color="inherit" target='_blank' component={RouterLink} to="/">
           eSim
         </Link>
       </Typography>
@@ -153,7 +153,7 @@ function Header () {
                 style={{ marginTop: '25px' }}
               >
                 <MenuItem
-                  target='blank'
+                  target='_blank'
                   component={RouterLink}
                   to="/dashboard"
                   onClick={handleClose}
@@ -161,7 +161,7 @@ function Header () {
                   <ListItemText primary={auth.user.username} secondary={auth.user.email} />
                 </MenuItem>
                 <MenuItem
-                  target='blank'
+                  target='_blank'
                   component={RouterLink}
                   to="/dashboard/profile"
                   onClick={handleClose}
@@ -169,7 +169,7 @@ function Header () {
                   My Profile
                 </MenuItem>
                 <MenuItem
-                  target='blank'
+                  target='_blank'
                   component={RouterLink}
                   to="/dashboard/schematics"
                   onClick={handleClose}

@@ -147,6 +147,8 @@ export default function SchematicToolbar ({ mobileClose }) {
       var title = schSave.title
       var description = schSave.description
       dispatch(saveSchematic(title, description, xml))
+      setMessage('Saved Successfully')
+      handleSnacClick()
     }
   }
 
