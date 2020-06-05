@@ -2,13 +2,18 @@
 eSim Development Flow
 =====================
 
+.. image:: ../images/flow_lib_to_svg.png
+
+.. image:: ../images/flow_schematic_to_simulation.png
+
+
 Reading Component Symbol Library files and Rendering in the Browser
 ###################################################################
 The Kicad symbol libraries '.lib' and '.dcm' (https://github.com/KiCad/kicad-symbols) are parsed to generate SVG files that are compatible with the mxgraph (javascript graph library). This is a one time process. These generated SVG files are read and rendered in the component list (left pane) using mxgraph. 
 
 
-Generating XML files of the Circuit on Schematic editor
-#######################################################
+Generating XML files
+####################
 The components from the left pane are dropped onto the schematic grid. By default, the size of the grid is A4, which can be changed from A5 to A1. The components connected by wires are converted to XML format using mxgraph, whenever the circuit is saved by the user. This XML is used to save and re-open the saved circuits.
 
 
