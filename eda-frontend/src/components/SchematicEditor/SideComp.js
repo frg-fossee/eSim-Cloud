@@ -70,7 +70,7 @@ export default function SideComp ({ component }) {
           </ListItemText>
 
           <ListItemText>
-            <b>Datasheet:</b> <a href={component.data_link} rel="noreferrer" target='_blank' >{component.data_link}</a>
+            <b>Datasheet:</b> <a href={component.data_link} rel="noopener noreferrer" target='_blank' >{component.data_link}</a>
           </ListItemText>
 
           <ListItemText>
