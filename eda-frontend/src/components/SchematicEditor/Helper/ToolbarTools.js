@@ -16,7 +16,8 @@ const {
   mxEvent,
   mxCodec,
   mxCell,
-  mxMorphing
+  mxMorphing,
+  Graph
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -818,15 +819,59 @@ export function GenerateCompList () {
 
 export function generateXML () {
   var enc = new mxCodec(mxUtils.createXmlDocument())
+  console.log(enc)
   var node = enc.encode(graph.getModel())
+  console.log(node)
   var xml = mxUtils.getXml(node)
   console.log(xml)
 }
 
 export function renderXML () {
-  var xml = ''
+  // var changes = evt.getProperty('edit').changes
+  graph.view.refresh()
+  var xml = '<mxGraphModel><root><mxCell id="0" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName=""><Object as="properties"/></mxCell><mxCell id="1" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName=""><Object as="properties"/></mxCell><mxCell value="VSOURCE" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="V" pinType=" " Pin="0" PinNumber="0" PinName=""><mxGeometry x="210" y="130" width="120" height="120" as="geometry"/><Object id="317" name="VSOURCE" svg_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A_thumbnail.svg" symbol_prefix="V" component_library="http://localhost/api/libraries/8/" description="Voltage source symbol for simulation only" data_link="~" full_name="V-VSOURCE-1-A" keyword="simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="V" NAME="VSOURCE" N1="" N2="" VALUE="0" EXTRA_EXPRESSION="" MODEL="" UNIT="V" as="properties"/></mxCell><mxCell value="1" style="align=right;verticalAlign=up;rotation=0" id="3" vertex="1" Pin="1" pinType="Input" PinNumber="1" CellType="This is where you say what the vertex is" Component="0" PinName=""><mxGeometry x="60" width="0.5" height="0.5" as="geometry"/><mxCell value="VSOURCE" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="V" pinType=" " Pin="0" PinNumber="0" PinName="" as="ParentComponent"><mxGeometry x="210" y="130" width="120" height="120" as="geometry"/><Object id="317" name="VSOURCE" svg_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A_thumbnail.svg" symbol_prefix="V" component_library="http://localhost/api/libraries/8/" description="Voltage source symbol for simulation only" data_link="~" full_name="V-VSOURCE-1-A" keyword="simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="V" NAME="VSOURCE" N1="" N2="" VALUE="0" EXTRA_EXPRESSION="" MODEL="" UNIT="V" as="properties"/></mxCell><Object as="properties"/></mxCell><mxCell value="2" style="align=right;verticalAlign=bottom;rotation=0" id="4" vertex="1" Pin="1" pinType="Input" PinNumber="2" CellType="This is where you say what the vertex is" Component="0" PinName=""><mxGeometry x="60" y="119" width="0.5" height="0.5" as="geometry"/><mxCell value="VSOURCE" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="V" pinType=" " Pin="0" PinNumber="0" PinName="" as="ParentComponent"><mxGeometry x="210" y="130" width="120" height="120" as="geometry"/><Object id="317" name="VSOURCE" svg_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A_thumbnail.svg" symbol_prefix="V" component_library="http://localhost/api/libraries/8/" description="Voltage source symbol for simulation only" data_link="~" full_name="V-VSOURCE-1-A" keyword="simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="V" NAME="VSOURCE" N1="" N2="" VALUE="0" EXTRA_EXPRESSION="" MODEL="" UNIT="V" as="properties"/></mxCell><Object as="properties"/></mxCell></root></mxGraphModel>'
   var xmlDoc = mxUtils.parseXml(xml)
-  var node = xmlDoc.documentElement
+  /* var node = xmlDoc.documentElement
   var dec = new mxCodec(node)
-  dec.decode(node, graph.getModel())
+  // dec.decode(node, graph.getModel())
+  var change = dec.decode(node)
+  console.log(change) */
+  parseXmlToGraph(xmlDoc, graph)
+  // console.log(dec)
+  // change.execute()
+  // changes.push(change)
+}
+function parseXmlToGraph (xmlDoc, graph) {
+  const cells = xmlDoc.documentElement.children[0].children
+  const parent = graph.getDefaultParent()
+  for (let i = 0; i < cells.length; i++) {
+    const cellAttrs = cells[i].attributes
+    if (cellAttrs.vertex && cellAttrs.Component.value === '1') { // is component
+      const vertexName = cellAttrs.value.value
+      const style = cellAttrs.style.value
+      console.log(cellAttrs.Component.value)
+      const vertexId = Number(cellAttrs.id.value)
+      const geom = cells[i].children[0].attributes
+      const xPos = Number(geom.x.value)
+      var yPos
+      if (geom.y === undefined) {
+        yPos = 0
+      }
+      else {
+        yPos = Number(geom.y.value)
+      }
+      const height = Number(geom.height.value)
+      const width = Number(geom.width.value)
+      graph.insertVertex(parent, vertexId, vertexName, xPos, yPos, width, height, style)
+    } else if (cellAttrs.edge) { // is edge
+      const edgeName = cellAttrs.value.value
+      const edgeId = Number(cellAttrs.id.value)
+      const source = Number(cellAttrs.source.value)
+      const target = Number(cellAttrs.target.value)
+      graph.insertEdge(parent, edgeId, edgeName,
+        graph.getModel().getCell(source),
+        graph.getModel().getCell(target)
+      )
+    }
+  }
 }
