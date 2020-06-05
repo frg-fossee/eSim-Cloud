@@ -41,6 +41,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const searchOptions = {
+  NAME: 'name__contains',
+  KEYWORD: 'keyword__contains',
+  DESCRIPTION: 'description__contains',
+  COMPONENT_LIBRARY: 'component_library__library_name__contains',
+  PREFIX: 'symbol_prefix'
+}
+
+const searchOptionsList = ['NAME', 'KEYWORD', 'DESCRIPTION', 'COMPONENT_LIBRARY', 'PREFIX']
+
 export default function ComponentSidebar ({ compRef }) {
   const classes = useStyles()
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
@@ -53,9 +63,14 @@ export default function ComponentSidebar ({ compRef }) {
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
   const [searchedComponentList, setSearchedComponents] = useState([])
+  const [searchOption, setSearchOption] = useState('name')
   // const searchedComponentList = React.useRef([])
 
   const timeoutId = React.useRef()
+
+  const handleSearchOptionType = (evt) => {
+    setSearchOption(evt.target.value)
+  }
 
   const handleSearchText = (evt) => {
     if (searchText.length === 0) {
@@ -70,7 +85,7 @@ export default function ComponentSidebar ({ compRef }) {
   const callApi = (query) => {
     // call api here. and set searchedComponentList
 
-    axios.get(`http://localhost/api/components/?name__contains=${query.toUpperCase()}`)
+    axios.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${query}`)
       .then(res => {
       // searchedComponentList.current = res.data
 
@@ -154,7 +169,7 @@ export default function ComponentSidebar ({ compRef }) {
       <div style={isSimulate ? { display: 'none' } : {}}>
         {/* Display List of categorized components */}
         <List>
-          <ListItem button divider>
+          <ListItem button>
             <h2 style={{ margin: '5px' }}>Components List</h2>
           </ListItem>
           <ListItem>
@@ -177,6 +192,32 @@ export default function ComponentSidebar ({ compRef }) {
               }}
             />
 
+          </ListItem>
+
+          <ListItem divider>
+            <TextField
+              style={{ width: '100%' }}
+              id="searchType"
+              size='small'
+              variant="outlined"
+              select
+              label="Search By"
+              value={searchOption}
+              onChange={handleSearchOptionType}
+              SelectProps={{
+                native: true
+              }}
+            >
+
+              {
+                searchOptionsList.map((value, i) => {
+                  return (<option key={i} value={value}>
+                    {value}
+                  </option>)
+                })
+              }
+
+            </TextField>
           </ListItem>
 
           { searchText.length !== 0 && searchedComponentList.length !== 0 &&
