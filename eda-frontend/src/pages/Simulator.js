@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Container, Grid, Button, Paper } from '@material-ui/core'
+import { Container, Grid, Button, Paper, Typography } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Editor from '../components/Simulator/Editor'
 // import NetlistUpload from '../components/Simulator/NetlistUpload'
@@ -169,25 +169,31 @@ export default function Simulator () {
         justify="center"
         alignItems="stretch"
       >
-        <Grid item xs={12} sm={12} lg={12}>
+        <Grid item xs={12} >
           <Paper className={classes.paper}>
-            <h1>SPICE SIMULATOR</h1>
+
+            <Typography variant="h4" gutterBottom>
+              SPICE SIMULATOR
+            </Typography>
+            <Typography variant="subtitle1" gutterBottom>
+              eSim on Cloud - ngSpice Simulator
+            </Typography>
           </Paper>
         </Grid>
 
-        {/* <> */}
-        <Grid item>
+        <Grid item xs={12} >
           <Paper className={classes.paper}>
-            <h2>Enter Netlist</h2>
-            <Editor code={netlistCode} onCodeChange={onCodeChange}/>
+
+            <Typography variant="h5" gutterBottom>
+              Enter Netlist
+            </Typography>
+            <Editor code={netlistCode} onCodeChange={onCodeChange} />
             <br />
             <Button variant="contained" color="primary" size="large" onClick={handleSimulationButtonClick}>
-                Simulate
+              Simulate
             </Button>
           </Paper>
         </Grid>
-
-        {/* </> */}
       </Grid>
     </Container>
   )

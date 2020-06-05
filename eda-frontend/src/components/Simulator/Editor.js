@@ -13,10 +13,10 @@ export default function Editor (props) {
   return (
 
     <AceEditor
-
+      style={{ width: '100%', marginTop: '35px' }}
       onChange = {props.onCodeChange}
       value = {props.code}
-      theme = {theme.light}
+      theme = {theme.dark}
       editorProps={{
         $blockScrolling: true
       }}
@@ -36,5 +36,4 @@ export default function Editor (props) {
 Editor.propTypes = {
   code: PropTypes.string,
   onCodeChange: PropTypes.func
-  // simResults: PropTypes.object
 }

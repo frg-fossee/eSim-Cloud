@@ -412,7 +412,7 @@ export function GenerateNetList () {
             k = k + ` EXP(${comp.INITIAL_VALUE} ${comp.PULSED_VALUE} ${comp.FREQUENCY} ${comp.RISE_DELAY_TIME} ${comp.RISE_TIME_CONSTANT} ${comp.FALL_DELAY_TIME} ${comp.FALL_TIME_CONSTANT} )`
           } else if (comp.NAME === 'DC') {
             if (component.properties.VALUE !== undefined) {
-              k = k + ' ' + 'DC ' + component.properties.VALUE
+              k = k + ' DC ' + component.properties.VALUE
               component.value = component.value + '\n' + component.properties.VALUE
             }
           } else if (comp.NAME === 'PULSE') {

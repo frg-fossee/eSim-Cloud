@@ -229,7 +229,7 @@ export default function SimulationScreen ({ open, close }) {
                     </Typography>
                     <div style={{ padding: '20px' }}>
                       <TextField
-                        style={{ width: '20%' }}
+                        style={{ width: '10%' }}
                         id="xscale"
                         size='small'
                         variant="outlined"
@@ -261,7 +261,7 @@ export default function SimulationScreen ({ open, close }) {
                       </TextField>
 
                       <TextField
-                        style={{ width: '20%' }}
+                        style={{ width: '10%', marginLeft: '10px' }}
                         id="precision"
                         size='small'
                         variant="outlined"
