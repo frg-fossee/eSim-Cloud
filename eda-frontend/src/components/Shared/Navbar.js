@@ -85,15 +85,7 @@ export function Header () {
               >
                 Editor
               </Link>
-              <Link
-                variant="button"
-                color="textPrimary"
-                to="/simulator"
-                component={RouterLink}
-                className={classes.link}
-              >
-                Simulator
-              </Link>
+
               <Link
                 variant="button"
                 color="textPrimary"
@@ -105,7 +97,15 @@ export function Header () {
               </Link>
             </>)
             : (<>
-              <span />
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator/ngspice"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Spice Simulator
+              </Link>
             </>
             )
           )

@@ -1,7 +1,7 @@
-import React from 'react'
-import { Container, Grid, Paper } from '@material-ui/core'
+import React, { useState } from 'react'
+import { Container, Grid, Button, Paper } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-
+import Editor from '../components/Simulator/Editor'
 import NetlistUpload from '../components/Simulator/NetlistUpload'
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +19,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Simulator () {
   const classes = useStyles()
+  const [netlistCode, setNetlistCode] = useState('')
 
+  const onCodeChange = (code) => {
+    setNetlistCode(code)
+    console.log(netlistCode)
+  }
   return (
     <Container maxWidth="lg" className={classes.header}>
       <Grid
@@ -35,7 +40,29 @@ export default function Simulator () {
             <p>Upload Netlist to Simulate</p>
           </Paper>
         </Grid>
-        <NetlistUpload />
+        {/* <NetlistUpload /> */}
+        <>
+          <Grid item xs={12} sm={5}>
+            <Paper className={classes.paper}>
+              <h2>Enter Netlist</h2>
+              <Editor code={netlistCode} onCodeChange={onCodeChange}/>
+              <br />
+            </Paper>
+          </Grid>
+
+          <Grid item xs={12} sm={7}>
+            <Paper className={classes.paper}>
+              <h2>GRAPH OUTPUT</h2>
+              {/* <Graph
+              labels= {['time', 'V (In)', 'V (OP)']}
+              x={this.state.x_1}
+              y1={this.state.y1_1}
+              y2={this.state.y2_1}
+            /> */}
+            </Paper>
+          </Grid>
+
+        </>
       </Grid>
     </Container>
   )
