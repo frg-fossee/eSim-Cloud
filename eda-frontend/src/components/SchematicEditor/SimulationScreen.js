@@ -128,8 +128,10 @@ export default function SimulationScreen ({ open, close }) {
               (result.graph !== {} && result.isGraph === 'true')
                 ? <Grid item xs={12} sm={12}>
                   <Paper className={classes.paper}>
-                    <h2>GRAPH OUTPUT</h2>
-                    <div style={{ padding: '20px' }}>
+                    <Typography variant="h4" align="center" gutterBottom>
+                      GRAPH OUTPUT
+                    </Typography>
+                    <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }} >
                       <TextField
                         style={{ width: '20%' }}
                         id="xscale"
@@ -162,7 +164,7 @@ export default function SimulationScreen ({ open, close }) {
 
                       </TextField>
                       <TextField
-                        style={{ width: '20%' }}
+                        style={{ width: '20%', marginLeft: '10px' }}
                         id="yscale"
                         size='small'
                         variant="outlined"
@@ -194,7 +196,7 @@ export default function SimulationScreen ({ open, close }) {
                       </TextField>
 
                       <TextField
-                        style={{ width: '20%' }}
+                        style={{ width: '20%', marginLeft: '10px' }}
                         id="precision"
                         size='small'
                         variant="outlined"
@@ -238,7 +240,7 @@ export default function SimulationScreen ({ open, close }) {
                     <Typography variant="h4" align="center" gutterBottom>
                       OUTPUT
                     </Typography>
-                    <div style={{ padding: '20px' }}>
+                    <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
                       <TextField
                         style={{ width: '20%' }}
                         id="xscale"
@@ -272,7 +274,7 @@ export default function SimulationScreen ({ open, close }) {
                       </TextField>
 
                       <TextField
-                        style={{ width: '20%' }}
+                        style={{ width: '20%', marginLeft: '10px' }}
                         id="precision"
                         size='small'
                         variant="outlined"

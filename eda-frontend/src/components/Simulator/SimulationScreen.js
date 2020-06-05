@@ -117,8 +117,10 @@ export default function SimulationScreen ({ open, close }) {
               (result.graph !== {} && result.isGraph === 'true')
                 ? <Grid item xs={12} sm={12}>
                   <Paper className={classes.paper}>
-                    <h2>GRAPH OUTPUT</h2>
-                    <div style={{ padding: '20px' }}>
+                    <Typography variant="h4" align="center" gutterBottom>
+                      GRAPH OUTPUT
+                    </Typography>
+                    <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
                       <TextField
                         style={{ width: '20%' }}
                         id="xscale"
@@ -133,25 +135,25 @@ export default function SimulationScreen ({ open, close }) {
                         }}
                       >
                         <option value='si'>
-                                SI UNIT
+                          SI UNIT
                         </option>
 
                         <option value='m'>
-                                Milli (m)
+                          Milli (m)
                         </option>
                         <option value='u'>
-                                Micro (u)
+                          Micro (u)
                         </option>
                         <option value='n'>
-                                Nano (n)
+                          Nano (n)
                         </option>
                         <option value='p'>
-                                Pico (p)
+                          Pico (p)
                         </option>
 
                       </TextField>
                       <TextField
-                        style={{ width: '20%' }}
+                        style={{ width: '20%', marginLeft: '10px' }}
                         id="yscale"
                         size='small'
                         variant="outlined"
@@ -164,26 +166,26 @@ export default function SimulationScreen ({ open, close }) {
                         }}
                       >
                         <option value='si'>
-                                SI UNIT
+                          SI UNIT
                         </option>
 
                         <option value='m'>
-                                Milli (m)
+                          Milli (m)
                         </option>
                         <option value='u'>
-                                Micro (u)
+                          Micro (u)
                         </option>
                         <option value='n'>
-                                Nano (n)
+                          Nano (n)
                         </option>
                         <option value='p'>
-                                Pico (p)
+                          Pico (p)
                         </option>
 
                       </TextField>
 
                       <TextField
-                        style={{ width: '20%' }}
+                        style={{ width: '20%', marginLeft: '10px' }}
                         id="precision"
                         size='small'
                         variant="outlined"
@@ -227,9 +229,9 @@ export default function SimulationScreen ({ open, close }) {
                     <Typography variant="h4" align="center" gutterBottom>
                       OUTPUT
                     </Typography>
-                    <div style={{ padding: '20px' }}>
+                    <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
                       <TextField
-                        style={{ width: '10%' }}
+                        style={{ width: '20%' }}
                         id="xscale"
                         size='small'
                         variant="outlined"
@@ -242,26 +244,26 @@ export default function SimulationScreen ({ open, close }) {
                         }}
                       >
                         <option value='si'>
-                                SI UNIT
+                          SI UNIT
                         </option>
 
                         <option value='m'>
-                                Milli (m)
+                          Milli (m)
                         </option>
                         <option value='u'>
-                                Micro (u)
+                          Micro (u)
                         </option>
                         <option value='n'>
-                                Nano (n)
+                          Nano (n)
                         </option>
                         <option value='p'>
-                                Pico (p)
+                          Pico (p)
                         </option>
 
                       </TextField>
 
                       <TextField
-                        style={{ width: '10%', marginLeft: '10px' }}
+                        style={{ width: '20%', marginLeft: '10px' }}
                         id="precision"
                         size='small'
                         variant="outlined"
