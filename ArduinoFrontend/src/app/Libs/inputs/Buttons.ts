@@ -43,7 +43,7 @@ export class PushButton extends CircuitElement {
     let iniValue = -1;
     let by = -1;
     this.elements[9].mousedown(() => {
-      const val = this.pinNamedMap['Terminal 1a'].value;
+      let val = this.pinNamedMap['Terminal 1a'].value;
       if (val > 0) {
         by = 0;
         iniValue = this.pinNamedMap['Terminal 2a'].value;
@@ -51,6 +51,7 @@ export class PushButton extends CircuitElement {
         this.pinNamedMap['Terminal 2b'].setValue(val, null);
       } else {
         by = 1;
+        val = this.pinNamedMap['Terminal 2a'].value;
         iniValue = this.pinNamedMap['Terminal 1a'].value;
         this.pinNamedMap['Terminal 1a'].setValue(val, null);
         this.pinNamedMap['Terminal 1b'].setValue(val, null);
