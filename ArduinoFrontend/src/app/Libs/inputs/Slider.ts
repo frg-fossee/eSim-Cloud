@@ -7,7 +7,10 @@ export class Slider {
   minv = 0;
   maxv = 0;
   constructor(public canvas: any, public x: number, public y: number) {
-    this.canvas.rect(this.x - 60, this.y - 40, 120, 20, 15);
+    const slid = this.canvas.rect(this.x - 60, this.y - 40, 120, 20, 15);
+    slid.attr({
+      fill: '0-#03b5fc-#fc6203'
+    });
     this.minx = this.x - 60 + 6;
     this.maxx = this.x + 60 - 6;
     this.control = this.canvas.circle(this.x, this.y - 30, 12)
