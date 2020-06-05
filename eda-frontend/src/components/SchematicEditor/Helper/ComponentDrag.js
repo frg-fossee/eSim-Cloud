@@ -59,9 +59,9 @@ export default function LoadGrid (container, sidebar, outline) {
     // Tells whether the pin is input/output
     mxCell.prototype.pinType = ' '
     // Tells if the cell is component, Default is false
-    mxCell.prototype.Component = null
+    mxCell.prototype.Component = false
     // Tells if the cell is pin, Default is false
-    mxCell.prototype.Pin = null
+    mxCell.prototype.Pin = false
     // Pin number of the component, default is 0
     mxCell.prototype.PinNumber = 0
     // Parent component of a pin, default is null
@@ -71,6 +71,8 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.PinName = ''
     mxCell.prototype.CompObject = null
     mxCell.prototype.properties = {}
+    mxCell.prototype.sourceVertex = false
+    mxCell.prototype.targetVertex = false
     // mxCell.prototype.ConnectedNode = null
 
     // Enables guides
