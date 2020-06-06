@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SchematiEditor () {
+export default function SchematiEditor (props) {
   const classes = useStyles()
   const compRef = React.createRef()
   const gridRef = React.createRef()
@@ -43,6 +43,12 @@ export default function SchematiEditor () {
     var container = gridRef.current
     var sidebar = compRef.current
     var outline = outlineRef.current
+
+    if(props.location.state.id){
+      console.log("id",props.location.state.id)
+    }
+
+
     LoadGrid(container, sidebar, outline)
   }, [compRef, gridRef, outlineRef])
 
