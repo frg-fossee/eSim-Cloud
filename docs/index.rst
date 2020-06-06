@@ -1,5 +1,5 @@
-Welcome to eSim on Cloud's documentation!
-=============================================
+Welcome to eSim and Arduino on Cloud's documentation!
+=====================================================
 
 The project aims to provide a facility for a user to design different types of electronic circuits and arduino projects and simulate them by providing simulation parameters on the web. The detailed features will be updated soon.
 
