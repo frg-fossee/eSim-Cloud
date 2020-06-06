@@ -124,7 +124,6 @@ export const logout = () => (dispatch, getState) => {
     .then(
       (res) => {
         if (res.status === 200 || res.status === 204) {
-          console.log(res)
           dispatch({
             type: actions.LOGOUT_SUCCESSFUL,
             payload: {

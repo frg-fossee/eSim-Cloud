@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
 import {
   Toolbar,
   Typography,
@@ -27,7 +28,7 @@ import ShareIcon from '@material-ui/icons/Share'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { Link as RouterLink } from 'react-router-dom'
+
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared } from '../../redux/actions/index'
 import store from '../../redux/store'
@@ -99,6 +100,7 @@ SimpleSnackbar.propTypes = {
 }
 
 function Header () {
+  const history = useHistory()
   const classes = useStyles()
   const auth = store.getState().authReducer
   const schSave = useSelector(state => state.saveSchematicReducer)
@@ -298,6 +300,7 @@ function Header () {
                 </MenuItem>
                 <MenuItem onClick={() => {
                   store.dispatch(logout())
+                  history.goBack()
                 }}>
                   Logout
                 </MenuItem>
