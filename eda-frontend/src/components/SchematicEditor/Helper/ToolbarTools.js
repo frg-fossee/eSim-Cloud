@@ -34,7 +34,7 @@ export default function ToolbarTools (grid, unredo) {
 export function Save () {
   var enc = new mxCodec(mxUtils.createXmlDocument())
   var node = enc.encode(graph.getModel())
-  var value = mxUtils.getPrettyXml(node)
+  var value = mxUtils.getXml(node)
   return value
 }
 

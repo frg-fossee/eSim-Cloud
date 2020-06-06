@@ -55,7 +55,7 @@ export const saveSchematic = (title, description, xml) => (dispatch, getState) =
     api.post('save/' + schSave.details.save_id, queryString.stringify(body), config)
       .then(
         (res) => {
-          console.log(res)
+          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -100,6 +100,9 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
           type: actions.SET_SCH_SAVED,
           payload: res.data
         })
+        dispatch(setSchTitle(res.data.name))
+        dispatch(setSchDescription(res.data.description))
+        dispatch(setSchXmlData(res.data.data_dump))
       }
     )
     .catch((err) => { console.error(err) })

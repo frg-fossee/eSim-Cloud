@@ -153,7 +153,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             <ListItemText primary="Schematic Description" />
           </ListItem>
           <ListItem style={{ padding: '0px 7px 7px 7px' }} divider>
-            <TextareaAutosize id='Description' label='Description' value={description || ''} onChange={getInputValues} rowsMin={6} aria-label='Description' placeholder={'Add Schematic Description'} style={{ width: '100%', minWidth: '234px', maxHeight: '250px' }} />
+            <TextareaAutosize id='Description' label='Description' value={ schSave.description === '' ? description || '' : schSave.description } onChange={getInputValues} rowsMin={6} aria-label='Description' placeholder={'Add Schematic Description'} style={{ width: '100%', minWidth: '234px', maxHeight: '250px' }} />
           </ListItem>
         </div>
       </List>

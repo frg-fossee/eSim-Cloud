@@ -61,7 +61,7 @@ export default function SchematicCard ({ sch }) {
           <Button
             target="_blank"
             component={RouterLink}
-            to="/editor"
+            to={'/editor/' + sch.save_id}
             size="small"
             color="primary"
           >
