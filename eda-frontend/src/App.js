@@ -54,15 +54,12 @@ function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
 }
 
 function SchematicEditorRoute (props) {
-  useEffect(() => {
-
-  }, [props])
+  useEffect(() => {}, [props])
 
   return <Redirect to={{
-                  pathname:  '/editor',
-                  state: {id:props.match.params.Id}
-
-                }} />
+    pathname: '/editor',
+    state: { id: props.match.params.Id }
+  }} />
 }
 
 function App () {

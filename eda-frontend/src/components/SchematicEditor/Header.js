@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Toolbar,
   Typography,
@@ -11,10 +12,19 @@ import {
   Menu,
   Fade,
   MenuItem,
-  ListItemText
+  ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  FormControlLabel,
+  Switch,
+  Snackbar
 } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
+import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { Link as RouterLink } from 'react-router-dom'
@@ -58,6 +68,36 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+function SimpleSnackbar ({ open, close, message }) {
+  return (
+    <div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={close}
+        message={message}
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    </div>
+  )
+}
+
+SimpleSnackbar.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.func,
+  message: PropTypes.string
+}
+
 function Header () {
   const classes = useStyles()
   const auth = store.getState().authReducer
@@ -79,8 +119,53 @@ function Header () {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
+  // Notification Snackbar
+  const [snacOpen, setSnacOpen] = React.useState(false)
+  const [message, setMessage] = React.useState('')
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
+
+  // Share Dialog box
+  const [openShare, setShareOpen] = React.useState(false)
+
+  const handleShareOpen = () => {
+    setShareOpen(true)
+  }
+
+  const handleShareClose = () => {
+    setShareOpen(false)
+  }
+
+  const [shared, setShared] = React.useState(false)
+
+  const handleShareChange = (event) => {
+    setShared(event.target.checked)
+  }
+
+  const handleShare = () => {
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else if (schSave.isSaved !== true) {
+      setMessage('You have not saved the circuit')
+      handleSnacClick()
+    } else {
+      handleShareOpen()
+    }
+  }
+
   return (
     <Toolbar variant="dense" color="default">
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <IconButton edge="start" className={classes.button} color="primary">
         <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
@@ -100,7 +185,7 @@ function Header () {
           <Input
             className={classes.input}
             color="secondary"
-            value={ schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title }
+            value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
             onChange={titleHandler}
             inputProps={{ 'aria-label': 'SchematicTitle' }}
           />
@@ -110,13 +195,35 @@ function Header () {
       <div className={classes.rightBlock}>
         <Button
           size="small"
-          variant="contained"
+          variant={schSave.isShared !== true ? 'outlined' : 'contained'}
           color="primary"
           className={classes.button}
           startIcon={<ShareIcon />}
+          onClick={handleShare}
         >
           <Hidden xsDown>Share</Hidden>
         </Button>
+        <Dialog
+          open={openShare}
+          onClose={handleShareClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{'Share Your Schematic'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <FormControlLabel
+                control={<Switch checked={shared} onChange={handleShareChange} name="shared" />}
+                label=": Sharing On"
+              />
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleShareClose} color="primary" autoFocus>
+              close
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {
           (!auth.isAuthenticated ? (<Button
