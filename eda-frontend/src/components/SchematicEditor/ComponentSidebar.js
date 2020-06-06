@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import api from '../../utils/Api'
 import {
   Hidden,
   List,
@@ -7,8 +8,14 @@ import {
   Collapse,
   ListItemIcon,
   IconButton,
-  Tooltip
+  Tooltip,
+  TextField,
+  InputAdornment
+
 } from '@material-ui/core'
+import Loader from 'react-loader-spinner'
+import SearchIcon from '@material-ui/icons/Search'
+
 import { makeStyles } from '@material-ui/core/styles'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import ExpandMore from '@material-ui/icons/ExpandMore'
@@ -34,6 +41,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const searchOptions = {
+  NAME: 'name__icontains',
+  KEYWORD: 'keyword__icontains',
+  DESCRIPTION: 'description__icontains',
+  COMPONENT_LIBRARY: 'component_library__library_name__icontains',
+  PREFIX: 'symbol_prefix'
+}
+
+const searchOptionsList = ['NAME', 'KEYWORD', 'DESCRIPTION', 'COMPONENT_LIBRARY', 'PREFIX']
+
 export default function ComponentSidebar ({ compRef }) {
   const classes = useStyles()
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
@@ -42,10 +59,58 @@ export default function ComponentSidebar ({ compRef }) {
   const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
 
   const dispatch = useDispatch()
+  const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
+  const [searchText, setSearchText] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const [searchedComponentList, setSearchedComponents] = useState([])
+  const [searchOption, setSearchOption] = useState('NAME')
+  // const searchedComponentList = React.useRef([])
+
+  const timeoutId = React.useRef()
+
+  const handleSearchOptionType = (evt) => {
+    setSearchOption(evt.target.value)
+  }
+
+  const handleSearchText = (evt) => {
+    if (searchText.length === 0) {
+      setSearchedComponents([])
+    }
+    setSearchText(evt.target.value)
+    // mimic the value so we can access the latest value in our API call.
+
+    // call api from here. and set the result to searchedComponentList.
+  }
+
+  React.useEffect(() => {
+    // if the user keeps typing, stop the API call!
+    clearTimeout(timeoutId.current)
+    // don't make an API call with no data
+    if (!searchText.trim()) return
+    // capture the timeoutId so we can
+    // stop the call if the user keeps typing
+    timeoutId.current = setTimeout(() => {
+      // call api here
+      setLoading(true)
+
+      api.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${searchText}`)
+        .then(
+          (res) => {
+            setSearchedComponents([...res.data])
+            if (res.data.length === 0) {
+              setIssearchedResultsEmpty(true)
+            } else {
+              setIssearchedResultsEmpty(false)
+            }
+          }
+        )
+        .catch((err) => { console.error(err) })
+      setLoading(false)
+    }, 800)
+  }, [searchText, searchOption])
 
   const handleCollapse = (id) => {
-    // console.log('Current: ', collapse[id], components[id].length)
-
     // Fetches Components for given library if not already fetched
     if (collapse[id] === false && components[id].length === 0) {
       // console.log('Components not fetched earlier, fetching.')
@@ -83,12 +148,88 @@ export default function ComponentSidebar ({ compRef }) {
       <div style={isSimulate ? { display: 'none' } : {}}>
         {/* Display List of categorized components */}
         <List>
-          <ListItem button divider>
+          <ListItem button>
             <h2 style={{ margin: '5px' }}>Components List</h2>
           </ListItem>
+          <ListItem>
+
+            <TextField
+              id="standard-number"
+              placeholder="Search Component"
+              variant="outlined"
+              size="small"
+              value={searchText}
+              onChange={handleSearchText}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon/>
+                  </InputAdornment>
+
+                )
+
+              }}
+            />
+
+          </ListItem>
+
+          <ListItem divider>
+            <TextField
+              style={{ width: '100%' }}
+              id="searchType"
+              size='small'
+              variant="outlined"
+              select
+              label="Search By"
+              value={searchOption}
+              onChange={handleSearchOptionType}
+              SelectProps={{
+                native: true
+              }}
+            >
+
+              {
+                searchOptionsList.map((value, i) => {
+                  return (<option key={i} value={value}>
+                    {value}
+                  </option>)
+                })
+              }
+
+            </TextField>
+          </ListItem>
+
+          { searchText.length !== 0 && searchedComponentList.length !== 0 &&
+
+                    searchedComponentList.map((component, i) => {
+                      // console.log(component)
+                      return (<ListItemIcon key={i}>
+                        <SideComp component={component} />
+                      </ListItemIcon>)
+                    }
+                    )
+
+          }
+
+          <ListItem>
+
+            <Loader
+              type="TailSpin"
+              color="#F44336"
+              height={100}
+              width={100}
+              visible={loading}
+            />
+          </ListItem>
+
+          { !loading && searchText.length !== 0 && isSearchedResultsEmpty &&
+
+              <span style={{ margin: '20px' }}>No Components Found</span>
+
+          }
 
           {/* Collapsing List Mapped by Libraries fetched by the API */}
-          {
+          {searchText.length === 0 &&
             libraries.map(
               (library) => {
                 return (
