@@ -13,7 +13,7 @@ configparser==5.0.0
 coreapi==2.3.3
 coreschema==0.0.4
 cryptography==2.9.2
-Django==2.2.12
+Django==2.2.13
 django-cors-headers==3.2.1
 django-templated-mail==1.1.1
 djangorestframework==3.11.0
