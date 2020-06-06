@@ -83,23 +83,6 @@ export default function ComponentSidebar ({ compRef }) {
     // call api from here. and set the result to searchedComponentList.
   }
 
-  const callApi = (query) => {
-    // call api here. and set searchedComponentList
-
-    api.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${query}`)
-      .then(
-        (res) => {
-          setSearchedComponents([...res.data])
-          if (res.data.length === 0) {
-            setIssearchedResultsEmpty(true)
-          } else {
-            setIssearchedResultsEmpty(false)
-          }
-        }
-      )
-      .catch((err) => { console.error(err) })
-  }
-
   React.useEffect(() => {
     // if the user keeps typing, stop the API call!
     clearTimeout(timeoutId.current)
@@ -110,7 +93,19 @@ export default function ComponentSidebar ({ compRef }) {
     timeoutId.current = setTimeout(() => {
       // call api here
       setLoading(true)
-      callApi(searchText)
+
+      api.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${searchText}`)
+        .then(
+          (res) => {
+            setSearchedComponents([...res.data])
+            if (res.data.length === 0) {
+              setIssearchedResultsEmpty(true)
+            } else {
+              setIssearchedResultsEmpty(false)
+            }
+          }
+        )
+        .catch((err) => { console.error(err) })
       setLoading(false)
     }, 800)
   }, [searchText, searchOption])
