@@ -421,10 +421,15 @@ export default function LoadGrid (container, sidebar, outline) {
   }
 
   // Updates target terminal point for edge-to-edge connections.
+  try {
   var mxConnectionHandlerUpdateCurrentState = mxConnectionHandler.prototype.updateCurrentState
   mxConnectionHandler.prototype.updateCurrentState = function (me) {
+    try { 
     mxConnectionHandlerUpdateCurrentState.apply(this, arguments)
-
+    }
+    catch(err) {
+      
+    }
     if (this.edgeState != null) {
       this.edgeState.cell.geometry.setTerminalPoint(null, false)
 
@@ -437,6 +442,9 @@ export default function LoadGrid (container, sidebar, outline) {
         this.edgeState.cell.geometry.setTerminalPoint(pt, false)
       }
     }
+  } }
+  catch(e){
+    console
   }
 
   // Updates the terminal and control points in the cloned preview.
