@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-// import axios from 'axios'
 import api from '../../utils/Api'
 import {
   Hidden,
@@ -43,10 +42,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const searchOptions = {
-  NAME: 'name__contains',
-  KEYWORD: 'keyword__contains',
-  DESCRIPTION: 'description__contains',
-  COMPONENT_LIBRARY: 'component_library__library_name__contains',
+  NAME: 'name__icontains',
+  KEYWORD: 'keyword__icontains',
+  DESCRIPTION: 'description__icontains',
+  COMPONENT_LIBRARY: 'component_library__library_name__icontains',
   PREFIX: 'symbol_prefix'
 }
 
@@ -63,6 +62,7 @@ export default function ComponentSidebar ({ compRef }) {
   const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
+
   const [searchedComponentList, setSearchedComponents] = useState([])
   const [searchOption, setSearchOption] = useState('NAME')
   // const searchedComponentList = React.useRef([])
@@ -83,29 +83,22 @@ export default function ComponentSidebar ({ compRef }) {
     // call api from here. and set the result to searchedComponentList.
   }
 
-
-
   const callApi = (query) => {
     // call api here. and set searchedComponentList
 
-
-
     api.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${query}`)
-    .then(
-      (res) => {
-        console.log(res)
-        setSearchedComponents([...res.data])
-        if (res.data.length === 0) {
-          setIssearchedResultsEmpty(true)
-        } else {
-          setIssearchedResultsEmpty(false)
+      .then(
+        (res) => {
+          setSearchedComponents([...res.data])
+          if (res.data.length === 0) {
+            setIssearchedResultsEmpty(true)
+          } else {
+            setIssearchedResultsEmpty(false)
+          }
         }
-      }
-    )
-    .catch((err) => { console.error(err) })
-}
-
-
+      )
+      .catch((err) => { console.error(err) })
+  }
 
   React.useEffect(() => {
     // if the user keeps typing, stop the API call!
@@ -115,29 +108,14 @@ export default function ComponentSidebar ({ compRef }) {
     // capture the timeoutId so we can
     // stop the call if the user keeps typing
     timeoutId.current = setTimeout(() => {
-      // grab our query, but store it in state so
-      // I can show it to you below in the example 😄
-      // setQuery(inputRef.current)
-
       // call api here
       setLoading(true)
       callApi(searchText)
       setLoading(false)
-
-      // here we pass a callback so we get the current callCount value
-      // from the useState hook's setter function
-      // we use a Ref for timeoutId to avoid this same problem
     }, 800)
-  }, [searchText])
-
-  // call this method with search api response
-  // const handleSearchedComponentList = (searchedComponentList) => {
-  //   setSearchedComponents(searchedComponentList)
-  // }
+  }, [searchText, searchOption])
 
   const handleCollapse = (id) => {
-    // console.log('Current: ', collapse[id], components[id].length)
-
     // Fetches Components for given library if not already fetched
     if (collapse[id] === false && components[id].length === 0) {
       // console.log('Components not fetched earlier, fetching.')
@@ -228,9 +206,9 @@ export default function ComponentSidebar ({ compRef }) {
 
           { searchText.length !== 0 && searchedComponentList.length !== 0 &&
 
-                    searchedComponentList.map((component) => {
+                    searchedComponentList.map((component, i) => {
                       // console.log(component)
-                      return (<ListItemIcon key={component.full_name}>
+                      return (<ListItemIcon key={i}>
                         <SideComp component={component} />
                       </ListItemIcon>)
                     }
@@ -238,16 +216,16 @@ export default function ComponentSidebar ({ compRef }) {
 
           }
 
-      <ListItem>
+          <ListItem>
 
-          <Loader
-            type="TailSpin"
-            color="#F44336"
-            height={100}
-            width={100}
-            visible={loading}
-          />
-      </ListItem>
+            <Loader
+              type="TailSpin"
+              color="#F44336"
+              height={100}
+              width={100}
+              visible={loading}
+            />
+          </ListItem>
 
           { !loading && searchText.length !== 0 && isSearchedResultsEmpty &&
 
@@ -271,7 +249,6 @@ export default function ComponentSidebar ({ compRef }) {
                         {/* Chunked Components of Library */}
                         {
                           chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
-
                             return (
                               <ListItem key={componentChunk[0].svg_path} divider>
                                 {
