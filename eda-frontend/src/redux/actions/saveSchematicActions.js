@@ -77,3 +77,35 @@ export const saveSchematic = (title, description, xml) => (dispatch, getState) =
       .catch((err) => { console.error(err) })
   }
 }
+
+export const fetchSchematic = (save_id) => (dispatch, getState) => {
+
+
+  const token = getState().authReducer.token
+
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+
+    // console.log('Already Saved')
+    api.get('save/' + save_id, config)
+      .then(
+        (res) => {
+          console.log('response',res)
+          dispatch({
+            type: actions.SET_SCH_SAVED,
+            payload: res.data
+          })
+        }
+      )
+      .catch((err) => { console.error(err) })
+
+}
