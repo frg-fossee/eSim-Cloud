@@ -29,7 +29,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared } from '../../redux/actions/index'
 import store from '../../redux/store'
 
 const useStyles = makeStyles((theme) => ({
@@ -145,10 +145,11 @@ function Header () {
     setShareOpen(false)
   }
 
-  const [shared, setShared] = React.useState(false)
+  const [shared, setShared] = React.useState(schSave.isShared)
 
   const handleShareChange = (event) => {
     setShared(event.target.checked)
+    dispatch(setSchShared(event.target.checked))
   }
 
   const handleShare = () => {
@@ -193,30 +194,41 @@ function Header () {
       </Hidden>
 
       <div className={classes.rightBlock}>
-        <Button
-          size="small"
-          variant={schSave.isShared !== true ? 'outlined' : 'contained'}
-          color="primary"
-          className={classes.button}
-          startIcon={<ShareIcon />}
-          onClick={handleShare}
-        >
-          <Hidden xsDown>Share</Hidden>
-        </Button>
+        {auth.isAuthenticated === true
+          ? <Button
+            size="small"
+            variant={shared !== true ? 'outlined' : 'contained'}
+            color="primary"
+            className={classes.button}
+            startIcon={<ShareIcon />}
+            onClick={handleShare}
+          >
+            <Hidden xsDown>Share</Hidden>
+          </Button>
+          : <></>
+        }
+
         <Dialog
           open={openShare}
           onClose={handleShareClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+          aria-labelledby="share-dialog-title"
+          aria-describedby="share-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{'Share Your Schematic'}</DialogTitle>
+          <DialogTitle id="share-dialog-title">{'Share Your Schematic'}</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+            <DialogContentText id="share-dialog-description">
               <FormControlLabel
                 control={<Switch checked={shared} onChange={handleShareChange} name="shared" />}
                 label=": Sharing On"
               />
             </DialogContentText>
+            <DialogContentText id="share-dialog-description">
+              {shared === true
+                ? <>Link : <a href={window.location.href + '/' + schSave.details.save_id}>{window.location.href + '/' + schSave.details.save_id}</a></>
+                : <> Turn On sharing </>
+              }
+            </DialogContentText>
+
           </DialogContent>
           <DialogActions>
             <Button onClick={handleShareClose} color="primary" autoFocus>

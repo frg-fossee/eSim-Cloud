@@ -107,3 +107,36 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
+
+export const setSchShared = (share) => (dispatch, getState) => {
+  const token = getState().authReducer.token
+  const schSave = getState().saveSchematicReducer
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+  var isShared
+  if (share === true) {
+    isShared = 'on'
+  } else {
+    isShared = 'off'
+  }
+
+  api.post('save/' + schSave.details.save_id + '/sharing/' + isShared, {}, config)
+    .then(
+      (res) => {
+        dispatch({
+          type: actions.SET_SCH_SHARED,
+          payload: res.data
+        })
+      }
+    )
+    .catch((err) => { console.error(err) })
+}
