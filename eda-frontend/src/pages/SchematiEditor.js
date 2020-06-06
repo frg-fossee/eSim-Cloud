@@ -44,7 +44,8 @@ export default function SchematiEditor (props) {
     var sidebar = compRef.current
     var outline = outlineRef.current
 
-    if(props.location.state.id){
+    if(props.location.state !== undefined){
+      console.log(props.location)
       console.log("id",props.location.state.id)
     }
 
