@@ -49,6 +49,8 @@ const searchOptions = {
   PREFIX: 'symbol_prefix'
 }
 
+// var tempSearchTxt = ''
+
 const searchOptionsList = ['NAME', 'KEYWORD', 'DESCRIPTION', 'COMPONENT_LIBRARY', 'PREFIX']
 
 export default function ComponentSidebar ({ compRef }) {
@@ -70,13 +72,16 @@ export default function ComponentSidebar ({ compRef }) {
   const timeoutId = React.useRef()
 
   const handleSearchOptionType = (evt) => {
+    setSearchedComponents([])
     setSearchOption(evt.target.value)
   }
 
   const handleSearchText = (evt) => {
+    // tempSearchTxt = evt.target.value
     if (searchText.length === 0) {
       setSearchedComponents([])
     }
+    setSearchedComponents([])
     setSearchText(evt.target.value)
     // mimic the value so we can access the latest value in our API call.
 
@@ -203,7 +208,7 @@ export default function ComponentSidebar ({ compRef }) {
 
                     searchedComponentList.map((component, i) => {
                       // console.log(component)
-                      return (<ListItemIcon key={i}>
+                      return (<ListItemIcon key={component.name}>
                         <SideComp component={component} />
                       </ListItemIcon>)
                     }
