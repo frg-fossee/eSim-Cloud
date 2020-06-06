@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import axios from 'axios'
+// import axios from 'axios'
+import api from '../../utils/Api'
 import {
   Hidden,
   List,
@@ -82,23 +83,29 @@ export default function ComponentSidebar ({ compRef }) {
     // call api from here. and set the result to searchedComponentList.
   }
 
+
+
   const callApi = (query) => {
     // call api here. and set searchedComponentList
 
-    axios.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${query}`)
-      .then(res => {
-      // searchedComponentList.current = res.data
 
 
+    api.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${query}`)
+    .then(
+      (res) => {
+        console.log(res)
         setSearchedComponents([...res.data])
         if (res.data.length === 0) {
           setIssearchedResultsEmpty(true)
         } else {
           setIssearchedResultsEmpty(false)
         }
+      }
+    )
+    .catch((err) => { console.error(err) })
+}
 
-      })
-  }
+
 
   React.useEffect(() => {
     // if the user keeps typing, stop the API call!
