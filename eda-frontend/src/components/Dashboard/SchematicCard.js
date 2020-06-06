@@ -38,7 +38,7 @@ export default function SchematicCard ({ sch }) {
           <CardMedia
             className={classes.media}
             image={sch.base64_image}
-            title="Contemplative Reptile"
+            title={sch.name}
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">

@@ -83,7 +83,14 @@ export default function ProgressPanel () {
       </AppBar>
       <TabPanel value={value} index={0}>
         {schematics.length !== 0
-          ? <>
+          ? <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+            alignContent="center"
+            spacing={3}
+          >
             {schematics.map(
               (sch) => {
                 return (
@@ -93,7 +100,7 @@ export default function ProgressPanel () {
                 )
               }
             )}
-          </>
+          </Grid>
           : <Typography variant="subtitle1" gutterBottom>
             You have not created any schematic , Create your first one now...
           </Typography>
