@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
 import { CssBaseline } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -11,10 +12,10 @@ import RightSidebar from '../components/SchematicEditor/RightSidebar'
 import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import {fetchSchematic} from '../redux/actions/index'
+import { fetchSchematic } from '../redux/actions/index'
 // import {TermsAndConditions} from '../components/SchematicEditor/ToolbarExtension'
-import { useSelector, useDispatch } from 'react-redux'
-import api from '../utils/Api'
+import { useDispatch } from 'react-redux'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -47,15 +48,14 @@ export default function SchematiEditor (props) {
     var sidebar = compRef.current
     var outline = outlineRef.current
 
-    if(props.location.state !== undefined){
-      console.log("id",props.location.state.id)
-      //calling the api
+    if (props.location.state !== undefined) {
+      console.log('id', props.location.state.id)
+      // calling the api
       dispatch(fetchSchematic(props.location.state.id))
     }
 
-
     LoadGrid(container, sidebar, outline)
-  }, [compRef, gridRef, outlineRef])
+  }, [compRef, gridRef, outlineRef, props.location, dispatch])
 
   return (
 

@@ -78,11 +78,8 @@ export const saveSchematic = (title, description, xml) => (dispatch, getState) =
   }
 }
 
-export const fetchSchematic = (save_id) => (dispatch, getState) => {
-
-
+export const fetchSchematic = (saveId) => (dispatch, getState) => {
   const token = getState().authReducer.token
-
 
   const config = {
     headers: {
@@ -94,18 +91,16 @@ export const fetchSchematic = (save_id) => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-
-    // console.log('Already Saved')
-    api.get('save/' + save_id, config)
-      .then(
-        (res) => {
-          console.log('response',res)
-          dispatch({
-            type: actions.SET_SCH_SAVED,
-            payload: res.data
-          })
-        }
-      )
-      .catch((err) => { console.error(err) })
-
+  // console.log('Already Saved')
+  api.get('save/' + saveId, config)
+    .then(
+      (res) => {
+        // console.log('response', res)
+        dispatch({
+          type: actions.SET_SCH_SAVED,
+          payload: res.data
+        })
+      }
+    )
+    .catch((err) => { console.error(err) })
 }
