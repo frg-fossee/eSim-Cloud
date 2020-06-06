@@ -13,7 +13,7 @@ import {
   MenuItem,
   ListItemText
 } from '@material-ui/core'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
 function Header () {
   const classes = useStyles()
   const auth = store.getState().authReducer
+  const schSave = useSelector(state => state.saveSchematicReducer)
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const dispatch = useDispatch()
@@ -98,8 +99,8 @@ function Header () {
         <form className={classes.form} noValidate autoComplete="off">
           <Input
             className={classes.input}
-            defaultValue="Untitled_Schematic"
             color="secondary"
+            value={ schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title }
             onChange={titleHandler}
             inputProps={{ 'aria-label': 'SchematicTitle' }}
           />
