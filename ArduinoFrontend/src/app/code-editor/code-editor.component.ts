@@ -9,6 +9,7 @@ declare var monaco: any;
   styleUrls: ['./code-editor.component.css']
 })
 export class CodeEditorComponent implements OnInit {
+  // TODO: Seperate Data
   editorOptions = {
     theme: 'vs',
     language: 'c'
@@ -64,7 +65,6 @@ export class CodeEditorComponent implements OnInit {
     if (value) {
       this.names = [];
       this.arduinos = [];
-      // console.log(window['ArduinoUno_name']);
       for (const key in window['ArduinoUno_name']) {
         if (window['ArduinoUno_name'][key]) {
           this.names.push(key);
@@ -1107,16 +1107,15 @@ export class CodeEditorComponent implements OnInit {
     this.code = this.arduinos[this.selectedIndex].code;
   }
   openFolder() {
-   // const editor = document.getElementById('editor')
+    // const editor = document.getElementById('editor')
     const folder = document.getElementById('lib');
-   // console.log(folder.style.display);
 
     if (folder.style.display === 'none') {
       folder.style.display = 'flex';
-     // editor.style.display = 'none';
+      // editor.style.display = 'none';
     } else {
       folder.style.display = 'none';
-     // editor.style.display = 'block';
+      // editor.style.display = 'block';
     }
   }
 

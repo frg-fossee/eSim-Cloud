@@ -1,6 +1,6 @@
 {
-    "name": "'Temperature Sensor LM35",
-    "className": "LM35",
+    "name": "'Temperature Sensor TMP36",
+    "className": "TMP36",
     "pins": [
         {
             "x": -1,
@@ -22,7 +22,7 @@
     "draw": [
         {
             "type": "image",
-            "url": "assets/images/components/LM35.svg",
+            "url": "assets/images/components/TMP36.svg",
             "width": 29,
             "height": 73,
             "x": 0,
@@ -31,9 +31,9 @@
     ],
     "simulation": {},
     "info": {
-        "name": "Temperature sensor LM35",
-        "image": "https://commons.wikimedia.org/wiki/File:LM35_temperature_sensor_semiconductor_thermometer_1480374_5_6_HDR_enhancer.jpg",
-        "Datasheet": "http://www.ti.com/lit/ds/symlink/lm35.pdf",
+        "name": "Temperature sensor TMP36",
+        "image": "https://microcontrollerslab.com/wp-content/uploads/2020/03/TMP36-pinout-scaled.jpg",
+        "Datasheet": "https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf",
         "description": "The TMP102 Digital Temperature Sensor Breakout from Sparkfun is a breakout board for the incredibly small TMP102 digital temperature sensor. The TMP102 is a digital sensor (I2C a.k.a. TWI), has a resolution of 0.0625°C, and is accurate up to 0.5°C. The sensor requires very low-current, and is loaded with features.",
         "properties": {
             "MinimumVoltage": "35V",

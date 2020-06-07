@@ -27,6 +27,31 @@ export class ArduinoUno extends CircuitElement {
     for (const node of this.nodes) {
       this.pinNameMap[node.label] = node;
     }
+    for (let i = 0; i <= 5; ++i) {
+      this.pinNameMap[`A${i}`].addValueListener((val) => {
+        if (isUndefined(this.runner) || isNull(this.runner)) {
+          setTimeout(() => {
+            this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val));
+          }, 300);
+        } else {
+          this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val));
+        }
+      });
+    }
+
+    this.pinNameMap['D12'].addValueListener((v) => {
+      if (isUndefined(this.runner) || isNull(this.runner)) {
+        setTimeout(() => {
+          this.pinNameMap['D12'].setValue(v, this.pinNameMap['D12']);
+        }, 300);
+        return;
+      } else {
+        if (this.runner.portB.pinState(4) === AVR8.PinState.Input) {
+          this.runner.portB.setPin(4, v > 0 ? 1 : 0);
+        }
+      }
+    });
+
     this.pinNameMap['D7'].addValueListener((v) => {
       if (isUndefined(this.runner) || isNull(this.runner)) {
         setTimeout(() => {
@@ -36,6 +61,20 @@ export class ArduinoUno extends CircuitElement {
       }
       if (this.runner.portD.pinState(7) === AVR8.PinState.Input) {
         this.runner.portD.setPin(7, v > 0 ? 1 : 0);
+      }
+    });
+
+    this.pinNameMap['D6'].addValueListener((v) => {
+      // console.log(v);
+      if (isUndefined(this.runner) || isNull(this.runner)) {
+        setTimeout(() => {
+          this.pinNameMap['D6'].setValue(v, this.pinNameMap['D6']);
+        }, 300);
+        return;
+      }
+      if (this.runner.portD.pinState(6) === AVR8.PinState.Input) {
+        console.log(v);
+        // this.runner.portD.setPin(6, v > 0 ? 1 : 0);
       }
     });
   }
@@ -93,6 +132,8 @@ export class ArduinoUno extends CircuitElement {
     this.pinNameMap['3.3V'].setValue(3.3, null);
     const myOutput = document.createElement('pre');
     this.runner = new ArduinoRunner(this.hex);
+    // window['test'] = this.runner;
+
     // console.log(this.runner);
     this.runner.portB.addListener((value) => {
       for (let i = 0; i <= 5; ++i) {

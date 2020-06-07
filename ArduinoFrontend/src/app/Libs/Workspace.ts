@@ -6,6 +6,7 @@ import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
+import { Point } from './Point';
 
 declare var window;
 declare var $; // For Jquery
@@ -477,7 +478,6 @@ export class Workspace {
   }
 
   static LoadWires(wires: any[]) {
-    console.log(wires);
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -486,24 +486,23 @@ export class Workspace {
       // console.log(points[0]);
       // console.log(points[0][0]);
       // console.log(points[0][1]);
-      let start = null;
-      let end = null;
+      let start: Point = null;
+      let end: Point = null;
       // console.log(w.start.keyName);
       // console.log(window.scope[w.start.keyName]);
       // Use Linear search to find the start circuit node
       for (const st of window.scope[w.start.keyName]) {
         // console.log(st.id,w.start.id);
         if (st.id === w.start.id) {
-          start = st.getNode(points[0][0], points[0][1]);
+          start = st.getNode(points[0][0], points[0][1], w.start.pid);
           break;
         }
       }
-      // console.log(start);
       // Use Linear Search to find the end circuit node
       for (const en of window.scope[w.end.keyName]) {
         if (en.id === w.end.id) {
           const p = points[points.length - 1];
-          end = en.getNode(p[0], p[1]);
+          end = en.getNode(p[0], p[1], w.end.pid);
           break;
         }
       }
@@ -517,7 +516,7 @@ export class Workspace {
         window['scope']['wires'].push(tmp);
         tmp.update();
       } else {
-        alert('something went wrong');
+        // alert('something went wrong');
       }
     }
   }
@@ -640,7 +639,6 @@ export class Workspace {
   }
 
   static startArduino() {
-    Workspace.simulating = true;
     // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
@@ -651,27 +649,46 @@ export class Workspace {
         wire.end.gid = gid++;
       }
     }
-    // Call init simulation
-    for (const key in window.scope) {
-      if (window.scope[key] && key !== 'ArduinoUno') {
-        for (const ele of window.scope[key]) {
-          if (ele.initSimulation) {
-            ele.initSimulation();
+    const seqn = ['output', 'controllers', 'drivers', 'power', 'input', 'general', 'misc'];
+    for (const key of seqn) {
+      for (const items of Utils.componentBox[key]) {
+        for (const item of items) {
+          if (window.scope[item]) {
+            for (const ele of window.scope[item]) {
+              if (ele.initSimulation) {
+                ele.initSimulation();
+              }
+            }
           }
         }
       }
     }
 
-    for (const comp of window.scope.ArduinoUno) {
-      // comp.runner.execute();
-      // console.log('s')
-      comp.initSimulation();
-    }
+    // // Call init simulation
+    // for (const key in window.scope) {
+    //   if (window.scope[key] && key !== 'ArduinoUno') {
+    //     for (const ele of window.scope[key]) {
+    //       if (ele.initSimulation) {
+    //         ele.initSimulation();
+    //       }
+    //     }
+    //   }
+    // }
+
+    // for (const comp of window.scope.ArduinoUno) {
+    //   // comp.runner.execute();
+    //   // console.log('s')
+    //   comp.initSimulation();
+    // }
+
+    Workspace.simulating = true;
   }
 
   static stopSimulation() {
+    if (!Workspace.simulating) {
+      return;
+    }
     // TODO: Show Loading Animation
-    Workspace.simulating = false;
     for (const key in window.scope) {
       if (window.scope[key]) {
         for (const ele of window.scope[key]) {
@@ -681,5 +698,6 @@ export class Workspace {
         }
       }
     }
+    Workspace.simulating = false;
   }
 }

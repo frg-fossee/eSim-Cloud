@@ -17,6 +17,7 @@ export abstract class CircuitElement {
   public data: any = {}; // Store Values that are additionaly require by class
   public info: any;
   public pointHalf: number;
+  public nid = 0;
   /**
    * Creates Circuit Component
    * @param keyName Circuit Component Name
@@ -40,12 +41,12 @@ export abstract class CircuitElement {
           this.setDragListeners();
           this.setClickListener(null);
           this.setHoverListener();
-          this.init();
           this.elements.transform(`t${this.tx},${this.ty}`);
           for (const node of this.nodes) {
             node.relativeMove(this.tx, this.ty);
           }
           window['queue'] -= 1;
+          this.init();
         })
         .catch(err => {
           console.error(err);
@@ -289,12 +290,14 @@ export abstract class CircuitElement {
   /**
    * Returns the Circuit Node based on the x,y Position
    */
-  getNode(x: number, y: number): Point {
+  getNode(x: number, y: number, id: number = null): Point {
     // console.log([x, y]);
     for (const node of this.nodes) {
       if (
-        Math.floor(node.x + this.pointHalf) === Math.floor(x) &&
-        Math.floor(node.y + this.pointHalf) === Math.floor(y)
+        (Math.floor(node.x + this.pointHalf) === Math.floor(x) &&
+          Math.floor(node.y + this.pointHalf) === Math.floor(y))
+        ||
+        node.id === id
       ) {
         return node;
       }

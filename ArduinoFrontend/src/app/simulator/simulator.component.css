@@ -1,3 +1,16 @@
+.mynode:hover{
+  fill: #f00 !important;
+  stroke: black !important;
+  fill-opacity: 1 !important;
+  stroke-opacity: 1 !important;
+}
+.mynode{
+  fill: #f00 !important;
+  stroke: black !important;
+  fill-opacity: 0 !important;
+  stroke-opacity: 0 !important;
+}
+
 textarea:hover,
 input:hover,
 textarea:active,

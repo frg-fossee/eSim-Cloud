@@ -75,4 +75,8 @@ export class Collision {
     } while (i !== 0);
     return (count % 2) !== 0;
   }
+
+  static EuclideanDistance(a: Vector, b: Vector) {
+    return ((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y));
+  }
 }

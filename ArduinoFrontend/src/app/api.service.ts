@@ -15,7 +15,22 @@ export class ApiService {
   };
   url = 'http://localhost:8000/';
   constructor(private http: HttpClient) { }
+  saveProject(data: any) {
+    // this.httpOptions.headers.set('', '');
+    return this.http.post(`${this.url}api/save`, data);
+  }
+  listProject() {
+    return this.http.get(`${this.url}api/save/list`);
+  }
+  readProject(projectId: string) {
+    return this.http.get(`${this.url}api/save/${projectId}`);
+  }
+  updateProject(projectId: string, data: any) {
+    return this.http.post(`${this.url}api/save/${projectId}`, data);
+  }
+  deleteProject() {
 
+  }
   fetchSuggestions(): Observable<any> {
     return this.http.get('assets/jsons/specification.json');
   }

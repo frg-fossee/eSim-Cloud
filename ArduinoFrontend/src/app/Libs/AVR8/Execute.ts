@@ -14,6 +14,7 @@ export class ArduinoRunner {
   readonly portC: any;
   readonly portD: any;
   readonly usart: any;
+  readonly adc: any;
   readonly speed = 16e6;
   readonly scheduler: TaskScheduler = new TaskScheduler();
   readonly workUnitCycles = 500000; // TODO: FIGURE OUT
@@ -27,6 +28,7 @@ export class ArduinoRunner {
     this.portC = new AVR8.AVRIOPort(this.cpu, AVR8.portCConfig);
     this.portD = new AVR8.AVRIOPort(this.cpu, AVR8.portDConfig);
     this.usart = new AVR8.AVRUSART(this.cpu, AVR8.usart0Config, this.speed);
+    this.adc = new AVR8.ADC(this.cpu);
     this.scheduler.start();
   }
 
