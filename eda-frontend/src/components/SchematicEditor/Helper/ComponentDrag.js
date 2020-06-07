@@ -73,6 +73,8 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.properties = {}
     mxCell.prototype.sourceVertex = false
     mxCell.prototype.targetVertex = false
+    mxCell.prototype.tarx = 0
+    mxCell.prototype.tary = 0
     // mxCell.prototype.ConnectedNode = null
 
     // Enables guides
