@@ -101,18 +101,18 @@ export default function ProgressPanel () {
               }
             )}
           </Grid>
-          : <Typography variant="subtitle1" gutterBottom>
+          : <Typography variant="button" display="block" gutterBottom>
             You have not created any schematic , Create your first one now...
           </Typography>
         }
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="button" display="block" gutterBottom>
           Start publishing circuit , You don't have any schematics under review...
         </Typography>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Typography variant="subtitle1" gutterBottom>
+        <Typography variant="button" display="block" gutterBottom>
           Start publishing circuit , You don't have any schematics to be tagged by
           domain expert...
         </Typography>
