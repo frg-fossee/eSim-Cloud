@@ -4,12 +4,9 @@ import { Slider } from './Slider';
 
 export class TMP36 extends CircuitElement {
   slide: Slider;
+  valueText: any;
   constructor(public canvas: any, x: number, y: number) {
     super('TMP36', x, y, 'TMP36.json', canvas);
-  }
-  init() {
-    console.log(this.nodes[0].label);
-    console.log(this.nodes[2].label);
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
@@ -31,18 +28,25 @@ export class TMP36 extends CircuitElement {
     }
   }
   initSimulation(): void {
+    this.valueText = this.canvas.text(this.x + this.tx + 120, this.y + this.ty - 40, '42.38°C');
+    this.valueText.attr({
+      'font-size': 15
+    });
     this.slide = new Slider(this.canvas, this.x + this.tx, this.y + this.ty - 10);
-    this.slide.minv = 0;
-    this.slide.maxv = 1;
+    this.slide.setGradient('#03b5fc', '#fc6203');
     this.slide.setValueChangeListener((v) => {
       const tmp = v * 165 + -40; // Temperature
-      // console.log([tmp, (tmp + 50) / 100]);
       // this.nodes[1].setValue((tmp + 50) / 100, null);
+      // console.log([tmp, (tmp + 50) / 100]);
+      this.valueText.attr({
+        text: `${Math.round((tmp) * 100) / 100}°C`
+      });
       this.setValue((tmp + 50) / 100);
     });
     this.setValue(0.925);
   }
   closeSimulation(): void {
+    this.valueText.remove();
     this.slide.remove();
     delete this.slide;
     this.slide = null;
