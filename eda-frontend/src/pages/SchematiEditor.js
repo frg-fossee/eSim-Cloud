@@ -13,7 +13,6 @@ import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
 import { fetchSchematic } from '../redux/actions/index'
-// import {TermsAndConditions} from '../components/SchematicEditor/ToolbarExtension'
 import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
@@ -34,10 +33,6 @@ export default function SchematiEditor (props) {
   const dispatch = useDispatch()
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
-  // const [tAc,settAc] = React.useState(true)
-  // const handletAcOpen = () => {
-  //   settAc(false)
-  // }
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
@@ -47,20 +42,17 @@ export default function SchematiEditor (props) {
     var container = gridRef.current
     var sidebar = compRef.current
     var outline = outlineRef.current
+    LoadGrid(container, sidebar, outline)
 
     if (props.location.state !== undefined) {
-      console.log('id', props.location.state.id)
       // calling the api
       dispatch(fetchSchematic(props.location.state.id))
     }
-
-    LoadGrid(container, sidebar, outline)
   }, [compRef, gridRef, outlineRef, props.location, dispatch])
 
   return (
 
     <div className={classes.root}>
-      {/* <TermsAndConditions open={tAc} close={handletAcOpen}/> */}
 
       <CssBaseline />
 

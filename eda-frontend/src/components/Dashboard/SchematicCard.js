@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 function timeSince (jsonDate) {
   var json = jsonDate
-  // var dateStr = JSON.parse(json)
+
   var date = new Date(json)
 
   var seconds = Math.floor((new Date() - date) / 1000)

@@ -81,6 +81,8 @@ export default function ProgressPanel () {
           <Tab label="Under Domain Expert" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
+
+      {/* Listing Recently Saved Schematics */}
       <TabPanel value={value} index={0}>
         {schematics.length !== 0
           ? <Grid
@@ -106,11 +108,15 @@ export default function ProgressPanel () {
           </Typography>
         }
       </TabPanel>
+
+      {/* Listing Schematics Under Review */}
       <TabPanel value={value} index={1}>
         <Typography variant="button" display="block" gutterBottom>
           Start publishing circuit , You don't have any schematics under review...
         </Typography>
       </TabPanel>
+
+      {/* Listing Reviewed Schematics */}
       <TabPanel value={value} index={2}>
         <Typography variant="button" display="block" gutterBottom>
           Start publishing circuit , You don't have any schematics to be tagged by

@@ -118,13 +118,11 @@ export default function ComponentSidebar ({ compRef }) {
   const handleCollapse = (id) => {
     // Fetches Components for given library if not already fetched
     if (collapse[id] === false && components[id].length === 0) {
-
       dispatch(fetchComponents(id))
     }
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-
   }
 
   // For Fetching Libraries
@@ -207,7 +205,6 @@ export default function ComponentSidebar ({ compRef }) {
             {searchText.length !== 0 && searchedComponentList.length !== 0 &&
 
               searchedComponentList.map((component, i) => {
-
                 return (<ListItemIcon key={component.name}>
                   <SideComp component={component} />
                 </ListItemIcon>)
@@ -253,7 +250,6 @@ export default function ComponentSidebar ({ compRef }) {
                                 <ListItem key={componentChunk[0].svg_path} divider>
                                   {
                                     componentChunk.map((component) => {
-
                                       return (<ListItemIcon key={component.full_name}>
                                         <SideComp component={component} />
                                       </ListItemIcon>)

@@ -42,7 +42,6 @@ export default function Simulator () {
   }
   const onCodeChange = (code) => {
     setNetlistCode(code)
-    console.log(netlistCode)
   }
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
@@ -62,7 +61,6 @@ export default function Simulator () {
 
   function prepareNetlist () {
     var sanatizedText = netlistCodeSanitization(netlistCode)
-    console.log('cleancode', sanatizedText)
     var file = textToFile(sanatizedText)
     sendNetlist(file)
   }
@@ -84,7 +82,6 @@ export default function Simulator () {
       .then((response) => {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
-        console.log(getUrl)
         simulationResult(getUrl)
       })
       .catch(function (error) {
@@ -99,12 +96,9 @@ export default function Simulator () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          console.log('FULL', res.data)
           var temp = res.data.details.data
           var result = res.data.details
-          var data = result.data
-          console.log('result.details', result)
-          console.log('result.details.data', data)
+          var data = result.FormData
           if (res.data.details.graph === 'true') {
             var simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
@@ -137,10 +131,8 @@ export default function Simulator () {
             for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
               simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
             }
-            console.log('LOG', simResultGraph)
             dispatch(setResultGraph(simResultGraph))
           } else {
-            console.log('i am gere')
             var simResultText = []
             for (let i = 0; i < temp.length; i++) {
               let postfixUnit = ''
@@ -154,8 +146,6 @@ export default function Simulator () {
 
               simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2]) + ' ' + postfixUnit + '\n')
             }
-            // console.log(simResultText)
-            console.log('NOGRAPH', simResultText)
             // handleSimulationResult(res.data.details)
             dispatch(setResultText(simResultText))
           }

@@ -149,11 +149,10 @@ export default function SimulationProperties () {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
 
-
         simulationResult(getUrl)
       })
       .catch(function (error) {
-        // console.log(error)
+        console.log(error)
       })
   }
 
@@ -193,7 +192,6 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-
           var temp = res.data.details.data
           var result = res.data.details
           var data = result.data
@@ -247,7 +245,6 @@ export default function SimulationProperties () {
               simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2]) + ' ' + postfixUnit + '\n')
             }
 
-
             handleSimulationResult(res.data.details)
             dispatch(setResultText(simResultText))
           }
@@ -255,7 +252,7 @@ export default function SimulationProperties () {
       })
       .then((res) => { handlesimulateOpen() })
       .catch(function (error) {
-
+        console.log(error)
       })
   }
 
