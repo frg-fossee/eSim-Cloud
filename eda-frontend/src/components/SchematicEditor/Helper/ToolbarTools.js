@@ -16,7 +16,8 @@ const {
   mxEvent,
   mxCodec,
   mxCell,
-  mxMorphing
+  mxMorphing,
+  Graph
 } = new mxGraphFactory()
 
 export default function ToolbarTools (grid, unredo) {
@@ -358,11 +359,15 @@ export function GenerateNetList () {
                       console.log(pin.edges[wire].source)
                       console.log(pin.edges[wire].source.node)
                       pin.edges[wire].node = pin.edges[wire].source.node
+                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
                     } else if (pin.edges[wire].target.edge === true) {
                       console.log('wire')
                       console.log(pin.edges[wire].target)
                       console.log(pin.edges[wire].target.node)
                       pin.edges[wire].node = pin.edges[wire].target.node
+                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
                     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                       // console.log('Found ground')
                       // console.log('ground')
@@ -370,6 +375,8 @@ export function GenerateNetList () {
                       // pin.edges[wire].node = '0'
                       pin.edges[wire].value = 0
                       // k = k + ' ' + pin.edges[wire].node
+                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
                     } else {
                       // console.log(pin.edges[wire])
                       // if (pin.edges[wire].node === null) {
@@ -378,12 +385,17 @@ export function GenerateNetList () {
                       console.log('comp')
                       // ++n
                       // }
+                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
 
                       pin.edges[wire].value = pin.edges[wire].node
                       // k = k + '  ' + pin.edges[wire].node
                     }
                     pin.edges[wire].value = pin.edges[wire].node
                   }
+                  console.log('Check the wires here ')
+                  console.log(pin.edges[wire].sourceVertex)
+                  console.log(pin.edges[wire].targetVertex)
                 }
                 // console.log()
                 // console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
@@ -594,6 +606,8 @@ function annotate (graph) {
                       // k = k + '  ' + pin.edges[wire].node
                     }
                   }
+
+                  console.log(pin.edges[wire])
                 }
                 // console.log()
                 // console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
@@ -839,16 +853,79 @@ export function GenerateCompList () {
   // console.log(netlist)
   // netlist.nodelist = new Set(a)
 }
+
 export function generateXML () {
   var enc = new mxCodec(mxUtils.createXmlDocument())
+  console.log(enc)
   var node = enc.encode(graph.getModel())
+  console.log(node)
   var xml = mxUtils.getXml(node)
   console.log(xml)
 }
+
 export function renderXML () {
-  var xml = ''
+  // var changes = evt.getProperty('edit').changes
+  graph.view.refresh()
+  var xml = '<mxGraphModel><root><mxCell id="0" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0"><Object as="properties"/></mxCell><mxCell id="1" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0"><Object as="properties"/></mxCell><mxCell value="V1&#xA;0" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="V" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="230" y="320" width="120" height="120" as="geometry"/><Object id="317" name="VSOURCE" svg_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A_thumbnail.svg" symbol_prefix="V" component_library="http://localhost/api/libraries/8/" description="Voltage source symbol for simulation only" data_link="~" full_name="V-VSOURCE-1-A" keyword="simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="V1" NAME="VSOURCE" N1="" N2="" VALUE="0" EXTRA_EXPRESSION="" MODEL="" UNIT="V" as="properties"/></mxCell><mxCell value="1" style="align=right;verticalAlign=up;rotation=0" id="3" vertex="1" Pin="1" pinType="Input" PinNumber="1" ConnectedNode="V1.1" CellType="This is where you say what the vertex is" Component="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="60" width="0.5" height="0.5" as="geometry"/><mxCell value="V1&#xA;0" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="V" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0" as="ParentComponent"><mxGeometry x="230" y="320" width="120" height="120" as="geometry"/><Object id="317" name="VSOURCE" svg_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A_thumbnail.svg" symbol_prefix="V" component_library="http://localhost/api/libraries/8/" description="Voltage source symbol for simulation only" data_link="~" full_name="V-VSOURCE-1-A" keyword="simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="V1" NAME="VSOURCE" N1="" N2="" VALUE="0" EXTRA_EXPRESSION="" MODEL="" UNIT="V" as="properties"/></mxCell><Object as="properties"/></mxCell><mxCell value="2" style="align=right;verticalAlign=bottom;rotation=0" id="4" vertex="1" Pin="1" pinType="Input" PinNumber="2" CellType="This is where you say what the vertex is" Component="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="60" y="119" width="0.5" height="0.5" as="geometry"/><mxCell value="V1&#xA;0" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="V" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0" as="ParentComponent"><mxGeometry x="230" y="320" width="120" height="120" as="geometry"/><Object id="317" name="VSOURCE" svg_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/V-VSOURCE-1-A_thumbnail.svg" symbol_prefix="V" component_library="http://localhost/api/libraries/8/" description="Voltage source symbol for simulation only" data_link="~" full_name="V-VSOURCE-1-A" keyword="simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="V1" NAME="VSOURCE" N1="" N2="" VALUE="0" EXTRA_EXPRESSION="" MODEL="" UNIT="V" as="properties"/></mxCell><Object as="properties"/></mxCell><mxCell value="R1&#xA;1" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/R-R-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="5" vertex="1" connectable="0" Component="1" CellType="Component" symbol="R" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="570" y="320" width="16" height="100" as="geometry"/><Object id="321" name="R" svg_path="kicad-symbols/symbol_svgs/pspice/R-R-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/R-R-1-A_thumbnail.svg" symbol_prefix="R" component_library="http://localhost/api/libraries/8/" description="Resistor symbol for simulation only" data_link="~" full_name="R-R-1-A" keyword="resistor simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="R1" NAME="R" N1="" N2="" VALUE="1" EXTRA_EXPRESSION="" MODEL="" UNIT="K" as="properties"/></mxCell><mxCell value="1" style="align=right;verticalAlign=up;rotation=0" id="6" vertex="1" Pin="1" pinType="Output" PinNumber="1" ConnectedNode="V1.1" CellType="This is where you say what the vertex is" Component="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="8" width="0.5" height="0.5" as="geometry"/><mxCell value="R1&#xA;1" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/R-R-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="5" vertex="1" connectable="0" Component="1" CellType="Component" symbol="R" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0" as="ParentComponent"><mxGeometry x="570" y="320" width="16" height="100" as="geometry"/><Object id="321" name="R" svg_path="kicad-symbols/symbol_svgs/pspice/R-R-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/R-R-1-A_thumbnail.svg" symbol_prefix="R" component_library="http://localhost/api/libraries/8/" description="Resistor symbol for simulation only" data_link="~" full_name="R-R-1-A" keyword="resistor simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="R1" NAME="R" N1="" N2="" VALUE="1" EXTRA_EXPRESSION="" MODEL="" UNIT="K" as="properties"/></mxCell><Object as="properties"/></mxCell><mxCell value="2" style="align=right;verticalAlign=bottom;rotation=0" id="7" vertex="1" Pin="1" pinType="Output" PinNumber="2" CellType="This is where you say what the vertex is" Component="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="8" y="99" width="0.5" height="0.5" as="geometry"/><mxCell value="R1&#xA;1" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/pspice/R-R-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="5" vertex="1" connectable="0" Component="1" CellType="Component" symbol="R" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0" as="ParentComponent"><mxGeometry x="570" y="320" width="16" height="100" as="geometry"/><Object id="321" name="R" svg_path="kicad-symbols/symbol_svgs/pspice/R-R-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/pspice/R-R-1-A_thumbnail.svg" symbol_prefix="R" component_library="http://localhost/api/libraries/8/" description="Resistor symbol for simulation only" data_link="~" full_name="R-R-1-A" keyword="resistor simulation" as="CompObject"><Array as="alternate_component"/></Object><Object PREFIX="R1" NAME="R" N1="" N2="" VALUE="1" EXTRA_EXPRESSION="" MODEL="" UNIT="K" as="properties"/></mxCell><Object as="properties"/></mxCell><mxCell value="V1.1" style="exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" id="8" edge="1" node="V1.1" sourceVertex="3" targetVertex="6" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName=""><mxGeometry relative="1" as="geometry"/><Object as="properties"/></mxCell><mxCell value="GND2" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/power/PWR-GND2-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="9" vertex="1" connectable="0" Component="1" CellType="Component" symbol="PWR" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="390" y="440" width="40" height="80" as="geometry"/><Object id="54" name="GND2" svg_path="kicad-symbols/symbol_svgs/power/PWR-GND2-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/power/PWR-GND2-1-A_thumbnail.svg" symbol_prefix="PWR" component_library="http://localhost/api/libraries/2/" description="Power symbol creates a global label with name &quot;GND2&quot; , ground" data_link="" full_name="PWR-GND2-1-A" keyword="power-flag" as="CompObject"><Array as="alternate_component"/></Object><Object NAME="GND2" as="properties"/></mxCell><mxCell value="1" style="align=right;verticalAlign=up;rotation=0" id="10" vertex="1" Pin="1" pinType="Output" PinNumber="1" CellType="This is where you say what the vertex is" Component="0" PinName="" sourceVertex="0" targetVertex="0"><mxGeometry x="20" y="39" width="0.5" height="0.5" as="geometry"/><mxCell value="GND2" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/power/PWR-GND2-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="9" vertex="1" connectable="0" Component="1" CellType="Component" symbol="PWR" pinType=" " Pin="0" PinNumber="0" PinName="" sourceVertex="0" targetVertex="0" as="ParentComponent"><mxGeometry x="390" y="440" width="40" height="80" as="geometry"/><Object id="54" name="GND2" svg_path="kicad-symbols/symbol_svgs/power/PWR-GND2-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/power/PWR-GND2-1-A_thumbnail.svg" symbol_prefix="PWR" component_library="http://localhost/api/libraries/2/" description="Power symbol creates a global label with name &quot;GND2&quot; , ground" data_link="" full_name="PWR-GND2-1-A" keyword="power-flag" as="CompObject"><Array as="alternate_component"/></Object><Object NAME="GND2" as="properties"/></mxCell><Object as="properties"/></mxCell><mxCell value="0" style="exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" id="11" edge="1" node="0" sourceVertex="4" targetVertex="10" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="290" y="470"/><mxPoint x="411" y="470"/></Array></mxGeometry><Object as="properties"/></mxCell><mxCell value="0" style="exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" id="12" edge="1" node="0" sourceVertex="7" targetVertex="10" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName=""><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="579" y="479"/></Array></mxGeometry><Object as="properties"/></mxCell></root></mxGraphModel>'
   var xmlDoc = mxUtils.parseXml(xml)
-  var node = xmlDoc.documentElement
+  /* var node = xmlDoc.documentElement
   var dec = new mxCodec(node)
-  dec.decode(node, graph.getModel())
+  // dec.decode(node, graph.getModel())
+  var change = dec.decode(node)
+  console.log(change) */
+  parseXmlToGraph(xmlDoc, graph)
+  // console.log(dec)
+  // change.execute()
+  // changes.push(change)
+}
+function parseXmlToGraph (xmlDoc, graph) {
+  const cells = xmlDoc.documentElement.children[0].children
+  const parent = graph.getDefaultParent()
+  var v1
+  var yPos
+  for (let i = 0; i < cells.length; i++) {
+    const cellAttrs = cells[i].attributes
+    if (cellAttrs.Component.value === '1') { // is component
+      const vertexName = cellAttrs.value.value
+      const style = cellAttrs.style.value
+      console.log(cellAttrs.Component.value)
+      const vertexId = Number(cellAttrs.id.value)
+      const geom = cells[i].children[0].attributes
+      const xPos = Number(geom.x.value)
+      // var yPos
+      if (geom.y === undefined) {
+        yPos = 0
+      } else {
+        yPos = Number(geom.y.value)
+      }
+      const height = Number(geom.height.value)
+      const width = Number(geom.width.value)
+      v1 = graph.insertVertex(parent, vertexId, vertexName, xPos, yPos, width, height, style)
+    } else if (cellAttrs.Pin.value === '1') {
+      const vertexName = cellAttrs.value.value
+      const style = cellAttrs.style.value
+      console.log(cellAttrs.Component.value)
+      const vertexId = Number(cellAttrs.id.value)
+      const geom = cells[i].children[0].attributes
+      const xPos = Number(geom.x.value)
+      // var yPos
+      if (geom.y === undefined) {
+        yPos = 0
+      } else {
+        yPos = Number(geom.y.value)
+      }
+      const height = Number(geom.height.value)
+      const width = Number(geom.width.value)
+      graph.insertVertex(v1, vertexId, vertexName, xPos, yPos, 0.5, 0.5, style)
+    } else if (cellAttrs.edge) { // is edge
+      // const edgeName = cellAttrs.value.value
+      const edgeId = Number(cellAttrs.id.value)
+      const source = Number(cellAttrs.sourceVertex.value)
+      const target = Number(cellAttrs.targetVertex.value)
+      graph.insertEdge(parent, edgeId, null,
+        graph.getModel().getCell(source),
+        graph.getModel().getCell(target)
+      )
+    }
+  }
 }
