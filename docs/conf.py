@@ -1,3 +1,0 @@
-extensions = [
-   'sphinxcontrib.openapi',
-]
