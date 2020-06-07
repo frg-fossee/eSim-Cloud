@@ -27,6 +27,18 @@ export class ArduinoUno extends CircuitElement {
     for (const node of this.nodes) {
       this.pinNameMap[node.label] = node;
     }
+    for (let i = 0; i <= 5; ++i) {
+      this.pinNameMap[`A${i}`].addValueListener((val) => {
+        if (isUndefined(this.runner) || isNull(this.runner)) {
+          setTimeout(() => {
+            this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val));
+          }, 300);
+        } else {
+          this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val));
+        }
+      });
+    }
+
     this.pinNameMap['D12'].addValueListener((v) => {
       if (isUndefined(this.runner) || isNull(this.runner)) {
         setTimeout(() => {
@@ -106,6 +118,8 @@ export class ArduinoUno extends CircuitElement {
     this.pinNameMap['3.3V'].setValue(3.3, null);
     const myOutput = document.createElement('pre');
     this.runner = new ArduinoRunner(this.hex);
+    // window['test'] = this.runner;
+
     // console.log(this.runner);
     this.runner.portB.addListener((value) => {
       for (let i = 0; i <= 5; ++i) {
@@ -156,6 +170,8 @@ export class ArduinoUno extends CircuitElement {
       myOutput.textContent += String.fromCharCode(value);
     };
 
+    console.log(this.runner.adc.setAnalogValue);
+    // this.runner.adc.setAnalogValue(0, 20);
     document.getElementById('msg').append(myOutput);
 
     this.runner.execute();
