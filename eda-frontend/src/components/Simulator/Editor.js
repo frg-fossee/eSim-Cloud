@@ -5,7 +5,7 @@ import 'brace/theme/monokai'
 import 'brace/theme/github'
 
 export default function Editor (props) {
-  console.log(props)
+
   return (
 
     <AceEditor
