@@ -14,6 +14,7 @@ import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
 import { fetchSchematic } from '../redux/actions/index'
 import { useDispatch } from 'react-redux'
+import { renderXML } from '../components/SchematicEditor/Helper/ToolbarTools'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,6 +48,7 @@ export default function SchematiEditor (props) {
     if (props.location.state !== undefined) {
       // calling the api
       dispatch(fetchSchematic(props.location.state.id))
+      renderXML()
     }
   }, [compRef, gridRef, outlineRef, props.location, dispatch])
 

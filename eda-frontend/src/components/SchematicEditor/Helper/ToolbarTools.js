@@ -854,14 +854,14 @@ export function GenerateCompList () {
   // netlist.nodelist = new Set(a)
 }
 
-export function generateXML () {
-  var enc = new mxCodec(mxUtils.createXmlDocument())
-  console.log(enc)
-  var node = enc.encode(graph.getModel())
-  console.log(node)
-  var xml = mxUtils.getXml(node)
-  console.log(xml)
-}
+// export function generateXML () {
+//   var enc = new mxCodec(mxUtils.createXmlDocument())
+//   console.log(enc)
+//   var node = enc.encode(graph.getModel())
+//   console.log(node)
+//   var xml = mxUtils.getXml(node)
+//   console.log(xml)
+// }
 
 export function renderXML () {
   // var changes = evt.getProperty('edit').changes
