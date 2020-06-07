@@ -63,6 +63,20 @@ export class ArduinoUno extends CircuitElement {
         this.runner.portD.setPin(7, v > 0 ? 1 : 0);
       }
     });
+
+    this.pinNameMap['D6'].addValueListener((v) => {
+      // console.log(v);
+      if (isUndefined(this.runner) || isNull(this.runner)) {
+        setTimeout(() => {
+          this.pinNameMap['D6'].setValue(v, this.pinNameMap['D6']);
+        }, 300);
+        return;
+      }
+      if (this.runner.portD.pinState(6) === AVR8.PinState.Input) {
+        console.log(v);
+        // this.runner.portD.setPin(6, v > 0 ? 1 : 0);
+      }
+    });
   }
   SaveData() {
     return {
@@ -170,8 +184,6 @@ export class ArduinoUno extends CircuitElement {
       myOutput.textContent += String.fromCharCode(value);
     };
 
-    console.log(this.runner.adc.setAnalogValue);
-    // this.runner.adc.setAnalogValue(0, 20);
     document.getElementById('msg').append(myOutput);
 
     this.runner.execute();
