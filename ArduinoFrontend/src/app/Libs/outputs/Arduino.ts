@@ -69,7 +69,6 @@ export class ArduinoUno extends CircuitElement {
     // Handle Input For Port D D2 - D7
     for (let i = 2; i <= 7; ++i) {
       this.pinNameMap[`D${i}`].addValueListener((v) => {
-        console.log([i, v]);
         if (isUndefined(this.runner) || isNull(this.runner)) {
           setTimeout(() => {
             this.pinNameMap[`D${i}`].setValue(v, this.pinNameMap[`D${i}`]);
@@ -205,5 +204,14 @@ export class ArduinoUno extends CircuitElement {
   }
   simulate(): void {
   }
-
+  getPort(pinName: string) {
+    const num = parseInt(pinName.substr(1), 10);
+    if (!isNaN(num)) {
+      if (num >= 0 && num <= 7) {
+        return { name: 'portD', pin: num };
+      } else if (num > 7 && num <= 13) {
+        return { name: 'portB', pin: num };
+      }
+    }
+  }
 }
