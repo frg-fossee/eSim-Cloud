@@ -7,13 +7,13 @@
   </form>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item dropdown text-white">
+      <li id="projectid" class="nav-item dropdown text-white">
         <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           Project
         </a>
-        <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item text-dark" href="/simulator" target="_blank">New Project</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="z-index: 1001;background-color: #b8b8b8;">
+          <a class="dropdown-item text-dark" [routerLink]="['/simulator']" target="_blank">New Project</a>
           <a class="dropdown-item text-dark" (click)="ClearProject()">Clear Project</a>
           <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a>
 

@@ -19,18 +19,18 @@ declare var Raphael;
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
-  projectId: number = null;
-  projectTitle = 'Untitled';
-  description = '';
+  projectId: number = null; // Stores the id of project
+  projectTitle = 'Untitled'; // Stores the title of project
+  description = ''; // Stores the description of project
   showProperty = true;
   componentsBox = Utils.componentBox;
   components = Utils.components;
-  openCodeEditor = false;
-  toggle = true;
-  stoggle = true;
-  status = 'Start Simulation';
-  toggle1 = false;
-  atoggle = false;
+  openCodeEditor = false; // stores the initial status of code editor
+  toggle = true; // Stores toggle status for code editor
+  stoggle = true; // stores toggle status for simulation button
+  status = 'Start Simulation'; //  stores the initial status of simulation button
+  toggle1 = false; // Stores the toggle status for expanding Virtual console
+  atoggle = false; // stores the toggle status for closing/opening Virtual console
 
   constructor(
     private aroute: ActivatedRoute,
@@ -41,7 +41,7 @@ export class SimulatorComponent implements OnInit {
     Workspace.initializeGlobalFunctions();
     Workspace.injector = this.injector;
   }
-
+  /** Function dynamically creates an SVG tag */
   makeSVGg() {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     el.setAttribute('transform', 'scale(1,1)translate(0,0)');
@@ -52,6 +52,7 @@ export class SimulatorComponent implements OnInit {
     this.aroute.queryParams.subscribe(v => {
       console.log(v);
       this.projectId = parseInt(v.id, 10);
+      // if project id is present then project is read from offline
       if (this.projectId) {
         SaveOffline.Read(this.projectId, (data) => {
           this.LoadProject(data);
@@ -127,14 +128,17 @@ export class SimulatorComponent implements OnInit {
     block.classList.toggle('show-div');
   }
 
-
+  /** Function called when Start Simulation button is triggered */
   StartSimulation() {
+    // Clears Output in console when clear button triggered
     Workspace.ClearConsole();
+    // prints the output in console
     window['printConsole']('Starting Simulation', ConsoleType.INFO);
     this.stoggle = !this.stoggle;
     this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
     const sim = document.getElementById('console');
     const simload = document.getElementById('simload');
+    // if status is Stop simulation then console is opened
     if (!this.stoggle) {
       sim.style.display = 'block';
       // simload.style.display = 'block';
@@ -146,7 +150,7 @@ export class SimulatorComponent implements OnInit {
       // this.hidesimload();
     }
   }
-
+  /** Function called to hide simulation loading svg */
   hidesimload() {
     const simload = document.getElementById('simload');
     simload.style.display = 'none';
@@ -168,6 +172,7 @@ export class SimulatorComponent implements OnInit {
        div.style.display = 'none';
      }*/
   }
+  /** Function called to close Virtual console */
   closeConsole() {
     const close = document.getElementById('console');
     const ft = document.getElementById('footer');
@@ -190,7 +195,7 @@ export class SimulatorComponent implements OnInit {
 
     }
   }
-
+  /** function called to open Virtual Console */
   expandConsole() {
     const msg = document.getElementById('msg');
     const console = document.getElementById('console');
@@ -222,16 +227,26 @@ export class SimulatorComponent implements OnInit {
       el.value = 'Untitled';
     }
   }
-
+  /**
+   * Function invoked when dbclick is performed on a component inside ComponentList
+   * @param key string
+   */
   componentdbClick(key: string) {
     Workspace.addComponent(key, 100, 100, 0, 0);
   }
-
+  /**
+   * Event is fired when the user starts dragging an component or text selection.
+   * @param event DragEvent
+   * @param key string
+   */
   dragStart(event: DragEvent, key: string) {
     event.dataTransfer.dropEffect = 'copyMove';
     event.dataTransfer.setData('text', key);
   }
-
+  /**
+   * Function calls zoomIn/Out() mentioned in Workspace.ts
+   * @param x number
+   */
   zoom(x: number) {
     if (x === 0) {
       Workspace.zoomIn();
@@ -239,34 +254,41 @@ export class SimulatorComponent implements OnInit {
       Workspace.zoomOut();
     }
   }
+  /** Functions opens Info Dailog Box on selecting the component */
   openInfo() {
     const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
       width: '500px'
     });
     dialogRef.afterClosed();
   }
+  /** Function opens Dailog Box on selecting Export option */
   openDailog() {
     const exportref = this.dialog.open(ExportfileComponent);
     exportref.afterClosed();
   }
+  /** Function opens Component List Dailog box on selecting view option */
   openview() {
     const viewref = this.dialog.open(ComponentlistComponent, {
       width: '600px'
     });
     viewref.afterClosed();
   }
+  /** Function deletes the component */
   delete() {
     Workspace.DeleteComponent();
     Workspace.hideContextMenu();
   }
+  /** Function pastes the component */
   paste() {
     Workspace.pasteComponent();
     Workspace.hideContextMenu();
   }
+  /** Function copy the component */
   copy() {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
   }
+  /** Function saves or updates the project */
   SaveProject() {
     if (this.projectId) {
       Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
@@ -286,10 +308,15 @@ export class SimulatorComponent implements OnInit {
       });
     }
   }
+  /** Function clear variables in the Workspace */
   ClearProject() {
     // TODO: Clear Variables instead of Reloading
     window.location.reload();
   }
+  /**
+   * Function called after reading data from offline
+   * @param data any
+   */
   LoadProject(data: any) {
     console.log(data);
     this.projectTitle = data.project.name;
