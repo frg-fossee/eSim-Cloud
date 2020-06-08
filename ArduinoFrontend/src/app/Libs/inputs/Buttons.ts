@@ -1,5 +1,4 @@
 import { CircuitElement } from '../CircuitElement';
-import { Point } from '../Point';
 
 declare var Raphael;
 
@@ -82,20 +81,36 @@ export class PushButton extends CircuitElement {
 
 
 export class SlideSwitch extends CircuitElement {
-  private reverseAnim = true;
-
+  private flag = true; // if true connected with terminal 1 else connected with terminal 2
   constructor(public canvas: any, x: number, y: number) {
     super('SlideSwitch', x, y, 'SlideSwitch.json', canvas);
   }
+  init() {
+    // this.nodes[0]
+    console.log(this.nodes[0].label);
+    console.log(this.nodes[1].label);
+    console.log(this.nodes[2].label);
+    this.nodes[1].addValueListener((v) => {
+      console.log(v);
+      if (this.flag) {
+        this.nodes[0].setValue(v, null);
+        this.nodes[2].setValue(-1, null);
+      } else {
+        this.nodes[0].setValue(-1, null);
+        this.nodes[2].setValue(v, null);
+      }
+    });
+  }
   anim() {
     let anim;
-    if (this.reverseAnim) {
-      anim = Raphael.animation({ transform: 't15,0' }, 500);
+    if (this.flag) {
+      anim = Raphael.animation({ transform: `t${this.tx + 15},${this.ty}` }, 500);
     } else {
-      anim = Raphael.animation({ transform: 't0,0' }, 500);
+      anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
     }
     this.elements[1].animate(anim);
-    this.reverseAnim = !this.reverseAnim;
+    this.flag = !this.flag;
+    this.nodes[1].setValue(this.nodes[1].value, this.nodes[1]);
   }
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
@@ -107,8 +122,19 @@ export class SlideSwitch extends CircuitElement {
     };
   }
   initSimulation(): void {
+    this.elements.unmousedown();
+    this.elements.unclick();
+    this.elements.click(() => {
+      this.anim();
+    });
+    this.nodes[1].setValue(5, null);
   }
   closeSimulation(): void {
+    this.elements.unclick();
+    this.setDragListeners();
+    this.setClickListener(null);
+    const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
+    this.elements[1].animate(anim);
   }
   simulate(): void {
   }
