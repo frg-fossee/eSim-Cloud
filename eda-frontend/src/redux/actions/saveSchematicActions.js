@@ -55,7 +55,7 @@ export const saveSchematic = (title, description, xml) => (dispatch, getState) =
     api.post('save/' + schSave.details.save_id, queryString.stringify(body), config)
       .then(
         (res) => {
-          console.log(res)
+          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -76,4 +76,67 @@ export const saveSchematic = (title, description, xml) => (dispatch, getState) =
       )
       .catch((err) => { console.error(err) })
   }
+}
+
+export const fetchSchematic = (saveId) => (dispatch, getState) => {
+  const token = getState().authReducer.token
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+  // console.log('Already Saved')
+  api.get('save/' + saveId, config)
+    .then(
+      (res) => {
+        // console.log('response', res)
+        dispatch({
+          type: actions.SET_SCH_SAVED,
+          payload: res.data
+        })
+        dispatch(setSchTitle(res.data.name))
+        dispatch(setSchDescription(res.data.description))
+        dispatch(setSchXmlData(res.data.data_dump))
+      }
+    )
+    .catch((err) => { console.error(err) })
+}
+
+export const setSchShared = (share) => (dispatch, getState) => {
+  const token = getState().authReducer.token
+  const schSave = getState().saveSchematicReducer
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+  var isShared
+  if (share === true) {
+    isShared = 'on'
+  } else {
+    isShared = 'off'
+  }
+
+  api.post('save/' + schSave.details.save_id + '/sharing/' + isShared, {}, config)
+    .then(
+      (res) => {
+        dispatch({
+          type: actions.SET_SCH_SHARED,
+          payload: res.data
+        })
+      }
+    )
+    .catch((err) => { console.error(err) })
 }

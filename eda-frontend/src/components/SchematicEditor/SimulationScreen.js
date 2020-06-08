@@ -81,7 +81,7 @@ export default function SimulationScreen ({ open, close }) {
   //  const getCleanData = () => {
 
   //   setSimRes(simResults)
-  //   console.log("hello",simRes)
+
   // }
   return (
     <div>

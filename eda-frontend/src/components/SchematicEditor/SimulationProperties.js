@@ -148,7 +148,7 @@ export default function SimulationProperties () {
       .then((response) => {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
-        console.log(getUrl)
+
         simulationResult(getUrl)
       })
       .catch(function (error) {
@@ -192,12 +192,10 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          console.log('FULL', res.data)
           var temp = res.data.details.data
           var result = res.data.details
           var data = result.data
-          console.log('result.details', result)
-          console.log('result.details.data', data)
+
           if (res.data.details.graph === 'true') {
             var simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
@@ -230,7 +228,7 @@ export default function SimulationProperties () {
             for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
               simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
             }
-            console.log('LOG', simResultGraph)
+
             dispatch(setResultGraph(simResultGraph))
           } else {
             var simResultText = []
@@ -246,8 +244,7 @@ export default function SimulationProperties () {
 
               simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2]) + ' ' + postfixUnit + '\n')
             }
-            // console.log(simResultText)
-            console.log('NOGRAPH', simResultText)
+
             handleSimulationResult(res.data.details)
             dispatch(setResultText(simResultText))
           }

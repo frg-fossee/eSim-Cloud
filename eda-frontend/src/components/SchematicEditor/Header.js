@@ -1,4 +1,6 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
 import {
   Toolbar,
   Typography,
@@ -11,15 +13,24 @@ import {
   Menu,
   Fade,
   MenuItem,
-  ListItemText
+  ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  FormControlLabel,
+  Switch,
+  Snackbar
 } from '@material-ui/core'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import ShareIcon from '@material-ui/icons/Share'
+import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { Link as RouterLink } from 'react-router-dom'
+
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared } from '../../redux/actions/index'
 import store from '../../redux/store'
 
 const useStyles = makeStyles((theme) => ({
@@ -58,9 +69,41 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+function SimpleSnackbar ({ open, close, message }) {
+  return (
+    <div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={close}
+        message={message}
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    </div>
+  )
+}
+
+SimpleSnackbar.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.func,
+  message: PropTypes.string
+}
+
 function Header () {
+  const history = useHistory()
   const classes = useStyles()
   const auth = store.getState().authReducer
+  const schSave = useSelector(state => state.saveSchematicReducer)
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const dispatch = useDispatch()
@@ -78,8 +121,54 @@ function Header () {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
+  // Notification Snackbar
+  const [snacOpen, setSnacOpen] = React.useState(false)
+  const [message, setMessage] = React.useState('')
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
+
+  // Share Dialog box
+  const [openShare, setShareOpen] = React.useState(false)
+
+  const handleShareOpen = () => {
+    setShareOpen(true)
+  }
+
+  const handleShareClose = () => {
+    setShareOpen(false)
+  }
+
+  const [shared, setShared] = React.useState(schSave.isShared)
+
+  const handleShareChange = (event) => {
+    setShared(event.target.checked)
+    dispatch(setSchShared(event.target.checked))
+  }
+
+  const handleShare = () => {
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else if (schSave.isSaved !== true) {
+      setMessage('You have not saved the circuit')
+      handleSnacClick()
+    } else {
+      handleShareOpen()
+    }
+  }
+
   return (
     <Toolbar variant="dense" color="default">
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <IconButton edge="start" className={classes.button} color="primary">
         <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
@@ -98,8 +187,8 @@ function Header () {
         <form className={classes.form} noValidate autoComplete="off">
           <Input
             className={classes.input}
-            defaultValue="Untitled_Schematic"
             color="secondary"
+            value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
             onChange={titleHandler}
             inputProps={{ 'aria-label': 'SchematicTitle' }}
           />
@@ -107,15 +196,48 @@ function Header () {
       </Hidden>
 
       <div className={classes.rightBlock}>
-        <Button
-          size="small"
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          startIcon={<ShareIcon />}
+        {auth.isAuthenticated === true
+          ? <Button
+            size="small"
+            variant={shared !== true ? 'outlined' : 'contained'}
+            color="primary"
+            className={classes.button}
+            startIcon={<ShareIcon />}
+            onClick={handleShare}
+          >
+            <Hidden xsDown>Share</Hidden>
+          </Button>
+          : <></>
+        }
+
+        <Dialog
+          open={openShare}
+          onClose={handleShareClose}
+          aria-labelledby="share-dialog-title"
+          aria-describedby="share-dialog-description"
         >
-          <Hidden xsDown>Share</Hidden>
-        </Button>
+          <DialogTitle id="share-dialog-title">{'Share Your Schematic'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="share-dialog-description">
+              <FormControlLabel
+                control={<Switch checked={shared} onChange={handleShareChange} name="shared" />}
+                label=": Sharing On"
+              />
+            </DialogContentText>
+            <DialogContentText id="share-dialog-description">
+              {shared === true
+                ? <>Link : <a href={window.location.href + '/' + schSave.details.save_id}>{window.location.href + '/' + schSave.details.save_id}</a></>
+                : <> Turn On sharing </>
+              }
+            </DialogContentText>
+
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleShareClose} color="primary" autoFocus>
+              close
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {
           (!auth.isAuthenticated ? (<Button
@@ -178,6 +300,7 @@ function Header () {
                 </MenuItem>
                 <MenuItem onClick={() => {
                   store.dispatch(logout())
+                  history.goBack()
                 }}>
                   Logout
                 </MenuItem>

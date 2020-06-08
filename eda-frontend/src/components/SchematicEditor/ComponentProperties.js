@@ -14,7 +14,6 @@ export default function ComponentProperties () {
 
   useEffect(() => {
     setVal(properties)
-    console.log('properties', properties)
   }, [properties])
 
   const getInputValues = (evt) => {
@@ -26,7 +25,6 @@ export default function ComponentProperties () {
   }
 
   const setProps = () => {
-    console.log(val)
     dispatch(setCompProperties(id, val))
     dispatch(setModel(val.MODEL))
     // setVal({})

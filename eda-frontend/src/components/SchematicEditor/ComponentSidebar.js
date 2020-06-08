@@ -118,13 +118,11 @@ export default function ComponentSidebar ({ compRef }) {
   const handleCollapse = (id) => {
     // Fetches Components for given library if not already fetched
     if (collapse[id] === false && components[id].length === 0) {
-      // console.log('Components not fetched earlier, fetching.')
       dispatch(fetchComponents(id))
     }
 
     // Updates state of collapse to show/hide dropdown
     dispatch(toggleCollapse(id))
-    // console.log(collapse)
   }
 
   // For Fetching Libraries
@@ -168,7 +166,7 @@ export default function ComponentSidebar ({ compRef }) {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <SearchIcon/>
+                    <SearchIcon />
                   </InputAdornment>
 
                 )
@@ -203,75 +201,74 @@ export default function ComponentSidebar ({ compRef }) {
 
             </TextField>
           </ListItem>
+          <div style={{ maxHeight: '70vh', overflowY: 'auto', overflowX: 'hidden' }} >
+            {searchText.length !== 0 && searchedComponentList.length !== 0 &&
 
-          { searchText.length !== 0 && searchedComponentList.length !== 0 &&
+              searchedComponentList.map((component, i) => {
+                return (<ListItemIcon key={component.name}>
+                  <SideComp component={component} />
+                </ListItemIcon>)
+              }
+              )
 
-                    searchedComponentList.map((component, i) => {
-                      // console.log(component)
-                      return (<ListItemIcon key={component.name}>
-                        <SideComp component={component} />
-                      </ListItemIcon>)
-                    }
-                    )
+            }
 
-          }
+            <ListItem>
 
-          <ListItem>
+              <Loader
+                type="TailSpin"
+                color="#F44336"
+                height={100}
+                width={100}
+                visible={loading}
+              />
+            </ListItem>
 
-            <Loader
-              type="TailSpin"
-              color="#F44336"
-              height={100}
-              width={100}
-              visible={loading}
-            />
-          </ListItem>
-
-          { !loading && searchText.length !== 0 && isSearchedResultsEmpty &&
+            {!loading && searchText.length !== 0 && isSearchedResultsEmpty &&
 
               <span style={{ margin: '20px' }}>No Components Found</span>
 
-          }
+            }
 
-          {/* Collapsing List Mapped by Libraries fetched by the API */}
-          {searchText.length === 0 &&
-            libraries.map(
-              (library) => {
-                return (
-                  <div key={library.id}>
-                    <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
-                      <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
-                      {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
-                    </ListItem>
-                    <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
-                      <List component="div" disablePadding dense >
+            {/* Collapsing List Mapped by Libraries fetched by the API */}
+            {searchText.length === 0 &&
+              libraries.map(
+                (library) => {
+                  return (
+                    <div key={library.id}>
+                      <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
+                        <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
+                        {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
+                      </ListItem>
+                      <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
+                        <List component="div" disablePadding dense >
 
-                        {/* Chunked Components of Library */}
-                        {
-                          chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
-                            return (
-                              <ListItem key={componentChunk[0].svg_path} divider>
-                                {
-                                  componentChunk.map((component) => {
-                                    // console.log(component)
-                                    return (<ListItemIcon key={component.full_name}>
-                                      <SideComp component={component} />
-                                    </ListItemIcon>)
+                          {/* Chunked Components of Library */}
+                          {
+                            chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
+                              return (
+                                <ListItem key={componentChunk[0].svg_path} divider>
+                                  {
+                                    componentChunk.map((component) => {
+                                      return (<ListItemIcon key={component.full_name}>
+                                        <SideComp component={component} />
+                                      </ListItemIcon>)
+                                    }
+                                    )
                                   }
-                                  )
-                                }
-                              </ListItem>
-                            )
-                          })
-                        }
+                                </ListItem>
+                              )
+                            })
+                          }
 
-                      </List>
-                    </Collapse>
-                  </div>
-                )
-              }
-            )
-          }
+                        </List>
+                      </Collapse>
+                    </div>
+                  )
+                }
+              )
+            }
+          </div>
         </List>
       </div>
       <div style={isSimulate ? {} : { display: 'none' }}>

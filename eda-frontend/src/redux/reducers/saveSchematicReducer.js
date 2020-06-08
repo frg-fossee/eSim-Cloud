@@ -5,7 +5,8 @@ const initialState = {
   description: '',
   xmlData: null,
   details: {},
-  isSaved: null
+  isSaved: null,
+  isShared: null
 }
 
 export default function (state = initialState, action) {
@@ -14,6 +15,15 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isSaved: true,
+        isShared: action.payload.shared,
+        details: action.payload
+      }
+    }
+
+    case actions.SET_SCH_SHARED: {
+      return {
+        ...state,
+        isShared: true,
         details: action.payload
       }
     }

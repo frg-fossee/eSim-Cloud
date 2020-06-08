@@ -33,7 +33,7 @@ class Graph extends Component {
 
     const dataset = () => {
       var arr = []
-      console.log('xscale', xscale)
+
       for (var i = 0; i < y.length; i++) {
         if (labels[0] === labels[i + 1]) continue
         arr.push({

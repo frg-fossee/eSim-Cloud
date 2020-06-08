@@ -62,38 +62,37 @@ export default function DashSidebar (props) {
       <Hidden smDown>
         <div className={classes.toolbar} />
       </Hidden>
-
-      <ListItem
-        alignItems="flex-start"
-        component={RouterLink}
-        to="/dashboard"
-        style={{ marginTop: '15px' }}
-        className={classes.sideItem}
-        button
-        divider
-      >
-        <ListItemAvatar>
-          <Avatar className={classes.purple}>
-            {auth.user.username.charAt(0).toUpperCase()}
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary={auth.user.username}
-          secondary={
-            <React.Fragment>
-              <Typography
-                component="span"
-                variant="body2"
-                color="textSecondary"
-              >
-                Contributor
-              </Typography>
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-
       <List>
+        <ListItem
+          alignItems="flex-start"
+          component={RouterLink}
+          to="/dashboard"
+          style={{ marginTop: '15px' }}
+          className={classes.sideItem}
+          button
+          divider
+        >
+          <ListItemAvatar>
+            <Avatar className={classes.purple}>
+              {auth.user.username.charAt(0).toUpperCase()}
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={auth.user.username}
+            secondary={
+              <React.Fragment>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  color="textSecondary"
+                >
+                  Contributor
+                </Typography>
+              </React.Fragment>
+            }
+          />
+        </ListItem>
+
         <ListItem
           component={RouterLink}
           to="/dashboard/profile"
@@ -101,18 +100,15 @@ export default function DashSidebar (props) {
           button
           divider
         >
-          My Profile
+          <ListItemText primary='My Profile'/>
         </ListItem>
-      </List>
-
-      <List>
         <ListItem
           component={RouterLink}
           to="/dashboard/schematics"
           className={classes.sideItem}
           button
         >
-          My Schematics
+          <ListItemText primary='My Schematics'/>
         </ListItem>
         <List className={classes.nestedSearch} >
           <InputBase
@@ -120,13 +116,13 @@ export default function DashSidebar (props) {
             placeholder="Find your schematic..."
           />
         </List>
-        <List className={classes.nested} >
+        <div className={classes.nested} >
           {schematics.map((sch) => (
             <ListItem key={sch.save_id} button>
               <ListItemText primary={`${sch.name}`} />
             </ListItem>
           ))}
-        </List>
+        </div>
         <Divider />
       </List>
     </>
