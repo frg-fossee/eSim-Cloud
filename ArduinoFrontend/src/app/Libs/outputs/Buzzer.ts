@@ -9,9 +9,16 @@ export class Buzzer extends CircuitElement {
   oscillator: any;
   audioCtx: AudioContext;
   sound = false;
+  /**
+   * pushbutton constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(private canvas: any, public x: number, public y: number) {
     super('Buzzer', x, y, 'Buzzer.json', canvas);
   }
+  /** init is called when the component is complety drawn to the canvas */
   init() {
     // console.log(this.nodes[0].label);
     // console.log(this.nodes[1].label);
@@ -42,7 +49,13 @@ export class Buzzer extends CircuitElement {
       window.showToast('Buzzer is not Connected properly');
     }
   }
-  // return propeties object
+  /**
+   * returns properties object
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties() {
     const body = document.createElement('div');
     return {
@@ -52,6 +65,9 @@ export class Buzzer extends CircuitElement {
       body
     };
   }
+  /**
+   * Initialize Variable and callback when start simulation is pressed
+   */
   initSimulation() {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioCtx = new AudioContext();
@@ -65,6 +81,7 @@ export class Buzzer extends CircuitElement {
   simulate() {
     // TODO: Play Music on Simulation
   }
+  /** Function removes all callbacks  */
   closeSimulation() {
     if (this.oscillator && this.sound) {
       // this.oscillator.stop();
