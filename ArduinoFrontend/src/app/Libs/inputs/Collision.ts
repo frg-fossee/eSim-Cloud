@@ -13,6 +13,9 @@ export enum Orienation {
 // https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 
 export class Collision {
+  /// TODO: Polygon to Polygon Collision
+  /// Right now for Polygon to Polygon Collision we check if small polygon points are inside big polygon
+  // Which has one issue Try to find it ;)
   static inLine(p: Vector, q: Vector, r: Vector) {
     if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) &&
       q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)) {
@@ -77,6 +80,6 @@ export class Collision {
   }
 
   static EuclideanDistance(a: Vector, b: Vector) {
-    return ((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y));
+    return Math.sqrt(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)));
   }
 }
