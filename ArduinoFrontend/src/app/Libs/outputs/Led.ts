@@ -27,8 +27,8 @@ export class LED extends CircuitElement {
     };
   }
   /**
-   * Loads the data of SaveData()
-   * @param data saved object
+   * Function Called to Load data from saved object
+   * @param data Saved Object
    */
   LoadData(data: any) {
     this.selectedIndex = data.data.color;

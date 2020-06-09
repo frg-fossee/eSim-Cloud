@@ -50,7 +50,7 @@ export class SimulatorComponent implements OnInit {
 
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
-      console.log(v);
+      // console.log(v);
       this.projectId = parseInt(v.id, 10);
       // if project id is present then project is read from offline
       if (this.projectId) {
@@ -145,7 +145,6 @@ export class SimulatorComponent implements OnInit {
       Workspace.CompileCode();
     } else {
       sim.style.display = 'none';
-      Workspace.simulating = false;
       Workspace.stopSimulation();
       // this.hidesimload();
     }
@@ -318,7 +317,7 @@ export class SimulatorComponent implements OnInit {
    * @param data any
    */
   LoadProject(data: any) {
-    console.log(data);
+    // console.log(data);
     this.projectTitle = data.project.name;
     this.description = data.project.description;
     this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');

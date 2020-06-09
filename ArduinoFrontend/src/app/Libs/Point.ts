@@ -34,6 +34,7 @@ export class Point {
   value = -1;
   listener: (val: number, calledby: Point, current: Point) => void = null;
   gid = -1;
+  id: number;
   /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper
@@ -51,10 +52,21 @@ export class Point {
     public half: number,
     public parent: CircuitElement
   ) {
+    // if (window['point_id']) {
+    //   this.id = window['point_id'];
+    //   window.point_id += 1;
+    // }
+    // else {
+    //   this.id = 1;
+    //   window['point_id'] = 2;
+    // }
+    this.id = this.parent.nid;
+    ++this.parent.nid;
     // Create a rectangle of 4x4 and set default color and stroke
     this.body = this.canvas.rect(x, y, 2 * this.half, 2 * this.half);
 
     this.body.attr(Point.defaultAttr);
+    // this.body.node.setAttribute('class', 'mynode');
 
     // Set Hover callback
     this.body.hover(() => {
@@ -77,8 +89,9 @@ export class Point {
       window.showBubble(this.label, evt.clientX, evt.clientY);
     });
 
-    // Set mouse out popup
+    // // Set mouse out popup
     this.body.mouseout(() => {
+      window.hideBubble();
       this.hide();
     });
     // TODO: Remove The following code After Development

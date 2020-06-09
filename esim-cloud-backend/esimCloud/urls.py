@@ -43,7 +43,7 @@ urlpatterns = [
 
     # publishAPI routes
     path('api/', include(publishURLs)),
-    
+
     # Arduino Routes
     path('api/arduino/', include(arduinoURLs)),
 

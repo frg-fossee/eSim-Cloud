@@ -72,6 +72,21 @@ export class CoinCell extends CircuitElement {
    * @param body body of property box
    * @param title Component title
    */
+  init() {
+    this.nodes[1].addValueListener((_, calledby, __) => {
+      if (calledby.parent.id === this.id) {
+        /// TODO: Show Toast and Stop Simulation
+        window['showToast']('Short Circuit');
+      }
+    });
+  }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -81,7 +96,11 @@ export class CoinCell extends CircuitElement {
       title: 'Coin Cell'
     };
   }
+  /**
+   * Initialize variable when start simulation is pressed
+   */
   initSimulation(): void {
+    this.nodes[0].setValue(3, null);
   }
   closeSimulation(): void {
   }
