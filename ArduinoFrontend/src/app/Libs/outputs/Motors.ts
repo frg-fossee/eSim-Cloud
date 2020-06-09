@@ -9,7 +9,7 @@ export class Motor extends CircuitElement {
   cx = 0;
   cy = 0;
   rpm: any;
-   /**
+  /**
    * Motor constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
@@ -18,7 +18,7 @@ export class Motor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('Motor', x, y, 'Motor.json', canvas);
   }
-  /** init is called when the component is complety drawn to the canvas */ 
+  /** init is called when the component is complety drawn to the canvas */
   // 6v -> 9000rpm ->
   init() {
     // Add value change Listener to circuit node

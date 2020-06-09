@@ -323,4 +323,12 @@ export class SimulatorComponent implements OnInit {
     this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
     Workspace.Load(data);
   }
+  closeProject() {
+    const closeProject = document.getElementById('opendialog');
+    closeProject.style.display = 'none';
+  }
+  openProject() {
+    const openProject = document.getElementById('opendialog');
+    openProject.style.display = 'block';
+  }
 }
