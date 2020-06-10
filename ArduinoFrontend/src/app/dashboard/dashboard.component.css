@@ -10,11 +10,13 @@
 }
 
 #main {
-  width: 73%;
+  width: 95%;
   float: left;
   position: relative;
   height: auto;
   margin-top: 20px;
+  margin-left: 40px;
+  
 }
 
 .subbox {
@@ -46,20 +48,29 @@
 }
 
 @media screen and (max-width: 1424px) {
-  #sidebar {
-    width: 30%;
-  }
+  
   #main {
-    width: 68%;
+    width: 90%;
   }
 }
 
-@media screen and (max-width: 1128px) {
-  #sidebar {
-    width: 40%;
-  }
+@media screen and (max-width: 1280px) {
+
   #main {
-    width: 58%;
+    width: 90%;
+  }
+}
+@media screen and (max-width: 808px) {
+
+  #main {
+    width: 90%;
+  }
+}
+
+@media screen and (max-width: 689px) {
+
+  #main {
+    width: 70%;
   }
 }
 
