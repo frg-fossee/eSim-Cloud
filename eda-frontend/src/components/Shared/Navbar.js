@@ -127,6 +127,16 @@ export function Header () {
               <Link
                 variant="button"
                 color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
                 to="/gallery"
                 component={RouterLink}
                 style={{ marginRight: '20px' }}

@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Card,
   Grid,
@@ -7,10 +8,13 @@ import {
   CardActions,
   CardContent,
   Container,
-  CssBaseline
+  CssBaseline,
+  CardActionArea,
+  CardMedia
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import GallerySchSample from '../utils/GallerySchSample'
 
 const useStyles = makeStyles((theme) => ({
   mainHead: {
@@ -29,8 +33,58 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     minHeight: '100vh',
     backgroundColor: '#f4f6f8'
+  },
+  media: {
+    marginTop: theme.spacing(3),
+    height: 170
   }
 }))
+
+var images = require.context('../static/gallery', true)
+
+function SchematicCard ({ sch }) {
+  const classes = useStyles()
+
+  const imageName = images('./' + sch.media)
+
+  return (
+    <>
+      {/* Gallery Schematic Overview Card */}
+      <Card>
+        <CardActionArea>
+          <CardMedia
+            className={classes.media}
+            image={imageName}
+            title={sch.name}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="h2">
+              {sch.name}
+            </Typography>
+            <Typography variant="body2" component="p">
+              {sch.description}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+
+        <CardActions>
+          <Button
+            target="_blank"
+            component={RouterLink}
+            to={'/editor/' + sch.save_id}
+            size="small"
+            color="primary"
+          >
+            Launch in Editor
+          </Button>
+        </CardActions>
+      </Card>
+    </>
+  )
+}
+SchematicCard.propTypes = {
+  sch: PropTypes.object
+}
 
 function MainCard () {
   const classes = useStyles()
@@ -82,6 +136,18 @@ export default function Gallery () {
           <Grid item xs={12}>
             <MainCard />
           </Grid>
+
+          {/* Listing Gallery Schematics */}
+          {GallerySchSample.map(
+            (sch) => {
+              return (
+                <Grid item xs={12} sm={6} lg={4} key={sch.save_id}>
+                  <SchematicCard sch={sch} />
+                </Grid>
+              )
+            }
+          )}
+
         </Grid>
       </Container>
     </div>
