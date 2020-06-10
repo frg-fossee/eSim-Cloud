@@ -14,12 +14,22 @@ export class Battery9v extends CircuitElement {
   }
   /** init is called when the component is complety drawn to the canvas */
   init() {
+    // console.log(this.nodes[0].label);
+    // console.log(this.nodes[1].label);
     this.nodes[1].addValueListener((_, calledby, __) => {
       // if both the terminals of battery are connected with each other
       if (calledby.parent.id === this.id) {
         /// TODO: Show Toast and Stop Simulation
         console.log('Short Circuit');
         window['showToast']('Short Circuit');
+      }
+    });
+    this.nodes[1].addValueListener((v) => {
+      if (v >= 0 && this.nodes[0].value <= 0) {
+        this.nodes[0].setValue(9, this.nodes[0]);
+      }
+      if (v < 0) {
+        this.nodes[0].setValue(-1, this.nodes[0]);
       }
     });
   }
@@ -44,6 +54,11 @@ export class Battery9v extends CircuitElement {
    */
   initSimulation(): void {
     this.nodes[0].setValue(9, null);
+    setTimeout(() => {
+      if (this.nodes[1].value < 0) {
+        this.nodes[0].setValue(-1, null);
+      }
+    }, 10);
   }
   closeSimulation(): void {
   }

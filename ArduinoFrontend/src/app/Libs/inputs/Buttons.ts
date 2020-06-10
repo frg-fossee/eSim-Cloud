@@ -23,10 +23,15 @@ export class PushButton extends CircuitElement {
     }
     // Add value Change Listener to Circuit nodes
     this.pinNamedMap['Terminal 1a'].addValueListener((v) => {
-      this.pinNamedMap['Terminal 1b'].setValue(v, null);
+      if (v !== this.pinNamedMap['Terminal 1b'].value) {
+        this.pinNamedMap['Terminal 1b'].setValue(v, this.pinNamedMap['Terminal 1b']);
+      }
     });
     this.pinNamedMap['Terminal 1b'].addValueListener((v) => {
-      this.pinNamedMap['Terminal 1a'].setValue(v, null);
+      if (v !== this.pinNamedMap['Terminal 1a'].value) {
+        console.log(v);
+        this.pinNamedMap['Terminal 1a'].setValue(v, this.pinNamedMap['Terminal 1a']);
+      }
     });
     this.pinNamedMap['Terminal 2a'].addValueListener((v) => {
       this.pinNamedMap['Terminal 2b'].setValue(v, null);
@@ -74,6 +79,7 @@ export class PushButton extends CircuitElement {
         this.pinNamedMap['Terminal 1a'].setValue(val, null);
         this.pinNamedMap['Terminal 1b'].setValue(val, null);
       }
+      // console.log(val);
     });
     // Set mouseup listener for the button
     this.elements[9].mouseup(() => this.MouseUp(by, iniValue));
