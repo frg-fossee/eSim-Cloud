@@ -98,7 +98,7 @@ export default function Simulator () {
         } else {
           var temp = res.data.details.data
           var result = res.data.details
-          var data = result.FormData
+          var data = result.data
           if (res.data.details.graph === 'true') {
             var simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
