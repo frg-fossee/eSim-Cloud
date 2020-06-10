@@ -1,42 +1,42 @@
 <div [style.width.px]=width [style.minHeight]="height+'vh'" style="margin-top: 0px;">
 
-    <div class=" text text-center" style="display:flex; background-color: whitesmoke; height:100vh; font-size: 1.4em;"
-      *ngIf="names.length == 0">
-      <p style="margin:auto auto;">No Programmable Component in this Circuit</p>
-    </div>
-
-    <div *ngIf="names.length>0">
-      <div class="inline-block"
-        style="display: flex; background-color:whitesmoke; justify-content: space-between;margin:auto;">
-        <span style="flex:1 1 auto;"></span>
-        <button class="btn btn-light btn-sm  mb-1 mt-2 mr-1 bg-white" style="font-size: 16px; max-height:30px;" (click)="DownloadCode()"><i
-            class="fa fa-download"></i></button>
-        <button class="btn btn-light btn-sm mb-1 mt-2 mr-1 bg-white" style="font-size:16px; max-height:30px;"
-          (click)="openFolder()"><i class="fas fa-box"></i></button>
-        <form>
-          <div class="form-group mt-2 " style="max-height: 20px; box-shadow: whitesmoke; ">
-            <select id="inputState" class="form-control form-control-sm" (change)="chooseArduino(chooseController)"
-              #chooseController>
-              <option *ngFor="let name of names">{{name}}</option>
-            </select>
-          </div>
-        </form>
-      </div>
-
-      <div id="lib"
-        style="display: none; flex-direction: column; z-index: 1000;position: absolute; overflow-y: scroll; overflow-x: hidden; height: 600vh;background-color: lightgray">
-        <div class="alert alert-dark" role="alert" *ngFor="let record of records">
-          <button type="button" class="btn btn-outline-primary btn-sm include">Include</button>
-          <div class="name">{{record.name}}</div>
-          <div class="description">{{record.Description}}</div>
-          <span style="flex:1 1 auto;"></span>
-          <button class="btn btn-sm icon"><a href={{record.url}} target="_blank"><i
-                class="fas fa-external-link-alt"></i></a></button>
-        </div>
-      </div>
-      <ngx-monaco-editor id="editor" style="height: 100vh; display: block;" [options]="editorOptions" [(ngModel)]="code"
-        (ngModelChange)="codeChanged()" (onInit)="onInit($event)">
-      </ngx-monaco-editor>
-    </div>
-
+  <div class=" text text-center" style="display:flex; background-color: whitesmoke; height:100vh; font-size: 1.4em;"
+    *ngIf="names.length == 0">
+    <p style="margin:auto auto;">No Programmable Component in this Circuit</p>
   </div>
+
+  <div *ngIf="names.length>0">
+    <div class="inline-block"
+      style="display: flex; background-color:whitesmoke; justify-content: space-between;margin:auto;">
+      <span style="flex:1 1 auto;"></span>
+      <button class="btn btn-light btn-sm  mb-1 mt-2 mr-1 bg-white" style="font-size: 16px; max-height:30px;"
+        (click)="DownloadCode()"><i class="fa fa-download"></i></button>
+      <button class="btn btn-light btn-sm mb-1 mt-2 mr-1 bg-white" style="font-size:16px; max-height:30px;"
+        (click)="openFolder()"><i class="fas fa-box"></i></button>
+      <form>
+        <div class="form-group mt-2 " style="max-height: 20px; box-shadow: whitesmoke; ">
+          <select id="inputState" class="form-control form-control-sm" (change)="chooseArduino(chooseController)"
+            #chooseController>
+            <option *ngFor="let name of names">{{name}}</option>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <div id="lib"
+      style="display: none; flex-direction: column; z-index: 1000;position: absolute; overflow-y: scroll; overflow-x: hidden; height: 600vh;background-color: lightgray">
+      <div class="alert alert-dark" role="alert" *ngFor="let record of records;let i = index">
+        <button type="button" class="btn btn-outline-primary btn-sm include" (click)="Include(i)">Include</button>
+        <div class="name">{{record.name}}</div>
+        <div class="description">{{record.Description}}</div>
+        <span style="flex:1 1 auto;"></span>
+        <button class="btn btn-sm icon"><a href={{record.url}} target="_blank"><i
+              class="fas fa-external-link-alt"></i></a></button>
+      </div>
+    </div>
+    <ngx-monaco-editor id="editor" style="height: 100vh; display: block;" [options]="editorOptions" [(ngModel)]="code"
+      (ngModelChange)="codeChanged()" (onInit)="onInit($event)">
+    </ngx-monaco-editor>
+  </div>
+
+</div>
