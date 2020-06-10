@@ -1,22 +1,32 @@
 import { CircuitElement } from '../CircuitElement';
 import { Collision } from './Collision';
 import { isNull } from 'util';
-
+/**
+ * PIR Sensor class
+ */
 export class PIRSensor extends CircuitElement {
-  static curve: number[][];
-  static handPoints: number[][];
-  range: any;
-  backCurve: string;
-  hand: any;
+  static curve: number[][]; // curve points of sensor
+  static handPoints: number[][]; // points of hand polygon
+  range: any; // range of sensor
+  backCurve: string; // backCurve(path) of sensor
+  hand: any; // hand is a Raphael Element
   pinNameMap: any = {};
+  /**
+   * pushbutton constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('PIRSensor', x, y, 'PIRSensor.json', canvas);
   }
+  /** init is called when the component is complety drawn to the canvas */
   init() {
     PIRSensor.curve = this.data.curve;
     PIRSensor.handPoints = this.data.hand;
     this.backCurve = this.data.backCurve;
     this.data = null;
+    // Create a mapping for node label to node
     for (const node of this.nodes) {
       this.pinNameMap[node.label] = node;
     }
@@ -25,6 +35,13 @@ export class PIRSensor extends CircuitElement {
       this.pinNameMap['GND'].setValue(v, null);
     });
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('body');
     return {
@@ -34,6 +51,9 @@ export class PIRSensor extends CircuitElement {
       id: this.id
     };
   }
+  /**
+   * Initialize Variable,callback and event caller when start simulation is pressed
+   */
   initSimulation(): void {
     this.elements.undrag();
     this.elements.unmousedown();
@@ -46,6 +66,7 @@ export class PIRSensor extends CircuitElement {
     this.range.translate(this.x + this.tx + 99, this.y + this.ty + 80);
     this.range.toBack();
     const tmpCurve = [];
+    // Updates the points of the sensor ranging curve
     for (const x of PIRSensor.curve) {
       tmpCurve.push([x[0] + this.x + this.tx, x[1] + this.y + this.ty]);
     }
@@ -73,6 +94,7 @@ export class PIRSensor extends CircuitElement {
       this.elements[1].transform(`t${handTX + dx},${handTy + dy}`);
       // let handPoints = [];
       ans = false;
+      // to check collision between hand and affected region
       for (const vec of PIRSensor.handPoints) {
         // handPoints.push(
         //   [vec[0] + this.x + hand_tx + dx, vec[1] + this.y + hand_ty + dy]
@@ -83,6 +105,7 @@ export class PIRSensor extends CircuitElement {
         );
       }
       // console.log(ans);
+      // if VCC pin of sensor is connected and has a potential of 5 volts
       if (ans) {
         if (this.pinNameMap['VCC'].value > 0) {
           this.pinNameMap['SIGNAL'].setValue(5, null);
@@ -113,6 +136,7 @@ export class PIRSensor extends CircuitElement {
       }, 1000);
     });
   }
+  /** Function removes all events and callbacks  */
   closeSimulation(): void {
     if (this.range) {
       this.range.remove();

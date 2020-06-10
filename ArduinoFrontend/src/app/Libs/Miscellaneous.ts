@@ -1,6 +1,7 @@
 import { CircuitElement } from './CircuitElement';
-import { Point } from './Point';
-
+/**
+ * Label class
+ */
 export class Label extends CircuitElement {
   text = 'Label';
   fontSize = 15;
@@ -9,6 +10,12 @@ export class Label extends CircuitElement {
   // normal | bold | bolder | lighter
   fontWeight = 'normal';
   getName = null;
+  /**
+   * Label constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('Label', x, y);
     this.elements.push(
@@ -20,6 +27,7 @@ export class Label extends CircuitElement {
     this.setHoverListener();
     window['queue'] -= 1;
   }
+  /** Saves data for label class */
   SaveData() {
     return {
       text: this.text,
@@ -29,6 +37,10 @@ export class Label extends CircuitElement {
       style: this.fontStyle
     };
   }
+  /**
+   * Loads data of SaveData()
+   * @param data saved object
+   */
   LoadData(data: any) {
     this.text = data.data.text;
     this.fontSize = data.data.size;
@@ -38,6 +50,7 @@ export class Label extends CircuitElement {
     this.elements.transform(`t${this.tx},${this.ty}`);
     this.update();
   }
+  /** Function updates the label class */
   update() {
     this.elements[0]
       .attr({
@@ -49,7 +62,9 @@ export class Label extends CircuitElement {
         fill: this.fontColor
       });
   }
+  /** Changes text for label  */
   changeLabel(value: string) {
+    // if text field is empty
     if (value === '') {
       // TODO: Show Toast
       window['showToast']('Label cannot be empty');
@@ -58,6 +73,13 @@ export class Label extends CircuitElement {
     this.text = value;
     this.update();
   }
+  /**
+   * Function provides label details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     let tmp;
     const body = document.createElement('div');

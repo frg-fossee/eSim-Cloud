@@ -42,4 +42,12 @@ export class ApiService {
   getHex(taskId: string): Observable<any> {
     return this.http.get(`${this.url}api/arduino/compile/status?task_id=${taskId}`);
   }
+
+  getToken() {
+
+  }
+
+  redirectToLogin() {
+    console.log(window.location.host);
+  }
 }

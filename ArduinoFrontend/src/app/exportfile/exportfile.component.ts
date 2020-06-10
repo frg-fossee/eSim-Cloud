@@ -38,6 +38,8 @@ export class ExportfileComponent implements OnInit {
           Download.DownloadImage(v, this.title.getTitle(), ImageType.JPG);
           window.hideLoading();
         });
+    } else {
+      window.hideLoading();
     }
     this.dialog.close();
   }

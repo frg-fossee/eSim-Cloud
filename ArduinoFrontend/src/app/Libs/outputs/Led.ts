@@ -2,16 +2,25 @@ import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 
 declare var window;
-
+/**
+ * LED class
+ */
 export class LED extends CircuitElement {
   static colors: string[] = []; // Color of LED
-  static glowColors: string[] = [];
-  static colorNames: string[] = [];
-  selectedIndex = 0;
+  static glowColors: string[] = []; // color to be shown while glowing
+  static colorNames: string[] = []; // Name of Color of LED
+  selectedIndex = 0; // Selectedindex wrt to color
   prev = -2;
+  /**
+   * LED constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('LED', x, y, 'LED.json', canvas);
   }
+  /** Saves data of selected color wrt its index */
   SaveData() {
     return {
       color: this.selectedIndex
@@ -24,6 +33,7 @@ export class LED extends CircuitElement {
   LoadData(data: any) {
     this.selectedIndex = data.data.color;
   }
+  /** init is called when the component is complety drawn to the canvas */
   init() {
     if (LED.glowColors.length === 0) {
       // LED
@@ -33,13 +43,16 @@ export class LED extends CircuitElement {
       LED.glowColors = this.data.glowcolors;
     }
     this.data = null;
+    // Add value Change Listener to Circuit nodes
     this.nodes[0].addValueListener((v) => this.logic(v));
     this.nodes[1].addValueListener((v) => this.logic(v));
     this.elements[0].attr({
       fill: LED.colors[this.selectedIndex]
     });
-}
+  }
+  /** Simulation Logic */
   logic(val: number) {
+    // console.log(val);
     if (this.prev === val) {
       return;
     }
@@ -51,12 +64,15 @@ export class LED extends CircuitElement {
       } else {
         this.elements[3].attr({ fill: 'none' });
       }
-      this.nodes[1].setValue(val, null);
+      if (val >= 0) {
+        this.nodes[1].setValue(val, null);
+      }
     } else {
       // TODO: Show Toast
       window.showToast('LED is not Connected properly');
     }
   }
+  /** animation caller when start simulation is pressed */
   anim() {
     this.elements[3].attr({
       fill: `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`
@@ -66,6 +82,13 @@ export class LED extends CircuitElement {
     // TODO: Change Accordingly to Color
     return `LED Red`;
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     const select = document.createElement('select');
@@ -94,6 +117,7 @@ export class LED extends CircuitElement {
   }
   initSimulation(): void {
   }
+  /** Function removes all the animations */
   closeSimulation(): void {
     this.prev = -2;
     this.elements[3].attr({ fill: 'none' });
@@ -101,11 +125,20 @@ export class LED extends CircuitElement {
   simulate(): void {
   }
 }
-
+/**
+ * RGBLED class
+ */
 export class RGBLED extends CircuitElement {
+  /**
+   * RGBLED constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('RGBLED', x, y, 'RGBLED.json', canvas);
   }
+  /** animation caller when start simulation is pressed */
   anim() {
     // TODO: Remove
     this.elements[1].attr({
@@ -115,6 +148,13 @@ export class RGBLED extends CircuitElement {
       color: 'rgb(255,0,0)'
     });
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
