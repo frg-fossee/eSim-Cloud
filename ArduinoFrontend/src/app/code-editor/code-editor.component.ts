@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ArduinoUno } from '../Libs/outputs/Arduino';
+import { Download } from '../Libs/Download';
 
 declare var monaco: any;
 
@@ -52,7 +53,7 @@ export class CodeEditorComponent implements OnInit {
       url: 'https://www.arduino.cc/en/Reference/SPI'
     }
   ];
-  code = 's';
+  code = '';
   names: string[] = [];
   arduinos: ArduinoUno[] = [];
   selectedIndex = 0;
@@ -78,6 +79,13 @@ export class CodeEditorComponent implements OnInit {
         this.code = this.arduinos[this.selectedIndex].code;
       }
     }
+  }
+  DownloadCode() {
+    Download.DownloadText(this.names[this.selectedIndex] + '.ino',
+      [this.code],
+      {
+        type: 'text/ino;charset=utf-8;'
+      });
   }
   onInit(_) {
     (window as any).monaco.languages.registerCompletionItemProvider('c', {
