@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Container,
   Grid,
@@ -14,6 +14,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { Link as RouterLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { login } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,8 +42,12 @@ export default function SignIn () {
   const classes = useStyles()
 
   useEffect(() => {
-    document.title = 'Login - EDA '
+    document.title = 'Login - eSim '
   })
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const dispatch = useDispatch()
 
   return (
     <Container component="main" maxWidth="xs">
@@ -64,6 +70,8 @@ export default function SignIn () {
             label="Username"
             name="email"
             autoComplete="email"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
             autoFocus
           />
           <TextField
@@ -75,6 +83,8 @@ export default function SignIn () {
             label="Password"
             type="password"
             id="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           <FormControlLabel
@@ -82,12 +92,10 @@ export default function SignIn () {
             label="Remember me"
           />
           <Button
-            component={RouterLink}
-            to="/dashboard"
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
+            onClick={() => dispatch(login(username, password))}
             className={classes.submit}
           >
             Login
@@ -109,7 +117,6 @@ export default function SignIn () {
       <Button
         component={RouterLink}
         to="/"
-        type="submit"
         fullWidth
         color="default"
         className={classes.submit}

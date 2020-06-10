@@ -1,9 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { IconButton, Tooltip } from '@material-ui/core'
+import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
-import FolderIcon from '@material-ui/icons/Folder'
-import EditIcon from '@material-ui/icons/Edit'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
 import UndoIcon from '@material-ui/icons/Undo'
@@ -17,12 +15,16 @@ import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined'
 import RotateRightIcon from '@material-ui/icons/RotateRight'
 import BorderClearIcon from '@material-ui/icons/BorderClear'
 import { makeStyles } from '@material-ui/core/styles'
+import CloseIcon from '@material-ui/icons/Close'
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined'
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
+import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
+import { Link as RouterLink } from 'react-router-dom'
 
 import { NetlistModal, HelpScreen } from './ToolbarExtension'
-import MenuButton from './MenuButton'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSimulate, closeCompProperties } from '../../redux/actions/index'
+import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -45,14 +47,46 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+function SimpleSnackbar ({ open, close, message }) {
+  return (
+    <div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={close}
+        message={message}
+        action={
+          <React.Fragment>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    </div>
+  )
+}
+
+SimpleSnackbar.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.func,
+  message: PropTypes.string
+}
+
 export default function SchematicToolbar ({ mobileClose }) {
   const classes = useStyles()
   const netfile = useSelector(state => state.netlistReducer)
+  const auth = useSelector(state => state.authReducer)
+  const schSave = useSelector(state => state.saveSchematicReducer)
 
   const dispatch = useDispatch()
 
+  // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
-  const [helpOpen, setHelpOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
 
   const handleClickOpen = () => {
@@ -70,6 +104,9 @@ export default function SchematicToolbar ({ mobileClose }) {
     setOpen(false)
   }
 
+  // Help dialog window
+  const [helpOpen, setHelpOpen] = React.useState(false)
+
   const handleHelpOpen = () => {
     setHelpOpen(true)
   }
@@ -78,18 +115,86 @@ export default function SchematicToolbar ({ mobileClose }) {
     setHelpOpen(false)
   }
 
+  // Delete component
   const handleDeleteComp = () => {
     DeleteComp()
     dispatch(closeCompProperties())
   }
 
+  // Notification Snackbar
+  const [snacOpen, setSnacOpen] = React.useState(false)
+  const [message, setMessage] = React.useState('')
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
+
+  // Save Schematic
+  const handelSchSave = () => {
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else {
+      var xml = Save()
+      dispatch(setSchXmlData(xml))
+      var title = schSave.title
+      var description = schSave.description
+      dispatch(saveSchematic(title, description, xml))
+      setMessage('Saved Successfully')
+      handleSnacClick()
+    }
+  }
+
+  // Open Schematic
+  const handelSchOpen = () => {
+    const fileSelector = document.createElement('input')
+    fileSelector.setAttribute('type', 'file')
+    fileSelector.setAttribute('multiple', 'multiple')
+    fileSelector.click()
+  }
+
   return (
     <>
-      <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} />
-      <MenuButton title={'Edit'} iconType={EditIcon} items={['Cut', 'Copy', 'Paste']} />
+      {/* <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} /> */}
+      <Tooltip title="New">
+        <IconButton color="inherit" className={classes.tools} size="small" target="_blank" component={RouterLink} to="/editor" >
+          <CreateNewFolderOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Open">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchOpen} >
+          <OpenInBrowserIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Save">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
+          <SaveOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+      <span className={classes.pipe}>|</span>
+
       <Tooltip title="Simulate">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { dispatch(toggleSimulate()) }}>
           <PlayCircleOutlineIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Generate Netlist">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleClickOpen} >
+          <BorderClearIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <NetlistModal open={open} close={handleClose} netlist={netlist} />
+      <Tooltip title="ERC Check">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={ErcCheck}>
+          <BugReportOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>
@@ -133,19 +238,6 @@ export default function SchematicToolbar ({ mobileClose }) {
           <PrintOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Generate Netlist">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleClickOpen} >
-          <BorderClearIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <NetlistModal open={open} close={handleClose} netlist={netlist} />
-      <Tooltip title="ERC Check">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={ErcCheck}>
-          <BugReportOutlinedIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
-      <span className={classes.pipe}>|</span>
-
       <Tooltip title="Delete">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleDeleteComp}>
           <DeleteIcon fontSize="small" />

@@ -12,7 +12,6 @@
       "element",
       "app",
       "kebab-case"
-    ],
-    "no-redundant-jsdoc": true
+    ]
   }
 }

@@ -18,21 +18,20 @@ def extract_data_from_ngspice_output(pathToFile):
                 graph = False
 
             if(not graph):
-                json_data = {"total_number_of_tables": 0, "data": [],
-                             "graph": "false"}
+                json_data = {"data": [], "graph": "false"}
                 for line in f_contents:
                     contents_of_line = line.split()
                     json_data["data"].append(contents_of_line)
 
             else:
-                json_data = {"total_number_of_tables": 0, "data": [],
-                             "graph": "true"}
+                json_data = {"data": [], "graph": "true"}
                 for line in f_contents:
                     contents_of_line = line.split()
 
                     if('Index' in contents_of_line):
-                        line_set = remove_duplicate_items_from_list(
-                            contents_of_line)
+                        # line_set = remove_duplicate_items_from_list(
+                        #     contents_of_line)
+                        line_set = contents_of_line
 
                         if(line_set != curernt_headers):
                             curernt_headers = line_set
@@ -56,8 +55,8 @@ def extract_data_from_ngspice_output(pathToFile):
 
                             for x in range(len(data["y"])):
                                 data["y"][x].append(contents_of_line[x+2])
-
-                json_data["total_number_of_tables"] = total_number_of_tables - len(json_data["data"])  # noqa
+                json_data["total_number_of_tables"] = total_number_of_tables -\
+                    len(json_data["data"])
         return json_data
 
     except IOError as e:
@@ -65,12 +64,12 @@ def extract_data_from_ngspice_output(pathToFile):
         raise e
 
 
-def remove_duplicate_items_from_list(line_list):
-    res = []
-    for i in line_list:
-        if i not in res:
-            res.append(i)
-    return res
+# def remove_duplicate_items_from_list(line_list):
+#     res = []
+#     for i in line_list:
+#         if i not in res:
+#             res.append(i)
+#     return res
 
 
 # for testing provide the filepath as command line argument

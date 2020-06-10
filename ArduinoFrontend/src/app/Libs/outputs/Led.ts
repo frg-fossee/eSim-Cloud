@@ -49,9 +49,10 @@ export class LED extends CircuitElement {
     this.elements[0].attr({
       fill: LED.colors[this.selectedIndex]
     });
-}
+  }
   /** Simulation Logic */
   logic(val: number) {
+    // console.log(val);
     if (this.prev === val) {
       return;
     }
@@ -63,7 +64,9 @@ export class LED extends CircuitElement {
       } else {
         this.elements[3].attr({ fill: 'none' });
       }
-      this.nodes[1].setValue(val, null);
+      if (val >= 0) {
+        this.nodes[1].setValue(val, null);
+      }
     } else {
       // TODO: Show Toast
       window.showToast('LED is not Connected properly');

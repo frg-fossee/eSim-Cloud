@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
 import { CssBaseline } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -11,7 +12,10 @@ import RightSidebar from '../components/SchematicEditor/RightSidebar'
 import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-// import {TermsAndConditions} from '../components/SchematicEditor/ToolbarExtension'
+import { fetchSchematic } from '../redux/actions/index'
+import { useDispatch } from 'react-redux'
+import { renderXML } from '../components/SchematicEditor/Helper/ToolbarTools'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -22,34 +26,35 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SchematiEditor () {
+export default function SchematiEditor (props) {
   const classes = useStyles()
   const compRef = React.createRef()
   const gridRef = React.createRef()
   const outlineRef = React.createRef()
-
+  const dispatch = useDispatch()
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
-  // const [tAc,settAc] = React.useState(true)
-  // const handletAcOpen = () => {
-  //   settAc(false)
-  // }
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
   }
 
   useEffect(() => {
-    document.title = 'Schematic Editor - EDA '
+    document.title = 'Schematic Editor - eSim '
     var container = gridRef.current
     var sidebar = compRef.current
     var outline = outlineRef.current
     LoadGrid(container, sidebar, outline)
-  }, [compRef, gridRef, outlineRef])
+
+    if (props.location.state !== undefined) {
+      // calling the api
+      dispatch(fetchSchematic(props.location.state.id))
+      renderXML()
+    }
+  }, [compRef, gridRef, outlineRef, props.location, dispatch])
 
   return (
 
     <div className={classes.root}>
-      {/* <TermsAndConditions open={tAc} close={handletAcOpen}/> */}
 
       <CssBaseline />
 

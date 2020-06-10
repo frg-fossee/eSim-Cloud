@@ -1,5 +1,4 @@
 import { CircuitElement } from './CircuitElement';
-import { Point } from './Point';
 /**
  * Label class
  */
