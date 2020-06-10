@@ -7,6 +7,7 @@ The Arduino circuit designer is divided into 2 panes. The left pane consists of 
 Component categories
 ####################
 The components are categorized as follows:
+
 * General: Resistor, Breadboard
 * Controllers: Arduino UNO
 * Output: Buzzer, LED, Motor, LCD, Servo Motor, 7 segment display, RGB LED

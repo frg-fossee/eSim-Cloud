@@ -8,5 +8,6 @@ Introduction to Arduino on Cloud
     :titlesonly:
     :glob:
 
+    flow.rst
     features.rst
     screenshots.rst
