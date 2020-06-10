@@ -104,7 +104,7 @@ DATABASES = {
         "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
         "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
         "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-        "HOST": "mongodb",
+        "HOST": "localhost",
         "PORT": 27017,
         'AUTH_SOURCE': 'admin',
         'AUTH_MECHANISM': 'SCRAM-SHA-1',
@@ -207,15 +207,15 @@ STATIC_URL = '/django_static/'
 
 # noqa For Netlist handling netlist uploads and other temp uploads
 MEDIA_URL = '/_files/'
-MEDIA_ROOT = os.path.join("/tmp", "esimCloud-temp")
+MEDIA_ROOT = 'D:\\tempData'
 
 # File Storage
 FILE_STORAGE_ROOT = os.path.join(BASE_DIR, 'file_storage')
 FILE_STORAGE_URL = '/files'
 
 # celery
-CELERY_BROKER_URL = 'redis://redis:6379'
-CELERY_RESULT_BACKEND = 'redis://redis:6379'
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'

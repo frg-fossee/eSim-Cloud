@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def saveFiles(data):
+    print(os.path.isdir(settings.MEDIA_ROOT))
     try:
         filenames = []
         if not os.path.exists(settings.MEDIA_ROOT):

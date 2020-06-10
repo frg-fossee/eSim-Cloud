@@ -67,7 +67,7 @@ services:
     build: ./esim-cloud-backend/
     command: "python3 manage.py runserver 0.0.0.0:8000"
     ports:
-      - "8000:8000"
+      - "8000:9000"
     volumes:
       - ./esim-cloud-backend:/code
       - run_vol:/var/run
@@ -128,20 +128,20 @@ services:
           - ./redis_data:/data
 
   # Uncomment this and Change appropriate env variables to switch to mysql
-  # db:
-  #   image: "mysql:${TAG_MYSQL}"
-  #   command: --default-authentication-plugin=mysql_native_password
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./mysql_data:/var/lib/mysql
-
   db:
-    image: postgres
-    volumes:
-      - ./postgres_data:/var/lib/postgresql/data/
+    image: "mysql:${TAG_MYSQL}"
+    command: --default-authentication-plugin=mysql_native_password
     env_file:
       - .env
+    volumes:
+      - ./mysql_data:/var/lib/mysqlt
+
+  # db:
+  #   image: postgres
+  #   volumes:
+  #     - ./postgres_data:/var/lib/postgresql/data/
+  #   env_file:
+  #     - .env
 
 volumes:
   run_vol:
