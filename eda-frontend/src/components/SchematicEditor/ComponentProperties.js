@@ -47,6 +47,7 @@ export default function ComponentProperties () {
       <ListItem>
         <ListItemText primary='Component Properties' secondary={properties.NAME} />
       </ListItem>
+
       {
         Object.keys(properties).map((keyName, i) => {
           if (keyName === 'MODEL') {
@@ -55,87 +56,43 @@ export default function ComponentProperties () {
             </ListItem>
           // eslint-disable-next-line brace-style
           }
-          // if (keyName === 'MODEL') {
-          //   return (
-          //     <div>
-          //       <ListItem key={i}>
-          //         <Button size="small" variant="outlined" color="primary" onClick={handleClickOpen}>
-          //         ADD MODEL
-          //         </Button>
 
-          //       </ListItem>
-
-          //       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          //         <DialogTitle id="form-dialog-title">ADD MODEL</DialogTitle>
-          //         <DialogContent>
-          //           <ListItem key={i}>
-          //             <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={'ADD EXPRESSION'} style={{ width: '100%' }} />
-          //           </ListItem>
-          //         </DialogContent>
-          //         <DialogActions>
-          //           <Button onClick={handleClose} color="primary">
-          //             Cancel
-          //           </Button>
-          //           <Button onClick={handleClose} color="primary">
-          //             Add
-          //           </Button>
-          //         </DialogActions>
-          //       </Dialog>
-          //     </div>
-          //   )
-          // }
           else if (keyName === 'EXTRA_EXPRESSION') {
             return <ListItem key={i}>
-              <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={'ADD EXPRESSION'} style={{ width: '100%' }} />
+              <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={'EXPRESSION'} style={{ width: '100%' }} />
             </ListItem>
           }
 
-          // else if (keyName === 'EXTRA_EXPRESSION') {
-          //   return (
-
-          //     <div>
-          //       <ListItem key={i}>
-          //         <Button size="small" variant="outlined" color="primary" onClick={handleClickOpen}>
-          //         ADD EXPRESSION
-          //         </Button>
-
-          //       </ListItem>
-
-          //       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-          //         <DialogTitle id="form-dialog-title">ADD EXPRESSION</DialogTitle>
-          //         <DialogContent>
-          //           <ListItem key={i}>
-          //             <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={'ADD EXPRESSION'} style={{ width: '100%' }} />
-          //           </ListItem>
-          //         </DialogContent>
-          //         <DialogActions>
-          //           <Button onClick={handleClose} color="primary">
-          //             Cancel
-          //           </Button>
-          //           <Button onClick={handleClose} color="primary">
-          //             Add
-          //           </Button>
-          //         </DialogActions>
-          //       </Dialog>
-          //     </div>
-
-          //   )
-          // }
           else if (keyName.charAt(0) === 'N' && keyName !== 'NAME') {
             return <span key={i} />
-          } else if (keyName === 'UNIT') {
+          } else if (keyName.includes('UNIT')) {
             return <span key={i} />
-          } else if (keyName === 'VALUE') {
+          }
+          else if (keyName === 'PREFIX') {
             return (
               <ListItem key={i}>
-                <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
-                <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
+                <TextField id={keyName} label='LABEL' value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
               </ListItem>)
           }
+          else if (keyName === 'NAME') {
+            return (
+              <ListItem key={i}>
+                <TextField disabled id={keyName} label='COMPONENT NAME' value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+
+              </ListItem>)
+          }
+          // else if (keyName === 'VALUE') {
+          //   return (
+          //     <ListItem key={i}>
+          //       <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+          //       <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
+          //     </ListItem>)
+          // }
 
           return (
             <ListItem key={i}>
               <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+              {val[`${keyName}_UNIT`] && <span style={{ marginLeft: '10px' }}>{val[`${keyName}_UNIT`] || ''}</span>}
             </ListItem>)
         })
       }
