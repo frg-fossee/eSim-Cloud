@@ -985,3 +985,18 @@ function parseXmlToGraph (xmlDoc, graph) {
     }
   }
 }
+
+export function renderGalleryXML (xml) {
+  // var changes = evt.getProperty('edit').changes
+  graph.view.refresh()
+  var xmlDoc = mxUtils.parseXml(xml)
+  /* var node = xmlDoc.documentElement
+  var dec = new mxCodec(node)
+  // dec.decode(node, graph.getModel())
+  var change = dec.decode(node)
+  console.log(change) */
+  parseXmlToGraph(xmlDoc, graph)
+  // console.log(dec)
+  // change.execute()
+  // changes.push(change)
+}
