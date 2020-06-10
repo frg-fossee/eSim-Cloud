@@ -8,6 +8,7 @@ Component categories
 ####################
 The components are categorized as follows:
 
+
 * General: Resistor, Breadboard
 * Controllers: Arduino UNO
 * Output: Buzzer, LED, Motor, LCD, Servo Motor, 7 segment display, RGB LED
@@ -38,7 +39,7 @@ The circuit can be exported as jpeg, png, and svg. This is useful for documentin
 
 Code editor
 ###########
-A code editor is a place where the users will write the code (logic) for simulation. This is nothing but .ino file, which can be downloaded for use in Arduino IDE. There is also a facility to include the supported header files like EEPROM, LiquidCrystal, Servo, SoftwareSerial, Wire, and SPI.
+A code editor is a place where the users will write the code (logic) for simulation. This is nothing but ``.ino`` file, which can be downloaded for use in Arduino IDE. There is also a facility to include the supported header files like EEPROM, LiquidCrystal, Servo, SoftwareSerial, Wire, and SPI.
 
 Simulator
 #########
