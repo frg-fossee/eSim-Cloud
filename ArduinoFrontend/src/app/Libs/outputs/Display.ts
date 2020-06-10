@@ -1,10 +1,25 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
-
+/**
+ * LCD16X2 Class
+ */
 export class LCD16X2 extends CircuitElement {
+  /**
+   * LCD16X2 constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('LCD16X2', x, y, 'LCD16X2.json', canvas);
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -21,16 +36,25 @@ export class LCD16X2 extends CircuitElement {
   simulate(): void {
   }
 }
-
+/**
+ * SevenSegment Class
+ */
 export class SevenSegment extends CircuitElement {
   static barColor: string;
   static barGlowColor: string;
   static mapping: number[] = [];
   glows = [];
   pinNamedMap: any = {};
+  /**
+   * SevenSegment constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: any, y: any) {
     super('SevenSegment', x, y, 'SevenSegment.json', canvas);
   }
+  /** init is called when the component is completely drawn to the canvas */
   init() {
     if (SevenSegment.mapping.length === 0) {
       SevenSegment.mapping = this.data.mapping;
@@ -55,9 +79,11 @@ export class SevenSegment extends CircuitElement {
       }
     }
   }
+  /** Simulation Logic */
   logic(_) {
     // console.log(k)
     let byte = 0;
+    // create a mapping for node label to node
     byte |= (this.pinNamedMap['a'].value > 0) ? 1 : 0;
     byte |= (this.pinNamedMap['b'].value > 0) ? 2 : 0;
     byte |= (this.pinNamedMap['C'].value > 0) ? 4 : 0;
@@ -69,6 +95,7 @@ export class SevenSegment extends CircuitElement {
     // console.log(byte);
     this.animate(byte);
   }
+  /** animation caller when start simulation is pressed */
   animate(value: number) {
     value = value & 0xFF;
     for (let i = 0; i < 8; ++i) {
@@ -85,6 +112,13 @@ export class SevenSegment extends CircuitElement {
       }
     }
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -96,6 +130,7 @@ export class SevenSegment extends CircuitElement {
   }
   initSimulation(): void {
   }
+  /** Function removes all  animations */
   closeSimulation(): void {
     this.animate(0);
   }

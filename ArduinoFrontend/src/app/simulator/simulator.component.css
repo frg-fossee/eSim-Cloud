@@ -337,3 +337,26 @@ body {
         top: 500px;
     }
 }
+
+#innerdialog {
+    background-color:white;
+    position: absolute;
+    color: black;
+    top: 170px;
+    width: 25%;
+    min-height: 170px;
+    margin-left: 35%;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: block;
+    z-index: 1001;
+  }
+  #opendialog {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    min-height: 150%;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  

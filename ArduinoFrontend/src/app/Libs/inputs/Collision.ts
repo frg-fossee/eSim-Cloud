@@ -1,9 +1,12 @@
-
+/**
+ * @param x position x
+ * @param y position y
+ */
 export interface Vector {
   x: number;
   y: number;
 }
-
+// enum function for rotation of motor
 export enum Orienation {
   COLINEAR,
   CLOCKWISE,
@@ -12,18 +15,22 @@ export enum Orienation {
 
 // https://www.geeksforgeeks.org/how-to-check-if-a-given-point-lies-inside-a-polygon/
 
+/** function detects collision of three collinear points  */
 export class Collision {
   /// TODO: Polygon to Polygon Collision
   /// Right now for Polygon to Polygon Collision we check if small polygon points are inside big polygon
   // Which has one issue Try to find it ;)
+
+  /** Given three collinear points */
   static inLine(p: Vector, q: Vector, r: Vector) {
+    // checks wether q lies on segment pr
     if (q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) &&
       q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)) {
       return true;
     }
     return false;
   }
-
+  /** To find orientation of ordered triplet (p, q, r).  */
   static orientation(p: Vector, q: Vector, r: Vector) {
     const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
     if (val === 0) {
@@ -31,7 +38,7 @@ export class Collision {
     }
     return (val > 0) ? Orienation.CLOCKWISE : Orienation.COUNTER_CLOCKWISE;
   }
-
+  /** Function returns true if two line segemnts intersects */
   static isIntersecting(p1: Vector, q1: Vector, p2: Vector, q2: Vector) {
     const o1 = Collision.orientation(p1, q1, p2);
     const o2 = Collision.orientation(p1, q1, q2);
@@ -54,7 +61,7 @@ export class Collision {
 
     return false; // Doesn't fall in any of the above cases
   }
-
+  /** Function returns true if the point p lies inside polygon */
   static isPointInsidePolygon(point: number[][], p: number[]) {
     const extreme: Vector = {
       x: 10000000,
@@ -78,7 +85,11 @@ export class Collision {
     } while (i !== 0);
     return (count % 2) !== 0;
   }
-
+  /**
+   *  Function performes Euclidean Distance operation
+   * @param a coordinate a
+   * @param b coordinate b
+   */
   static EuclideanDistance(a: Vector, b: Vector) {
     return Math.sqrt(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)));
   }

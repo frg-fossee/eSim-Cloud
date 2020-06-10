@@ -1,10 +1,18 @@
 import { CircuitElement } from '../CircuitElement';
 import { Collision, Vector } from './Collision';
 
-
 /// TODO: Handle the digital pin
+/**
+ * Class GasSensor MQ2
+ */
 export class MQ2 extends CircuitElement {
   line: any;
+  /**
+   * Gas Sensor Constructor
+   * @param canvas Raphael canvas
+   * @param x Position x
+   * @param y Position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('MQ2', x, y, 'MQ2.json', canvas);
   }
@@ -14,6 +22,13 @@ export class MQ2 extends CircuitElement {
       this.nodes[1].setValue(v, null);
     });
   }
+  /**
+   * Function provides component details
+   * @param keyName  Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

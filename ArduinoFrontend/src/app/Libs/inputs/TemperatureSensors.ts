@@ -1,13 +1,22 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
 import { Slider } from './Slider';
-
+/**
+ * Temperature sensor TMP36
+ */
 export class TMP36 extends CircuitElement {
   slide: Slider;
   valueText: any;
   constructor(public canvas: any, x: number, y: number) {
     super('TMP36', x, y, 'TMP36.json', canvas);
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -17,6 +26,7 @@ export class TMP36 extends CircuitElement {
       title: 'Temperatur Sensor'
     };
   }
+  /** sets value for nodes */
   setValue(val: number) {
     if (
       this.nodes[0].connectedTo && this.nodes[0].value >= 4.9 &&
@@ -27,6 +37,9 @@ export class TMP36 extends CircuitElement {
       window['showToast']('Please Connect Wires Properly');
     }
   }
+  /**
+   * Initialize Variable and callback when start simulation is pressed
+   */
   initSimulation(): void {
     this.valueText = this.canvas.text(this.x + this.tx + 120, this.y + this.ty - 40, '42.38°C');
     this.valueText.attr({
@@ -45,6 +58,7 @@ export class TMP36 extends CircuitElement {
     });
     this.setValue(0.925);
   }
+  /** Function removes all callbacks  */
   closeSimulation(): void {
     this.valueText.remove();
     this.slide.remove();

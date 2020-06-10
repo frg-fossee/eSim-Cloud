@@ -1,16 +1,27 @@
 import { CircuitElement } from '../CircuitElement';
 
 declare var Raphael;
-
+/**
+ * Pushbutton Class
+ */
 export class PushButton extends CircuitElement {
   pinNamedMap: any = {};
+  /**
+   * pushbutton constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('PushButton', x, y, 'PushButton.json', canvas);
   }
+  /** init is called when the component is complety drawn to the canvas */
   init() {
+    // Create a mapping for node label to node
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
     }
+    // Add value Change Listener to Circuit nodes
     this.pinNamedMap['Terminal 1a'].addValueListener((v) => {
       this.pinNamedMap['Terminal 1b'].setValue(v, null);
     });
@@ -24,9 +35,13 @@ export class PushButton extends CircuitElement {
       this.pinNamedMap['Terminal 2a'].setValue(v, null);
     });
   }
-  logic(v) {
-
-  }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -36,11 +51,15 @@ export class PushButton extends CircuitElement {
       title: 'Push Button'
     };
   }
+  /**
+   * Initialize Variable,callback and animation caller when start simulation is pressed
+   */
   initSimulation(): void {
     // console.log(this.pinNamedMap[''])
     this.elements.unmousedown();
     let iniValue = -1;
     let by = -1;
+    // create mousedown for the button
     this.elements[9].mousedown(() => {
       let val = this.pinNamedMap['Terminal 1a'].value;
       if (val > 0) {
@@ -56,18 +75,26 @@ export class PushButton extends CircuitElement {
         this.pinNamedMap['Terminal 1b'].setValue(val, null);
       }
     });
+    // Set mouseup listener for the button
     this.elements[9].mouseup(() => this.MouseUp(by, iniValue));
     this.elements[9].mouseout(() => this.MouseUp(by, iniValue));
   }
+  /**
+   * Mouse Up Callback
+   * @param by Representing the node whose value > 0
+   * @param iniValue Initial value of the node before mousedown
+   */
   MouseUp(by: number, iniValue: number) {
     if (by === 0) {
       this.pinNamedMap['Terminal 2a'].setValue(iniValue, null);
-      this.pinNamedMap['Terminal 2b'].setValue(iniValue, null);
+      this.pinNamedMap['Terminal 2b'].
+        setValue(iniValue, null);
     } else {
       this.pinNamedMap['Terminal 1a'].setValue(iniValue, null);
       this.pinNamedMap['Terminal 1b'].setValue(iniValue, null);
     }
   }
+  /** Function removes all  animations and callbacks  */
   closeSimulation(): void {
     this.elements.unmousedown();
     this.elements.unmouseup();
@@ -79,9 +106,17 @@ export class PushButton extends CircuitElement {
 
 }
 
-
+/**
+ * Slideswitch Class
+ */
 export class SlideSwitch extends CircuitElement {
   private flag = true; // if true connected with terminal 1 else connected with terminal 2
+  /**
+   * Slideswitch constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('SlideSwitch', x, y, 'SlideSwitch.json', canvas);
   }
@@ -101,6 +136,7 @@ export class SlideSwitch extends CircuitElement {
       }
     });
   }
+  /** Animation caller during start simulation button pressed */
   anim() {
     let anim;
     if (this.flag) {
@@ -112,6 +148,13 @@ export class SlideSwitch extends CircuitElement {
     this.flag = !this.flag;
     this.nodes[1].setValue(this.nodes[1].value, this.nodes[1]);
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

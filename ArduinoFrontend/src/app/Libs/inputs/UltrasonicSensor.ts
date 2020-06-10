@@ -3,6 +3,9 @@ import { Collision } from './Collision';
 import { Point } from '../Point';
 import { ArduinoUno } from '../outputs/Arduino';
 
+/**
+ * Ultrasonic Sensor class
+ */
 export class UltrasonicSensor extends CircuitElement {
   static readonly linesAttr = {
     'stroke-width': 4,
@@ -18,14 +21,23 @@ export class UltrasonicSensor extends CircuitElement {
   Tline: any;
   Rline: any;
   valueText: any;
+  /**
+   * Ultrasonic constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, public x: number, y: number) {
     super('UltrasonicSensor', x, y, 'UltrasonicSensor.json', canvas);
   }
+  /** init is called when the component is complety drawn to the canvas */
   init() {
+    // Create a mapping for node label to node
     for (const x of this.nodes) {
       this.pinNamedMap[x.label] = x;
     }
     // let timeout;
+    // Add value Change Listener to Circuit nodes
     // console.log(this.pinNamedMap['TRIG']);
     this.pinNamedMap['TRIG'].addValueListener((v) => {
       // TODO: Handle On
@@ -48,6 +60,13 @@ export class UltrasonicSensor extends CircuitElement {
       // }
     });
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {
@@ -71,6 +90,9 @@ export class UltrasonicSensor extends CircuitElement {
   getDistance() {
 
   }
+  /**
+   * Initialize Variable and callback when start simulation is pressed
+   */
   initSimulation(): void {
     this.valueText = this.canvas.text(this.x + this.tx + 253, this.ty + this.y, '16 CM').attr({
       'font-size': 30
@@ -157,6 +179,7 @@ export class UltrasonicSensor extends CircuitElement {
       });
     }
   }
+  /** Function removes all callbacks  */
   closeSimulation(): void {
     this.valueText.remove();
     this.Tline.remove();
