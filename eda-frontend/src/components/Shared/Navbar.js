@@ -96,6 +96,16 @@ export function Header () {
               <Link
                 variant="button"
                 color="textPrimary"
+                to="/gallery"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
                 to="/simulator/ngspice"
                 component={RouterLink}
                 className={classes.link}
@@ -114,6 +124,16 @@ export function Header () {
               </Link>
             </>)
             : (<>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/gallery"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Gallery
+              </Link>
+
               <Link
                 variant="button"
                 color="textPrimary"

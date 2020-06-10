@@ -10,7 +10,7 @@ import NotFound from './pages/NotFound'
 import SchematicEditor from './pages/SchematiEditor'
 
 import Simulator from './pages/Simulator'
-
+import Gallery from './pages/Gallery'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 
@@ -75,6 +75,7 @@ function App () {
           : <Route path="/editor" component={SchematicEditor} />
         }
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
+        <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
