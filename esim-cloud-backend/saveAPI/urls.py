@@ -5,6 +5,11 @@ esimCloud URL Configuration
 """
 from django.urls import path
 from saveAPI import views as saveAPI_views
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'save/search', saveAPI_views.SaveSearchViewSet,
+                basename='SaveSearch')
 
 
 urlpatterns = [
@@ -24,3 +29,6 @@ urlpatterns = [
          saveAPI_views.StateShareView.as_view(), name='shareState'),
 
 ]
+
+
+urlpatterns += router.urls

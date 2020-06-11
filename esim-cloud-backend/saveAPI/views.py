@@ -1,3 +1,5 @@
+import django_filters
+from django_filters import rest_framework as filters
 from saveAPI.serializers import StateSaveSerializer, SaveListSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, JSONParser
@@ -6,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
+from rest_framework import viewsets
 import uuid
 import logging
 logger = logging.getLogger(__name__)
@@ -207,3 +210,25 @@ class ArduinoSaveList(APIView):
             return Response(serialized.data)
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SaveSearchFilterSet(django_filters.FilterSet):
+    class Meta:
+        model = StateSave
+        fields = {
+            'name': ['icontains'],
+            'description': ['icontains'],
+            'save_time': ['icontains'],
+            'create_time': ['icontains'],
+            'is_arduino': ['exact']
+        }
+
+
+class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Search Project
+    """
+    queryset = StateSave.objects.all()
+    serializer_class = SaveListSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = SaveSearchFilterSet
