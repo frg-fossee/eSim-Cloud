@@ -1,4 +1,4 @@
-from saveAPI.serializers import StateSaveSerializer
+from saveAPI.serializers import StateSaveSerializer, SaveListSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.views import APIView
@@ -203,7 +203,7 @@ class ArduinoSaveList(APIView):
         saved_state = StateSave.objects.filter(
             owner=self.request.user, is_arduino=True)
         try:
-            serialized = StateSaveSerializer(saved_state, many=True)
+            serialized = SaveListSerializer(saved_state, many=True)
             return Response(serialized.data)
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
