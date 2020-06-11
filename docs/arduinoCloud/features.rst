@@ -35,11 +35,11 @@ The list of components and its quantity which are present on the workspace can b
 
 Export 
 ######
-The circuit can be exported as jpeg, png, and svg. This is useful for documenting and printing.
+The circuit can be exported as ``jpeg``, ``png``, and ``svg``. This is useful for documenting and printing.
 
 Code editor
 ###########
-A code editor is a place where the users will write the code (logic) for simulation. This is nothing but ``.ino`` file, which can be downloaded for use in Arduino IDE. There is also a facility to include the supported header files like EEPROM, LiquidCrystal, Servo, SoftwareSerial, Wire, and SPI.
+A code editor is a place where the users will write the code (logic) for simulation. This is nothing but ``ino`` file, which can be downloaded for use in Arduino IDE. There is also a facility to include the supported header files like EEPROM, LiquidCrystal, Servo, SoftwareSerial, Wire, and SPI.
 
 Simulator
 #########

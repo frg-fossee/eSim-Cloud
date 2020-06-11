@@ -9,10 +9,10 @@ Drawing Components and Rendering in Browser
 * The ``png`` files (components) are rendered in the components pane (left pane) in the browser.
 * When the components are dropped onto the workspace on the right, the components are rendered using 
 
-  * ``SVG``: if that component does not have any animation, i.e. they remain static during entire the simulation process 
+  * ``SVG`` if that component does not have any animation, i.e. they remain static during entire the simulation process 
   * ``Raphael``: if that component produces some animation during the simulation. A basic example would be: glowing of LED. 
 
-* The details of these components like ``name``, ``pins``, ``drawing path``, ``voltage``, ``current``, ``frequency``, ``color of LED``, etc., are stored in respective json files (``/ArduinoFrontend/src/assets/jsons/``)
+* The details of these components like ``name``, ``pins``, ``drawing path``, ``voltage``, ``current``, ``frequency``, ``color of LED``, etc., are stored in respective json files ``/ArduinoFrontend/src/assets/jsons/``
 
 Capturing Arduino Project Schematic
 ###################################
