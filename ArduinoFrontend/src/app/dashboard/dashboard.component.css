@@ -16,7 +16,7 @@
   height: auto;
   margin-top: 20px;
   margin-left: 40px;
-  
+
 }
 
 .subbox {
@@ -48,7 +48,7 @@
 }
 
 @media screen and (max-width: 1424px) {
-  
+
   #main {
     width: 90%;
   }
@@ -126,25 +126,3 @@ input[type=submit]:hover {
   margin-top: 280px;
   margin-left: 5%;
 }
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: whitesmoke;
-  width: 150px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  right: 30%;
-  height: auto;
-}
-
-.dropdown-content div:hover {background-color: #ddd;}
-
-.dropdown:hover .dropdown-content {display: block;}
-
-
