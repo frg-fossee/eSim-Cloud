@@ -8,14 +8,23 @@ Component categories
 ####################
 The components are categorized as follows:
 
-
-* General: Resistor, Breadboard
-* Controllers: Arduino UNO
-* Output: Buzzer, LED, Motor, LCD, Servo Motor, 7 segment display, RGB LED
-* Input: Push button, Ultrasonic Distance Sensor, PIR Sensor, Slide switch, Photo sensor, Temperature Sensor, Potentiometer, Gas Sensor
-* Sources: 9v Battery, Coin cell 3v
-* Drivers: Motor driver L298N
-* Miscellaneous: Label, Relay module
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
+| Categories     | Components                                                                                                                      |
++================+=================================================================================================================================+
+| General        | Resistor, Breadboard                                                                                                            |
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
+| Controllers    | Arduino UNO                                                                                                                     |
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
+| Output         | Buzzer, LED, Motor, LCD, Servo Motor, 7 segment display, RGB LED                                                                | 
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
+| Input          | Push button, Ultrasonic Distance Sensor, PIR Sensor, Slide switch, Photo sensor, Temperature Sensor, Potentiometer, Gas Sensor  |
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
+| Sources        | 9v Battery, Coin cell 3v                                                                                                        |
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
+| Drivers        | Motor driver L298N                                                                                                              |
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
+| Miscellaneous  | Label, Relay module                                                                                                             |
++----------------+---------------------------------------------------------------------------------------------------------------------------------+
 
 Workspace
 #########
