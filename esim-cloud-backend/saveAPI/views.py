@@ -185,7 +185,7 @@ class UserSavesView(APIView):
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def get(self, request):
         saved_state = StateSave.objects.filter(
-            owner=self.request.user, is_arduino=False)
+            owner=self.request.user, is_arduino=False).order_by('-save_time')
         try:
             serialized = StateSaveSerializer(saved_state, many=True)
             return Response(serialized.data)
@@ -204,7 +204,7 @@ class ArduinoSaveList(APIView):
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def get(self, request):
         saved_state = StateSave.objects.filter(
-            owner=self.request.user, is_arduino=True)
+            owner=self.request.user, is_arduino=True).order_by('-save_time')
         try:
             serialized = SaveListSerializer(saved_state, many=True)
             return Response(serialized.data)
