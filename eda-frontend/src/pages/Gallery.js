@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff'
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#80ff80'
   },
   header: {
@@ -92,27 +92,13 @@ function MainCard () {
   return (
     <Card className={classes.mainHead}>
       <CardContent>
-        <Typography className={classes.title} gutterBottom>
-          sample schematics are listed below...
+        <Typography variant="h2" align="center" gutterBottom>
+        eSim Gallery
         </Typography>
-        <Typography variant="h4" gutterBottom>
-          eSim Gallery
+        <Typography className={classes.title} align="center" gutterBottom>
+        Sample schematics are listed below...
         </Typography>
       </CardContent>
-      <CardActions>
-        <Button
-          target="_blank"
-          component={RouterLink}
-          to="/editor"
-          size="small"
-          color="primary"
-        >
-          Create New
-        </Button>
-        <Button size="small" color="secondary">
-          Load More
-        </Button>
-      </CardActions>
     </Card>
   )
 }
