@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Login } from '../Libs/Login';
 
 @Component({
   selector: 'app-front-page',
@@ -52,4 +53,7 @@ export class FrontPageComponent implements OnInit {
     }, 1000);
   }
 
+  Login() {
+    Login.redirectLogin(true);
+  }
 }
