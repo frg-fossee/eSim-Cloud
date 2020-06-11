@@ -4,10 +4,10 @@
     Dashboard</div>
   <!--<div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
   </div>-->
-  <!--<div style="flex-basis: 100px; line-height: 60px;">
-        <a mat-stroked-button href="#" target="_blank">Login</a>
-    </div>-->
-  <div class="dropdown" style="flex-basis: 100px; line-height: 60px;">
+  <div style="flex-basis: 100px; line-height: 60px;">
+    <a mat-stroked-button href="#" [routerLink]="['/dashboard']">Login</a>
+  </div>
+  <!--<div class="dropdown" style="flex-basis: 100px; line-height: 60px;">
     <div class="w3-dropdown-hover">
       <img src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="">
       <div class="dropdown-content">
@@ -33,16 +33,16 @@
           <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> logout</div>
       </div>
     </div>
-  </div>
+  </div>-->
 </div>
 
 <!--sidebar-->
-<div id="sidebar">
+<!--<div id="sidebar">
   <div class="card" style="width: 80%;position: relative">
     <ul class="list-group list-group-flush" style="width: 100%">
       <li class="list-group-item">
         <img class="card-img-top" src="assets/images/login.svg" width="60" height="60" alt="Card image cap">
-        <h3 class="text-center">Username</h3>
+        <h3 class="text-center">Anonymous</h3>
       </li>
       <li class="list-group-item">
         <form class="form-inline" action="#" style="width: 100%">
@@ -59,7 +59,7 @@
       <li class="btn btn-primary text-left ">Arduino Circuits</li>
     </ul>
   </div>
-</div>
+</div>-->
 <!--/sidebar-->
 <div id="main">
   <h5>Arduino Circuits</h5>
@@ -69,7 +69,7 @@
       <div class="subbox" (click)="openProject(item.id)">
         <div>
           <div style="width: 100%;  background-color: #e8e8e8;">
-            <img class="item-img" src={{item.project.image}} alt="">
+            <img class="item-img" style="border-radius: 5px;" src={{item.project.image}} alt="">
           </div>
           <div style="box-sizing: border-box; padding: 15px;">
             <h4>{{item.project.name}}</h4>
@@ -99,7 +99,8 @@
     <div id="projectimage" style="height: 470px;position: relative;">
       <div
         style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
-        <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.project.image}} alt="">
+        <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.project.image}}
+          alt="">
 
         <button mat-raised-button color="warn" style="margin-top: 70%;margin-left:23%"
           (click)="DeleteCircuit(selected.id)">Delete Circuit</button>
