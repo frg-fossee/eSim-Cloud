@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -29,6 +29,7 @@ import { ComponentlistComponent } from './componentlist/componentlist.component'
 import { MatIconModule } from '@angular/material/icon';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
+import { HeaderComponent } from './header/header.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { GalleryComponent } from './gallery/gallery.component';
     ComponentlistComponent,
     FrontPageComponent,
     GalleryComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +63,10 @@ import { GalleryComponent } from './gallery/gallery.component';
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent]
+  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ],
+  exports: [HeaderComponent]
 })
 export class AppModule { }
