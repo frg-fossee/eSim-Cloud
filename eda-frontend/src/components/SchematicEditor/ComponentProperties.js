@@ -81,13 +81,13 @@ export default function ComponentProperties () {
 
               </ListItem>)
           }
-          else if (keyName === 'VALUE') {
-            return (
-              <ListItem key={i}>
-                <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
-                <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
-              </ListItem>)
-          }
+          // else if (keyName === 'VALUE') {
+          //   return (
+          //     <ListItem key={i}>
+          //       <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
+          //       <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
+          //     </ListItem>)
+          // }
 
           return (
             <ListItem key={i}>
