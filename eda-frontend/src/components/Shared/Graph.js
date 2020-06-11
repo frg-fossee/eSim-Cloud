@@ -23,6 +23,9 @@ class Graph extends Component {
     const myChartRef = this.chartRef.current.getContext('2d')
     const { x, y, labels, xscale, yscale, precision } = this.props
     const scales = {
+      G: { value: 1000000000, ticks: 3 },
+      M: { value: 1000000, ticks: 3 },
+      K: { value: 1000, ticks: 3 },
       si: { value: 1, ticks: 3 },
       m: { value: 0.001, ticks: 5 },
       u: { value: 0.000001, ticks: 7 },
@@ -58,6 +61,13 @@ class Graph extends Component {
           return 'Voltage in V'
         } else {
           return `Voltage in ${xscale}V`
+        }
+      }
+      if (labels[0] === 'frequency') {
+        if (xscale === 'si') {
+          return 'frequency in Hz'
+        } else {
+          return `frequency in ${xscale}Hz`
         }
       }
     }
