@@ -22,6 +22,7 @@ class StateSave(models.Model):
         get_user_model(), null=True, on_delete=models.CASCADE)
     base64_image = models.ImageField(
         upload_to='circuit_images', storage=file_storage, null=True)
+    is_arduino = models.BooleanField(default=False, null=False)
 
     def save(self, *args, **kwargs):
         super(StateSave, self).save(*args, **kwargs)

@@ -14,6 +14,8 @@ urlpatterns = [
     path('save/list', saveAPI_views.UserSavesView.as_view(),
          name='listSaves'),
 
+    path('save/arduino/list', saveAPI_views.ArduinoSaveList.as_view(),
+         name='ArduinoSaveList'),
 
     path('save/<uuid:save_id>',
          saveAPI_views.StateFetchUpdateView.as_view(), name='fetchState'),
