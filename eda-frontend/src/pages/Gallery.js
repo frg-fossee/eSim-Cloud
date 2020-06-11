@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Card,
@@ -44,6 +44,10 @@ var images = require.context('../static/gallery', true)
 
 function SchematicCard ({ sch }) {
   const classes = useStyles()
+
+  useEffect(() => {
+    document.title = 'Gallery - eSim '
+  })
 
   const imageName = images('./' + sch.media)
 
