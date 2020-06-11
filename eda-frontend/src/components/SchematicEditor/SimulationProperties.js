@@ -110,14 +110,12 @@ export default function SimulationProperties () {
   }
 
   const handleAcAnalysisControlLine = (evt) => {
-
     const value = evt.target.value
 
     setAcAnalysisControlLine({
       ...acAnalysisControlLine,
       [evt.target.id]: value
     })
-
   }
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
@@ -135,9 +133,9 @@ export default function SimulationProperties () {
   }
 
   const acTypeOptionList = {
-    Linear : 'lin',
-    Decade : 'dec',
-    Octave : 'oct',
+    Linear: 'lin',
+    Decade: 'dec',
+    Octave: 'oct'
   }
 
   // Prepare Netlist to file
@@ -203,7 +201,7 @@ export default function SimulationProperties () {
           var temp = res.data.details.data
           var result = res.data.details
           var data = result.data
-          console.log("DATA SIm",data)
+          console.log('DATA SIm', data)
           if (res.data.details.graph === 'true') {
             var simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
@@ -766,7 +764,7 @@ export default function SimulationProperties () {
                         }}
 
                       >
-                        <option  key="linear" value="lin">
+                        <option key="linear" value="lin">
                           Linear
                         </option>
                         <option key="decade" value="dec">
@@ -778,7 +776,7 @@ export default function SimulationProperties () {
                       </TextField>
                     </ListItem>
 
-                      {/* <ListItem>
+                    {/* <ListItem>
                       <TextField
                         style={{ width: '100%' }}
                         id="input"
