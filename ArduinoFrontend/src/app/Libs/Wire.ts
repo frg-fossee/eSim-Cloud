@@ -13,7 +13,7 @@ export class Wire {
   end: Point = null; // End circuit node of wire
   element: any; // body of the wire
   color: any = '#000'; // color of the wire
-  glow: any;
+  glows: any[] = [];
   id: number;
   /**
    * Constructor of wire
@@ -189,13 +189,17 @@ export class Wire {
       });
       // change attribute
       this.element.attr({ 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '4', stroke: this.color });
-      if (this.glow) {
-        this.glow.remove();
+      if (this.glows.length > 0) {
+        // this.glow.remove();
+        this.removeGlows();
       }
       this.element.mouseover(() => {
-        this.glow = this.element.glow({
-          color: this.color
-        });
+        this.glows.push(
+          this.element.glow({
+            color: this.color
+          })
+        );
+
       });
     }
   }
@@ -235,6 +239,11 @@ export class Wire {
     this.color = data.color;
     this.points = data.points;
   }
+  private removeGlows() {
+    while (this.glows.length !== 0) {
+      this.glows.pop().remove();
+    }
+  }
   /**
    * Remove wire from canvas
    */
@@ -242,10 +251,7 @@ export class Wire {
     for (const joint of this.joints) {
       joint.remove();
     }
-    if (this.glow) {
-      this.glow.remove();
-    }
-    this.glow = null;
+    this.removeGlows();
     this.joints = [];
     this.joints = null;
     this.points = [];
