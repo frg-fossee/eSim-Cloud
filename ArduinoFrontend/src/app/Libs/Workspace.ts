@@ -170,17 +170,6 @@ export class Workspace {
     //   event.preventDefault();
     //   event.returnValue = 'did you save the stuff?';
     // });
-    // Global function to display loading svg while simulation
-
-    window['showLoading'] = () => {
-      const showloader = document.getElementById('loadanim');
-      showloader.style.display = 'flex';
-    };
-    // Global function to hide loading svg after simulation
-    window['hideLoading'] = () => {
-      const hideloader = document.getElementById('loadanim');
-      hideloader.style.display = 'none';
-    };
   }
   /**
    * Event Listener for mousemove on html body
