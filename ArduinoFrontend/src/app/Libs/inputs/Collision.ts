@@ -17,10 +17,6 @@ export enum Orienation {
 
 /** function detects collision of three collinear points  */
 export class Collision {
-  /// TODO: Polygon to Polygon Collision
-  /// Right now for Polygon to Polygon Collision we check if small polygon points are inside big polygon
-  // Which has one issue Try to find it ;)
-
   /** Given three collinear points */
   static inLine(p: Vector, q: Vector, r: Vector) {
     // checks wether q lies on segment pr
@@ -91,6 +87,6 @@ export class Collision {
    * @param b coordinate b
    */
   static EuclideanDistance(a: Vector, b: Vector) {
-    return Math.sqrt(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)));
+    return ((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y));
   }
 }

@@ -69,6 +69,17 @@ For Frontend Containers and backend containers
 * To run arduino-frontend along with all backend containers
   
   ``docker-compose -f docker-compose.dev.yml up arduino-frontend``
+  
+
+Supported Browsers
+******************
+Our Web Application is supported by the following browsers:
+
+* Google Chrome
+* Mozilla Firefox
+* Opera
+* Microsoft Edge
+* Safari
 
 
 

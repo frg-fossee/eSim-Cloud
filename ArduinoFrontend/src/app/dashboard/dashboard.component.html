@@ -26,14 +26,31 @@
 </div>-->
 <!--/sidebar-->
 <div id="main">
-  <h5>Arduino Circuits</h5>
-  <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New Circuit</a>
+  <h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Arduino
+    Circuits</h3>
+  <div style="display: flex;">
+    <div style="flex-basis: 1450px;">
+      <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']" style="font-weight: 600;">+ New
+        Circuit</a>
+    </div>
+
+    <div style="flex-basis: 350px;">
+      <form class="form-inline">
+        <div class="form-group mb-2" style="padding-right: 1px;">
+          <input type="text" class="form-control" id="Search" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i></button>
+      </form>
+    </div>
+  </div>
+
   <mat-tab-group style="width: 100%;display: flex;">
     <mat-tab label="Online">
-      <div>No Online Circuits Available &#9785;</div>
+      <div class=" text text-center" style="margin-top: 18%; font-size: x-large;" >No Online Circuits Available &#9785;</div>
     </mat-tab>
-    <mat-tab label="Offline">
-      <div *ngIf="!items && items.length == 0">No Online Circuits Available &#9785;</div>
+
+    <mat-tab label="Offline" style="overflow: hidden;">
+      <div *ngIf="!items && items.length == 0"  class=" text text-center" style="margin-top: 18%; font-size: x-large;">No Online Circuits Available &#9785;</div>
       <div class="row" style="margin-top: 10px;">
         <div class="col-md-3" *ngFor="let item of items">
           <div class="subbox" (click)="openProject(item.id)">
@@ -79,7 +96,7 @@
         <button mat-raised-button color="primary" [routerLink]="['/simulator']" [queryParams]="{id: selected.id}"
           style=" margin-top: 5%;margin-left:13%">Edit circuit</button>
       </div>
-      <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%;">
+      <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%; top: 10px;">
         <div
           style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 230px;background-color:white; float: left; overflow: auto">
           <h5 style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
@@ -87,22 +104,30 @@
 
           <p style="margin-left: 10px">{{selected.project.description}}</p>
         </div>
-        <div
+        <div <<<<<<< Updated upstream
           style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
           <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: You</h6>
+          =======
+          style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 210px; background-color:
+          white; float: left;">
+          <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: Navonil Das</h6>
+          >>>>>>> Stashed changes
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
           <h6 style="margin-left: 15px;font-family: cursive">Created At: 30/May/2020</h6>
           <h6 style="margin-left: 15px;font-family: cursive">Edited At: 30/May/2020</h6>
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
-          <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px">
-            <i class="fab fa-facebook-f" style="color:white; font-size: medium;"></i>
+          <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank"><i
+                class="fab fa-facebook-f" style="color:white; font-size: medium;"></i></a>
           </button>
 
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF;">
-            <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;">
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Fdeveloper.linkedin.com"
+              target="_blank"><i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i></a>
           </button>
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;">
-            <i class='fab fa-reddit-alien' style='font-size:24px;'></i>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;top: 4px;">
+            <a href="https://www.reddit.com/submit" target="_blank"><i class='fab fa-reddit-alien'
+                style='font-size:24px;color: white;'></i></a>
           </button>
 
           <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">

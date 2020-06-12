@@ -7,6 +7,7 @@ import { Login } from '../Libs/Login';
   styleUrls: ['./front-page.component.css']
 })
 export class FrontPageComponent implements OnInit {
+
   mapping = [
     ['a', 'b', 'c', 'd', 'e', 'f'], // 0
     ['b', 'c'], // 1
