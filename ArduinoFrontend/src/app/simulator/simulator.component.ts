@@ -10,6 +10,7 @@ import { Title } from '@angular/platform-browser';
 import { SaveOffline } from '../Libs/SaveOffiline';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
+import { SaveOnline } from '../Libs/SaveOnline';
 declare var Raphael;
 
 
@@ -21,7 +22,7 @@ declare var Raphael;
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
-  projectId: number = null; // Stores the id of project
+  projectId: any = null; // Stores the id of project
   projectTitle = 'Untitled'; // Stores the title of project
   description = ''; // Stores the description of project
   showProperty = true;
@@ -54,14 +55,16 @@ export class SimulatorComponent implements OnInit {
 
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
-      // console.log(v);
-      this.projectId = parseInt(v.id, 10);
-      // if project id is present then project is read from offline
-      if (this.projectId) {
-        SaveOffline.Read(this.projectId, (data) => {
-          this.LoadProject(data);
-        });
+      if (v.id && v.offline === 'true') {
+        // if project id is present then project is read from offline
+        this.projectId = parseInt(v.id, 10);
+        if (this.projectId) {
+          SaveOffline.Read(this.projectId, (data) => {
+            this.LoadProject(data);
+          });
+        }
       }
+      // console.log(v);
     });
 
     const gtag = this.makeSVGg();
@@ -293,7 +296,27 @@ export class SimulatorComponent implements OnInit {
   }
   /** Function saves or updates the project Online */
   SaveProject() {
-    Workspace.SaveCircuitOnline(this.projectTitle, this.description, this.api);
+    if (!(Login.getToken())) {
+      return;
+    }
+    if (this.projectId) {
+
+    } else {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
+        alert('Saved');
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: out.save_id,
+              online: true
+            },
+            queryParamsHandling: 'merge'
+          }
+        );
+      });
+    }
   }
   /** Function saves or updates the project offline */
   SaveProjectOff() {
