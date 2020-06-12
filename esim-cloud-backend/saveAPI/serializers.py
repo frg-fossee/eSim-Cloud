@@ -41,4 +41,4 @@ class SaveListSerializer(serializers.ModelSerializer):
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'name', 'description',
-                  'owner', 'shared', 'base64_image', 'create_time')
+                  'shared', 'base64_image', 'create_time')

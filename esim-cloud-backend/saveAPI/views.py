@@ -23,7 +23,7 @@ class StateSaveView(APIView):
 
     # Permissions should be validated here
     permission_classes = (IsAuthenticated,)
-    parser_classes = (FormParser,)
+    # parser_classes = (FormParser,)
 
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
