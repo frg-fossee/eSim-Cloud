@@ -28,26 +28,34 @@
 <div id="main">
   <h5>Arduino Circuits</h5>
   <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New Circuit</a>
-  <div class="row">
-    <div class="col-md-3" *ngFor="let item of items">
-      <div class="subbox" (click)="openProject(item.id)">
-        <div>
-          <div style="width: 100%;  background-color: #e8e8e8;">
-            <img class="item-img" style="border-radius: 5px;" src={{item.project.image}} alt="">
-          </div>
-          <div style="box-sizing: border-box; padding: 15px;">
-            <h4>{{item.project.name}}</h4>
-            <p>{{item.project.description}}</p>
-            <p>2 hours ago</p>
+  <mat-tab-group style="width: 100%;display: flex;">
+    <mat-tab label="Online">
+      <div>No Online Circuits Available &#9785;</div>
+    </mat-tab>
+    <mat-tab label="Offline">
+      <div *ngIf="!items && items.length == 0">No Online Circuits Available &#9785;</div>
+      <div class="row" style="margin-top: 10px;">
+        <div class="col-md-3" *ngFor="let item of items">
+          <div class="subbox" (click)="openProject(item.id)">
+            <div>
+              <div style="width: 100%;  background-color: #e8e8e8;">
+                <img class="item-img" style="border-radius: 5px;" src={{item.project.image}} alt="">
+              </div>
+              <div style="box-sizing: border-box; padding: 15px;">
+                <h4>{{item.project.name}}</h4>
+                <p>{{item.project.description}}</p>
+                <p>2 hours ago</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>
 
 <!--open project-->
-<div id="openproject" style="display: none;">
+<div id="openproject" style="display: none;z-index: 1000;">
   <div id="innerdialog" *ngIf="selected && selected.project">
     <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
       <div
@@ -81,7 +89,7 @@
         </div>
         <div
           style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
-          <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: Navonil Das</h6>
+          <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: You</h6>
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
           <h6 style="margin-left: 15px;font-family: cursive">Created At: 30/May/2020</h6>
           <h6 style="margin-left: 15px;font-family: cursive">Edited At: 30/May/2020</h6>
