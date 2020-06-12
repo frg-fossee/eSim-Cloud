@@ -24,7 +24,6 @@ export class DashboardComponent implements OnInit {
   }
 
   openProject(id, offline = false) {
-    console.log(offline);
     // for (const item of this.items) {
     //   if (item.id === id) {
     if (offline) {
@@ -32,6 +31,7 @@ export class DashboardComponent implements OnInit {
     } else {
       this.selected = this.online[id];
     }
+    this.selected.index = id;
     //     break;
     //   }
     // }
@@ -58,9 +58,9 @@ export class DashboardComponent implements OnInit {
     const token = Login.getToken();
     if (token) {
       this.api.listProject(token).subscribe((val: any[]) => {
-        console.log(val);
+        // console.log(val);
         this.online = val;
-        console.log(this.online);
+        // console.log(this.online);
       }, err => console.log(err));
     }
   }
@@ -96,8 +96,5 @@ export class DashboardComponent implements OnInit {
   ExpandDate(item) {
     item.create = moment(item.create_time).format('LLLL');
     item.edit = moment(item.save_time).format('LLLL');
-  }
-  CalcTimeDifference() {
-
   }
 }

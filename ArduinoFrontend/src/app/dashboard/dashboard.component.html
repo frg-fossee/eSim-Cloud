@@ -93,7 +93,7 @@
           alt="">
 
         <button mat-raised-button color="warn" style="margin-top: 70%;margin-left:23%"
-          (click)="DeleteCircuit(selected.save_id,selected.offline,i)">Delete Circuit</button>
+          (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
         <button mat-raised-button color="primary" [routerLink]="['/simulator']"
           [queryParams]="{id: selected.save_id,offline: selected.offline}" style=" margin-top: 5%;margin-left:13%">Edit
           circuit</button>
