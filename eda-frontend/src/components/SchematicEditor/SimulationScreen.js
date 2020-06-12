@@ -59,6 +59,9 @@ export default function SimulationScreen ({ open, close }) {
   const [precision, setPrecision] = React.useState(5)
   const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   const scales = {
+    G: 1000000000,
+    M: 1000000,
+    K: 1000,
     si: 1,
     m: 0.001,
     u: 0.000001,
@@ -145,6 +148,15 @@ export default function SimulationScreen ({ open, close }) {
                           native: true
                         }}
                       >
+                        <option value='G'>
+                                Giga (G)
+                        </option>
+                        <option value='M'>
+                                Mega (MEG)
+                        </option>
+                        <option value='K'>
+                                Kilo (K)
+                        </option>
                         <option value='si'>
                                 SI UNIT
                         </option>
@@ -176,6 +188,15 @@ export default function SimulationScreen ({ open, close }) {
                           native: true
                         }}
                       >
+                        <option value='G'>
+                                Giga (G)
+                        </option>
+                        <option value='M'>
+                                Mega (MEG)
+                        </option>
+                        <option value='K'>
+                                Kilo (K)
+                        </option>
                         <option value='si'>
                                 SI UNIT
                         </option>
@@ -254,6 +275,15 @@ export default function SimulationScreen ({ open, close }) {
                           native: true
                         }}
                       >
+                        <option value='G'>
+                                Giga (G)
+                        </option>
+                        <option value='M'>
+                                Mega (MEG)
+                        </option>
+                        <option value='K'>
+                                Kilo (K)
+                        </option>
                         <option value='si'>
                                 SI UNIT
                         </option>
