@@ -8,6 +8,8 @@ import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
 import { Title } from '@angular/platform-browser';
 import { SaveOffline } from '../Libs/SaveOffiline';
+import { ApiService } from '../api.service';
+import { Login } from '../Libs/Login';
 declare var Raphael;
 
 
@@ -37,7 +39,9 @@ export class SimulatorComponent implements OnInit {
     public dialog: MatDialog,
     private injector: Injector,
     private title: Title,
-    private router: Router) {
+    private router: Router,
+    private api: ApiService
+  ) {
     Workspace.initializeGlobalFunctions();
     Workspace.injector = this.injector;
   }
@@ -287,8 +291,12 @@ export class SimulatorComponent implements OnInit {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
   }
-  /** Function saves or updates the project */
+  /** Function saves or updates the project Online */
   SaveProject() {
+    Workspace.SaveCircuitOnline(this.projectTitle, this.description, this.api);
+  }
+  /** Function saves or updates the project offline */
+  SaveProjectOff() {
     if (this.projectId) {
       Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
     } else {
