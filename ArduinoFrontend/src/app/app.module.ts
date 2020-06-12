@@ -20,7 +20,7 @@ import {
   MatTableModule,
   MatRadioModule,
   MatDividerModule,
-  MatTabsModule
+  MatTabsModule,
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,6 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { HeaderComponent } from './header/header.component';
+import { ViewProjectComponent } from './view-project/view-project.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { HeaderComponent } from './header/header.component';
     ComponentlistComponent,
     FrontPageComponent,
     GalleryComponent,
+    ViewProjectComponent,
     HeaderComponent,
   ],
   imports: [
@@ -58,7 +60,7 @@ import { HeaderComponent } from './header/header.component';
     MatTableModule,
     HttpClientModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
