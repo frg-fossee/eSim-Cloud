@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SimulatorComponent } from './simulator/simulator.component';
 
-import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { PathLocationStrategy, LocationStrategy } from '@angular/common';
@@ -32,6 +32,16 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { HeaderComponent } from './header/header.component';
 import { ViewProjectComponent } from './view-project/view-project.component';
 
+export function onMonacoLoad() { }
+
+const monacoConfig: NgxMonacoEditorConfig = {
+  baseUrl: './assets',
+  defaultOptions: { scrollBeyondLastLine: false },
+  onMonacoLoad
+};
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,7 +60,7 @@ import { ViewProjectComponent } from './view-project/view-project.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    MonacoEditorModule.forRoot(),
+    MonacoEditorModule.forRoot(monacoConfig),
     BrowserAnimationsModule,
     MatDialogModule,
     MatRadioModule,
