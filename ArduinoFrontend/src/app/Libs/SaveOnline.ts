@@ -7,6 +7,10 @@ import { Workspace } from './Workspace';
 declare var window;
 
 export class SaveOnline {
+  static isUUID(input: string) {
+    const rgx = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return rgx.test(input);
+  }
   static Save(name: string = '', description: string = '', api: ApiService, callback: any = null, id: string = null) {
     const token = Login.getToken();
     if (token) {
@@ -41,24 +45,34 @@ export class SaveOnline {
       saveObj.data_dump = JSON.stringify(dataDump);
       Download.ExportImage(ImageType.PNG).then(v => {
         saveObj['base64_image'] = v;
-        console.log(saveObj);
-        api.saveProject(saveObj, token).subscribe(output => {
-          if (callback) {
-            callback(output);
-          }
-        }, err => {
-          let message = '';
-          for (const key in err.error) {
-            if (err.error[key]) {
-              message += '\n' + key;
-              for (const item of err.error[key]) {
-                message += `${item},`;
+        if (toUpdate) {
+          api.updateProject(id, saveObj, token).subscribe(out => {
+            if (callback) {
+              callback(out);
+            }
+          }, err => {
+            console.log(err);
+          });
+        } else {
+          api.saveProject(saveObj, token).subscribe(output => {
+            if (callback) {
+              callback(output);
+            }
+          }, err => {
+            let message = '';
+            for (const key in err.error) {
+              if (err.error[key]) {
+                message += '\n' + key;
+                for (const item of err.error[key]) {
+                  message += `${item},`;
+                }
               }
             }
-          }
-          alert(message);
-        });
+            alert(message);
+          });
+        }
       });
     }
   }
 }
+
