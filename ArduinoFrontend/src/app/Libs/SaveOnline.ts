@@ -51,6 +51,10 @@ export class SaveOnline {
               callback(out);
             }
           }, err => {
+            if (err.status === 401) {
+              alert('You Cannot Save the Circuit as you are not the Ownwer');
+              return;
+            }
             console.log(err);
           });
         } else {

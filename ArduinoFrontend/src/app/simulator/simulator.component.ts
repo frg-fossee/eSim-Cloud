@@ -11,6 +11,7 @@ import { SaveOffline } from '../Libs/SaveOffiline';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 import { SaveOnline } from '../Libs/SaveOnline';
+import { HttpErrorResponse } from '@angular/common/http';
 declare var Raphael;
 
 
@@ -234,6 +235,7 @@ export class SimulatorComponent implements OnInit {
     if (el.value === '') {
       el.value = 'Untitled';
     }
+    this.projectTitle = el.value;
   }
   /**
    * Function invoked when dbclick is performed on a component inside ComponentList
@@ -299,6 +301,7 @@ export class SimulatorComponent implements OnInit {
   /** Function saves or updates the project Online */
   SaveProject() {
     if (!(Login.getToken())) {
+      alert('Please Login! Before Login Save the Project Temporary.');
       return;
     }
     if (SaveOnline.isUUID(this.projectId)) {
@@ -323,6 +326,10 @@ export class SimulatorComponent implements OnInit {
   }
   /** Function saves or updates the project offline */
   SaveProjectOff() {
+    if (SaveOnline.isUUID(this.projectId)) {
+      alert('Project is already Online!');
+      return;
+    }
     if (this.projectId) {
       Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
     } else {
@@ -349,6 +356,7 @@ export class SimulatorComponent implements OnInit {
   LoadOnlineProject(id) {
     const token = Login.getToken();
     if (!token) {
+      alert('Please Login');
       return;
     }
     this.api.readProject(id, token).subscribe((data: any) => {
@@ -356,9 +364,12 @@ export class SimulatorComponent implements OnInit {
       this.description = data.description;
       this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
       Workspace.Load(JSON.parse(data.data_dump));
-      // console.log()
-      console.log(data);
-    }, err => {
+    }, (err: HttpErrorResponse) => {
+      if (err.status === 401) {
+        alert('You are Not Authorized to view this circuit');
+        window.open('../../../', '_self');
+        return;
+      }
       alert('Something Went Wrong');
       console.log(err);
     });
