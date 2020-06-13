@@ -20,7 +20,7 @@ body {
   padding-left: 60px;
   font-size: x-large;
 }
-.dropdown {
+.my-dropdown {
   position: relative;
   display: inline-block;
   flex-basis: 100px;
