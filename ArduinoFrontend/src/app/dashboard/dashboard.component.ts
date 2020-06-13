@@ -106,4 +106,24 @@ export class DashboardComponent implements OnInit {
     item.create = moment(item.create_time).format('LLLL');
     item.edit = moment(item.save_time).format('LLLL');
   }
+  SearchCircuits(input: HTMLInputElement) {
+    const token = Login.getToken();
+    if (token) {
+      if (input.value === '') {
+        this.api.listProject(token).subscribe((val: any[]) => {
+          this.online = val;
+        }, err => console.log(err));
+        return;
+      }
+      this.api.searchProject(input.value, token).subscribe((out: any[]) => {
+        console.log(out);
+        this.online = out;
+      }, err => {
+        alert('Something went wrong');
+        console.log(err);
+      });
+    } else {
+      alert('Please Login!');
+    }
+  }
 }

@@ -35,9 +35,9 @@
     </div>
 
     <div style="flex-basis: 350px;">
-      <form class="form-inline">
+      <form class="form-inline" (submit)="SearchCircuits(searchBox)">
         <div class="form-group mb-2" style="padding-right: 1px;">
-          <input type="text" class="form-control" id="Search" placeholder="Search">
+          <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
         </div>
         <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i></button>
       </form>

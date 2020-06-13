@@ -42,6 +42,16 @@ export class ApiService {
       })
     });
   }
+  searchProject(title: string, token: string) {
+    const url = encodeURI(`${this.url}api/save/search?name__icontains=${title}&description__icontains=${title}&is_arduino=true`);
+    return this.http.get(url, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
   updateProject(id: string, data: any, token: string) {
     return this.http.post(`${this.url}api/save/${id}`, data, {
       headers: new HttpHeaders({
