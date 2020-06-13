@@ -1,8 +1,8 @@
-import { Component, OnInit, wtfLeave, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
-import { MatDialog, MatRadioModule } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
@@ -63,8 +63,10 @@ export class SimulatorComponent implements OnInit {
             this.LoadProject(data);
           });
         }
+      } else if (v.id) {
+        this.projectId = v.id;
+        this.LoadOnlineProject(v.id);
       }
-      // console.log(v);
     });
 
     const gtag = this.makeSVGg();
@@ -299,8 +301,8 @@ export class SimulatorComponent implements OnInit {
     if (!(Login.getToken())) {
       return;
     }
-    if (this.projectId) {
-
+    if (SaveOnline.isUUID(this.projectId)) {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => alert('Updated'), this.projectId);
     } else {
       SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
         alert('Saved');
@@ -310,7 +312,8 @@ export class SimulatorComponent implements OnInit {
             relativeTo: this.aroute,
             queryParams: {
               id: out.save_id,
-              online: true
+              online: true,
+              offline: null
             },
             queryParamsHandling: 'merge'
           }
@@ -343,6 +346,24 @@ export class SimulatorComponent implements OnInit {
     // TODO: Clear Variables instead of Reloading
     window.location.reload();
   }
+  LoadOnlineProject(id) {
+    const token = Login.getToken();
+    if (!token) {
+      return;
+    }
+    this.api.readProject(id, token).subscribe((data: any) => {
+      this.projectTitle = data.name;
+      this.description = data.description;
+      this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+      Workspace.Load(JSON.parse(data.data_dump));
+      // console.log()
+      console.log(data);
+    }, err => {
+      alert('Something Went Wrong');
+      console.log(err);
+    });
+  }
+
   /**
    * Function called after reading data from offline
    * @param data any
