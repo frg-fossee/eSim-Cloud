@@ -104,7 +104,6 @@ export class SaveOffline {
         .delete(id);
 
       ok.onsuccess = (_) => {
-        alert('Done Deleting');
         if (callback) {
           callback();
         }

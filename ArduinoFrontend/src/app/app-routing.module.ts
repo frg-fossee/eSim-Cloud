@@ -8,7 +8,7 @@ import {ViewProjectComponent} from './view-project/view-project.component';
 
 const routes: Routes = [
   { path: '', component: FrontPageComponent },
-  { path: 'viewproject', component: ViewProjectComponent},
+  { path: 'project/:slug', component: ViewProjectComponent},
   { path: 'gallery', component: GalleryComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'simulator', component: SimulatorComponent },

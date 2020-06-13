@@ -8,7 +8,6 @@ import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { Login } from './Login';
-import { DateAdapter } from '@angular/material';
 
 declare var window;
 declare var $; // For Jquery
@@ -39,6 +38,7 @@ export class Workspace {
       ${Workspace.scale})
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
+    Workspace.updateWires();
   }
   /** function to zoom out workspace */
   static zoomOut() {
@@ -50,6 +50,7 @@ export class Workspace {
       ${Workspace.scale})
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
+    Workspace.updateWires();
   }
   /** Function deals with min and max value of zoom, hold and move  */
   static minMax(min: number, max: number, value: number) {
@@ -169,17 +170,6 @@ export class Workspace {
     //   event.preventDefault();
     //   event.returnValue = 'did you save the stuff?';
     // });
-    // Global function to display loading svg while simulation
-
-    window['showLoading'] = () => {
-      const showloader = document.getElementById('loadanim');
-      showloader.style.display = 'flex';
-    };
-    // Global function to hide loading svg after simulation
-    window['hideLoading'] = () => {
-      const hideloader = document.getElementById('loadanim');
-      hideloader.style.display = 'none';
-    };
   }
   /**
    * Event Listener for mousemove on html body
@@ -448,47 +438,6 @@ export class Workspace {
       } else {
         delete obj[prop];
       }
-    }
-  }
-  static SaveCircuitOnline(name: string = '', description: string = '', api: ApiService, callback: any = null, id: string = null) {
-    const token = Login.getToken();
-    if (token) {
-      let toUpdate = false;
-      const data = new FormData();
-      if (isNull(id)) {
-      } else {
-        toUpdate = true;
-      }
-      data.append('name', name);
-      data.append('description', description);
-      data.append('is_arduino', 'true');
-      const dataDump = {
-        canvas: {
-          x: Workspace.translateX,
-          y: Workspace.translateY,
-          scale: Workspace.scale
-        }
-      };
-      for (const key in window.scope) {
-        if (window.scope[key] && window.scope[key].length > 0) {
-          dataDump[key] = [];
-          for (const item of window.scope[key]) {
-            if (item.save) {
-              dataDump[key].push(item.save());
-            }
-          }
-        }
-      }
-      data.append('data_dump', JSON.stringify(dataDump));
-      Download.ExportImage(ImageType.PNG).then((v: string) => {
-        // saveObj.project['image'] = v;
-        // saveObj['base64_image'] = v;
-        data.append('base64_image', v);
-        console.log(data);
-        api.saveProject(data, token).subscribe(res => {
-          console.log(res);
-        }, err => console.log(err));
-      });
     }
   }
   /**

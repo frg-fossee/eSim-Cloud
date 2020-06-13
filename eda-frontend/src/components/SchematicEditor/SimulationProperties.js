@@ -70,7 +70,7 @@ export default function SimulationProperties () {
   })
 
   const [acAnalysisControlLine, setAcAnalysisControlLine] = useState({
-    input: '',
+    input: 'dec',
     start: '',
     stop: '',
     pointsBydecade: ''
@@ -130,6 +130,12 @@ export default function SimulationProperties () {
 
   const handleSimulationResult = (simResults) => {
     setSimResult(simResults)
+  }
+
+  const acTypeOptionList = {
+    Linear: 'lin',
+    Decade: 'dec',
+    Octave: 'oct'
   }
 
   // Prepare Netlist to file
@@ -195,7 +201,7 @@ export default function SimulationProperties () {
           var temp = res.data.details.data
           var result = res.data.details
           var data = result.data
-
+          console.log('DATA SIm', data)
           if (res.data.details.graph === 'true') {
             var simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
@@ -280,7 +286,7 @@ export default function SimulationProperties () {
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
-        controlLine = `.ac dec ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+        controlLine = `.ac ${acAnalysisControlLine.input} ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
 
         dispatch(setResultTitle('AC Analysis Output'))
         break
@@ -769,6 +775,36 @@ export default function SimulationProperties () {
                         </option>
                       </TextField>
                     </ListItem>
+
+                    {/* <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="input"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Type"
+                        value={acAnalysisControlLine.input}
+                        onChange={handleAcAnalysisControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+
+                        {
+                          Object.keys(acTypeOptionList).map((type, i) => {
+                            console.log(acTypeOptionList.type)
+                              return (
+                              <option key={i} value={acTypeOptionList.type}>
+                                {type}
+                              </option>)
+
+                          })
+                        }
+
+                      </TextField>
+                      </ListItem> */}
+
                     <ListItem>
                       <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"
                         value={acAnalysisControlLine.pointsBydecade}

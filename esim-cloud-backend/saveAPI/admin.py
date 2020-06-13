@@ -1,3 +1,8 @@
 from django.contrib import admin
+from saveAPI.models import StateSave
 
-# Register your models here.
+
+@admin.register(StateSave)
+class UserCircuits(admin.ModelAdmin):
+    list_display = ('name', 'is_arduino', 'base64_image',
+                    'save_time', 'create_time')
