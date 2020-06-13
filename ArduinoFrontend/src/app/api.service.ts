@@ -9,9 +9,6 @@ import { environment } from '../environments/environment';
 export class ApiService {
   url = environment.API_URL;
   constructor(private http: HttpClient) {
-    if (window.location.host.indexOf('4200') <= -1) {
-      this.url = '';
-    }
   }
   saveProject(data: any, token: string) {
     if (data.description === '') {

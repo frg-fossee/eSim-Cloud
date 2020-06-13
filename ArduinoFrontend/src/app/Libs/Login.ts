@@ -15,7 +15,7 @@ export class Login {
   }
 
   static redirectLogin(isFront: boolean = false): void {
-    const dashboardURI = (new URL('../#/dashboard', window.location.href)).href;
+    const dashboardURI = (new URL(environment.DASHBOARD_URL, window.location.href)).href;
     if (Login.getToken()) {
       window.open(dashboardURI, '_self');
     } else {
