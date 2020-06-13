@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
+import { HashRouter, Switch, Route, Redirect } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import Navbar from './components/Shared/Navbar'
@@ -10,7 +10,7 @@ import NotFound from './pages/NotFound'
 import SchematicEditor from './pages/SchematiEditor'
 
 import Simulator from './pages/Simulator'
-
+import Gallery from './pages/Gallery'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 
@@ -64,7 +64,7 @@ function SchematicEditorRoute (props) {
 
 function App () {
   return (
-    <BrowserRouter basename='/eda'>
+    <HashRouter>
       <Switch>
         <PublicRoute exact path="/login" restricted={true} nav={false} component={Login} />
         <PublicRoute exact path="/signup" restricted={true} nav={false} component={SignUp} />
@@ -75,10 +75,11 @@ function App () {
           : <Route path="/editor" component={SchematicEditor} />
         }
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
+        <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

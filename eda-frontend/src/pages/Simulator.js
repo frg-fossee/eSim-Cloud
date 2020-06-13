@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Container, Grid, Button, Paper, Typography, Switch, FormControlLabel } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Editor from '../components/Simulator/Editor'
@@ -31,6 +31,10 @@ export default function Simulator () {
   const [state, setState] = React.useState({
     checkedA: false
 
+  })
+
+  useEffect(() => {
+    document.title = 'Simulator - eSim '
   })
 
   const handleChange = (event) => {
@@ -98,7 +102,7 @@ export default function Simulator () {
         } else {
           var temp = res.data.details.data
           var result = res.data.details
-          var data = result.FormData
+          var data = result.data
           if (res.data.details.graph === 'true') {
             var simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels

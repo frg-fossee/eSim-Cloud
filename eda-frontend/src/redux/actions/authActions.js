@@ -46,7 +46,7 @@ export const loadUser = () => (dispatch, getState) => {
     .catch((err) => { console.error(err) })
 }
 
-export const login = (username, password) => {
+export const login = (username, password, toUrl) => {
   const body = {
     password: password,
     username: username
@@ -62,7 +62,11 @@ export const login = (username, password) => {
               data: res.data
             }
           })
-          dispatch(loadUser())
+          if (toUrl === '') {
+            dispatch(loadUser())
+          } else {
+            window.open(toUrl, '_self')
+          }
         } else if (res.status === 403 || res.status === 401) {
           dispatch({
             type: actions.AUTHENTICATION_ERROR,

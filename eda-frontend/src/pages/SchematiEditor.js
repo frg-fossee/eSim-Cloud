@@ -12,7 +12,7 @@ import RightSidebar from '../components/SchematicEditor/RightSidebar'
 import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { fetchSchematic } from '../redux/actions/index'
+import { fetchSchematic, loadGallery } from '../redux/actions/index'
 import { useDispatch } from 'react-redux'
 import { renderXML } from '../components/SchematicEditor/Helper/ToolbarTools'
 
@@ -46,9 +46,14 @@ export default function SchematiEditor (props) {
     LoadGrid(container, sidebar, outline)
 
     if (props.location.state !== undefined) {
-      // calling the api
-      dispatch(fetchSchematic(props.location.state.id))
-      renderXML()
+      var cktid = props.location.state.id
+      if (cktid.substr(0, 7) === 'gallery') {
+        dispatch(loadGallery(cktid.substr(7, cktid.length)))
+      } else {
+        // calling the api
+        dispatch(fetchSchematic(cktid))
+        renderXML()
+      }
     }
   }, [compRef, gridRef, outlineRef, props.location, dispatch])
 

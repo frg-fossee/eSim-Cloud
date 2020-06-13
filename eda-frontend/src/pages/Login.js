@@ -1,4 +1,6 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
+
 import {
   Container,
   Grid,
@@ -38,16 +40,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SignIn () {
+var url = ''
+
+export default function SignIn (props) {
   const classes = useStyles()
 
   useEffect(() => {
     document.title = 'Login - eSim '
+    if (props.location.search !== '') {
+      const query = new URLSearchParams(props.location.search)
+      url = query.get('url')
+    } else {
+      url = ''
+    }
   })
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
+
+  const handleLogin = () => {
+    dispatch(login(username, password, url))
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -95,7 +109,7 @@ export default function SignIn () {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(login(username, password))}
+            onClick={handleLogin}
             className={classes.submit}
           >
             Login

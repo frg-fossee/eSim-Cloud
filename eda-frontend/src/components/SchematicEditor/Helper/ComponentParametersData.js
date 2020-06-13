@@ -333,7 +333,7 @@ const ComponentParameters = {
     VALUE: '1',
     EXTRA_EXPRESSION: '',
     MODEL: '',
-    UNIT: 'K'
+    VALUE_UNIT: 'Ohm'
   },
 
   Z: {
