@@ -13,34 +13,52 @@ export class ApiService {
     }
   }
   saveProject(data: any, token: string) {
-    // const data = new HttpParams();
-    // data.set('name', 'name');
-    // data.set('description', 'description');
-    // data.set('is_arduino', 'true');
-    // data.set('data_dump', 'sss');
-    // data.set('base64_image','ss');
-    // test.set()
-    // console.log(data);
-    // console.log(data.toString());
+    if (data.description === '') {
+      data.description = null;
+    }
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
         'Access-Control-Allow-Origin': '*',
       })
     });
   }
-  listProject() {
-    return this.http.get(`${this.url}api/save/arduino/list`);
+  listProject(token) {
+    return this.http.get(`${this.url}api/save/arduino/list`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
   }
-  readProject(projectId: string) {
-    return this.http.get(`${this.url}api/save/${projectId}`);
+  readProject(id: string, token: string) {
+    return this.http.get(`${this.url}api/save/${id}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
   }
-  updateProject(projectId: string, data: any) {
-    return this.http.post(`${this.url}api/save/${projectId}`, data);
+  updateProject(id: string, data: any, token: string) {
+    return this.http.post(`${this.url}api/save/${id}`, data, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
   }
-  deleteProject() {
-
+  deleteProject(id, token): Observable<any> {
+    return this.http.delete(`${this.url}api/save/${id}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
   }
   fetchSuggestions(): Observable<any> {
     return this.http.get('assets/jsons/specification.json');
