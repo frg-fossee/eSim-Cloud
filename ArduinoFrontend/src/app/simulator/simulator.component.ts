@@ -1,13 +1,17 @@
-import { Component, OnInit, wtfLeave, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
-import { MatDialog, MatRadioModule } from '@angular/material';
+import { MatDialog } from '@angular/material';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
 import { Title } from '@angular/platform-browser';
 import { SaveOffline } from '../Libs/SaveOffiline';
+import { ApiService } from '../api.service';
+import { Login } from '../Libs/Login';
+import { SaveOnline } from '../Libs/SaveOnline';
+import { HttpErrorResponse } from '@angular/common/http';
 declare var Raphael;
 
 
@@ -19,7 +23,7 @@ declare var Raphael;
 })
 export class SimulatorComponent implements OnInit {
   canvas: any;
-  projectId: number = null; // Stores the id of project
+  projectId: any = null; // Stores the id of project
   projectTitle = 'Untitled'; // Stores the title of project
   description = ''; // Stores the description of project
   showProperty = true;
@@ -37,7 +41,9 @@ export class SimulatorComponent implements OnInit {
     public dialog: MatDialog,
     private injector: Injector,
     private title: Title,
-    private router: Router) {
+    private router: Router,
+    private api: ApiService
+  ) {
     Workspace.initializeGlobalFunctions();
     Workspace.injector = this.injector;
   }
@@ -50,13 +56,17 @@ export class SimulatorComponent implements OnInit {
 
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
-      // console.log(v);
-      this.projectId = parseInt(v.id, 10);
-      // if project id is present then project is read from offline
-      if (this.projectId) {
-        SaveOffline.Read(this.projectId, (data) => {
-          this.LoadProject(data);
-        });
+      if (v.id && v.offline === 'true') {
+        // if project id is present then project is read from offline
+        this.projectId = parseInt(v.id, 10);
+        if (this.projectId) {
+          SaveOffline.Read(this.projectId, (data) => {
+            this.LoadProject(data);
+          });
+        }
+      } else if (v.id) {
+        this.projectId = v.id;
+        this.LoadOnlineProject(v.id);
       }
     });
 
@@ -225,6 +235,7 @@ export class SimulatorComponent implements OnInit {
     if (el.value === '') {
       el.value = 'Untitled';
     }
+    this.projectTitle = el.value;
   }
   /**
    * Function invoked when dbclick is performed on a component inside ComponentList
@@ -287,8 +298,38 @@ export class SimulatorComponent implements OnInit {
     Workspace.copyComponent();
     Workspace.hideContextMenu();
   }
-  /** Function saves or updates the project */
+  /** Function saves or updates the project Online */
   SaveProject() {
+    if (!(Login.getToken())) {
+      alert('Please Login! Before Login Save the Project Temporary.');
+      return;
+    }
+    if (SaveOnline.isUUID(this.projectId)) {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => alert('Updated'), this.projectId);
+    } else {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
+        alert('Saved');
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: out.save_id,
+              online: true,
+              offline: null
+            },
+            queryParamsHandling: 'merge'
+          }
+        );
+      });
+    }
+  }
+  /** Function saves or updates the project offline */
+  SaveProjectOff() {
+    if (SaveOnline.isUUID(this.projectId)) {
+      alert('Project is already Online!');
+      return;
+    }
     if (this.projectId) {
       Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
     } else {
@@ -312,6 +353,28 @@ export class SimulatorComponent implements OnInit {
     // TODO: Clear Variables instead of Reloading
     window.location.reload();
   }
+  LoadOnlineProject(id) {
+    const token = Login.getToken();
+    if (!token) {
+      alert('Please Login');
+      return;
+    }
+    this.api.readProject(id, token).subscribe((data: any) => {
+      this.projectTitle = data.name;
+      this.description = data.description;
+      this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+      Workspace.Load(JSON.parse(data.data_dump));
+    }, (err: HttpErrorResponse) => {
+      if (err.status === 401) {
+        alert('You are Not Authorized to view this circuit');
+        window.open('../../../', '_self');
+        return;
+      }
+      alert('Something Went Wrong');
+      console.log(err);
+    });
+  }
+
   /**
    * Function called after reading data from offline
    * @param data any

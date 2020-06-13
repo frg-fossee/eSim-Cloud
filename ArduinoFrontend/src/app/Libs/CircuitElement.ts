@@ -1,5 +1,6 @@
 import { Point } from './Point';
 import { Wire } from './Wire';
+import { isNull } from 'util';
 
 /**
  * Abstract Class Circuit Elements
@@ -245,7 +246,10 @@ export abstract class CircuitElement {
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
       if (window['Selected'] && (window['Selected'] instanceof Wire)) {
-        return;
+        if ((isNull(window['Selected'].start) || isNull(window['Selected'].end))) {
+          return;
+        }
+        window['Selected'].deselect();
       }
       window['isSelected'] = true;
       window['Selected'] = this;

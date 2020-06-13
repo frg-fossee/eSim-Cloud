@@ -9,8 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "postinstall": "webdriver-manager update --standalone false --gecko false --versions.chrome 76.0.3809.68",
-    "doc": "typedoc --out doc/ src/",
-    "compodoc": "compodoc -p tsconfig.json"
+    "doc": "compodoc -p tsconfig.json"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +35,7 @@
     "@angular/cli": "~7.3.8",
     "@angular/compiler-cli": "~7.2.0",
     "@angular/language-service": "~7.2.0",
+    "@compodoc/compodoc": "^1.1.11",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^8.9.5",

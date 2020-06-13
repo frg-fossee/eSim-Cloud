@@ -7,6 +7,7 @@ import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
+import { Login } from './Login';
 
 declare var window;
 declare var $; // For Jquery
@@ -37,6 +38,7 @@ export class Workspace {
       ${Workspace.scale})
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
+    Workspace.updateWires();
   }
   /** function to zoom out workspace */
   static zoomOut() {
@@ -48,6 +50,7 @@ export class Workspace {
       ${Workspace.scale})
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
+    Workspace.updateWires();
   }
   /** Function deals with min and max value of zoom, hold and move  */
   static minMax(min: number, max: number, value: number) {
@@ -167,17 +170,6 @@ export class Workspace {
     //   event.preventDefault();
     //   event.returnValue = 'did you save the stuff?';
     // });
-    // Global function to display loading svg while simulation
-
-    window['showLoading'] = () => {
-      const showloader = document.getElementById('loadanim');
-      showloader.style.display = 'flex';
-    };
-    // Global function to hide loading svg after simulation
-    window['hideLoading'] = () => {
-      const hideloader = document.getElementById('loadanim');
-      hideloader.style.display = 'none';
-    };
   }
   /**
    * Event Listener for mousemove on html body
@@ -418,7 +410,7 @@ export class Workspace {
     );
     window['scope'][classString].push(obj);
   }
- /** Function updates the position of wires */
+  /** Function updates the position of wires */
   static updateWires() {
     for (const z of window['scope']['wires']) {
       z.update();

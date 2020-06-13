@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Login } from '../Libs/Login';
 
 @Component({
   selector: 'app-front-page',
@@ -6,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./front-page.component.css']
 })
 export class FrontPageComponent implements OnInit {
+
   mapping = [
     ['a', 'b', 'c', 'd', 'e', 'f'], // 0
     ['b', 'c'], // 1
@@ -52,4 +54,7 @@ export class FrontPageComponent implements OnInit {
     }, 1000);
   }
 
+  Login() {
+    Login.redirectLogin(true);
+  }
 }

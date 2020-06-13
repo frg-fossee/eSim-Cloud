@@ -1,6 +1,9 @@
+// enum function for file type
 export enum ImageType { PNG, JPG, SVG }
 declare var canvg;
-
+/**
+ * Download Class
+ */
 export class Download {
 
   static DownloadImage(data: any, filename: string, type: ImageType) {
