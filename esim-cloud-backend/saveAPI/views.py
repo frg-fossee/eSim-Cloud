@@ -1,6 +1,7 @@
 import django_filters
 from django_filters import rest_framework as filters
 from saveAPI.serializers import StateSaveSerializer, SaveListSerializer
+from saveAPI.serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.views import APIView
@@ -91,13 +92,24 @@ class StateFetchUpdateView(APIView):
                                 status=status.HTTP_406_NOT_ACCEPTABLE)
 
             try:
+                # if data dump, shared,name and description needs to be updated
                 if 'data_dump' in request.data:
                     saved_state.data_dump = request.data['data_dump']
-                print(request.data)
                 if 'shared' in request.data:
                     saved_state.shared = bool(request.data['shared'])
+                if 'name' in request.data:
+                    saved_state.name = request.data['name']
+                if 'description' in request.data:
+                    saved_state.description = request.data['description']
+
+                # if thumbnail needs to be updated
+                if 'base64_image' in request.data:
+                    img = Base64ImageField(max_length=None, use_url=True)
+                    filename, content = img.update(
+                        request.data['base64_image'])
+                    saved_state.base64_image.save(filename, content)
                 saved_state.save()
-                serialized = StateSaveSerializer(saved_state)
+                serialized = SaveListSerializer(saved_state)
                 return Response(serialized.data)
             except Exception:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
