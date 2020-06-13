@@ -59,6 +59,9 @@ export class Wire {
   }
   // Click event callback
   handleClick() {
+    if (window['Selected'] && (window['Selected'] instanceof Wire)) {
+      window['Selected'].deselect();
+    }
     for (const joint of this.joints) {
       joint.show();
     }
