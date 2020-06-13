@@ -22,6 +22,7 @@ import {
   MatDividerModule,
   MatTabsModule,
 } from '@angular/material';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
@@ -61,6 +62,7 @@ import { ViewProjectComponent } from './view-project/view-project.component';
     HttpClientModule,
     MatIconModule,
     MatTabsModule,
+    MatTooltipModule,
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
