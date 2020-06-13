@@ -14,6 +14,8 @@ export class DashboardComponent implements OnInit {
   items: any[] = [];
   selected: any = {};
   online: any[] = [];
+  onCloudMessage = 'No Online Circuits Available &#9785;';
+
   share() {
     confirm('Enable Sharing the circuit will  become public');
   }
@@ -62,14 +64,21 @@ export class DashboardComponent implements OnInit {
         this.online = val;
         // console.log(this.online);
       }, err => console.log(err));
+    } else {
+      this.onCloudMessage = 'Please Login to See Circuit';
     }
   }
   DeleteCircuit(id, offline, index) {
+    const ok = confirm('Are You Sure You want to Delete Circuit');
+    if (!ok) {
+      return;
+    }
     window['showLoading']();
     if (offline) {
       SaveOffline.Delete(id, () => {
         this.items.splice(index, 1);
         this.closeProject();
+        alert('Done Deleting');
         window['hideLoading']();
       });
     } else {

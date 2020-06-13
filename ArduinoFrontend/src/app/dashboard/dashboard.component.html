@@ -30,7 +30,7 @@
     Circuits</h3>
   <div style="display: flex;">
     <div style="flex-basis: 1450px;">
-      <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']" style="font-weight: 600;">+ New
+      <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
         Circuit</a>
     </div>
 
@@ -45,8 +45,8 @@
   </div>
 
   <mat-tab-group style="width: 100%;display: flex;">
-    <mat-tab label="Online">
-      <div *ngIf="online && online.length === 0">No Online Circuits Available &#9785;</div>
+    <mat-tab label="On Cloud">
+      <div *ngIf="online && online.length === 0" [innerHtml]="onCloudMessage"></div>
       <div class="row" style="margin-top: 10px;">
         <div class="col-md-3" *ngFor="let item of online; let i = index">
           <div class="subbox" (click)="openProject(i)">
@@ -65,8 +65,8 @@
         </div>
       </div>
     </mat-tab>
-    <mat-tab label="Offline">
-      <div *ngIf="!items && items.length == 0">No Offline Circuits Available &#9785;</div>
+    <mat-tab label="Temporary Circuits">
+      <div *ngIf="items.length == 0">No Offline Circuits Available &#9785;</div>
       <div class="row" style="margin-top: 10px;">
         <div class="col-md-3" *ngFor="let item of items; let i = index">
           <div class="subbox" (click)="openProject(i,true)">
@@ -130,30 +130,32 @@
           <h6 style="margin-left: 15px;font-family: cursive">Created At: {{selected.create}}</h6>
           <h6 style="margin-left: 15px;font-family: cursive">Edited At: {{selected.edit}}</h6>
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
-          <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;">
-            <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank"><i
-                class="fab fa-facebook-f" style="color:white; font-size: medium;"></i></a>
-          </button>
+          <div *ngIf="!selected.offline">
+            <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank"><i
+                  class="fab fa-facebook-f" style="color:white; font-size: medium;"></i></a>
+            </button>
 
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;">
-            <a href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Fdeveloper.linkedin.com"
-              target="_blank"><i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i></a>
-          </button>
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;top: 4px;">
-            <a href="https://www.reddit.com/submit" target="_blank"><i class='fab fa-reddit-alien'
-                style='font-size:24px;color: white;'></i></a>
-          </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;">
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Fdeveloper.linkedin.com"
+                target="_blank"><i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i></a>
+            </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;top: 4px;">
+              <a href="http://www.reddit.com/submit?url=https://stackoverflow.com/questions/24823114/post-to-reddit-via-url&title=Post%20to%20Reddit%20via%20URL"
+                target="_blank"><i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i></a>
+            </button>
 
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
-            <i class="fa fa-envelope" style="font-size: medium;"></i>
-          </button>
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)="share()">
-            <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
-          </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
+              <i class="fa fa-envelope" style="font-size: medium;"></i>
+            </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)="share()">
+              <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-
+    <!--Comments
     <hr>
     <div style="height: 185px; width: 100%;">
       <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
@@ -164,6 +166,7 @@
         <button mat-raised-button disabled>Post Comment</button>
       </div>
     </div>
+  -->
   </div>
 </div>
 <!--/open project-->
