@@ -218,7 +218,8 @@ class ArduinoSaveList(APIView):
         saved_state = StateSave.objects.filter(
             owner=self.request.user, is_arduino=True).order_by('-save_time')
         try:
-            serialized = SaveListSerializer(saved_state, many=True)
+            serialized = SaveListSerializer(
+                saved_state, many=True, context={'request': request})
             return Response(serialized.data)
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
