@@ -1,30 +1,5 @@
 <app-header title="Dashboard"></app-header>
 
-<!--sidebar-->
-<!--<div id="sidebar">
-  <div class="card" style="width: 80%;position: relative">
-    <ul class="list-group list-group-flush" style="width: 100%">
-      <li class="list-group-item">
-        <img class="card-img-top" src="assets/images/login.svg" width="60" height="60" alt="Card image cap">
-        <h3 class="text-center">Anonymous</h3>
-      </li>
-      <li class="list-group-item">
-        <form class="form-inline" action="#" style="width: 100%">
-          <div class="form-group mb-1 mt-1" style="padding-left: 0px; position: relative;">
-
-            <input type="search" class="form-control form-control-md " id="search" placeholder="Search"
-              style="width: 100%; position: relative;">
-
-          </div>
-        </form>
-      </li>
-      <li class="list-group-item  btn btn-outline-secondary mb-1 text-left
-                           ">EDA Design</li>
-      <li class="btn btn-primary text-left ">Arduino Circuits</li>
-    </ul>
-  </div>
-</div>-->
-<!--/sidebar-->
 <div id="main">
   <h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Arduino
     Circuits</h3>
@@ -130,28 +105,26 @@
           <h6 style="margin-left: 15px;font-family: cursive">Created At: {{selected.create}}</h6>
           <h6 style="margin-left: 15px;font-family: cursive">Edited At: {{selected.edit}}</h6>
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
-          <div *ngIf="!selected.offline">
-            <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;">
-              <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank"><i
-                  class="fab fa-facebook-f" style="color:white; font-size: medium;"></i></a>
-            </button>
+          <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;" matTooltip="Share it on Facebook">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse" target="_blank" ><i
+                class="fab fa-facebook-f" style="color:white; font-size: medium;"></i></a>
+          </button>
 
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;">
-              <a href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Fdeveloper.linkedin.com"
-                target="_blank"><i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i></a>
-            </button>
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;top: 4px;">
-              <a href="http://www.reddit.com/submit?url=https://stackoverflow.com/questions/24823114/post-to-reddit-via-url&title=Post%20to%20Reddit%20via%20URL"
-                target="_blank"><i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i></a>
-            </button>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;" matTooltip="Share it on LinkedIn">
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Fdeveloper.linkedin.com"
+              target="_blank"><i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i></a>
+          </button>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;top: 4px;" matTooltip="Share it on Reddit">
+            <a href="https://www.reddit.com/submit" target="_blank"><i class='fab fa-reddit-alien'
+                style='font-size:24px;color: white;'></i></a>
+          </button>
 
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
-              <i class="fa fa-envelope" style="font-size: medium;"></i>
-            </button>
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)="share()">
-              <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
-            </button>
-          </div>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" matTooltip="Share it with Mail">
+            <i class="fa fa-envelope" style="font-size: medium;"></i>
+          </button>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)="share()" matTooltip="Copy Sharing URL">
+            <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
+          </button>
         </div>
       </div>
     </div>
