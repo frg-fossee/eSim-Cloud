@@ -35,6 +35,8 @@ export class SimulatorComponent implements OnInit {
   status = 'Start Simulation'; //  stores the initial status of simulation button
   toggle1 = false; // Stores the toggle status for expanding Virtual console
   atoggle = false; // stores the toggle status for closing/opening Virtual console
+  token: string;
+  username: string;
 
   constructor(
     private aroute: ActivatedRoute,
@@ -55,6 +57,19 @@ export class SimulatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.token = Login.getToken();
+    if (this.token) {
+      this.api.userInfo(this.token).subscribe((tmp) => {
+        this.username = tmp.username;
+      }, err => {
+        if (err.status === 401) {
+          Login.logout();
+        }
+        this.token = null;
+        console.log(err);
+      });
+    }
+
     this.aroute.queryParams.subscribe(v => {
       if (v.id && v.offline === 'true') {
         // if project id is present then project is read from offline
@@ -393,5 +408,11 @@ export class SimulatorComponent implements OnInit {
   openProject() {
     const openProject = document.getElementById('opendialog');
     openProject.style.display = 'block';
+  }
+  Login() {
+    Login.redirectLogin();
+  }
+  Logout() {
+    Login.logout();
   }
 }
