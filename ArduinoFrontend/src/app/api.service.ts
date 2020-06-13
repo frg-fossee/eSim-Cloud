@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  url = 'http://localhost:8000/';
+  url = environment.API_URL;
   constructor(private http: HttpClient) {
     if (window.location.host.indexOf('4200') <= -1) {
       this.url = '';
