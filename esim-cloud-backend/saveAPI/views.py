@@ -66,7 +66,8 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             try:
-                serialized = StateSaveSerializer(saved_state)
+                serialized = StateSaveSerializer(
+                    saved_state, context={'request': request})
                 User = get_user_model()
                 owner_name = User.objects.get(
                     id=serialized.data.get('owner'))
@@ -251,7 +252,10 @@ class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Search Project
     """
-    queryset = StateSave.objects.all()
+    def get_queryset(self):
+        queryset = StateSave.objects.filter(
+            owner=self.request.user).order_by('-save_time')
+        return queryset
     serializer_class = SaveListSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SaveSearchFilterSet
