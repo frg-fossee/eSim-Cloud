@@ -25,3 +25,11 @@ ng lint
 ```bash
 ng test
 ```
+
+* To generate documentation
+
+```bash
+npm run doc
+```
+
+Then open a server on the "documentation" folder.
