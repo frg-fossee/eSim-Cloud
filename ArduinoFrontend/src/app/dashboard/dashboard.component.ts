@@ -122,9 +122,9 @@ export class DashboardComponent implements OnInit {
       alert('Please Login!');
     }
   }
-  CopyUrlToClipBoard(saveId) {
+  CopyUrlToClipBoard(url) {
     const tmpEl = document.createElement('textarea');
-    tmpEl.value = `http:\\\\${window.location.host}/#/simulator?id=${saveId}`;
+    tmpEl.value = url;
     document.body.appendChild(tmpEl);
     tmpEl.focus();
     tmpEl.select();
@@ -165,10 +165,14 @@ export class DashboardComponent implements OnInit {
      * 3 -> Mail
      * 4 -> copy url
      */
-    this.snackbar.open('Anyone With The Link Can View and Simulate Project But cannot edit.', 'Close');
-    let shareURL = `${window.location.protocol}:\\\\${window.location.host}/#/project/${selected.save_id}`;
-    console.log(shareURL);
+    this.snackbar.open('Anyone With The Link Can View and Simulate Project But cannot edit.', 'Close', {
+      duration: 10000
+    });
+    const slug = `${selected.save_id.replace(/-/g, '_')}-${selected.name.substr(0, 50).replace(/ +/g, '-')}`;
+    let shareURL = `${window.location.protocol}\\\\${window.location.host}/#/project/${slug} `;
+    const copyUrl = shareURL;
     shareURL = encodeURIComponent(shareURL);
+
     const sharingName = encodeURIComponent(`${selected.name} | Arduino On Cloud`);
     if (index < 3) {
       const map = [
@@ -205,12 +209,12 @@ export class DashboardComponent implements OnInit {
       }
     } else if (index === 4) {
       if (selected.shared) {
-        this.CopyUrlToClipBoard(selected.save_id);
+        this.CopyUrlToClipBoard(copyUrl);
       } else {
         this.EnableSharing(selected.save_id, token, (v) => {
           selected.shared = v.shared;
           if (selected.shared) {
-            this.CopyUrlToClipBoard(selected.save_id);
+            this.CopyUrlToClipBoard(copyUrl);
           } else {
             alert('Not Able to Share Circuit');
           }
