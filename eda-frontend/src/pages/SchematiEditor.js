@@ -14,7 +14,6 @@ import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
 import { fetchSchematic, loadGallery } from '../redux/actions/index'
 import { useDispatch } from 'react-redux'
-import { renderXML } from '../components/SchematicEditor/Helper/ToolbarTools'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,14 +44,14 @@ export default function SchematiEditor (props) {
     var outline = outlineRef.current
     LoadGrid(container, sidebar, outline)
 
-    if (props.location.state !== undefined) {
-      var cktid = props.location.state.id
+    if (props.location.search !== '') {
+      const query = new URLSearchParams(props.location.search)
+      var cktid = query.get('id')
       if (cktid.substr(0, 7) === 'gallery') {
         dispatch(loadGallery(cktid.substr(7, cktid.length)))
       } else {
         // calling the api
         dispatch(fetchSchematic(cktid))
-        renderXML()
       }
     }
   }, [compRef, gridRef, outlineRef, props.location, dispatch])
