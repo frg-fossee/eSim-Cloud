@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory, Link as RouterLink } from 'react-router-dom'
 import {
@@ -148,6 +148,10 @@ function Header () {
   }
 
   const [shared, setShared] = React.useState(schSave.isShared)
+
+  useEffect(() => {
+    setShared(schSave.isShared)
+  }, [schSave.isShared])
 
   const handleShareChange = (event) => {
     setShared(event.target.checked)

@@ -11,7 +11,6 @@ import {
   Tooltip
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
-import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded'
 import { makeStyles } from '@material-ui/core/styles'
 // import Rating from '@material-ui/lab/Rating'
 import { Link as RouterLink } from 'react-router-dom'
@@ -19,7 +18,7 @@ import { Link as RouterLink } from 'react-router-dom'
 const useStyles = makeStyles((theme) => ({
   media: {
     marginTop: theme.spacing(3),
-    height: 150
+    height: 165
   },
   rating: {
     marginTop: theme.spacing(1),
@@ -102,19 +101,11 @@ export default function SchematicCard ({ sch }) {
             Launch in Editor
           </Button>
 
-          <Tooltip title="Download" placement="bottom" arrow>
-            <GetAppRoundedIcon
-              color="action"
-              fontSize="small"
-              style={{ marginLeft: 'auto' }}
-            />
-          </Tooltip>
-
-          <Tooltip title="SHARE" placement="bottom" arrow>
+          <Tooltip title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'} placement="bottom" arrow>
             <ShareIcon
-              color="action"
+              color={!sch.shared ? 'disabled' : 'primary'}
               fontSize="small"
-              style={{ marginRight: '10px' }}
+              style={{ marginLeft: 'auto', marginRight: '10px' }}
             />
           </Tooltip>
         </CardActions>
