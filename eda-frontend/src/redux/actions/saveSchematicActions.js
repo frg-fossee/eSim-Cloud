@@ -105,6 +105,7 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
         dispatch(setSchTitle(res.data.name))
         dispatch(setSchDescription(res.data.description))
         dispatch(setSchXmlData(res.data.data_dump))
+        renderGalleryXML(res.data.data_dump)
       }
     )
     .catch((err) => { console.error(err) })

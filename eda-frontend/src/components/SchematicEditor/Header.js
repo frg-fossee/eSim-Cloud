@@ -226,7 +226,7 @@ function Header () {
             </DialogContentText>
             <DialogContentText id="share-dialog-description">
               {shared === true
-                ? <>Link : <a href={window.location.href + '/' + schSave.details.save_id}>{window.location.href + '/' + schSave.details.save_id}</a></>
+                ? <>Link : <a href={window.location.href}>{window.location.href}</a></>
                 : <> Turn On sharing </>
               }
             </DialogContentText>

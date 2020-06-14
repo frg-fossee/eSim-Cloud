@@ -53,15 +53,6 @@ function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
   }} />
 }
 
-function SchematicEditorRoute (props) {
-  useEffect(() => {}, [props])
-
-  return <Redirect to={{
-    pathname: '/editor',
-    state: { id: props.match.params.Id }
-  }} />
-}
-
 function App () {
   return (
     <HashRouter>
@@ -69,7 +60,6 @@ function App () {
         <PublicRoute exact path="/login" restricted={true} nav={false} component={Login} />
         <PublicRoute exact path="/signup" restricted={true} nav={false} component={SignUp} />
         <PublicRoute exact path="/" restricted={false} nav={true} component={Home} />
-        <Route exact path="/editor/:Id" component={SchematicEditorRoute} />
         {localStorage.getItem('esim_token') !== null
           ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
           : <Route path="/editor" component={SchematicEditor} />
