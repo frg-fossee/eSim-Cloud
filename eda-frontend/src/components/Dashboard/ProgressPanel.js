@@ -77,8 +77,8 @@ export default function ProgressPanel () {
           aria-label="scrollable auto tabs example"
         >
           <Tab label="Recent Schematics" {...a11yProps(0)} />
-          <Tab label="Under Reviewer" {...a11yProps(1)} />
-          <Tab label="Under Domain Expert" {...a11yProps(2)} />
+          {/* <Tab label="Under Reviewer" {...a11yProps(1)} />
+          <Tab label="Under Domain Expert" {...a11yProps(2)} /> */}
         </Tabs>
       </AppBar>
 
@@ -93,7 +93,7 @@ export default function ProgressPanel () {
             alignContent="center"
             spacing={3}
           >
-            {schematics.map(
+            {schematics.slice(0, 4).map(
               (sch) => {
                 return (
                   <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
@@ -110,19 +110,19 @@ export default function ProgressPanel () {
       </TabPanel>
 
       {/* Listing Schematics Under Review */}
-      <TabPanel value={value} index={1}>
+      {/* <TabPanel value={value} index={1}>
         <Typography variant="button" display="block" gutterBottom>
           Start publishing circuit , You don't have any schematics under review...
         </Typography>
-      </TabPanel>
+      </TabPanel> */}
 
       {/* Listing Reviewed Schematics */}
-      <TabPanel value={value} index={2}>
+      {/* <TabPanel value={value} index={2}>
         <Typography variant="button" display="block" gutterBottom>
           Start publishing circuit , You don't have any schematics to be tagged by
           domain expert...
         </Typography>
-      </TabPanel>
+      </TabPanel> */}
     </div>
   )
 }
