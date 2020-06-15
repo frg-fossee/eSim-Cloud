@@ -85,10 +85,11 @@
     [style.background-color]="toggle ? 'white' : 'lightblue'">
     <i class='far fa-file-code'></i>Code</button>
 
-  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" (click)="StartSimulation()"
-    [style.background-color]="stoggle ? 'white' : 'lightgreen'">
+  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" [disabled]="disabled"
+    (click)="StartSimulation()" [style.background-color]="stoggle ? 'white' : 'lightgreen'">
     <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
-    {{status}}</button>
+    {{ stoggle ? 'Start Simulation' : 'Stop Simulation' }}
+  </button>
 
   <!--simulation loading svg-->
   <div id="simload"
