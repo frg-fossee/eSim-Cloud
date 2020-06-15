@@ -96,13 +96,17 @@ class SvgGenerator:
         """
 
         data = self.parser.extract_data_from_lib(file_path)
-
         dcm_path = file_path.rsplit(".", 1)
         dcm_path = dcm_path[0] + ".dcm"
         folder_name = file_path.split('/')[-1].split(".")[0]
         if(folder_name in self.NAME_OF_LIBS_TO_IGNORE_PIN_NAME):
             self.SHOW_PIN_NAME = False
         dcm_data = self.parser.extract_data_from_dcm(dcm_path)
+
+        if len(dcm_data) <= 0:
+            isDcmPresent = False
+        else:
+            isDcmPresent = True
         # folder_name is also same as the file name without extension
 
         component_data = {}
@@ -453,6 +457,15 @@ class SvgGenerator:
                             name = (f"{symbol_prefix}" +
                                     f"-{name_of_symbol}-{dm}-" +
                                     f"{chr(64+z)}")
+
+                            if(not isDcmPresent):
+                                # populate dcm_data with fake info
+                                for ix in range(len(data)):
+                                    dummy_dcm = {'name': '', 'D': '',
+                                                 'K': '', 'F': ''}
+                                    dummy_dcm['name'] = data[ix]['def'][1]
+                                    dcm_data.append(dummy_dcm)
+
                             if dm == 1 and z == 1:
                                 # run twice to save a thumbnail image
                                 for sav_svg in range(0, 2):
@@ -481,7 +494,7 @@ class SvgGenerator:
                                         comp = dcm_data[co]
                                         if(name_of_symbol == comp["name"]):
                                             cmp_data["name"] = comp["name"]
-                                            cmp_data["full_name"] = name
+                                            cmp_data["full_name"] = name if (name != '') else comp['name'] # noqa
                                             if 'K' in comp.keys():
                                                 cmp_data["keyword"] = comp["K"]
                                             else:
@@ -529,7 +542,7 @@ class SvgGenerator:
                                     comp = dcm_data[co]
                                     if(name_of_symbol == comp["name"]):
                                         cmp_data["name"] = comp["name"]
-                                        cmp_data["full_name"] = name
+                                        cmp_data["full_name"] = name if (name != '') else comp['name'] # noqa
                                         if 'K' in comp.keys():
                                             cmp_data["keyword"] = comp["K"]
                                         else:

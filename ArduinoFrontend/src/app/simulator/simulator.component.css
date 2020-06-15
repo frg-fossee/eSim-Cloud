@@ -1,18 +1,24 @@
-textarea:hover,
-input:hover,
-textarea:active,
-input:active,
-textarea:focus,
-input:focus,
-label:focus {
+.mynode:hover {
+    fill: #f00 !important;
+    stroke: black !important;
+    fill-opacity: 1 !important;
+    stroke-opacity: 1 !important;
+}
+
+.mynode {
+    fill: #f00 !important;
+    stroke: black !important;
+    fill-opacity: 0 !important;
+    stroke-opacity: 0 !important;
+}
+
+textarea:hover, input:hover, textarea:active, input:active, textarea:focus, input:focus, label:focus {
     outline: 0px !important;
     -webkit-appearance: none;
     /* box-shadow: none !important; */
 }
 
-button:focus,
-button:active,
-button:hover {
+button:focus, button:active, button:hover {
     outline: 0px !important;
     -webkit-appearance: none;
 }
@@ -205,12 +211,10 @@ button:hover {
     #sidebar-wrapper {
         margin-left: 0;
     }
-
     #page-content-wrapper {
         min-width: 0;
         width: 100%;
     }
-
     #wrapper.toggled #sidebar-wrapper {
         margin-left: -15rem;
     }
@@ -218,8 +222,7 @@ button:hover {
 
 /*context-menu*/
 
-html,
-body {
+html, body {
     height: 100%;
 }
 
@@ -319,8 +322,30 @@ body {
     from {
         bottom: 0px;
     }
-
     to {
         top: 500px;
     }
+}
+
+#innerdialog {
+    background-color: white;
+    position: absolute;
+    color: black;
+    top: 170px;
+    width: 25%;
+    min-height: 170px;
+    margin-left: 35%;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: block;
+    z-index: 1001;
+}
+
+#opendialog {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    min-height: 150%;
+    background-color: rgba(0, 0, 0, 0.4);
 }

@@ -13,7 +13,7 @@ export class Wire {
   end: Point = null; // End circuit node of wire
   element: any; // body of the wire
   color: any = '#000'; // color of the wire
-  glow: any;
+  glows: any[] = [];
   id: number;
   /**
    * Constructor of wire
@@ -59,6 +59,9 @@ export class Wire {
   }
   // Click event callback
   handleClick() {
+    if (window['Selected'] && (window['Selected'] instanceof Wire)) {
+      window['Selected'].deselect();
+    }
     for (const joint of this.joints) {
       joint.show();
     }
@@ -90,7 +93,7 @@ export class Wire {
     body.innerHTML = '<label>Color:</label><br>';
     const select = document.createElement('select');
     select.innerHTML = `<option>Black</option><option>Red</option><option>Yellow</option><option>Blue</option><option>Green</option>`;
-    const colors = ['#000', '#ff0000', '#ffff00', '#2593fa', '#31c404'];
+    const colors = ['#000', '#ff0000', '#e6a800', '#2593fa', '#31c404'];
     // set the current color
     for (let i = 0; i < colors.length; ++i) {
       if (colors[i] === this.color) {
@@ -189,13 +192,17 @@ export class Wire {
       });
       // change attribute
       this.element.attr({ 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '4', stroke: this.color });
-      if (this.glow) {
-        this.glow.remove();
+      if (this.glows.length > 0) {
+        // this.glow.remove();
+        this.removeGlows();
       }
       this.element.mouseover(() => {
-        this.glow = this.element.glow({
-          color: this.color
-        });
+        this.glows.push(
+          this.element.glow({
+            color: this.color
+          })
+        );
+
       });
     }
   }
@@ -217,11 +224,13 @@ export class Wire {
       color: this.color,
       start: {
         id: this.start.parent.id,
-        keyName: this.start.parent.keyName
+        keyName: this.start.parent.keyName,
+        pid: this.start.id
       },
       end: {
         id: this.end.parent.id,
-        keyName: this.end.parent.keyName
+        keyName: this.end.parent.keyName,
+        pid: this.end.id
       }
     };
   }
@@ -233,6 +242,11 @@ export class Wire {
     this.color = data.color;
     this.points = data.points;
   }
+  private removeGlows() {
+    while (this.glows.length !== 0) {
+      this.glows.pop().remove();
+    }
+  }
   /**
    * Remove wire from canvas
    */
@@ -240,10 +254,7 @@ export class Wire {
     for (const joint of this.joints) {
       joint.remove();
     }
-    if (this.glow) {
-      this.glow.remove();
-    }
-    this.glow = null;
+    this.removeGlows();
     this.joints = [];
     this.joints = null;
     this.points = [];

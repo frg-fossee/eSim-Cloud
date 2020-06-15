@@ -24,12 +24,25 @@
   <script src="./assets/js/raphael.min.js"></script>
   <!-- <script>var exports = {};</script> -->
   <script src="./assets/avr8js/index.js"></script>
-
+  <script src="https://momentjs.com/downloads/moment.min.js"></script>
   <script type="text/javascript" src="https://unpkg.com/canvg@3.0.4/lib/umd.js"></script>
+  <script>
+    // Global function to display loading svg while simulation
+    window['showLoading'] = () => {
+      const showloader = document.getElementById('loadanim');
+      showloader.style.display = 'flex';
+    };
+    // Global function to hide loading svg after simulation
+    window['hideLoading'] = () => {
+      const hideloader = document.getElementById('loadanim');
+      hideloader.style.display = 'none';
+    };
+  </script>
 </head>
 
 <body>
-  <div id="loadanim" style="display: none;top: 44%; left: 52%; z-index: 100; position: absolute; width: 100vw; height: 100vh; background: transparent;">
+  <div id="loadanim"
+    style="display: none;top: 44%; left: 52%; z-index: 100; position: absolute; width: 100vw; height: 100vh; background: transparent;">
     <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="140px" height="140px"
       viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
       <path fill="none" stroke="#6252c5" stroke-width="8" stroke-dasharray="42.76482137044271 42.76482137044271"

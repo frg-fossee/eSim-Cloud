@@ -29,10 +29,10 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
     class Meta:
         model = LibraryComponent
         fields = {
-            'name': ['contains'],
-            'keyword': ['contains'],
-            'description': ['contains'],
-            'component_library__library_name': ['contains'],
+            'name': ['icontains'],
+            'keyword': ['icontains'],
+            'description': ['icontains'],
+            'component_library__library_name': ['icontains'],
             'component_library': ['exact'],
             'symbol_prefix': ['exact'],
         }

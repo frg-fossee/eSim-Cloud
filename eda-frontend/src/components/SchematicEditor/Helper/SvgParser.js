@@ -119,12 +119,35 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       var prefix = newsource.split('/')
       var symboltype = prefix[3].split('') */
       v1.CellType = 'Component'
-      v1.symbol = component.symbol_prefix
+      v1.symbol = component.symbol_prefix.toUpperCase()
       v1.CompObject = component
 
-      var props = Object.assign({}, ComponentParameters[v1.symbol])
+      component.name = component.name.toUpperCase()
+      var props = {}
+      if (v1.symbol === 'V') {
+        // console.log('voltage')
+
+        if (ComponentParameters[v1.symbol][component.name] === undefined) {
+          props = Object.assign({}, ComponentParameters[v1.symbol].VSOURCE)
+        } else {
+          props = Object.assign({}, ComponentParameters[v1.symbol][component.name])
+        }
+      } else if (v1.symbol === 'I') {
+        // console.log('CURRENT')
+        if (ComponentParameters[v1.symbol][component.name] === undefined) {
+          props = Object.assign({}, ComponentParameters[v1.symbol].ISOURCE)
+        } else {
+          props = Object.assign({}, ComponentParameters[v1.symbol][component.name])
+        }
+      } else {
+        // console.log('other')
+
+        props = Object.assign({}, ComponentParameters[v1.symbol])
+      }
       props.NAME = component.name
       v1.properties = props
+      // console.log('component', component)
+      // console.log('v1.properties', v1.properties)
 
       v1.setConnectable(false)
 

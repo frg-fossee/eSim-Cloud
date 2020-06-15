@@ -1,16 +1,5 @@
-<div id="header" class="bg-light" style="display: flex; height:60px;">
-  <div
-    style="flex-basis: 1300px; line-height: 60px;font-weight: bold; padding-left: 55px; font-size: x-large; color: cornflowerblue">
-    Arduino On Cloud</div>
-  <div style="flex-basis: 100px; line-height: 60px; text-align: right; padding-right: 10px;font-weight:600">
-    <button mat-stroked-button [routerLink]="['/gallery']" >Gallery</button>
-  </div>
-  <div style="flex-basis: 300px; line-height: 60px;">
-    <!--<button mat-stroked-button>dashboard</button>-->
-    <a mat-stroked-button style="margin-left: 5px;" [routerLink]="['/dashboard']">Login</a>
+<app-header title="Arduino on Cloud" color="cornflowerblue" front="true"></app-header>
 
-  </div>
-</div>
 
 <div style="min-height: 90vh;display: flex;">
   <div class="row" style="margin: auto auto; width: 100%;">

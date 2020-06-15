@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Hidden,
   Divider,
@@ -13,6 +13,8 @@ import {
 import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchSchematics } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -45,42 +47,52 @@ const useStyles = makeStyles((theme) => ({
 
 export default function DashSidebar (props) {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
+  const schematics = useSelector(state => state.dashboardReducer.schematics)
+
+  const dispatch = useDispatch()
+
+  // For Fetching Saved Schematics
+  useEffect(() => {
+    dispatch(fetchSchematics())
+  }, [dispatch])
 
   return (
     <>
       <Hidden smDown>
         <div className={classes.toolbar} />
       </Hidden>
-
-      <ListItem
-        alignItems="flex-start"
-        component={RouterLink}
-        to="/dashboard"
-        style={{ marginTop: '15px' }}
-        className={classes.sideItem}
-        button
-        divider
-      >
-        <ListItemAvatar>
-          <Avatar className={classes.purple}>U</Avatar>
-        </ListItemAvatar>
-        <ListItemText
-          primary="User Name"
-          secondary={
-            <React.Fragment>
-              <Typography
-                component="span"
-                variant="body2"
-                color="textSecondary"
-              >
-                Contributor
-              </Typography>
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-
       <List>
+        <ListItem
+          alignItems="flex-start"
+          component={RouterLink}
+          to="/dashboard"
+          style={{ marginTop: '15px' }}
+          className={classes.sideItem}
+          button
+          divider
+        >
+          <ListItemAvatar>
+            <Avatar className={classes.purple}>
+              {auth.user.username.charAt(0).toUpperCase()}
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText
+            primary={auth.user.username}
+            secondary={
+              <React.Fragment>
+                <Typography
+                  component="span"
+                  variant="body2"
+                  color="textSecondary"
+                >
+                  Contributor
+                </Typography>
+              </React.Fragment>
+            }
+          />
+        </ListItem>
+
         <ListItem
           component={RouterLink}
           to="/dashboard/profile"
@@ -88,32 +100,29 @@ export default function DashSidebar (props) {
           button
           divider
         >
-          My Profile
+          <ListItemText primary='My Profile'/>
         </ListItem>
-      </List>
-
-      <List>
         <ListItem
           component={RouterLink}
           to="/dashboard/schematics"
           className={classes.sideItem}
           button
         >
-          My Schematics
+          <ListItemText primary='My Schematics'/>
         </ListItem>
-        <List className={classes.nestedSearch} dense="true">
+        <List className={classes.nestedSearch} >
           <InputBase
             className={classes.input}
             placeholder="Find your schematic..."
           />
         </List>
-        <List className={classes.nested} dense="true">
-          {[0, 1, 2, 4, 5, 6, 7, 8].map((item) => (
-            <ListItem key={`item-${item}`} button>
-              <ListItemText primary={`Schematic ${item}`} />
+        <div className={classes.nested} >
+          {schematics.map((sch) => (
+            <ListItem key={sch.save_id} button>
+              <ListItemText primary={`${sch.name}`} />
             </ListItem>
           ))}
-        </List>
+        </div>
         <Divider />
       </List>
     </>

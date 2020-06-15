@@ -7,16 +7,16 @@
   </form>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item dropdown text-white">
+      <li id="projectid" class="nav-item dropdown text-white">
         <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           Project
         </a>
-        <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item text-dark" href="/simulator" target="_blank">New Project</a>
-          <a class="dropdown-item text-dark" (click)="ClearProject()">Clear Project</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="z-index: 1001;background-color: #b8b8b8;">
+          <a class="dropdown-item text-dark" [routerLink]="['/simulator']" target="_blank">New Project</a>
+          <a class="dropdown-item text-dark" (click)="openProject()">Clear Project</a>
           <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a>
-
+          <a class="dropdown-item text-dark" (click)="SaveProjectOff()">Save Temporary</a>
         </div>
       </li>
       <li class="nav-item">
@@ -40,9 +40,10 @@
 
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a href="#" class="nav-link">
+        <!--<a href="#" class="nav-link">
           <img src="./assets/images/login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
-        </a>
+        </a>-->
+        <a mat-stroked-button href="#" [routerLink]="['/dashboard']" style="background-color: whitesmoke; color: black;">Login</a>
       </li>
 
     </ul>
@@ -64,7 +65,7 @@
   <!--simulation loading svg-->
   <div id="simload"
     style="display:none; z-index: 100;position: relative;width: 20%; height:20%;background: transparent;padding: 10px;">
-    <img src="../assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
+    <img src="./assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
   </div>
   <!--/simulation loading svg-->
 
@@ -303,3 +304,15 @@
   </div>
 </div>
 <!--/console ui-->
+<div id="opendialog" style="display: none;">
+  <div id="innerdialog">
+    <div id="top" style="background-color: transparent; width: 100%; height: 120px;border-radius: 5px;">
+      <p style="text-align: center;padding-top: 35px;">Are you sure you want to clear the project?</p>
+    </div>
+    <div class="modal-footer" style="background-color: transparent;">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeProject()">NO</button>
+      <button type="button" class="btn btn-primary" (click)="ClearProject()">YES</button>
+    </div>
+  </div>
+</div>
+

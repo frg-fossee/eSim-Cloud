@@ -1,45 +1,12 @@
-<!-- As a heading -->
-<div class="bg-light" style="display: flex; height:60px;">
-  <div style="flex-basis: 1500px; line-height: 60px;font-weight: bold; padding-left: 60px; font-size: x-large;">
-    Dashboard</div>
-  <div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
-  </div>
-  <!--<div style="flex-basis: 100px; line-height: 60px;">
-        <a mat-stroked-button href="#" target="_blank">Login</a>
-    </div>-->
-  <div class="dropdown" style="flex-basis: 100px; line-height: 60px;">
-    <div class="w3-dropdown-hover">
-      <img src="../assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="">
-      <div class="dropdown-content" style="display: none;">
-        <div
-          style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;margin-top: 5px;">
-          <i class="fas fa-user" style="margin-left: 5px;"></i> Meet Shah</div>
-        <hr style="margin-top: 5px;">
-        <div
-          style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
-          <i class="fa fa-plus" style="margin-left: 5px;"></i> New</div>
-        <div
-          style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
-          <i class="fa fa-tasks" style="margin-left: 5px;"></i> Designs</div>
-        <div
-          style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
-          <i class="fa fa-envelope" style="margin-left: 5px;"></i> Notification</div>
-        <hr style="margin-top: 5px;">
-        <div
-          style="position: relative;height: 37px;line-height: 37px;padding-left: 5px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 900; font-size: small;">
-          <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> logout</div>
-      </div>
-    </div>
-  </div>
-</div>
+<app-header title="Dashboard"></app-header>
 
 <!--sidebar-->
-<div id="sidebar">
+<!--<div id="sidebar">
   <div class="card" style="width: 80%;position: relative">
     <ul class="list-group list-group-flush" style="width: 100%">
       <li class="list-group-item">
         <img class="card-img-top" src="assets/images/login.svg" width="60" height="60" alt="Card image cap">
-        <h3 class="text-center">Username</h3>
+        <h3 class="text-center">Anonymous</h3>
       </li>
       <li class="list-group-item">
         <form class="form-inline" action="#" style="width: 100%">
@@ -56,36 +23,78 @@
       <li class="btn btn-primary text-left ">Arduino Circuits</li>
     </ul>
   </div>
-</div>
+</div>-->
 <!--/sidebar-->
 <div id="main">
-  <h5>Arduino Circuits</h5>
-  <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New Circuit</a>
-  <div class="row">
-    <div class="col-md-3" *ngFor="let item of items">
-      <div class="subbox" (click)="openProject(item.id)">
-        <div>
-          <div style="width: 100%;  background-color: #e8e8e8;">
-            <img class="item-img" src={{item.project.image}} alt="">
-          </div>
-          <div style="box-sizing: border-box; padding: 15px;">
-            <h4>{{item.project.name}}</h4>
-            <p>{{item.project.description}}</p>
-            <p>2 hours ago</p>
+  <h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Arduino
+    Circuits</h3>
+  <div style="display: flex;">
+    <div style="flex-basis: 1450px;">
+      <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
+        Circuit</a>
+    </div>
+
+    <div style="flex-basis: 350px;">
+      <form class="form-inline" (submit)="SearchCircuits(searchBox)">
+        <div class="form-group mb-2" style="padding-right: 1px;">
+          <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i></button>
+      </form>
+    </div>
+  </div>
+
+  <mat-tab-group style="width: 100%;display: flex;">
+    <mat-tab label="On Cloud">
+      <div *ngIf="online && online.length === 0" [innerHtml]="onCloudMessage"></div>
+      <div class="row" style="margin-top: 10px;">
+        <div class="col-md-3" *ngFor="let item of online; let i = index">
+          <div class="subbox" (click)="openProject(i)">
+            <div>
+              <div style="width: 100%;  background-color: #e8e8e8;">
+                <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+              </div>
+              <div style="box-sizing: border-box; padding: 15px;">
+                <h4>{{item.name}}</h4>
+                <p>{{item.description}}</p>
+                {{ DateDiff(item,item.save_time) }}
+                <p>{{item.time}}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </mat-tab>
+    <mat-tab label="Temporary Circuits">
+      <div *ngIf="items.length == 0">No Offline Circuits Available &#9785;</div>
+      <div class="row" style="margin-top: 10px;">
+        <div class="col-md-3" *ngFor="let item of items; let i = index">
+          <div class="subbox" (click)="openProject(i,true)">
+            <div>
+              <div style="width: 100%;  background-color: #e8e8e8;">
+                <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+              </div>
+              <div style="box-sizing: border-box; padding: 15px;">
+                <h4>{{item.name}}</h4>
+                <p>{{item.description}}</p>
+                {{ DateDiff(item,item.save_time) }}
+                <p>{{item.time}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </div>
 
 <!--open project-->
-<div id="openproject" style="display: none;">
-  <div id="innerdialog" *ngIf="selected && selected.project">
+<div id="openproject" style="display: none;z-index: 1000;">
+  <div id="innerdialog" *ngIf="selected">
     <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
       <div
         style="flex-basis: 80%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
-        {{selected.project.name}}
+        {{selected.name}}
       </div>
       <div style="flex-basis: 20%; padding: 10px;float: right;">
         <button style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"
@@ -96,49 +105,57 @@
     <div id="projectimage" style="height: 470px;position: relative;">
       <div
         style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
-        <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.project.image}} alt="">
+        <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.base64_image}}
+          alt="">
 
         <button mat-raised-button color="warn" style="margin-top: 70%;margin-left:23%"
-          (click)="DeleteCircuit(selected.id)">Delete Circuit</button>
-        <button mat-raised-button color="primary" [routerLink]="['/simulator']" [queryParams]="{id: selected.id}"
-          style=" margin-top: 5%;margin-left:13%">Edit circuit</button>
+          (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
+        <button mat-raised-button color="primary" [routerLink]="['/simulator']"
+          [queryParams]="{id: selected.save_id,offline: selected.offline}" style=" margin-top: 5%;margin-left:13%">Edit
+          circuit</button>
       </div>
-      <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%;">
+      <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%; top: 10px;">
         <div
           style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 230px;background-color:white; float: left; overflow: auto">
           <h5 style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
             Description</h5>
 
-          <p style="margin-left: 10px">{{selected.project.description}}</p>
+          <p style="margin-left: 10px">{{selected.description}}</p>
         </div>
         <div
           style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
-          <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: Navonil Das</h6>
+          <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: You</h6>
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
-          <h6 style="margin-left: 15px;font-family: cursive">Created At: 30/May/2020</h6>
-          <h6 style="margin-left: 15px;font-family: cursive">Edited At: 30/May/2020</h6>
+          {{ ExpandDate(selected) }}
+          <h6 style="margin-left: 15px;font-family: cursive">Created At: {{selected.create}}</h6>
+          <h6 style="margin-left: 15px;font-family: cursive">Edited At: {{selected.edit}}</h6>
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
-          <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px">
-            <i class="fab fa-facebook-f" style="color:white; font-size: medium;"></i>
-          </button>
+          <div *ngIf="!selected.offline">
+            <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;">
+              <a href="https://www.facebook.com/sharer/sharer.php?u=example.org" target="_blank"><i
+                  class="fab fa-facebook-f" style="color:white; font-size: medium;"></i></a>
+            </button>
 
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF;">
-            <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
-          </button>
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;">
-            <i class='fab fa-reddit-alien' style='font-size:24px;'></i>
-          </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;">
+              <a href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Fdeveloper.linkedin.com"
+                target="_blank"><i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i></a>
+            </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #008CBA;top: 4px;">
+              <a href="http://www.reddit.com/submit?url=https://stackoverflow.com/questions/24823114/post-to-reddit-via-url&title=Post%20to%20Reddit%20via%20URL"
+                target="_blank"><i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i></a>
+            </button>
 
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
-            <i class="fa fa-envelope" style="font-size: medium;"></i>
-          </button>
-          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)="share()">
-            <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
-          </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;">
+              <i class="fa fa-envelope" style="font-size: medium;"></i>
+            </button>
+            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;" (click)="share()">
+              <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
-
+    <!--Comments
     <hr>
     <div style="height: 185px; width: 100%;">
       <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
@@ -149,6 +166,7 @@
         <button mat-raised-button disabled>Post Comment</button>
       </div>
     </div>
+  -->
   </div>
 </div>
 <!--/open project-->

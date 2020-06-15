@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -7,9 +7,12 @@ import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SimulatorComponent } from './simulator/simulator.component';
 
-import { MonacoEditorModule } from 'ngx-monaco-editor';
+import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { PathLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
 import {
   MatDialogModule,
   MatInputModule,
@@ -17,7 +20,7 @@ import {
   MatTableModule,
   MatRadioModule,
   MatDividerModule,
-  MatTabsModule
+  MatTabsModule,
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -26,6 +29,18 @@ import { ComponentlistComponent } from './componentlist/componentlist.component'
 import { MatIconModule } from '@angular/material/icon';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
+import { HeaderComponent } from './header/header.component';
+import { ViewProjectComponent } from './view-project/view-project.component';
+
+export function onMonacoLoad() { }
+
+const monacoConfig: NgxMonacoEditorConfig = {
+  baseUrl: './assets',
+  defaultOptions: { scrollBeyondLastLine: false },
+  onMonacoLoad
+};
+
+
 
 @NgModule({
   declarations: [
@@ -38,12 +53,14 @@ import { GalleryComponent } from './gallery/gallery.component';
     ComponentlistComponent,
     FrontPageComponent,
     GalleryComponent,
+    ViewProjectComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    MonacoEditorModule.forRoot(),
+    MonacoEditorModule.forRoot(monacoConfig),
     BrowserAnimationsModule,
     MatDialogModule,
     MatRadioModule,
@@ -53,10 +70,15 @@ import { GalleryComponent } from './gallery/gallery.component';
     MatTableModule,
     HttpClientModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
   ],
-  providers: [],
+  // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent]
+  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA
+  ],
+  exports: [HeaderComponent]
 })
 export class AppModule { }

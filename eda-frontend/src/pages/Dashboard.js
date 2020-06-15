@@ -3,7 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import { CssBaseline } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-import Header from '../components/Dashboard/Header'
+import { Header } from '../components/Shared/Navbar'
 import Layout from '../components/Shared/Layout'
 import LayoutMain from '../components/Shared/LayoutMain'
 import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
@@ -24,7 +24,7 @@ export default function Dashboard () {
   const classes = useStyles()
 
   useEffect(() => {
-    document.title = 'Dashboard - EDA '
+    document.title = 'Dashboard - eSim '
   })
 
   return (

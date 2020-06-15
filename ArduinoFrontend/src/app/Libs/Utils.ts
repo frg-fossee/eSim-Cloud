@@ -9,17 +9,20 @@ import { Motor, L298N, ServoMotor } from './outputs/Motors';
 import { LCD16X2, SevenSegment } from './outputs/Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
-import { LM35 } from './inputs/TemperatureSensors';
+import { TMP36 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
 import { Resistor, BreadBoard } from './General';
-
+/**
+ * Utils class
+ * Contains All components with their section
+ */
 export class Utils {
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
-      ['SlideSwitch', 'PhotoResistor', 'LM35'],
+      ['SlideSwitch', 'PhotoResistor', 'TMP36'],
       ['PotentioMeter', 'MQ2']
     ],
     power: [
@@ -43,7 +46,7 @@ export class Utils {
       ['Resistor', 'BreadBoard']
     ]
   };
-
+  /** Components with thier name, image, classname */
   static components = {
     BreadBoard: {
       name: 'BreadBoard',
@@ -85,10 +88,10 @@ export class Utils {
       image: './assets/images/components/Potentiometer.png',
       className: Potentiometer
     },
-    LM35: {
-      name: 'Temperature Sensor LM35',
-      image: './assets/images/components/LM35.svg',
-      className: LM35
+    TMP36: {
+      name: 'Temperature Sensor TMP36',
+      image: './assets/images/components/TMP36.svg',
+      className: TMP36
     },
     PhotoResistor: {
       name: 'Photo Resistor',

@@ -1,8 +1,12 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react'
-import { Tab, Box, Tabs, AppBar, Typography } from '@material-ui/core'
+import React, { useEffect } from 'react'
+import { Tab, Box, Tabs, AppBar, Typography, Grid } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types'
+
+import SchematicCard from './SchematicCard'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchSchematics } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,6 +57,15 @@ export default function ProgressPanel () {
     setValue(newValue)
   }
 
+  const schematics = useSelector(state => state.dashboardReducer.schematics)
+
+  const dispatch = useDispatch()
+
+  // For Fetching Saved Schematics
+  useEffect(() => {
+    dispatch(fetchSchematics())
+  }, [dispatch])
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -64,20 +77,52 @@ export default function ProgressPanel () {
           aria-label="scrollable auto tabs example"
         >
           <Tab label="Recent Schematics" {...a11yProps(0)} />
-          <Tab label="Under Reviewer" {...a11yProps(1)} />
-          <Tab label="Under Domain Expert" {...a11yProps(2)} />
+          {/* <Tab label="Under Reviewer" {...a11yProps(1)} />
+          <Tab label="Under Domain Expert" {...a11yProps(2)} /> */}
         </Tabs>
       </AppBar>
+
+      {/* Listing Recently Saved Schematics */}
       <TabPanel value={value} index={0}>
-        You have not created any schematic , Create your first one now...
+        {schematics.length !== 0
+          ? <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="flex-start"
+            alignContent="center"
+            spacing={3}
+          >
+            {schematics.slice(0, 4).map(
+              (sch) => {
+                return (
+                  <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                    <SchematicCard sch={sch} />
+                  </Grid>
+                )
+              }
+            )}
+          </Grid>
+          : <Typography variant="button" display="block" gutterBottom>
+            You have not created any schematic , Create your first one now...
+          </Typography>
+        }
       </TabPanel>
-      <TabPanel value={value} index={1}>
-        Start publishing circuit , You don't have any schematics under review...
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Start publishing circuit , You don't have any schematics to be tagged by
-        domain expert...
-      </TabPanel>
+
+      {/* Listing Schematics Under Review */}
+      {/* <TabPanel value={value} index={1}>
+        <Typography variant="button" display="block" gutterBottom>
+          Start publishing circuit , You don't have any schematics under review...
+        </Typography>
+      </TabPanel> */}
+
+      {/* Listing Reviewed Schematics */}
+      {/* <TabPanel value={value} index={2}>
+        <Typography variant="button" display="block" gutterBottom>
+          Start publishing circuit , You don't have any schematics to be tagged by
+          domain expert...
+        </Typography>
+      </TabPanel> */}
     </div>
   )
 }

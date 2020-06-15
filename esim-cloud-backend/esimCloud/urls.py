@@ -15,6 +15,8 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.conf.urls import url, include
+from arduinoAPI import urls as arduinoURLs
+
 schema_view = get_schema_view(
     openapi.Info(
         title="eSim Cloud API",
@@ -41,6 +43,9 @@ urlpatterns = [
 
     # publishAPI routes
     path('api/', include(publishURLs)),
+
+    # Arduino Routes
+    path('api/arduino/', include(arduinoURLs)),
 
     # Auth API Routes
     url(r'^api/auth/', include('djoser.urls')),

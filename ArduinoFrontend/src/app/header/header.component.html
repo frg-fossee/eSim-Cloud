@@ -1,0 +1,37 @@
+<!-- As a heading -->
+<div class="bg-light" style="display: flex; height:60px;">
+  <div class="head-title" [style.color]="color">{{title}}</div>
+  <!--<div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
+  </div>-->
+  <div style="flex-basis: 200px; line-height: 60px;" *ngIf="!token">
+    <a mat-stroked-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
+    <a mat-stroked-button (click)="Login()">Login</a>
+  </div>
+  <div class="dropdown" *ngIf="token">
+    <div class="w3-dropdown-hover">
+      <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="">
+      <div class="dropdown-content">
+        <div *ngIf="username">
+          <i class="fas fa-user" style="margin-left: 5px;"></i> {{username}}
+        </div>
+        <hr style="margin-top: 5px;margin-bottom: 0;">
+        <div>
+          <a href="../../"><i class="fa fa-home" style="margin-left: 5px;"></i> Home</a>
+        </div>
+        <div>
+          <a [routerLink]="['/simulator']"><i class="fa fa-plus" style="margin-left: 5px;"></i> New</a>
+        </div>
+        <div class="list">
+          <a [routerLink]="['/dashboard']"><i class="fa fa-credit-card" style="margin-left: 5px;"></i> Dashboard</a>
+        </div>
+        <div>
+          <a [routerLink]="['/gallery']"><i class="fa fa-th" style="margin-left: 5px;"></i> Gallery</a>
+        </div>
+        <hr style="margin-top: 5px;margin-bottom: 0;">
+        <div (click)="Logout()">
+          <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> Logout
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

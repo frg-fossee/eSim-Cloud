@@ -1,19 +1,27 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
-
+/**
+ * Resistor Class
+ */
 export class Resistor extends CircuitElement {
-  static colorTable: string[] = [];
-  static tolColorMap: number[] = [];
-  static toleranceValues: string[] = [];
-  static unitLabels: string[] = [];
-  static unitValues: number[] = [];
+  static colorTable: string[] = []; // color table(hex values) of resistor
+  static tolColorMap: number[] = []; // tolerance color mapping values of resistor
+  static toleranceValues: string[] = []; // tolerance value of resistor
+  static unitLabels: string[] = []; // unit labels of resistor
+  static unitValues: number[] = []; // unit values of resistor
 
   value: number;
   toleranceIndex: number;
-
+  /**
+   * Resistor constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('Resistor', x, y, 'Resistor.json', canvas);
   }
+  /** init is called when the component is completely drawn to the canvas */
   init() {
     if (Resistor.colorTable.length === 0) {
       Resistor.colorTable = this.data.colorTable;
@@ -28,16 +36,24 @@ export class Resistor extends CircuitElement {
     delete this.data;
     this.data = null;
   }
+  /** Saves data/values that are provided to resistor  */
   SaveData() {
     return {
       value: this.value,
       tolerance: this.toleranceIndex
     };
   }
+  /**
+   * function loads the SaveData()
+   * @param data save object
+   */
   LoadData(data: any) {
     this.value = data.data.value;
     this.toleranceIndex = data.data.tolerance;
   }
+  /**
+   * Updates Resistor Properties
+   */
   updateColors() {
     const cur = this.getValue();
     this.elements[1].attr({
@@ -56,6 +72,7 @@ export class Resistor extends CircuitElement {
       fill: Resistor.colorTable[this.toleranceIndex]
     }); // Tolerance
   }
+  /** Function gets Resistence value */
   getValue() {
     const l = `${this.value}`.length;
     const tmp = `${this.value}`;
@@ -81,6 +98,7 @@ export class Resistor extends CircuitElement {
       third: +tmp.charAt(2),
     };
   }
+  /** Power values for unitvalues 1K ohm => 10^3 */
   private getPower(index: number) {
     if (index >= 0 && index <= Resistor.unitValues.length) {
       return Resistor.unitValues[index];
@@ -99,7 +117,7 @@ export class Resistor extends CircuitElement {
       this.updateColors();
     }
   }
-
+  /** Function returns resistence values 10K ohm => 10 */
   getInputValues() {
     const val = this.value;
     let tmp = val;
@@ -121,10 +139,18 @@ export class Resistor extends CircuitElement {
       ]
     };
   }
+  /** Function returns the resistor with resistence */
   getName() {
     const cur = this.getInputValues();
     return `Resistor ${cur.val}${Resistor.unitLabels[cur.index]}`;
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     let tmp;
     const cur = this.getInputValues();
@@ -186,13 +212,23 @@ export class Resistor extends CircuitElement {
 
 }
 
-
+/**
+ * Breadboard Class
+ */
 export class BreadBoard extends CircuitElement {
   public joined: Point[] = [];
+  /**
+   * Breadboard constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('BreadBoard', x, y, 'Breadboard.json', canvas);
   }
+  /** init is called when the component is complety drawn to the canvas */
   init() {
+    // Create a mapping for node label to node
     for (const node of this.nodes) {
       node.connectCallback = (item) => {
         this.joined.push(item);
@@ -244,6 +280,13 @@ export class BreadBoard extends CircuitElement {
       this.y += this.ty;
     });
   }
+  /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     return {

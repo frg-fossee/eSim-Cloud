@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ArduinoUno } from '../Libs/outputs/Arduino';
+import { Download } from '../Libs/Download';
 
-declare var monaco: any;
+declare var monaco;
 
 @Component({
   selector: 'app-code-editor',
@@ -9,49 +10,51 @@ declare var monaco: any;
   styleUrls: ['./code-editor.component.css']
 })
 export class CodeEditorComponent implements OnInit {
+  // TODO: Seperate Data
   editorOptions = {
     theme: 'vs',
     language: 'c'
   };
+  editor: any;
   records = [
     {
-      include: '#include <EEPROM.h>',
+      include: 'EEPROM.h',
       name: 'EEPROM',
       Description: 'Reading and writing to permanent storage',
       url: 'https://www.arduino.cc/en/Reference/EEPROM'
     },
     {
-      include: '#include <LiquidCrystal.h>',
+      include: 'LiquidCrystal.h',
       name: 'LiquidCrystal',
       Description: 'Controlling liquid crystal displays (LCDs)',
       url: 'https://www.arduino.cc/en/Reference/LiquidCrystal'
     },
     {
-      include: '#include <Servo.h>',
+      include: 'Servo.h',
       name: 'Servo',
       Description: 'Controlling Servo motor',
       url: 'https://www.arduino.cc/en/Reference/Servo'
     },
     {
-      include: '#include <SoftwareSerial.h>',
+      include: 'SoftwareSerial.h',
       name: 'SoftwareSerial',
       Description: 'Allow serial communication on other digital pins of the Arduino',
       url: 'https://www.arduino.cc/en/Reference/SoftwareSerial'
     },
     {
-      include: '#include <Wire.h>',
+      include: 'Wire.h',
       name: 'Wire',
       Description: 'This library allows you to communicate with I2C / TWI devices',
       url: 'https://www.arduino.cc/en/Reference/Wire'
     },
     {
-      include: '#include <SPI.h>',
+      include: 'SPI.h',
       name: 'SPI',
       Description: 'Communicating with devices using the Serial Peripheral Interface (SPI) Bus',
       url: 'https://www.arduino.cc/en/Reference/SPI'
     }
   ];
-  code = 's';
+  code = '';
   names: string[] = [];
   arduinos: ArduinoUno[] = [];
   selectedIndex = 0;
@@ -64,7 +67,6 @@ export class CodeEditorComponent implements OnInit {
     if (value) {
       this.names = [];
       this.arduinos = [];
-      // console.log(window['ArduinoUno_name']);
       for (const key in window['ArduinoUno_name']) {
         if (window['ArduinoUno_name'][key]) {
           this.names.push(key);
@@ -79,8 +81,25 @@ export class CodeEditorComponent implements OnInit {
       }
     }
   }
-  onInit(_) {
-    (window as any).monaco.languages.registerCompletionItemProvider('c', {
+  DownloadCode() {
+    Download.DownloadText(this.names[this.selectedIndex] + '.ino',
+      [this.code],
+      {
+        type: 'text/ino;charset=utf-8;'
+      });
+  }
+  Include(i) {
+    this.editor.executeEdits('code-editor', [{
+      identifier: { major: 1, minor: 1 },
+      range: new monaco.Range(1, 1, 1, 1),
+      text: '#include <' + this.records[i].include + '>\n',
+      forceMoveMarkers: false
+    }]);
+    this.openFolder();
+  }
+  onInit(editor) {
+    this.editor = editor;
+    monaco.languages.registerCompletionItemProvider('c', {
       provideCompletionItems: () => {
         return {
           suggestions: [
@@ -1107,16 +1126,15 @@ export class CodeEditorComponent implements OnInit {
     this.code = this.arduinos[this.selectedIndex].code;
   }
   openFolder() {
-   // const editor = document.getElementById('editor')
+    // const editor = document.getElementById('editor')
     const folder = document.getElementById('lib');
-   // console.log(folder.style.display);
 
     if (folder.style.display === 'none') {
       folder.style.display = 'flex';
-     // editor.style.display = 'none';
+      // editor.style.display = 'none';
     } else {
       folder.style.display = 'none';
-     // editor.style.display = 'block';
+      // editor.style.display = 'block';
     }
   }
 

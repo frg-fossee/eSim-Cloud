@@ -1,4 +1,7 @@
-from saveAPI.serializers import StateSaveSerializer
+import django_filters
+from django_filters import rest_framework as filters
+from saveAPI.serializers import StateSaveSerializer, SaveListSerializer
+from saveAPI.serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.views import APIView
@@ -6,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
+from rest_framework import viewsets
 import uuid
 import logging
 logger = logging.getLogger(__name__)
@@ -20,7 +24,7 @@ class StateSaveView(APIView):
 
     # Permissions should be validated here
     permission_classes = (IsAuthenticated,)
-    parser_classes = (FormParser,)
+    # parser_classes = (FormParser,)
 
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
@@ -88,16 +92,50 @@ class StateFetchUpdateView(APIView):
                                 status=status.HTTP_406_NOT_ACCEPTABLE)
 
             try:
+                # if data dump, shared,name and description needs to be updated
                 if 'data_dump' in request.data:
                     saved_state.data_dump = request.data['data_dump']
-                print(request.data)
                 if 'shared' in request.data:
                     saved_state.shared = bool(request.data['shared'])
+                if 'name' in request.data:
+                    saved_state.name = request.data['name']
+                if 'description' in request.data:
+                    saved_state.description = request.data['description']
+
+                # if thumbnail needs to be updated
+                if 'base64_image' in request.data:
+                    img = Base64ImageField(max_length=None, use_url=True)
+                    filename, content = img.update(
+                        request.data['base64_image'])
+                    saved_state.base64_image.save(filename, content)
                 saved_state.save()
-                serialized = StateSaveSerializer(saved_state)
+                serialized = SaveListSerializer(saved_state)
                 return Response(serialized.data)
             except Exception:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response({'error': 'Invalid sharing state'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(responses={200: StateSaveSerializer})
+    def delete(self, request, save_id):
+        if isinstance(save_id, uuid.UUID):
+            # Check for permissions and sharing settings here
+            try:
+                saved_state = StateSave.objects.get(save_id=save_id)
+            except StateSave.DoesNotExist:
+                return Response({'error': 'Does not Exist'},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            # Verifies owner
+            if self.request.user != saved_state.owner and not saved_state.shared:  # noqa
+                return Response({'error': 'not the owner and not shared'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+            try:
+                saved_state.delete()
+                return Response({'done': True})
+            except Exception:
+                return Response({'done': False})
         else:
             return Response({'error': 'Invalid sharing state'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -158,9 +196,52 @@ class UserSavesView(APIView):
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def get(self, request):
-        saved_state = StateSave.objects.filter(owner=self.request.user)
+        saved_state = StateSave.objects.filter(
+            owner=self.request.user, is_arduino=False).order_by('-save_time')
         try:
             serialized = StateSaveSerializer(saved_state, many=True)
             return Response(serialized.data)
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ArduinoSaveList(APIView):
+    """
+    List of Arduino Projects
+    """
+    permission_classes = (IsAuthenticated,)
+    parser_classes = (FormParser, JSONParser)
+    methods = ['GET']
+
+    @swagger_auto_schema(responses={200: StateSaveSerializer})
+    def get(self, request):
+        saved_state = StateSave.objects.filter(
+            owner=self.request.user, is_arduino=True).order_by('-save_time')
+        try:
+            serialized = SaveListSerializer(
+                saved_state, many=True, context={'request': request})
+            return Response(serialized.data)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SaveSearchFilterSet(django_filters.FilterSet):
+    class Meta:
+        model = StateSave
+        fields = {
+            'name': ['icontains'],
+            'description': ['icontains'],
+            'save_time': ['icontains'],
+            'create_time': ['icontains'],
+            'is_arduino': ['exact']
+        }
+
+
+class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Search Project
+    """
+    queryset = StateSave.objects.all()
+    serializer_class = SaveListSerializer
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = SaveSearchFilterSet

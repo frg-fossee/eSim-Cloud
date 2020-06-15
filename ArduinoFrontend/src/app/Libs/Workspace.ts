@@ -5,26 +5,30 @@ import { Injector } from '@angular/core';
 import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
+import { SaveOffline } from './SaveOffiline';
+import { Point } from './Point';
+import { Login } from './Login';
 
 declare var window;
 declare var $; // For Jquery
+// Enum function for Colour values to print in console
 export enum ConsoleType { INFO, WARN, ERROR, OUTPUT }
 
 export class Workspace {
-  // TODO: Add Comments
-  static translateX = 0.0;
-  static translateY = 0.0;
-  static scale = 1.0;
-  static zooomIncrement = 0.01;
-  static translateRate = 0.25;
+  static translateX = 0.0; // Stores initial value of new position of x
+  static translateY = 0.0; // Stores initial value of new postion of y
+  static scale = 1.0; // Stores scaling factor value for zoom in/out
+  static zooomIncrement = 0.01; // recursive zoomin/out increments by 0.01
+  static translateRate = 0.25; // stores translation rate for zoom in/out using mouse event
   static moveCanvas = {
     x: 0,
     y: 0,
     start: false
-  };
-  static copiedItem: any;
+  }; // Stores initial position values for x and y
+  static copiedItem: any; // stores value of copied component
   static injector: Injector;
-  static simulating = false;
+  static simulating = false; // stores boolean value for simulation
+  /** function to zoom in workspace */
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -34,8 +38,9 @@ export class Workspace {
       ${Workspace.scale})
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
+    Workspace.updateWires();
   }
-
+  /** function to zoom out workspace */
   static zoomOut() {
     Workspace.scale = Math.max(0.1, Workspace.scale - Workspace.zooomIncrement);
     Workspace.scale = Math.max(0.1, Workspace.scale - Workspace.zooomIncrement);
@@ -45,8 +50,9 @@ export class Workspace {
       ${Workspace.scale})
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
+    Workspace.updateWires();
   }
-
+  /** Function deals with min and max value of zoom, hold and move  */
   static minMax(min: number, max: number, value: number) {
     if (value < min) {
       return min;
@@ -140,10 +146,13 @@ export class Workspace {
       }, 10000);
 
     };
+    // Global Function to print output in Console
     window['printConsole'] = (textmsg: string, type: ConsoleType) => {
       const msg = document.getElementById('msg');
       const container = document.createElement('label');
       container.innerText = textmsg;
+      //  checks which type of output needs to be printed
+      //  depending on which the colour is assigned
       if (type === ConsoleType.ERROR) {
         container.style.color = 'red';
       } else if (type === ConsoleType.WARN) {
@@ -155,20 +164,12 @@ export class Workspace {
       }
       msg.appendChild(container);
     };
+
+    // Global function for displaying alert msg during closing and reloading page
     // window.addEventListener('beforeunload', (event) => {
     //   event.preventDefault();
     //   event.returnValue = 'did you save the stuff?';
     // });
-
-    window['showLoading'] = () => {
-      const showloader = document.getElementById('loadanim');
-      showloader.style.display = 'flex';
-    };
-
-    window['hideLoading'] = () => {
-      const hideloader = document.getElementById('loadanim');
-      hideloader.style.display = 'none';
-    };
   }
   /**
    * Event Listener for mousemove on html body
@@ -206,7 +207,10 @@ export class Workspace {
     }
     window['property_box'].start = false;
   }
-
+  /**
+   * Event Listener for mousedown on html body
+   * @param event MouseDown
+   */
   static mouseDown(event: MouseEvent) {
     Workspace.hideContextMenu();
     if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
@@ -229,7 +233,10 @@ export class Workspace {
 
   static click(event: MouseEvent) {
   }
-
+  /**
+   * Event Listener for mouseMove on html body
+   * @param event MouseMove
+   */
   static mouseMove(event: MouseEvent) {
     event.preventDefault();
     // if wire is selected then draw temporary lines
@@ -265,7 +272,10 @@ export class Workspace {
   static mouseUp(event: MouseEvent) {
 
   }
-
+  /**
+   * Event Listener to display for performing copy, paste, delete operation
+   * @param event Click Event
+   */
   static contextMenu(event: MouseEvent) {
     event.preventDefault();
     const element = document.getElementById('contextMenu');
@@ -274,6 +284,7 @@ export class Workspace {
     element.style.top = `${event.clientY}px`;
     return true;
   }
+  /** Function called to hide ContextMenu */
   static hideContextMenu() {
     const element = document.getElementById('contextMenu');
     element.style.display = 'none';
@@ -285,7 +296,10 @@ export class Workspace {
   static cut(event: ClipboardEvent) {
 
   }
-
+  /**
+   * function deselects the item on Canvas
+   * @param event DoubleClick
+   */
   static doubleClick(event: MouseEvent) {
     if (window['isSelected'] && (window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
       return;
@@ -296,17 +310,26 @@ export class Workspace {
     // deselect item
     window.hideProperties();
   }
-
+  /**
+   * function drags element to valid drop target
+   * @param event DragEvent
+   */
   static dragLeave(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
   }
-
+  /**
+   * function drags element over a valid drop target
+   * @param event DragEvent
+   */
   static dragOver(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
   }
-
+  /**
+   * function drop element at drop target
+   * @param event DragEvent
+   */
   static drop(event: DragEvent) {
     event.preventDefault();
     event.stopPropagation();
@@ -321,6 +344,10 @@ export class Workspace {
   static keyPress(event: KeyboardEvent) {
     // event.preventDefault();
   }
+  /**
+   * event Listener to perform Keyboard operations
+   * @param event keyup Event
+   */
   static keyUp(event: KeyboardEvent) {
     // event.preventDefault();
     // console.log([event.ctrlKey, event.key]);
@@ -351,6 +378,10 @@ export class Workspace {
       // TODO: Start Simulation
     }
   }
+  /**
+   * Event Listener for zoom in/zoom out on workspace
+   * @param event MouseWheel Event
+   */
   static mouseWheel(event: WheelEvent) {
     event.preventDefault();
     if (event.deltaY < 0) {
@@ -362,7 +393,14 @@ export class Workspace {
   static paste(event: ClipboardEvent) {
 
   }
-
+  /**
+   * Function adds components by providing their keynames
+   * @param classString string
+   * @param x number
+   * @param y number
+   * @param offsetX  number
+   * @param offsetY number
+   */
   static addComponent(classString: string, x: number, y: number, offsetX: number, offsetY: number) {
     const myClass = Utils.components[classString].className;
     const obj = new myClass(
@@ -372,19 +410,27 @@ export class Workspace {
     );
     window['scope'][classString].push(obj);
   }
-
+  /** Function updates the position of wires */
   static updateWires() {
     for (const z of window['scope']['wires']) {
       z.update();
     }
   }
-
+  /**
+   * Function returns point translated according to the svg
+   * @param x number
+   * @param y number
+   */
   static svgPoint(x, y) {
     const pt = window['holder_svg'].createSVGPoint();
     pt.x = x;
     pt.y = y;
     return pt.matrixTransform(window.canvas.canvas.getScreenCTM().inverse());
   }
+  /**
+   * This function is required by deleteComponent() to recursively remove item
+   * @param obj any
+   */
   static removeMeta(obj) {
     for (const prop in obj) {
       if (typeof obj[prop] === 'object') {
@@ -394,8 +440,14 @@ export class Workspace {
       }
     }
   }
-
-  static SaveCircuit(name: string = '', description: string = '', id: number = null) {
+  /**
+   * Function saves the circuit
+   * @param name string
+   * @param description string
+   * @param callback any
+   * @param id number
+   */
+  static SaveCircuit(name: string = '', description: string = '', callback: any = null, id: number = null) {
     let toUpdate = false;
     if (isNull(id)) {
       id = Date.now();
@@ -430,135 +482,16 @@ export class Workspace {
       saveObj.project['image'] = v;
       console.log(saveObj);
       if (toUpdate) {
-        Workspace.UpdateIDB(saveObj);
+        SaveOffline.Update(saveObj);
       } else {
-        Workspace.SaveIDB(saveObj);
+        SaveOffline.Save(saveObj, callback);
       }
     });
   }
-
-  static SaveIDB(mydata, callback: any = null) {
-    // window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-
-    // window.IDBTransaction = window.IDBTransaction ||
-    //   window.webkitIDBTransaction || window.msIDBTransaction;
-    // window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = () => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = () => {
-      db = request.result;
-      db.transaction(['project'], 'readwrite')
-        .objectStore('project')
-        .add(mydata);
-      if (callback) {
-        callback(mydata);
-      }
-      alert('Done Saved');
-    };
-  }
-
-  static readAll(callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = () => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = () => {
-      db = request.result;
-      console.log('success: ' + db);
-      const objectStore = db.transaction('project').objectStore('project');
-      const data = [];
-      objectStore.openCursor().onsuccess = (event) => {
-        const cursor = event.target.result;
-        if (cursor) {
-          data.push(cursor.value);
-          cursor.continue();
-        } else {
-          if (callback) {
-            callback(data);
-          }
-        }
-      };
-    };
-  }
-
-  static DeleteIDB(id, callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = (_) => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = (__) => {
-      db = request.result;
-
-      const ok = db.transaction(['project'], 'readwrite')
-        .objectStore('project')
-        .delete(id);
-
-      ok.onsuccess = (_) => {
-        alert('Done Deleting');
-        if (callback) {
-          callback();
-        }
-      };
-
-    };
-  }
-  static UpdateIDB(mydata, callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = (_) => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = (__) => {
-      db = request.result;
-
-      const ok = db.transaction(['project'], 'readwrite')
-        .objectStore('project')
-        .put(mydata);
-
-      ok.onsuccess = (_) => {
-        alert('Done Updating');
-        if (callback) {
-          callback();
-        }
-      };
-
-    };
-  }
-
-  static readIDB(id, callback: any = null) {
-    let db;
-    const request = window.indexedDB.open('projects', 1);
-    request.onerror = () => {
-      console.log('error: ');
-    };
-
-    request.onsuccess = () => {
-      db = request.result;
-
-      const transaction = db.transaction(['project']);
-      const objectStore = transaction.objectStore('project');
-      const ok = objectStore.get(parseInt(id, 10));
-
-      ok.onerror = () => {
-        alert('Unable to retrieve daa from database!');
-      };
-
-      ok.onsuccess = () => {
-        callback(ok.result);
-      };
-
-    };
-  }
-
+  /**
+   * Function called to Load data from saved object
+   * @param data Saved Object
+   */
   static Load(data) {
     Workspace.translateX = data.canvas.x;
     Workspace.translateY = data.canvas.y;
@@ -596,9 +529,8 @@ export class Workspace {
       }
     }, 100);
   }
-
+  /** This function recreates the wire object */
   static LoadWires(wires: any[]) {
-    console.log(wires);
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -607,24 +539,23 @@ export class Workspace {
       // console.log(points[0]);
       // console.log(points[0][0]);
       // console.log(points[0][1]);
-      let start = null;
-      let end = null;
+      let start: Point = null;
+      let end: Point = null;
       // console.log(w.start.keyName);
       // console.log(window.scope[w.start.keyName]);
       // Use Linear search to find the start circuit node
       for (const st of window.scope[w.start.keyName]) {
         // console.log(st.id,w.start.id);
         if (st.id === w.start.id) {
-          start = st.getNode(points[0][0], points[0][1]);
+          start = st.getNode(points[0][0], points[0][1], w.start.pid);
           break;
         }
       }
-      // console.log(start);
       // Use Linear Search to find the end circuit node
       for (const en of window.scope[w.end.keyName]) {
         if (en.id === w.end.id) {
           const p = points[points.length - 1];
-          end = en.getNode(p[0], p[1]);
+          end = en.getNode(p[0], p[1], w.end.pid);
           break;
         }
       }
@@ -638,11 +569,11 @@ export class Workspace {
         window['scope']['wires'].push(tmp);
         tmp.update();
       } else {
-        alert('something went wrong');
+        // alert('something went wrong');
       }
     }
   }
-
+  /** Function to delete component fro Workspace */
   static DeleteComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof ArduinoUno) {
@@ -669,6 +600,7 @@ export class Workspace {
       window['showToast']('No Element Selected');
     }
   }
+  /** Function to copy component fro Workspace */
   static copyComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof Wire) {
@@ -680,6 +612,7 @@ export class Workspace {
       Workspace.copiedItem = null;
     }
   }
+  /** Function to paste component fro Workspace */
   static pasteComponent() {
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
@@ -700,12 +633,13 @@ export class Workspace {
       // obj.copy(Workspace.copiedItem)
     }
   }
+  /** Function called to clear output in console */
   static ClearConsole() {
     const clear = document.getElementById('msg');
     clear.innerHTML = '';
   }
 
-
+  /** Function called to compile code in console */
   static CompileCode() {
     const toSend = {};
     const nameMap = {};
@@ -761,34 +695,56 @@ export class Workspace {
   }
 
   static startArduino() {
-    Workspace.simulating = true;
     // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
-      wire.start.gid = gid++;
-      wire.end.gid = gid++;
+      if (wire.start) {
+        wire.start.gid = gid++;
+      }
+      if (wire.end) {
+        wire.end.gid = gid++;
+      }
     }
-    // Call init simulation
-    for (const key in window.scope) {
-      if (window.scope[key] && key !== 'ArduinoUno') {
-        for (const ele of window.scope[key]) {
-          if (ele.initSimulation) {
-            ele.initSimulation();
+    const seqn = ['output', 'controllers', 'drivers', 'power', 'input', 'general', 'misc'];
+    for (const key of seqn) {
+      for (const items of Utils.componentBox[key]) {
+        for (const item of items) {
+          if (window.scope[item]) {
+            for (const ele of window.scope[item]) {
+              if (ele.initSimulation) {
+                ele.initSimulation();
+              }
+            }
           }
         }
       }
     }
 
-    for (const comp of window.scope.ArduinoUno) {
-      // comp.runner.execute();
-      // console.log('s')
-      comp.initSimulation();
-    }
-  }
+    // // Call init simulation
+    // for (const key in window.scope) {
+    //   if (window.scope[key] && key !== 'ArduinoUno') {
+    //     for (const ele of window.scope[key]) {
+    //       if (ele.initSimulation) {
+    //         ele.initSimulation();
+    //       }
+    //     }
+    //   }
+    // }
 
+    // for (const comp of window.scope.ArduinoUno) {
+    //   // comp.runner.execute();
+    //   // console.log('s')
+    //   comp.initSimulation();
+    // }
+
+    Workspace.simulating = true;
+  }
+  /** Function called when StopSimulation button is triggered */
   static stopSimulation() {
+    if (!Workspace.simulating) {
+      return;
+    }
     // TODO: Show Loading Animation
-    Workspace.simulating = false;
     for (const key in window.scope) {
       if (window.scope[key]) {
         for (const ele of window.scope[key]) {
@@ -798,5 +754,6 @@ export class Workspace {
         }
       }
     }
+    Workspace.simulating = false;
   }
 }

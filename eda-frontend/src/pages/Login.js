@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react'
+/* eslint-disable react/prop-types */
+import React, { useState, useEffect } from 'react'
+
 import {
   Container,
   Grid,
@@ -14,6 +16,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { Link as RouterLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { login } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,12 +40,28 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SignIn () {
+var url = ''
+
+export default function SignIn (props) {
   const classes = useStyles()
 
   useEffect(() => {
-    document.title = 'Login - EDA '
+    document.title = 'Login - eSim '
+    if (props.location.search !== '') {
+      const query = new URLSearchParams(props.location.search)
+      url = query.get('url')
+    } else {
+      url = ''
+    }
   })
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const dispatch = useDispatch()
+
+  const handleLogin = () => {
+    dispatch(login(username, password, url))
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -64,6 +84,8 @@ export default function SignIn () {
             label="Username"
             name="email"
             autoComplete="email"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
             autoFocus
           />
           <TextField
@@ -75,6 +97,8 @@ export default function SignIn () {
             label="Password"
             type="password"
             id="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           <FormControlLabel
@@ -82,12 +106,10 @@ export default function SignIn () {
             label="Remember me"
           />
           <Button
-            component={RouterLink}
-            to="/dashboard"
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
+            onClick={handleLogin}
             className={classes.submit}
           >
             Login
@@ -109,7 +131,6 @@ export default function SignIn () {
       <Button
         component={RouterLink}
         to="/"
-        type="submit"
         fullWidth
         color="default"
         className={classes.submit}
