@@ -169,7 +169,7 @@ export class DashboardComponent implements OnInit {
       duration: 10000
     });
     const slug = `${selected.save_id.replace(/-/g, '_')}-${selected.name.substr(0, 50).replace(/ +/g, '-')}`;
-    let shareURL = `${window.location.protocol}\\\\${window.location.host}/#/project/${slug} `;
+    let shareURL = `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug} `;
     const copyUrl = shareURL;
     shareURL = encodeURIComponent(shareURL);
 
