@@ -41,7 +41,7 @@ export class ApiService {
     });
   }
   searchProject(title: string, token: string) {
-    const url = encodeURI(`${this.url}api/save/search?name__icontains=${title}&description__icontains=${title}&is_arduino=true`);
+    const url = encodeURI(`${this.url}api/save/search?name__icontains=${title}&is_arduino=true`);
     return this.http.get(url, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
