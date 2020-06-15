@@ -640,58 +640,60 @@ export class Workspace {
   }
 
   /** Function called to compile code in console */
-  static CompileCode() {
-    const toSend = {};
-    const nameMap = {};
+  static CompileCode(api: ApiService, callback: () => void) {
+    const toSend = {}; // Json Which needs to be Send for compilation
+    const nameMap = {}; // Create a Mapping id => Arduino
+
+    // Check if there is any Programmable Device
     const isProgrammable = window.scope.ArduinoUno.length > 0;
+
     if (!isProgrammable) {
       window.printConsole('No Programmable Device Found', ConsoleType.INFO);
       Workspace.startArduino();
+      callback();
       return;
     }
+
     for (const arduino of window.scope.ArduinoUno) {
       toSend[arduino.id] = arduino.code;
       nameMap[arduino.id] = arduino;
     }
-    // console.log(JSON.stringify(toSend));
 
-    if (Workspace.injector) {
-      window.printConsole('Compiling Source Code', ConsoleType.INFO);
-      const api = Workspace.injector.get(ApiService);
-      api.compileCode(toSend).subscribe(v => {
-        // console.log(v)
-        //     'state': 'SUCCESS',
-        const taskid = v.uuid;
-        const temp = setInterval(() => {
-          api.getHex(taskid).subscribe(hex => {
-            console.log(hex);
-            if (hex.state === 'SUCCESS') {
-              clearInterval(temp);
-              for (const k in hex.details) {
-                if (hex.details[k]) {
-                  const d = hex.details[k];
-                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
-                  if (d.output) {
-                    window.printConsole(d.output, ConsoleType.OUTPUT);
-                    nameMap[k].hex = d.data;
-                  }
-                  if (d.error) {
-                    window.printConsole(d.error, ConsoleType.ERROR);
-                  }
+    window.printConsole('Compiling Source Code', ConsoleType.INFO);
+
+    api.compileCode(toSend).subscribe(v => {
+      const taskid = v.uuid; // Get Compilation id
+
+      const temp = setInterval(() => {
+        api.getHex(taskid).subscribe(hex => {
+          if (hex.state === 'SUCCESS') {
+            clearInterval(temp);
+            for (const k in hex.details) {
+              if (hex.details[k]) {
+                const d = hex.details[k];
+                window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                if (d.output && d.data) {
+                  window.printConsole(d.output, ConsoleType.OUTPUT);
+                  nameMap[k].hex = d.data;
+                }
+                if (d.error) {
+                  window.printConsole(d.error, ConsoleType.ERROR);
                 }
               }
-              Workspace.startArduino();
-            } else if (hex.state === 'FAILED') {
-              clearInterval(temp);
-              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
             }
-          });
-        }, 2000);
-      });
-    } else {
-      window.showToast('Something Went Wrong! Please Refresh Browser');
-    }
-    // Workspace.startArduino();
+            Workspace.startArduino();
+            callback();
+          } else if (hex.state === 'FAILED') {
+            clearInterval(temp);
+            window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+          }
+        });
+      }, 2000);
+    }, error => {
+      window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
+      console.log(error);
+    });
+
   }
 
   static startArduino() {
@@ -740,7 +742,7 @@ export class Workspace {
     Workspace.simulating = true;
   }
   /** Function called when StopSimulation button is triggered */
-  static stopSimulation() {
+  static stopSimulation(callback: () => void) {
     if (!Workspace.simulating) {
       return;
     }
@@ -755,5 +757,6 @@ export class Workspace {
       }
     }
     Workspace.simulating = false;
+    callback();
   }
 }
