@@ -359,7 +359,7 @@ export default function SimulationScreen ({ open, close, isResult }) {
               : <Grid item xs={12} sm={12}>
                 <Paper className={classes.paper}>
                   <Typography variant="h6" align="center" gutterBottom>
-                    SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS AND SCHEMATIC DIGRAM.
+                    SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS AND SCHEMATIC DIAGRAM.
                   </Typography>
                 </Paper>
               </Grid>
