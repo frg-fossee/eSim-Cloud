@@ -190,6 +190,8 @@ export default function SimulationProperties () {
   //     : sign + lead + (+pow >= decimal.length ? (decimal + '0'.repeat(Math.max(+pow - decimal.length || 0, 0))) : (decimal.slice(0, +pow) + '.' + decimal.slice(+pow)))
   // }
 
+  const [isResult, setIsResult] = useState(false)
+
   // Get the simulation result with task_Id
   function simulationResult (url) {
     api
@@ -198,61 +200,66 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          var temp = res.data.details.data
           var result = res.data.details
-          var data = result.data
-          console.log('DATA SIm', data)
-          if (res.data.details.graph === 'true') {
-            var simResultGraph = { labels: [], x_points: [], y_points: [] }
-            // populate the labels
-            for (var i = 0; i < data.length; i++) {
-              simResultGraph.labels[0] = data[i].labels[0]
-              var lab = data[i].labels
-              // lab is an array containeing labels names ['time','abc','def']
-              simResultGraph.x_points = data[0].x
-
-              // labels
-              for (var x = 1; x < lab.length; x++) {
-                if (lab[x].includes('#branch')) {
-                  lab[x] = `I (${lab[x].replace('#branch', '')})`
-                }
-                //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
-                //  else {
-                // lab[x] = `V (${lab[x]})`
-
-                // }
-                simResultGraph.labels.push(lab[x])
-              }
-              // populate y_points
-              for (var z = 0; z < data[i].y.length; z++) {
-                simResultGraph.y_points.push(data[i].y[z])
-              }
-            }
-
-            simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
-
-            for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
-              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
-            }
-
-            dispatch(setResultGraph(simResultGraph))
+          if (result === null) {
+            setIsResult(false)
           } else {
-            var simResultText = []
-            for (let i = 0; i < temp.length; i++) {
-              let postfixUnit = ''
-              if (temp[i][0].includes('#branch')) {
-                temp[i][0] = `I(${temp[i][0].replace('#branch', '')})`
-                postfixUnit = 'A'
-              } else {
-                temp[i][0] = `V(${temp[i][0]})`
-                postfixUnit = 'V'
+            setIsResult(true)
+            var temp = res.data.details.data
+            var data = result.data
+            // console.log('DATA SIm', data)
+            if (res.data.details.graph === 'true') {
+              var simResultGraph = { labels: [], x_points: [], y_points: [] }
+              // populate the labels
+              for (var i = 0; i < data.length; i++) {
+                simResultGraph.labels[0] = data[i].labels[0]
+                var lab = data[i].labels
+                // lab is an array containeing labels names ['time','abc','def']
+                simResultGraph.x_points = data[0].x
+
+                // labels
+                for (var x = 1; x < lab.length; x++) {
+                  if (lab[x].includes('#branch')) {
+                    lab[x] = `I (${lab[x].replace('#branch', '')})`
+                  }
+                  //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
+                  //  else {
+                  // lab[x] = `V (${lab[x]})`
+
+                  // }
+                  simResultGraph.labels.push(lab[x])
+                }
+                // populate y_points
+                for (var z = 0; z < data[i].y.length; z++) {
+                  simResultGraph.y_points.push(data[i].y[z])
+                }
               }
 
-              simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2]) + ' ' + postfixUnit + '\n')
-            }
+              simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
 
-            handleSimulationResult(res.data.details)
-            dispatch(setResultText(simResultText))
+              for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
+                simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
+              }
+
+              dispatch(setResultGraph(simResultGraph))
+            } else {
+              var simResultText = []
+              for (let i = 0; i < temp.length; i++) {
+                let postfixUnit = ''
+                if (temp[i][0].includes('#branch')) {
+                  temp[i][0] = `I(${temp[i][0].replace('#branch', '')})`
+                  postfixUnit = 'A'
+                } else {
+                  temp[i][0] = `V(${temp[i][0]})`
+                  postfixUnit = 'V'
+                }
+
+                simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2]) + ' ' + postfixUnit + '\n')
+              }
+
+              handleSimulationResult(res.data.details)
+              dispatch(setResultText(simResultText))
+            }
           }
         }
       })
@@ -329,7 +336,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} close={handleSimulateClose} />
+        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} />
 
         {/* Simulation modes list */}
         <List>
@@ -351,7 +358,7 @@ export default function SimulationProperties () {
                       <ListItem>
 
                         <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-                         Add Expression
+                          Add Expression
                         </Button>
                         <Popover
                           id={id}
@@ -380,7 +387,7 @@ export default function SimulationProperties () {
                       <ListItem>
                         <Button size='small' variant="contained" color="primary"
                           onClick={(e) => { startSimulate('DcSolver') }}>
-            Run dc solver
+                          Run dc solver
                         </Button>
                       </ListItem>
                     </List>
@@ -496,7 +503,7 @@ export default function SimulationProperties () {
                     </ListItem> */}
 
                     {/* SECONDARY PARAMETER FOR SWEEP */}
-                    <Divider/>
+                    <Divider />
                     <ListItem>
 
                       <h4 style={{ marginLeft: '10px' }}>Secondary Parameters</h4>
@@ -583,7 +590,7 @@ export default function SimulationProperties () {
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-   Add Expression
+                        Add Expression
                       </Button>
                       <Popover
                         id={id}
@@ -692,7 +699,7 @@ export default function SimulationProperties () {
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-   Add Expression
+                        Add Expression
                       </Button>
                       <Popover
                         id={id}
@@ -837,7 +844,7 @@ export default function SimulationProperties () {
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-   Add Expression
+                        Add Expression
                       </Button>
                       <Popover
                         id={id}
