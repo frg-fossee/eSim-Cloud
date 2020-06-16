@@ -18,8 +18,8 @@ export class Workspace {
   static translateX = 0.0; // Stores initial value of new position of x
   static translateY = 0.0; // Stores initial value of new postion of y
   static scale = 1.0; // Stores scaling factor value for zoom in/out
-  static zooomIncrement = 0.01; // recursive zoomin/out increments by 0.01
-  static translateRate = 0.25; // stores translation rate for zoom in/out using mouse event
+  static readonly zooomIncrement = 0.01; // recursive zoomin/out increments by 0.01
+  static readonly translateRate = 0.25; // stores translation rate for zoom in/out using mouse event
   static moveCanvas = {
     x: 0,
     y: 0,
@@ -64,8 +64,15 @@ export class Workspace {
   }
 
   static initalizeGlobalVariables(canvas: any) {
+    Workspace.simulating = false;
+    Workspace.copiedItem = null;
+    Workspace.moveCanvas = {
+      x: 0, y: 0, start: false
+    };
+    Workspace.scale = 1.0;
+    Workspace.translateY = 0.0;
+    Workspace.translateX = 0.0;
     window['canvas'] = canvas;
-    window['test'] = Workspace.zoomIn;
     window['holder'] = document.getElementById('holder').getBoundingClientRect();
     window['holder_svg'] = document.querySelector('#holder > svg');
     window['ArduinoUno_name'] = {};
@@ -666,7 +673,7 @@ export class Workspace {
 
       const temp = setInterval(() => {
         api.getHex(taskid).subscribe(hex => {
-          if (hex.state === 'SUCCESS') {
+          if (hex.state === 'SUCCESS' && !hex.details.error) {
             clearInterval(temp);
             for (const k in hex.details) {
               if (hex.details[k]) {
@@ -683,9 +690,10 @@ export class Workspace {
             }
             Workspace.startArduino();
             callback();
-          } else if (hex.state === 'FAILED') {
+          } else if (hex.state === 'FAILED' || hex.details.error) {
             clearInterval(temp);
             window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+            callback();
           }
         });
       }, 2000);
@@ -744,6 +752,7 @@ export class Workspace {
   /** Function called when StopSimulation button is triggered */
   static stopSimulation(callback: () => void) {
     if (!Workspace.simulating) {
+      callback();
       return;
     }
     // TODO: Show Loading Animation
