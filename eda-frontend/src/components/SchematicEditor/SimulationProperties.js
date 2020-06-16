@@ -12,8 +12,11 @@ import {
   Typography,
   Select,
   Divider,
-  Popover
+  Popover,
+  Tooltip,
+  IconButton
 } from '@material-ui/core'
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
@@ -360,6 +363,11 @@ export default function SimulationProperties () {
                         <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
                           Add Expression
                         </Button>
+                        <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                          <IconButton aria-label="info">
+                            <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                          </IconButton>
+                        </Tooltip>
                         <Popover
                           id={id}
                           open={open}
@@ -592,6 +600,11 @@ export default function SimulationProperties () {
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
                         Add Expression
                       </Button>
+                      <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
                       <Popover
                         id={id}
                         open={open}
@@ -701,6 +714,11 @@ export default function SimulationProperties () {
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
                         Add Expression
                       </Button>
+                      <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
                       <Popover
                         id={id}
                         open={open}
@@ -846,6 +864,11 @@ export default function SimulationProperties () {
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
                         Add Expression
                       </Button>
+                      <Tooltip title={'Add expression seperated by spaces. Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
                       <Popover
                         id={id}
                         open={open}

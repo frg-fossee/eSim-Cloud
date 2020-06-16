@@ -55,19 +55,23 @@ class Graph extends Component {
         } else {
           return `Time in ${xscale}S`
         }
-      }
-      if (labels[0] === 'v-sweep') {
+      } else if (labels[0] === 'v-sweep') {
         if (xscale === 'si') {
           return 'Voltage in V'
         } else {
           return `Voltage in ${xscale}V`
         }
-      }
-      if (labels[0] === 'frequency') {
+      } else if (labels[0] === 'frequency') {
         if (xscale === 'si') {
           return 'frequency in Hz'
         } else {
           return `frequency in ${xscale}Hz`
+        }
+      } else {
+        if (xscale === 'si') {
+          return `${labels[0]}`
+        } else {
+          return `${labels[0]} in ${xscale}`
         }
       }
     }
