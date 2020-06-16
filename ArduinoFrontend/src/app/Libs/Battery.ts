@@ -16,15 +16,13 @@ export class Battery9v extends CircuitElement {
   init() {
     // console.log(this.nodes[0].label);
     // console.log(this.nodes[1].label);
-    this.nodes[1].addValueListener((_, calledby, __) => {
+    this.nodes[1].addValueListener((v, calledby) => {
       // if both the terminals of battery are connected with each other
       if (calledby.parent.id === this.id) {
         /// TODO: Show Toast and Stop Simulation
         console.log('Short Circuit');
         window['showToast']('Short Circuit');
       }
-    });
-    this.nodes[1].addValueListener((v) => {
       if (v >= 0 && this.nodes[0].value <= 0) {
         this.nodes[0].setValue(9, this.nodes[0]);
       }

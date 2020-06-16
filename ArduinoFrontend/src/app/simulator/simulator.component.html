@@ -38,15 +38,43 @@
       </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item">
-        <!--<a href="#" class="nav-link">
-          <img src="./assets/images/login.svg" width="40" height="40" class="d-inline-block align-top bg" alt="">
-        </a>-->
-        <a mat-stroked-button href="#" [routerLink]="['/dashboard']" style="background-color: whitesmoke; color: black;">Login</a>
-      </li>
+    <div class="navbar-nav ml-auto" *ngIf="!token">
+      <a mat-raised-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
+      <a mat-raised-button (click)="Login()">Login</a>
+    </div>
 
-    </ul>
+    <div class="navbar-nav ml-auto" *ngIf="token">
+      <div class="dropdown my-dropdown" *ngIf="token">
+        <div class="w3-dropdown-hover">
+          <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
+            alt="Login Image">
+          <div class="dropdown-content" style="color: #000;">
+            <div *ngIf="username">
+              <i class="fas fa-user" style="margin-left: 5px;"></i> {{username}}
+            </div>
+            <hr style="margin-top: 5px;margin-bottom: 0;">
+            <div>
+              <a href="../../"><i class="fa fa-home" style="margin-left: 5px;"></i> Home</a>
+            </div>
+            <div>
+              <a [routerLink]="['/simulator']"><i class="fa fa-plus" style="margin-left: 5px;"></i> New</a>
+            </div>
+            <div class="list">
+              <a [routerLink]="['/dashboard']"><i class="fa fa-credit-card" style="margin-left: 5px;"></i> Dashboard</a>
+            </div>
+            <div>
+              <a [routerLink]="['/gallery']"><i class="fa fa-th" style="margin-left: 5px;"></i> Gallery</a>
+            </div>
+            <hr style="margin-top: 5px;margin-bottom: 0;">
+            <div (click)="Logout()">
+              <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> Logout
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
   </div>
 </nav>
 
@@ -57,10 +85,11 @@
     [style.background-color]="toggle ? 'white' : 'lightblue'">
     <i class='far fa-file-code'></i>Code</button>
 
-  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" (click)="StartSimulation()"
-    [style.background-color]="stoggle ? 'white' : 'lightgreen'">
+  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" [disabled]="disabled"
+    (click)="StartSimulation()" [style.background-color]="stoggle ? 'white' : 'lightgreen'">
     <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
-    {{status}}</button>
+    {{ stoggle ? 'Start Simulation' : 'Stop Simulation' }}
+  </button>
 
   <!--simulation loading svg-->
   <div id="simload"
@@ -315,4 +344,3 @@
     </div>
   </div>
 </div>
-

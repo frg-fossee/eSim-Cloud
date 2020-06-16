@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { SaveOffline } from '../Libs/SaveOffiline';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
-
+import { MatSnackBar } from '@angular/material';
 declare var moment;
 
 @Component({
@@ -15,10 +15,6 @@ export class DashboardComponent implements OnInit {
   selected: any = {};
   online: any[] = [];
   onCloudMessage = 'No Online Circuits Available &#9785;';
-
-  share() {
-    confirm('Enable Sharing the circuit will  become public');
-  }
 
   closeProject() {
     const closeProject = document.getElementById('openproject');
@@ -41,7 +37,7 @@ export class DashboardComponent implements OnInit {
     openProject.style.display = 'block';
   }
 
-  constructor(private api: ApiService) {
+  constructor(private api: ApiService, private snackbar: MatSnackBar) {
   }
   ngOnInit() {
     SaveOffline.ReadALL((v: any[]) => {
@@ -124,6 +120,106 @@ export class DashboardComponent implements OnInit {
       });
     } else {
       alert('Please Login!');
+    }
+  }
+  CopyUrlToClipBoard(url) {
+    const tmpEl = document.createElement('textarea');
+    tmpEl.value = url;
+    document.body.appendChild(tmpEl);
+    tmpEl.focus();
+    tmpEl.select();
+    const done = document.execCommand('copy');
+    if (!done) {
+      alert('Not able to Copy ' + tmpEl.value);
+    } else {
+      this.snackbar.open('Copied', null, {
+        duration: 2000
+      });
+    }
+    document.body.removeChild(tmpEl);
+  }
+
+  EnableSharing(id, token, callback: any) {
+    this.api.Sharing(id, true, token).subscribe((v) => {
+      callback(v);
+    }, err => {
+      if (err.status === 401) {
+        console.log('You are not the Owner');
+        return;
+      }
+      console.log(err);
+    });
+  }
+
+  ShareCircuit(selected, index) {
+    const token = Login.getToken();
+    if (!token) {
+      alert('Please Login');
+      return;
+    }
+    /**
+     * index
+     * 0 -> FB
+     * 1 -> LinkedIN
+     * 2 -> Reddit
+     * 3 -> Mail
+     * 4 -> copy url
+     */
+    this.snackbar.open('Anyone With The Link Can View and Simulate Project But cannot edit.', 'Close', {
+      duration: 10000
+    });
+    const slug = `${selected.save_id.replace(/-/g, '_')}-${selected.name.substr(0, 50).replace(/ +/g, '-')}`;
+    let shareURL = `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug} `;
+    const copyUrl = shareURL;
+    shareURL = encodeURIComponent(shareURL);
+
+    const sharingName = encodeURIComponent(`${selected.name} | Arduino On Cloud`);
+    if (index < 3) {
+      const map = [
+        `https://www.facebook.com/sharer/sharer.php?u=${shareURL}`,
+        `https://www.linkedin.com/sharing/share-offsite/?url=${shareURL}`,
+        `http://www.reddit.com/submit?url=${shareURL}&title=${sharingName}`
+      ];
+      if (selected.shared) {
+        window.open(map[index], '_blank');
+      } else {
+        this.EnableSharing(selected.save_id, token, (v) => {
+          selected.shared = v.shared;
+          if (selected.shared) {
+            window.open(map[index], '_blank');
+          } else {
+            alert('Not Able to Share Circuit');
+          }
+        });
+      }
+    } else if (index === 3) {
+      const description = encodeURI(`${selected.description}\n\n\n\n\nVisit `);
+      const back = `subject=${sharingName}&body=${description}${shareURL}`;
+      if (selected.shared) {
+        window.open(`mailto:?${back}`, '_blank');
+      } else {
+        this.EnableSharing(selected.save_id, token, (v) => {
+          selected.shared = v.shared;
+          if (selected.shared) {
+            window.open(`mailto:?${back}`, '_blank');
+          } else {
+            alert('Not Able to Share Circuit');
+          }
+        });
+      }
+    } else if (index === 4) {
+      if (selected.shared) {
+        this.CopyUrlToClipBoard(copyUrl);
+      } else {
+        this.EnableSharing(selected.save_id, token, (v) => {
+          selected.shared = v.shared;
+          if (selected.shared) {
+            this.CopyUrlToClipBoard(copyUrl);
+          } else {
+            alert('Not Able to Share Circuit');
+          }
+        });
+      }
     }
   }
 }

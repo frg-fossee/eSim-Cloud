@@ -11,7 +11,9 @@ from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
 from rest_framework import viewsets
 import uuid
+from django.contrib.auth import get_user_model
 import logging
+import traceback
 logger = logging.getLogger(__name__)
 
 
@@ -64,10 +66,19 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             try:
-                serialized = StateSaveSerializer(saved_state)
-                return Response(serialized.data)
+                serialized = StateSaveSerializer(
+                    saved_state, context={'request': request})
+                User = get_user_model()
+                owner_name = User.objects.get(
+                    id=serialized.data.get('owner'))
+                data = {}
+                data.update(serialized.data)
+                data['owner'] = owner_name.username
+                return Response(data)
             except Exception:
-                return Response(serialized.error)
+                traceback.print_exc()
+                return Response({'error': 'Not Able To Serialize'},
+                                status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response({'error': 'Invalid sharing state'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -241,7 +252,10 @@ class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Search Project
     """
-    queryset = StateSave.objects.all()
+    def get_queryset(self):
+        queryset = StateSave.objects.filter(
+            owner=self.request.user).order_by('-save_time')
+        return queryset
     serializer_class = SaveListSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SaveSearchFilterSet

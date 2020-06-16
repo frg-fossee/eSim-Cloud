@@ -32,9 +32,11 @@ export class SimulatorComponent implements OnInit {
   openCodeEditor = false; // stores the initial status of code editor
   toggle = true; // Stores toggle status for code editor
   stoggle = true; // stores toggle status for simulation button
-  status = 'Start Simulation'; //  stores the initial status of simulation button
+  disabled = false;
   toggle1 = false; // Stores the toggle status for expanding Virtual console
   atoggle = false; // stores the toggle status for closing/opening Virtual console
+  token: string;
+  username: string;
 
   constructor(
     private aroute: ActivatedRoute,
@@ -55,7 +57,25 @@ export class SimulatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.token = Login.getToken();
+    if (this.token) {
+      this.api.userInfo(this.token).subscribe((tmp) => {
+        this.username = tmp.username;
+      }, err => {
+        if (err.status === 401) {
+          Login.logout();
+        }
+        this.token = null;
+        console.log(err);
+      });
+    }
+
     this.aroute.queryParams.subscribe(v => {
+      if (Object.keys(v).length === 0 && this.projectId) {
+        setTimeout(() => this.router.navigate(['dashboard'])
+          , 100);
+        return;
+      }
       if (v.id && v.offline === 'true') {
         // if project id is present then project is read from offline
         this.projectId = parseInt(v.id, 10);
@@ -140,23 +160,31 @@ export class SimulatorComponent implements OnInit {
 
   /** Function called when Start Simulation button is triggered */
   StartSimulation() {
-    // Clears Output in console when clear button triggered
+    this.disabled = true;
+    // Clears Output in Console
     Workspace.ClearConsole();
     // prints the output in console
     window['printConsole']('Starting Simulation', ConsoleType.INFO);
+
     this.stoggle = !this.stoggle;
-    this.status = this.stoggle ? 'Start Simulation' : 'Stop Simulation';
     const sim = document.getElementById('console');
-    const simload = document.getElementById('simload');
+
+    // Show Loading Animation
+    document.getElementById('simload').style.display = 'block';
+
     // if status is Stop simulation then console is opened
     if (!this.stoggle) {
       sim.style.display = 'block';
-      // simload.style.display = 'block';
-      Workspace.CompileCode();
+      Workspace.CompileCode(this.api, () => {
+        this.disabled = false;
+        document.getElementById('simload').style.display = 'none';
+      });
     } else {
       sim.style.display = 'none';
-      Workspace.stopSimulation();
-      // this.hidesimload();
+      Workspace.stopSimulation(() => {
+        this.disabled = false;
+        document.getElementById('simload').style.display = 'none';
+      });
     }
   }
   /** Function called to hide simulation loading svg */
@@ -393,5 +421,11 @@ export class SimulatorComponent implements OnInit {
   openProject() {
     const openProject = document.getElementById('opendialog');
     openProject.style.display = 'block';
+  }
+  Login() {
+    Login.redirectLogin();
+  }
+  Logout() {
+    Login.logout();
   }
 }

@@ -41,7 +41,7 @@ export class ApiService {
     });
   }
   searchProject(title: string, token: string) {
-    const url = encodeURI(`${this.url}api/save/search?name__icontains=${title}&description__icontains=${title}&is_arduino=true`);
+    const url = encodeURI(`${this.url}api/save/search?name__icontains=${title}&is_arduino=true`);
     return this.http.get(url, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -87,6 +87,17 @@ export class ApiService {
     // console.log(this.httpOptions.headers)
     // console.log(this.httpOptions.headers.get('Authorization'));
     return this.http.get(`${this.url}api/auth/users/me`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
+  Sharing(id: string, on: boolean, token: string) {
+    const state = on ? 'on' : 'off';
+    return this.http.post(`${this.url}api/save/${id}/sharing/${state}`, {}, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,

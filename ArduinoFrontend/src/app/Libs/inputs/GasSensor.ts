@@ -44,9 +44,8 @@ export class MQ2 extends CircuitElement {
     if (dist <= 189) {
       v = ((189 - dist) / 189) * 5;
     } else {
-      v = 2 * Math.random();
+      v = 0;
     }
-
     if (this.nodes[0].connectedTo && this.nodes[0].value >= 4.9) {
       this.nodes[3].setValue(Math.round(v), null);
     } else {

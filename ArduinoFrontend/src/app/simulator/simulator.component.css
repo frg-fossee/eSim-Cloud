@@ -12,17 +12,6 @@
     stroke-opacity: 0 !important;
 }
 
-textarea:hover, input:hover, textarea:active, input:active, textarea:focus, input:focus, label:focus {
-    outline: 0px !important;
-    -webkit-appearance: none;
-    /* box-shadow: none !important; */
-}
-
-button:focus, button:active, button:hover {
-    outline: 0px !important;
-    -webkit-appearance: none;
-}
-
 .grabbing {
     cursor: grabbing !important;
     cursor: -moz-grabbing !important;

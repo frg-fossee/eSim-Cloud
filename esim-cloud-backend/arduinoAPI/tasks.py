@@ -7,7 +7,6 @@ import traceback
 from django.conf import settings
 from celery import shared_task, current_task
 from celery import states
-from celery.exceptions import Ignore
 import json
 import logging
 import re
@@ -16,27 +15,27 @@ logger = logging.getLogger(__name__)
 
 
 def saveFiles(data):
-    try:
-        filenames = []
-        if not os.path.exists(settings.MEDIA_ROOT):
-            Path(settings.MEDIA_ROOT).mkdir(parents=True, exist_ok=True)
-        for k in data:
-            work_dir = settings.MEDIA_ROOT+'/'+str(k)
+    # try:
+    filenames = []
+    if not os.path.exists(settings.MEDIA_ROOT):
+        Path(settings.MEDIA_ROOT).mkdir(parents=True, exist_ok=True)
+    for k in data:
+        work_dir = settings.MEDIA_ROOT+'/'+str(k)
 
-            Path(work_dir).mkdir(parents=True, exist_ok=True)
+        Path(work_dir).mkdir(parents=True, exist_ok=True)
 
-            filename = settings.MEDIA_ROOT+'/'+str(k)+'/sketch.ino'
-            fout = open(filename, 'w', encoding='utf8')
-            fout.writelines('#line 1 "{}"\n'.format(filename))
-            fout.writelines('void setup();void loop();\n'.format(filename))
-            fout.writelines(data.get(k, ''))
-            fout.close()
+        filename = settings.MEDIA_ROOT+'/'+str(k)+'/sketch.ino'
+        fout = open(filename, 'w', encoding='utf8')
+        fout.writelines('#line 1 "{}"\n'.format(filename))
+        fout.writelines('void setup();void loop();\n'.format(filename))
+        fout.writelines(data.get(k, ''))
+        fout.close()
 
-            filenames.append(k)
-        return filenames
-    except Exception:
-        logger.error(traceback.format_exc())
-        return []
+        filenames.append(k)
+    return filenames
+    # except Exception:
+    #     logger.error(traceback.format_exc())
+    #     return []
 
 
 def CompileINO(filenames):
@@ -79,6 +78,7 @@ def CompileINO(filenames):
 
     except Exception:
         print(traceback.format_exc())
+        return False
     finally:
         for filename in filenames:
             parent = settings.MEDIA_ROOT+'/'+str(filename)
@@ -97,14 +97,21 @@ def compile_sketch_task(task_id, data):
             state='PROGRESS',
             meta={'current_process': 'Starting Compiling'})
         output = CompileINO(filenames)
-        current_task.update_state(
-            state='PROGRESS',
-            meta={'current_process': 'Done'})
-        return output
+        if isinstance(output, bool):
+            current_task.update_state(state='FAILURE', meta={
+                'exc_type': 'Compilation Error',
+                'exc_message': 'Server Error'
+            })
+            return {'error': True}
+        else:
+            current_task.update_state(
+                state='PROGRESS',
+                meta={'current_process': 'Done'})
+            return output
     except Exception as e:
         current_task.update_state(state='FAILURE', meta={
             'exc_type': type(e).__name__,
             'exc_message': traceback.format_exc()
         })
         print(traceback.format_exc())
-        raise Ignore()
+        return {'error': True}
