@@ -3,6 +3,7 @@ import queryString from 'query-string'
 import api from '../../utils/Api'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
+import { setTitle } from './index'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -147,6 +148,7 @@ export const setSchShared = (share) => (dispatch, getState) => {
 export const loadGallery = (Id) => (dispatch, getState) => {
   var data = GallerySchSample[Id]
 
+  dispatch(setTitle('* ' + data.name))
   dispatch(setSchTitle(data.name))
   dispatch(setSchDescription(data.description))
   dispatch(setSchXmlData(data.data_dump))
