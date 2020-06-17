@@ -70,6 +70,11 @@ export function DeleteComp () {
   graph.removeCells()
 }
 
+// CLEAR WHOLE GRID
+export function ClearGrid () {
+  graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
+}
+
 // ROTATE COMPONENT
 export function Rotate () {
   var view = graph.getView()
@@ -989,6 +994,7 @@ function parseXmlToGraph (xmlDoc, graph) {
 }
 
 export function renderGalleryXML (xml) {
+  graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
   // var changes = evt.getProperty('edit').changes
   graph.view.refresh()
   var xmlDoc = mxUtils.parseXml(xml)
