@@ -69,7 +69,8 @@
     <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
       <div
         style="flex-basis: 80%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
-        {{selected.name}}
+        {{selected.name}} 
+        <button type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;">Shared</button>
       </div>
       <div style="flex-basis: 20%; padding: 10px;float: right;">
         <button style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"
@@ -82,12 +83,8 @@
         style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
         <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.base64_image}}
           alt="">
-
-        <button mat-raised-button color="warn" style="margin-top: 70%;margin-left:23%"
-          (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
-        <button mat-raised-button color="primary" [routerLink]="['/simulator']"
-          [queryParams]="{id: selected.save_id,offline: selected.offline}" style=" margin-top: 5%;margin-left:13%">Edit
-          circuit</button>
+          
+        
       </div>
       <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%; top: 10px;">
         <div
@@ -96,6 +93,12 @@
             Description</h5>
 
           <p style="margin-left: 10px">{{selected.description}}</p>
+          <button mat-raised-button color="primary" [routerLink]="['/simulator']"
+          [queryParams]="{id: selected.save_id,offline: selected.offline}" style=" margin-top: 10%;margin-left:13%">Edit
+          circuit</button>
+          <button mat-raised-button color="warn" style="margin-left: 1%;"
+          (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
+          <button mat-raised-button style="margin-left: 1%;background-color: #26b12d;color: white;">Publish circuit</button>
         </div>
         <div
           style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
