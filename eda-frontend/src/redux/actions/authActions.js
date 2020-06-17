@@ -43,7 +43,15 @@ export const loadUser = () => (dispatch, getState) => {
         }
       }
     )
-    .catch((err) => { console.error(err) })
+    .catch((err) => {
+      console.error(err)
+      dispatch({
+        type: actions.LOGIN_FAILED,
+        payload: {
+          data: {}
+        }
+      })
+    })
 }
 
 export const login = (username, password, toUrl) => {
