@@ -37,12 +37,9 @@ const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     marginRight: theme.spacing(2)
   },
-  form: {
-    flexGrow: 1
-  },
   input: {
     marginLeft: theme.spacing(1),
-    flex: 1,
+    width: '200px',
     color: '#595959'
   },
   rightBlock: {
@@ -188,15 +185,13 @@ function Header () {
       </Typography>
 
       <Hidden xsDown>
-        <form className={classes.form} noValidate autoComplete="off">
-          <Input
-            className={classes.input}
-            color="secondary"
-            value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
-            onChange={titleHandler}
-            inputProps={{ 'aria-label': 'SchematicTitle' }}
-          />
-        </form>
+        <Input
+          className={classes.input}
+          color="secondary"
+          value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
+          onChange={titleHandler}
+          inputProps={{ 'aria-label': 'SchematicTitle' }}
+        />
       </Hidden>
 
       <div className={classes.rightBlock}>
