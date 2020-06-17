@@ -82,6 +82,7 @@ export function Rotate () {
   if (cell != null) {
     vHandler.rotateCell(cell, 90, cell.getParent())
   }
+  vHandler.destroy()
 }
 
 // PRINT PREVIEW OF SCHEMATIC
