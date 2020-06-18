@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useHistory, Link as RouterLink } from 'react-router-dom'
 import {
@@ -37,12 +37,9 @@ const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     marginRight: theme.spacing(2)
   },
-  form: {
-    flexGrow: 1
-  },
   input: {
     marginLeft: theme.spacing(1),
-    flex: 1,
+    width: '200px',
     color: '#595959'
   },
   rightBlock: {
@@ -149,6 +146,10 @@ function Header () {
 
   const [shared, setShared] = React.useState(schSave.isShared)
 
+  useEffect(() => {
+    setShared(schSave.isShared)
+  }, [schSave.isShared])
+
   const handleShareChange = (event) => {
     setShared(event.target.checked)
     dispatch(setSchShared(event.target.checked))
@@ -184,15 +185,13 @@ function Header () {
       </Typography>
 
       <Hidden xsDown>
-        <form className={classes.form} noValidate autoComplete="off">
-          <Input
-            className={classes.input}
-            color="secondary"
-            value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
-            onChange={titleHandler}
-            inputProps={{ 'aria-label': 'SchematicTitle' }}
-          />
-        </form>
+        <Input
+          className={classes.input}
+          color="secondary"
+          value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
+          onChange={titleHandler}
+          inputProps={{ 'aria-label': 'SchematicTitle' }}
+        />
       </Hidden>
 
       <div className={classes.rightBlock}>
@@ -226,7 +225,7 @@ function Header () {
             </DialogContentText>
             <DialogContentText id="share-dialog-description">
               {shared === true
-                ? <>Link : <a href={window.location.href + '/' + schSave.details.save_id}>{window.location.href + '/' + schSave.details.save_id}</a></>
+                ? <>Link : <a href={window.location.href}>{window.location.href}</a></>
                 : <> Turn On sharing </>
               }
             </DialogContentText>

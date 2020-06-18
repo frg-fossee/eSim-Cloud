@@ -26,3 +26,28 @@ export const fetchSchematics = () => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
+
+export const deleteSchematic = (saveId) => (dispatch, getState) => {
+  const token = getState().authReducer.token
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+  api.delete('save/' + saveId, config)
+    .then(
+      (res) => {
+        // console.log('response', res)
+        if (res.status === 200) {
+          dispatch(fetchSchematics())
+        }
+      }
+    )
+    .catch((err) => { console.error(err) })
+}

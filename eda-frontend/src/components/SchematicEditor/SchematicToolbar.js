@@ -18,11 +18,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
+import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import { Link as RouterLink } from 'react-router-dom'
 
 import { NetlistModal, HelpScreen } from './ToolbarExtension'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic } from '../../redux/actions/index'
 
@@ -241,6 +242,11 @@ export default function SchematicToolbar ({ mobileClose }) {
       <Tooltip title="Delete">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleDeleteComp}>
           <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Clear All">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={ClearGrid}>
+          <HighlightOffOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Help">
