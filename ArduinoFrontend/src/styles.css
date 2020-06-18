@@ -30,11 +30,11 @@ button:hover {
 }
 
 .head-title {
-  flex-basis: 1700px;
+  width: 100%;
   line-height: 60px;
   font-weight: bold;
-  padding-left: 60px;
-  font-size: x-large;
+  margin-left: 3%;
+  font-size: 1.3em;
 }
 
 .my-dropdown {
