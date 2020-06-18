@@ -76,6 +76,7 @@ export class Workspace {
     window['holder'] = document.getElementById('holder').getBoundingClientRect();
     window['holder_svg'] = document.querySelector('#holder > svg');
     window['ArduinoUno_name'] = {};
+    window.scope = null;
     // Stores all the Circuit Information
     window['scope'] = {
       wires: []
@@ -500,6 +501,7 @@ export class Workspace {
    * @param data Saved Object
    */
   static Load(data) {
+    // TODO: Clear Project
     Workspace.translateX = data.canvas.x;
     Workspace.translateY = data.canvas.y;
     Workspace.scale = data.canvas.scale;
@@ -512,7 +514,7 @@ export class Workspace {
       ${Workspace.translateY})`);
     for (const key in data) {
       if (key !== 'id' && key !== 'canvas' && key !== 'project' && key !== 'wires') {
-        // console.log(key);
+        window['scope'][key] = [];
         const components = data[key];
         for (const comp of components) {
           const myClass = Utils.components[key].className;
@@ -682,13 +684,13 @@ export class Workspace {
                 if (d.output && d.data) {
                   window.printConsole(d.output, ConsoleType.OUTPUT);
                   nameMap[k].hex = d.data;
+                  Workspace.startArduino();
                 }
                 if (d.error) {
                   window.printConsole(d.error, ConsoleType.ERROR);
                 }
               }
             }
-            Workspace.startArduino();
             callback();
           } else if (hex.state === 'FAILED' || hex.details.error) {
             clearInterval(temp);
@@ -700,6 +702,7 @@ export class Workspace {
     }, error => {
       window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
       console.log(error);
+      callback();
     });
 
   }
@@ -754,6 +757,14 @@ export class Workspace {
     if (!Workspace.simulating) {
       callback();
       return;
+    }
+    for (const wire of window.scope.wires) {
+      if (wire.start) {
+        wire.start.value = -1;
+      }
+      if (wire.end) {
+        wire.end.value = -1;
+      }
     }
     // TODO: Show Loading Animation
     for (const key in window.scope) {
