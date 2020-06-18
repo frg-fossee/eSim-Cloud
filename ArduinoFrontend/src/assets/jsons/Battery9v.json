@@ -4,12 +4,12 @@
     "pointHalf": 4,
     "pins": [
         {
-            "x": 0,
+            "x": -4,
             "y": 27,
             "name": "Positive"
         },
         {
-            "x": 0,
+            "x": -4,
             "y": 69,
             "name": "Negative"
         }

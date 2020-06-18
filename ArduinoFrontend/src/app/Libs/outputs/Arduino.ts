@@ -1,6 +1,7 @@
 import { CircuitElement } from '../CircuitElement';
 import { ArduinoRunner } from '../AVR8/Execute';
 import { isUndefined, isNull } from 'util';
+import { Point } from '../Point';
 
 declare var AVR8;
 
@@ -13,6 +14,7 @@ export class ArduinoUno extends CircuitElement {
   public powerLed: any;
   public builtinLED: any;
   public pinNameMap: any = {};
+  private servos: any[] = [];
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
     let start = window['scope']['ArduinoUno'].length + 1;
@@ -186,6 +188,13 @@ export class ArduinoUno extends CircuitElement {
     document.getElementById('msg').append(myOutput);
     this.pinNameMap['5V'].setValue(5, null);
     this.pinNameMap['3.3V'].setValue(3.3, null);
+
+    if (this.servos.length > 0) {
+      for (const ser of this.servos) {
+        this.runner.addServo(ser.port, ser.pin, ser.call);
+      }
+      this.servos = [];
+    }
     this.runner.execute();
   }
   closeSimulation(): void {
@@ -203,6 +212,14 @@ export class ArduinoUno extends CircuitElement {
     }
   }
   simulate(): void {
+  }
+  addServo(pin: Point, callback: (angle: number, prevAngle: number) => void) {
+    const tmp = this.getPort(pin.label);
+    this.servos.push({
+      port: tmp.name,
+      pin: tmp.pin,
+      call: callback
+    });
   }
   getPort(pinName: string) {
     const num = parseInt(pinName.substr(1), 10);
