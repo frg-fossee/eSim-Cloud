@@ -3,6 +3,7 @@ import { SaveOffline } from '../Libs/SaveOffiline';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 import { MatSnackBar } from '@angular/material';
+import { Title } from '@angular/platform-browser';
 declare var moment;
 
 @Component({
@@ -37,7 +38,8 @@ export class DashboardComponent implements OnInit {
     openProject.style.display = 'block';
   }
 
-  constructor(private api: ApiService, private snackbar: MatSnackBar) {
+  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title) {
+    this.title.setTitle('Dashboard | Arduino On Cloud');
   }
   ngOnInit() {
     SaveOffline.ReadALL((v: any[]) => {
