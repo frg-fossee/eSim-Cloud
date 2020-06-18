@@ -23,9 +23,9 @@ export class HeaderComponent implements OnInit {
       }, (err) => {
         // console.log(err.status)
         // console.log(err);
-        if (err.status === 401) {
+        // if (err.status === 401) {
           Login.logout();
-        }
+        // }
       });
     }
   }
