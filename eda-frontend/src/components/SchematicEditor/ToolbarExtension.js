@@ -185,6 +185,7 @@ export function HelpScreen ({ open, close }) {
 
                     <TableContainer component={Paper}>
                       <Table className={classes.table} aria-label="simple table">
+                        <caption>Ngspice scale factors naming conventions</caption>
                         <TableHead>
                           <TableRow>
                             <TableCell align="center">SUFFIX</TableCell>
