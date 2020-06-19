@@ -46,7 +46,7 @@ export function NetlistModal ({ open, close, netlist }) {
   const createNetlistFile = () => {
     var titleA = netfile.title.split(' ')[1]
     var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
-    FileSaver.saveAs(blob, `${titleA}.cir`)
+    FileSaver.saveAs(blob, `${titleA}_eSim_on_cloud.cir`)
   }
   return (
     <Dialog
