@@ -11,6 +11,12 @@
   margin-left: 2.5%;
 }
 
+@media (max-width: 767.98px) { 
+  #main{
+    max-width: 60%;
+  }
+ }
+
 .subbox {
   box-sizing: border-box;
   width: 95%;
@@ -48,7 +54,7 @@
   background-color: white;
   position: relative;
   color: black;
-  top: 50px;
+  top: 30px;
   width: 70%;
   min-height: 800px;
   margin-left: 15%;
