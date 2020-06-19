@@ -3,14 +3,14 @@
 <div id="main">
   <h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Arduino
     Circuits</h3>
-  <div style="display: flex;">
-    <div style="flex-basis: 1450px;">
+  <div class="d-flex" style="max-width: 100%;">
+    <div>
       <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
         Circuit</a>
     </div>
 
-    <div style="flex-basis: 350px;">
-      <form class="form-inline" (submit)="SearchCircuits(searchBox)">
+    <div class="ml-auto">
+      <form class="form-inline" (submit)="SearchCircuits(searchBox)" style="float: right;">
         <div class="form-group mb-2" style="padding-right: 1px;">
           <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
         </div>
@@ -78,17 +78,15 @@
       </div>
     </div>
     <hr>
-    <div id="projectimage" style="height: 470px;position: relative;">
+    <div id="projectimage" style="height: 55vh;position: relative;">
       <div
-        style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
+        style="position: relative; float: left;background-color: white;  width: 50%;height: 54vh; top: 10px; left: 15px;">
         <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.base64_image}}
           alt="">
-          
-        
       </div>
-      <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%; top: 10px;">
+      <div style=" position: relative; height:54vh; background-color:white;float: left; width: 50%; top: 10px;">
         <div
-          style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 230px;background-color:white; float: left; overflow: auto">
+          style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 27vh;background-color:white; float: left; overflow: auto">
           <h5 style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
             Description</h5>
 
@@ -101,7 +99,7 @@
           <button mat-raised-button style="margin-left: 1%;background-color: #26b12d;color: white;">Publish circuit</button>
         </div>
         <div
-          style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
+          style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 25vh; background-color: white; float: left;">
           <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: You</h6>
           <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
           {{ ExpandDate(selected) }}
@@ -114,11 +112,11 @@
                 style="color:white; font-size: medium;"></i>
             </button>
 
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;"
+            <button mat-mini-fab style="margin-top: 9px;margin-left: 15px;background-color: #0080FF; top: 4px;"
               matTooltip="Share it on Linked In" (click)="ShareCircuit(selected,1)">
               <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
             </button>
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #ff4500;top: 4px;"
+            <button mat-mini-fab style="margin-top: 9px;margin-left: 15px ;background-color: #ff4500;top: 4px;"
               matTooltip="Share it on Reddit" (click)="ShareCircuit(selected,2)">
               <i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i>
             </button>
