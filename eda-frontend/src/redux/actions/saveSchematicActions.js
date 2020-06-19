@@ -154,3 +154,13 @@ export const loadGallery = (Id) => (dispatch, getState) => {
   dispatch(setSchXmlData(data.data_dump))
   renderGalleryXML(data.data_dump)
 }
+
+export const openLocalSch = (obj) => (dispatch, getState) => {
+  var data = obj
+
+  dispatch(setTitle('* ' + data.title))
+  dispatch(setSchTitle(data.title))
+  dispatch(setSchDescription(data.description))
+  dispatch(setSchXmlData(data.data_dump))
+  renderGalleryXML(data.data_dump)
+}

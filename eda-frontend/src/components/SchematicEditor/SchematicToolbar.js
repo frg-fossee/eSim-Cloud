@@ -22,12 +22,13 @@ import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
 import ClearAllIcon from '@material-ui/icons/ClearAll'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
+import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import { Link as RouterLink } from 'react-router-dom'
 
 import { NetlistModal, HelpScreen, ImageExportDialog } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic } from '../../redux/actions/index'
+import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -139,9 +140,9 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setSnacOpen(false)
   }
 
+  // Image Export of Schematic Diagram
   async function exportImage (type) {
     const svg = document.querySelector('#divGrid > svg').cloneNode(true)
-    console.log(gridRef.current)
     svg.removeAttribute('style')
     svg.setAttribute('width', gridRef.current.scrollWidth)
     svg.setAttribute('height', gridRef.current.scrollHeight)
@@ -207,7 +208,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     })
     var a = document.createElement('a')
     const ext = (type === 'PNG') ? '.png' : '.jpg'
-    a.setAttribute('download', schSave.title + ext)
+    a.setAttribute('download', schSave.title + '_eSim_on_cloud' + ext)
     a.setAttribute('href', data)
     a.setAttribute('target', '_blank')
     a.dispatchEvent(evt)
@@ -221,7 +222,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       cancelable: true
     })
     const a = document.createElement('a')
-    a.setAttribute('download', schSave.title + '.svg')
+    a.setAttribute('download', schSave.title + '_eSim_on_cloud.svg')
     a.href = URL.createObjectURL(blob)
     a.target = '_blank'
     a.setAttribute('target', '_blank')
@@ -275,12 +276,42 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
-  // Open Schematic
+  // Save Schematics Locally
+  const handelLocalSchSave = () => {
+    var saveLocalData = {}
+    saveLocalData.data_dump = Save()
+    saveLocalData.title = schSave.title
+    saveLocalData.description = schSave.description
+    var json = JSON.stringify(saveLocalData)
+    const blob = new Blob([json], { type: 'octet/stream' })
+    const evt = new MouseEvent('click', {
+      view: window,
+      bubbles: false,
+      cancelable: true
+    })
+    const a = document.createElement('a')
+    a.setAttribute('download', schSave.title + '_eSim_on_cloud.json')
+    a.href = URL.createObjectURL(blob)
+    a.target = '_blank'
+    a.setAttribute('target', '_blank')
+    a.dispatchEvent(evt)
+  }
+
+  // Open Locally Saved Schematic
   const handelSchOpen = () => {
+    var obj = {}
     const fileSelector = document.createElement('input')
     fileSelector.setAttribute('type', 'file')
-    fileSelector.setAttribute('multiple', 'multiple')
     fileSelector.click()
+    fileSelector.addEventListener('change', function (event) {
+      var reader = new FileReader()
+      reader.onload = onReaderLoad
+      reader.readAsText(event.target.files[0])
+    })
+    const onReaderLoad = function (event) {
+      obj = JSON.parse(event.target.result)
+      dispatch(openLocalSch(obj))
+    }
   }
 
   return (
@@ -304,6 +335,11 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <span className={classes.pipe}>|</span>
 
+      <Tooltip title="Export">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
+          <SystemUpdateAltOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <Tooltip title="Image Export">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleImgClickOpen}>
           <ImageOutlinedIcon fontSize="small" />
