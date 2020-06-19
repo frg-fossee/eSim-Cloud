@@ -8,6 +8,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  CardHeader,
   Tooltip,
   Snackbar
 } from '@material-ui/core'
@@ -22,8 +23,8 @@ import MuiAlert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => ({
   media: {
-    marginTop: theme.spacing(3),
-    height: 165
+    height: 0,
+    paddingTop: '56.25%' // 16:9
   },
   rating: {
     marginTop: theme.spacing(1),
@@ -101,6 +102,14 @@ function timeSince (jsonDate) {
   return Math.floor(seconds) + ' seconds'
 }
 
+function getDate (jsonDate) {
+  var json = jsonDate
+  var date = new Date(json)
+  const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
+  const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
+  return `${day}-${month}-${year}`
+}
+
 export default function SchematicCard ({ sch }) {
   const classes = useStyles()
 
@@ -122,20 +131,21 @@ export default function SchematicCard ({ sch }) {
       {/* User Schematic Overview Card */}
       <Card>
         <CardActionArea>
+          <CardHeader
+            title={sch.name}
+            subheader={'Created On ' + getDate(sch.create_time)}
+          />
           <CardMedia
             className={classes.media}
             image={sch.base64_image}
             title={sch.name}
           />
           <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {sch.name}
-            </Typography>
             <Typography variant="body2" component="p">
               {sch.description}
             </Typography>
             <Typography variant="body2" color="textSecondary" component="p" style={{ margin: '5px 0px 0px 0px' }}>
-              Created {timeSince(sch.create_time)} ago...
+              Updated {timeSince(sch.save_time)} ago...
             </Typography>
             {/* <Rating
               name="half-rating-read"
