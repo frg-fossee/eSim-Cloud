@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import Canvg from 'canvg'
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
@@ -18,11 +19,12 @@ import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined'
 import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
-import HighlightOffOutlinedIcon from '@material-ui/icons/HighlightOffOutlined'
+import ClearAllIcon from '@material-ui/icons/ClearAll'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
+import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { NetlistModal, HelpScreen } from './ToolbarExtension'
+import { NetlistModal, HelpScreen, ImageExportDialog } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic } from '../../redux/actions/index'
@@ -78,7 +80,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar ({ mobileClose }) {
+export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const classes = useStyles()
   const netfile = useSelector(state => state.netlistReducer)
   const auth = useSelector(state => state.authReducer)
@@ -137,6 +139,123 @@ export default function SchematicToolbar ({ mobileClose }) {
     setSnacOpen(false)
   }
 
+  async function exportImage (type) {
+    const svg = document.querySelector('#divGrid > svg').cloneNode(true)
+    console.log(gridRef.current)
+    svg.removeAttribute('style')
+    svg.setAttribute('width', gridRef.current.scrollWidth)
+    svg.setAttribute('height', gridRef.current.scrollHeight)
+    const canvas = document.createElement('canvas')
+    canvas.width = gridRef.current.scrollWidth
+    canvas.height = gridRef.current.scrollHeight
+    canvas.style.width = canvas.width + 'px'
+    canvas.style.height = canvas.height + 'px'
+    var images = svg.getElementsByTagName('image')
+    for (var image of images) {
+      const data = await fetch(image.getAttribute('xlink:href')).then((v) => {
+        return v.text()
+      })
+      image.removeAttribute('xlink:href')
+      image.setAttribute(
+        'href',
+        'data:image/svg+xml;base64,' + window.btoa(data)
+      )
+    }
+    var ctx = canvas.getContext('2d')
+    ctx.mozImageSmoothingEnabled = true
+    ctx.webkitImageSmoothingEnabled = true
+    ctx.msImageSmoothingEnabled = true
+    ctx.imageSmoothingEnabled = true
+    const pixelRatio = window.devicePixelRatio || 1
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+    return new Promise(resolve => {
+      if (type === 'SVG') {
+        var svgdata = new XMLSerializer().serializeToString(svg)
+        resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata)
+        return
+      }
+      var v = Canvg.fromString(ctx, svg.outerHTML)
+      v.render().then(() => {
+        var image = ''
+        if (type === 'JPG') {
+          const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          for (let i = 0; i < imgdata.data.length; i += 4) {
+            if (imgdata.data[i + 3] === 0) {
+              imgdata.data[i] = 255
+              imgdata.data[i + 1] = 255
+              imgdata.data[i + 2] = 255
+              imgdata.data[i + 3] = 255
+            }
+          }
+          ctx.putImageData(imgdata, 0, 0)
+          image = canvas.toDataURL('image/jpeg', 1.0)
+        } else {
+          if (type === 'PNG') {
+            image = canvas.toDataURL('image/png')
+          }
+        }
+        resolve(image)
+      })
+    })
+  }
+
+  function downloadImage (data, type) {
+    var evt = new MouseEvent('click', {
+      view: window,
+      bubbles: false,
+      cancelable: true
+    })
+    var a = document.createElement('a')
+    const ext = (type === 'PNG') ? '.png' : '.jpg'
+    a.setAttribute('download', schSave.title + ext)
+    a.setAttribute('href', data)
+    a.setAttribute('target', '_blank')
+    a.dispatchEvent(evt)
+  }
+
+  function downloadText (data, options) {
+    const blob = new Blob(data, options)
+    const evt = new MouseEvent('click', {
+      view: window,
+      bubbles: false,
+      cancelable: true
+    })
+    const a = document.createElement('a')
+    a.setAttribute('download', schSave.title + '.svg')
+    a.href = URL.createObjectURL(blob)
+    a.target = '_blank'
+    a.setAttribute('target', '_blank')
+    a.dispatchEvent(evt)
+  }
+
+  const [imgopen, setImgOpen] = React.useState(false)
+
+  const handleImgClickOpen = () => {
+    setImgOpen(true)
+  }
+
+  const handleImgClose = (value) => {
+    setImgOpen(false)
+    if (value === 'SVG') {
+      exportImage('SVG')
+        .then(v => {
+          downloadText([v], {
+            type: 'data:image/svg+xml;charset=utf-8;'
+          })
+        })
+    } else if (value === 'PNG') {
+      exportImage('PNG')
+        .then(v => {
+          downloadImage(v, 'PNG')
+        })
+    } else if (value === 'JPG') {
+      exportImage('JPG')
+        .then(v => {
+          downloadImage(v, 'JPG')
+        })
+    }
+  }
+
   // Save Schematic
   const handelSchSave = () => {
     if (auth.isAuthenticated !== true) {
@@ -147,7 +266,10 @@ export default function SchematicToolbar ({ mobileClose }) {
       dispatch(setSchXmlData(xml))
       var title = schSave.title
       var description = schSave.description
-      dispatch(saveSchematic(title, description, xml))
+      exportImage('PNG')
+        .then(res => {
+          dispatch(saveSchematic(title, description, xml, res))
+        })
       setMessage('Saved Successfully')
       handleSnacClick()
     }
@@ -180,6 +302,19 @@ export default function SchematicToolbar ({ mobileClose }) {
         </IconButton>
       </Tooltip>
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+      <span className={classes.pipe}>|</span>
+
+      <Tooltip title="Image Export">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleImgClickOpen}>
+          <ImageOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <ImageExportDialog open={imgopen} onClose={handleImgClose} />
+      <Tooltip title="Print Preview">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={PrintPreview}>
+          <PrintOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Simulate">
@@ -234,11 +369,6 @@ export default function SchematicToolbar ({ mobileClose }) {
       </Tooltip>
       <span className={classes.pipe}>|</span>
 
-      <Tooltip title="Print Preview">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={PrintPreview}>
-          <PrintOutlinedIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
       <Tooltip title="Delete">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleDeleteComp}>
           <DeleteIcon fontSize="small" />
@@ -246,7 +376,7 @@ export default function SchematicToolbar ({ mobileClose }) {
       </Tooltip>
       <Tooltip title="Clear All">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={ClearGrid}>
-          <HighlightOffOutlinedIcon fontSize="small" />
+          <ClearAllIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Help">
@@ -271,5 +401,6 @@ export default function SchematicToolbar ({ mobileClose }) {
 }
 
 SchematicToolbar.propTypes = {
-  mobileClose: PropTypes.func
+  mobileClose: PropTypes.func,
+  gridRef: PropTypes.object.isRequired
 }

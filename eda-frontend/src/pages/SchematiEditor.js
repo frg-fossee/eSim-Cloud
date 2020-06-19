@@ -62,7 +62,7 @@ export default function SchematiEditor (props) {
 
       <CssBaseline />
 
-      <Layout header={<Header />} resToolbar={<SchematicToolbar mobileClose={handleDrawerToggle} />} sidebar={<ComponentSidebar compRef={compRef} />} />
+      <Layout header={<Header />} resToolbar={<SchematicToolbar gridRef={gridRef} mobileClose={handleDrawerToggle} />} sidebar={<ComponentSidebar compRef={compRef} />} />
 
       <LayoutMain>
         <div className={classes.toolbar} />

@@ -22,12 +22,19 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  List,
+  ListItem,
+  ListItemText,
+  Avatar,
+  ListItemAvatar
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
+import { blue } from '@material-ui/core/colors'
+
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
@@ -92,6 +99,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     backgroundColor: '#404040',
     color: '#fff'
+  },
+  avatar: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    backgroundColor: blue[100],
+    color: blue[600]
   }
 }))
 
@@ -310,4 +323,46 @@ export function HelpScreen ({ open, close }) {
 HelpScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func
+}
+
+const ImgTypes = ['PNG', 'JPG', 'SVG']
+export function ImageExportDialog (props) {
+  const classes = useStyles()
+  const { onClose, open } = props
+
+  const handleClose = () => {
+    onClose('')
+  }
+
+  const handleListItemClick = (value) => {
+    onClose(value)
+  }
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="image-export-dialog-title" open={open}>
+      <DialogTitle id="image-export-dialog-title">Select Image type</DialogTitle>
+      <List>
+        {ImgTypes.map((img) => (
+          <ListItem button onClick={() => handleListItemClick(img)} key={img}>
+            <ListItemAvatar>
+              <Avatar className={classes.avatar}>
+                {img.charAt(0).toUpperCase()}
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={img} />
+          </ListItem>
+        ))}
+      </List>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary" autoFocus>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+ImageExportDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
 }
