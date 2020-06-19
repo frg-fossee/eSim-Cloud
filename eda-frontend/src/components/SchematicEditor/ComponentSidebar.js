@@ -81,8 +81,8 @@ export default function ComponentSidebar ({ compRef }) {
     if (searchText.length === 0) {
       setSearchedComponents([])
     }
-    setSearchedComponents([])
     setSearchText(evt.target.value)
+    setSearchedComponents([])
     // mimic the value so we can access the latest value in our API call.
 
     // call api from here. and set the result to searchedComponentList.
@@ -99,14 +99,14 @@ export default function ComponentSidebar ({ compRef }) {
       // call api here
       setLoading(true)
 
-      api.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${searchText}`)
+      api.get(`components/?${searchOptions[searchOption]}=${searchText}`)
         .then(
           (res) => {
-            setSearchedComponents([...res.data])
             if (res.data.length === 0) {
               setIssearchedResultsEmpty(true)
             } else {
               setIssearchedResultsEmpty(false)
+              setSearchedComponents([...res.data])
             }
           }
         )
@@ -205,7 +205,7 @@ export default function ComponentSidebar ({ compRef }) {
             {searchText.length !== 0 && searchedComponentList.length !== 0 &&
 
               searchedComponentList.map((component, i) => {
-                return (<ListItemIcon key={component.name}>
+                return (<ListItemIcon key={i}>
                   <SideComp component={component} />
                 </ListItemIcon>)
               }
