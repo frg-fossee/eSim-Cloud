@@ -1,4 +1,6 @@
 import { CircuitElement } from '../CircuitElement';
+import { ArduinoUno } from './Arduino';
+import { ConstantPool } from '@angular/compiler';
 
 declare var Raphael;
 /**
@@ -172,6 +174,8 @@ export class L298N extends CircuitElement {
  * Servo Motor class
  */
 export class ServoMotor extends CircuitElement {
+  connected = true;
+  arduino: CircuitElement = null;
   /**
    * MotorDriver L298N constructor
    * @param canvas Raphael Canvas (Paper)
@@ -181,9 +185,17 @@ export class ServoMotor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('ServoMotor', x, y, 'ServoMotor.json', canvas);
   }
+  init() {
+    this.nodes[1].addValueListener((v) => {
+      if (v < 4 || v > 6) {
+        window['showToast']('Low Voltage Applied');
+      }
+      this.nodes[0].setValue(v, this.nodes[1]);
+    });
+  }
   /** Animation caller during start simulation button pressed */
-  animate(angle: number) {
-    const anim = Raphael.animation({ transform: `r${angle}` }, 2500);
+  animate(angle: number, duration: number = 10) {
+    const anim = Raphael.animation({ transform: `r${angle}` }, duration);
     this.elements[1].animate(anim);
   }
   /**
@@ -199,12 +211,69 @@ export class ServoMotor extends CircuitElement {
       keyName: this.keyName,
       id: this.id,
       body,
-      title: 'Motor'
+      title: 'Servo Motor'
     };
   }
   initSimulation(): void {
+    if (!(
+      this.nodes[0].connectedTo &&
+      this.nodes[1].connectedTo &&
+      this.nodes[2].connectedTo
+    )
+    ) {
+      window['showToast']('Please Connect Servo Properly!');
+      this.connected = false;
+      return;
+    }
+    let connectedPin = null;
+    if (this.nodes[2].connectedTo.start
+      && this.nodes[2].connectedTo.start.parent.keyName === 'ArduinoUno') {
+      this.arduino = this.nodes[2].connectedTo.start.parent;
+      connectedPin = this.nodes[2].connectedTo.start;
+    }
+
+    if (this.arduino === null &&
+      this.nodes[2].connectedTo.end &&
+      this.nodes[2].connectedTo.end.parent.keyName === 'ArduinoUno'
+    ) {
+      connectedPin = this.nodes[2].connectedTo.end;
+      this.arduino = this.nodes[2].connectedTo.end.parent;
+    } else {
+      window['showToast']('Arduino Not Found!');
+      this.connected = false;
+      return;
+    }
+
+    this.connected = true;
+    this.elements.undrag();
+    const ok = this.elements[1].attr();
+    this.elements[1].attr({
+      transform: '',
+      x: ok.x + this.tx,
+      y: ok.y + this.ty
+    });
+
+    (this.arduino as ArduinoUno).addServo(connectedPin, (angle, prev) => {
+      if (angle > 182) {
+        return;
+      }
+      const duration = Math.abs(angle - (prev > 0 ? prev : 0)) * 5;
+      this.animate(angle, duration);
+    });
   }
   closeSimulation(): void {
+    if (!this.connected) {
+      return;
+    }
+    this.arduino = null;
+    this.elements[1].stop();
+    const ok = this.elements[1].attr();
+    this.elements[1].attr({
+      transform: `t${this.tx},${this.ty}`,
+      x: ok.x - this.tx,
+      y: ok.y - this.ty
+    });
+    this.setDragListeners();
   }
   simulate(): void {
   }

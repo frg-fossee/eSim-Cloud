@@ -8,24 +8,67 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Tooltip
+  Tooltip,
+  Snackbar
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
-import GetAppRoundedIcon from '@material-ui/icons/GetAppRounded'
 import { makeStyles } from '@material-ui/core/styles'
 // import Rating from '@material-ui/lab/Rating'
 import { Link as RouterLink } from 'react-router-dom'
+import DeleteIcon from '@material-ui/icons/Delete'
+import { useDispatch } from 'react-redux'
+import { deleteSchematic } from '../../redux/actions/index'
+import MuiAlert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => ({
   media: {
     marginTop: theme.spacing(3),
-    height: 150
+    height: 165
   },
   rating: {
     marginTop: theme.spacing(1),
     marginLeft: 'auto'
   }
 }))
+function Alert (props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
+}
+
+function SimpleSnackbar ({ open, close, sch }) {
+  const dispatch = useDispatch()
+
+  return (
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center'
+      }}
+      open={open}
+      autoHideDuration={6000}
+      onClose={close}
+    >
+      <Alert icon={false} severity="warning" color="error" style={{ width: '100%' }} action={
+        <>
+          <Button size="small" aria-label="close" color="inherit" onClick={() => { dispatch(deleteSchematic(sch.save_id)) }}>
+            Yes
+          </Button>
+          <Button size="small" aria-label="close" color="inherit" onClick={close}>
+            NO
+          </Button>
+        </>
+      }
+      >
+        {'Delete ' + sch.name + ' ?'}
+      </Alert>
+    </Snackbar>
+  )
+}
+
+SimpleSnackbar.propTypes = {
+  open: PropTypes.bool,
+  close: PropTypes.func,
+  sch: PropTypes.object
+}
 
 function timeSince (jsonDate) {
   var json = jsonDate
@@ -61,6 +104,19 @@ function timeSince (jsonDate) {
 export default function SchematicCard ({ sch }) {
   const classes = useStyles()
 
+  const [snacOpen, setSnacOpen] = React.useState(false)
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
+
   return (
     <>
       {/* User Schematic Overview Card */}
@@ -95,24 +151,26 @@ export default function SchematicCard ({ sch }) {
           <Button
             target="_blank"
             component={RouterLink}
-            to={'/editor/' + sch.save_id}
+            to={'/editor?id=' + sch.save_id}
             size="small"
             color="primary"
           >
             Launch in Editor
           </Button>
 
-          <Tooltip title="Download" placement="bottom" arrow>
-            <GetAppRoundedIcon
-              color="action"
+          <Tooltip title='Delete' placement="bottom" arrow>
+            <DeleteIcon
+              color='secondary'
               fontSize="small"
               style={{ marginLeft: 'auto' }}
+              onClick={() => { handleSnacClick() }}
             />
           </Tooltip>
+          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
-          <Tooltip title="SHARE" placement="bottom" arrow>
+          <Tooltip title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'} placement="bottom" arrow>
             <ShareIcon
-              color="action"
+              color={!sch.shared ? 'disabled' : 'primary'}
               fontSize="small"
               style={{ marginRight: '10px' }}
             />

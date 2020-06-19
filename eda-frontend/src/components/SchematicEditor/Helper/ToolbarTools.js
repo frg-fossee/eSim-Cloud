@@ -70,6 +70,11 @@ export function DeleteComp () {
   graph.removeCells()
 }
 
+// CLEAR WHOLE GRID
+export function ClearGrid () {
+  graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
+}
+
 // ROTATE COMPONENT
 export function Rotate () {
   var view = graph.getView()
@@ -82,6 +87,7 @@ export function Rotate () {
   if (cell != null) {
     vHandler.rotateCell(cell, 90, cell.getParent())
   }
+  vHandler.destroy()
 }
 
 // PRINT PREVIEW OF SCHEMATIC
@@ -92,7 +98,8 @@ export function PrintPreview () {
   var footerSize = 50
 
   // Applies scale to page
-  var pf = mxRectangle.fromRectangle(graph.pageFormat || mxConstants.PAGE_FORMAT_A4_PORTRAIT)
+  var pageFormat = { x: 0, y: 0, width: 1169, height: 827 }
+  var pf = mxRectangle.fromRectangle(pageFormat || mxConstants.PAGE_FORMAT_A4_LANDSCAPE)
   pf.width = Math.round(pf.width * scale * graph.pageScale)
   pf.height = Math.round(pf.height * scale * graph.pageScale)
 
@@ -129,13 +136,13 @@ export function PrintPreview () {
     header.style.lineHeight = (this.marginTop - 10) + 'px'
 
     var footer = header.cloneNode(true)
-
-    mxUtils.write(header, 'Untitled_Schematic ' + pageNumber + ' - EDA Cloud')
-    header.style.borderBottom = '1px solid gray'
+    var title = store.getState().saveSchematicReducer.title
+    mxUtils.write(header, title + ' - eSim on Cloud')
+    header.style.borderBottom = '1px solid blue'
     header.style.top = '0px'
 
-    mxUtils.write(footer, 'Made with Schematic Editor - EDA Cloud')
-    footer.style.borderTop = '1px solid gray'
+    mxUtils.write(footer, 'Made with Schematic Editor - ' + pageNumber + ' - eSim on Cloud')
+    footer.style.borderTop = '1px solid blue'
     footer.style.bottom = '0px'
 
     div.firstChild.appendChild(footer)
@@ -987,6 +994,7 @@ function parseXmlToGraph (xmlDoc, graph) {
 }
 
 export function renderGalleryXML (xml) {
+  graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
   // var changes = evt.getProperty('edit').changes
   graph.view.refresh()
   var xmlDoc = mxUtils.parseXml(xml)

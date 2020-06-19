@@ -16,7 +16,13 @@ import {
   Container,
   Grid,
   Paper,
-  Divider
+  Divider,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -120,45 +126,7 @@ export function HelpScreen ({ open, close }) {
             justify="center"
             alignItems="center"
           >
-            <Grid item xs={12} sm={12}>
-              <Paper className={classes.paper}>
-                <fieldset style={{ padding: '20px 40px' }}>
-                  <legend>
-                    <Typography variant="h5" align="center" component="p" gutterBottom>
-                      Simulation Modes
-                    </Typography>
-                  </legend>
-                  <Typography variant="h6" align='left' gutterBottom>
-                    DC Solver
-                  </Typography>
-                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    A DC simulation attempts to find a stable DC solution of your circuit.
-                  </Typography>
-                  <Divider />
-                  <Typography variant="h6" align='left' gutterBottom>
-                    DC Sweep
-                  </Typography>
-                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    A DC Sweep will plot the DC solution of your circuit across different values of a parameter of a circuit element.
-                    You can sweep any numerical parameter of any circuit element in your circuit.
-                  </Typography>
-                  <Divider />
-                  <Typography variant="h6" align='left' gutterBottom>
-                    Transient Analysis
-                  </Typography>
-                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    A Transient analysis does a Time-Domain Simulation of your circuit over a certain period of time.
-                  </Typography>
-                  <Divider />
-                  <Typography variant="h6" align='left' gutterBottom>
-                    AC Analysis
-                  </Typography>
-                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    AC Analysis does a small signal analysis of your circuit. The input can be any voltage source or current source.
-                  </Typography>
-                </fieldset>
-              </Paper>
-            </Grid>
+
             <Grid item xs={12} sm={12}>
               <Paper className={classes.paper}>
                 <fieldset style={{ padding: '20px 40px' }}>
@@ -200,6 +168,133 @@ export function HelpScreen ({ open, close }) {
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
                     Ctrl + Y
+                  </Typography>
+                </fieldset>
+              </Paper>
+            </Grid>
+
+            <Grid item xs={12} sm={12}>
+              <Paper className={classes.paper}>
+                <fieldset style={{ padding: '20px 40px' }}>
+                  <legend>
+                    <Typography variant="h5" align="center" component="p" gutterBottom>
+                      Units Table
+                    </Typography>
+                  </legend>
+                  <Typography>
+
+                    <TableContainer component={Paper}>
+                      <Table className={classes.table} aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">SUFFIX</TableCell>
+                            <TableCell align="center">NAME</TableCell>
+                            <TableCell align="center">FACTOR</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+
+                          <TableRow>
+                            <TableCell align="center">T</TableCell>
+                            <TableCell align="center">Tera</TableCell>
+                            <TableCell align="center">10<sup>12</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">G</TableCell>
+                            <TableCell align="center">Giga</TableCell>
+                            <TableCell align="center">10<sup>9</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">Meg</TableCell>
+                            <TableCell align="center">Mega</TableCell>
+                            <TableCell align="center">10<sup>6</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">K</TableCell>
+                            <TableCell align="center">Kilo</TableCell>
+                            <TableCell align="center">10<sup>3</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">mil</TableCell>
+                            <TableCell align="center">Mil</TableCell>
+                            <TableCell align="center">25.4 X 10<sup>-6</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">m</TableCell>
+                            <TableCell align="center">milli</TableCell>
+                            <TableCell align="center">10<sup>-3</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">u</TableCell>
+                            <TableCell align="center">micro</TableCell>
+                            <TableCell align="center">10<sup>-6</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">n</TableCell>
+                            <TableCell align="center">nano</TableCell>
+                            <TableCell align="center">10<sup>-9</sup></TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell align="center">p</TableCell>
+                            <TableCell align="center">pico</TableCell>
+                            <TableCell align="center">10<sup>-12</sup></TableCell>
+                          </TableRow>
+
+                          <TableRow>
+                            <TableCell align="center">f</TableCell>
+                            <TableCell align="center">femto</TableCell>
+                            <TableCell align="center">10<sup>-15</sup></TableCell>
+                          </TableRow>
+
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Typography>
+                </fieldset>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <Paper className={classes.paper}>
+                <fieldset style={{ padding: '20px 40px' }}>
+                  <legend>
+                    <Typography variant="h5" align="center" component="p" gutterBottom>
+                      Simulation Modes
+                    </Typography>
+                  </legend>
+                  <Typography variant="h6" align='left' gutterBottom>
+                    DC Solver
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    A DC simulation attempts to find a stable DC solution of your circuit.
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    DC Sweep
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    A DC Sweep will plot the DC solution of your circuit across different values of a parameter of a circuit element.
+                    You can sweep any numerical parameter of any circuit element in your circuit.
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Transient Analysis
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    A Transient analysis does a Time-Domain Simulation of your circuit over a certain period of time.
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    AC Analysis
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    AC Analysis does a small signal analysis of your circuit. The input can be any voltage source or current source.
                   </Typography>
                 </fieldset>
               </Paper>
