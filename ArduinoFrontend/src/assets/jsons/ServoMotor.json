@@ -3,18 +3,18 @@
     "className": "ServoMotor",
     "pins": [
         {
-            "x": 15,
-            "y": 2,
+            "x": 17,
+            "y": 6,
             "name": "GND"
         },
         {
-            "x": 30,
-            "y": 2,
+            "x": 33,
+            "y": 6,
             "name": "POWER"
         },
         {
-            "x": 45,
-            "y": 2,
+            "x": 47,
+            "y": 6,
             "name": "Signal"
         }
     ],
