@@ -1,7 +1,7 @@
 {
   "name": "RGB LED",
   "className": "RGBLED",
-  "pointHalf": 4,
+  "pointHalf": 6,
   "pins": [
     {
       "x": -3,
