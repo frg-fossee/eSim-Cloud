@@ -273,7 +273,7 @@ html, body {
     z-index: 1000;
     background: #fff;
     right: 0px;
-    bottom: 5px;
+    bottom: 23px;
     padding: 1px;
     justify-content: space-between;
     background-color: black;
@@ -288,7 +288,7 @@ html, body {
     white-space: pre-wrap;
     word-wrap: break-word;
     position: relative;
-    height: 65%;
+    height: 73%;
     display: flex;
     color: #fff;
     flex-direction: column;

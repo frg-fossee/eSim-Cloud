@@ -3,14 +3,14 @@
 <div id="main">
   <h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Arduino
     Circuits</h3>
-  <div style="display: flex;">
-    <div style="flex-basis: 1450px;">
+  <div class="d-flex" style="max-width: 100%;">
+    <div>
       <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
         Circuit</a>
     </div>
 
-    <div style="flex-basis: 350px;">
-      <form class="form-inline" (submit)="SearchCircuits(searchBox)">
+    <div class="ml-auto">
+      <form class="form-inline" (submit)="SearchCircuits(searchBox)" style="float: right;">
         <div class="form-group mb-2" style="padding-right: 1px;">
           <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
         </div>
@@ -66,78 +66,66 @@
 <!--open project-->
 <div id="openproject" style="display: none;z-index: 1000;">
   <div id="innerdialog" *ngIf="selected">
-    <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
-      <div
-        style="flex-basis: 80%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
-        {{selected.name}} 
-        <button type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;">Shared</button>
-      </div>
-      <div style="flex-basis: 20%; padding: 10px;float: right;">
-        <button style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"
-          (click)="closeProject()"><i class="fa fa-close"></i></button>
-      </div>
+    <div class="p-2" style="display: flex; line-height: 20px;max-width: 100%;">
+      <h2 style="margin-left: 1%">{{selected.name}}</h2>
+      <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
+        (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;<i class="fa fa-close"></i></button>
+
+      <button class="ml-auto" style="position: relative; padding-top: 10px;background-color: transparent; border: none;"
+        (click)="closeProject()"><i class="fa fa-close"></i></button>
     </div>
     <hr>
-    <div id="projectimage" style="height: 470px;position: relative;">
-      <div
-        style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
-        <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;" src={{selected.base64_image}}
-          alt="">
-          
-        
+    <div class="row">
+      <div class="col-md-7">
+        <div style="display: flex;">
+          <img style="max-width: 100%;margin: auto auto;" src={{selected.base64_image}} alt="">
+        </div>
       </div>
-      <div style=" position: relative; height:470px; background-color:white;float: left; width: 50%; top: 10px;">
-        <div
-          style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 230px;background-color:white; float: left; overflow: auto">
-          <h5 style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
-            Description</h5>
-
-          <p style="margin-left: 10px">{{selected.description}}</p>
-          <button mat-raised-button color="primary" [routerLink]="['/simulator']"
-          [queryParams]="{id: selected.save_id,offline: selected.offline}" style=" margin-top: 10%;margin-left:13%">Edit
+      <div class="col-md-5 data-body" style="padding-left: 30px;">
+        <h4 style="font-family: cursive;font-weight: bold;">Description</h4>
+        <p>{{selected.description}}</p>
+        <button mat-raised-button color="primary" [routerLink]="['/simulator']"
+          [queryParams]="{id: selected.save_id,offline: selected.offline}" style=" margin-top: 10%;margin-left:1%">Edit
           circuit</button>
-          <button mat-raised-button color="warn" style="margin-left: 1%;"
+        <button mat-raised-button color="warn" style="margin-left: 1%;"
           (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
-          <button mat-raised-button style="margin-left: 1%;background-color: #26b12d;color: white;">Publish circuit</button>
-        </div>
-        <div
-          style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 220px; background-color: white; float: left;">
-          <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: You</h6>
-          <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
-          {{ ExpandDate(selected) }}
-          <h6 style="margin-left: 15px;font-family: cursive">Created At: {{selected.create}}</h6>
-          <h6 style="margin-left: 15px;font-family: cursive">Edited At: {{selected.edit}}</h6>
-          <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
-          <div *ngIf="!selected.offline">
-            <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;"
-              matTooltip="Share it on Facebook" (click)="ShareCircuit(selected,0)"><i class="fab fa-facebook-f"
-                style="color:white; font-size: medium;"></i>
-            </button>
+        <button mat-raised-button style="margin-left: 1%;background-color: #26b12d;color: white;">Publish
+          circuit</button>
+        <div style="margin-top: 100px;"></div>
+        <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: You</h6>
+        <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
+        {{ ExpandDate(selected) }}
+        <h6 style="margin-left: 15px;font-family: cursive">Created At: {{selected.create}}</h6>
+        <h6 style="margin-left: 15px;font-family: cursive">Edited At: {{selected.edit}}</h6>
+        <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
+        <div *ngIf="!selected.offline">
+          <button mat-mini-fab color="primary" style="margin-top: 15px;margin-left: 15px;top: 1px;"
+            matTooltip="Share it on Facebook" (click)="ShareCircuit(selected,0)"><i class="fab fa-facebook-f"
+              style="color:white; font-size: medium;"></i>
+          </button>
 
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px;background-color: #0080FF; top: 4px;"
-              matTooltip="Share it on Linked In" (click)="ShareCircuit(selected,1)">
-              <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
-            </button>
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: #ff4500;top: 4px;"
-              matTooltip="Share it on Reddit" (click)="ShareCircuit(selected,2)">
-              <i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i>
-            </button>
+          <button mat-mini-fab style="margin-top: 9px;margin-left: 15px;background-color: #0080FF; top: 4px;"
+            matTooltip="Share it on Linked In" (click)="ShareCircuit(selected,1)">
+            <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
+          </button>
+          <button mat-mini-fab style="margin-top: 9px;margin-left: 15px ;background-color: #ff4500;top: 4px;"
+            matTooltip="Share it on Reddit" (click)="ShareCircuit(selected,2)">
+            <i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i>
+          </button>
 
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;"
-              matTooltip="Share it with Mail" (click)="ShareCircuit(selected,3)">
-              <i class="fa fa-envelope" style="font-size: medium;"></i>
-            </button>
-            <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;"
-              matTooltip="Copy Sharing URL" (click)="ShareCircuit(selected,4)">
-              <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
-            </button>
-
-          </div>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;"
+            matTooltip="Share it with Mail" (click)="ShareCircuit(selected,3)">
+            <i class="fa fa-envelope" style="font-size: medium;"></i>
+          </button>
+          <button mat-mini-fab style="margin-top: 15px;margin-left: 15px ;background-color: black;"
+            matTooltip="Copy Sharing URL" (click)="ShareCircuit(selected,4)">
+            <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
+          </button>
 
         </div>
+
       </div>
-    </div>
-    <!--Comments
+      <!--Comments
     <hr>
     <div style="height: 185px; width: 100%;">
       <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
@@ -149,6 +137,6 @@
       </div>
     </div>
   -->
+    </div>
   </div>
-</div>
-<!--/open project-->
+  <!--/open project-->
