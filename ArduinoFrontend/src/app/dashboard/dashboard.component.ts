@@ -101,7 +101,7 @@ export class DashboardComponent implements OnInit {
     const token = Login.getToken();
     this.EnableSharing(item.save_id, token, (v) => {
       item.shared = v.shared;
-      alert('done');
+      alert('Sharing Disabled!');
     }, false);
   }
   DateDiff(item: any, time) {
