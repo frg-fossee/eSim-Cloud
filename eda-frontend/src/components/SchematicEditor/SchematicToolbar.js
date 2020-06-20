@@ -60,7 +60,7 @@ function SimpleSnackbar ({ open, close, message }) {
           horizontal: 'left'
         }}
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={5000}
         onClose={close}
         message={message}
         action={
@@ -298,19 +298,31 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Open Locally Saved Schematic
-  const handelSchOpen = () => {
+  const handelLocalSchOpen = () => {
     var obj = {}
     const fileSelector = document.createElement('input')
     fileSelector.setAttribute('type', 'file')
+    fileSelector.setAttribute('accept', 'application/JSON')
     fileSelector.click()
     fileSelector.addEventListener('change', function (event) {
       var reader = new FileReader()
-      reader.onload = onReaderLoad
-      reader.readAsText(event.target.files[0])
+      var filename = event.target.files[0].name
+      if (filename.slice(filename.length - 4) === 'json') {
+        reader.onload = onReaderLoad
+        reader.readAsText(event.target.files[0])
+      } else {
+        setMessage('Unsupported file type error ! Select valid file.')
+        handleSnacClick()
+      }
     })
     const onReaderLoad = function (event) {
       obj = JSON.parse(event.target.result)
-      dispatch(openLocalSch(obj))
+      if (obj.data_dump === undefined || obj.title === undefined || obj.description === undefined) {
+        setMessage('Unsupported file error !')
+        handleSnacClick()
+      } else {
+        dispatch(openLocalSch(obj))
+      }
     }
   }
 
@@ -323,7 +335,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         </IconButton>
       </Tooltip>
       <Tooltip title="Open">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchOpen} >
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchOpen} >
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
