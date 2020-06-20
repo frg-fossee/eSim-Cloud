@@ -49,6 +49,7 @@
     "name": "Relay Module 4-Channel",
     "image": "https://potentiallabs.com/cart/image/cache/catalog/Arduino/4-channel relay Module-300x250.jpg",
     "description": "The 4 Channel Relay Module is a convenient board which can be used to control high voltage, high current load such as motor, solenoid valves, lamps and AC load. It is designed to interface with microcontroller such as Arduino, PIC and etc. The relays terminal (COM, NO and NC) is being brought out with screw terminal. It also comes with a LED to indicate the status of relay.",
+    "Datasheet": "https://www.curtocircuito.com.br/datasheet/modulo/rele-1canal.pdf",
     "properties": {
       "channel": "4",
       "Rated through-current": "10A (NO) 5A (NC)",

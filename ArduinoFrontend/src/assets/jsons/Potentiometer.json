@@ -40,7 +40,7 @@
     "simulation": {},
     "info": {
         "name": "Pontientiometer",
-        "image": "https://commons.wikimedia.org/wiki/File:Electronic-Component-Potentiometer.jpg",
+        "image": "https://arduinogetstarted.com/images/tutorial/rotary-potentiometer-pinout.jpg",
         "description": "Potentiometers also known as POT, are nothing but variable resistors. They can provide a variable resistance by simply varying the knob on top of its head. It can be classified based on two main parameters. One is their Resistance (R-ohms) itself and the other is its Power (P-Watts) rating.",
         "properties": {
             "Type": "Rotary(Radio POT)",

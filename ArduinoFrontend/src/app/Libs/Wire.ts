@@ -260,8 +260,12 @@ export class Wire {
     this.points = [];
     this.points = null;
     this.element.remove();
-    this.start.connectedTo = null;
-    this.end.connectedTo = null;
+    if (this.start) {
+      this.start.connectedTo = null;
+    }
+    if (this.end) {
+      this.end.connectedTo = null;
+    }
     this.start = null;
     this.end = null;
   }

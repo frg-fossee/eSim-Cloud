@@ -105,4 +105,8 @@ export class ApiService {
       })
     });
   }
+
+  fetchSamples(): Observable<any> {
+    return this.http.get('./assets/samples/Samples.json');
+  }
 }

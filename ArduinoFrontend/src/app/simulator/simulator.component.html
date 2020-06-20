@@ -315,7 +315,6 @@
 <!--/toast message-->
 <!--console ui-->
 <div id="console" style="display: none;">
-
   <div id="displayheader" style="display: flex; background-color: white; position: relative; width: 100%;">
     <button class="btn" style="background-color: white;" (click)="closeConsole()"><i
         [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
@@ -323,13 +322,12 @@
         [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
   </div>
   <div id="msg"></div>
-  <div id="footer" style="bottom: 0px; position: relative; display: block; top: 10px; padding: 0px; margin: 0px;">
-    <form style="bottom: 0px; position: relative; padding: 0px; background-color: pink; height: auto;">
+  <div id="footer"  style="display:block;position: relative;">
+    <form style="position: relative; padding: 0px;">
       <input type="text" style="border-radius: 0px; width: 89.5%;">
       <button type="button" style="border-color: darkgray; border-radius: 0px;">Send</button>
       <button type="button" style="border-color: darkgray; border-radius: 0px;" (click)="clearConsole()">Clear</button>
     </form>
-
   </div>
 </div>
 <!--/console ui-->

@@ -97,6 +97,13 @@ export class DashboardComponent implements OnInit {
     }
 
   }
+  DisableSharing(item: any) {
+    const token = Login.getToken();
+    this.EnableSharing(item.save_id, token, (v) => {
+      item.shared = v.shared;
+      alert('Sharing Disabled!');
+    }, false);
+  }
   DateDiff(item: any, time) {
     item.time = moment(time).fromNow();
   }
@@ -141,8 +148,8 @@ export class DashboardComponent implements OnInit {
     document.body.removeChild(tmpEl);
   }
 
-  EnableSharing(id, token, callback: any) {
-    this.api.Sharing(id, true, token).subscribe((v) => {
+  EnableSharing(id, token, callback: any, enable: boolean = true) {
+    this.api.Sharing(id, enable, token).subscribe((v) => {
       callback(v);
     }, err => {
       if (err.status === 401) {
