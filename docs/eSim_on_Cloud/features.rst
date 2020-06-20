@@ -62,6 +62,9 @@ Saving and Re-Opening
 #####################
 The circuits are saved only of an authenticated user and are viewed on the user dashboard. The same can be reopened as well for further editing.
 
+Dashboard
+#########
+A  place  where  the  authenticated  user  can  view  the  different  circuits  designed  by him/her. Then user can open the saved circuit into the editor by clicking on ``Launch in Editor``.
 
 Export 
 ######
