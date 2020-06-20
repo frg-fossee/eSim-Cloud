@@ -396,7 +396,7 @@ export function OpenSchDialog (props) {
       <DialogContent dividers>
         <DialogContentText id="open-dialog-description" >
           {isLocal
-            ? <center> <Button variant="outlined" size="large" onClick={() => { openLocal(); close() }} color="primary">
+            ? <center> <Button variant="outlined" fullWidth={true} size="large" onClick={() => { openLocal(); close() }} color="primary">
               Upload File
             </Button></center>
             : isGallery
@@ -449,10 +449,10 @@ export function OpenSchDialog (props) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
+        <Button variant={isLocal ? 'outlined' : 'text' } onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
           Local
         </Button>
-        <Button onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
+        <Button variant={isGallery ? 'outlined' : 'text' } onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
         </Button>
         <Button onClick={close} color="primary" autoFocus>
