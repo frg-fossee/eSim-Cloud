@@ -66,9 +66,6 @@ export class CodeEditorComponent implements OnInit {
   @Input('reinit')
   set reinit(value: boolean) {
     if (value) {
-      if (!this.init) {
-        window['showLoading']();
-      }
       this.names = [];
       this.arduinos = [];
       for (const key in window['ArduinoUno_name']) {
@@ -82,6 +79,9 @@ export class CodeEditorComponent implements OnInit {
       }
       if (this.arduinos.length > 0) {
         this.code = this.arduinos[this.selectedIndex].code;
+      }
+      if (this.names.length !== 0 && !this.init) {
+        window['showLoading']();
       }
     }
   }
