@@ -25,7 +25,7 @@ import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { NetlistModal, HelpScreen, ImageExportDialog } from './ToolbarExtension'
+import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
@@ -326,6 +326,17 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
+  // Help dialog window
+  const [schOpen, setSchOpen] = React.useState(false)
+
+  const handleSchDialOpen = () => {
+    setSchOpen(true)
+  }
+
+  const handleSchDialClose = () => {
+    setSchOpen(false)
+  }
+
   return (
     <>
       {/* <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} /> */}
@@ -335,10 +346,11 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         </IconButton>
       </Tooltip>
       <Tooltip title="Open">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchOpen} >
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleSchDialOpen} >
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} />
       <Tooltip title="Save">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
           <SaveOutlinedIcon fontSize="small" />

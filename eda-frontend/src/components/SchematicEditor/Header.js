@@ -215,7 +215,7 @@ function Header () {
 
       {auth.isAuthenticated === true
         ? <>
-          {(schSave.isSaved === true && schSave.details !== {})
+          {(schSave.isSaved === true && schSave.details.save_time !== undefined)
             ? <Typography
               variant="body2"
               style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
@@ -228,7 +228,7 @@ function Header () {
             size="small"
             variant={shared !== true ? 'outlined' : 'contained'}
             color="primary"
-            className={schSave.isSaved === true && schSave.details !== {} ? classes.button : classes.rightBlock}
+            className={schSave.isSaved === true && schSave.details.save_time !== undefined ? classes.button : classes.rightBlock}
             startIcon={<ShareIcon />}
             onClick={handleShare}
           >

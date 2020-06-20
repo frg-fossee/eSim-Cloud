@@ -148,6 +148,10 @@ export const setSchShared = (share) => (dispatch, getState) => {
 export const loadGallery = (Id) => (dispatch, getState) => {
   var data = GallerySchSample[Id]
 
+  dispatch({
+    type: actions.LOAD_GALLERY,
+    payload: data
+  })
   dispatch(setTitle('* ' + data.name))
   dispatch(setSchTitle(data.name))
   dispatch(setSchDescription(data.description))
@@ -158,6 +162,7 @@ export const loadGallery = (Id) => (dispatch, getState) => {
 export const openLocalSch = (obj) => (dispatch, getState) => {
   var data = obj
 
+  dispatch({ type: actions.CLEAR_DETAILS })
   dispatch(setTitle('* ' + data.title))
   dispatch(setSchTitle(data.title))
   dispatch(setSchDescription(data.description))

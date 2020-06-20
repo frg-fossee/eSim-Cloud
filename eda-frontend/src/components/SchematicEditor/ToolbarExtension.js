@@ -27,12 +27,15 @@ import {
   ListItem,
   ListItemText,
   Avatar,
-  ListItemAvatar
+  ListItemAvatar,
+  Tooltip
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { loadGallery } from '../../redux/actions/index'
+import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
 
 const Transition = React.forwardRef(function Transition (props, ref) {
@@ -325,6 +328,7 @@ HelpScreen.propTypes = {
   close: PropTypes.func
 }
 
+// Image Export Dialog
 const ImgTypes = ['PNG', 'JPG', 'SVG']
 export function ImageExportDialog (props) {
   const classes = useStyles()
@@ -365,4 +369,102 @@ export function ImageExportDialog (props) {
 ImageExportDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired
+}
+
+// Open Schematics Dialog
+export function OpenSchDialog (props) {
+  const { open, close, openLocal } = props
+  const [isLocal, setisLocal] = React.useState(true)
+  const [isGallery, setisGallery] = React.useState(false)
+  const schSave = useSelector(state => state.saveSchematicReducer)
+
+  const dispatch = useDispatch()
+
+  return (
+    <Dialog
+      open={open}
+      onClose={close}
+      maxWidth='md'
+      TransitionComponent={Transition}
+      keepMounted
+      aria-labelledby="open-dialog-title"
+      aria-describedby="open-dialog-description"
+    >
+      <DialogTitle id="open-dialog-title" onClose={close}>
+        <Typography variant="h6">{'Open Schematic'}</Typography>
+      </DialogTitle>
+      <DialogContent dividers>
+        <DialogContentText id="open-dialog-description" >
+          {isLocal
+            ? <center> <Button variant="outlined" size="large" onClick={() => { openLocal(); close() }} color="primary">
+              Upload File
+            </Button></center>
+            : isGallery
+              ? <Grid item xs={12} sm={12}>
+                {/* Listing Gallery Schematics */}
+                <TableContainer component={Paper}>
+                  <Table stickyHeader size="small" aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="center">Name</TableCell>
+                        <TableCell align="center">Description</TableCell>
+                        <TableCell align="center">Launch</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <>
+                        {GallerySchSample.map(
+                          (sch) => {
+                            return (
+                              <TableRow key={sch.save_id}>
+                                <TableCell align="center">{sch.name}</TableCell>
+                                <TableCell align="center">
+                                  <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
+                                    <span>
+                                      {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
+                                    </span>
+                                  </Tooltip>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Button
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => { dispatch(loadGallery(sch.save_id.substr(7, sch.save_id.length))) }}
+                                    variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
+                                  >
+                                    Launch
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            )
+                          }
+                        )}
+                      </>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              : <></>
+          }
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
+          Local
+        </Button>
+        <Button onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
+          Gallery
+        </Button>
+        <Button onClick={close} color="primary" autoFocus>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+OpenSchDialog.propTypes = {
+  close: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  openLocal: PropTypes.func.isRequired
 }
