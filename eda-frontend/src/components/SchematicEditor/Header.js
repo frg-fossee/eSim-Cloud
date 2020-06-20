@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2)
   },
   button: {
-    marginRight: theme.spacing(2)
+    marginRight: theme.spacing(0.7)
   },
   small: {
     width: theme.spacing(3.7),
@@ -176,6 +176,16 @@ function Header () {
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
+  const textAreaRef = React.useRef(null)
+
+  function copyToClipboard (e) {
+    textAreaRef.current.select()
+    document.execCommand('copy')
+    e.target.focus()
+    setMessage('Copied Successfully!')
+    handleSnacClick()
+  }
+
   return (
     <Toolbar variant="dense" color="default">
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
@@ -205,7 +215,7 @@ function Header () {
 
       {auth.isAuthenticated === true
         ? <>
-          {(schSave.isSaved === true && schSave.details !== {})
+          {(schSave.isSaved === true && schSave.details.save_time !== undefined)
             ? <Typography
               variant="body2"
               style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
@@ -218,7 +228,7 @@ function Header () {
             size="small"
             variant={shared !== true ? 'outlined' : 'contained'}
             color="primary"
-            className={schSave.isSaved === true && schSave.details !== {} ? classes.button : classes.rightBlock}
+            className={schSave.isSaved === true && schSave.details.save_time !== undefined ? classes.button : classes.rightBlock}
             startIcon={<ShareIcon />}
             onClick={handleShare}
           >
@@ -244,13 +254,23 @@ function Header () {
           </DialogContentText>
           <DialogContentText id="share-dialog-description">
             {shared === true
-              ? <>Link : <a href={window.location.href}>{window.location.href}</a></>
+              ? <input
+                ref={textAreaRef}
+                value={`${window.location.protocol}\\\\${window.location.host}/eda/#/editor?id=${schSave.details.save_id}`}
+                readOnly
+              />
               : <> Turn On sharing </>
             }
           </DialogContentText>
 
         </DialogContent>
         <DialogActions>
+          {shared === true && document.queryCommandSupported('copy')
+            ? <Button onClick={copyToClipboard} color="primary" autoFocus>
+              Copy url
+            </Button>
+            : <></>
+          }
           <Button onClick={handleShareClose} color="primary" autoFocus>
             close
           </Button>
@@ -265,7 +285,6 @@ function Header () {
           style={{ marginLeft: 'auto' }}
           color="primary"
           variant="outlined"
-          className={classes.button}
         >
           Login
         </Button>)
@@ -273,7 +292,6 @@ function Header () {
 
             <IconButton
               edge="start"
-              className={classes.button}
               color="primary"
               aria-controls="simple-menu"
               aria-haspopup="true"
