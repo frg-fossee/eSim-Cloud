@@ -1,32 +1,22 @@
-#main {
-  width: 95%;
-  float: left;
-  position: relative;
-  height: auto;
-  margin-top: 20px;
-  margin-left: 20px;
-  margin-right: 0px;
+.subbox {
+    box-sizing: border-box;
+    width: 95%;
+    height: auto;
+    background-color: white;
+    border-radius: 0.3125em;
+    margin-bottom: 15px;
+    box-shadow: 1px 1px 3px grey;
+    cursor: pointer;
+    margin-left: 2%;
+    justify-content: space-evenly;
 }
 
-.subbox {
-  width: 340px;
-  height: 330px;
-  background-color: white;
-  border-radius: 3px;
-  margin-bottom: 15px;
-  box-shadow: 1px 1px 3px grey;
-  cursor: pointer;
-  margin-left: 20px;
+.item-img {
+    min-height: 180px;
+    max-width: 100%;
+    max-height: 180px;
 }
 
 .subbox:hover {
-  box-shadow: 2px 2px 9px grey;
-}
-
-.box {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  height: auto;
-  margin-top: 20px;
+    box-shadow: 2px 2px 9px grey;
 }
