@@ -2,13 +2,6 @@
   background-color: #ddd;
 }
 
-#sidebar {
-  width: 25%;
-  float: left;
-  padding: 20px;
-  position: relative;
-}
-
 #main {
   width: 95%;
   float: left;
@@ -18,14 +11,23 @@
   margin-left: 2.5%;
 }
 
+@media (max-width: 767.98px) { 
+  #main{
+    max-width: 60%;
+  }
+ }
+
 .subbox {
-  width: 98%;
+  box-sizing: border-box;
+  width: 95%;
   height: auto;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 0.3125em;
   margin-bottom: 15px;
   box-shadow: 1px 1px 3px grey;
   cursor: pointer;
+  margin-left: 2%;
+  justify-content: space-evenly;
 }
 
 .item-img{
@@ -38,27 +40,13 @@
   box-shadow: 2px 2px 9px grey;
 }
 
-.box {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  height: auto;
-  margin-top: 10%;
-}
-
-@media (max-width: 767.98px) {
-
-  #main {
-    width: 60%;
-  }
-}
 
 #openproject {
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   width: 100%;
-  min-height: 150%;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -66,7 +54,7 @@
   background-color: white;
   position: relative;
   color: black;
-  top: 80px;
+  top: 30px;
   width: 70%;
   min-height: 800px;
   margin-left: 15%;
@@ -88,20 +76,3 @@ input[type=submit]:hover {
   background-color: #45a049;
 }
 
-#clsbtn {
-  background-color: #008CBA;
-  border: none;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  width: 90%;
-  font-weight: bolder;
-  border-radius: 12px;
-  margin-top: 280px;
-  margin-left: 5%;
-}

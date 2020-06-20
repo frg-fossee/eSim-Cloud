@@ -372,6 +372,7 @@
     "name": "Seven Segment Module",
     "image": "https://www.elprocus.com/wp-content/uploads/2014/10/seven.jpg",
     "description": "LCD modules are very commonly used in most embedded projects, the reason being its cheap price, availability and programmer friendly. Most of us would have come across these displays in our day to day life, either at PCO’s or calculators. The appearance and the pinouts have already been visualized above now let us get a bit technical.",
+    "Datasheet": "https://www.sparkfun.com/datasheets/Components/LED/7-Segment/SFE-0012-DS-7segmentSerial-v41.pdf",
     "properties": {
       "sizes": "9.14mm,14.20mm,20.40mm,38.10mm,57.0mm and 100mm (Commonly used/available size is 14.20mm)",
       "Current consumption": "30mA / segment",
