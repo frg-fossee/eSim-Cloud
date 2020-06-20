@@ -7,15 +7,10 @@
   float: left;
   position: relative;
   height: auto;
-  margin-top: 2%;
-  margin-left: 2.5%;
+  margin-top: 20px;
+  margin-left: 20px;
+  margin-right: 0px;
 }
-
-@media (max-width: 767.98px) { 
-  #main{
-    max-width: 60%;
-  }
- }
 
 .subbox {
   box-sizing: border-box;
@@ -60,6 +55,8 @@
   margin-left: 15%;
   border-radius: 5px;
   box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 input[type=submit] {
