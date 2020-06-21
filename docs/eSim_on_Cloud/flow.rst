@@ -9,12 +9,12 @@ eSim Development Flow
 
 Reading Component Symbol Library files and Rendering in the Browser
 ###################################################################
-The Kicad symbol libraries '.lib' and '.dcm' (https://github.com/KiCad/kicad-symbols) are parsed to generate SVG files that are compatible with the mxgraph (javascript graph library). This is a one time process. These generated SVG files are read and rendered in the component list (left pane) using mxgraph. 
+The Kicad symbol libraries '.lib' and '.dcm' (https://github.com/KiCad/kicad-symbols) are parsed to generate SVG files that are compatible with the mxgraph (javascript graph library). These components are generated only once and are cached. These generated SVG files are read and rendered in the component list (left pane) using mxgraph. 
 
 
 Generating XML files
 ####################
-The components from the left pane are dropped onto the schematic grid. By default, the size of the grid is A4, which can be changed from A5 to A1. The components connected by wires are converted to XML format using mxgraph, whenever the circuit is saved by the user. This XML is used to save and re-open the saved circuits.
+The components from the left pane are dropped onto the schematic grid. By default, the size of the grid is A4, which can be changed from A5 to A1. The components connected by wires are converted to XML format using mxgraph, whenever the circuit is saved by the user. This XML is used to save and re-open the saved circuits. This XML is also used to auto annotate the circuit as well as inperforming ERC checks.
 
 
 Generating Netlist 
@@ -61,6 +61,35 @@ Using the mxgraph object, a netlist is generated (compatible with ngspice simula
         .end
 
 
-Scaling ngspice
-###############
-Using the distributed queueing mechanism of Celery, asynchronous requests (netlist files generated above) are handled which are passed onto ngspice for generating the simulation graph. The simulation graph is rendered using chartjs.
+Simulation
+##########
+
+* When the 'Simulate' button is clicked, the ERC checks are performed. If all goes well then the netlist is generated. If not, the error(s) are shown to the user. 
+* This netlist is sent to the backend services. Using the distributed queueing mechanism of Celery, asynchronous requests (netlist files) are kept in queue and passed onto Ngspice. 
+* Ngspice then outputs a text file with all the coordinates required to plot the graph.  
+* This textfile is then parsed using an inhouse parser to convert the data of the text file into an organised data structures (``JSON``). The simulation graph is then plotted and rendered based on the data returned by this ``JSON`` using ``chartjs``.
+
+
+JSON format returned by parser
+##############################
+
+As mentioned above, the output produced by ngspice is converted to ``JSON``. The format is given below:
+
+    .. code::
+
+        {
+            total_number_of_tables: <int>,
+            isGraph: <bool>,
+            data:[
+                {
+                    labels : [ ], x : [ ], y : [ [ ] , [ ] ] ,
+                } 
+            ]
+        }
+
+* total-number-of-tables: the number of tables present.
+* isGraph: ``True'' if the data is a graph, ``False`` if the data is just a table.
+* data: An array which contains one or more objects depending on the input provided to the parser.
+* labels: An array which contains all the labels that have to be present on the graph. Eg. ["time","vin","vout"].
+* x: An array containing all the ``x`` co-ordinates for a set of graph. Eg. Time on x-axis. This is a linear array as the ``x`` coordinates will be the same for different set of ``y`` coordinates.
+* y: A 2D array containing ``y`` co-ordinates for different graphs.
