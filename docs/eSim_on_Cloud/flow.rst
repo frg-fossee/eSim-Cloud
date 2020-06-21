@@ -14,7 +14,7 @@ The Kicad symbol libraries '.lib' and '.dcm' (https://github.com/KiCad/kicad-sym
 
 Generating XML files
 ####################
-The components from the left pane are dropped onto the schematic grid. By default, the size of the grid is A4, which can be changed from A5 to A1. The components connected by wires are converted to XML format using mxgraph, whenever the circuit is saved by the user. This XML is used to save and re-open the saved circuits. This XML is also used to auto annotate the circuit as well as inperforming ERC checks.
+The components from the left pane are dropped onto the schematic grid. By default, the size of the grid is A4, which can be changed from A5 to A1. The components connected by wires are converted to XML format using mxgraph, whenever the circuit is saved by the user. This XML is used to save and re-open the saved circuits. This XML is also used to auto annotate the circuit, and in performing ERC checks as well.
 
 
 Generating Netlist 
@@ -87,9 +87,9 @@ As mentioned above, the output produced by ngspice is converted to ``JSON``. The
             ]
         }
 
-* total-number-of-tables: the number of tables present.
-* isGraph: ``True'' if the data is a graph, ``False`` if the data is just a table.
+* total-number-of-tables: The number of tables present.
+* isGraph: ``True``, if the data is a graph, ``False`` if the data is just a table.
 * data: An array which contains one or more objects depending on the input provided to the parser.
-* labels: An array which contains all the labels that have to be present on the graph. Eg. ["time","vin","vout"].
-* x: An array containing all the ``x`` co-ordinates for a set of graph. Eg. Time on x-axis. This is a linear array as the ``x`` coordinates will be the same for different set of ``y`` coordinates.
+* labels: An array which contains all the labels that have to be present on the graph. Eg. ["time", "vin", "vout"].
+* x: An array containing all the ``x`` co-ordinates for a set of graph. E.g. Time on x-axis. This is a linear array as the ``x`` coordinates will be the same for different set of ``y`` coordinates.
 * y: A 2D array containing ``y`` co-ordinates for different graphs.
