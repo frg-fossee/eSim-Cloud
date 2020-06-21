@@ -11,13 +11,17 @@ import {
   FormControlLabel,
   TextField,
   Card,
-  Avatar
+  Avatar,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { Link as RouterLink } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { login } from '../redux/actions/index'
+import { useSelector, useDispatch } from 'react-redux'
+import { login, authDefault } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,8 +48,13 @@ var url = ''
 
 export default function SignIn (props) {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
+
+  const dispatch = useDispatch()
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
 
   useEffect(() => {
+    dispatch(authDefault())
     document.title = 'Login - eSim '
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
@@ -53,11 +62,13 @@ export default function SignIn (props) {
     } else {
       url = ''
     }
-  })
+  }, [dispatch, props.location.search])
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const dispatch = useDispatch()
+  const [showPassword, setShowPassword] = useState(false)
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
   const handleLogin = () => {
     dispatch(login(username, password, url))
@@ -72,6 +83,10 @@ export default function SignIn (props) {
 
         <Typography component="h1" variant="h5">
           Login | Sign IN
+        </Typography>
+
+        <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
+          {auth.errors}
         </Typography>
 
         <form className={classes.form} noValidate>
@@ -95,7 +110,21 @@ export default function SignIn (props) {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            type={showPassword ? 'text' : 'password'}
             id="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -129,8 +158,7 @@ export default function SignIn (props) {
         </form>
       </Card>
       <Button
-        component={RouterLink}
-        to="/"
+        onClick={() => { window.open(homeURL, '_self') }}
         fullWidth
         color="default"
         className={classes.submit}

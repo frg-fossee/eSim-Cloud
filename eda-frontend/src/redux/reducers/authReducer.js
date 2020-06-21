@@ -6,7 +6,8 @@ const initialState = {
   isRegistered: null,
   isLoading: false,
   user: null,
-  errors: {}
+  errors: '',
+  regErrors: ''
 }
 
 export default function (state = initialState, action) {
@@ -18,10 +19,26 @@ export default function (state = initialState, action) {
       }
     }
 
+    case actions.DEFAULT_STORE: {
+      return {
+        ...state,
+        errors: '',
+        regErrors: ''
+      }
+    }
+
     case actions.SIGNUP_SUCCESSFUL: {
       return {
         ...state,
-        isRegistered: true
+        isRegistered: true,
+        regErrors: ''
+      }
+    }
+
+    case actions.SIGNUP_FAILED: {
+      return {
+        ...state,
+        regErrors: action.payload.data
       }
     }
 
@@ -42,7 +59,7 @@ export default function (state = initialState, action) {
         // ...action.payload.data,
         // isAuthenticated: true,
         // isLoading: false,
-        errors: null
+        errors: ''
       }
     }
 
