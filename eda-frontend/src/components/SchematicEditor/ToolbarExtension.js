@@ -34,7 +34,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { loadGallery } from '../../redux/actions/index'
+import { fetchSchematics, fetchSchematic, loadGallery } from '../../redux/actions/index'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
 
@@ -377,6 +377,16 @@ export function OpenSchDialog (props) {
   const [isLocal, setisLocal] = React.useState(true)
   const [isGallery, setisGallery] = React.useState(false)
   const schSave = useSelector(state => state.saveSchematicReducer)
+  const auth = useSelector(state => state.authReducer)
+  const schematics = useSelector(state => state.dashboardReducer.schematics)
+
+  function getDate (jsonDate) {
+    var json = jsonDate
+    var date = new Date(json)
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
+    return `${day} ${month} ${hour}:${minute}:${second}`
+  }
 
   const dispatch = useDispatch()
 
@@ -402,7 +412,7 @@ export function OpenSchDialog (props) {
             : isGallery
               ? <Grid item xs={12} sm={12}>
                 {/* Listing Gallery Schematics */}
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
                   <Table stickyHeader size="small" aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -444,7 +454,59 @@ export function OpenSchDialog (props) {
                   </Table>
                 </TableContainer>
               </Grid>
-              : <></>
+              : <Grid item xs={12} sm={12}>
+                {/* Listing Saved Schematics */}
+                {schematics.length === 0
+                  ? <Typography variant="subtitle1" gutterBottom>
+                  Hey {auth.user.username} , You dont have any saved schematics...
+                  </Typography>
+                  : <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
+                    <Table stickyHeader size="small" aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="center">Name</TableCell>
+                          <TableCell align="center">Description</TableCell>
+                          <TableCell align="center">Created</TableCell>
+                          <TableCell align="center">Updated</TableCell>
+                          <TableCell align="center">Launch</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <>
+                          {schematics.map(
+                            (sch) => {
+                              return (
+                                <TableRow key={sch.save_id}>
+                                  <TableCell align="center">{sch.name}</TableCell>
+                                  <TableCell align="center">
+                                    <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
+                                      <span>
+                                        {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
+                                      </span>
+                                    </Tooltip>
+                                  </TableCell>
+                                  <TableCell align="center">{getDate(sch.create_time)}</TableCell>
+                                  <TableCell align="center">{getDate(sch.save_time)}</TableCell>
+                                  <TableCell align="center">
+                                    <Button
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => { dispatch(fetchSchematic(sch.save_id)) }}
+                                      variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
+                                    >
+                                    Launch
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            }
+                          )}
+                        </>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                }
+              </Grid>
           }
         </DialogContentText>
       </DialogContent>
@@ -455,6 +517,12 @@ export function OpenSchDialog (props) {
         <Button variant={isGallery ? 'outlined' : 'text' } onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
         </Button>
+        {auth.isAuthenticated !== true
+          ? <></>
+          : <Button variant={!isGallery & !isLocal ? 'outlined' : 'text' } onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false) }} color="secondary" >
+            on Cloud
+          </Button>
+        }
         <Button onClick={close} color="primary" autoFocus>
           Close
         </Button>
