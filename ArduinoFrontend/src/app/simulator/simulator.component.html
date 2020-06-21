@@ -45,10 +45,10 @@
 
     <div class="navbar-nav ml-auto" *ngIf="token">
       <div class="dropdown my-dropdown" *ngIf="token">
-        <div class="w3-dropdown-hover">
+        <div class="w3-dropdown-hover" style="z-index: 1001;">
           <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
             alt="Login Image">
-          <div class="dropdown-content" style="color: #000;z-index: 1001;">
+          <div class="dropdown-content" style="color: #000;">
             <div *ngIf="username">
               <i class="fas fa-user" style="margin-left: 5px;"></i> {{username}}
             </div>
