@@ -2,16 +2,6 @@
   background-color: #ddd;
 }
 
-#main {
-  width: 95%;
-  float: left;
-  position: relative;
-  height: auto;
-  margin-top: 20px;
-  margin-left: 20px;
-  margin-right: 0px;
-}
-
 .subbox {
   box-sizing: border-box;
   width: 95%;

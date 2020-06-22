@@ -1,28 +1,43 @@
 <app-header title="Dashboard"></app-header>
 
-<div id="main">
+<div id="main" style="margin: 1em;">
   <h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;">Arduino
     Circuits</h3>
-  <div class="d-flex" style="max-width: 100%;">
-    <div>
+  
+    <!--<div >
       <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
         Circuit</a>
     </div>
 
     <div class="ml-auto">
-      <form class="form-inline" (submit)="SearchCircuits(searchBox)" style="float: right;">
+      <form class="form-inline" (submit)="SearchCircuits(searchBox)">
         <div class="form-group mb-2" style="padding-right: 1px;">
           <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
         </div>
         <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i></button>
       </form>
+    </div>-->
+    <div class="row" >
+      <div class="col-md-9">
+        <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
+          Circuit</a>
+      </div>
+      <div class="col-md-3 ml-auto">
+        <form class="form-inline" (submit)="SearchCircuits(searchBox)">
+          <div class="form-group mb-2" style="padding-right: 1px;">
+            <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+    
     </div>
-  </div>
+  
 
   <mat-tab-group style="width: 100%;display: flex;">
     <mat-tab label="On Cloud">
       <div *ngIf="online && online.length === 0" [innerHtml]="onCloudMessage"></div>
-      <div class="row" style="margin-top: 10px;">
+      <div class="row" style="margin: 1em;">
         <div class="col-md-3" *ngFor="let item of online; let i = index">
           <div class="subbox" (click)="openProject(i)">
             <div>
@@ -42,7 +57,7 @@
     </mat-tab>
     <mat-tab label="Temporary Circuits">
       <div *ngIf="items.length == 0">No Offline Circuits Available &#9785;</div>
-      <div class="row" style="margin-top: 10px;">
+      <div class="row" style="margin: 1em;">
         <div class="col-md-3" *ngFor="let item of items; let i = index">
           <div class="subbox" (click)="openProject(i,true)">
             <div>
