@@ -8,6 +8,7 @@ import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { Login } from './Login';
+import { environment } from 'src/environments/environment';
 
 declare var window;
 declare var $; // For Jquery
@@ -173,11 +174,13 @@ export class Workspace {
       msg.appendChild(container);
     };
 
-    // Global function for displaying alert msg during closing and reloading page
-    // window.addEventListener('beforeunload', (event) => {
-    //   event.preventDefault();
-    //   event.returnValue = 'did you save the stuff?';
-    // });
+    if (environment.production) {
+      // Global function for displaying alert msg during closing and reloading page
+      window.addEventListener('beforeunload', (event) => {
+        event.preventDefault();
+        event.returnValue = 'did you save the stuff?';
+      });
+    }
   }
   /**
    * Event Listener for mousemove on html body
