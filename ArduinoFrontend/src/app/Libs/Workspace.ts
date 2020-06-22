@@ -7,7 +7,6 @@ import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
-import { Login } from './Login';
 import { environment } from 'src/environments/environment';
 
 declare var window;
@@ -505,6 +504,8 @@ export class Workspace {
    */
   static Load(data) {
     // TODO: Clear Project
+    this.ClearWorkspace();
+    window.showLoading();
     Workspace.translateX = data.canvas.x;
     Workspace.translateY = data.canvas.y;
     Workspace.scale = data.canvas.scale;
@@ -516,6 +517,9 @@ export class Workspace {
       translate(${Workspace.translateX},
       ${Workspace.translateY})`);
     for (const key in data) {
+      if (!(key in data)) {
+        continue;
+      }
       if (key !== 'id' && key !== 'canvas' && key !== 'project' && key !== 'wires') {
         window['scope'][key] = [];
         const components = data[key];
@@ -533,6 +537,7 @@ export class Workspace {
           }
         }
       }
+      window.hideLoading();
     }
     const interval = setInterval(() => {
       if (window.queue === 0) {
@@ -781,5 +786,24 @@ export class Workspace {
     }
     Workspace.simulating = false;
     callback();
+  }
+
+  static ClearWorkspace() {
+    window.showLoading();
+    for (const key in window.scope) {
+      if (key in window.scope && window.scope[key].length > 0) {
+        for (const item of window.scope[key]) {
+          // window.Selected = item;
+          // this.DeleteComponent();
+          item.remove();
+          Workspace.removeMeta(item);
+        }
+        window.scope[key] = [];
+      }
+    }
+    window.Selected = null;
+    window.isSelected = false;
+    Workspace.initalizeGlobalVariables(window['canvas']);
+    window.hideLoading();
   }
 }
