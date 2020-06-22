@@ -1,10 +1,6 @@
-# EDA
-EDA Tool and Arduino on Cloud
-
+# eSim Cloud and Arduino on Cloud
 [![CodeFactor](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud/badge)](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud)
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
-
-
 
 Development branch status
 
@@ -13,6 +9,17 @@ Development branch status
 ![React Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/React%20Build%20and%20Tests/badge.svg?branch=develop)
 ![Containers](https://github.com/frg-fossee/eSim-Cloud/workflows/Containers/badge.svg)
 ![ESLint eda-frontend](https://github.com/frg-fossee/eSim-Cloud/workflows/ESLint%20eda-frontend/badge.svg?branch=develop)
+
+### Demo
+
+![eSim Demo](demo/demo-esim.gif)
+eSim on Cloud Demonstration
+
+
+![Arduino Demo](demo/demo-arduino.gif)
+Arduino Demonstration
+
+
 ### Configuring Production Environment
 * Install Docker and docker-compose for server OS
 * ``` git clone git@github.com:frg-fossee/eSim-Cloud.git && cd eSim-Cloud```
