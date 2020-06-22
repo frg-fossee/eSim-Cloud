@@ -1066,60 +1066,62 @@ function XMLWireConnections () {
             var pin = component.children[child]
             if (pin.vertex === true) {
               // alert(pin.id)
-              if (pin.edges !== null || pin.edges.length !== 0) {
-                for (var wire in pin.edges) {
-                  if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                    if (pin.edges[wire].source.edge === true) {
+              try {
+                if (pin.edges !== null || pin.edges.length !== 0) {
+                  for (var wire in pin.edges) {
+                    if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
+                      if (pin.edges[wire].source.edge === true) {
                       /* console.log('wire')
                       console.log(pin.edges[wire].source)
                       console.log(pin.edges[wire].source.node)
                       pin.edges[wire].node = pin.edges[wire].source.node */
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                    } else if (pin.edges[wire].target.edge === true) {
+                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                      } else if (pin.edges[wire].target.edge === true) {
                       /* console.log('wire')
                       console.log(pin.edges[wire].target)
                       console.log(pin.edges[wire].target.node)
                       pin.edges[wire].node = pin.edges[wire].target.node */
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
-                      pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
-                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                        pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
+                        pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
+                      } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                       // console.log('Found ground')
                       // console.log('ground')
                       // pin.edges[wire].node = 0
                       // pin.edges[wire].node = '0'
                       // pin.edges[wire].value = 0
                       // k = k + ' ' + pin.edges[wire].node
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                    } else {
+                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                      } else {
                       // console.log(pin.edges[wire])
                       // if (pin.edges[wire].node === null) {
-                      pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      // console.log('comp')
-                      // ++n
-                      // }
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                        pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                        pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                        // console.log('comp')
+                        // ++n
+                        // }
+                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
 
-                      pin.edges[wire].value = pin.edges[wire].node
+                        pin.edges[wire].value = pin.edges[wire].node
                       // k = k + '  ' + pin.edges[wire].node
+                      }
+                      pin.edges[wire].value = pin.edges[wire].node
                     }
-                    pin.edges[wire].value = pin.edges[wire].node
+                    console.log('Check the wires here ')
+                    console.log(pin.edges[wire].sourceVertex)
+                    console.log(pin.edges[wire].targetVertex)
                   }
-                  console.log('Check the wires here ')
-                  console.log(pin.edges[wire].sourceVertex)
-                  console.log(pin.edges[wire].targetVertex)
-                }
-                // console.log()
-                // console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
-                // k = k + ' ' + pin.edges[0].node
+                  // console.log()
+                  // console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
+                  // k = k + ' ' + pin.edges[0].node
 
                 // console.log(k)
-              }
+                }
+              } catch (e) { console.log('error') }
             }
           }
           /* compobj.name = component.symbol
