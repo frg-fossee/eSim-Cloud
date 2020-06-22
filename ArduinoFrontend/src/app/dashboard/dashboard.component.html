@@ -31,7 +31,10 @@
               </div>
               <div style="box-sizing: border-box; padding: 15px;">
                 <h4>{{item.name}}</h4>
-                <p>{{item.description}}</p>
+                <p style="word-break: break-all;">
+                  {{ item.description | slice:0:57 }}
+                  {{ (item.description && item.description.length) > 60?'...':'' }}
+                </p>
                 {{ DateDiff(item,item.save_time) }}
                 <p>{{item.time}}</p>
               </div>
