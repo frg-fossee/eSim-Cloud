@@ -114,10 +114,12 @@
 
   <span class="pipe">|</span>
 
-  <button mat-icon-button matTooltip="New Project" [routerLink]="['/simulator']" target="_blank"
-    style="align-items: center;background: transparent;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
-  </button>
+  <a href="../#/simulator" target="_blank">
+    <button mat-icon-button matTooltip="New Project"
+      style="align-items: center;background: transparent;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
+    </button>
+  </a>
 
 
   <button mat-icon-button matTooltip="Clear Project" (click)="openProject()"
@@ -379,7 +381,7 @@
   </div>
 </div>
 <!--/console ui-->
-<div id="opendialog" style="display: none;">
+<div id="opendialog" style="display: none;z-index: 1000;">
   <div id="innerdialog">
     <div id="top" style="background-color: transparent; width: 100%; height: 120px;border-radius: 5px;">
       <p style="text-align: center;padding-top: 35px;">Are you sure you want to clear the project?</p>
