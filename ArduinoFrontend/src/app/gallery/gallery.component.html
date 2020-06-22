@@ -1,8 +1,8 @@
-<app-header title="Arduino on Cloud" color="cornflowerblue"></app-header>
+<app-header title="Gallery"></app-header>
 
 <!--close header-->
 <div id="main">
-  <h5 style="margin:1em;font-family: monospace;font-weight: 900;font-size: 30px">Gallery</h5>
+  <!-- <h5 style="margin:1em;font-family: monospace;font-weight: 900;font-size: 30px">Gallery</h5> -->
 
 
   <mat-tab-group style="width: 100%;display: flex;">
@@ -11,7 +11,7 @@
       <div class="row" style="margin: 1em;">
         <div class="col-md-3" *ngFor="let item of samples; let i = index">
           {{ DateTime(item) }}
-          <div class="subbox">
+          <div class="subbox" [routerLink]="['/simulator']" [queryParams]="{gallery:i}">
             <div>
               <div style="width: 100%;  background-color: #e8e8e8;">
                 <img class="item-img" style="border-radius: 5px;" src="./assets/samples/{{item.base64_image}}"
