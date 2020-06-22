@@ -34,6 +34,7 @@ export default function ToolbarTools (grid, unredo) {
 
 // SAVE
 export function Save () {
+  XMLWireConnections()
   var enc = new mxCodec(mxUtils.createXmlDocument())
   var node = enc.encode(graph.getModel())
   var value = mxUtils.getXml(node)
@@ -274,7 +275,7 @@ function ErcCheckNets () {
       }
     } */
   }
-  XMLWireConnections()
+  // XMLWireConnections()
   if (vertexCount === 0) {
     alert('No Component added')
     ++errorCount
