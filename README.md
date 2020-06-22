@@ -10,11 +10,11 @@ Development branch status
 ![Containers](https://github.com/frg-fossee/eSim-Cloud/workflows/Containers/badge.svg)
 ![ESLint eda-frontend](https://github.com/frg-fossee/eSim-Cloud/workflows/ESLint%20eda-frontend/badge.svg?branch=develop)
 
-### Demo
+### Demo (eSim on Cloud)
 
 ![eSim Demo](demo/demo-esim.gif)
-eSim on Cloud Demonstration
 
+### Demo (Arduino on Cloud)
 
 ![Arduino Demo](demo/demo-arduino.gif)
 Arduino Demonstration
