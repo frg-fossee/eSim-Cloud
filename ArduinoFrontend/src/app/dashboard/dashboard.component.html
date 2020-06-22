@@ -76,9 +76,9 @@
     </div>
     <hr>
     <div class="row">
-      <div class="col-md-7">
+      <div class="col-md-7" style="left: 30px;">
         <div style="display: flex;">
-          <img style="max-width: 100%;margin: auto auto;" src={{selected.base64_image}} alt="">
+          <img style="max-width: 100%;margin: auto auto; align-items: center;" src={{selected.base64_image}} alt="">
         </div>
       </div>
       <div class="col-md-5 data-body" style="padding-left: 30px;">
@@ -104,11 +104,11 @@
               style="color:white; font-size: medium;"></i>
           </button>
 
-          <button mat-mini-fab style="margin-top: 9px;margin-left: 15px;background-color: #0080FF; top: 4px;"
+          <button mat-mini-fab style="margin-left: 15px;background-color: #0080FF;"
             matTooltip="Share it on Linked In" (click)="ShareCircuit(selected,1)">
             <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
           </button>
-          <button mat-mini-fab style="margin-top: 9px;margin-left: 15px ;background-color: #ff4500;top: 4px;"
+          <button mat-mini-fab style="margin-left: 15px ;background-color: #ff4500;"
             matTooltip="Share it on Reddit" (click)="ShareCircuit(selected,2)">
             <i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i>
           </button>

@@ -45,7 +45,7 @@
 
     <div class="navbar-nav ml-auto" *ngIf="token">
       <div class="dropdown my-dropdown" *ngIf="token">
-        <div class="w3-dropdown-hover">
+        <div class="w3-dropdown-hover" style="z-index: 1001;">
           <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
             alt="Login Image">
           <div class="dropdown-content" style="color: #000;">
@@ -87,7 +87,7 @@
 
   <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" [disabled]="disabled"
     (click)="StartSimulation()" [style.background-color]="stoggle ? 'white' : 'lightgreen'">
-    <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
+    <i [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
     {{ stoggle ? 'Start Simulation' : 'Stop Simulation' }}
   </button>
 
@@ -97,14 +97,31 @@
     <img src="./assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
   </div>
   <!--/simulation loading svg-->
-
+  <button mat-icon-button  matTooltip="new Project" [routerLink]="['/simulator']" target="_blank" style="align-items: center;margin-left: 55px;background: transparent;" class="mt-1">
+    <i  style="font-size: 20px;color: black;"class='fas fa-folder-open'></i>
+  </button>
+  <button mat-icon-button  matTooltip="Clear Project" (click)="openProject()" style="align-items: center;background: transparent;" class="mt-1">
+    <i  style="font-size: 20px;color: black;"class="fa fa-times-circle"></i>
+  </button>
+  <button mat-icon-button  matTooltip="Save Project" (click)="SaveProject()" style="align-items: center;background: transparent;" class="mt-1">
+    <i  style="font-size: 20px;color: black;"class="fa fa-cloud"></i>
+  </button>
+  <button mat-icon-button  matTooltip="Save Project Temporary" (click)="SaveProjectOff()" style="align-items: center;background: transparent;" class="mt-1">
+    <i  style="font-size: 20px;color: black;"class="fa fa-save"></i>
+  </button>
+  <button mat-icon-button matTooltip="Export File" (click)="openDailog()" style="align-items: center;background: transparent;" class="mt-1">
+    <i  style="font-size: 20px;color: black;"class="fa fa-image"></i>
+  </button>
+  <button mat-icon-button matTooltip="View Component List" (click)="openview()" style="align-items: center;background: transparent;" class="mt-1">
+    <i  style="font-size: 20px;color: black;" class="fa fa-list-alt"></i>
+  </button>
   <span style="flex:1 1 auto;"></span>
 
-  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1" (click)="delete()"><i class="fa fa-trash"></i></button>
+  <button mat-icon-button  matTooltip="Delete" class="mt-1" style="align-items: center;background: transparent;" (click)="delete()"><i style="font-size: 20px;color: black;" class="fa fa-trash"></i></button>
 
-  <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
+  <button mat-icon-button  matTooltip="Zoom in" class="mt-1" style="align-items: center;background: transparent;" (click)="zoom(0)"><i style="font-size: 20px;color: black;" class="fa fa-search-plus"></i></button>
 
-  <button class="btn btn-light btn-sm mb-1 mt-1" style="margin-right: 30px;" (click)="zoom(1)"><i
+  <button mat-icon-button  matTooltip="Zoom out" class="mt-1" style="margin-right: 30px;align-items: center;background: transparent;" (click)="zoom(1)"><i style="font-size: 20px;color: black;"
       class="fa fa-search-minus"></i></button>
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
@@ -268,7 +285,7 @@
 <!-- /#page-content-wrapper -->
 
 
-<div id="propertybox" style="top: 110px;left: calc(100vw - 230px);" (mousedown)="propertyMouseDown($event)">
+<div id="propertybox" style="top: 110px;left: calc(100vw - 230px);z-index: 1000;" (mousedown)="propertyMouseDown($event)">
   <div style="display: flex;justify-content: space-between;">
     <h6 class="title">Project Info</h6>
     <span style="flex:1 1 auto;"></span>

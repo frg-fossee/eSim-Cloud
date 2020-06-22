@@ -4,6 +4,8 @@ import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material';
+import { ProjectComponent } from '../project/project.component';
 declare var moment;
 
 @Component({
@@ -36,9 +38,14 @@ export class DashboardComponent implements OnInit {
     // }
     const openProject = document.getElementById('openproject');
     openProject.style.display = 'block';
+    /** Function open Projecties Properties on selecting card on Dashboard */
+    /*const project =this.dialog.open(ProjectComponent,{
+      width: '70%',
+      minHeight: '800px'
+    });*/
   }
 
-  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title) {
+  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title, public dialog: MatDialog) {
     this.title.setTitle('Dashboard | Arduino On Cloud');
   }
   ngOnInit() {
