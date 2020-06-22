@@ -17,7 +17,6 @@ Development branch status
 ### Demo (Arduino on Cloud)
 
 ![Arduino Demo](demo/demo-arduino.gif)
-Arduino Demonstration
 
 
 ### Configuring Production Environment
