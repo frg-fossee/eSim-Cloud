@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit {
   onCloudMessage = 'No Online Circuits Available &#9785;';
 
   closeProject() {
+    document.documentElement.style.overflow = 'auto';
     const closeProject = document.getElementById('openproject');
     closeProject.style.display = 'none';
   }
@@ -36,6 +37,7 @@ export class DashboardComponent implements OnInit {
     //     break;
     //   }
     // }
+    document.documentElement.style.overflow = 'hidden';
     const openProject = document.getElementById('openproject');
     openProject.style.display = 'block';
     /** Function open Projecties Properties on selecting card on Dashboard */
