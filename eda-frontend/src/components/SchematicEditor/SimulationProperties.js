@@ -312,9 +312,9 @@ export default function SimulationProperties () {
     dispatch(setControlBlock(controlBlock))
     // setTimeout(function () { }, 2000)
 
-    var netlist = netfile.title + '\n' +
-      netfile.model + '\n' +
-      compNetlist + '\n' +
+    var netlist = netfile.title + '\n\n' +
+      compNetlist.models + '\n' +
+      compNetlist.main + '\n' +
       controlLine + '\n' +
       controlBlock + '\n'
 

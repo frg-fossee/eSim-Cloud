@@ -165,7 +165,6 @@ export function Header () {
           to="/login"
           color="primary"
           variant="outlined"
-          className={classes.button}
         >
           Login
         </Button>)
@@ -173,7 +172,6 @@ export function Header () {
 
             <IconButton
               edge="start"
-              className={classes.button}
               style={{ marginLeft: 'auto' }}
               color="primary"
               aria-controls="simple-menu"

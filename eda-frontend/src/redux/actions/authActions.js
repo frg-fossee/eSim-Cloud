@@ -75,27 +75,34 @@ export const login = (username, password, toUrl) => {
           } else {
             window.open(toUrl, '_self')
           }
-        } else if (res.status === 403 || res.status === 401) {
+        } else if (res.status === 400 || res.status === 403 || res.status === 401) {
           dispatch({
             type: actions.AUTHENTICATION_ERROR,
             payload: {
-              data: res.data
+              data: 'Incorrect Username or Password.'
             }
           })
         } else {
           dispatch({
             type: actions.LOGIN_FAILED,
             payload: {
-              data: res.data
+              data: 'Something went wrong! Login Failed'
             }
           })
         }
       })
-      .catch((err) => { console.error(err) })
+      .catch((err) => {
+        var res = err.response
+        if (res.status === 400 || res.status === 403 || res.status === 401) {
+          dispatch(loginError('Incorrect Username or Password.'))
+        } else {
+          dispatch(loginError('Something went wrong! Login Failed'))
+        }
+      })
   }
 }
 
-export const signUp = (email, username, password) => (dispatch) => {
+export const signUp = (email, username, password, history) => (dispatch) => {
   const body = {
     email: email,
     username: username,
@@ -111,10 +118,19 @@ export const signUp = (email, username, password) => (dispatch) => {
 
   api.post('auth/users/', body, config)
     .then((res) => {
-      // console.log(res)
-      dispatch({ type: actions.SIGNUP_SUCCESSFUL })
+      if (res.status === 200 || res.status === 201) {
+        dispatch({ type: actions.SIGNUP_SUCCESSFUL })
+        history.push('/login')
+      }
     })
-    .catch((err) => { console.error(err) })
+    .catch((err) => {
+      var res = err.response
+      if (res.status === 400 || res.status === 403 || res.status === 401) {
+        dispatch(signUpError('Enter Valid Credentials.'))
+      } else {
+        dispatch(signUpError('Something went wrong! Registeration Failed'))
+      }
+    })
 }
 
 export const logout = () => (dispatch, getState) => {
@@ -146,4 +162,26 @@ export const logout = () => (dispatch, getState) => {
       }
     )
     .catch((err) => { console.error(err) })
+}
+
+export const authDefault = () => (dispatch) => {
+  dispatch({ type: actions.DEFAULT_STORE })
+}
+
+const loginError = (message) => (dispatch) => {
+  dispatch({
+    type: actions.AUTHENTICATION_ERROR,
+    payload: {
+      data: message
+    }
+  })
+}
+
+const signUpError = (message) => (dispatch) => {
+  dispatch({
+    type: actions.SIGNUP_FAILED,
+    payload: {
+      data: message
+    }
+  })
 }
