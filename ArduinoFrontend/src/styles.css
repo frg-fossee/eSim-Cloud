@@ -42,7 +42,7 @@ button:hover {
   position: relative;
   display: inline-block;
   flex-basis: 100px;
-  line-height: 60px;
+  /* line-height: 60px; */
   z-index: 1000;
 }
 
