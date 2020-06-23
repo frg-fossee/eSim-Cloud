@@ -966,6 +966,26 @@ function parseXmlToGraph (xmlDoc, graph) {
           graph.getModel().getCell(source),
           graph.getModel().getCell(target)
         )
+        e.geometry.points = []
+        for (var a in cells[i].children[1].children) {
+          try {
+            console.log(plist[a].attributes.x.value)
+            console.log(plist[a].attributes.y.value)
+            e.geometry.points.push(new mxPoint(Number(plist[a].attributes.x.value), Number(plist[a].attributes.y.value)))
+            console.log(e.geometry.points)
+          } catch (e) { console.log('error') }
+          graph.getModel().beginUpdate()
+          try {
+            graph.view.refresh()
+          } finally {
+            // Arguments are number of steps, ease and delay
+            var morph = new mxMorphing(graph, 20, 1.2, 20)
+            morph.addListener(mxEvent.DONE, function () {
+              graph.getModel().endUpdate()
+            })
+            morph.startAnimation()
+          }
+        }
         if (graph.getModel().getCell(target).edge === true) {
           e.geometry.setTerminalPoint(new mxPoint(Number(cellAttrs.tarx.value), Number(cellAttrs.tary.value)), false)
           graph.getModel().beginUpdate()
@@ -1077,6 +1097,7 @@ function XMLWireConnections () {
                       pin.edges[wire].node = pin.edges[wire].source.node */
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
                       } else if (pin.edges[wire].target.edge === true) {
                       /* console.log('wire')
                       console.log(pin.edges[wire].target)
@@ -1086,6 +1107,7 @@ function XMLWireConnections () {
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
                         pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
                         pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
+                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
                       } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                       // console.log('Found ground')
                       // console.log('ground')
@@ -1095,6 +1117,7 @@ function XMLWireConnections () {
                       // k = k + ' ' + pin.edges[wire].node
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
                       } else {
                       // console.log(pin.edges[wire])
                       // if (pin.edges[wire].node === null) {
@@ -1105,11 +1128,11 @@ function XMLWireConnections () {
                         // }
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
-
-                        pin.edges[wire].value = pin.edges[wire].node
+                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
+                        // pin.edges[wire].value = pin.edges[wire].node
                       // k = k + '  ' + pin.edges[wire].node
                       }
-                      pin.edges[wire].value = pin.edges[wire].node
+                      // pin.edges[wire].value = pin.edges[wire].node
                     }
                     console.log('Check the wires here ')
                     console.log(pin.edges[wire].sourceVertex)
