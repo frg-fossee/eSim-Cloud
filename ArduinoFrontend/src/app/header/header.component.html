@@ -1,6 +1,7 @@
 <!-- As a heading -->
 <div style="background:whitesmoke;display: flex; height: 60px">
-  <div class="head-title">
+  <div class="head-title" style="display: flex;">
+    <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-md-block" alt="AOC">
     <a [routerLink]="['/']" [style.color]="color" style="text-decoration: none;">
       {{title}}
     </a>
@@ -44,8 +45,8 @@
         <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
           class="d-inline-block align-center" alt="Login Image">
-        <div class="dropdown-menu dropdown-menu-right"
-          style="background-color: whitesmoke;  color: black !important;" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;  color: black !important;"
+          aria-labelledby="dropdownMenuLink">
           <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>

@@ -1,10 +1,13 @@
 <!-- As a heading -->
-<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #999;height: 50px;">
-  <!-- <img src="./assets/icon.png" style="max-height: 100%;"> -->
-  <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span>
-  <form class="form-inline my-2 my-lg-0">
-    <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
-      id="project-title" (focusout)="onFocusOut($event)">
+<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: whitesmoke;height: 50px;">
+  <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-md-block" alt="AOC">
+  <!-- <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span> -->
+  <form style="min-width: 300px;">
+    <mat-form-field style="width: 100%;">
+      <input matInput [value]="projectTitle"  (focusout)="onFocusOut($event)" class="text-dark">
+    </mat-form-field>
+    <!-- <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
+      id="project-title" > -->
   </form>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
@@ -84,7 +87,7 @@
           <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i>  Dashboard</a>
           <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i>  Gallery</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i>  Logout</a> 
+          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i>  Logout</a>
         </div>
       </div>
     </div>
