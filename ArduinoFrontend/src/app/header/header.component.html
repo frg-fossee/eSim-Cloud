@@ -13,6 +13,8 @@
   </div>
   <div class="dropdown my-dropdown" *ngIf="username">
     <div class="w3-dropdown-hover float-right" style="padding-bottom:10px;margin-right: 1em;">
+  <!--<div class="dropdown my-dropdown" *ngIf="token">
+    <div class="w3-dropdown-hover float-right p-2" style="padding-bottom:10px;">
       <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="Login Image">
       <div class="dropdown-content">
         <div>
@@ -37,5 +39,19 @@
         </div>
       </div>
     </div>
+  </div>-->
+  <div class="dropdown show mr-2" *ngIf="token" style="margin-top: 10px;">
+          <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
+            alt="Login Image">
+        <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;" aria-labelledby="dropdownMenuLink">
+          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i>  Home</a>
+          <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i>  New</a>
+          <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i>  Dashboard</a>
+          <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i>  Gallery</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i>  Logout</a>
+        </div>
   </div>
 </div>
