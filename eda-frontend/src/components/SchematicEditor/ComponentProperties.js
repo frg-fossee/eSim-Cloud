@@ -1,7 +1,7 @@
 /* eslint-disable brace-style */
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setCompProperties, setModel } from '../../redux/actions/index'
+import { setCompProperties } from '../../redux/actions/index'
 import { ListItem, ListItemText, Button, TextField, TextareaAutosize } from '@material-ui/core'
 
 export default function ComponentProperties () {
@@ -26,7 +26,7 @@ export default function ComponentProperties () {
 
   const setProps = () => {
     dispatch(setCompProperties(id, val))
-    dispatch(setModel(val.MODEL))
+    // dispatch(setModel(val.MODEL))
     // setVal({})
   }
 

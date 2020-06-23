@@ -306,6 +306,7 @@ export function GenerateNetList () {
   var c = 1
   // var list = graph.getModel().cells
   var n = 1
+  var spiceModels = ''
   var netlist = {
     componentlist: [],
     nodelist: []
@@ -461,6 +462,9 @@ export function GenerateNetList () {
         if (component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
+        if (component.properties.MODEL.length > 0) {
+          spiceModels += component.properties.MODEL + '\n'
+        }
 
         // k = k + ' 10'
         k = k + ' \n'
@@ -472,7 +476,12 @@ export function GenerateNetList () {
   // k = k + '.end \n'
 
   // console.log(netlist)
-
+  store.dispatch({
+    type: actions.SET_MODEL,
+    payload: {
+      model: spiceModels
+    }
+  })
   store.dispatch({
     type: actions.SET_NETLIST,
     payload: {
@@ -499,7 +508,11 @@ export function GenerateNetList () {
   var a = new Set(netlist.nodelist)
   console.log(netlist.nodelist)
   console.log(a)
-  return k
+  var netobj = {
+    models: spiceModels,
+    main: k
+  }
+  return netobj
 }
 function annotate (graph) {
   /* var enc = new mxCodec(mxUtils.createXmlDocument())
