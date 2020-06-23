@@ -89,10 +89,10 @@
     <div class="p-2" style="display: flex; line-height: 20px;max-width: 100%;">
       <h2 style="margin-left: 1%">{{selected.name}}</h2>
       <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
-        (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;<i class="fa fa-close"></i></button>
+        (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;&#10006;</button>
 
-      <button class="ml-auto" style="position: relative; padding-top: 10px;background-color: transparent; border: none;"
-        (click)="closeProject()"><i class="fa fa-close"></i></button>
+      <button class="ml-auto" style="position: relative; padding-top: 10px;background-color: transparent; border: none;font-size: 2.2em;font-weight: 400;"
+        (click)="closeProject()">	&#10006;</button>
     </div>
     <hr>
     <div class="row">
