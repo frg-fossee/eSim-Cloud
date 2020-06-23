@@ -961,6 +961,7 @@ function parseXmlToGraph (xmlDoc, graph) {
       const edgeId = Number(cellAttrs.id.value)
       const source = Number(cellAttrs.sourceVertex.value)
       const target = Number(cellAttrs.targetVertex.value)
+      var plist = cells[i].children[1].children
       try {
         var e = graph.insertEdge(parent, edgeId, null,
           graph.getModel().getCell(source),
@@ -999,7 +1000,7 @@ function parseXmlToGraph (xmlDoc, graph) {
             graph.view.refresh()
           } finally {
             // Arguments are number of steps, ease and delay
-            var morph = new mxMorphing(graph, 20, 1.2, 20)
+            morph = new mxMorphing(graph, 20, 1.2, 20)
             morph.addListener(mxEvent.DONE, function () {
               graph.getModel().endUpdate()
             })
