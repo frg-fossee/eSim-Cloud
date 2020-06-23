@@ -7,15 +7,15 @@
   </div>
   <!--<div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
   </div>-->
-  <div style="display: flex; padding: 10px;" *ngIf="!token">
+  <div style="display: flex; padding: 10px;" *ngIf="!username">
     <a mat-stroked-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
     <a mat-stroked-button (click)="Login()">Login</a>
   </div>
-  <div class="dropdown my-dropdown" *ngIf="token">
-    <div class="w3-dropdown-hover float-right p-2" style="padding-bottom:10px;">
+  <div class="dropdown my-dropdown" *ngIf="username">
+    <div class="w3-dropdown-hover float-right" style="padding-bottom:10px;margin-right: 1em;">
       <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="Login Image">
       <div class="dropdown-content">
-        <div *ngIf="username">
+        <div>
           <i class="fas fa-user" style="margin-left: 5px;"></i> {{username}}
         </div>
         <hr style="margin-top: 5px;margin-bottom: 0;">
