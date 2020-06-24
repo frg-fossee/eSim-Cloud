@@ -65,35 +65,24 @@ export class Point {
     // Create a rectangle of 4x4 and set default color and stroke
     this.body = this.canvas.rect(x, y, 2 * this.half, 2 * this.half);
 
-    this.body.attr(Point.defaultAttr);
-    // this.body.node.setAttribute('class', 'mynode');
+    // this.body.attr(Point.defaultAttr);
+    this.body.node.setAttribute('class', 'mynode');
 
     // Set Hover callback
-    this.body.hover(() => {
-      this.show();
+    this.body.hover((evt: MouseEvent) => {
       // Check if callback is present if it is then call it
       if (this.hoverCallback) {
         this.hoverCallback(this.x, this.y);
       }
+      window.showBubble(this.label, evt.clientX, evt.clientY);
     }, () => {
-      this.hide();
       // Check if close callback is present if present call it
       if (this.hoverCloseCallback) {
         this.hoverCloseCallback(this.x, this.y);
       }
-    });
-
-    // Set Mouse over event
-    this.body.mouseover((evt: MouseEvent) => {
-      this.show();
-      window.showBubble(this.label, evt.clientX, evt.clientY);
-    });
-
-    // // Set mouse out popup
-    this.body.mouseout(() => {
       window.hideBubble();
-      this.hide();
     });
+
     // TODO: Remove The following code After Development
     // this.body.drag((dx, dy) => {
     //   this.body.attr({
@@ -124,6 +113,11 @@ export class Point {
         this.connectedTo = window.Selected;
         window['Selected'].connect(this, true);
         window.Selected.deselect();
+        if (window['Selected'].start && window['Selected'].end) {
+          window['scope']['wires'].push(window['Selected']);
+        } else {
+          window['showToast']('Wire was not connected properly !');
+        }
         window['isSelected'] = false; // deselect object
         window['Selected'] = null;
       } else {
@@ -133,7 +127,6 @@ export class Point {
         this.connectedTo = tmp;
         // select the wire and insert into the scope of circuit
         window.Selected = tmp;
-        window['scope']['wires'].push(tmp);
       }
       if (this.connectCallback) {
         this.connectCallback(this);
@@ -178,7 +171,6 @@ export class Point {
    * Hide Node
    */
   hide() {
-    window.hideBubble();
     this.body.attr(Point.defaultAttr);
   }
 

@@ -251,7 +251,7 @@ export class Workspace {
     event.preventDefault();
     // if wire is selected then draw temporary lines
     if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
-      const pt = Workspace.svgPoint(event.clientX, event.clientY);
+      const pt = Workspace.svgPoint(event.clientX - 2, event.clientY - 2);
       window.Selected.draw(pt.x, pt.y);
     } else {
       // deselect item

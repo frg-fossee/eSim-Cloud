@@ -204,7 +204,9 @@ export class Wire {
         );
 
       });
+      return true;
     }
+    return false;
   }
   /**
    * Callback called after the wire is deselect
