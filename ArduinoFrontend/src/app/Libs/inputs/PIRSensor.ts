@@ -43,7 +43,7 @@ export class PIRSensor extends CircuitElement {
    * @param title Component title
    */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
-    const body = document.createElement('body');
+    const body = document.createElement('div');
     return {
       keyName: this.keyName,
       body,
