@@ -65,7 +65,7 @@ export class Point {
     // Create a rectangle of 4x4 and set default color and stroke
     this.body = this.canvas.rect(x, y, 2 * this.half, 2 * this.half);
 
-    // this.body.attr(Point.defaultAttr);
+    this.body.attr(Point.defaultAttr);
     this.body.node.setAttribute('class', 'mynode');
 
     // Set Hover callback
