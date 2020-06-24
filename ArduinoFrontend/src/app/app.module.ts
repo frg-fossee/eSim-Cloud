@@ -33,6 +33,7 @@ import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { HeaderComponent } from './header/header.component';
 import { ViewProjectComponent } from './view-project/view-project.component';
+import { ProjectComponent } from './project/project.component';
 
 export function onMonacoLoad() { }
 
@@ -57,6 +58,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     GalleryComponent,
     ViewProjectComponent,
     HeaderComponent,
+    ProjectComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,7 +81,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent],
+  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, ProjectComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

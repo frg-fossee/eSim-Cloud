@@ -10,6 +10,7 @@ declare var monaco;
   styleUrls: ['./code-editor.component.css']
 })
 export class CodeEditorComponent implements OnInit {
+  private init = false;
   // TODO: Seperate Data
   editorOptions = {
     theme: 'vs',
@@ -64,6 +65,7 @@ export class CodeEditorComponent implements OnInit {
 
   @Input('reinit')
   set reinit(value: boolean) {
+    window['isCodeEditorOpened'] = value;
     if (value) {
       this.names = [];
       this.arduinos = [];
@@ -78,6 +80,9 @@ export class CodeEditorComponent implements OnInit {
       }
       if (this.arduinos.length > 0) {
         this.code = this.arduinos[this.selectedIndex].code;
+      }
+      if (this.names.length !== 0 && !this.init) {
+        window['showLoading']();
       }
     }
   }
@@ -98,6 +103,8 @@ export class CodeEditorComponent implements OnInit {
     this.openFolder();
   }
   onInit(editor) {
+    this.init = true;
+    window['hideLoading']();
     this.editor = editor;
     monaco.languages.registerCompletionItemProvider('c', {
       provideCompletionItems: () => {

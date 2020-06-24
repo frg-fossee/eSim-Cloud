@@ -14,6 +14,7 @@ export class GalleryComponent implements OnInit {
 
 
   ngOnInit() {
+    document.title = 'Gallery | Arduino On Cloud';
     window['showLoading']();
     this.api.fetchSamples().subscribe(samples => {
       this.samples = samples;
