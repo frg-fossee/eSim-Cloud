@@ -223,33 +223,25 @@ export class SimulatorComponent implements OnInit {
       close.style.height = '30px';
       msg.style.height = '0px';
       ft.style.display = 'none';
-
-    } else if (!this.atoggle || !this.toggle1) {
-      close.style.bottom = '40px';
-      close.style.height = '620px';
-      msg.style.height = '565px';
-      ft.style.display = 'block';
     } else {
-      msg.style.height = '150px';
-      close.style.height = '230px';
+      msg.style.height = '190px';
+      close.style.height = '30.5%';
       ft.style.display = 'block';
 
     }
   }
   /** function called to open Virtual Console */
-  expandConsole() {
+    expandConsole() {
     const msg = document.getElementById('msg');
     const console = document.getElementById('console');
     this.toggle1 = !this.toggle1;
-
     if (this.toggle1 || console.style.top === '495px') {
-      console.style.bottom = '40px';
       console.style.height = '620px';
-      msg.style.height = '565px';
+      msg.style.height = '552px';
     } else {
-      console.style.bottom = '0px';
-      console.style.height = '230px';
-      msg.style.height = '150px';
+      console.style.bottom = '23px';
+      console.style.height = '30.5%';
+      msg.style.height = '190px';
     }
   }
 
