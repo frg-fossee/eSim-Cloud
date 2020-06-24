@@ -891,6 +891,7 @@ export function renderXML () {
   // changes.push(change)
 }
 function parseXmlToGraph (xmlDoc, graph) {
+  console.log(xmlDoc)
   const cells = xmlDoc.documentElement.children[0].children
   const parent = graph.getDefaultParent()
   var v1
@@ -917,7 +918,7 @@ function parseXmlToGraph (xmlDoc, graph) {
       v1 = graph.insertVertex(parent, vertexId, vertexName, xPos, yPos, width, height, style)
       v1.symbol = cellAttrs.symbol.value
       if (v1.symbol === 'V') {
-        props = Object.assign({}, ComponentParameters[v1.symbol][cells[i].children[2].attributes.NAME.value])
+        try {props = Object.assign({}, ComponentParameters[v1.symbol][cells[i].children[2].attributes.NAME.value]) } catch (e) { props = Object.assign({}, ComponentParameters[v1.symbol][cells[i].children[1].attributes.NAME.value]) }
       } else {
         props = Object.assign({}, ComponentParameters[v1.symbol])
       }
@@ -926,7 +927,7 @@ function parseXmlToGraph (xmlDoc, graph) {
         console.log('find name here')
         console.log(cells[i].children[2].attributes.NAME.value)
       } */
-      try { props.NAME = cells[i].children[2].attributes.NAME.value } catch (e) { console.log('error') }
+      try { props.NAME = cells[i].children[2].attributes.NAME.value } catch (e) { props.NAME = cells[i].children[1].attributes.NAME.value }
       v1.properties = props
       v1.Component = true
       v1.CellType = 'Component'
@@ -937,11 +938,14 @@ function parseXmlToGraph (xmlDoc, graph) {
         console.log(v1.properties)
       }
       for (var check in props) {
-        try { v1.properties[check] = cells[i].children[2].attributes[check].value } catch (e) { }
+        try { v1.properties[check] = cells[i].children[2].attributes[check].value } catch (e) { v1.properties[check] = cells[i].children[1].attributes[check].value }
       }
+      console.log('component added')
     } else if (cellAttrs.Pin.value === '1') {
       const vertexName = cellAttrs.value.value
       const style = cellAttrs.style.value
+      console.log('Pin name')
+      console.log(vertexName)
       // console.log(cellAttrs.Component.value)
       const vertexId = Number(cellAttrs.id.value)
       const geom = cells[i].children[0].attributes
@@ -956,11 +960,13 @@ function parseXmlToGraph (xmlDoc, graph) {
       const width = Number(geom.width.value)
       var vp = graph.insertVertex(v1, vertexId, vertexName, xPos, yPos, 0.5, 0.5, style)
       vp.ParentComponent = v1
+      vp.Pin = 1
     } else if (cellAttrs.edge) { // is edge
       // const edgeName = cellAttrs.value.value
       const edgeId = Number(cellAttrs.id.value)
       const source = Number(cellAttrs.sourceVertex.value)
       const target = Number(cellAttrs.targetVertex.value)
+      console.log(edgeId)
       var plist = cells[i].children[1].children
       try {
         var e = graph.insertEdge(parent, edgeId, null,
