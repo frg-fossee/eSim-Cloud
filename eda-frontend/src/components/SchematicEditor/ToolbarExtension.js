@@ -22,12 +22,22 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  List,
+  ListItem,
+  ListItemText,
+  Avatar,
+  ListItemAvatar,
+  Tooltip
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { fetchSchematics, fetchSchematic, loadGallery } from '../../redux/actions/index'
+import GallerySchSample from '../../utils/GallerySchSample'
+import { blue } from '@material-ui/core/colors'
+
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
@@ -39,7 +49,7 @@ export function NetlistModal ({ open, close, netlist }) {
   const createNetlistFile = () => {
     var titleA = netfile.title.split(' ')[1]
     var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
-    FileSaver.saveAs(blob, `${titleA}.cir`)
+    FileSaver.saveAs(blob, `${titleA}_eSim_on_cloud.cir`)
   }
   return (
     <Dialog
@@ -92,6 +102,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     backgroundColor: '#404040',
     color: '#fff'
+  },
+  avatar: {
+    width: theme.spacing(4),
+    height: theme.spacing(4),
+    backgroundColor: blue[100],
+    color: blue[600]
   }
 }))
 
@@ -185,6 +201,7 @@ export function HelpScreen ({ open, close }) {
 
                     <TableContainer component={Paper}>
                       <Table className={classes.table} aria-label="simple table">
+                        <caption>Ngspice scale factors naming conventions</caption>
                         <TableHead>
                           <TableRow>
                             <TableCell align="center">SUFFIX</TableCell>
@@ -309,4 +326,213 @@ export function HelpScreen ({ open, close }) {
 HelpScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func
+}
+
+// Image Export Dialog
+const ImgTypes = ['PNG', 'JPG', 'SVG']
+export function ImageExportDialog (props) {
+  const classes = useStyles()
+  const { onClose, open } = props
+
+  const handleClose = () => {
+    onClose('')
+  }
+
+  const handleListItemClick = (value) => {
+    onClose(value)
+  }
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="image-export-dialog-title" open={open}>
+      <DialogTitle id="image-export-dialog-title">Select Image type</DialogTitle>
+      <List>
+        {ImgTypes.map((img) => (
+          <ListItem button onClick={() => handleListItemClick(img)} key={img}>
+            <ListItemAvatar>
+              <Avatar className={classes.avatar}>
+                {img.charAt(0).toUpperCase()}
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={img} />
+          </ListItem>
+        ))}
+      </List>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary" autoFocus>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+ImageExportDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired
+}
+
+// Open Schematics Dialog
+export function OpenSchDialog (props) {
+  const { open, close, openLocal } = props
+  const [isLocal, setisLocal] = React.useState(true)
+  const [isGallery, setisGallery] = React.useState(false)
+  const schSave = useSelector(state => state.saveSchematicReducer)
+  const auth = useSelector(state => state.authReducer)
+  const schematics = useSelector(state => state.dashboardReducer.schematics)
+
+  function getDate (jsonDate) {
+    var json = jsonDate
+    var date = new Date(json)
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
+    return `${day} ${month} ${hour}:${minute}:${second}`
+  }
+
+  const dispatch = useDispatch()
+
+  return (
+    <Dialog
+      open={open}
+      onClose={close}
+      maxWidth='md'
+      TransitionComponent={Transition}
+      keepMounted
+      aria-labelledby="open-dialog-title"
+      aria-describedby="open-dialog-description"
+    >
+      <DialogTitle id="open-dialog-title" onClose={close}>
+        <Typography variant="h6">{'Open Schematic'}</Typography>
+      </DialogTitle>
+      <DialogContent dividers>
+        <DialogContentText id="open-dialog-description" >
+          {isLocal
+            ? <center> <Button variant="outlined" fullWidth={true} size="large" onClick={() => { openLocal(); close() }} color="primary">
+              Upload File
+            </Button></center>
+            : isGallery
+              ? <Grid item xs={12} sm={12}>
+                {/* Listing Gallery Schematics */}
+                <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
+                  <Table stickyHeader size="small" aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell align="center">Name</TableCell>
+                        <TableCell align="center">Description</TableCell>
+                        <TableCell align="center">Launch</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <>
+                        {GallerySchSample.map(
+                          (sch) => {
+                            return (
+                              <TableRow key={sch.save_id}>
+                                <TableCell align="center">{sch.name}</TableCell>
+                                <TableCell align="center">
+                                  <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
+                                    <span>
+                                      {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
+                                    </span>
+                                  </Tooltip>
+                                </TableCell>
+                                <TableCell align="center">
+                                  <Button
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => { dispatch(loadGallery(sch.save_id.substr(7, sch.save_id.length))) }}
+                                    variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
+                                  >
+                                    Launch
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            )
+                          }
+                        )}
+                      </>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </Grid>
+              : <Grid item xs={12} sm={12}>
+                {/* Listing Saved Schematics */}
+                {schematics.length === 0
+                  ? <Typography variant="subtitle1" gutterBottom>
+                  Hey {auth.user.username} , You dont have any saved schematics...
+                  </Typography>
+                  : <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
+                    <Table stickyHeader size="small" aria-label="simple table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell align="center">Name</TableCell>
+                          <TableCell align="center">Description</TableCell>
+                          <TableCell align="center">Created</TableCell>
+                          <TableCell align="center">Updated</TableCell>
+                          <TableCell align="center">Launch</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        <>
+                          {schematics.map(
+                            (sch) => {
+                              return (
+                                <TableRow key={sch.save_id}>
+                                  <TableCell align="center">{sch.name}</TableCell>
+                                  <TableCell align="center">
+                                    <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
+                                      <span>
+                                        {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
+                                      </span>
+                                    </Tooltip>
+                                  </TableCell>
+                                  <TableCell align="center">{getDate(sch.create_time)}</TableCell>
+                                  <TableCell align="center">{getDate(sch.save_time)}</TableCell>
+                                  <TableCell align="center">
+                                    <Button
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => { dispatch(fetchSchematic(sch.save_id)) }}
+                                      variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
+                                    >
+                                    Launch
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            }
+                          )}
+                        </>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                }
+              </Grid>
+          }
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button variant={isLocal ? 'outlined' : 'text' } onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
+          Local
+        </Button>
+        <Button variant={isGallery ? 'outlined' : 'text' } onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
+          Gallery
+        </Button>
+        {auth.isAuthenticated !== true
+          ? <></>
+          : <Button variant={!isGallery & !isLocal ? 'outlined' : 'text' } onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false) }} color="secondary" >
+            on Cloud
+          </Button>
+        }
+        <Button onClick={close} color="primary" autoFocus>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+OpenSchDialog.propTypes = {
+  close: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  openLocal: PropTypes.func.isRequired
 }

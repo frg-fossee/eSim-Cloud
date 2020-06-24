@@ -9,13 +9,17 @@ import {
   FormControlLabel,
   TextField,
   Card,
-  Avatar
+  Avatar,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import { Link as RouterLink, Redirect } from 'react-router-dom'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { signUp } from '../redux/actions/index'
+import { signUp, authDefault } from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,18 +47,24 @@ export default function SignUp () {
 
   const auth = useSelector(state => state.authReducer)
 
+  const dispatch = useDispatch()
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
+
   useEffect(() => {
+    dispatch(authDefault())
     document.title = 'Sign Up - eSim '
-  })
+  }, [dispatch])
+
+  const history = useHistory()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
-  const dispatch = useDispatch()
+  const [accept, setAccept] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
-  if (auth.isRegistered) {
-    return <Redirect to="/login" />
-  }
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>
@@ -64,6 +74,10 @@ export default function SignUp () {
 
         <Typography component="h1" variant="h5">
           Register | Sign Up
+        </Typography>
+
+        <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
+          {auth.regErrors}
         </Typography>
 
         <form className={classes.form} noValidate>
@@ -101,22 +115,37 @@ export default function SignUp () {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            type={showPassword ? 'text' : 'password'}
             id="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox checked={accept} onChange={e => setAccept(e.target.checked)} color="primary" />}
             label="I accept the Terms of Use & Privacy Policy"
           />
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(signUp(email, username, password))}
+            onClick={() => dispatch(signUp(email, username, password, history))}
             className={classes.submit}
+            disabled={!accept}
           >
             Sign Up
           </Button>
@@ -130,9 +159,8 @@ export default function SignUp () {
         </form>
       </Card>
       <Button
-        component={RouterLink}
-        to="/"
         fullWidth
+        onClick={() => { window.open(homeURL, '_self') }}
         color="default"
         className={classes.submit}
       >
