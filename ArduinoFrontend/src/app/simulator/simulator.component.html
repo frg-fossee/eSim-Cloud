@@ -1,33 +1,37 @@
 <!-- As a heading -->
-<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: #999;height: 50px;">
-  <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span>
-  <form class="form-inline my-2 my-lg-0">
-    <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
-      id="project-title" (focusout)="onFocusOut($event)">
+<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: whitesmoke;height: 50px;">
+  <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-md-block" alt="AOC">
+  <!-- <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span> -->
+  <form style="min-width: 300px;">
+    <mat-form-field style="width: 100%;">
+      <input matInput [value]="projectTitle"  (focusout)="onFocusOut($event)" class="text-dark">
+    </mat-form-field>
+    <!-- <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
+      id="project-title" > -->
   </form>
   <div class="collapse navbar-collapse">
     <ul class="navbar-nav mr-auto">
-      <li id="projectid" class="nav-item dropdown text-white">
-        <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          Project
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="z-index: 1001;background-color: #b8b8b8;">
-          <a class="dropdown-item text-dark" [routerLink]="['/simulator']" target="_blank">New Project</a>
-          <a class="dropdown-item text-dark" (click)="openProject()">Clear Project</a>
-          <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a>
-          <a class="dropdown-item text-dark" (click)="SaveProjectOff()">Save Temporary</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-dark" id="navbarDropdown" role="button" (click)="openDailog()">
-          Export
-        </a>
-        <!-- <button mat-button class="text-dark m-auto" >
+      <!-- <li id="projectid" class="nav-item dropdown text-white"> -->
+      <!-- <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" -->
+      <!-- aria-haspopup="true" aria-expanded="false"> -->
+      <!-- Project -->
+      <!-- </a> -->
+      <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="z-index: 1001;background-color: #b8b8b8;"> -->
+      <!-- <a class="dropdown-item text-dark" [routerLink]="['/simulator']" target="_blank">New Project</a> -->
+      <!-- <a class="dropdown-item text-dark" (click)="openProject()">Clear Project</a> -->
+      <!-- <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a> -->
+      <!-- <a class="dropdown-item text-dark" (click)="SaveProjectOff()">Save Temporary</a> -->
+      <!-- </div> -->
+      <!-- </li> -->
+      <!-- <li class="nav-item"> -->
+      <!-- <a class="nav-link text-dark" id="navbarDropdown" role="button" (click)="openDailog()"> -->
+      <!-- Export -->
+      <!-- </a> -->
+      <!-- <button mat-button class="text-dark m-auto" >
           Export
         </button> -->
-      </li>
-      <li class="nav-item dropdown text-white">
+      <!-- </li> -->
+      <!-- <li class="nav-item dropdown text-white">
         <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">
           View
@@ -35,7 +39,7 @@
         <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
           <a class="dropdown-item text-dark" role="button" (click)="openview()">Component List</a>
         </div>
-      </li>
+      </li> -->
     </ul>
 
     <div class="navbar-nav ml-auto" *ngIf="!token">
@@ -44,11 +48,11 @@
     </div>
 
     <div class="navbar-nav ml-auto" *ngIf="token">
-      <div class="dropdown my-dropdown" *ngIf="token">
+      <!--<div class="dropdown my-dropdown" *ngIf="token">
         <div class="w3-dropdown-hover">
           <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
             alt="Login Image">
-          <div class="dropdown-content" style="color: #000;">
+          <div class="dropdown-content" style="color: #000;z-index: 1001;">
             <div *ngIf="username">
               <i class="fas fa-user" style="margin-left: 5px;"></i> {{username}}
             </div>
@@ -71,6 +75,20 @@
             </div>
           </div>
         </div>
+      </div>-->
+      <div class="dropdown show" *ngIf="token">
+          <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
+            alt="Login Image">
+        <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;" aria-labelledby="dropdownMenuLink">
+          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i>  Home</a>
+          <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i>  New</a>
+          <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i>  Dashboard</a>
+          <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i>  Gallery</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i>  Logout</a>
+        </div>
       </div>
     </div>
 
@@ -81,31 +99,79 @@
 
 <!-- start of icon block -->
 <div id="secondary-header">
-  <button mat-raised-button class="ml-2 mb-1 mt-1 mr-1 btn-fst" (click)="toggleCodeEditor(codeDiv)"
+  <!-- <button mat-raised-button class="ml-2 mb-1 mt-1 mr-1 btn-fst" (click)="toggleCodeEditor(codeDiv)"
     [style.background-color]="toggle ? 'white' : 'lightblue'">
-    <i class='far fa-file-code'></i>Code</button>
+    <i class='far fa-file-code'></i>Code</button> -->
 
-  <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" [disabled]="disabled"
-    (click)="StartSimulation()" [style.background-color]="stoggle ? 'white' : 'lightgreen'">
-    <i [ngClass]="stoggle ? 'fas fa-caret-right' : 'fas fa-stop-circle'"></i>
+  <!-- <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" [disabled]="disabled" (click)="StartSimulation()"
+    [style.background-color]="stoggle ? 'white' : 'lightgreen'">
+    <i [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
     {{ stoggle ? 'Start Simulation' : 'Stop Simulation' }}
+  </button> -->
+
+
+
+  <button mat-icon-button matTooltip="Code" (click)="toggleCodeEditor(codeDiv)"
+    style="align-items: center;margin-left: 10px;background: transparent;" class="mt-1"
+    [style.background-color]="toggle ? 'transparent' : 'lightblue'">
+    <i style="font-size: 20px;color: black;" class="far fa-file-code"></i>
+  </button>
+
+
+  <button mat-icon-button [matTooltip]="stoggle ? 'Start Simulation' : 'Stop Simulation'" [disabled]="disabled"
+    (click)="StartSimulation()" style="align-items: center;background: transparent;" class="mt-1"
+    [style.background-color]="stoggle ? 'transparent' : 'lightgreen'">
+    <i style="font-size: 20px;color: black;" [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
   </button>
 
   <!--simulation loading svg-->
-  <div id="simload"
-    style="display:none; z-index: 100;position: relative;width: 20%; height:20%;background: transparent;padding: 10px;">
-    <img src="./assets/images/Spin.svg" style="margin:auto; width: 30px; height:30px;background: transparent;">
+  <div id="simload" style="display:none;height:20%;padding: 10px;">
+    <img src="./assets/images/Spin.svg" width="30" height="30">
   </div>
   <!--/simulation loading svg-->
 
-  <span style="flex:1 1 auto;"></span>
+  <span class="pipe">|</span>
 
-  <button class="btn btn-light btn-sm  ml-2 mb-1 mt-1" (click)="delete()"><i class="fa fa-trash"></i></button>
+  <a href="../#/simulator" target="_blank">
+    <button mat-icon-button matTooltip="New Project"
+      style="align-items: center;background: transparent;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
+    </button>
+  </a>
 
-  <button class="btn btn-light btn-sm mb-1 mt-1" (click)="zoom(0)"><i class="fa fa-search-plus"></i></button>
 
-  <button class="btn btn-light btn-sm mb-1 mt-1" style="margin-right: 30px;" (click)="zoom(1)"><i
-      class="fa fa-search-minus"></i></button>
+  <button mat-icon-button matTooltip="Clear Project" (click)="openProject()"
+    style="align-items: center;background: transparent;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-times-circle"></i>
+  </button>
+  <button mat-icon-button matTooltip="Save Project" (click)="SaveProject()"
+    style="align-items: center;background: transparent;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-cloud"></i>
+  </button>
+  <button mat-icon-button matTooltip="Save Temporary" (click)="SaveProjectOff()"
+    style="align-items: center;background: transparent;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-save"></i>
+  </button>
+  <span class="pipe">|</span>
+  <button mat-icon-button matTooltip="Export File" (click)="openDailog()"
+    style="align-items: center;background: transparent;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-file-export"></i>
+  </button>
+  <button mat-icon-button matTooltip="View Component List" (click)="openview()"
+    style="align-items: center;background: transparent;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-list-alt"></i>
+  </button>
+  <span class="pipe">|</span>
+
+  <button mat-icon-button matTooltip="Delete" class="mt-1" style="align-items: center;background: transparent;"
+    (click)="delete()"><i style="font-size: 20px;color: black;" class="fa fa-trash"></i></button>
+
+  <button mat-icon-button matTooltip="Zoom in" class="mt-1" style="align-items: center;background: transparent;"
+    (click)="zoom(0)"><i style="font-size: 20px;color: black;" class="fa fa-search-plus"></i></button>
+
+  <button mat-icon-button matTooltip="Zoom out" class="mt-1"
+    style="margin-right: 30px;align-items: center;background: transparent;" (click)="zoom(1)"><i
+      style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
@@ -113,6 +179,7 @@
 
   <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-link fa-rotate-45"
       style="font-size:20px"></i></button> -->
+  <span style="flex:1 1 auto;"></span>
 
 </div>
 <!-- end of icon block -->
@@ -268,7 +335,8 @@
 <!-- /#page-content-wrapper -->
 
 
-<div id="propertybox" style="top: 110px;left: calc(100vw - 230px);" (mousedown)="propertyMouseDown($event)">
+<div id="propertybox" style="top: 110px;left: calc(100vw - 230px);z-index: 600;"
+  (mousedown)="propertyMouseDown($event)">
   <div style="display: flex;justify-content: space-between;">
     <h6 class="title">Project Info</h6>
     <span style="flex:1 1 auto;"></span>
@@ -322,7 +390,7 @@
         [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
   </div>
   <div id="msg"></div>
-  <div id="footer"  style="display:block;position: relative;">
+  <div id="footer" style="display:block;position: relative;">
     <form style="position: relative; padding: 0px;">
       <input type="text" style="border-radius: 0px; width: 89.5%;">
       <button type="button" style="border-color: darkgray; border-radius: 0px;">Send</button>
@@ -331,7 +399,7 @@
   </div>
 </div>
 <!--/console ui-->
-<div id="opendialog" style="display: none;">
+<div id="opendialog" style="display: none;z-index: 1000;">
   <div id="innerdialog">
     <div id="top" style="background-color: transparent; width: 100%; height: 120px;border-radius: 5px;">
       <p style="text-align: center;padding-top: 35px;">Are you sure you want to clear the project?</p>

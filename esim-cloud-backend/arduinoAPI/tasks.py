@@ -12,6 +12,7 @@ import logging
 import re
 
 logger = logging.getLogger(__name__)
+PATTERN = r'^[ \t]*\w+\d*[ \t]+\w+\d*\(([ \t]*\w+\d*[ \t]+\w+\d*[ \t]*\,?)*\)[ \t]*\n?\{'  # noqa
 
 
 def saveFiles(data):
@@ -25,9 +26,16 @@ def saveFiles(data):
         Path(work_dir).mkdir(parents=True, exist_ok=True)
 
         filename = settings.MEDIA_ROOT+'/'+str(k)+'/sketch.ino'
+
         fout = open(filename, 'w', encoding='utf8')
-        fout.writelines('#line 1 "{}"\n'.format(filename))
-        fout.writelines('void setup();void loop();\n'.format(filename))
+        matches = re.finditer(PATTERN, data.get(k, ''), re.MULTILINE)
+
+        for _, match in enumerate(matches, start=1):
+            func_name = match.group().replace('{', '')
+            func_name = func_name.strip() + ';'
+            fout.writelines('#line 1 "{}"\n'.format(filename))
+            fout.writelines('{}\n'.format(func_name))
+
         fout.writelines(data.get(k, ''))
         fout.close()
 

@@ -1,6 +1,6 @@
 <div [style.width.px]=width [style.minHeight]="height+'vh'" style="margin-top: 0px;">
 
-  <div class=" text text-center" style="display:flex; background-color: whitesmoke; height:100vh; font-size: 1.4em;"
+  <div class=" text text-center" style="display:flex;height: 100vh; background-color: whitesmoke; font-size: 1.4em;"
     *ngIf="names.length == 0">
     <p style="margin:auto auto;">No Programmable Component in this Circuit</p>
   </div>
@@ -34,7 +34,7 @@
               class="fas fa-external-link-alt"></i></a></button>
       </div>
     </div>
-    <ngx-monaco-editor id="editor" style="height: 100vh; display: block;" [options]="editorOptions" [(ngModel)]="code"
+    <ngx-monaco-editor id="editor" style="height: calc(100vh - 135px); display: block;" [options]="editorOptions" [(ngModel)]="code"
       (ngModelChange)="codeChanged()" (onInit)="onInit($event)">
     </ngx-monaco-editor>
   </div>

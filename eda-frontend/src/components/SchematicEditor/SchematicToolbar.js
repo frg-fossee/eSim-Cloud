@@ -95,9 +95,9 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
-    var netlist = netfile.title + '\n' +
-      netfile.model + '\n' +
-      compNetlist + '\n' +
+    var netlist = netfile.title + '\n\n' +
+      compNetlist.models + '\n' +
+      compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
       netfile.controlBlock + '\n'
     genNetlist(netlist)

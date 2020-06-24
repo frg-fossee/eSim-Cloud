@@ -1,10 +1,16 @@
 import { CircuitElement } from '../CircuitElement';
-import { Point } from '../Point';
+import { Vector } from './Collision';
+
 declare var Raphael;
+declare var window;
+
 /**
  * Potentiometer Class
  */
 export class Potentiometer extends CircuitElement {
+  static variants: string[];
+  static variantsValue: number[];
+  selectedIndex: number;
   /**
    * Potentiometer constructor
    * @param canvas Raphael Canvas (Paper)
@@ -12,38 +18,57 @@ export class Potentiometer extends CircuitElement {
    * @param y  position y
    */
   constructor(public canvas: any, x: number, y: number) {
-    super('Potentiometer', x, y, 'Potentiometer.json', canvas);
-    // const anim = Raphael.animation({transform: 'r360'}, 2500).repeat(Infinity);
-    // this.elements[1].animate(anim);
+    super('PotentioMeter', x, y, 'Potentiometer.json', canvas);
   }
   /** init is called when the component is complety drawn to the canvas */
   init() {
-    const attr = this.elements[1].attr();
-    const center = {
-      x: attr.x + attr.width / 2,
-      y: attr.y + attr.height / 2
-    };
-    console.log(center);
-    let prev = 0;
-    // Set mousemove listener for the potentiometer
-    this.elements[1].mousemove((ev: MouseEvent) => {
-      // this.elements[1].rotate(-prev);
-      const difX = ev.clientX - center.x;
-      const difY = ev.clientY - center.y;
-      let ang = Math.atan2(difY, difX) * 180 / Math.PI;
-      if (difX > 0 && difY > 0) {
-        ang += 180;
-      } else {
-        ang -= 180;
-      }
-      this.elements[1].transform(`r${ang}`);
-      // ang -= prev;
-      // this.elements[1].rotate(
-      //   ang
-      // );
-      prev = ang;
-      // console.log();
-    });
+    Potentiometer.variants = this.data.variants;
+    Potentiometer.variantsValue = this.data.value;
+    this.data.value = [];
+    this.data.variants = [];
+    this.data = null;
+  }
+  svgPoint(x, y) {
+    const pt = window['holder_svg'].createSVGPoint();
+    pt.x = x;
+    pt.y = y;
+    return pt.matrixTransform(window.canvas.canvas.getScreenCTM().inverse());
+  }
+
+  rotateDial(center: Vector, clientX: number, clientY: number) {
+    // let line;
+    const point = this.svgPoint(clientX, clientY);
+    const difX = point.x - center.x;
+    const difY = point.y - center.y;
+    let ang = Math.atan2(difY, difX);
+    if (ang < 0) {
+      ang += 2 * Math.PI;
+    }
+    // if(line){
+    //   line.remove();
+    //   line = null;
+    // }
+    // const ex = center.x + 100*Math.cos(ang);
+    // const ey = center.y + 100*Math.sin(ang);
+    // line = this.canvas.path(`M${center.x},${center.y}L${ex},${ey}`)
+    ang *= (180 / Math.PI);
+    ang = (ang + 225) % 360;
+    if (ang > 268) {
+      ang = 268;
+    }
+    // console.log(ang / 268);
+    const to = Math.max(
+      this.nodes[0].value,
+      this.nodes[1].value
+    );
+    if (to < 0) {
+      window['showToast']('Potentiometer Not Connected');
+      return;
+    }
+    const intp = (ang / 268) * to;
+    this.elements[1].transform(`r${ang}`);
+
+    this.nodes[1].setValue(intp, this.nodes[1]);
   }
   /**
    * Function provides component details
@@ -54,6 +79,22 @@ export class Potentiometer extends CircuitElement {
    */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
+    body.style.display = 'flex';
+    body.style.flexDirection = 'column';
+    const label = document.createElement('label');
+    label.innerText = 'Resistance';
+    const select = document.createElement('select');
+    let tmp = '';
+    for (const val of Potentiometer.variants) {
+      tmp += `<option>${val} &#8486;</option>`;
+    }
+    select.innerHTML = tmp;
+    select.selectedIndex = this.selectedIndex;
+    select.onchange = () => {
+      this.selectedIndex = select.selectedIndex;
+    };
+    body.append(label);
+    body.append(select);
     return {
       keyName: this.keyName,
       id: this.id,
@@ -62,8 +103,58 @@ export class Potentiometer extends CircuitElement {
     };
   }
   initSimulation(): void {
+    if (
+      !(this.nodes[0].connectedTo &&
+        this.nodes[1].connectedTo &&
+        this.nodes[2].connectedTo)) {
+      // console.log("ss")
+    }
+    const attr = this.elements[1].attr();
+    const center = {
+      x: attr.x + attr.width / 2 + this.tx,
+      y: attr.y + attr.height / 2 + this.ty
+    };
+    this.elements[1].transform(`t0,0`);
+    this.elements[1].attr({
+      x: attr.x + this.tx,
+      y: attr.y + this.ty
+    });
+    this.elements.undrag();
+    this.elements.unmousedown();
+    this.elements.drag((_, __, mX, mY) => {
+      this.rotateDial(center, mX, mY);
+    }, (mX, mY) => {
+      this.rotateDial(center, mX, mY);
+    },
+      (ev: MouseEvent) => {
+        this.rotateDial(center, ev.clientX, ev.clientY);
+      });
+
+    this.nodes[1].setValue(0, this.nodes[1]);
+  }
+  SaveData() {
+    return {
+      value: this.selectedIndex
+    };
+  }
+  LoadData(data: any) {
+    if (data.data && data.data.value > 0) {
+      this.selectedIndex = data.data.value;
+    } else {
+      this.selectedIndex = 0;
+    }
   }
   closeSimulation(): void {
+    const attr = this.elements[1].attr();
+    this.elements[1].attr({
+      x: attr.x - this.tx,
+      y: attr.y - this.ty
+    });
+    this.elements[1].transform(`t${this.tx},${this.ty}`);
+    this.elements.undrag();
+    this.elements.unmousedown();
+    this.setClickListener(null);
+    this.setDragListeners();
   }
   simulate(): void {
   }
