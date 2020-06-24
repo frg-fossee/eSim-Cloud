@@ -65,6 +65,7 @@ export class CodeEditorComponent implements OnInit {
 
   @Input('reinit')
   set reinit(value: boolean) {
+    window['isCodeEditorOpened'] = value;
     if (value) {
       this.names = [];
       this.arduinos = [];

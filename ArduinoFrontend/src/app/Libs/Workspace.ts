@@ -359,6 +359,9 @@ export class Workspace {
    * @param event keyup Event
    */
   static keyUp(event: KeyboardEvent) {
+    if (window.isCodeEditorOpened) {
+      return;
+    }
     // event.preventDefault();
     // console.log([event.ctrlKey, event.key]);
     if (event.key === 'Delete') {
@@ -585,6 +588,12 @@ export class Workspace {
         tmp.connect(end, true, true);
         window['scope']['wires'].push(tmp);
         tmp.update();
+        if (start.connectCallback) {
+          start.connectCallback(start);
+        }
+        if (end.connectCallback) {
+          end.connectCallback(end);
+        }
       } else {
         // alert('something went wrong');
       }
@@ -726,7 +735,7 @@ export class Workspace {
         wire.end.gid = gid++;
       }
     }
-    const seqn = ['output', 'controllers', 'drivers', 'power', 'input', 'general', 'misc'];
+    const seqn = ['output', 'controllers', 'drivers', 'general', 'power', 'input', 'misc'];
     for (const key of seqn) {
       for (const items of Utils.componentBox[key]) {
         for (const item of items) {
