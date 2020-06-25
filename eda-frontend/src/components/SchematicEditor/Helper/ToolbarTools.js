@@ -931,7 +931,7 @@ function parseXmlToGraph (xmlDoc, graph) {
       v1 = graph.insertVertex(parent, vertexId, vertexName, xPos, yPos, width, height, style)
       v1.symbol = cellAttrs.symbol.value
       if (v1.symbol === 'V') {
-        try {props = Object.assign({}, ComponentParameters[v1.symbol][cells[i].children[2].attributes.NAME.value]) } catch (e) { props = Object.assign({}, ComponentParameters[v1.symbol][cells[i].children[1].attributes.NAME.value]) }
+        try { props = Object.assign({}, ComponentParameters[v1.symbol][cells[i].children[2].attributes.NAME.value]) } catch (e) { props = Object.assign({}, ComponentParameters[v1.symbol][cells[i].children[1].attributes.NAME.value]) }
       } else {
         props = Object.assign({}, ComponentParameters[v1.symbol])
       }
