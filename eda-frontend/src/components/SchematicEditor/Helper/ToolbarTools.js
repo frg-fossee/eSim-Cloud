@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable new-cap */
+/* eslint-disable */
 import mxGraphFactory from 'mxgraph'
 import store from '../../../redux/store'
 import * as actions from '../../../redux/actions/actions'
