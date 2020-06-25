@@ -9,4 +9,5 @@ Introduction to eSim on Cloud
 
     flow.rst
     features.rst
+    eSimGallery.rst
     screenshots.rst
