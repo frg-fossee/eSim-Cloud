@@ -134,6 +134,9 @@ export class ArduinoUno extends CircuitElement {
       color: '#00ff00'
     });
     const myOutput = document.createElement('pre');
+    if (isNull(this.hex) && isUndefined(this.hex)) {
+      return;
+    }
     this.runner = new ArduinoRunner(this.hex);
 
     this.runner.portB.addListener((value) => {
