@@ -91,7 +91,7 @@ Shunt Clipper
 RC Circuit Parallel
 ###############
 
-.. image:: images/RC Circuit Parallel.png
+.. image:: images/RC_Circuit_Parallel.png
 
 * Simulation Type: Transient Analysis
 * Simulation Parameters
