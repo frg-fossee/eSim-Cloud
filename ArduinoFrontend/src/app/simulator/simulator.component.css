@@ -121,7 +121,7 @@
 
 #holder {
   cursor: pointer;
-  overflow: scroll;
+  overflow: hidden;
   width: 100%;
   height: calc(100vh - 101px);
   background-color: white;
@@ -283,23 +283,38 @@ body {
   height: 30%;
   z-index: 1000;
   background: #fff;
-  right: 0px;
-  bottom: 23px;
-  padding: 1px;
+  right: 0;
+  bottom: 0;
   justify-content: space-between;
   background-color: black;
   animation: mymove 0.2s;
   animation-iteration-count: 1s;
 }
 
+#console > .body {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 40px);
+}
+
+#console > .head {
+  display: flex;
+  background-color: white;
+  position: relative;
+  width: 100%;
+  border: 1px solid #000;
+  max-height: 40px;
+}
+
 #msg {
-  overflow-y: scroll;
+  padding: 1em;
+  flex-grow: 1;
+  overflow-y: auto;
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: pre-wrap;
   word-wrap: break-word;
   position: relative;
-  height: 73%;
   display: flex;
   color: #fff;
   flex-direction: column;

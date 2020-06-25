@@ -214,34 +214,34 @@ export class SimulatorComponent implements OnInit {
      }*/
   }
   /** Function called to close Virtual console */
-  closeConsole() {
-    const close = document.getElementById('console');
-    const ft = document.getElementById('footer');
-    const msg = document.getElementById('msg');
+  minimizeConsole() {
+    const Console = document.getElementById('console');
+    const close = document.querySelector('#console > .body');
+    if (this.toggle1) {
+      this.toggle1 = !this.toggle1;
+    }
     this.atoggle = !this.atoggle;
     if (this.atoggle) {
-      close.style.height = '30px';
-      msg.style.height = '0px';
-      ft.style.display = 'none';
+      (close as HTMLElement).style.display = 'none';
+      Console.style.height = 'auto';
     } else {
-      msg.style.height = '190px';
-      close.style.height = '30.5%';
-      ft.style.display = 'block';
-
+      (close as HTMLElement).style.display = 'flex';
+      Console.style.height = '30%';
     }
   }
   /** function called to open Virtual Console */
-    expandConsole() {
-    const msg = document.getElementById('msg');
-    const console = document.getElementById('console');
+  expandConsole() {
+    const Console = document.getElementById('console');
+    if (this.atoggle) {
+      const close = document.querySelector('#console > .body');
+      (close as HTMLElement).style.display = 'flex';
+      this.atoggle = !this.atoggle;
+    }
     this.toggle1 = !this.toggle1;
-    if (this.toggle1 || console.style.top === '495px') {
-      console.style.height = '620px';
-      msg.style.height = '552px';
+    if (this.toggle1) {
+      Console.style.height = 'calc(100% - 110px)';
     } else {
-      console.style.bottom = '23px';
-      console.style.height = '30.5%';
-      msg.style.height = '190px';
+      Console.style.height = '30%';
     }
   }
 
