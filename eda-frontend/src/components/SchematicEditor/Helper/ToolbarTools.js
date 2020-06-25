@@ -951,7 +951,7 @@ function parseXmlToGraph (xmlDoc, graph) {
         console.log(v1.properties)
       }
       for (var check in props) {
-        try { v1.properties[check] = cells[i].children[2].attributes[check].value } catch (e) { v1.properties[check] = cells[i].children[1].attributes[check].value }
+        try { v1.properties[check] = cells[i].children[2].attributes[check].value } catch (e) { /* v1.properties[check] = cells[i].children[1].attributes[check].value */ }
       }
       console.log('component added')
     } else if (cellAttrs.Pin.value === '1') {
