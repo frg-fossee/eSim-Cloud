@@ -232,7 +232,11 @@ export default function ComponentSidebar ({ compRef }) {
 
             {/* Collapsing List Mapped by Libraries fetched by the API */}
             {searchText.length === 0 &&
-              libraries.map(
+              libraries.sort(function (a, b) {
+                var textA = a.library_name.toUpperCase()
+                var textB = b.library_name.toUpperCase()
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+              }).map(
                 (library) => {
                   return (
                     <div key={library.id}>
