@@ -249,6 +249,18 @@ export class SimulatorComponent implements OnInit {
     Workspace.ClearConsole();
   }
 
+  PrintToConsole(sin: HTMLInputElement) {
+    if (sin.value) {
+      const tmp = sin.value;
+      for (const ard of window['scope']['ArduinoUno']) {
+        if (ard.runner) {
+          ard.runner.serialInput(tmp);
+        }
+      }
+    }
+    sin.value = '';
+  }
+
   /**
    * Project Title input focus out callback
    * @param evt Event
