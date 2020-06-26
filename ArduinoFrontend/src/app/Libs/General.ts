@@ -276,8 +276,6 @@ export class BreadBoard extends CircuitElement {
       tmpar2 = [];
       this.tx = tmpx;
       this.ty = tmpy;
-      this.x += this.tx;
-      this.y += this.ty;
     });
   }
   /**
@@ -296,7 +294,50 @@ export class BreadBoard extends CircuitElement {
       title: this.title
     };
   }
+
   initSimulation(): void {
+    const xtemp = {};
+    const ytemp = {};
+    for (const node of this.joined) {
+      node.addValueListener((v, cby, par) => {
+        if (par.x === par.x && cby.y === par.y) {
+          return;
+        }
+        if (node.label === '+' || node.label === '-') {
+          for (const neigh of ytemp[node.y]) {
+            if (neigh.x !== node.x) {
+              neigh.setValue(v, neigh);
+            }
+          }
+        } else {
+          const op = node.label.charCodeAt(0);
+          if (op >= 102) {
+            for (const neigh of xtemp[node.x]) {
+              if (neigh.y !== node.y && neigh.label.charCodeAt(0) >= 102) {
+                neigh.setValue(v, neigh);
+              }
+            }
+          }
+          if (op <= 101) {
+            for (const neigh of xtemp[node.x]) {
+              if (neigh.y !== node.y && neigh.label.charCodeAt(0) <= 101) {
+                neigh.setValue(v, neigh);
+              }
+            }
+          }
+        }
+
+      });
+      if (!(node.x in xtemp)) {
+        xtemp[node.x] = [];
+      }
+      xtemp[node.x].push(node);
+
+      if (!(node.y in ytemp)) {
+        ytemp[node.y] = [];
+      }
+      ytemp[node.y].push(node);
+    }
   }
   closeSimulation(): void {
   }
