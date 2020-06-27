@@ -19,7 +19,8 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { signUp, authDefault } from '../redux/actions/index'
+import { signUp, authDefault, googleLogin } from '../redux/actions/index'
+import google from '../static/google.png'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
+    margin: theme.spacing(1.5, 0)
   }
 }))
 
@@ -64,6 +65,11 @@ export default function SignUp () {
   const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => setShowPassword(!showPassword)
   const handleMouseDownPassword = () => setShowPassword(!showPassword)
+
+  const handelGoogleSignup = () => {
+    var host = window.location.protocol + '//' + window.location.host
+    dispatch(googleLogin(host))
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -149,14 +155,25 @@ export default function SignUp () {
           >
             Sign Up
           </Button>
-          <Grid container>
-            <Grid item style={{ marginLeft: 'auto' }} >
-              <Link component={RouterLink} to="/login" variant="body2">
-                {'Already have account? Login'}
-              </Link>
-            </Grid>
-          </Grid>
+          <Typography variant="body2" color="secondary" align="center" >Or</Typography>
+          <Button
+            fullWidth
+            variant="outlined"
+            color="primary"
+            onClick={handelGoogleSignup}
+            className={classes.submit}
+          >
+            <img alt="G" src={google} height="20" />&emsp; Sign Up With Google
+          </Button>
         </form>
+
+        <Grid container>
+          <Grid item style={{ margin: 'auto' }} >
+            <Link component={RouterLink} to="/login" variant="body2">
+              {'Already have account? Login'}
+            </Link>
+          </Grid>
+        </Grid>
       </Card>
       <Button
         fullWidth

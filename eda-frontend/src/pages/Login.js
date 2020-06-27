@@ -21,11 +21,12 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { Link as RouterLink } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { login, authDefault } from '../redux/actions/index'
+import { login, authDefault, googleLogin } from '../redux/actions/index'
+import google from '../static/google.png'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(27),
+    marginTop: theme.spacing(24),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
+    margin: theme.spacing(2, 0)
   }
 }))
 
@@ -74,6 +75,11 @@ export default function SignIn (props) {
     dispatch(login(username, password, url))
   }
 
+  const handleGoogleLogin = () => {
+    var host = window.location.protocol + '//' + window.location.host
+    dispatch(googleLogin(host))
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>
@@ -82,7 +88,7 @@ export default function SignIn (props) {
         </Avatar>
 
         <Typography component="h1" variant="h5">
-          Login | Sign IN
+          Login | Sign In
         </Typography>
 
         <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
@@ -156,6 +162,16 @@ export default function SignIn (props) {
             </Grid>
           </Grid>
         </form>
+        <Typography variant="body1" color="secondary" align="center" >Or</Typography>
+        <Button
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={handleGoogleLogin}
+          className={classes.submit}
+        >
+          <img alt="G" src={google} height="20" />&emsp; Login With Google
+        </Button>
       </Card>
       <Button
         onClick={() => { window.open(homeURL, '_self') }}

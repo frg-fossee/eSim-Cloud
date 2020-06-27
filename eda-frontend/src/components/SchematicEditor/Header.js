@@ -335,8 +335,7 @@ function Header () {
                 My Schematics
               </MenuItem>
               <MenuItem onClick={() => {
-                store.dispatch(logout())
-                history.goBack()
+                store.dispatch(logout(history))
               }}>
                 Logout
               </MenuItem>
