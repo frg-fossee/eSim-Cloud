@@ -175,7 +175,7 @@
   "simulation": {},
   "info": {
     "name": "Arduino UNO R3",
-    "image": "https://5.imimg.com/data5/RG/FF/LP/SELLER-43948449/arduino-uno-r3-board-500x500.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Arduino_Uno_006.jpg",
     "Datasheet": "https://www.farnell.com/datasheets/1682209.pdf",
     "description": "This is the Arduino Uno R3. In addition to all the features of the previous board, the Uno now uses an ATmega16U2 instead of the 8U2 found on the Uno (or the FTDI found on previous generations). This allows for faster transfer rates and more memory. No drivers needed for Linux or Mac (inf file for Windows is needed and included in the Arduino IDE), and the ability to have the Uno show up as a keyboard, mouse, joystick, etc.",
     "properties": {

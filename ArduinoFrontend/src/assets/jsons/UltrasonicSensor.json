@@ -37,7 +37,7 @@
     "simulation": {},
     "info": {
         "name": "Ultrasonic Sensor HC-SR04",
-        "image": "https://d2t1xqejof9utc.cloudfront.net/screenshots/pics/3e2267edb9c1f128699c3a7e11bca876/large.png",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/HC_SR04_Ultrasonic_sensor_1480322_3_4_HDR_Enhancer.jpg/640px-HC_SR04_Ultrasonic_sensor_1480322_3_4_HDR_Enhancer.jpg",
         "Datasheet": "https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf",
         "description": "HC-SR04 Ultrasonic (US) sensor is a 4 pin module, whose pin names are Vcc, Trigger, Echo and Ground respectively. This sensor is a very popular sensor used in many applications where measuring distance or sensing objects are required. The module has two eyes like projects in the front which forms the Ultrasonic transmitter and Receiver.",
         "properties": {
