@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useHistory } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import store from '../../redux/store'
 import { logout } from '../../redux/actions/index'
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export function Header () {
+  const history = useHistory()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const auth = store.getState().authReducer
@@ -213,7 +214,7 @@ export function Header () {
                 My Schematics
               </MenuItem>
               <MenuItem onClick={() => {
-                store.dispatch(logout())
+                store.dispatch(logout(history))
               }}>
                 Logout
               </MenuItem>

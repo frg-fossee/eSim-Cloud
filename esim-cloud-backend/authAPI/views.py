@@ -7,6 +7,8 @@ from djoser.conf import settings as djoser_settings
 from random import randint
 import requests
 from django.shortcuts import render
+from django.http import HttpResponseNotFound
+
 Token = djoser_settings.TOKEN_MODEL
 
 
@@ -28,32 +30,13 @@ def activate_user(request, uid, token):
                    })
 
 
-class GoogleOAuth2(APIView):
-    """
-    Login with Google OAuth2
+def GoogleOAuth2(request):
+    state = request.GET.get('state', None)
+    code = request.GET.get('code', None)
 
-        1. Use the following route to get authorization_url:
-           http://localhost/api/auth/o/google-oauth2/?redirect_uri=http://localhost/api/auth/google-callback
-        2. This is the callback route
-           returns
-            {
-                "auth_token": "1503a622f9bb9ef705d6f8a4921bf83cc5a9872c"
-            }
-            Creates user if not already existing
-
-    """
-
-    def get(self, request):
-        """
-
-        Creates user if OAuth token valid
-
-        """
+    if not (state is None) or not (code is None):
         client_id = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
         client_secret = settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
-
-        state = request.query_params.get('state')
-        code = request.query_params.get('code')
 
         google = OAuth2Session(
             client_id,
@@ -80,4 +63,13 @@ class GoogleOAuth2(APIView):
                 user.username = username
                 user.save()
             token, created = Token.objects.get_or_create(user=user)
-        return Response({'auth_token': token.key})
+
+            protocol = 'https://' if request.is_secure() else 'http://'
+            web_url = protocol + request.get_host() + '/eda/#/login'
+
+            return render(request, 'google_callback.html',
+                          {
+                              "token": token,
+                              "url": web_url
+                          })
+    return HttpResponseNotFound("<h1>Page Not Found</h1>")

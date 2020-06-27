@@ -127,10 +127,6 @@ export class SlideSwitch extends CircuitElement {
     super('SlideSwitch', x, y, 'SlideSwitch.json', canvas);
   }
   init() {
-    // this.nodes[0]
-    console.log(this.nodes[0].label);
-    console.log(this.nodes[1].label);
-    console.log(this.nodes[2].label);
     this.nodes[1].addValueListener((v) => {
       console.log(v);
       if (this.flag) {

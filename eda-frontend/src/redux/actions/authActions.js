@@ -133,7 +133,7 @@ export const signUp = (email, username, password, history) => (dispatch) => {
     })
 }
 
-export const logout = () => (dispatch, getState) => {
+export const logout = (history) => (dispatch, getState) => {
   const token = getState().authReducer.token
 
   // add headers
@@ -158,6 +158,7 @@ export const logout = () => (dispatch, getState) => {
               user: res.data
             }
           })
+          history.push('/login')
         }
       }
     )
@@ -184,4 +185,32 @@ const signUpError = (message) => (dispatch) => {
       data: message
     }
   })
+}
+
+// Google login
+export const googleLogin = (host, toUrl) => {
+  return function (dispatch) {
+    api.get('auth/o/google-oauth2/?redirect_uri=' + host + '/api/auth/google-callback')
+      .then((res) => {
+        if (res.status === 200) {
+          window.open(res.data.authorization_url, '_self')
+        } else {
+          dispatch({
+            type: actions.LOGIN_FAILED,
+            payload: {
+              data: 'Something went wrong! Login Failed'
+            }
+          })
+        }
+      })
+      .then((res) => { console.log(res) })
+      .catch((err) => {
+        var res = err.response
+        if (res.status === 400 || res.status === 403 || res.status === 401) {
+          dispatch(loginError('Incorrect Username or Password.'))
+        } else {
+          dispatch(loginError('Something went wrong! Login Failed'))
+        }
+      })
+  }
 }

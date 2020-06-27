@@ -701,13 +701,13 @@ export class Workspace {
                 if (d.output && d.data) {
                   window.printConsole(d.output, ConsoleType.OUTPUT);
                   nameMap[k].hex = d.data;
-                  Workspace.startArduino();
                 }
                 if (d.error) {
                   window.printConsole(d.error, ConsoleType.ERROR);
                 }
               }
             }
+            Workspace.startArduino();
             callback();
           } else if (hex.state === 'FAILED' || hex.details.error) {
             clearInterval(temp);
