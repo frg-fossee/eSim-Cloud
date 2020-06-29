@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
@@ -12,6 +12,7 @@ import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 import { SaveOnline } from '../Libs/SaveOnline';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 declare var Raphael;
 
 
@@ -21,7 +22,7 @@ declare var Raphael;
   styleUrls: ['./simulator.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class SimulatorComponent implements OnInit {
+export class SimulatorComponent implements OnInit, OnDestroy {
   canvas: any;
   projectId: any = null; // Stores the id of project
   projectTitle = 'Untitled'; // Stores the title of project
@@ -54,6 +55,12 @@ export class SimulatorComponent implements OnInit {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     el.setAttribute('transform', 'scale(1,1)translate(0,0)');
     return el;
+  }
+
+  ngOnDestroy() {
+    if (environment.production) {
+      window.removeEventListener('beforeunload', Workspace.BeforeUnload);
+    }
   }
 
   ngOnInit() {
@@ -123,6 +130,10 @@ export class SimulatorComponent implements OnInit {
     document.body.addEventListener('keydown', Workspace.keyDown, true);
     document.body.addEventListener('keypress', Workspace.keyPress, true);
     document.body.addEventListener('keyup', Workspace.keyUp, true);
+    if (environment.production) {
+      // Global function for displaying alert msg during closing and reloading page
+      window.addEventListener('beforeunload', Workspace.BeforeUnload);
+    }
 
     // Initialize Property Box
     Workspace.initProperty(v => {

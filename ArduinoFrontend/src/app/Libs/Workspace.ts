@@ -172,14 +172,10 @@ export class Workspace {
       }
       msg.appendChild(container);
     };
-
-    if (environment.production) {
-      // Global function for displaying alert msg during closing and reloading page
-      window.addEventListener('beforeunload', (event) => {
-        event.preventDefault();
-        event.returnValue = 'did you save the stuff?';
-      });
-    }
+  }
+  static BeforeUnload(event) {
+    event.preventDefault();
+    event.returnValue = 'did you save the stuff?';
   }
   /**
    * Event Listener for mousemove on html body
