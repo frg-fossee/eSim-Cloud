@@ -1,6 +1,5 @@
 import { TaskScheduler } from './Scheduler';
 import { parseHex } from './IntelHex';
-import { appendNgContent } from '@angular/core/src/view/ng_content';
 
 declare var AVR8: any;
 // declare var window: any;
@@ -38,6 +37,7 @@ export class ArduinoRunner {
   private events: MicroEvent[] = [];
   private servo: ServoEvent[] = [];
   private listeners: any = {};
+  private serialBuffer: string[] = [];
 
   constructor(hex: string) {
     parseHex(hex, new Uint8Array(this.program.buffer));
@@ -55,6 +55,7 @@ export class ArduinoRunner {
     // this.addServo('portD', 5, (k) => console.log(k));
     this.scheduler.start();
   }
+
   execute() {
     const cyclesToRun = this.cpu.cycles + this.workUnitCycles;
     while (this.cpu.cycles < cyclesToRun) {
@@ -72,6 +73,17 @@ export class ArduinoRunner {
         }
       }
     }
+
+    if (((this.cpu.data[0xc0] >> 7) & 1) === 0 && this.serialBuffer.length > 0) {
+      const chr = this.serialBuffer.shift();
+      this.cpu.data[0xc6] = chr.charCodeAt(0) & 255;
+      let tmp = this.cpu.data[0xc0];
+      tmp &= ~(1 << 6);
+      tmp &= ~(1 << 5);
+      tmp |= (1 << 7);
+      this.cpu.writeData(0xc0, tmp);
+    }
+
     this.scheduler.postTask(() => this.execute());
   }
   getmiliS(seconds: number) {
@@ -134,5 +146,9 @@ export class ArduinoRunner {
       });
       this.listeners[port] = true;
     }
+  }
+
+  serialInput(inp: string) {
+    this.serialBuffer = inp.split('');
   }
 }
