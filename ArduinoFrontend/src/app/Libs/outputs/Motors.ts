@@ -38,12 +38,16 @@ export class Motor extends CircuitElement {
           this.rpm.remove();
           this.rpm = null;
         }
+        this.elements[1].stop();
+        if (v === 0) {
+          return;
+        }
         // animation caller
         const anim = Raphael.animation({ transform: `r-360` }, 400 / v);
         this.elements[1].animate(anim.repeat(Infinity));
-        this.rpm = this.canvas.text(this.x + this.tx, this.y + this.ty - 30, `${1500 * v}RPM`);
+        this.rpm = this.canvas.text(this.x + this.tx, this.y + this.ty - 30, `${1500 * v}RPM\nAntiClockwise`);
         this.rpm.attr({
-          'font-size': 20,
+          'font-size': 15,
         });
       }
     });
@@ -57,15 +61,20 @@ export class Motor extends CircuitElement {
       if (v < 0) {
         this.elements[1].stop();
       } else {
-        // const ok = this.elements[1].attr();
-        // console.log(400 / v);
-        // animation caller
+        if (this.rpm) {
+          this.rpm.remove();
+          this.rpm = null;
+        }
+        this.elements[1].stop();
+        if (v === 0) {
+          return;
+        }
         const anim = Raphael.animation({ transform: `r360` }, 400 / v);
         this.elements[1].animate(anim.repeat(Infinity));
         // setTimeout(() => this.elements[1].stop(), 3000);
-        this.rpm = this.canvas.text(this.x + this.tx, this.y + this.ty - 30, `${1500 * v}RPM`);
+        this.rpm = this.canvas.text(this.x + this.tx, this.y + this.ty - 30, `${1500 * v}RPM\nClockwise`);
         this.rpm.attr({
-          'font-size': 20,
+          'font-size': 15,
         });
       }
     });
