@@ -264,7 +264,7 @@ export default function LoadGrid (container, sidebar, outline) {
 
     SideBar(graph, sidebar)
     KeyboardShorcuts(graph)
-    NetlistInfoFunct(graph)
+    //NetlistInfoFunct(graph)
     ToolbarTools(graph)
 
     store.subscribe(() => {
