@@ -36,7 +36,6 @@ export abstract class CircuitElement {
           this.pointHalf = obj.pointHalf;
           this.DrawElement(canvas, obj.draw);
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
-          // console.log(obj);
           this.info = obj.info;
           this.data = obj.data;
           this.setDragListeners();
@@ -196,15 +195,15 @@ export abstract class CircuitElement {
   }
 
   setDragListeners() {
-    let tmpx = 0;
-    let tmpy = 0;
+    // let tmpx = 0;
+    // let tmpy = 0;
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      tmpx = this.tx + dx;
-      tmpy = this.ty + dy;
+      // tmpx = this.tx + dx;
+      // tmpy = this.ty + dy;
       fdx = dx;
       fdy = dy;
       for (let i = 0; i < this.nodes.length; ++i) {
@@ -225,8 +224,8 @@ export abstract class CircuitElement {
       //   node.relativeMove(fdx, fdy);
       //   node.remainShow();
       // }
-      this.tx = tmpx;
-      this.ty = tmpy;
+      this.tx += fdx;
+      this.ty += fdy;
     });
   }
 
