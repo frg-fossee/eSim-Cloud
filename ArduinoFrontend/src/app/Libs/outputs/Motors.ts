@@ -143,6 +143,7 @@ export class Motor extends CircuitElement {
  * MotorDriver L298N class
  */
 export class L298N extends CircuitElement {
+  pinNamedMap: any = {};
   /**
    * MotorDriver L298N constructor
    * @param canvas Raphael Canvas (Paper)
@@ -153,7 +154,65 @@ export class L298N extends CircuitElement {
     super('L298N', x, y, 'L298N.json', canvas);
   }
   init() {
-    // console.log(this.nodes);
+    for (const node of this.nodes) {
+      this.pinNamedMap[node.label] = node;
+    }
+    this.pinNamedMap['V IN'].addValueListener(v => {
+      this.pinNamedMap['GND'].setValue(v, this.pinNamedMap['GND']);
+      if (v >= 5) {
+        this.pinNamedMap['5V IN'].setValue(5, this.pinNamedMap['5V IN']);
+      }
+      this.update();
+    });
+
+    this.pinNamedMap['IN1'].addValueListener(v => this.update());
+    this.pinNamedMap['IN2'].addValueListener(v => this.update());
+    this.pinNamedMap['IN3'].addValueListener(v => this.update());
+    this.pinNamedMap['IN4'].addValueListener(v => this.update());
+  }
+  update() {
+    if (this.pinNamedMap['IN1'].value > 0 && this.pinNamedMap['IN2'].value > 0) {
+      window['showToast']('Both IN1 and IN2 Pins are High!');
+      return;
+    }
+
+    if (this.pinNamedMap['IN3'].value > 0 && this.pinNamedMap['IN4'].value > 0) {
+      window['showToast']('Both IN3 and IN4 Pins are High!');
+      return;
+    }
+    if (this.pinNamedMap['IN1'].value > 0) {
+      this.pinNamedMap['Terminal 2'].setValue(
+        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['Terminal 2']
+      );
+    } else if (this.pinNamedMap['IN2'].value > 0) {
+      this.pinNamedMap['Terminal 1'].setValue(
+        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['Terminal 1']
+      );
+    } else {
+      this.pinNamedMap['Terminal 1'].setValue(
+        0,
+        this.pinNamedMap['Terminal 1']
+      );
+    }
+
+    if (this.pinNamedMap['IN3'].value > 0) {
+      this.pinNamedMap['Terminal 4'].setValue(
+        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['Terminal 4']
+      );
+    } else if (this.pinNamedMap['IN4'].value > 0) {
+      this.pinNamedMap['Terminal 3'].setValue(
+        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['Terminal 3']
+      );
+    } else {
+      this.pinNamedMap['Terminal 3'].setValue(
+        0,
+        this.pinNamedMap['Terminal 3']
+      );
+    }
   }
   /**
    * Function provides component details
@@ -172,9 +231,12 @@ export class L298N extends CircuitElement {
       title: 'Motor Driver (L298N)'
     };
   }
-  initSimulation(): void {
-  }
+  initSimulation(): void { }
   closeSimulation(): void {
+    this.pinNamedMap['IN1'].value = -1;
+    this.pinNamedMap['IN2'].value = -1;
+    this.pinNamedMap['IN3'].value = -1;
+    this.pinNamedMap['IN4'].value = -1;
   }
   simulate(): void {
   }
