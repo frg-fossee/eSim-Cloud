@@ -7,14 +7,23 @@ import {
   platformBrowserDynamicTesting
 } from '@angular/platform-browser-dynamic/testing';
 
+/**
+ * Prevent from throwing error for require function
+ */
 declare const require: any;
 
-// First, initialize the Angular testing environment.
+/**
+ * First, initialize the Angular testing environment.
+ */
 getTestBed().initTestEnvironment(
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting()
 );
-// Then we find all the tests.
+/**
+ * Then we find all the tests.
+ */
 const context = require.context('./', true, /\.spec\.ts$/);
-// And load the modules.
+/**
+ * And load the modules.
+ */
 context.keys().map(context);
