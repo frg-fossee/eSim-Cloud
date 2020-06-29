@@ -60,6 +60,7 @@ export default function SignIn (props) {
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       url = query.get('url')
+      localStorage.setItem('ard_redurl', url)
     } else {
       url = ''
     }
