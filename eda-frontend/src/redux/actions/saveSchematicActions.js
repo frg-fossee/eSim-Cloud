@@ -32,6 +32,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
   })
 }
 
+// Api call to save new schematic or updating saved schematic.
 export const saveSchematic = (title, description, xml, base64) => (dispatch, getState) => {
   const body = {
     data_dump: xml,
@@ -40,25 +41,27 @@ export const saveSchematic = (title, description, xml, base64) => (dispatch, get
     description: description
   }
 
+  // Get token from localstorage
   const token = getState().authReducer.token
   const schSave = getState().saveSchematicReducer
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
 
   if (schSave.isSaved) {
-    // console.log('Already Saved')
+    //  Updating saved schemaic
     api.post('save/' + schSave.details.save_id, queryString.stringify(body), config)
       .then(
         (res) => {
-          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -67,10 +70,10 @@ export const saveSchematic = (title, description, xml, base64) => (dispatch, get
       )
       .catch((err) => { console.error(err) })
   } else {
+    // saving new schematic
     api.post('save', queryString.stringify(body), config)
       .then(
         (res) => {
-          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -81,15 +84,19 @@ export const saveSchematic = (title, description, xml, base64) => (dispatch, get
   }
 }
 
+// Action for Loading on-cloud saved schematics
 export const fetchSchematic = (saveId) => (dispatch, getState) => {
+  // Get token from localstorage
   const token = getState().authReducer.token
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
@@ -98,7 +105,6 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
   api.get('save/' + saveId, config)
     .then(
       (res) => {
-        // console.log('response', res)
         dispatch({
           type: actions.SET_SCH_SAVED,
           payload: res.data
@@ -113,15 +119,18 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
 }
 
 export const setSchShared = (share) => (dispatch, getState) => {
+  // Get token from localstorage
   const token = getState().authReducer.token
   const schSave = getState().saveSchematicReducer
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
@@ -145,6 +154,7 @@ export const setSchShared = (share) => (dispatch, getState) => {
     .catch((err) => { console.error(err) })
 }
 
+// Action for Loading Gallery schematics
 export const loadGallery = (Id) => (dispatch, getState) => {
   var data = GallerySchSample[Id]
 
@@ -159,6 +169,7 @@ export const loadGallery = (Id) => (dispatch, getState) => {
   renderGalleryXML(data.data_dump)
 }
 
+// Action for Loading local exported schematics
 export const openLocalSch = (obj) => (dispatch, getState) => {
   var data = obj
 

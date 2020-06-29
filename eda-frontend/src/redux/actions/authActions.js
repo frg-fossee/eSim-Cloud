@@ -1,6 +1,7 @@
 import * as actions from './actions'
 import api from '../../utils/Api'
 
+// Api call for maintaining user login state throughout the application
 export const loadUser = () => (dispatch, getState) => {
   // User Loading
   dispatch({ type: actions.USER_LOADING })
@@ -54,6 +55,7 @@ export const loadUser = () => (dispatch, getState) => {
     })
 }
 
+// Handel api call for user login
 export const login = (username, password, toUrl) => {
   const body = {
     password: password,
@@ -102,6 +104,7 @@ export const login = (username, password, toUrl) => {
   }
 }
 
+// Handel api call for user sign up
 export const signUp = (email, username, password, history) => (dispatch) => {
   const body = {
     email: email,
@@ -133,7 +136,9 @@ export const signUp = (email, username, password, history) => (dispatch) => {
     })
 }
 
+// Handel api call for user logout
 export const logout = (history) => (dispatch, getState) => {
+  // Get token from localstorage
   const token = getState().authReducer.token
 
   // add headers
@@ -165,10 +170,12 @@ export const logout = (history) => (dispatch, getState) => {
     .catch((err) => { console.error(err) })
 }
 
+// Redux action for default auth store
 export const authDefault = () => (dispatch) => {
   dispatch({ type: actions.DEFAULT_STORE })
 }
 
+// Redux action for display login error
 const loginError = (message) => (dispatch) => {
   dispatch({
     type: actions.AUTHENTICATION_ERROR,
@@ -178,6 +185,7 @@ const loginError = (message) => (dispatch) => {
   })
 }
 
+// Redux action for display sign up error
 const signUpError = (message) => (dispatch) => {
   dispatch({
     type: actions.SIGNUP_FAILED,
@@ -187,12 +195,13 @@ const signUpError = (message) => (dispatch) => {
   })
 }
 
-// Google login
+// Api call for Google oAuth login or sign up
 export const googleLogin = (host, toUrl) => {
   return function (dispatch) {
     api.get('auth/o/google-oauth2/?redirect_uri=' + host + '/api/auth/google-callback')
       .then((res) => {
         if (res.status === 200) {
+          // Open google login page
           window.open(res.data.authorization_url, '_self')
         } else {
           dispatch({
