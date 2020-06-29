@@ -180,6 +180,4 @@ export class Label extends CircuitElement {
   }
   closeSimulation(): void {
   }
-  simulate(): void {
-  }
 }

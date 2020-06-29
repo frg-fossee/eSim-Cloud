@@ -65,6 +65,4 @@ export class TMP36 extends CircuitElement {
     delete this.slide;
     this.slide = null;
   }
-  simulate(): void {
-  }
 }

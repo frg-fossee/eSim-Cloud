@@ -214,8 +214,6 @@ export class ArduinoUno extends CircuitElement {
       this.powerLed = null;
     }
   }
-  simulate(): void {
-  }
   addServo(pin: Point, callback: (angle: number, prevAngle: number) => void) {
     const tmp = this.getPort(pin.label);
     this.servos.push({

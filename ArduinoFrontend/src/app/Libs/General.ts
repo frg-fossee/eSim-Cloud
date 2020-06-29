@@ -207,9 +207,6 @@ export class Resistor extends CircuitElement {
   }
   closeSimulation(): void {
   }
-  simulate(): void {
-  }
-
 }
 
 /**
@@ -340,7 +337,5 @@ export class BreadBoard extends CircuitElement {
     }
   }
   closeSimulation(): void {
-  }
-  simulate(): void {
   }
 }

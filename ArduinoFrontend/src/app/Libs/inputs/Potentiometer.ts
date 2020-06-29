@@ -156,6 +156,4 @@ export class Potentiometer extends CircuitElement {
     this.setClickListener(null);
     this.setDragListeners();
   }
-  simulate(): void {
-  }
 }

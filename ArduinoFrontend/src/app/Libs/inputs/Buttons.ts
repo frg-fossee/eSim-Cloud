@@ -107,9 +107,6 @@ export class PushButton extends CircuitElement {
     this.elements.unmouseout();
     this.setClickListener(null);
   }
-  simulate(): void {
-  }
-
 }
 
 /**
@@ -181,7 +178,4 @@ export class SlideSwitch extends CircuitElement {
     const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
     this.elements[1].animate(anim);
   }
-  simulate(): void {
-  }
-
 }

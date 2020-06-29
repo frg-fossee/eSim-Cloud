@@ -122,8 +122,6 @@ export class LED extends CircuitElement {
     this.prev = -2;
     this.elements[3].attr({ fill: 'none' });
   }
-  simulate(): void {
-  }
 }
 /**
  * RGBLED class
@@ -204,7 +202,5 @@ export class RGBLED extends CircuitElement {
     this.elements[1].attr({
       fill: 'none'
     });
-  }
-  simulate(): void {
   }
 }

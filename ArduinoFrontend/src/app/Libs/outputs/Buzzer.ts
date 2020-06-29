@@ -78,9 +78,6 @@ export class Buzzer extends CircuitElement {
     // oscillator.start();
     // console.log(this.oscillator)
   }
-  simulate() {
-    // TODO: Play Music on Simulation
-  }
   /** Function removes all callbacks  */
   closeSimulation() {
     if (this.oscillator && this.sound) {

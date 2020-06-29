@@ -63,6 +63,4 @@ export class Relay extends CircuitElement {
   }
   closeSimulation(): void {
   }
-  simulate(): void {
-  }
 }

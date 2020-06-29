@@ -271,10 +271,4 @@ export class Wire {
     this.start = null;
     this.end = null;
   }
-  initSimulation() {
-  }
-  simulate() {
-  }
-  closeSimulation() {
-  }
 }

@@ -60,9 +60,6 @@ export class Battery9v extends CircuitElement {
   }
   closeSimulation(): void {
   }
-  simulate(): void {
-  }
-
 }
 
 /**
@@ -116,7 +113,5 @@ export class CoinCell extends CircuitElement {
     this.nodes[0].setValue(3, null);
   }
   closeSimulation(): void {
-  }
-  simulate(): void {
   }
 }

@@ -33,8 +33,6 @@ export class LCD16X2 extends CircuitElement {
   }
   closeSimulation(): void {
   }
-  simulate(): void {
-  }
 }
 /**
  * SevenSegment Class
@@ -134,7 +132,4 @@ export class SevenSegment extends CircuitElement {
   closeSimulation(): void {
     this.animate(0);
   }
-  simulate(): void {
-  }
-
 }

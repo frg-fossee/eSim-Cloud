@@ -107,6 +107,4 @@ export class MQ2 extends CircuitElement {
     this.elements[1].undrag();
     this.setDragListeners();
   }
-  simulate(): void {
-  }
 }

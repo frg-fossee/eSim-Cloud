@@ -146,6 +146,4 @@ export class PIRSensor extends CircuitElement {
     this.setDragListeners();
     this.setClickListener(null);
   }
-  simulate(): void {
-  }
 }

@@ -69,7 +69,4 @@ export class PhotoResistor extends CircuitElement {
     this.slide = null;
     this.valueText = null;
   }
-  simulate(): void {
-  }
-
 }

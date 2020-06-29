@@ -333,8 +333,4 @@ export abstract class CircuitElement {
    * Called when Stop Simulation
    */
   abstract closeSimulation(): void;
-  /**
-   * Called During Simulation
-   */
-  abstract simulate(): void;
 }

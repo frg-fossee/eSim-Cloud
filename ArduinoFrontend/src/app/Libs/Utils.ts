@@ -14,11 +14,15 @@ import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
 import { Resistor, BreadBoard } from './General';
+
 /**
  * Utils class
  * Contains All components with their section
  */
 export class Utils {
+  /**
+   * Stores an object required by the Side Component Panel
+   */
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
@@ -47,6 +51,7 @@ export class Utils {
         'BreadBoard']
     ]
   };
+
   /** Components with thier name, image, classname */
   static components = {
     BreadBoard: {

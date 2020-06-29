@@ -190,6 +190,4 @@ export class UltrasonicSensor extends CircuitElement {
     this.Tline = null;
     this.Rline = null;
   }
-  simulate(): void {
-  }
 }

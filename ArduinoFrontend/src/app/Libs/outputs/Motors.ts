@@ -134,9 +134,6 @@ export class Motor extends CircuitElement {
     }
     this.setDragListeners();
   }
-  simulate(): void {
-  }
-
 }
 
 /**
@@ -237,8 +234,6 @@ export class L298N extends CircuitElement {
     this.pinNamedMap['IN2'].value = -1;
     this.pinNamedMap['IN3'].value = -1;
     this.pinNamedMap['IN4'].value = -1;
-  }
-  simulate(): void {
   }
 }
 /**
@@ -346,7 +341,4 @@ export class ServoMotor extends CircuitElement {
     });
     this.setDragListeners();
   }
-  simulate(): void {
-  }
-
 }
