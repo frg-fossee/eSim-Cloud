@@ -1,3 +1,4 @@
+// User Login / Sign In page.
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
 
@@ -71,10 +72,12 @@ export default function SignIn (props) {
   const handleClickShowPassword = () => setShowPassword(!showPassword)
   const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
+  // Function call for normal user login.
   const handleLogin = () => {
     dispatch(login(username, password, url))
   }
 
+  // Function call for google oAuth login.
   const handleGoogleLogin = () => {
     var host = window.location.protocol + '//' + window.location.host
     dispatch(googleLogin(host))
@@ -91,6 +94,7 @@ export default function SignIn (props) {
           Login | Sign In
         </Typography>
 
+        {/* Display's error messages while logging in */}
         <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
           {auth.errors}
         </Typography>
@@ -125,7 +129,7 @@ export default function SignIn (props) {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                   >
-                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
                   </IconButton>
                 </InputAdornment>
               )
@@ -163,6 +167,8 @@ export default function SignIn (props) {
           </Grid>
         </form>
         <Typography variant="body1" color="secondary" align="center" >Or</Typography>
+
+        {/* Google oAuth Sign In option */}
         <Button
           fullWidth
           variant="outlined"

@@ -1,3 +1,5 @@
+// Sample schematics in gallery section are stored below as array of JS objects.
+
 const GallerySchSample = [
   {
     save_id: 'gallery0',

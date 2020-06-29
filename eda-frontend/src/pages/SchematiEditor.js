@@ -1,3 +1,4 @@
+// Main Layout for Schemaic Editor page.
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
 import { CssBaseline } from '@material-ui/core'
@@ -47,10 +48,12 @@ export default function SchematiEditor (props) {
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       var cktid = query.get('id')
+
       if (cktid.substr(0, 7) === 'gallery') {
+        // Loading Gallery schemaic.
         dispatch(loadGallery(cktid.substr(7, cktid.length)))
       } else {
-        // calling the api
+        // Loading User on-cloud saved schemaic.
         dispatch(fetchSchematic(cktid))
       }
     }
@@ -62,8 +65,10 @@ export default function SchematiEditor (props) {
 
       <CssBaseline />
 
+      {/* Schematic editor header, toolbar and left side pane */}
       <Layout header={<Header />} resToolbar={<SchematicToolbar gridRef={gridRef} mobileClose={handleDrawerToggle} />} sidebar={<ComponentSidebar compRef={compRef} />} />
 
+      {/* Grid for drawing and designing circuits */}
       <LayoutMain>
         <div className={classes.toolbar} />
         <center>
@@ -71,6 +76,7 @@ export default function SchematiEditor (props) {
         </center>
       </LayoutMain>
 
+      {/* Schematic editor Right side pane */}
       <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle} >
         <PropertiesSidebar gridRef={gridRef} outlineRef={outlineRef} />
       </RightSidebar>

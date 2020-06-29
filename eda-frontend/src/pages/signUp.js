@@ -1,3 +1,4 @@
+// User Sign Up / Register page.
 import React, { useState, useEffect } from 'react'
 import {
   Container,
@@ -66,6 +67,7 @@ export default function SignUp () {
   const handleClickShowPassword = () => setShowPassword(!showPassword)
   const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
+  // Function call for google oAuth sign up.
   const handelGoogleSignup = () => {
     var host = window.location.protocol + '//' + window.location.host
     dispatch(googleLogin(host))
@@ -82,6 +84,7 @@ export default function SignUp () {
           Register | Sign Up
         </Typography>
 
+        {/* Display's error messages while signing in */}
         <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
           {auth.regErrors}
         </Typography>
@@ -130,7 +133,7 @@ export default function SignUp () {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                   >
-                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
                   </IconButton>
                 </InputAdornment>
               )
@@ -156,6 +159,8 @@ export default function SignUp () {
             Sign Up
           </Button>
           <Typography variant="body2" color="secondary" align="center" >Or</Typography>
+
+          {/* Google oAuth Sign Up option */}
           <Button
             fullWidth
             variant="outlined"

@@ -1,3 +1,4 @@
+// Main layout for gallery page.
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -42,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 
 var images = require.context('../static/gallery', true)
 
+// Card displaying overview of gallery sample schematics.
 function SchematicCard ({ sch }) {
   const classes = useStyles()
 
@@ -53,7 +55,6 @@ function SchematicCard ({ sch }) {
 
   return (
     <>
-      {/* Gallery Schematic Overview Card */}
       <Card>
         <CardActionArea>
           <CardMedia
@@ -90,6 +91,7 @@ SchematicCard.propTypes = {
   sch: PropTypes.object
 }
 
+// Card displaying eSim gallery page header.
 function MainCard () {
   const classes = useStyles()
 

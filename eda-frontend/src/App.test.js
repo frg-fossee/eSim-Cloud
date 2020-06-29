@@ -1,3 +1,4 @@
+// Basic unit test for React application.
 /* eslint-disable no-undef */
 import React from 'react'
 import { create } from 'react-test-renderer'
