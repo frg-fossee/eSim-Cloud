@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../api.service';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
@@ -8,18 +7,40 @@ import { MatDialogRef } from '@angular/material';
   styleUrls: ['./view-component-info.component.css']
 })
 export class ViewComponentInfoComponent implements OnInit {
+  /**
+   * Data That need to show in table
+   */
   tableData = [];
+  /**
+   * Data including decription and image
+   */
   data: any = {};
-  columns = ['Name', 'Value'];
+  /**
+   * Column Names
+   */
+  readonly columns = ['Name', 'Value'];
+  /**
+   * Variable to specify if there is no data
+   */
   noData = false;
 
+  /**
+   * View Project Info Dialog Component
+   * @param dialogRef Material Dialog Reference
+   */
   constructor(public dialogRef: MatDialogRef<ViewComponentInfoComponent>) { }
 
+  /**
+   * On Init Function
+   */
   ngOnInit() {
+    // Get the Selected Item
     const item = window['Selected'];
 
     if (item) {
+      // get the info
       this.data = item.info;
+      // Create the table array
       for (const propName in this.data.properties) {
         if (this.data.properties[propName]) {
           this.tableData.push({
@@ -28,15 +49,16 @@ export class ViewComponentInfoComponent implements OnInit {
           });
         }
       }
+      // Data is present
       this.noData = false;
     } else {
+      // No Data is Present
       this.noData = true;
     }
-    // const key = document.getElementById('propertybox').getAttribute('key');
-    // this.data = window['suggestion_json'][key];
   }
-
-
+  /**
+   * Close View Component info dialog
+   */
   close() {
     this.dialogRef.close();
   }

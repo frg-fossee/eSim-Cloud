@@ -2,7 +2,6 @@ import { TaskScheduler } from './Scheduler';
 import { parseHex } from './IntelHex';
 
 declare var AVR8: any;
-// declare var window: any;
 
 export interface MicroEvent {
   state: boolean;
