@@ -1,7 +1,9 @@
 <!-- As a heading -->
 <nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: whitesmoke;height: 50px;">
-  <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-md-block"
-    alt="AOC">
+  <a [routerLink]="['/']">
+    <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;"
+      class="d-md-block" alt="AOC">
+  </a>
   <!-- <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span> -->
   <form style="min-width: 300px;">
     <mat-form-field style="width: 100%;">
@@ -411,7 +413,8 @@
           <option>115200</option>
         </select>
         <input type="text" style="flex:1;" #sin>
-        <button mat-raised-button style="margin-right: 1px;margin-left: 1px;" (click)="PrintToConsole(sin)">Send</button>
+        <button mat-raised-button style="margin-right: 1px;margin-left: 1px;"
+          (click)="PrintToConsole(sin)">Send</button>
         <button mat-raised-button style="margin-right: 1px;" (click)="clearConsole()">Clear</button>
       </form>
     </div>

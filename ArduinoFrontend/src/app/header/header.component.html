@@ -1,10 +1,13 @@
 <!-- As a heading -->
 <div style="background:whitesmoke;display: flex; height: 60px">
   <div class="head-title" style="display: flex;">
-    <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-md-block" alt="AOC">
-    <a [routerLink]="['/']" [style.color]="color" style="text-decoration: none;">
-      {{title}}
+    <a [routerLink]="['/']">
+      <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;"
+        class="d-md-block" alt="AOC">
     </a>
+    <span [style.color]="color" style="text-decoration: none;">
+      {{title}}
+    </span>
   </div>
   <!--<div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
   </div>-->
