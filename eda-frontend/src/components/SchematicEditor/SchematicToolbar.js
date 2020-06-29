@@ -339,7 +339,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   return (
     <>
-      {/* <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} /> */}
       <Tooltip title="New">
         <IconButton color="inherit" className={classes.tools} size="small" target="_blank" component={RouterLink} to="/editor" >
           <CreateNewFolderOutlinedIcon fontSize="small" />
