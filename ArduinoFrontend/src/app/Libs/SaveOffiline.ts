@@ -12,9 +12,10 @@ export class SaveOffline {
 
     if (window.indexedDB) {
       const request = window.indexedDB.open('projects', 1);
-      request.onerror = () => {
+      request.onerror = (err) => {
+        console.log(err);
         // console.log('error: ');
-        alert('Error Occurred');
+        alert('Error Occurred for Ofline Circuit (Private Window Can be a Reason)');
       };
       request.onsuccess = () => {
         if (callback) {
