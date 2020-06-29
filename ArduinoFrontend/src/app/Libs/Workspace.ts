@@ -658,7 +658,17 @@ export class Workspace {
   /** Function called to clear output in console */
   static ClearConsole() {
     const clear = document.getElementById('msg');
-    clear.innerHTML = '';
+    let inside: any = clear.firstChild;
+    while (inside != null) {
+      if (inside.tagName === 'PRE') {
+        inside.innerText = '';
+        inside = inside.nextSibling;
+        continue;
+      }
+      const tmp = inside;
+      inside = inside.nextSibling;
+      clear.removeChild(tmp);
+    }
   }
 
   /** Function called to compile code in console */
