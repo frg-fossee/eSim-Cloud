@@ -1,20 +1,46 @@
 import { Point } from './Point';
-import { CircuitElement } from './CircuitElement';
 
-// Declare window so that custom created function don't throw error
+/**
+ * To prevent window from throwing error
+ */
 declare let window;
 /**
  * Class for Wire
  */
 export class Wire {
-  keyName = 'wires';
-  points: number[][] = []; // stores array of position [x,y]
+  /**
+   * Keyname require for mapping
+   */
+  static keyName = 'wires';
+  /**
+   * Stores array of position [x,y]
+   */
+  points: number[][] = [];
+  /**
+   * Store the Raphael elements of the joints
+   */
   joints: any[] = [];
-  end: Point = null; // End circuit node of wire
-  element: any; // body of the wire
-  color: any = '#000'; // color of the wire
+  /**
+   * End circuit node of wire
+   */
+  end: Point = null;
+  /**
+   * Body of the wire
+   */
+  element: any;
+  /**
+   * Color of the wire
+   */
+  color: any = '#000';
+  /**
+   * Store the glows on Hover
+   */
   glows: any[] = [];
+  /**
+   * Id of the Wire
+   */
   id: number;
+
   /**
    * Constructor of wire
    * @param canvas Raphael Canvas / paper
@@ -26,6 +52,7 @@ export class Wire {
     // insert the position of start node in array
     this.points.push(start.position());
   }
+
   /**
    *  Draws wire on the canvas
    * @param x x position of point
@@ -36,8 +63,11 @@ export class Wire {
     if (this.element) {
       this.element.remove();
     }
+
     if (this.points.length > 1) {
+      // Move to First point
       let inp = 'M' + this.points[0][0] + ',' + this.points[0][1] + ' ';
+      // Draw lines to other points
       for (let i = 1; i < this.points.length; ++i) {
         inp += 'L' + this.points[i][0] + ',' + this.points[i][1] + ' ';
       }
@@ -49,6 +79,7 @@ export class Wire {
       this.element = this.canvas.path('M' + this.points[0][0] + ',' + this.points[0][1] + 'L' + x + ',' + y);
     }
   }
+
   /**
    * Add a point to wire
    * @param x x position
@@ -57,22 +88,30 @@ export class Wire {
   add(x: number, y: number) {
     this.points.push([x, y]);
   }
-  // Click event callback
+  /**
+   * Handle click on Wire
+   */
   handleClick() {
+    // If Current Selected item is wire then deselect it
     if (window['Selected'] && (window['Selected'] instanceof Wire)) {
       window['Selected'].deselect();
     }
+
+    // Show all joints
     for (const joint of this.joints) {
       joint.show();
     }
+
     // Select current instance
     window['isSelected'] = true;
     window['Selected'] = this;
+
     // Show properties
     window.showProperty(() => {
       return this.properties();
     });
   }
+
   /**
    * Set Color of the wire
    * @param color color of the wire
@@ -80,12 +119,14 @@ export class Wire {
   setColor(color: string) {
     this.color = color;
     this.element.attr({ stroke: color }); // set attribute
+    // Update the color of joints
     for (const joint of this.joints) {
       joint.attr({ fill: color, stroke: color });
     }
   }
+
   /**
-   * Return properties of wire
+   * Return Properties of wire
    */
   properties() {
     // Create div and insert options form color
@@ -109,11 +150,12 @@ export class Wire {
     body.append(select);
     return {
       title: 'Wire',
-      keyName: this.keyName,
+      keyName: Wire.keyName,
       id: this.id,
       body
     };
   }
+
   /**
    * Function to connect wire with the node
    * @param t End point / END circuit node
@@ -130,31 +172,42 @@ export class Wire {
     this.points.push(t.position());
 
     if (this.points.length > 2) {
+      // For each point in the wire except first and last
       for (let i = 1; i < this.points.length - 1; ++i) {
+        // Create a Joint
         const joint = this.canvas.circle(this.points[i][0], this.points[i][1], 6);
-        joint.attr({ fill: this.color });
+        joint.attr({ fill: this.color, stroke: this.color });  // Give the joint a Color
+        // Variables used while dragging joints
         let tmpx;
         let tmpy;
         // set drag listener
         joint.drag((dx, dy) => {
+          // Update joints position
           joint.attr({ cx: tmpx + dx, cy: tmpy + dy });
+          // Update repective Point
           this.points[i] = [tmpx + dx, tmpy + dy];
+          // Update the wire
           this.update();
         }, () => {
+          // Get the Joints center
           const xx = joint.attr();
           tmpx = xx.cx;
           tmpy = xx.cy;
         }, () => {
         });
         this.joints.push(joint);
+        // Hide joint if required
         if (hideJoint) {
           joint.hide();
         }
       }
     }
+    // Update Wire
     this.update();
   }
-  // Returns true if both end od wire is connected
+  /**
+   * Returns true if both end of wire is connected
+   */
   isConnected() {
     return (this.start !== null && this.end !== null);
   }
@@ -244,6 +297,9 @@ export class Wire {
     this.color = data.color;
     this.points = data.points;
   }
+  /**
+   * Remove Glow of Wire
+   */
   private removeGlows() {
     while (this.glows.length !== 0) {
       this.glows.pop().remove();
@@ -253,22 +309,30 @@ export class Wire {
    * Remove wire from canvas
    */
   remove() {
+    // Remove Joint
     for (const joint of this.joints) {
       joint.remove();
     }
+    // Remove Glow
     this.removeGlows();
+    // Clear Joints
     this.joints = [];
     this.joints = null;
+    // Clear Points
     this.points = [];
     this.points = null;
+    // Remove element from dom
     this.element.remove();
+    // Clear connection from start node
     if (this.start) {
       this.start.connectedTo = null;
     }
+    // Clear connection from end node
     if (this.end) {
       this.end.connectedTo = null;
     }
     this.start = null;
     this.end = null;
+    this.element = null;
   }
 }
