@@ -5,7 +5,8 @@ import { Login } from '../Libs/Login';
 import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material';
-import { ProjectComponent } from '../project/project.component';
+import { environment } from 'src/environments/environment';
+
 declare var moment;
 
 @Component({
@@ -18,7 +19,7 @@ export class DashboardComponent implements OnInit {
   selected: any = {};
   online: any[] = [];
   onCloudMessage = 'No Online Circuits Available &#9785;';
-
+  isProd = environment.production;
   closeProject() {
     document.documentElement.style.overflow = 'auto';
     const closeProject = document.getElementById('openproject');
