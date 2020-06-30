@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationProperties() {
+export default function SimulationProperties () {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const dispatch = useDispatch()
@@ -152,7 +152,7 @@ export default function SimulationProperties() {
     sendNetlist(file)
   }
 
-  function sendNetlist(file) {
+  function sendNetlist (file) {
     netlistConfig(file)
       .then((response) => {
         const res = response.data
@@ -166,7 +166,7 @@ export default function SimulationProperties() {
   }
 
   // Upload the nelist
-  function netlistConfig(file) {
+  function netlistConfig (file) {
     const formData = new FormData()
     formData.append('file', file)
     const config = {
@@ -180,7 +180,7 @@ export default function SimulationProperties() {
   const [isResult, setIsResult] = useState(false)
 
   // Get the simulation result with task_Id
-  function simulationResult(url) {
+  function simulationResult (url) {
     api
       .get(url)
       .then((res) => {
@@ -432,7 +432,6 @@ export default function SimulationProperties() {
 
                     </ListItem>
 
-
                     <ListItem>
                       <TextField id="start" label="Start Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start}
@@ -454,7 +453,6 @@ export default function SimulationProperties() {
                       />
                       <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
-
 
                     {/* SECONDARY PARAMETER FOR SWEEP */}
                     <Divider />
@@ -679,7 +677,6 @@ export default function SimulationProperties() {
                         </option>
                       </TextField>
                     </ListItem>
-
 
                     <ListItem>
                       <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"

@@ -26,7 +26,7 @@ const styles = (theme) => ({
 })
 
 class NetlistUpload extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       file: null,
@@ -40,14 +40,14 @@ class NetlistUpload extends Component {
     this.netlistUpload = this.netlistUpload.bind(this)
   }
 
-  onChange(e) {
+  onChange (e) {
     this.setState({
       file: e.target.files[0],
       filename: e.target.files[0].name
     })
   }
 
-  onFormSubmit(e) {
+  onFormSubmit (e) {
     // Stop default form submit
     e.preventDefault()
     this.netlistUpload(this.state.file)
@@ -62,7 +62,7 @@ class NetlistUpload extends Component {
   }
 
   // Upload the nelist
-  netlistUpload(file) {
+  netlistUpload (file) {
     const formData = new FormData()
     formData.append('file', file)
     const config = {
@@ -74,7 +74,7 @@ class NetlistUpload extends Component {
   }
 
   // Get the simulation result with task_Id
-  simulationResult(url) {
+  simulationResult (url) {
     api
       .get(url)
       .then((res) => {
@@ -112,7 +112,7 @@ class NetlistUpload extends Component {
     }
   };
 
-  render() {
+  render () {
     const { classes } = this.props
     return (
       <>

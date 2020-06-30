@@ -11,11 +11,11 @@ Chart.defaults.global.defaultFontColor = '#e6e6e6'
 class Graph extends Component {
   chartRef = React.createRef();
 
-  componentDidMount() {
+  componentDidMount () {
     this.buildChart()
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     this.buildChart()
   }
 
@@ -148,7 +148,7 @@ class Graph extends Component {
     })
   };
 
-  render() {
+  render () {
     return (
       <div>
         <canvas id="myChart" ref={this.chartRef} />

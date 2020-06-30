@@ -14,8 +14,7 @@ let width, height, symbolName
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
 const fixed_number = 5
 
-function extractData(xml) {
-
+function extractData (xml) {
   // extracting metadata from the svg file.
 
   pinData = []
@@ -57,8 +56,7 @@ function extractData(xml) {
   }
 }
 
-export function getSvgMetadata(graph, parent, evt, target, x, y, component) {
-
+export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
   // calls extractData and other MXGRAPH functions
   // initialize information from the svg meta
   // plots pinnumbers and component labels.
@@ -77,7 +75,6 @@ export function getSvgMetadata(graph, parent, evt, target, x, y, component) {
       // console.log(data)
       return data
     }).then(function (data) {
-
       const pins = []
       width = data.width
       height = data.height
@@ -174,8 +171,7 @@ export function getSvgMetadata(graph, parent, evt, target, x, y, component) {
         // move this to another file
         // eslint-disable-next-line
 
-
-        if (currentPin.pinOrientation === "L") {
+        if (currentPin.pinOrientation === 'L') {
           pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0.5, 'align=right;verticalAlign=bottom;rotation=0')
         } else if (currentPin.pinOrientation === 'R') {
           pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0.5, 'align=left;verticalAlign=bottom;rotation=0')

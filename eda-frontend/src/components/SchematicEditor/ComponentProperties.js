@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setCompProperties } from '../../redux/actions/index'
 import { ListItem, ListItemText, Button, TextField, TextareaAutosize } from '@material-ui/core'
 
-export default function ComponentProperties() {
+export default function ComponentProperties () {
   // component properties that are displayed on the right side bar when user clicks on a component on the grid.
 
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)

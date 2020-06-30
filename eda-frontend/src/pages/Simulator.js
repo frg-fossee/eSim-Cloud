@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Simulator() {
+export default function Simulator () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [netlistCode, setNetlistCode] = useState('')
@@ -62,14 +62,14 @@ export default function Simulator() {
     return cleanCode
   }
 
-  function prepareNetlist() {
+  function prepareNetlist () {
     var sanatizedText = netlistCodeSanitization(netlistCode)
     var file = textToFile(sanatizedText)
     sendNetlist(file)
   }
 
   // Upload the nelist
-  function netlistConfig(file) {
+  function netlistConfig (file) {
     const formData = new FormData()
     formData.append('file', file)
     const config = {
@@ -80,7 +80,7 @@ export default function Simulator() {
     return api.post('simulation/upload', formData, config)
   }
 
-  function sendNetlist(file) {
+  function sendNetlist (file) {
     netlistConfig(file)
       .then((response) => {
         const res = response.data
@@ -94,7 +94,7 @@ export default function Simulator() {
 
   const [isResult, setIsResult] = useState(false)
 
-  function simulationResult(url) {
+  function simulationResult (url) {
     api
       .get(url)
       .then((res) => {

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import 'brace/theme/monokai'
 import 'brace/theme/github'
 
-export default function Editor(props) {
+export default function Editor (props) {
   // code editor for online spice simulator
   return (
 
