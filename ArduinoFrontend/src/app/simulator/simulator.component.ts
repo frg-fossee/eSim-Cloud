@@ -107,7 +107,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   ) {
     // Initialize Global Variables
     Workspace.initializeGlobalFunctions();
-    Workspace.injector = this.injector;
   }
   /** Function dynamically creates an SVG tag */
   makeSVGg() {
