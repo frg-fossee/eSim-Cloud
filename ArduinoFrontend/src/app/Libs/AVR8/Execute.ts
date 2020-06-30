@@ -16,6 +16,8 @@ export interface ServoEvent {
   pin: number;
   start: number;
   prevAngle: number;
+  isPWM?: boolean;
+  port?: string;
   callback: (angle: number, prevAngle: number) => void;
 }
 
@@ -50,8 +52,6 @@ export class ArduinoRunner {
     this.usart = new AVR8.AVRUSART(this.cpu, AVR8.usart0Config, this.frequency);
     this.adc = new AVR8.ADC(this.cpu);
 
-    // this.addServo('portD', 3, (k) => console.log(k));
-    // this.addServo('portD', 5, (k) => console.log(k));
     this.scheduler.start();
   }
 
@@ -99,8 +99,8 @@ export class ArduinoRunner {
     this.listeners = null;
     this.scheduler.stop();
   }
-  stop() {
 
+  stop() {
     this.scheduler.stop();
   }
   addMicroEvent(event: MicroEvent) {
@@ -110,17 +110,21 @@ export class ArduinoRunner {
     // TODO: Check index is in range
     return this.events[index];
   }
-  addServo(port: string, pin: number, callback: (angle: number, prevAngle: number) => void) {
+  addServo(port: string, pin: number, callback: (angle: number, prevAngle: number) => void, isPwm = false) {
     this.servo.push({
       pin,
       prevAngle: -10,
       start: 0,
-      callback
+      callback,
+      isPWM: isPwm,
+      port
     });
-
     if (!(port in this.listeners)) {
       this[port].addListener((value) => {
         for (const item of this.servo) {
+          if (port !== item.port) {
+            continue;
+          }
           if (((value >> item.pin) & 1) === 1) {
             item.start = this.cpu.cycles;
           } else {
@@ -128,8 +132,14 @@ export class ArduinoRunner {
               continue;
             }
             const seconds = ((this.cpu.cycles - item.start) * 1000000) / this.frequency;
-            let ang = (Math.floor(seconds) - 543) / 10.316;
-            ang = Math.floor(ang);
+            let ang = 0.0;
+            if (item.isPWM) {
+              ang = (Math.floor(seconds) - 7) / 4.048;
+              ang = Math.floor(ang);
+            } else {
+              ang = (Math.floor(seconds) - 543) / 10.316;
+              ang = Math.floor(ang);
+            }
             if (
               (ang + 1) !== item.prevAngle &&
               (ang - 1) !== item.prevAngle &&
