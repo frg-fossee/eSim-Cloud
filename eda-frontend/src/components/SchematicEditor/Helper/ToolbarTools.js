@@ -686,6 +686,19 @@ function parseXmlToGraph (xmlDoc, graph) {
   var yPos
   var xPos
   var props
+  var style = graph.getStylesheet().getDefaultVertexStyle()
+
+  style[mxConstants.STYLE_SHAPE] = 'label'
+  style[mxConstants.STYLE_VERTICAL_ALIGN] = 'bottom'
+      // style[mxConstants.STYLE_INDICATOR_SHAPE] = 'ellipse'
+      // style[mxConstants.STYLE_INDICATOR_WIDTH] = 34
+      // style[mxConstants.STYLE_INDICATOR_HEIGHT] = 34
+  style[mxConstants.STYLE_IMAGE_VERTICAL_ALIGN] = 'bottom' // indicator v-alignment
+  style[mxConstants.STYLE_IMAGE_ALIGN] = 'bottom'
+  style[mxConstants.STYLE_INDICATOR_COLOR] = 'green'
+  style[mxConstants.STYLE_FONTCOLOR] = 'red'
+  style[mxConstants.STYLE_FONTSIZE] = '10'
+  delete style[mxConstants.STYLE_STROKECOLOR] // transparent
   for (let i = 0; i < cells.length; i++) {
     const cellAttrs = cells[i].attributes
     if (cellAttrs.Component.value === '1') { // is component
