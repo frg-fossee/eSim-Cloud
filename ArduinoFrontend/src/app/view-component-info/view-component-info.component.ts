@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 
+/**
+ * Class for View Info Dialog Component
+ */
 @Component({
   selector: 'app-view-component-info',
   templateUrl: './view-component-info.component.html',

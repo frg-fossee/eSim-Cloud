@@ -9,7 +9,9 @@ import { Title, Meta } from '@angular/platform-browser';
  */
 declare var moment;
 
-
+/**
+ * Class For Project Page(Component) Used in sharing.
+ */
 @Component({
   selector: 'app-view-project',
   templateUrl: './view-project.component.html',

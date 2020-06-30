@@ -1,14 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Login } from '../Libs/Login';
 
+/**
+ * Class For Front page contains Seven Segment animation logic
+ */
 @Component({
   selector: 'app-front-page',
   templateUrl: './front-page.component.html',
   styleUrls: ['./front-page.component.css']
 })
 export class FrontPageComponent implements OnInit {
-
-  mapping = [
+  /**
+   * Mapping For Seven Segment animation
+   */
+  readonly mapping = [
     ['a', 'b', 'c', 'd', 'e', 'f'], // 0
     ['b', 'c'], // 1
     ['a', 'b', 'g', 'e', 'd'], // 2
@@ -27,11 +31,22 @@ export class FrontPageComponent implements OnInit {
     ['a', 'e', 'f', 'g'], // F
     [] // all off
   ];
+  /**
+   * Current Digit
+   */
   digit = 0;
+  /**
+   * Constructor For Front page
+   */
   constructor() { }
-
+  /**
+   * On Init Front page
+   */
   ngOnInit() {
+    // Set animation Interval
     setInterval(() => {
+      // TODO: For optimization glow only those bars which are changed
+      // Stop Glow in every bar of seven segment
       for (const className of this.mapping[8]) {
         const els = document.getElementsByClassName(className) as any;
         if (els.length < 3) { continue; }
@@ -39,7 +54,7 @@ export class FrontPageComponent implements OnInit {
         els[1].style.opacity = '0';
         els[2].setAttribute('fill', '#b2b2b2');
       }
-
+      // From mapping glow only required bar
       for (const ClassName of this.mapping[this.digit]) {
         const els = document.getElementsByClassName(ClassName) as any;
         if (els.length < 3) { continue; }
@@ -47,14 +62,12 @@ export class FrontPageComponent implements OnInit {
         els[1].style.opacity = '0.333';
         els[2].setAttribute('fill', '#ffa500');
       }
+      // Increment the Digit
       ++this.digit;
+      // If digit is big reset the digit
       if (this.digit >= 17) {
         this.digit -= 17;
       }
     }, 1000);
-  }
-
-  Login() {
-    Login.redirectLogin(true);
   }
 }
