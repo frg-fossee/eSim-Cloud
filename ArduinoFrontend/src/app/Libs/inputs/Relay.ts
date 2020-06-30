@@ -1,5 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
-import { Point } from '../Point';
+
 /**
  * Relay Module Class
  */
@@ -10,10 +10,12 @@ export class Relay extends CircuitElement {
    * @param x Position x
    * @param y Position y
    */
-  noSimulate = false;
   constructor(public canvas: any, public x: number, y: number) {
     super('RelayModule', x, y, 'Relay.json', canvas);
   }
+  /**
+   * Initialize the relay module.
+   */
   init() {
     let iniValue = 0;
     this.nodes[4].addValueListener((v) => {
@@ -49,6 +51,9 @@ export class Relay extends CircuitElement {
       body
     };
   }
+  /**
+   * Check connection,if not connected show toast.
+   */
   initSimulation(): void {
     // Check Connection
     if (
@@ -61,6 +66,9 @@ export class Relay extends CircuitElement {
       window['showToast']('Please Connect Relay Properly');
     }
   }
+  /**
+   * Called on Stop Simulation.
+   */
   closeSimulation(): void {
   }
 }

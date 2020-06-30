@@ -5,8 +5,20 @@ import { Slider } from './Slider';
  * Temperature sensor TMP36
  */
 export class TMP36 extends CircuitElement {
+  /**
+   * Slider to change temperature
+   */
   slide: Slider;
+  /**
+   * Raphael text element for showing value.
+   */
   valueText: any;
+  /**
+   * Constructor for temperature sensor
+   * @param canvas Raphael Paper
+   * @param x X position
+   * @param y y Position
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('TMP36', x, y, 'TMP36.json', canvas);
   }
@@ -58,7 +70,8 @@ export class TMP36 extends CircuitElement {
     });
     this.setValue(0.925);
   }
-  /** Function removes all callbacks  */
+
+  /** remove slider and text */
   closeSimulation(): void {
     this.valueText.remove();
     this.slide.remove();
