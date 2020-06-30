@@ -3,12 +3,29 @@ import { CircuitElement } from './CircuitElement';
  * Label class
  */
 export class Label extends CircuitElement {
+  /**
+   * Text of the label
+   */
   text = 'Label';
+  /**
+   * Font Size of the Label
+   */
   fontSize = 15;
+  /**
+   * Font color of the label.
+   */
   fontColor = '#000000';
+  /**
+   * Font style of the label
+   */
   fontStyle = 'normal';
-  // normal | bold | bolder | lighter
+  /**
+   * Font weight of the label.
+   */
   fontWeight = 'normal';
+  /**
+   * Get Name Function
+   */
   getName = null;
   /**
    * Label constructor
@@ -176,8 +193,14 @@ export class Label extends CircuitElement {
       title: 'Label'
     };
   }
+  /**
+   * Called on Start Simulation
+   */
   initSimulation(): void {
   }
+  /**
+   * Called on Stop simulation.
+   */
   closeSimulation(): void {
   }
 }
