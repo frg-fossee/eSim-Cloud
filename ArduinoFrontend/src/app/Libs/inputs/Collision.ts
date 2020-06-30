@@ -1,12 +1,20 @@
 /**
- * @param x position x
- * @param y position y
+ * Position as a Vector
  */
 export interface Vector {
+  /**
+   * X Position
+   */
   x: number;
+  /**
+   * Y Positon
+   */
   y: number;
+  // if require add Magnitude
 }
-// enum function for rotation of motor
+/**
+ * Orientation Between three points
+ */
 export enum Orienation {
   COLINEAR,
   CLOCKWISE,

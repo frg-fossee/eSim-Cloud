@@ -1,15 +1,26 @@
 import { CircuitElement } from '../CircuitElement';
 import { Vector } from './Collision';
 
-declare var Raphael;
+/**
+ * Declare window so that custom created function don't throw error
+ */
 declare var window;
 
 /**
  * Potentiometer Class
  */
 export class Potentiometer extends CircuitElement {
+  /**
+   * Types of potentiometer name.
+   */
   static variants: string[];
+  /**
+   * Types of potentiometer resistance
+   */
   static variantsValue: number[];
+  /**
+   * Selected potentiometer type.
+   */
   selectedIndex: number;
   /**
    * Potentiometer constructor
@@ -28,15 +39,24 @@ export class Potentiometer extends CircuitElement {
     this.data.variants = [];
     this.data = null;
   }
+  /**
+   * Returns the client point respective to the svg
+   * @param x X positon
+   * @param y y position
+   */
   svgPoint(x, y) {
     const pt = window['holder_svg'].createSVGPoint();
     pt.x = x;
     pt.y = y;
     return pt.matrixTransform(window.canvas.canvas.getScreenCTM().inverse());
   }
-
+  /**
+   * Rotates the dial and sets the analog value
+   * @param center Center of the Potentiometer
+   * @param clientX Mouse X
+   * @param clientY Mouse Y
+   */
   rotateDial(center: Vector, clientX: number, clientY: number) {
-    // let line;
     const point = this.svgPoint(clientX, clientY);
     const difX = point.x - center.x;
     const difY = point.y - center.y;
@@ -102,6 +122,9 @@ export class Potentiometer extends CircuitElement {
       body
     };
   }
+  /**
+   * Called on start simulation. Add Event listener.
+   */
   initSimulation(): void {
     if (
       !(this.nodes[0].connectedTo &&
@@ -132,11 +155,18 @@ export class Potentiometer extends CircuitElement {
 
     this.nodes[1].setValue(0, this.nodes[1]);
   }
+  /**
+   * Save the Selected type in database
+   */
   SaveData() {
     return {
       value: this.selectedIndex
     };
   }
+  /**
+   * Load the Selected type.
+   * @param data Saved Data
+   */
   LoadData(data: any) {
     if (data.data && data.data.value > 0) {
       this.selectedIndex = data.data.value;
@@ -144,6 +174,9 @@ export class Potentiometer extends CircuitElement {
       this.selectedIndex = 0;
     }
   }
+  /**
+   * Reset transformation add add event listeners.
+   */
   closeSimulation(): void {
     const attr = this.elements[1].attr();
     this.elements[1].attr({
@@ -155,7 +188,5 @@ export class Potentiometer extends CircuitElement {
     this.elements.unmousedown();
     this.setClickListener(null);
     this.setDragListeners();
-  }
-  simulate(): void {
   }
 }

@@ -10,6 +10,7 @@ from celery import states
 import json
 import logging
 import re
+import uuid
 
 logger = logging.getLogger(__name__)
 PATTERN = r'^[ \t]*\w+\d*[ \t]+\w+\d*\(([ \t]*\w+\d*[ \t]+\w+\d*[ \t]*\,?)*\)[ \t]*\n?\{'  # noqa
@@ -21,11 +22,12 @@ def saveFiles(data):
     if not os.path.exists(settings.MEDIA_ROOT):
         Path(settings.MEDIA_ROOT).mkdir(parents=True, exist_ok=True)
     for k in data:
-        work_dir = settings.MEDIA_ROOT+'/'+str(k)
+        foldername = str(uuid.uuid4()) + '_' + str(k)
+        work_dir = settings.MEDIA_ROOT+'/'+str(foldername)
 
         Path(work_dir).mkdir(parents=True, exist_ok=True)
 
-        filename = settings.MEDIA_ROOT+'/'+str(k)+'/sketch.ino'
+        filename = settings.MEDIA_ROOT+'/'+str(foldername)+'/sketch.ino'
 
         fout = open(filename, 'w', encoding='utf8')
         matches = re.finditer(PATTERN, data.get(k, ''), re.MULTILINE)
@@ -38,8 +40,10 @@ def saveFiles(data):
 
         fout.writelines(data.get(k, ''))
         fout.close()
+        filenames.append(foldername)
+        logger.info('Creating')
+        logger.info(filename)
 
-        filenames.append(k)
     return filenames
     # except Exception:
     #     logger.error(traceback.format_exc())
@@ -52,6 +56,9 @@ def CompileINO(filenames):
         for filename in filenames:
             ino_name = settings.MEDIA_ROOT+'/'+str(filename)+'/sketch.ino'
             out_name = settings.MEDIA_ROOT+'/'+str(filename)+'/out.hex'
+            logger.info('Compiling')
+            logger.info(ino_name)
+
             ps = subprocess.Popen(
                 ['arduino-cli', 'compile', ino_name, '--fqbn',
                     'arduino:avr:uno', '-o', out_name],
@@ -69,15 +76,21 @@ def CompileINO(filenames):
             if os.path.isfile(out_name):
                 data = open(out_name, 'r').read()
             # print(data)
+            pos = filename.find('_')
+            if pos != -1:
+                pos += 1
+                key = filename[pos:]
+            else:
+                key = filename
 
-            ret[str(filename)] = {
+            ret[key] = {
                 'output': re.sub(
-                    rf'{settings.MEDIA_ROOT}/\d+/',
+                    rf'{settings.MEDIA_ROOT}/{filename}/',
                     '',
                     output.decode('utf-8')
                 ),
                 'error': re.sub(
-                    rf'{settings.MEDIA_ROOT}/\d+/',
+                    rf'{settings.MEDIA_ROOT}/{filename}/',
                     '',
                     err.decode('utf-8')
                 ),
@@ -91,6 +104,8 @@ def CompileINO(filenames):
         for filename in filenames:
             parent = settings.MEDIA_ROOT+'/'+str(filename)
             shutil.rmtree(parent, True)
+            logger.info('Removing')
+            logger.info(parent)
     return ret
 
 

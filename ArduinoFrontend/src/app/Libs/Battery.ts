@@ -1,4 +1,5 @@
 import { CircuitElement } from './CircuitElement';
+
 /**
  * Battery9V class
  */
@@ -58,11 +59,11 @@ export class Battery9v extends CircuitElement {
       }
     }, 10);
   }
+  /**
+   * Called on Stop Simulation
+   */
   closeSimulation(): void {
   }
-  simulate(): void {
-  }
-
 }
 
 /**
@@ -115,8 +116,9 @@ export class CoinCell extends CircuitElement {
   initSimulation(): void {
     this.nodes[0].setValue(3, null);
   }
+  /**
+   * Called on stop Simulation
+   */
   closeSimulation(): void {
-  }
-  simulate(): void {
   }
 }

@@ -7,46 +7,99 @@ import { isNull } from 'util';
  * Inherited by Each Circuit Component
  */
 export abstract class CircuitElement {
-  public keyName: string; // Circuit Component Name
-  public id: number; // Stores the id of the Component
-  public nodes: Point[] = []; // Stores the Nodes of a Component
+  /**
+   * Circuit Component Name
+   */
+  public keyName: string;
+  /**
+   * Stores the id of the Component
+   */
+  public id: number;
+  /**
+   * Stores the Nodes of a Component
+   */
+  public nodes: Point[] = [];
+  /**
+   * Raphael Set of elements
+   */
   public elements: any;
+  /**
+   * Translation X
+   */
   public tx = 0;
+  /**
+   * Translation Y
+   */
   public ty = 0;
+  /**
+   * Title of the component
+   */
   public title: string;
-  public simulationData: any = {}; // Store Values That are required during simulation
-  public data: any = {}; // Store Values that are additionaly require by class
+  /**
+   * Store Values That are required during simulation
+   */
+  public simulationData: any = {};
+  /**
+   * Store Values that are additionaly require by class
+   */
+  public data: any = {};
+  /**
+   * Stores Information regarding a component
+   */
   public info: any;
+  /**
+   * The Half Size of the Circuit Node
+   */
   public pointHalf: number;
+  /**
+   * Node ID
+   */
   public nid = 0;
   /**
-   * Creates Circuit Component
-   * @param keyName Circuit Component Name
+   * Constructor For Circuit Element Class (Parent of every component)
+   * @param keyName KeyName For a Component required for mapping class to string
+   * @param x X position of component
+   * @param y Y Position Of component
+   * @param filename Json Data filename
+   * @param canvas Raphael Canvas
    */
   constructor(keyName: string, public x: number, public y: number, filename: string = '', canvas: any = null) {
     this.id = Date.now(); // Generate New id
     this.keyName = keyName; // Set key name
+    // Create Raphael Set
     this.elements = window['canvas'].set();
 
+    // if filename is present fetch the file
     if (filename) {
       fetch(`./assets/jsons/${filename}`)
         .then(v => v.json())
         .then(obj => {
+          // get the title
           this.title = obj.name;
+
           this.pointHalf = obj.pointHalf;
+          // Draw Elements of the component
           this.DrawElement(canvas, obj.draw);
+          // Add Circuiy Nodes
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
-          // console.log(obj);
+          // Add info and data
           this.info = obj.info;
           this.data = obj.data;
+          // Add a Drag listener
           this.setDragListeners();
+          // Add a Click Listener
           this.setClickListener(null);
+          // Add Hover Listener
           this.setHoverListener();
+          // Translate the elements to the tranformation
           this.elements.transform(`t${this.tx},${this.ty}`);
+          // Move the node according to the translatiom
           for (const node of this.nodes) {
             node.relativeMove(this.tx, this.ty);
           }
+          // Decrease the Queue
           window['queue'] -= 1;
+          // Call the init method
           this.init();
         })
         .catch(err => {
@@ -56,7 +109,12 @@ export abstract class CircuitElement {
         });
     }
   }
-
+  /**
+   * Draws circuit nodes
+   * @param canvas Raphael Canvas
+   * @param pinData Pin Position and name
+   * @param pointHalf The Half size of circuit node
+   */
   DrawNodes(canvas: any, pinData: any, pointHalf: number) {
     for (const pin of pinData) {
       this.nodes.push(
@@ -71,9 +129,14 @@ export abstract class CircuitElement {
       );
     }
   }
-
+  /**
+   * Draw Elements inside an component
+   * @param canvas Raphael Canvas
+   * @param drawData Draw Data
+   */
   DrawElement(canvas: any, drawData: any) {
     for (const item of drawData) {
+      // Draw image
       if (item.type === 'image') {
         this.elements.push(
           canvas.image(
@@ -89,6 +152,7 @@ export abstract class CircuitElement {
           this.DrawPath(canvas, item)
         );
       } else if (item.type === 'rectangle') {
+        // Draw rectangle
         this.elements.push(
           canvas.rect(
             this.x + item.x,
@@ -102,6 +166,7 @@ export abstract class CircuitElement {
           })
         );
       } else if (item.type === 'circle') {
+        // Draw a circle
         this.elements.push(
           canvas.circle(
             this.x + item.x,
@@ -117,7 +182,11 @@ export abstract class CircuitElement {
       }
     }
   }
-
+  /**
+   * Draws an Polygon
+   * @param canvas Raphael Paper(Canvas)
+   * @param item Polygon points in a 2d array format
+   */
   DrawPolygon(canvas: any, item: any) {
     if (item.points.length <= 1) {
       return;
@@ -136,16 +205,20 @@ export abstract class CircuitElement {
         })
     );
   }
-
+  /**
+   * Draw a Path
+   * @param canvas Raphael Paper (Canvas)
+   * @param item Path Data
+   */
   DrawPath(canvas: any, item: any) {
-    const lines = /L[\-]?\d+(\.\d*)?\,[\-]?\d+(\.\d*)?/g;
-    const start = /M[\-]?\d+(\.\d*)?\,[\-]?\d+(\.\d*)?/g;
+    // Regex used to parse the path data
+    const lines = /L[\-]?\d+(\.\d*)?\,[\-]?\d+(\.\d*)?/g; // L a,b
+    const start = /M[\-]?\d+(\.\d*)?\,[\-]?\d+(\.\d*)?/g; // M a,b
     const curves = /C([\-]?\d+(\.\d*)?\,){5}[\-]?\d+(\.\d*)?/g;
-    const horizontal = /H[\-]?\d+(\.\d*)?/g;
-    const vertical = /V[\-]?\d+(\.\d*)?/g;
+    const horizontal = /H[\-]?\d+(\.\d*)?/g; // H a
+    const vertical = /V[\-]?\d+(\.\d*)?/g; // V b
     const sCurve = /S([\-]?\d+(\.\d*)?\,){3}[\-]?\d+(\.\d*)?/g;
     let str: string = item.value;
-    // console.log(str);
 
     str = this.calcRelative(str, start, canvas);
     str = this.calcRelative(str, lines, canvas);
@@ -161,7 +234,12 @@ export abstract class CircuitElement {
         })
     );
   }
-
+  /**
+   * Draw path relative to the component
+   * @param input Path Data
+   * @param pattern The regex pattern
+   * @param canvas Raphael Paper
+   */
   calcRelative(input: string, pattern: RegExp, canvas: any) {
     const founds = input.match(pattern);
     if (founds) {
@@ -194,17 +272,19 @@ export abstract class CircuitElement {
     }
     return input;
   }
-
+  /**
+   * Add Drag listener to the components
+   */
   setDragListeners() {
-    let tmpx = 0;
-    let tmpy = 0;
+    // let tmpx = 0;
+    // let tmpy = 0;
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      tmpx = this.tx + dx;
-      tmpy = this.ty + dy;
+      // tmpx = this.tx + dx;
+      // tmpy = this.ty + dy;
       fdx = dx;
       fdy = dy;
       for (let i = 0; i < this.nodes.length; ++i) {
@@ -225,11 +305,13 @@ export abstract class CircuitElement {
       //   node.relativeMove(fdx, fdy);
       //   node.remainShow();
       // }
-      this.tx = tmpx;
-      this.ty = tmpy;
+      this.tx += fdx;
+      this.ty += fdy;
     });
   }
-
+  /**
+   * Add Hover Listener
+   */
   setHoverListener() {
     // this.elements.mouseover(() => {
     //   for (const node of this.nodes) {
@@ -242,7 +324,10 @@ export abstract class CircuitElement {
     //   }
     // });
   }
-
+  /**
+   * Add a Click listenert to component and show properties on click
+   * @param callback On Click Callback
+   */
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
       if (window['Selected'] && (window['Selected'] instanceof Wire)) {
@@ -259,6 +344,9 @@ export abstract class CircuitElement {
       }
     });
   }
+  /**
+   * Initialize Variable after inheriting this function
+   */
   init() { }
 
   /**
@@ -278,6 +366,10 @@ export abstract class CircuitElement {
     }
     return ret;
   }
+  /**
+   * The Additional data that needs to be saved inside database.
+   * After Inheriting return the Data Object
+   */
   SaveData() {
     return null;
   }
@@ -290,12 +382,16 @@ export abstract class CircuitElement {
     this.ty = data.ty;
     this.LoadData(data);
   }
+  /**
+   * The additional data which is stored in database needs to be load.
+   * Inherit this function for loading additional data.
+   * @param data Data from Database
+   */
   LoadData(data: any) { }
   /**
    * Returns the Circuit Node based on the x,y Position
    */
   getNode(x: number, y: number, id: number = null): Point {
-    // console.log([x, y]);
     for (const node of this.nodes) {
       if (
         (Math.floor(node.x + this.pointHalf) === Math.floor(x) &&
@@ -318,7 +414,13 @@ export abstract class CircuitElement {
     }
     this.delete();
   }
+  /**
+   * Inherit this function to remove some variable
+   */
   delete() { }
+  /**
+   * Return the Name of the component.Can be inheriter to return custom name.
+   */
   getName() { return this.title; }
   /**
    * Return the Property of the Circuit Component
@@ -334,8 +436,4 @@ export abstract class CircuitElement {
    * Called when Stop Simulation
    */
   abstract closeSimulation(): void;
-  /**
-   * Called During Simulation
-   */
-  abstract simulate(): void;
 }

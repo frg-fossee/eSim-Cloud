@@ -1,5 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
-import { Point } from '../Point';
+
 /**
  * LCD16X2 Class
  */
@@ -29,21 +29,40 @@ export class LCD16X2 extends CircuitElement {
       title: 'LCD Display 16x2'
     };
   }
+  /**
+   * Called on Start Simulation
+   */
   initSimulation(): void {
   }
+  /**
+   * Called on Stop Simulation
+   */
   closeSimulation(): void {
-  }
-  simulate(): void {
   }
 }
 /**
  * SevenSegment Class
  */
 export class SevenSegment extends CircuitElement {
+  /**
+   * The Seven Segment Bar Color
+   */
   static barColor: string;
+  /**
+   * The Seven Segment Bar glow color
+   */
   static barGlowColor: string;
+  /**
+   * The Bar mapping
+   */
   static mapping: number[] = [];
+  /**
+   * Stores list of Raphael Glow elements
+   */
   glows = [];
+  /**
+   * Map of Pin name to Circuit Node
+   */
   pinNamedMap: any = {};
   /**
    * SevenSegment constructor
@@ -128,13 +147,13 @@ export class SevenSegment extends CircuitElement {
       title: 'Seven Segment Display'
     };
   }
+  /**
+   * Called on Start Simulation
+   */
   initSimulation(): void {
   }
   /** Function removes all  animations */
   closeSimulation(): void {
     this.animate(0);
   }
-  simulate(): void {
-  }
-
 }

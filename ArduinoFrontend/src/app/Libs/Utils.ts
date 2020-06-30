@@ -14,16 +14,20 @@ import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
 import { Resistor, BreadBoard } from './General';
+
 /**
  * Utils class
  * Contains All components with their section
  */
 export class Utils {
+  /**
+   * Stores an object required by the Side Component Panel
+   */
   static componentBox = {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
-      ['SlideSwitch', 'PhotoResistor', 'TMP36'],
-      ['PotentioMeter', 'MQ2']
+      ['SlideSwitch', 'MQ2', 'TMP36'],
+      ['PotentioMeter'/*, 'PhotoResistor'*/]
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -33,8 +37,8 @@ export class Utils {
     ],
     output: [
       ['Buzzer', 'LED', 'Motor'], // Row
-      ['LCD16X2', 'ServoMotor', 'SevenSegment'],
-      ['RGBLED']
+      ['RGBLED', 'ServoMotor', 'SevenSegment']
+      // ['LCD16X2']
     ],
     drivers: [
       ['L298N']
@@ -43,9 +47,11 @@ export class Utils {
       ['Label', 'RelayModule']
     ],
     general: [
-      ['Resistor', 'BreadBoard']
+      [ // 'Resistor',
+        'BreadBoard']
     ]
   };
+
   /** Components with thier name, image, classname */
   static components = {
     BreadBoard: {

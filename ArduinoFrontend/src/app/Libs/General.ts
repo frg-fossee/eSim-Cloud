@@ -4,13 +4,33 @@ import { Point } from './Point';
  * Resistor Class
  */
 export class Resistor extends CircuitElement {
-  static colorTable: string[] = []; // color table(hex values) of resistor
-  static tolColorMap: number[] = []; // tolerance color mapping values of resistor
-  static toleranceValues: string[] = []; // tolerance value of resistor
-  static unitLabels: string[] = []; // unit labels of resistor
-  static unitValues: number[] = []; // unit values of resistor
-
+  /**
+   * color table(hex values) of resistor
+   */
+  static colorTable: string[] = [];
+  /**
+   * tolerance color mapping values of resistor
+   */
+  static tolColorMap: number[] = [];
+  /**
+   * tolerance value of resistor
+   */
+  static toleranceValues: string[] = [];
+  /**
+   * unit labels of resistor
+   */
+  static unitLabels: string[] = [];
+  /**
+   * unit values of resistor
+   */
+  static unitValues: number[] = [];
+  /**
+   * Resistance value of the resistor.
+   */
   value: number;
+  /**
+   * Tolerance index of the resistor.
+   */
   toleranceIndex: number;
   /**
    * Resistor constructor
@@ -105,6 +125,11 @@ export class Resistor extends CircuitElement {
     }
     return 0;
   }
+  /**
+   * Calculate the resistance based on the user input.
+   * @param value The Input resistance
+   * @param unitIndex The selected unit index
+   */
   update(value: string, unitIndex: number) {
     const val = parseFloat(value);
     const p = this.getPower(unitIndex);
@@ -203,19 +228,25 @@ export class Resistor extends CircuitElement {
       body
     };
   }
+  /**
+   * Called by the start simulation.
+   */
   initSimulation(): void {
   }
+  /**
+   * Called by the stop simulation.
+   */
   closeSimulation(): void {
   }
-  simulate(): void {
-  }
-
 }
 
 /**
  * Breadboard Class
  */
 export class BreadBoard extends CircuitElement {
+  /**
+   * Nodes that are connected
+   */
   public joined: Point[] = [];
   /**
    * Breadboard constructor
@@ -228,12 +259,13 @@ export class BreadBoard extends CircuitElement {
   }
   /** init is called when the component is complety drawn to the canvas */
   init() {
-    // Create a mapping for node label to node
+    // add a connect callback listener
     for (const node of this.nodes) {
       node.connectCallback = (item) => {
         this.joined.push(item);
       };
     }
+    // Remove the drag event
     this.elements.undrag();
     let tmpx = 0;
     let tmpy = 0;
@@ -241,6 +273,7 @@ export class BreadBoard extends CircuitElement {
     let fdy = 0;
     let tmpar = [];
     let tmpar2 = [];
+    // Create Custom Drag event
     this.elements.drag((dx, dy) => {
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
       tmpx = this.tx + dx;
@@ -294,11 +327,17 @@ export class BreadBoard extends CircuitElement {
       title: this.title
     };
   }
-
+  /**
+   * Initialize Breadboard for simultion
+   */
   initSimulation(): void {
+    // Stores set of node which has same x values
     const xtemp = {};
+    // Stores set of node which has same y values
     const ytemp = {};
+
     for (const node of this.joined) {
+      // Add a Node value change listener
       node.addValueListener((v, cby, par) => {
         if (par.x === par.x && cby.y === par.y) {
           return;
@@ -328,19 +367,23 @@ export class BreadBoard extends CircuitElement {
         }
 
       });
+
+      // create the set for x
       if (!(node.x in xtemp)) {
         xtemp[node.x] = [];
       }
       xtemp[node.x].push(node);
-
+      // Create the set for y
       if (!(node.y in ytemp)) {
         ytemp[node.y] = [];
       }
       ytemp[node.y].push(node);
     }
+
   }
+  /**
+   * Called on Stop Simulation is pressed
+   */
   closeSimulation(): void {
-  }
-  simulate(): void {
   }
 }

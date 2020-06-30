@@ -40,7 +40,7 @@
     "simulation": {},
     "info": {
         "name": "SG90 9G Micro Servo Motor",
-        "image": "https://aws.robu.in/wp-content/uploads/2017/09/Micro-Servo-SG90-9G-Eletronic-Module-RC.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Micro_servo.jpg/640px-Micro_servo.jpg",
         "Datasheet": "http://www.ee.ic.ac.uk/pcheung/teaching/DE1_EE/stores/sg90_datasheet.pdf",
         "description": "The TowerPro SG90 mini servo is lightweight, high-quality and lightning-fast. The servo is designed to work with almost all radio control systems. The SG90 mini servo with accessories is perfect for R/C helicopter, plane, car, boat and truck use.",
         "properties": {
