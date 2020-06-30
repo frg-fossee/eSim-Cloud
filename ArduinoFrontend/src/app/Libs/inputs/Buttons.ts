@@ -1,10 +1,16 @@
 import { CircuitElement } from '../CircuitElement';
 
+/**
+ * Declare Raphael so that build don't throws error
+ */
 declare var Raphael;
 /**
  * Pushbutton Class
  */
 export class PushButton extends CircuitElement {
+  /**
+   * Map of Pin name to the circuit node
+   */
   pinNamedMap: any = {};
   /**
    * pushbutton constructor
@@ -113,7 +119,10 @@ export class PushButton extends CircuitElement {
  * Slideswitch Class
  */
 export class SlideSwitch extends CircuitElement {
-  private flag = true; // if true connected with terminal 1 else connected with terminal 2
+  /**
+   * if true connected with terminal 1 else connected with terminal 2
+   */
+  private flag = true;
   /**
    * Slideswitch constructor
    * @param canvas Raphael Canvas (Paper)
@@ -123,6 +132,9 @@ export class SlideSwitch extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('SlideSwitch', x, y, 'SlideSwitch.json', canvas);
   }
+  /**
+   * Initialize Slide Switch
+   */
   init() {
     this.nodes[1].addValueListener((v) => {
       console.log(v);
@@ -163,6 +175,9 @@ export class SlideSwitch extends CircuitElement {
       title: 'Slide Switch'
     };
   }
+  /**
+   * Called on Start Simulation.
+   */
   initSimulation(): void {
     this.elements.unmousedown();
     this.elements.unclick();
@@ -171,6 +186,9 @@ export class SlideSwitch extends CircuitElement {
     });
     this.nodes[1].setValue(5, null);
   }
+  /**
+   * Called on stop simulation.
+   */
   closeSimulation(): void {
     this.elements.unclick();
     this.setDragListeners();
