@@ -3,20 +3,34 @@ import { Download, ImageType } from '../Libs/Download';
 import { Title } from '@angular/platform-browser';
 import { MatDialogRef } from '@angular/material';
 
+/**
+ * Declare window so that custom created function don't throw error
+ */
 declare var window;
 
+/**
+ * Class For Export Dialog Component
+ */
 @Component({
   selector: 'app-exportfile',
   templateUrl: './exportfile.component.html',
   styleUrls: ['./exportfile.component.css']
 })
-export class ExportfileComponent implements OnInit {
-
+export class ExportfileComponent {
+  /**
+   * Constructor For Export Dialog
+   * @param title Project Title
+   * @param dialog Material Dialog Reference
+   */
   constructor(private title: Title, private dialog: MatDialogRef<ExportfileComponent>) { }
-
-  ngOnInit() {
-  }
+  /**
+   * Export Workspace to image
+   * @param svg SVG Radio element
+   * @param png PNG Radio element
+   * @param jpg JPG Radio element
+   */
   Export(svg, png, jpg) {
+    // Show Loading animation
     window.showLoading();
     if (svg.checked) {
       Download.ExportImage(ImageType.SVG)
@@ -39,8 +53,10 @@ export class ExportfileComponent implements OnInit {
           window.hideLoading();
         });
     } else {
+      // Hide loading animation
       window.hideLoading();
     }
+    // Close Dialog
     this.dialog.close();
   }
 }
