@@ -3,20 +3,60 @@ import { ArduinoRunner } from '../AVR8/Execute';
 import { isUndefined, isNull } from 'util';
 import { Point } from '../Point';
 
+/**
+ * AVR8 global variable
+ */
 declare var AVR8;
 
+/**
+ * Arduino uno component class
+ */
 export class ArduinoUno extends CircuitElement {
+  /**
+   * Arduino name Prefix
+   */
   static prefix = 'Arduino UNO R3 '; // TODO: fetch from json
+  /**
+   * Name of the Arduino
+   */
   public name: string;
+  /**
+   * Code inside the arduino
+   */
   public code = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}'; // TODO: fetch from json
+  /**
+   * For execution of code
+   */
   public runner: ArduinoRunner;
+  /**
+   * The Compiled Hex
+   */
   public hex: string;
+  /**
+   * Power LED of Arduino
+   */
   public powerLed: any;
+  /**
+   * Built in LED of arduino
+   */
   public builtinLED: any;
+  /**
+   * Pin Names Mapped to the respective Node
+   */
   public pinNameMap: any = {};
+  /**
+   * Servo attached to an arduino
+   */
   private servos: any[] = [];
+  /**
+   * Constructor for Arduino
+   * @param canvas Raphael Paper
+   * @param x X position
+   * @param y Y Position
+   */
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
+    // Logic to Create Name of an  arduino
     let start = window['scope']['ArduinoUno'].length + 1;
     this.name = ArduinoUno.prefix + start;
     while (window['ArduinoUno_name'][this.name]) {
@@ -25,10 +65,15 @@ export class ArduinoUno extends CircuitElement {
     }
     window['ArduinoUno_name'][this.name] = this;
   }
+  /**
+   * Initialize Arduino
+   */
   init() {
+    // Create The mapping
     for (const node of this.nodes) {
       this.pinNameMap[node.label] = node;
     }
+    // Add a Analog value change Listener to the circuit nodes
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`A${i}`].addValueListener((val) => {
         if (isUndefined(this.runner) || isNull(this.runner)) {
@@ -41,19 +86,20 @@ export class ArduinoUno extends CircuitElement {
       });
     }
 
-    this.pinNameMap['D12'].addValueListener((v) => {
-      if (isUndefined(this.runner) || isNull(this.runner)) {
-        setTimeout(() => {
-          this.pinNameMap['D12'].setValue(v, this.pinNameMap['D12']);
-        }, 300);
-        return;
-      } else {
-        if (this.runner.portB.pinState(4) === AVR8.PinState.Input) {
-          this.runner.portB.setPin(4, v > 0 ? 1 : 0);
-        }
-      }
-    });
-    // For Port B D5 - D13
+    // this.pinNameMap['D12'].addValueListener((v) => {
+    //   if (isUndefined(this.runner) || isNull(this.runner)) {
+    //     setTimeout(() => {
+    //       this.pinNameMap['D12'].setValue(v, this.pinNameMap['D12']);
+    //     }, 300);
+    //     return;
+    //   } else {
+    //     if (this.runner.portB.pinState(4) === AVR8.PinState.Input) {
+    //       this.runner.portB.setPin(4, v > 0 ? 1 : 0);
+    //     }
+    //   }
+    // });
+
+    // For Port B D5 - D13 add a input listener
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`D${i + 8}`].addValueListener((v) => {
         console.log([i, v]);
@@ -63,6 +109,7 @@ export class ArduinoUno extends CircuitElement {
           }, 300);
           return;
         }
+        // Update the value of register only if pin is input
         if (this.runner.portB.pinState(i) === AVR8.PinState.Input) {
           this.runner.portB.setPin(i, v > 0 ? 1 : 0);
         }
@@ -77,23 +124,33 @@ export class ArduinoUno extends CircuitElement {
           }, 300);
           return;
         }
+        // Update the value of register only if pin is input
         if (this.runner.portD.pinState(i) === AVR8.PinState.Input) {
           this.runner.portD.setPin(i, v > 0 ? 1 : 0);
         }
       });
     }
   }
+  /**
+   * Data which needs to be saved inside the database
+   */
   SaveData() {
     return {
       name: this.name,
       code: this.code
     };
   }
+  /**
+   * Load Data which is fetched from data base
+   * @param data Data fetched from the database
+   */
   LoadData(data: any) {
     this.name = data.data.name;
     this.code = data.data.code;
-    // console.log(data);
   }
+  /**
+   * Property of an Arduino
+   */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
     const label = document.createElement('label');
@@ -122,6 +179,9 @@ export class ArduinoUno extends CircuitElement {
       body
     };
   }
+  /**
+   * Delete arduino name
+   */
   delete() {
     delete window['ArduinoUno_name'][this.name];
   }
@@ -194,7 +254,7 @@ export class ArduinoUno extends CircuitElement {
 
     if (this.servos.length > 0) {
       for (const ser of this.servos) {
-        this.runner.addServo(ser.port, ser.pin, ser.call);
+        this.runner.addServo(ser.port, ser.pin, ser.call, ser.pwm);
       }
       this.servos = [];
     }
@@ -214,6 +274,11 @@ export class ArduinoUno extends CircuitElement {
       this.powerLed = null;
     }
   }
+  /**
+   * Add Servo to the queue
+   * @param pin Circuit node where servo is connected
+   * @param callback Callback which needs to call on change in PWM
+   */
   addServo(pin: Point, callback: (angle: number, prevAngle: number) => void) {
     const tmp = this.getPort(pin.label);
     this.servos.push({
@@ -222,13 +287,40 @@ export class ArduinoUno extends CircuitElement {
       call: callback
     });
   }
+  /**
+   * Add PWM to the queue
+   * @param pin Circuit node where pwm component is connected
+   * @param callback Callback on change in pwm (The Value needs to be divided by 100)
+   */
+  addPWM(pin: Point, callback: (volt: number, prev: number) => void) {
+    const tmp = this.getPort(pin.label);
+    if (this.runner) {
+      this.runner.addServo(
+        tmp.name,
+        tmp.pin,
+        callback,
+        true
+      );
+    } else {
+      this.servos.push({
+        port: tmp.name,
+        pin: tmp.pin,
+        call: callback,
+        pwm: true
+      });
+    }
+  }
+  /**
+   * Returns the port name and pin mumber
+   * @param pinName Circuit Node Name
+   */
   getPort(pinName: string) {
     const num = parseInt(pinName.substr(1), 10);
     if (!isNaN(num)) {
       if (num >= 0 && num <= 7) {
         return { name: 'portD', pin: num };
       } else if (num > 7 && num <= 13) {
-        return { name: 'portB', pin: num };
+        return { name: 'portB', pin: num - 8 };
       }
     }
   }
