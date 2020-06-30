@@ -317,7 +317,9 @@ export class L298N extends CircuitElement {
     }
     return null;
   }
-
+  /**
+   * Called on Start Simulation
+   */
   initSimulation(): void {
     const arduinoEnd: any = this.getArduino(this.pinNamedMap['ENB']);
     if (arduinoEnd) {
@@ -338,7 +340,9 @@ export class L298N extends CircuitElement {
     }
 
   }
-
+  /**
+   * Called on Stop Simulation
+   */
   closeSimulation(): void {
     this.pinNamedMap['IN1'].value = -1;
     this.pinNamedMap['IN2'].value = -1;
@@ -415,7 +419,9 @@ export class ServoMotor extends CircuitElement {
       title: 'Servo Motor'
     };
   }
-
+  /**
+   * Called on Start Simulation
+   */
   initSimulation(): void {
     // Check Connection
     if (!(
@@ -468,7 +474,9 @@ export class ServoMotor extends CircuitElement {
       this.animate(angle, duration);
     });
   }
-
+  /**
+   * Called on Stop Simulation
+   */
   closeSimulation(): void {
     if (!this.connected) {
       return;

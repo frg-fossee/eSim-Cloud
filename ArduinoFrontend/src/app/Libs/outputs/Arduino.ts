@@ -185,6 +185,10 @@ export class ArduinoUno extends CircuitElement {
   delete() {
     delete window['ArduinoUno_name'][this.name];
   }
+
+  /**
+   * Initialize Stuff for simulation.
+   */
   initSimulation(): void {
     this.builtinLED = this.elements[1].glow({
       color: '#ffff00'
@@ -260,6 +264,9 @@ export class ArduinoUno extends CircuitElement {
     }
     this.runner.execute();
   }
+  /**
+   * Remove arduino runner on stop simulation.
+   */
   closeSimulation(): void {
     if (this.runner) {
       this.runner.delete();
