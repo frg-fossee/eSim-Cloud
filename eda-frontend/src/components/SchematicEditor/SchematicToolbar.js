@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Notification snackbar to give alert messages
 function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
@@ -108,7 +109,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setOpen(false)
   }
 
-  // Help dialog window
+  // Control Help dialog window
   const [helpOpen, setHelpOpen] = React.useState(false)
 
   const handleHelpOpen = () => {
@@ -119,13 +120,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setHelpOpen(false)
   }
 
-  // Delete component
+  // Handel Delete component
   const handleDeleteComp = () => {
     DeleteComp()
     dispatch(closeCompProperties())
   }
 
-  // Notification Snackbar
+  // Handel Notification Snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -200,6 +201,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     })
   }
 
+  // Download JPEG, PNG exported Image
   function downloadImage (data, type) {
     var evt = new MouseEvent('click', {
       view: window,
@@ -214,6 +216,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     a.dispatchEvent(evt)
   }
 
+  // Download SVG image
   function downloadText (data, options) {
     const blob = new Blob(data, options)
     const evt = new MouseEvent('click', {
@@ -257,7 +260,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
-  // Save Schematic
+  // Handel Save Schematic onCloud
   const handelSchSave = () => {
     if (auth.isAuthenticated !== true) {
       setMessage('You are not Logged In')
@@ -326,7 +329,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
-  // Help dialog window
+  // Control Help dialog window open and close
   const [schOpen, setSchOpen] = React.useState(false)
 
   const handleSchDialOpen = () => {

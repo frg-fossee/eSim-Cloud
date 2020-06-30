@@ -12,12 +12,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Display main content of layout
 export default function LayoutMain ({ children }) {
   const classes = useStyles()
 
   return (
     <>
-      {/* Display content of layout */}
       <main className={classes.content}>
         {children}
       </main>

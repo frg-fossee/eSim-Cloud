@@ -14,7 +14,6 @@ import {
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
-// import Rating from '@material-ui/lab/Rating'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
@@ -35,6 +34,7 @@ function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
+// Schematic delete snackbar
 function SimpleSnackbar ({ open, close, sch }) {
   const dispatch = useDispatch()
 
@@ -71,6 +71,7 @@ SimpleSnackbar.propTypes = {
   sch: PropTypes.object
 }
 
+// Display schematic updated status (e.g : updated 2 hours ago...)
 function timeSince (jsonDate) {
   var json = jsonDate
 
@@ -102,6 +103,7 @@ function timeSince (jsonDate) {
   return Math.floor(seconds) + ' seconds'
 }
 
+// Display schematic created date (e.g : Created On 29 Jun 2020)
 function getDate (jsonDate) {
   var json = jsonDate
   var date = new Date(json)
@@ -110,9 +112,11 @@ function getDate (jsonDate) {
   return `${day}-${month}-${year}`
 }
 
+// Card displaying overview of onCloud saved schematic.
 export default function SchematicCard ({ sch }) {
   const classes = useStyles()
 
+  // To handel delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
   const handleSnacClick = () => {
@@ -128,12 +132,12 @@ export default function SchematicCard ({ sch }) {
 
   return (
     <>
-      {/* User Schematic Overview Card */}
+      {/* User saved Schematic Overview Card */}
       <Card>
         <CardActionArea>
           <CardHeader
             title={sch.name}
-            subheader={'Created On ' + getDate(sch.create_time)}
+            subheader={'Created On ' + getDate(sch.create_time)} /* Display created date */
           />
           <CardMedia
             className={classes.media}
@@ -144,16 +148,10 @@ export default function SchematicCard ({ sch }) {
             <Typography variant="body2" component="p">
               {sch.description}
             </Typography>
+            {/* Display updated status */}
             <Typography variant="body2" color="textSecondary" component="p" style={{ margin: '5px 0px 0px 0px' }}>
               Updated {timeSince(sch.save_time)} ago...
             </Typography>
-            {/* <Rating
-              name="half-rating-read"
-              defaultValue={Math.floor((Math.random() * 5) + 1)}
-              precision={1}
-              className={classes.rating}
-              readOnly
-            /> */}
           </CardContent>
         </CardActionArea>
 
@@ -168,6 +166,7 @@ export default function SchematicCard ({ sch }) {
             Launch in Editor
           </Button>
 
+          {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon
               color='secondary'
@@ -178,6 +177,7 @@ export default function SchematicCard ({ sch }) {
           </Tooltip>
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
+          {/* Display share status */}
           <Tooltip title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'} placement="bottom" arrow>
             <ShareIcon
               color={!sch.shared ? 'disabled' : 'primary'}

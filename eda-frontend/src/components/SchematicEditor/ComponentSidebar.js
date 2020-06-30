@@ -276,6 +276,7 @@ export default function ComponentSidebar ({ compRef }) {
         </List>
       </div>
       <div style={isSimulate ? {} : { display: 'none' }}>
+        {/* Display simulation modes parameters on left side pane */}
         <List>
           <ListItem button divider>
             <h2 style={{ margin: '5px auto 5px 5px' }}>Simulation Modes</h2>

@@ -44,6 +44,7 @@ const Transition = React.forwardRef(function Transition (props, ref) {
 
 var FileSaver = require('file-saver')
 
+// Dialog box to display generated netlist
 export function NetlistModal ({ open, close, netlist }) {
   const netfile = useSelector(state => state.netlistReducer)
   const createNetlistFile = () => {
@@ -68,6 +69,7 @@ export function NetlistModal ({ open, close, netlist }) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
+        {/* Button to download the netlist */}
         <Button color="primary" onClick={createNetlistFile}>
           Download
         </Button>
@@ -111,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Screen to display information about as keyboard shortcuts, units table and simulation modes
 export function HelpScreen ({ open, close }) {
   const classes = useStyles()
   return (
@@ -328,7 +331,7 @@ HelpScreen.propTypes = {
   close: PropTypes.func
 }
 
-// Image Export Dialog
+// Image Export Dialog box
 const ImgTypes = ['PNG', 'JPG', 'SVG']
 export function ImageExportDialog (props) {
   const classes = useStyles()
@@ -371,7 +374,7 @@ ImageExportDialog.propTypes = {
   open: PropTypes.bool.isRequired
 }
 
-// Open Schematics Dialog
+// Dialog box to open saved Schematics
 export function OpenSchDialog (props) {
   const { open, close, openLocal } = props
   const [isLocal, setisLocal] = React.useState(true)

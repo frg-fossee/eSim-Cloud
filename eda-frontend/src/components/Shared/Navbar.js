@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Common navbar for Dashboard, Home, Simulator, Gallery, etc.
 export function Header () {
   const history = useHistory()
   const classes = useStyles()
@@ -57,6 +58,7 @@ export function Header () {
 
   return (
     <>
+      {/* Display logo */}
       <IconButton edge="start" className={classes.button} color="primary">
         <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
@@ -70,6 +72,8 @@ export function Header () {
           eSim
         </Link>
       </Typography>
+
+      {/* Display relative link to other pages */}
       <nav>
         {
           (auth.isAuthenticated
@@ -159,6 +163,8 @@ export function Header () {
           )
         }
       </nav>
+
+      {/* Display login option or user menu as per authenticated status */}
       {
         (!auth.isAuthenticated ? (<Button
           size="small"

@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Notification snackbar to give alert messages
 function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
@@ -119,7 +120,7 @@ function Header () {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
-  // Notification Snackbar
+  // handel notification snackbar open and close with message
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -134,7 +135,7 @@ function Header () {
     setSnacOpen(false)
   }
 
-  // Share Dialog box
+  // handel schematic Share Dialog box
   const [openShare, setShareOpen] = React.useState(false)
 
   const handleShareOpen = () => {
@@ -145,6 +146,7 @@ function Header () {
     setShareOpen(false)
   }
 
+  // change saved schematic share status
   const [shared, setShared] = React.useState(schSave.isShared)
 
   useEffect(() => {
@@ -168,6 +170,7 @@ function Header () {
     }
   }
 
+  // handel display format of last saved status
   function getDate (jsonDate) {
     var json = jsonDate
     var date = new Date(json)
@@ -176,6 +179,7 @@ function Header () {
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
+  // handel Copy Share Url
   const textAreaRef = React.useRef(null)
 
   function copyToClipboard (e) {
@@ -189,6 +193,8 @@ function Header () {
   return (
     <Toolbar variant="dense" color="default">
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+
+      {/* Display logo */}
       <IconButton edge="start" className={classes.button} color="primary">
         <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
@@ -203,6 +209,7 @@ function Header () {
         </Link>
       </Typography>
 
+      {/* Input field for schematic title */}
       <Hidden xsDown>
         <Input
           className={classes.input}
@@ -213,6 +220,7 @@ function Header () {
         />
       </Hidden>
 
+      {/* Display last saved and shared option for saved schematics */}
       {auth.isAuthenticated === true
         ? <>
           {(schSave.isSaved === true && schSave.details.save_time !== undefined)
@@ -220,7 +228,7 @@ function Header () {
               variant="body2"
               style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
             >
-              Last Saved : {getDate(schSave.details.save_time)}
+              Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
             </Typography>
             : <></>
           }
@@ -238,6 +246,7 @@ function Header () {
         : <></>
       }
 
+      {/* Share dialog box to get share url */}
       <Dialog
         open={openShare}
         onClose={handleShareClose}
@@ -277,6 +286,7 @@ function Header () {
         </DialogActions>
       </Dialog>
 
+      {/* Display login option or user menu as per authenticated status */}
       {
         (!auth.isAuthenticated ? (<Button
           size="small"

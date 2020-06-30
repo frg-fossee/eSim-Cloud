@@ -49,7 +49,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff'
   }
 }))
-// {details:{},title:''} simResults
+
+// Screen to display simulation result in graph or text format
 export default function SimulationScreen ({ open, close, isResult }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
@@ -79,13 +80,6 @@ export default function SimulationScreen ({ open, close, isResult }) {
     setPrecision(evt.target.value)
   }
 
-  // const [simRes,setSimRes] = React.useState({})
-
-  //  const getCleanData = () => {
-
-  //   setSimRes(simResults)
-
-  // }
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
@@ -115,6 +109,7 @@ export default function SimulationScreen ({ open, close, isResult }) {
             justify="center"
             alignItems="center"
           >
+            {/* Card to display simualtion result screen header */}
             <Grid item xs={12} sm={12}>
               <Paper className={classes.paper}>
                 <Typography variant="h2" align="center" gutterBottom>
@@ -126,6 +121,7 @@ export default function SimulationScreen ({ open, close, isResult }) {
               </Paper>
             </Grid>
 
+            {/* Display graph result */}
             {isResult === true ? <>
               {
                 (result.graph !== {} && result.isGraph === 'true')
@@ -254,6 +250,7 @@ export default function SimulationScreen ({ open, close, isResult }) {
                   : (result.isGraph === 'true') ? <span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span> : <span></span>
               }
 
+              {/* Display text result */}
               {
                 (result.isGraph === 'false')
                   ? <Grid item xs={12} sm={12}>
@@ -359,7 +356,7 @@ export default function SimulationScreen ({ open, close, isResult }) {
               : <Grid item xs={12} sm={12}>
                 <Paper className={classes.paper}>
                   <Typography variant="h6" align="center" gutterBottom>
-                    SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS AND SCHEMATIC DIAGRAM.
+                    SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS AND SCHEMATIC DIAGRAM. {/* Error handeling message in case of null result */}
                   </Typography>
                 </Paper>
               </Grid>
@@ -375,5 +372,4 @@ SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
   isResult: PropTypes.bool
-  // simResults: PropTypes.object
 }

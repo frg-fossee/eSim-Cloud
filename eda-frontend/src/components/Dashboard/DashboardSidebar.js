@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Vertical Navbar for user dashboard
 export default function DashSidebar (props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
@@ -110,6 +111,8 @@ export default function DashSidebar (props) {
         >
           <ListItemText primary='My Schematics'/>
         </ListItem>
+
+        {/* List name of saved schematics */}
         <List className={classes.nestedSearch} >
           <InputBase
             className={classes.input}
