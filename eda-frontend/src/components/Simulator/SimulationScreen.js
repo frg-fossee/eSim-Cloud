@@ -77,14 +77,6 @@ export default function SimulationScreen ({ open, close, isResult }) {
   const handlePrecision = (evt) => {
     setPrecision(evt.target.value)
   }
-
-  // const [simRes,setSimRes] = React.useState({})
-
-  //  const getCleanData = () => {
-
-  //   setSimRes(simResults)
-  //   console.log("hello",simRes)
-  // }
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
