@@ -12,7 +12,7 @@ let currentPin, x_pos, y_pos
 let width, height, symbolName
 
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
-const fixed_number = 5
+const default_scale = 5
 
 function extractData (xml) {
   // extracting metadata from the svg file.
@@ -101,18 +101,9 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       delete style[mxConstants.STYLE_STROKECOLOR] // transparent
       // delete style[mxConstants.STYLE_FILLCOLOR] // transparent
 
-      // if width and height is less than 200 i.e component size is very small
-      // to scale it up divide by 2.5 and not by fixed_number
-      // fixed_number = 5
-
       // make the component images larger by reducing the denominator and smaller by increasing the denominator
-      if (width <= 200 && height <= 200) {
-        width = width / 2.5
-        height = height / 2.5
-      } else {
-        width = width / fixed_number
-        height = height / fixed_number
-      }
+      width = width / default_scale
+      height = height / default_scale
 
       const v1 = graph.insertVertex(
         parent,
@@ -165,8 +156,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         currentPin = pinData[i]
         if (currentPin.pinName === 'NC') continue
         // move this to another file
-        x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / fixed_number)
-        y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / fixed_number) - 1
+        x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / default_scale)
+        y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / default_scale) - 1
 
         // move this to another file
         // eslint-disable-next-line
