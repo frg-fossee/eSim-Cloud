@@ -6,14 +6,28 @@ import { Point } from '../Point';
  * Declare Raphael so that build don't throws error
  */
 declare var Raphael;
+
 /**
  * Motor class
  */
 export class Motor extends CircuitElement {
-  dirn = 1;
+  /**
+   * The Direction of motor +1 => Clockwise, -1 => Anticlockwise
+   */
+  private dirn = 1;
+  /**
+   * The Center X of the motor.
+   */
   cx = 0;
+  /**
+   * Center Y of the motor.
+   */
   cy = 0;
+  /**
+   * RPM of the motor.
+   */
   rpm: any;
+
   /**
    * Motor constructor
    * @param canvas Raphael Canvas (Paper)
@@ -23,8 +37,9 @@ export class Motor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('Motor', x, y, 'Motor.json', canvas);
   }
-  /** init is called when the component is complety drawn to the canvas */
+
   // 6v -> 9000rpm ->
+  /** init is called when the component is complety drawn to the canvas */
   init() {
     // Add value change Listener to circuit node
     this.nodes[0].addValueListener((v, cby, par) => {
@@ -143,15 +158,28 @@ export class Motor extends CircuitElement {
  * MotorDriver L298N class
  */
 export class L298N extends CircuitElement {
+  /**
+   * Pin Name mapped to Pins
+   */
   pinNamedMap: any = {};
+  /**
+   * Speed of Motor A in range of 0 to 5.
+   */
   speedA = 5;
+  /**
+   * Speed of Motor B in range of 0 to 5
+   */
   speedB = 5;
+  /**
+   * Previous values of the pins.
+   */
   prevValues: any = {
     IN1: -1,
     IN2: -1,
     IN3: -1,
     IN4: -1
   };
+
   /**
    * MotorDriver L298N constructor
    * @param canvas Raphael Canvas (Paper)
@@ -161,6 +189,9 @@ export class L298N extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('L298N', x, y, 'L298N.json', canvas);
   }
+  /**
+   * Initialize motor class.
+   */
   init() {
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
@@ -198,6 +229,9 @@ export class L298N extends CircuitElement {
       }
     });
   }
+  /**
+   * Simulation Logic For L298N motor driver
+   */
   update() {
     setTimeout(() => {
       if (this.pinNamedMap['IN1'].value > 0 && this.pinNamedMap['IN2'].value > 0) {
@@ -262,6 +296,10 @@ export class L298N extends CircuitElement {
       title: 'Motor Driver (L298N)'
     };
   }
+  /**
+   * Return the node which is connected to arduino
+   * @param node The Node which need to be checked
+   */
   private getArduino(node: Point) {
     if (
       node.connectedTo &&
@@ -279,6 +317,7 @@ export class L298N extends CircuitElement {
     }
     return null;
   }
+
   initSimulation(): void {
     const arduinoEnd: any = this.getArduino(this.pinNamedMap['ENB']);
     if (arduinoEnd) {
@@ -299,6 +338,7 @@ export class L298N extends CircuitElement {
     }
 
   }
+
   closeSimulation(): void {
     this.pinNamedMap['IN1'].value = -1;
     this.pinNamedMap['IN2'].value = -1;
@@ -314,12 +354,21 @@ export class L298N extends CircuitElement {
     };
   }
 }
+
+
 /**
  * Servo Motor class
  */
 export class ServoMotor extends CircuitElement {
+  /**
+   * Variable to state if servo is connected properly or not.
+   */
   connected = true;
+  /**
+   * The Connected Arduino
+   */
   arduino: CircuitElement = null;
+
   /**
    * MotorDriver L298N constructor
    * @param canvas Raphael Canvas (Paper)
@@ -329,6 +378,9 @@ export class ServoMotor extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('ServoMotor', x, y, 'ServoMotor.json', canvas);
   }
+  /**
+   * Initializ Servo Motor
+   */
   init() {
     this.nodes[1].addValueListener((v) => {
       if (v < 4 || v > 6) {
@@ -337,11 +389,16 @@ export class ServoMotor extends CircuitElement {
       this.nodes[0].setValue(v, this.nodes[1]);
     });
   }
-  /** Animation caller during start simulation button pressed */
+  /**
+   * Animate rotation of the shaft.
+   * @param angle The Angle of the shaft
+   * @param duration How much time it takes it to move
+   */
   animate(angle: number, duration: number = 10) {
     const anim = Raphael.animation({ transform: `r${angle}` }, duration);
     this.elements[1].animate(anim);
   }
+
   /**
    * Function provides component details
    * @param keyName Unique Class name
@@ -358,7 +415,9 @@ export class ServoMotor extends CircuitElement {
       title: 'Servo Motor'
     };
   }
+
   initSimulation(): void {
+    // Check Connection
     if (!(
       this.nodes[0].connectedTo &&
       this.nodes[1].connectedTo &&
@@ -369,6 +428,8 @@ export class ServoMotor extends CircuitElement {
       this.connected = false;
       return;
     }
+
+    // Get the Pin Which is connected to arduino
     let connectedPin = null;
     if (this.nodes[2].connectedTo.start
       && this.nodes[2].connectedTo.start.parent.keyName === 'ArduinoUno') {
@@ -388,6 +449,7 @@ export class ServoMotor extends CircuitElement {
       return;
     }
 
+
     this.connected = true;
     this.elements.undrag();
     const ok = this.elements[1].attr();
@@ -397,6 +459,7 @@ export class ServoMotor extends CircuitElement {
       y: ok.y + this.ty
     });
 
+    // Add a Servo event on arduino
     (this.arduino as ArduinoUno).addServo(connectedPin, (angle, prev) => {
       if (angle > 182) {
         return;
@@ -405,6 +468,7 @@ export class ServoMotor extends CircuitElement {
       this.animate(angle, duration);
     });
   }
+
   closeSimulation(): void {
     if (!this.connected) {
       return;
