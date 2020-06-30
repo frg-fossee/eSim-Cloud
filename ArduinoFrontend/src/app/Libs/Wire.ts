@@ -11,7 +11,7 @@ export class Wire {
   /**
    * Keyname require for mapping
    */
-  static keyName = 'wires';
+  keyName = 'wires';
   /**
    * Stores array of position [x,y]
    */
@@ -150,7 +150,7 @@ export class Wire {
     body.append(select);
     return {
       title: 'Wire',
-      keyName: Wire.keyName,
+      keyName: this.keyName,
       id: this.id,
       body
     };

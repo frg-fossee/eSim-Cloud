@@ -1,7 +1,10 @@
 import { CircuitElement } from '../CircuitElement';
 import { ArduinoUno } from './Arduino';
-import { ConstantPool } from '@angular/compiler';
+import { Point } from '../Point';
 
+/**
+ * Declare Raphael so that build don't throws error
+ */
 declare var Raphael;
 /**
  * Motor class
@@ -141,6 +144,14 @@ export class Motor extends CircuitElement {
  */
 export class L298N extends CircuitElement {
   pinNamedMap: any = {};
+  speedA = 5;
+  speedB = 5;
+  prevValues: any = {
+    IN1: -1,
+    IN2: -1,
+    IN3: -1,
+    IN4: -1
+  };
   /**
    * MotorDriver L298N constructor
    * @param canvas Raphael Canvas (Paper)
@@ -162,29 +173,52 @@ export class L298N extends CircuitElement {
       this.update();
     });
 
-    this.pinNamedMap['IN1'].addValueListener(v => this.update());
-    this.pinNamedMap['IN2'].addValueListener(v => this.update());
-    this.pinNamedMap['IN3'].addValueListener(v => this.update());
-    this.pinNamedMap['IN4'].addValueListener(v => this.update());
+    this.pinNamedMap['IN1'].addValueListener(v => {
+      if (v !== this.prevValues.IN1) {
+        this.prevValues.IN1 = v;
+        this.update();
+      }
+    });
+    this.pinNamedMap['IN2'].addValueListener(v => {
+      if (v !== this.prevValues.IN2) {
+        this.prevValues.IN2 = v;
+        this.update();
+      }
+    });
+    this.pinNamedMap['IN3'].addValueListener(v => {
+      if (v !== this.prevValues.IN3) {
+        this.prevValues.IN3 = v;
+        this.update();
+      }
+    });
+    this.pinNamedMap['IN4'].addValueListener(v => {
+      if (v !== this.prevValues.IN4) {
+        this.prevValues.IN4 = v;
+        this.update();
+      }
+    });
   }
   update() {
-    if (this.pinNamedMap['IN1'].value > 0 && this.pinNamedMap['IN2'].value > 0) {
-      window['showToast']('Both IN1 and IN2 Pins are High!');
-      return;
-    }
+    setTimeout(() => {
+      if (this.pinNamedMap['IN1'].value > 0 && this.pinNamedMap['IN2'].value > 0) {
+        window['showToast']('Both IN1 and IN2 Pins are High!');
+        return;
+      }
 
-    if (this.pinNamedMap['IN3'].value > 0 && this.pinNamedMap['IN4'].value > 0) {
-      window['showToast']('Both IN3 and IN4 Pins are High!');
-      return;
-    }
+      if (this.pinNamedMap['IN3'].value > 0 && this.pinNamedMap['IN4'].value > 0) {
+        window['showToast']('Both IN3 and IN4 Pins are High!');
+        return;
+      }
+    }, 100);
+
     if (this.pinNamedMap['IN1'].value > 0) {
       this.pinNamedMap['Terminal 2'].setValue(
-        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['V IN'].value * (this.speedA / 5),
         this.pinNamedMap['Terminal 2']
       );
     } else if (this.pinNamedMap['IN2'].value > 0) {
       this.pinNamedMap['Terminal 1'].setValue(
-        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['V IN'].value * (this.speedA / 5),
         this.pinNamedMap['Terminal 1']
       );
     } else {
@@ -196,12 +230,12 @@ export class L298N extends CircuitElement {
 
     if (this.pinNamedMap['IN3'].value > 0) {
       this.pinNamedMap['Terminal 4'].setValue(
-        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['V IN'].value * (this.speedB / 5),
         this.pinNamedMap['Terminal 4']
       );
     } else if (this.pinNamedMap['IN4'].value > 0) {
       this.pinNamedMap['Terminal 3'].setValue(
-        this.pinNamedMap['V IN'].value,
+        this.pinNamedMap['V IN'].value * (this.speedB / 5),
         this.pinNamedMap['Terminal 3']
       );
     } else {
@@ -228,12 +262,56 @@ export class L298N extends CircuitElement {
       title: 'Motor Driver (L298N)'
     };
   }
-  initSimulation(): void { }
+  private getArduino(node: Point) {
+    if (
+      node.connectedTo &&
+      node.connectedTo.start &&
+      node.connectedTo.start.parent.keyName === 'ArduinoUno'
+    ) {
+      return node.connectedTo.start;
+    }
+    if (
+      node.connectedTo &&
+      node.connectedTo.end &&
+      node.connectedTo.end.parent.keyName === 'ArduinoUno'
+    ) {
+      return node.connectedTo.end;
+    }
+    return null;
+  }
+  initSimulation(): void {
+    const arduinoEnd: any = this.getArduino(this.pinNamedMap['ENB']);
+    if (arduinoEnd) {
+      const arduino = arduinoEnd.parent;
+      (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
+        this.speedA = v / 100;
+        this.update();
+      });
+    }
+
+    const arduinoEnd1: any = this.getArduino(this.pinNamedMap['ENA']);
+    if (arduinoEnd1) {
+      const arduino = arduinoEnd1.parent;
+      (arduino as ArduinoUno).addPWM(arduinoEnd1, (v, p) => {
+        this.speedB = v / 100;
+        this.update();
+      });
+    }
+
+  }
   closeSimulation(): void {
     this.pinNamedMap['IN1'].value = -1;
     this.pinNamedMap['IN2'].value = -1;
     this.pinNamedMap['IN3'].value = -1;
     this.pinNamedMap['IN4'].value = -1;
+    this.speedA = 5;
+    this.speedB = 5;
+    this.prevValues = {
+      IN1: -1,
+      IN2: -1,
+      IN3: -1,
+      IN4: -1
+    };
   }
 }
 /**
