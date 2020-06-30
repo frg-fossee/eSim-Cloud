@@ -4,7 +4,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setCompProperties } from '../../redux/actions/index'
 import { ListItem, ListItemText, Button, TextField, TextareaAutosize } from '@material-ui/core'
 
-export default function ComponentProperties () {
+export default function ComponentProperties() {
+  // component properties that are displayed on the right side bar when user clicks on a component on the grid.
+
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
   const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
   const id = useSelector(state => state.componentPropertiesReducer.id)
@@ -26,19 +28,7 @@ export default function ComponentProperties () {
 
   const setProps = () => {
     dispatch(setCompProperties(id, val))
-    // dispatch(setModel(val.MODEL))
-    // setVal({})
   }
-
-  // const [open, setOpen] = React.useState(false)
-
-  // const handleClickOpen = () => {
-  //   setOpen(true)
-  // }
-
-  // const handleClose = () => {
-  //   setOpen(false)
-  // }
 
   return (
 
@@ -54,7 +44,7 @@ export default function ComponentProperties () {
             return <ListItem key={i}>
               <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
             </ListItem>
-          // eslint-disable-next-line brace-style
+            // eslint-disable-next-line brace-style
           }
 
           else if (keyName === 'EXTRA_EXPRESSION') {
@@ -63,6 +53,7 @@ export default function ComponentProperties () {
             </ListItem>
           }
 
+          //
           else if (keyName.charAt(0) === 'N' && keyName !== 'NAME') {
             return <span key={i} />
           } else if (keyName.includes('UNIT')) {
@@ -81,13 +72,6 @@ export default function ComponentProperties () {
 
               </ListItem>)
           }
-          // else if (keyName === 'VALUE') {
-          //   return (
-          //     <ListItem key={i}>
-          //       <TextField id={keyName} label={keyName} value={val[keyName] || ''} size='small' variant="outlined" onChange={getInputValues} />
-          //       <span style={{ marginLeft: '10px' }}>{val.UNIT || ''}</span>
-          //     </ListItem>)
-          // }
 
           return (
             <ListItem key={i}>

@@ -11,17 +11,18 @@ Chart.defaults.global.defaultFontColor = '#e6e6e6'
 class Graph extends Component {
   chartRef = React.createRef();
 
-  componentDidMount () {
+  componentDidMount() {
     this.buildChart()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.buildChart()
   }
 
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
     const { x, y, labels, xscale, yscale, precision } = this.props
+    // ticks are the number of points to show on x axis
     const scales = {
       G: { value: 1000000000, ticks: 3 },
       M: { value: 1000000, ticks: 3 },
@@ -117,15 +118,10 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                // labelString: labels[0] === 'time' ? `TIME in ${xscale}s` : (labels[0] === 'v-sweep' ? `VOLTAGE in ${xscale}v` : labels[0])
                 labelString: selectLabel()
               },
-              // ticks:{
-              //   source:'labels',
-              //   maxTicksLimit: 10,
-              // }
+
               ticks: {
-                // maxTicksLimit: 10
                 maxTicksLimit: scales[xscale].ticks
               }
             }
@@ -143,7 +139,6 @@ class Graph extends Component {
               ticks: {
                 beginAtZero: true,
                 fontSize: 15,
-                // maxTicksLimit: 10, //Set Y axes points
                 padding: 25
               }
             }
@@ -153,7 +148,7 @@ class Graph extends Component {
     })
   };
 
-  render () {
+  render() {
     return (
       <div>
         <canvas id="myChart" ref={this.chartRef} />

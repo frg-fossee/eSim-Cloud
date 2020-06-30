@@ -26,7 +26,7 @@ const styles = (theme) => ({
 })
 
 class NetlistUpload extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       file: null,
@@ -40,14 +40,14 @@ class NetlistUpload extends Component {
     this.netlistUpload = this.netlistUpload.bind(this)
   }
 
-  onChange (e) {
+  onChange(e) {
     this.setState({
       file: e.target.files[0],
       filename: e.target.files[0].name
     })
   }
 
-  onFormSubmit (e) {
+  onFormSubmit(e) {
     // Stop default form submit
     e.preventDefault()
     this.netlistUpload(this.state.file)
@@ -62,7 +62,7 @@ class NetlistUpload extends Component {
   }
 
   // Upload the nelist
-  netlistUpload (file) {
+  netlistUpload(file) {
     const formData = new FormData()
     formData.append('file', file)
     const config = {
@@ -74,7 +74,7 @@ class NetlistUpload extends Component {
   }
 
   // Get the simulation result with task_Id
-  simulationResult (url) {
+  simulationResult(url) {
     api
       .get(url)
       .then((res) => {
@@ -88,7 +88,7 @@ class NetlistUpload extends Component {
           })
         }
       })
-      .then((res) => {})
+      .then((res) => { })
       .catch(function (error) {
         console.log(error)
       })
@@ -112,7 +112,7 @@ class NetlistUpload extends Component {
     }
   };
 
-  render () {
+  render() {
     const { classes } = this.props
     return (
       <>
@@ -146,12 +146,6 @@ class NetlistUpload extends Component {
         <Grid item xs={12} sm={7}>
           <Paper className={classes.paper}>
             <h2>GRAPH OUTPUT</h2>
-            {/* <Graph
-              labels= {['time', 'V (In)', 'V (OP)']}
-              x={this.state.x_1}
-              y1={this.state.y1_1}
-              y2={this.state.y2_1}
-            /> */}
           </Paper>
         </Grid>
       </>

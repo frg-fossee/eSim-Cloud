@@ -26,7 +26,7 @@ import { useSelector } from 'react-redux'
 
 import Graph from '../Shared/Graph'
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult }) {
+export default function SimulationScreen({ open, close, isResult }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const [xscale, setXScale] = React.useState('si')
@@ -77,14 +77,6 @@ export default function SimulationScreen ({ open, close, isResult }) {
   const handlePrecision = (evt) => {
     setPrecision(evt.target.value)
   }
-
-  // const [simRes,setSimRes] = React.useState({})
-
-  //  const getCleanData = () => {
-
-  //   setSimRes(simResults)
-  //   console.log("hello",simRes)
-  // }
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
