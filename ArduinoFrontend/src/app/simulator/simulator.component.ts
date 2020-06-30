@@ -18,7 +18,9 @@ import { environment } from 'src/environments/environment';
  */
 declare var Raphael;
 
-
+/**
+ * Class For Simulator Page (Component)
+ */
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
@@ -488,7 +490,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     this.closeProject();
   }
   /**
-   *
+   * Fetches project from cloud
    * @param id Project id
    */
   LoadOnlineProject(id) {
