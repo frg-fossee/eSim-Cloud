@@ -22,21 +22,27 @@ import {
   MatDividerModule,
   MatTabsModule,
   MatSnackBarModule,
+  MatIconModule,
+  MatTooltipModule
 } from '@angular/material';
-import {MatTooltipModule} from '@angular/material/tooltip';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
 import { ComponentlistComponent } from './componentlist/componentlist.component';
-import { MatIconModule } from '@angular/material/icon';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { HeaderComponent } from './header/header.component';
 import { ViewProjectComponent } from './view-project/view-project.component';
 import { ProjectComponent } from './project/project.component';
 
+/**
+ * Monaco OnLoad Function
+ */
 export function onMonacoLoad() { }
 
+/**
+ * Monaco editor config for loading js files
+ */
 const monacoConfig: NgxMonacoEditorConfig = {
   baseUrl: './assets',
   defaultOptions: { scrollBeyondLastLine: false },
