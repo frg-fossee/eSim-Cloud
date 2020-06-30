@@ -1,13 +1,25 @@
 import { CircuitElement } from '../CircuitElement';
 
-declare var window; // Declare window so that custom created function don't throw error
+/**
+ * Declare window so that custom created function don't throw error
+ */
+declare var window;
 
 /**
  * Buzzer Class
  */
 export class Buzzer extends CircuitElement {
+  /**
+   * The oscillator for buzzer.
+   */
   oscillator: any;
+  /**
+   * Audio Context
+   */
   audioCtx: AudioContext;
+  /**
+   * Toggle for wether buzzer is beeping or not.
+   */
   sound = false;
   /**
    * pushbutton constructor
@@ -25,23 +37,23 @@ export class Buzzer extends CircuitElement {
     this.nodes[0].addValueListener((v) => this.logic(v));
     this.nodes[1].addValueListener((v) => this.logic(v));
   }
+  /**
+   * Logic for beeping sound
+   * @param val The Value on the positive pin
+   */
   logic(val: number) {
+    // TODO: Handle PWM
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
-      // console.log(this.nodes[0].value);
       if (val === 5) {
-        // this.anim();
         if (this.oscillator && !this.sound) {
-          // this.oscillator.start();
           this.oscillator.connect(this.audioCtx.destination);
           this.sound = true;
         }
       } else {
         if (this.oscillator && this.sound) {
-          // this.oscillator.stop();
           this.oscillator.disconnect(this.audioCtx.destination);
           this.sound = false;
         }
-        // this.elements[3].attr({ fill: 'none' });
       }
       this.nodes[1].setValue(val, null);
     } else {
@@ -74,14 +86,10 @@ export class Buzzer extends CircuitElement {
     this.oscillator = this.audioCtx.createOscillator();
     this.oscillator.frequency.value = 2300;
     this.oscillator.start();
-    // setTimeout(()=>oscillator.stop(),1000);
-    // oscillator.start();
-    // console.log(this.oscillator)
   }
   /** Function removes all callbacks  */
   closeSimulation() {
     if (this.oscillator && this.sound) {
-      // this.oscillator.stop();
       this.oscillator.disconnect(this.audioCtx.destination);
       this.sound = false;
     }
