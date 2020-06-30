@@ -2,38 +2,68 @@ import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
 
+/**
+ * Declare window so that custom created function don't throw error
+ */
 declare var window;
 
 /**
  * Class For Circuit Node ie. Point wires can connect with nodes
  */
 export class Point {
-  // Hide node on creation
+  /**
+   * Hide node on creation
+   */
   static defaultAttr: any = {
     fill: 'rgba(0,0,0,0)',
     stroke: 'rgba(0,0,0,0)'
   };
-  // Show red color with black stroke on hover
+  /**
+   * Show red color with black stroke on hover
+   */
   static nodeAttr: any = {
     fill: 'rgba(255,0,0,1)',
     stroke: 'rgba(0,0,0,1)'
   };
-  body: any; // Body of the Circuit Node
+  /**
+   * Body of the Circuit Node
+   */
+  body: any;
 
-  // Stores the reference of wire which is connected to it
+  /**
+   * Stores the reference of wire which is connected to it
+   */
   connectedTo: Wire = null;
 
-  // Hover callback called on hover over node
+  /**
+   * Hover callback called on hover over node
+   */
   hoverCallback: any = null;
 
-  // Hover Close Callback called if hover is removed
+  /**
+   * Hover Close Callback called if hover is removed
+   */
   hoverCloseCallback: any = null;
 
+  /**
+   * Callback called when we connect wire.
+   */
   connectCallback: any = null;
-
+  /**
+   * The Value of the node
+   */
   value = -1;
+  /**
+   * Value change listener
+   */
   listener: (val: number, calledby: Point, current: Point) => void = null;
+  /**
+   * Graph id used while starting simulation.
+   */
   gid = -1;
+  /**
+   * The Node ID
+   */
   id: number;
   /**
    * Constructor for Circuit Node
@@ -173,11 +203,15 @@ export class Point {
   hide() {
     this.body.attr(Point.defaultAttr);
   }
-
+  /**
+   * This will permanently hide the node
+   */
   remainHidden() {
     this.body.hide();
   }
-
+  /**
+   * This will show node if its is permanently hidden
+   */
   remainShow() {
     this.body.show();
   }
@@ -216,23 +250,36 @@ export class Point {
       this.parent = null;
     }
   }
+  /**
+   * Adding a Value Change Listener.
+   * @param listener Value Change Listener
+   */
   addValueListener(listener: (val: number, calledby: Point, parent: Point) => void) {
     this.listener = listener;
   }
+  /**
+   * Set the value of a Circuit node.
+   * @param value New Value
+   * @param calledby The node which sets the value
+   */
   setValue(value: number, calledby: Point) {
     this.value = value;
+
     if (calledby && this.listener) {
       this.listener(this.value, calledby, this);
     }
+
     if (isNull(calledby)) {
       calledby = this;
     }
-    // console.log(this.connectedTo);
+    // Propogate the value further
+
     if (this.connectedTo && this.connectedTo.end) {
       if (this.connectedTo.end.gid !== calledby.gid && this.connectedTo.end.gid !== this.gid) {
         this.connectedTo.end.setValue(this.value, this);
       }
     }
+
     if (this.connectedTo && this.connectedTo.start) {
       if (this.connectedTo.start.gid !== calledby.gid && this.connectedTo.start.gid !== this.gid) {
         this.connectedTo.start.setValue(this.value, this);
