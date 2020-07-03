@@ -952,6 +952,8 @@ export class Workspace {
     window.isSelected = false;
     // Reinitialize variables
     Workspace.initalizeGlobalVariables(window['canvas']);
+    // Hide Property box
+    window.hideProperties();
     // Hide Loading animation
     window.hideLoading();
   }
