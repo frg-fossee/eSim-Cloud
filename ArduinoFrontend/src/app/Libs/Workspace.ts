@@ -707,20 +707,44 @@ export class Workspace {
 
       // get the component id
       const uid = window.Selected.id;
+      const key = window.Selected.keyName;
+
+      // If Current Selected item is a Wire which is not Connected from both end
+      if (key === 'wires') {
+        if (isNull(window.Selected.end)) {
+          // Remove and deselect
+          window.Selected.remove();
+          window.Selected = null;
+          window.isSelected = false;
+        }
+      }
+
       // get the component keyname
-      const items = window.scope[window.Selected.keyName];
+      const items = window.scope[key];
       // Use linear search find the element
       for (let i = 0; i < items.length; ++i) {
         if (items[i].id === uid) {
           // remove from DOM
           window.Selected.remove();
-
           window.Selected = null;
           window.isSelected = false;
           // Remove from scope
           const k = items.splice(i, 1);
           // Remove data from it recursively
           Workspace.removeMeta(k[0]);
+
+          if (key !== 'wires') {
+            let index = 0;
+            while (index < window.scope.wires.length) {
+              const wire = window.scope.wires[index];
+              if (isNull(wire.start) && isNull(wire.end)) {
+                window.scope.wires.splice(index, 1);
+                continue;
+              }
+              ++index;
+            }
+          }
+
           break;
         }
       }
