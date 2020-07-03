@@ -883,7 +883,7 @@ export class Workspace {
       }
     }
     // Sequence to be followed while calling initSimulation
-    const seqn = ['output', 'controllers', 'drivers', 'general', 'power', 'input', 'misc'];
+    const seqn = ['output', 'general', 'controllers', 'drivers', 'power', 'input', 'misc'];
     // For each component call initsimulation function
     for (const key of seqn) {
       for (const items of Utils.componentBox[key]) {
