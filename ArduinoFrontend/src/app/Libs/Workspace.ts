@@ -811,6 +811,7 @@ export class Workspace {
         api.getHex(taskid).subscribe(hex => {
           if (hex.state === 'SUCCESS' && !hex.details.error) {
             clearInterval(temp);
+            let SUCCESS = true;
             for (const k in hex.details) {
               if (hex.details[k]) {
                 const d = hex.details[k];
@@ -820,11 +821,14 @@ export class Workspace {
                   nameMap[k].hex = d.data;
                 }
                 if (d.error) {
+                  SUCCESS = false;
                   window.printConsole(d.error, ConsoleType.ERROR);
                 }
               }
             }
-            Workspace.startArduino();
+            if (SUCCESS) {
+              Workspace.startArduino();
+            }
             callback();
           } else if (hex.state === 'FAILED' || hex.details.error) {
             clearInterval(temp);
