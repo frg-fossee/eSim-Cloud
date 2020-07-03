@@ -73,7 +73,7 @@ export class Download {
     // Return a new Promise
     return new Promise((res, _) => {
       // Get the client pixel ratio
-      const pixelRatio = window.devicePixelRatio || 1;
+      const pixelRatio = 1.25;
       // get The Bounding box of the circuit
       const gtag = (document.querySelector('#holder > svg > g') as SVGSVGElement).getBBox();
       if (gtag.width === 0 || gtag.height === 0) {
