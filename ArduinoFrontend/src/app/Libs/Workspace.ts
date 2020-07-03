@@ -707,20 +707,44 @@ export class Workspace {
 
       // get the component id
       const uid = window.Selected.id;
+      const key = window.Selected.keyName;
+
+      // If Current Selected item is a Wire which is not Connected from both end
+      if (key === 'wires') {
+        if (isNull(window.Selected.end)) {
+          // Remove and deselect
+          window.Selected.remove();
+          window.Selected = null;
+          window.isSelected = false;
+        }
+      }
+
       // get the component keyname
-      const items = window.scope[window.Selected.keyName];
+      const items = window.scope[key];
       // Use linear search find the element
       for (let i = 0; i < items.length; ++i) {
         if (items[i].id === uid) {
           // remove from DOM
           window.Selected.remove();
-
           window.Selected = null;
           window.isSelected = false;
           // Remove from scope
           const k = items.splice(i, 1);
           // Remove data from it recursively
           Workspace.removeMeta(k[0]);
+
+          if (key !== 'wires') {
+            let index = 0;
+            while (index < window.scope.wires.length) {
+              const wire = window.scope.wires[index];
+              if (isNull(wire.start) && isNull(wire.end)) {
+                window.scope.wires.splice(index, 1);
+                continue;
+              }
+              ++index;
+            }
+          }
+
           break;
         }
       }
@@ -811,6 +835,7 @@ export class Workspace {
         api.getHex(taskid).subscribe(hex => {
           if (hex.state === 'SUCCESS' && !hex.details.error) {
             clearInterval(temp);
+            let SUCCESS = true;
             for (const k in hex.details) {
               if (hex.details[k]) {
                 const d = hex.details[k];
@@ -820,11 +845,14 @@ export class Workspace {
                   nameMap[k].hex = d.data;
                 }
                 if (d.error) {
+                  SUCCESS = false;
                   window.printConsole(d.error, ConsoleType.ERROR);
                 }
               }
             }
-            Workspace.startArduino();
+            if (SUCCESS) {
+              Workspace.startArduino();
+            }
             callback();
           } else if (hex.state === 'FAILED' || hex.details.error) {
             clearInterval(temp);
@@ -855,7 +883,7 @@ export class Workspace {
       }
     }
     // Sequence to be followed while calling initSimulation
-    const seqn = ['output', 'controllers', 'drivers', 'general', 'power', 'input', 'misc'];
+    const seqn = ['output', 'general', 'controllers', 'drivers', 'power', 'input', 'misc'];
     // For each component call initsimulation function
     for (const key of seqn) {
       for (const items of Utils.componentBox[key]) {
@@ -948,6 +976,8 @@ export class Workspace {
     window.isSelected = false;
     // Reinitialize variables
     Workspace.initalizeGlobalVariables(window['canvas']);
+    // Hide Property box
+    window.hideProperties();
     // Hide Loading animation
     window.hideLoading();
   }
