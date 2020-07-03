@@ -7,9 +7,8 @@ import { Point } from '../Point';
  * AVR8 global variable
  */
 declare var AVR8;
-
 /**
- * Arduino uno component class
+ * Arduino UNO Class
  */
 export class ArduinoUno extends CircuitElement {
   /**
@@ -28,31 +27,19 @@ export class ArduinoUno extends CircuitElement {
    * For execution of code
    */
   public runner: ArduinoRunner;
-  /**
-   * The Compiled Hex
-   */
-  public hex: string;
-  /**
-   * Power LED of Arduino
-   */
-  public powerLed: any;
-  /**
-   * Built in LED of arduino
-   */
-  public builtinLED: any;
-  /**
-   * Pin Names Mapped to the respective Node
-   */
+  public hex: string; // hex value
+  public powerLed: any; // PowerLed of Component
+  public builtinLED: any; // BuiltinLed of Component
   public pinNameMap: any = {};
   /**
    * Servo attached to an arduino
    */
   private servos: any[] = [];
   /**
-   * Constructor for Arduino
-   * @param canvas Raphael Paper
-   * @param x X position
-   * @param y Y Position
+   * Arduino UNO constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
    */
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
@@ -65,16 +52,15 @@ export class ArduinoUno extends CircuitElement {
     }
     window['ArduinoUno_name'][this.name] = this;
   }
-  /**
-   * Initialize Arduino
-   */
+  /** init is called when the component is complety drawn to the canvas */
   init() {
-    // Create The mapping
+    // Create a mapping for node label to node
     for (const node of this.nodes) {
       this.pinNameMap[node.label] = node;
     }
     // Add a Analog value change Listener to the circuit nodes
     for (let i = 0; i <= 5; ++i) {
+      // Add value Change Listener to Circuit nodes
       this.pinNameMap[`A${i}`].addValueListener((val) => {
         if (isUndefined(this.runner) || isNull(this.runner)) {
           setTimeout(() => {
@@ -131,9 +117,7 @@ export class ArduinoUno extends CircuitElement {
       });
     }
   }
-  /**
-   * Data which needs to be saved inside the database
-   */
+  /** Function saves the data */
   SaveData() {
     return {
       name: this.name,
@@ -141,15 +125,19 @@ export class ArduinoUno extends CircuitElement {
     };
   }
   /**
-   * Load Data which is fetched from data base
-   * @param data Data fetched from the database
+   * Function loads the saved data
+   * @param data saved object
    */
   LoadData(data: any) {
     this.name = data.data.name;
     this.code = data.data.code;
   }
   /**
-   * Property of an Arduino
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
    */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
     const body = document.createElement('div');
@@ -185,9 +173,8 @@ export class ArduinoUno extends CircuitElement {
   delete() {
     delete window['ArduinoUno_name'][this.name];
   }
-
   /**
-   * Initialize Stuff for simulation.
+   * Initialize Variable,callback and animation caller when start simulation is pressed
    */
   initSimulation(): void {
     this.builtinLED = this.elements[1].glow({
