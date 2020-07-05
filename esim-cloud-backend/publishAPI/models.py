@@ -38,7 +38,7 @@ class Circuit(models.Model):
         upload_to='circuit_images', storage=file_storage)
 
     author = models.ForeignKey(
-        get_user_model(), null=True, on_delete=models.SET_NULL)
+        get_user_model(), null=True, on_delete=models.CASCADE)
 
     # Meta Data
 
