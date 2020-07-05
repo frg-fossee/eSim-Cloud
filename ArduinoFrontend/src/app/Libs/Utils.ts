@@ -47,8 +47,7 @@ export class Utils {
       ['Label', 'RelayModule']
     ],
     general: [
-      [ // 'Resistor',
-        'BreadBoard']
+      ['Resistor', 'BreadBoard']
     ]
   };
 

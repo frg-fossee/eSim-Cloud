@@ -55,6 +55,17 @@ export class Resistor extends CircuitElement {
     this.updateColors();
     delete this.data;
     this.data = null;
+
+    this.nodes[0].addValueListener((v, cby, par) => {
+      if (cby.parent.id !== this.id) {
+        this.nodes[1].setValue(v, this.nodes[0]);
+      }
+    });
+    this.nodes[1].addValueListener((v, cby, par) => {
+      if (cby.parent.id !== this.id) {
+        this.nodes[0].setValue(v, this.nodes[1]);
+      }
+    });
   }
   /** Saves data/values that are provided to resistor  */
   SaveData() {
