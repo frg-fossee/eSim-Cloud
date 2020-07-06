@@ -134,7 +134,7 @@ export const signUp = (email, username, password, history) => (dispatch) => {
     .catch((err) => {
       var res = err.response
       if (res.status === 400 || res.status === 403 || res.status === 401) {
-        if (res.data.username[0] !== undefined) {
+        if (res.data.username !== undefined) {
           if (res.data.username[0].search('already') !== -1 && res.data.username[0].search('exists') !== -1) { dispatch(signUpError('Username Already Taken.')) }
         } else {
           dispatch(signUpError('Enter Valid Credentials.'))
