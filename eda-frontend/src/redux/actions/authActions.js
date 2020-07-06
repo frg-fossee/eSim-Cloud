@@ -122,14 +122,23 @@ export const signUp = (email, username, password, history) => (dispatch) => {
   api.post('auth/users/', body, config)
     .then((res) => {
       if (res.status === 200 || res.status === 201) {
-        dispatch({ type: actions.SIGNUP_SUCCESSFUL })
-        history.push('/login')
+        dispatch({
+          type: actions.SIGNUP_SUCCESSFUL,
+          payload: {
+            data: 'Successfully Signed Up! A verification link has been sent to your email account.'
+          }
+        })
+        // history.push('/login')
       }
     })
     .catch((err) => {
       var res = err.response
       if (res.status === 400 || res.status === 403 || res.status === 401) {
-        dispatch(signUpError('Enter Valid Credentials.'))
+        if (res.data.username[0] !== undefined) {
+          if (res.data.username[0].search('already') !== -1 && res.data.username[0].search('exists') !== -1) { dispatch(signUpError('Username Already Taken.')) }
+        } else {
+          dispatch(signUpError('Enter Valid Credentials.'))
+        }
       } else {
         dispatch(signUpError('Something went wrong! Registeration Failed'))
       }

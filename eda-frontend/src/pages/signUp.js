@@ -85,7 +85,7 @@ export default function SignUp () {
         </Typography>
 
         {/* Display's error messages while signing in */}
-        <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
+        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.isRegistered ? 'secondary' : 'error'}>
           {auth.regErrors}
         </Typography>
 

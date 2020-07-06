@@ -31,13 +31,14 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isRegistered: true,
-        regErrors: ''
+        regErrors: action.payload.data
       }
     }
 
     case actions.SIGNUP_FAILED: {
       return {
         ...state,
+        isRegistered: false,
         regErrors: action.payload.data
       }
     }

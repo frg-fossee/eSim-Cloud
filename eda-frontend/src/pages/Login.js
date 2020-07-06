@@ -96,7 +96,7 @@ export default function SignIn (props) {
         </Typography>
 
         {/* Display's error messages while logging in */}
-        <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
+        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color="error" >
           {auth.errors}
         </Typography>
 
