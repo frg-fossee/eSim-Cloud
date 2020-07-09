@@ -37,8 +37,8 @@ export class Utils {
     ],
     output: [
       ['Buzzer', 'LED', 'Motor'], // Row
-      ['RGBLED', 'ServoMotor', 'SevenSegment']
-      // ['LCD16X2']
+      ['RGBLED', 'ServoMotor', 'SevenSegment'],
+      ['LCD16X2']
     ],
     drivers: [
       ['L298N']
