@@ -79,41 +79,50 @@ export abstract class CircuitElement {
 
           this.pointHalf = obj.pointHalf;
           // Draw Elements of the component
-          
+
           /**
            * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
            */
-          if (obj.className == "LCD16X2") {
-            var i, j, k, l, tempX, tempY, tempRowsX, tempColumnsY: number;
-            var posX = obj.data.startX;
-            var posY = obj.data.startY;
-            for(k=0; k<obj.data.rows; k++){ // Rows: 2
+          if (obj.className === 'LCD16X2') {
+            let i: number;
+            let j: number;
+            let k: number;
+            let l: number;
+            let tempX: number;
+            let tempY: number;
+            let tempRowsX: number;
+            let tempColumnsY: number;
+
+            let posX = obj.data.startX;
+            let posY = obj.data.startY;
+            for (k = 0; k < obj.data.rows; k++) { // Rows: 2
               tempX = posX;
               tempY = posY;
-              for(l=0; l<obj.data.columns; l++){ //Columns: 16 (Characters)
+              for (l = 0; l < obj.data.columns; l++) { // Columns: 16 (Characters)
                 tempColumnsY = posY;
-                for(i=0; i<obj.data.gridRows; i++){ // Rows: 8
+                for (i = 0; i < obj.data.gridRows; i++) { // Rows: 8
                   tempRowsX = posX;
-                  for(j=0; j<obj.data.gridColumns; j++){ //Columns: 5 (Characters)
-                    obj.draw.push({"name": "G"+k+l+i+j,
-                      "type": "rectangle",
-                      "width": obj.data.gridWidth,
-                      "height": obj.data.gridHeight,
-                      "x": posX,
-                      "y": posY,
-                      "fill": obj.data.barColor});
+                  for(j = 0; j < obj.data.gridColumns; j++) { // Columns: 5 (Characters)
+                    obj.draw.push({'name': "G"+k+l+i+j,
+                      'type': 'rectangle',
+                      'width': obj.data.gridWidth,
+                      'height': obj.data.gridHeight,
+                      'x': posX,
+                      'y': posY,
+                      'fill': obj.data.barColor});
                     posX = posX + obj.data.gridWidth + obj.data.intraSpacing;
-                  } //Col ends
+                  } // Col ends
                   posX = tempRowsX;
                   posY = posY + obj.data.gridHeight +  obj.data.intraSpacing;
                 }
                 posX = posX + (obj.data.gridColumns * obj.data.gridWidth) + obj.data.interSpacing;
                 posY = tempColumnsY;
               }
-              posY = tempY + (obj.data.gridRows * obj.data.gridWidth) + (obj.data.interSpacing*1.5);
+              posY = tempY + (obj.data.gridRows * obj.data.gridWidth) + (obj.data.interSpacing * 1.5);
               posX = tempX;
-            } //Row ends
-          } //End of if (only for LCD16X2)
+            } // Row ends
+          } // End of if (only for LCD16X2)
+          console.log(obj.draw)
 
           this.DrawElement(canvas, obj.draw);
           // Add Circuiy Nodes
