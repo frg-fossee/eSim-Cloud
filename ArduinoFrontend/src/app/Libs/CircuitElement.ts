@@ -111,7 +111,7 @@ export abstract class CircuitElement {
                       x: posX,
                       y: posY,
                       fill: obj.data.barColor,
-                    }
+                    };
                     obj.draw.push(grid);
                     posX = posX + obj.data.gridWidth + obj.data.intraSpacing;
                   } // Col ends
