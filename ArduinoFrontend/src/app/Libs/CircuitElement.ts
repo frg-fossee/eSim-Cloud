@@ -102,14 +102,17 @@ export abstract class CircuitElement {
                 tempColumnsY = posY;
                 for (i = 0; i < obj.data.gridRows; i++) { // Rows: 8
                   tempRowsX = posX;
-                  for(j = 0; j < obj.data.gridColumns; j++) { // Columns: 5 (Characters)
-                    obj.draw.push({'name': "G"+k+l+i+j,
-                      'type': 'rectangle',
-                      'width': obj.data.gridWidth,
-                      'height': obj.data.gridHeight,
-                      'x': posX,
-                      'y': posY,
-                      'fill': obj.data.barColor});
+                  for (j = 0; j < obj.data.gridColumns; j++) { // Columns: 5 (Characters)
+                    const grid = {
+                      name: 'G' + k + l + i + j,
+                      type: 'rectangle',
+                      width: obj.data.gridWidth,
+                      height: obj.data.gridHeight,
+                      x: posX,
+                      y: posY,
+                      fill: obj.data.barColor,
+                    }
+                    obj.draw.push(grid);
                     posX = posX + obj.data.gridWidth + obj.data.intraSpacing;
                   } // Col ends
                   posX = tempRowsX;
@@ -122,7 +125,6 @@ export abstract class CircuitElement {
               posX = tempX;
             } // Row ends
           } // End of if (only for LCD16X2)
-          console.log(obj.draw)
 
           this.DrawElement(canvas, obj.draw);
           // Add Circuiy Nodes
