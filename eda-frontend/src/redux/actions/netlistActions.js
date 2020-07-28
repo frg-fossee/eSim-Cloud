@@ -1,5 +1,6 @@
 import * as actions from './actions'
 
+// Action to update netlist with component nodes and parameters
 export const setNetlist = (netlist) => (dispatch) => {
   dispatch({
     type: actions.SET_NETLIST,
@@ -9,6 +10,7 @@ export const setNetlist = (netlist) => (dispatch) => {
   })
 }
 
+// Action to update netlist title
 export const setTitle = (title) => (dispatch) => {
   dispatch({
     type: actions.SET_TITLE,
@@ -18,6 +20,7 @@ export const setTitle = (title) => (dispatch) => {
   })
 }
 
+// Action to update netlist model section
 export const setModel = (model) => (dispatch) => {
   dispatch({
     type: actions.SET_MODEL,
@@ -27,6 +30,7 @@ export const setModel = (model) => (dispatch) => {
   })
 }
 
+// Action to update netlist contorl line section
 export const setControlLine = (controlLine) => (dispatch) => {
   dispatch({
     type: actions.SET_CONTROL_LINE,
@@ -36,6 +40,7 @@ export const setControlLine = (controlLine) => (dispatch) => {
   })
 }
 
+// Action to update netlist control block section
 export const setControlBlock = (controlBlock) => (dispatch) => {
   dispatch({
     type: actions.SET_CONTROL_BLOCK,

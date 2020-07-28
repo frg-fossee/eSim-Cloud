@@ -32,6 +32,7 @@ export default function SideComp ({ component }) {
   const id = open ? 'simple-popover' : undefined
 
   useEffect(() => {
+    // Function call to make components draggable
     AddComponent(component, imageRef.current)
   }, [imageRef, component])
 
@@ -39,9 +40,11 @@ export default function SideComp ({ component }) {
     <div>
 
       <Tooltip title={component.full_name} arrow>
+        {/* Display Image thumbnail in left side pane */}
         <img ref={imageRef} className='compImage' src={'../' + component.svg_path} alt="Logo" aria-describedby={id} onClick={handleClick} />
       </Tooltip>
 
+      {/* Popover to display component information on single click */}
       <Popover
         id={id}
         open={open}

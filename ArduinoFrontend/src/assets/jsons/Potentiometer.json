@@ -1,54 +1,86 @@
 {
-    "name": "Potentiometer",
-    "className": "Potentiometer",
-    "pins": [
-        {
-            "x": 28,
-            "y": 114,
-            "name": "Terminal 1"
-        },
-        {
-            "x": 51,
-            "y": 114,
-            "name": "WIPER"
-        },
-        {
-            "x": 74,
-            "y": 114,
-            "name": "Terminal 2"
-        }
-    ],
-    "pointHalf": 4,
-    "draw": [
-        {
-            "type": "image",
-            "url": "assets/images/components/Potentiometer.svg",
-            "width": 109.3,
-            "height": 122.975,
-            "x": 0,
-            "y": 0
-        },
-        {
-            "type": "image",
-            "url": "assets/images/components/PotentiometerAbove.svg",
-            "width": 82.6,
-            "height": 82.6,
-            "x": 13.3,
-            "y": 12.5
-        }
-    ],
-    "simulation": {},
-    "info": {
-        "name": "Pontientiometer",
-        "image": "https://commons.wikimedia.org/wiki/File:Electronic-Component-Potentiometer.jpg",
-        "description": "Potentiometers also known as POT, are nothing but variable resistors. They can provide a variable resistance by simply varying the knob on top of its head. It can be classified based on two main parameters. One is their Resistance (R-ohms) itself and the other is its Power (P-Watts) rating.",
-        "properties": {
-            "Type": "Rotary(Radio POT)",
-            "Resistance values": "500Ω, 1K, 2K, 5K, 10K, 22K, 47K, 50K, 100K, 220K, 470K, 500K, 1 M",
-            "Peak wavelength": "600nm",
-            "Power Rating": "0.3W",
-            "Maximum Input Voltage": "200Vdc",
-            "Rotational Life": " 2000K cycles"
-        }
+  "name": "Potentiometer",
+  "className": "Potentiometer",
+  "pins": [
+    {
+      "x": 28,
+      "y": 114,
+      "name": "Terminal 1"
+    },
+    {
+      "x": 51,
+      "y": 114,
+      "name": "WIPER"
+    },
+    {
+      "x": 74,
+      "y": 114,
+      "name": "Terminal 2"
     }
+  ],
+  "pointHalf": 4,
+  "draw": [
+    {
+      "type": "image",
+      "url": "assets/images/components/Potentiometer.svg",
+      "width": 109.3,
+      "height": 122.975,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "type": "image",
+      "url": "assets/images/components/PotentiometerAbove.svg",
+      "width": 82.6,
+      "height": 82.6,
+      "x": 13.3,
+      "y": 12.5
+    }
+  ],
+  "simulation": {},
+  "data": {
+    "variants": [
+      "500",
+      "1K",
+      "2K",
+      "5K",
+      "10K",
+      "22K",
+      "47K",
+      "50K",
+      "100K",
+      "220K",
+      "470K",
+      "500K",
+      "1M"
+    ],
+    "value": [
+      500,
+      1000,
+      2000,
+      5000,
+      10000,
+      22000,
+      47000,
+      50000,
+      100000,
+      220000,
+      470000,
+      500000,
+      1000000
+    ]
+  },
+  "info": {
+    "name": "Pontientiometer",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Electronic-Component-Potentiometer.jpg",
+    "description": "Potentiometers also known as POT, are nothing but variable resistors. They can provide a variable resistance by simply varying the knob on top of its head. It can be classified based on two main parameters. One is their Resistance (R-ohms) itself and the other is its Power (P-Watts) rating.",
+    "properties": {
+      "Type": "Rotary(Radio POT)",
+      "Resistance values": "500Ω, 1K, 2K, 5K, 10K, 22K, 47K, 50K, 100K, 220K, 470K, 500K, 1 M",
+      "Peak wavelength": "600nm",
+      "Power Rating": "0.3W",
+      "Maximum Input Voltage": "200Vdc",
+      "Rotational Life": " 2000K cycles"
+    }
+  }
 }

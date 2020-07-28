@@ -82,7 +82,7 @@ export default function ProgressPanel () {
         </Tabs>
       </AppBar>
 
-      {/* Listing Recently Saved Schematics */}
+      {/* Display overview of recently 4 saved schematics */}
       <TabPanel value={value} index={0}>
         {schematics.length !== 0
           ? <Grid

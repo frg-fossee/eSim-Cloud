@@ -1,5 +1,7 @@
 
 export default function textToFile (data) {
+  // create a file from a blob
+
   var myblob = new Blob([data], {
     type: 'text/plain'
   })

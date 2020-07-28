@@ -32,16 +32,20 @@
     "simulation": {},
     "info": {
         "name": "Temperature sensor TMP36",
-        "image": "https://microcontrollerslab.com/wp-content/uploads/2020/03/TMP36-pinout-scaled.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Temperature_Sensor_%28TMP36%29.jpg/640px-Temperature_Sensor_%28TMP36%29.jpg",
         "Datasheet": "https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf",
-        "description": "The TMP102 Digital Temperature Sensor Breakout from Sparkfun is a breakout board for the incredibly small TMP102 digital temperature sensor. The TMP102 is a digital sensor (I2C a.k.a. TWI), has a resolution of 0.0625°C, and is accurate up to 0.5°C. The sensor requires very low-current, and is loaded with features.",
+        "description": "TThe TMP35/TMP36/TMP37 are low voltage, precision centi- grade temperature sensors. They provide a voltage output that is linearly proportional to the Celsius (centigrade) temperature.",
         "properties": {
-            "MinimumVoltage": "35V",
-            "MaximumVoltage": "-2V",
-            " temperature": " -55°C to 150°C ",
-            "Output voltage ": "10mV (0.01V)/1°C",
-            "Accuracy": "±0.5°C ",
-            "Drain current": "60uA"
+            "Supply Voltage": "2.7V to 5.5V",
+            "Ramp-Up Rate": "3°C/sec",
+            "Ramp-Down Rate ": "−6°C/sec",
+            "Operating Temperature Range": " -55°C to 150°C ",
+            "Storage Temperature Range": "−65°C to +160°C",
+            "Offset Voltage": "0.5V",
+            "Output voltage ": "750mV/25°C",
+            "Accuracy": "±2°C ",
+            "Supply Current": "less than 50uA",
+            "Shutdown current": "0.5 µA max"
         }
     }
 }

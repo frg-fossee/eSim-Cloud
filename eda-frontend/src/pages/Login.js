@@ -1,3 +1,4 @@
+// User Login / Sign In page.
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
 
@@ -11,17 +12,22 @@ import {
   FormControlLabel,
   TextField,
   Card,
-  Avatar
+  Avatar,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { Link as RouterLink } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-import { login } from '../redux/actions/index'
+import { useSelector, useDispatch } from 'react-redux'
+import { login, authDefault, googleLogin } from '../redux/actions/index'
+import google from '../static/google.png'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(27),
+    marginTop: theme.spacing(24),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -36,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
+    margin: theme.spacing(2, 0)
   }
 }))
 
@@ -44,23 +50,38 @@ var url = ''
 
 export default function SignIn (props) {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
+
+  const dispatch = useDispatch()
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
 
   useEffect(() => {
+    dispatch(authDefault())
     document.title = 'Login - eSim '
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       url = query.get('url')
+      localStorage.setItem('ard_redurl', url)
     } else {
       url = ''
     }
-  })
+  }, [dispatch, props.location.search])
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const dispatch = useDispatch()
+  const [showPassword, setShowPassword] = useState(false)
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
+  // Function call for normal user login.
   const handleLogin = () => {
     dispatch(login(username, password, url))
+  }
+
+  // Function call for google oAuth login.
+  const handleGoogleLogin = () => {
+    var host = window.location.protocol + '//' + window.location.host
+    dispatch(googleLogin(host))
   }
 
   return (
@@ -71,7 +92,12 @@ export default function SignIn (props) {
         </Avatar>
 
         <Typography component="h1" variant="h5">
-          Login | Sign IN
+          Login | Sign In
+        </Typography>
+
+        {/* Display's error messages while logging in */}
+        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color="error" >
+          {auth.errors}
         </Typography>
 
         <form className={classes.form} noValidate>
@@ -95,7 +121,21 @@ export default function SignIn (props) {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            type={showPassword ? 'text' : 'password'}
             id="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
@@ -127,10 +167,21 @@ export default function SignIn (props) {
             </Grid>
           </Grid>
         </form>
+        <Typography variant="body1" color="secondary" align="center" >Or</Typography>
+
+        {/* Google oAuth Sign In option */}
+        <Button
+          fullWidth
+          variant="outlined"
+          color="primary"
+          onClick={handleGoogleLogin}
+          className={classes.submit}
+        >
+          <img alt="G" src={google} height="20" />&emsp; Login With Google
+        </Button>
       </Card>
       <Button
-        component={RouterLink}
-        to="/"
+        onClick={() => { window.open(homeURL, '_self') }}
         fullWidth
         color="default"
         className={classes.submit}

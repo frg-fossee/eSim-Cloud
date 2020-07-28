@@ -2,33 +2,20 @@
   background-color: #ddd;
 }
 
-#sidebar {
-  width: 25%;
-  float: left;
-  padding: 20px;
-  position: relative;
-}
-
-#main {
-  width: 95%;
-  float: left;
-  position: relative;
-  height: auto;
-  margin-top: 2%;
-  margin-left: 2.5%;
-}
-
 .subbox {
-  width: 98%;
+  box-sizing: border-box;
+  width: 95%;
   height: auto;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 0.3125em;
   margin-bottom: 15px;
   box-shadow: 1px 1px 3px grey;
   cursor: pointer;
+  margin-left: 2%;
+  justify-content: space-evenly;
 }
 
-.item-img{
+.item-img {
   min-height: 180px;
   max-width: 100%;
   max-height: 180px;
@@ -38,70 +25,72 @@
   box-shadow: 2px 2px 9px grey;
 }
 
-.box {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  height: auto;
-  margin-top: 10%;
-}
-
-@media (max-width: 767.98px) {
-
-  #main {
-    width: 60%;
-  }
-}
-
 #openproject {
-  position: absolute;
-  top: 0px;
-  left: 0px;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  min-height: 150%;
+  height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
+  overflow-y: scroll;
 }
 
 #innerdialog {
   background-color: white;
   position: relative;
   color: black;
-  top: 80px;
-  width: 70%;
-  min-height: 800px;
-  margin-left: 15%;
+  margin: 1em 10% 1em 10%;
   border-radius: 5px;
   box-sizing: border-box;
+  min-width: 80%;
 }
 
-input[type=submit] {
-  background-color: #4CAF50;
+button[type="submit"] {
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   float: left;
   font-weight: bold;
+  border-top: 1px solid #007bff;
+  border-bottom: 1px solid #007bff;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  height: 100%;
 }
 
-input[type=submit]:hover {
-  background-color: #45a049;
+#Search {
+  width: 100%;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
-#clsbtn {
-  background-color: #008CBA;
-  border: none;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-  width: 90%;
-  font-weight: bolder;
-  border-radius: 12px;
-  margin-top: 280px;
-  margin-left: 5%;
+.act-buttons {
+  max-width: 100%;
+}
+
+.act-buttons button {
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.share-btns {
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+  width: 100%;
+}
+
+.share-btns button {
+  margin-left: 15px;
+}
+
+.act-desc {
+  margin: 15px;
+  font-family: cursive;
+}
+
+@media only screen and (max-width: 480px) {
+  .share-btns button {
+    margin-left: 5px;
+  }
 }

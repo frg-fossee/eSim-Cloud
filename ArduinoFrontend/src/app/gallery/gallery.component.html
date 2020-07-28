@@ -1,69 +1,35 @@
-<app-header title="Arduino on Cloud" color="cornflowerblue"></app-header>
+<app-header title="Gallery"></app-header>
 
 <!--close header-->
 <div id="main">
-    <div style="display: flex;margin-top: 10px;">
-        <h5 style="margin-right:5px;font-family: monospace;font-weight: 900;font-size: 30px">Gallery</h5>
-        <!--<a type="button" class="btn btn-primary mb-3"
-            style="line-height:10px ;height: 25px;margin-top: 3px;margin-left:5px">Circuits</a>-->
-    </div>
+  <!-- <h5 style="margin:1em;font-family: monospace;font-weight: 900;font-size: 30px">Gallery</h5> -->
 
 
-    <mat-tab-group style="width: 100%;display: flex;">
-        <mat-tab label="Recent">
-
-            <div class="box">
-                <!--First Card-->
-                <div class="subbox">
-                    <div>
-                        <img style="border-radius: 5px;" src="arduinoUnoR3.png" width="auto" height="auto" alt="">
-                        <div style="box-sizing: border-box; padding: 15px;">
-                            <h4>Project Name</h4><br>
-                            <h5>Author Name:</h5>
-                            <h6 style="margin-bottom:0px; font-size: 15px; color: lightgrey">10/03/2020 (2 hours ago)
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-                <!--/First Card-->
-                <!--Second Card-->
-                <div class="subbox">
-                    <div>
-                        <img style="border-radius: 5px;" src="arduinoUnoR3.png" width="auto" height="auto" alt="">
-                        <div style="box-sizing: border-box; padding: 15px;">
-                            <h4>Project Name</h4><br>
-                            <h5>Author Name:</h5>
-                            <h6 style="margin-bottom:0px; font-size: 15px; color: lightgrey">10/03/2020 (2 hours ago)
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-                <!--/Second Card-->
-                <div class="subbox">
-                    <div>
-                        <img style="border-radius: 5px;" src="arduinoUnoR3.png" width="auto" height="auto" alt="">
-                        <div style="box-sizing: border-box; padding: 15px;">
-                            <h4>Project Name</h4><br>
-                            <h5>Author Name:</h5>
-                            <h6 style="margin-bottom:0px; font-size: 15px; color: lightgrey">10/03/2020 (2 hours ago)
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="subbox">
-                    <div>
-                        <img style="border-radius: 5px;" src="arduinoUnoR3.png" width="auto" height="auto" alt="">
-                        <div style="box-sizing: border-box; padding: 15px;">
-                            <h4>Project Name</h4><br>
-                            <h5>Author Name:</h5>
-                            <h6 style="margin-bottom:0px; font-size: 15px; color: lightgrey">10/03/2020 (2 hours ago)
-                            </h6>
-                        </div>
-                    </div>
-                </div>
+  <mat-tab-group style="width: 100%;display: flex;">
+    <mat-tab label="Experiments">
+      <p *ngIf="samples.length === 0">No Experiments Available</p>
+      <div class="row" style="margin: 1em;">
+        <div class="col-md-3" *ngFor="let item of samples; let i = index">
+          {{ DateTime(item) }}
+          <div class="subbox" [routerLink]="['/simulator']" [queryParams]="{gallery:i}">
+            <div>
+              <div style="width: 100%;  background-color: #e8e8e8;">
+                <img class="item-img" style="border-radius: 5px;" src="./assets/samples/{{item.base64_image}}"
+                  alt="{{item.name}}">
+              </div>
+              <div style="box-sizing: border-box; padding: 15px;">
+                <h5>{{item.name}}</h5>
+                <p style="margin-bottom: 0;text-align: right;font-size: small;">{{item.time}} By {{item.author}}</p>
+              </div>
             </div>
-        </mat-tab>
-        <mat-tab label="Popular" style="font-weight: bold;"></mat-tab>
-    </mat-tab-group>
+          </div>
+        </div>
+      </div>
+
+    </mat-tab>
+    <mat-tab label="Recents" style="font-weight: bold;">
+      <p style="margin: 1em;">No Published Circuit Available</p>
+    </mat-tab>
+  </mat-tab-group>
 
 </div>

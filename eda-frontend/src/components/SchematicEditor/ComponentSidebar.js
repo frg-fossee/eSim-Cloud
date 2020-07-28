@@ -81,8 +81,8 @@ export default function ComponentSidebar ({ compRef }) {
     if (searchText.length === 0) {
       setSearchedComponents([])
     }
-    setSearchedComponents([])
     setSearchText(evt.target.value)
+    setSearchedComponents([])
     // mimic the value so we can access the latest value in our API call.
 
     // call api from here. and set the result to searchedComponentList.
@@ -99,14 +99,14 @@ export default function ComponentSidebar ({ compRef }) {
       // call api here
       setLoading(true)
 
-      api.get(`http://localhost/api/components/?${searchOptions[searchOption]}=${searchText}`)
+      api.get(`components/?${searchOptions[searchOption]}=${searchText}`)
         .then(
           (res) => {
-            setSearchedComponents([...res.data])
             if (res.data.length === 0) {
               setIssearchedResultsEmpty(true)
             } else {
               setIssearchedResultsEmpty(false)
+              setSearchedComponents([...res.data])
             }
           }
         )
@@ -205,7 +205,7 @@ export default function ComponentSidebar ({ compRef }) {
             {searchText.length !== 0 && searchedComponentList.length !== 0 &&
 
               searchedComponentList.map((component, i) => {
-                return (<ListItemIcon key={component.name}>
+                return (<ListItemIcon key={i}>
                   <SideComp component={component} />
                 </ListItemIcon>)
               }
@@ -232,7 +232,11 @@ export default function ComponentSidebar ({ compRef }) {
 
             {/* Collapsing List Mapped by Libraries fetched by the API */}
             {searchText.length === 0 &&
-              libraries.map(
+              libraries.sort(function (a, b) {
+                var textA = a.library_name.toUpperCase()
+                var textB = b.library_name.toUpperCase()
+                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+              }).map(
                 (library) => {
                   return (
                     <div key={library.id}>
@@ -272,6 +276,7 @@ export default function ComponentSidebar ({ compRef }) {
         </List>
       </div>
       <div style={isSimulate ? {} : { display: 'none' }}>
+        {/* Display simulation modes parameters on left side pane */}
         <List>
           <ListItem button divider>
             <h2 style={{ margin: '5px auto 5px 5px' }}>Simulation Modes</h2>

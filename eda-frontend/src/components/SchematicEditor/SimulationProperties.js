@@ -12,8 +12,11 @@ import {
   Typography,
   Select,
   Divider,
-  Popover
+  Popover,
+  Tooltip,
+  IconButton
 } from '@material-ui/core'
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
@@ -174,21 +177,7 @@ export default function SimulationProperties () {
     return api.post('simulation/upload', formData, config)
   }
 
-  // convert exponential valuese to integers
-  // function convert (n) {
-  //   var sign = +n < 0 ? '-' : ''
-  //   var toStr = n.toString()
-  //   if (!/e/i.test(toStr)) {
-  //     return n
-  //   }
-  //   var [lead, decimal, pow] = n.toString()
-  //     .replace(/^-/, '')
-  //     .replace(/^([0-9]+)(e.*)/, '$1.$2')
-  //     .split(/e|\./)
-  //   return +pow < 0
-  //     ? sign + '0.' + '0'.repeat(Math.max(Math.abs(pow) - 1 || 0, 0)) + lead + decimal
-  //     : sign + lead + (+pow >= decimal.length ? (decimal + '0'.repeat(Math.max(+pow - decimal.length || 0, 0))) : (decimal.slice(0, +pow) + '.' + decimal.slice(+pow)))
-  // }
+  const [isResult, setIsResult] = useState(false)
 
   // Get the simulation result with task_Id
   function simulationResult (url) {
@@ -198,61 +187,66 @@ export default function SimulationProperties () {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
           setTimeout(simulationResult(url), 1000)
         } else {
-          var temp = res.data.details.data
           var result = res.data.details
-          var data = result.data
-          console.log('DATA SIm', data)
-          if (res.data.details.graph === 'true') {
-            var simResultGraph = { labels: [], x_points: [], y_points: [] }
-            // populate the labels
-            for (var i = 0; i < data.length; i++) {
-              simResultGraph.labels[0] = data[i].labels[0]
-              var lab = data[i].labels
-              // lab is an array containeing labels names ['time','abc','def']
-              simResultGraph.x_points = data[0].x
-
-              // labels
-              for (var x = 1; x < lab.length; x++) {
-                if (lab[x].includes('#branch')) {
-                  lab[x] = `I (${lab[x].replace('#branch', '')})`
-                }
-                //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
-                //  else {
-                // lab[x] = `V (${lab[x]})`
-
-                // }
-                simResultGraph.labels.push(lab[x])
-              }
-              // populate y_points
-              for (var z = 0; z < data[i].y.length; z++) {
-                simResultGraph.y_points.push(data[i].y[z])
-              }
-            }
-
-            simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
-
-            for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
-              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
-            }
-
-            dispatch(setResultGraph(simResultGraph))
+          if (result === null) {
+            setIsResult(false)
           } else {
-            var simResultText = []
-            for (let i = 0; i < temp.length; i++) {
-              let postfixUnit = ''
-              if (temp[i][0].includes('#branch')) {
-                temp[i][0] = `I(${temp[i][0].replace('#branch', '')})`
-                postfixUnit = 'A'
-              } else {
-                temp[i][0] = `V(${temp[i][0]})`
-                postfixUnit = 'V'
+            setIsResult(true)
+            var temp = res.data.details.data
+            var data = result.data
+            // console.log('DATA SIm', data)
+            if (res.data.details.graph === 'true') {
+              var simResultGraph = { labels: [], x_points: [], y_points: [] }
+              // populate the labels
+              for (var i = 0; i < data.length; i++) {
+                simResultGraph.labels[0] = data[i].labels[0]
+                var lab = data[i].labels
+                // lab is an array containeing labels names ['time','abc','def']
+                simResultGraph.x_points = data[0].x
+
+                // labels
+                for (var x = 1; x < lab.length; x++) {
+                  if (lab[x].includes('#branch')) {
+                    lab[x] = `I (${lab[x].replace('#branch', '')})`
+                  }
+                  //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
+                  //  else {
+                  // lab[x] = `V (${lab[x]})`
+
+                  // }
+                  simResultGraph.labels.push(lab[x])
+                }
+                // populate y_points
+                for (var z = 0; z < data[i].y.length; z++) {
+                  simResultGraph.y_points.push(data[i].y[z])
+                }
               }
 
-              simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2]) + ' ' + postfixUnit + '\n')
-            }
+              simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
 
-            handleSimulationResult(res.data.details)
-            dispatch(setResultText(simResultText))
+              for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
+                simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
+              }
+
+              dispatch(setResultGraph(simResultGraph))
+            } else {
+              var simResultText = []
+              for (let i = 0; i < temp.length; i++) {
+                let postfixUnit = ''
+                if (temp[i][0].includes('#branch')) {
+                  temp[i][0] = `I(${temp[i][0].replace('#branch', '')})`
+                  postfixUnit = 'A'
+                } else {
+                  temp[i][0] = `V(${temp[i][0]})`
+                  postfixUnit = 'V'
+                }
+
+                simResultText.push(temp[i][0] + ' ' + temp[i][1] + ' ' + parseFloat(temp[i][2]) + ' ' + postfixUnit + '\n')
+              }
+
+              handleSimulationResult(res.data.details)
+              dispatch(setResultText(simResultText))
+            }
           }
         }
       })
@@ -302,9 +296,9 @@ export default function SimulationProperties () {
     dispatch(setControlBlock(controlBlock))
     // setTimeout(function () { }, 2000)
 
-    var netlist = netfile.title + '\n' +
-      netfile.model + '\n' +
-      compNetlist + '\n' +
+    var netlist = netfile.title + '\n\n' +
+      compNetlist.models + '\n' +
+      compNetlist.main + '\n' +
       controlLine + '\n' +
       controlBlock + '\n'
 
@@ -329,7 +323,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} close={handleSimulateClose} />
+        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} />
 
         {/* Simulation modes list */}
         <List>
@@ -351,8 +345,13 @@ export default function SimulationProperties () {
                       <ListItem>
 
                         <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-                         Add Expression
+                          Add Expression
                         </Button>
+                        <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                          <IconButton aria-label="info">
+                            <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                          </IconButton>
+                        </Tooltip>
                         <Popover
                           id={id}
                           open={open}
@@ -373,14 +372,12 @@ export default function SimulationProperties () {
                             value={controlBlockParam}
                             onChange={handleControlBlockParam}
                           />
-
                         </Popover>
-
                       </ListItem>
                       <ListItem>
                         <Button size='small' variant="contained" color="primary"
                           onClick={(e) => { startSimulate('DcSolver') }}>
-            Run dc solver
+                          Run dc solver
                         </Button>
                       </ListItem>
                     </List>
@@ -405,11 +402,6 @@ export default function SimulationProperties () {
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
                     <ListItem>
-                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
-                        value={dcSweepcontrolLine.parameter}
-                        onChange={handleDcSweepControlLine}
-                      /> */}
-
                       <TextField
                         style={{ width: '100%' }}
                         id="parameter"
@@ -440,30 +432,6 @@ export default function SimulationProperties () {
 
                     </ListItem>
 
-                    {/* <ListItem>
-                      <TextField
-                        style={{ width: '100%' }}
-                        id="sweepType"
-                        size='small'
-                        variant="outlined"
-                        select
-                        label="Sweep Type"
-                        value={dcSweepcontrolLine.sweepType}
-                        onChange={handleDcSweepControlLine}
-                        SelectProps={{
-                          native: true
-                        }}
-
-                      >
-                        <option key="linear" value="linear">
-                          Linear
-                        </option>
-                        <option key="decade" value="decade">
-                          Decade
-                        </option>
-                      </TextField>
-                    </ListItem> */}
-
                     <ListItem>
                       <TextField id="start" label="Start Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start}
@@ -486,27 +454,14 @@ export default function SimulationProperties () {
                       <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
 
-                    {/* <ListItem>
-                      Second Parameter:
-                      <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
-                    </ListItem> */}
-
-                    {/* <ListItem>
-                      <Button size='small' variant="contained">Add Expression</Button>
-                    </ListItem> */}
-
                     {/* SECONDARY PARAMETER FOR SWEEP */}
-                    <Divider/>
+                    <Divider />
                     <ListItem>
 
                       <h4 style={{ marginLeft: '10px' }}>Secondary Parameters</h4>
                     </ListItem>
 
                     <ListItem>
-                      {/* <TextField size='small' variant="outlined" id="parameter" label="Select Node"
-                        value={dcSweepcontrolLine.parameter}
-                        onChange={handleDcSweepControlLine}
-                      /> */}
 
                       <TextField
                         style={{ width: '100%' }}
@@ -535,30 +490,6 @@ export default function SimulationProperties () {
 
                     </ListItem>
 
-                    {/* <ListItem>
-                      <TextField
-                        style={{ width: '100%' }}
-                        id="sweepType"
-                        size='small'
-                        variant="outlined"
-                        select
-                        label="Sweep Type"
-                        value={dcSweepcontrolLine.sweepType}
-                        onChange={handleDcSweepControlLine}
-                        SelectProps={{
-                          native: true
-                        }}
-
-                      >
-                        <option key="linear" value="linear">
-                          Linear
-                        </option>
-                        <option key="decade" value="decade">
-                          Decade
-                        </option>
-                      </TextField>
-                    </ListItem> */}
-
                     <ListItem>
                       <TextField id="start2" label="Start Value" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start2}
@@ -583,8 +514,13 @@ export default function SimulationProperties () {
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-   Add Expression
+                        Add Expression
                       </Button>
+                      <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
                       <Popover
                         id={id}
                         open={open}
@@ -656,44 +592,16 @@ export default function SimulationProperties () {
                       <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
 
-                    {/* <ListItem>
-                      <TextField
-                        style={{ width: '100%' }}
-                        id="skipInitial"
-                        size='small'
-                        variant="outlined"
-                        select
-                        label="Skip Initial"
-                        value={transientAnalysisControlLine.skipInitial}
-                        onChange={handleTransientAnalysisControlLine}
-                        SelectProps={{
-                          native: true
-                        }}
-
-                      >
-                        <option key="No" value="No">
-                          No
-                        </option>
-                        <option key="Yes" value="Yes">
-                          Yes
-                        </option>
-                      </TextField>
-                    </ListItem> */}
-
-                    {/* <ListItem>
-                      Sweep Parameter:
-                      <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
-                    </ListItem> */}
-
-                    {/* <ListItem>
-                      <Button size='small' variant="contained">Add Expression</Button>
-                    </ListItem>
-                     */}
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-   Add Expression
+                        Add Expression
                       </Button>
+                      <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
                       <Popover
                         id={id}
                         open={open}
@@ -742,12 +650,6 @@ export default function SimulationProperties () {
               <ExpansionPanelDetails>
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
-                    {/* <ListItem>
-                      <TextField id="input" label="Input" size='small' variant="outlined"
-                        value={acAnalysisControlLine.skipInitial}
-                        onChange={handleAcAnalysisControlLine}
-                      />
-                    </ListItem> */}
 
                     <ListItem>
                       <TextField
@@ -776,35 +678,6 @@ export default function SimulationProperties () {
                       </TextField>
                     </ListItem>
 
-                    {/* <ListItem>
-                      <TextField
-                        style={{ width: '100%' }}
-                        id="input"
-                        size='small'
-                        variant="outlined"
-                        select
-                        label="Select Type"
-                        value={acAnalysisControlLine.input}
-                        onChange={handleAcAnalysisControlLine}
-                        SelectProps={{
-                          native: true
-                        }}
-                      >
-
-                        {
-                          Object.keys(acTypeOptionList).map((type, i) => {
-                            console.log(acTypeOptionList.type)
-                              return (
-                              <option key={i} value={acTypeOptionList.type}>
-                                {type}
-                              </option>)
-
-                          })
-                        }
-
-                      </TextField>
-                      </ListItem> */}
-
                     <ListItem>
                       <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"
                         value={acAnalysisControlLine.pointsBydecade}
@@ -826,19 +699,16 @@ export default function SimulationProperties () {
                       <span style={{ marginLeft: '10px' }}>Hz</span>
                     </ListItem>
 
-                    {/* <ListItem>
-                      Sweep Parameter:
-                      <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
-                    </ListItem> */}
-
-                    {/* <ListItem>
-                      <Button size='small' variant="contained">Add Expression</Button>
-                    </ListItem> */}
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
-   Add Expression
+                        Add Expression
                       </Button>
+                      <Tooltip title={'Add expression seperated by spaces. Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
                       <Popover
                         id={id}
                         open={open}

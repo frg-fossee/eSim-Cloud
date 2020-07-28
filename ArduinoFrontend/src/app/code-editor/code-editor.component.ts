@@ -2,20 +2,40 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ArduinoUno } from '../Libs/outputs/Arduino';
 import { Download } from '../Libs/Download';
 
+/**
+ * For Handling Time ie. Prevent moment error
+ */
 declare var monaco;
 
+/**
+ * Code Editor Component
+ */
 @Component({
   selector: 'app-code-editor',
   templateUrl: './code-editor.component.html',
   styleUrls: ['./code-editor.component.css']
 })
-export class CodeEditorComponent implements OnInit {
-  // TODO: Seperate Data
+export class CodeEditorComponent {
+  // TODO: Fetch records and Suggestion from api
+
+  /**
+   * Initialization variable for code editor
+   */
+  private init = false;
+  /**
+   * Monaco code editor options
+   */
   editorOptions = {
     theme: 'vs',
     language: 'c'
   };
+  /**
+   * Instance of Monaco editor
+   */
   editor: any;
+  /**
+   * Libraries that are already present
+   */
   records = [
     {
       include: 'EEPROM.h',
@@ -54,33 +74,67 @@ export class CodeEditorComponent implements OnInit {
       url: 'https://www.arduino.cc/en/Reference/SPI'
     }
   ];
+  /**
+   * Code inside the Monaco editor
+   */
   code = '';
+  /**
+   * Names of Arduino
+   */
   names: string[] = [];
+  /**
+   * Instance of Arduino uno for updating code
+   */
   arduinos: ArduinoUno[] = [];
+  /**
+   * Selected Arduino Index
+   */
   selectedIndex = 0;
-
+  /**
+   * Width of the Code editor
+   */
   @Input() width = 500;
+  /**
+   * Height of the code editor in terms of VH
+   */
   @Input() height = 80;
 
+  /**
+   * Reninitialize arduino names
+   */
   @Input('reinit')
   set reinit(value: boolean) {
+    // Set Global variable to tell that code editor is opened
+    window['isCodeEditorOpened'] = value;
+
     if (value) {
+      // Clear names and instances
       this.names = [];
       this.arduinos = [];
+      // get Names and instances
       for (const key in window['ArduinoUno_name']) {
         if (window['ArduinoUno_name'][key]) {
           this.names.push(key);
           this.arduinos.push(window['ArduinoUno_name'][key]);
         }
       }
+      // reset selected  index
       if (this.selectedIndex >= this.arduinos.length) {
         this.selectedIndex = 0;
       }
+      // select the code of respective arduino
       if (this.arduinos.length > 0) {
         this.code = this.arduinos[this.selectedIndex].code;
       }
+      // show loading animation if code editor is nor initialized
+      if (this.names.length !== 0 && !this.init) {
+        window['showLoading']();
+      }
     }
   }
+  /**
+   * Download the code from code editor
+   */
   DownloadCode() {
     Download.DownloadText(this.names[this.selectedIndex] + '.ino',
       [this.code],
@@ -88,6 +142,10 @@ export class CodeEditorComponent implements OnInit {
         type: 'text/ino;charset=utf-8;'
       });
   }
+  /**
+   * Include the header to the code
+   * @param i Index of the Library that needs to be included
+   */
   Include(i) {
     this.editor.executeEdits('code-editor', [{
       identifier: { major: 1, minor: 1 },
@@ -97,18 +155,26 @@ export class CodeEditorComponent implements OnInit {
     }]);
     this.openFolder();
   }
+  /**
+   * On Monaco code editor initialization
+   * @param editor Monaco Editor Instance
+   */
   onInit(editor) {
+    this.init = true;
+    window['hideLoading']();
     this.editor = editor;
     monaco.languages.registerCompletionItemProvider('c', {
       provideCompletionItems: () => {
         return {
+          // If more function needs to add then add to the following array
+          // https://www.arduino.cc/en/Reference
           suggestions: [
             {
-              label: 'digitalRead',
-              kind: monaco.languages.CompletionItemKind.Function,
-              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-              documentation: 'Read Digital Value',
-              insertText: 'digitalRead(${1:PIN});',
+              label: 'digitalRead', // Searching Parameter
+              kind: monaco.languages.CompletionItemKind.Function, // Type of Completion
+              insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet, // Insertion Rule
+              documentation: 'Read Digital Value', // The Documentation copied from arduino.cc
+              insertText: 'digitalRead(${1:PIN});', // The inserted text
             },
             {
               label: 'digitalWrite',
@@ -1114,27 +1180,34 @@ export class CodeEditorComponent implements OnInit {
       }
     });
   }
+  /**
+   * Constructor for code editor
+   */
   constructor() { }
-
-  ngOnInit() {
-  }
+  /**
+   * On code Change update the code in arduino
+   */
   codeChanged() {
     this.arduinos[this.selectedIndex].code = this.code;
   }
+  /**
+   * Select the code for respective ardino. Event handler for Choosing arduino
+   * @param item HTML Select Element
+   */
   chooseArduino(item: HTMLSelectElement) {
     this.selectedIndex = item.selectedIndex;
     this.code = this.arduinos[this.selectedIndex].code;
   }
+  /**
+   * Toggle Libraries Box
+   */
   openFolder() {
-    // const editor = document.getElementById('editor')
     const folder = document.getElementById('lib');
 
     if (folder.style.display === 'none') {
       folder.style.display = 'flex';
-      // editor.style.display = 'none';
     } else {
       folder.style.display = 'none';
-      // editor.style.display = 'block';
     }
   }
 

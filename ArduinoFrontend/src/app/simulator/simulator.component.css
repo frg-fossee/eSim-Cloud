@@ -1,351 +1,367 @@
+.pipe {
+  color: #999;
+  margin: 0px 12px;
+  font-size: 33px;
+}
+
 .mynode:hover {
-    fill: #f00 !important;
-    stroke: black !important;
-    fill-opacity: 1 !important;
-    stroke-opacity: 1 !important;
+  fill: #f00 !important;
+  stroke: black !important;
+  fill-opacity: 1 !important;
+  stroke-opacity: 1 !important;
 }
 
 .mynode {
-    fill: #f00 !important;
-    stroke: black !important;
-    fill-opacity: 0 !important;
-    stroke-opacity: 0 !important;
-}
-
-textarea:hover, input:hover, textarea:active, input:active, textarea:focus, input:focus, label:focus {
-    outline: 0px !important;
-    -webkit-appearance: none;
-    /* box-shadow: none !important; */
-}
-
-button:focus, button:active, button:hover {
-    outline: 0px !important;
-    -webkit-appearance: none;
+  fill: #f00 !important;
+  stroke: black !important;
+  stroke-width: 2;
+  fill-opacity: 0 !important;
+  stroke-opacity: 0 !important;
 }
 
 .grabbing {
-    cursor: grabbing !important;
-    cursor: -moz-grabbing !important;
-    cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
+  cursor: -moz-grabbing !important;
+  cursor: -webkit-grabbing !important;
 }
 
 .component-card {
-    max-width: 32%;
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-    cursor: pointer;
-    text-align: center;
+  max-width: 32%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
 }
 
 .component-card:hover {
-    background-color: #eee;
+  background-color: #eee;
 }
 
 .component-card img {
-    max-width: 100%;
-    height: 50px;
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 50px;
+  width: auto;
+  height: auto;
+  display: block;
 }
 
 .component-card label {
-    margin: 0 auto 0 auto;
+  margin: 0 auto 0 auto;
 }
 
 .component-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 #bubblebox {
-    top: 120px;
-    position: fixed;
-    background: #000;
-    padding: 10px;
-    color: #fff;
-    border-radius: .4em;
-    z-index: 100;
-    display: none;
+  top: 120px;
+  position: fixed;
+  background: #000;
+  padding: 10px;
+  color: #fff;
+  border-radius: 0.4em;
+  z-index: 100;
+  display: none;
 }
 
 #bubblebox:after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 0;
-    height: 0;
-    border: 10px solid transparent;
-    border-bottom-color: #000;
-    border-top: 0;
-    margin-left: -10px;
-    margin-top: -10px;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 10px solid transparent;
+  border-bottom-color: #000;
+  border-top: 0;
+  margin-left: -10px;
+  margin-top: -10px;
 }
 
 #propertybox {
-    display: block;
-    position: fixed;
-    width: 220px;
-    min-height: 50px;
-    z-index: 100;
-    background: #fff;
-    top: 120px;
-    box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
-    padding: 15px;
-    border-radius: 5px;
+  display: block;
+  position: fixed;
+  width: 220px;
+  min-height: 50px;
+  z-index: 100;
+  background: #fff;
+  top: 120px;
+  box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
+  padding: 15px;
+  border-radius: 5px;
 }
 
 * {
-    user-select: none;
+  user-select: none;
 }
 
 .collapse-card {
-    background-color: transparent;
+  background-color: transparent;
 }
 
 .card-header:hover {
-    background-color: #fff;
+  background-color: #fff;
 }
 
 .collapse-div {
-    display: block;
-    max-height: 0px;
-    overflow: hidden;
-    transition: max-height .5s ease-in-out;
+  display: block;
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out;
 }
 
 .show-div {
-    max-height: 1000vh;
-    transition: max-height .5s ease-in-out;
+  max-height: 1000vh;
+  transition: max-height 0.5s ease-in-out;
 }
 
 #holder {
-    cursor: pointer;
-    overflow: scroll;
-    width: 100%;
-    height: calc(100vh - 101px);
-    background-color: white;
-    padding-left: 0.525px;
+  cursor: pointer;
+  overflow: hidden;
+  width: 100%;
+  height: calc(100vh - 101px);
+  background-color: white;
+  padding-left: 0.525px;
 }
 
 #sidebar-wrapper {
-    overflow-y: scroll;
-    height: calc(100vh - 101px);
-    width: 400px;
-    margin-left: -15rem;
-    -webkit-transition: margin .25s ease-out;
-    -moz-transition: margin .25s ease-out;
-    -o-transition: margin .25s ease-out;
-    transition: margin .25s ease-out;
+  overflow-y: scroll;
+  height: calc(100vh - 101px);
+  width: 400px;
+  margin-left: -15rem;
+  -webkit-transition: margin 0.25s ease-out;
+  -moz-transition: margin 0.25s ease-out;
+  -o-transition: margin 0.25s ease-out;
+  transition: margin 0.25s ease-out;
 }
 
 .code-editor {
-    position: fixed;
-    top: 100px;
-    left: -600px;
-    width: 500px;
-    transition: left 0.5s ease-in-out;
+  position: fixed;
+  top: 100px;
+  left: -600px;
+  width: 500px;
+  transition: left 0.5s ease-in-out;
 }
 
 .show-code-editor {
-    left: 0;
+  left: 0;
 }
 
 .lightblue {
-    background-color: lightskyblue;
+  background-color: lightskyblue;
 }
 
 .lightgreen {
-    background-color: lightgreen;
+  background-color: lightgreen;
 }
 
 #project-title {
-    color: black !important;
-    background-color: transparent;
-    border: none;
+  color: black !important;
+  background-color: transparent;
+  border: none;
 }
 
 #project-title:focus {
-    background-color: #fff !important;
+  background-color: #fff !important;
 }
 
 #secondary-header {
-    display: flex;
-    background-color: whitesmoke;
-    justify-content: space-between;
-    height: 50px;
+  display: flex;
+  background-color: whitesmoke;
+  justify-content: space-between;
+  height: 50px;
 }
 
-#secondary-header>button {
-    font-size: smaller;
-    margin-left: 10px;
-    background-color: #fff;
+#secondary-header > button {
+  font-size: smaller;
+  margin-left: 10px;
+  background-color: #fff;
 }
 
 .btn-fst i {
-    font-size: 25px;
-    margin-right: 10px;
+  font-size: 25px;
+  margin-right: 10px;
 }
 
 #sidebar-wrapper .sidebar-heading {
-    padding: 0.900rem 1.28rem;
-    font-size: 1.7rem;
+  padding: 0.9rem 1.28rem;
+  font-size: 1.7rem;
 }
 
 #sidebar-wrapper .list-group {
-    width: 21.5rem;
-    font-size: 20px;
-    padding-left: 5px;
+  width: 21.5rem;
+  font-size: 20px;
+  padding-left: 5px;
 }
 
 #page-content-wrapper {
-    min-width: 100vw;
+  min-width: 100vw;
 }
 
 #wrapper.toggled #sidebar-wrapper {
-    margin-left: 0;
+  margin-left: 0;
 }
 
 @media (min-width: 768px) {
-    #sidebar-wrapper {
-        margin-left: 0;
-    }
-    #page-content-wrapper {
-        min-width: 0;
-        width: 100%;
-    }
-    #wrapper.toggled #sidebar-wrapper {
-        margin-left: -15rem;
-    }
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
 }
 
 /*context-menu*/
 
-html, body {
-    height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 .context-menu {
-    width: 160px;
-    height: 140px;
-    box-shadow: 0 0 5px 0 #ccc;
-    position: absolute;
-    display: none;
-    background-color: white;
+  width: 160px;
+  height: 140px;
+  box-shadow: 0 0 5px 0 #ccc;
+  position: absolute;
+  display: none;
+  background-color: white;
 }
 
 .context-menu ul {
-    list-style: none;
-    /*show no bullets*/
-    padding: 5px 0px 5px 0px;
+  list-style: none;
+  /*show no bullets*/
+  padding: 5px 0px 5px 0px;
 }
 
 .context-menu ul li {
-    padding: 10px 5px 10px 5px;
-    border-left: 4px solid transparent;
-    cursor: pointer;
-    z-index: 5000 !important;
-    overflow: visible !important;
+  padding: 10px 5px 10px 5px;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  z-index: 5000 !important;
+  overflow: visible !important;
 }
 
 .context-menu ul li:hover {
-    background-color: rgb(245, 207, 161);
-    border-left: 4px solid #666;
+  background-color: rgb(245, 207, 161);
+  border-left: 4px solid #666;
 }
 
 #ToastMessage {
-    top: 100px;
-    left: 1230px;
-    z-index: 1000;
-    position: fixed;
-    width: 300px;
-    height: auto;
-    box-shadow: 0 0 20px 0 #ccc;
-    border-radius: 5px;
-    background-color: black;
-    display: none;
+  top: 100px;
+  left: 1230px;
+  z-index: 1000;
+  position: fixed;
+  width: 300px;
+  height: auto;
+  box-shadow: 0 0 20px 0 #ccc;
+  border-radius: 5px;
+  background-color: black;
+  display: none;
 }
 
 .toast {
-    text-align: left;
+  text-align: left;
 }
 
 .toast-body {
-    padding: 15px 15px 15px 15px;
-    margin-top: 5px;
-    font-family: Arial, Helvetica, sans-serif;
+  padding: 15px 15px 15px 15px;
+  margin-top: 5px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 #console {
-    position: fixed;
-    width: calc(100% - 500px);
-    height: 30%;
-    z-index: 1000;
-    background: #fff;
-    right: 0px;
-    bottom: 5px;
-    padding: 1px;
-    justify-content: space-between;
-    background-color: black;
-    animation: mymove 0.2s;
-    animation-iteration-count: 1s;
+  position: fixed;
+  width: calc(100% - 500px);
+  height: 30%;
+  z-index: 1000;
+  background: #fff;
+  right: 0;
+  bottom: 0;
+  justify-content: space-between;
+  background-color: black;
+  animation: mymove 0.2s;
+  animation-iteration-count: 1s;
+}
+
+#console > .body {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 40px);
+}
+
+#console > .head {
+  display: flex;
+  background-color: white;
+  position: relative;
+  width: 100%;
+  border: 1px solid #000;
+  max-height: 40px;
 }
 
 #msg {
-    overflow-y: scroll;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    position: relative;
-    height: 65%;
-    display: flex;
-    color: #fff;
-    flex-direction: column;
+  padding: 1em;
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  position: relative;
+  display: flex;
+  color: #fff;
+  flex-direction: column;
 }
 
 #msg label {
-    margin-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 #msg pre {
-    color: #fff !important;
-    overflow: initial;
+  color: #fff !important;
+  overflow: initial;
 }
 
 .navbar-brand:focus {
-    outline: 0;
+  outline: 0;
 }
 
 @keyframes mymove {
-    from {
-        bottom: 0px;
-    }
-    to {
-        top: 500px;
-    }
+  from {
+    bottom: 0px;
+  }
+  to {
+    top: 500px;
+  }
 }
 
 #innerdialog {
-    background-color: white;
-    position: absolute;
-    color: black;
-    top: 170px;
-    width: 25%;
-    min-height: 170px;
-    margin-left: 35%;
-    border-radius: 5px;
-    box-sizing: border-box;
-    display: block;
-    z-index: 1001;
+  background-color: white;
+  position: absolute;
+  color: black;
+  top: 170px;
+  width: 25%;
+  min-height: 170px;
+  margin-left: 35%;
+  border-radius: 5px;
+  box-sizing: border-box;
+  display: block;
+  z-index: 1001;
 }
 
 #opendialog {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    min-height: 150%;
-    background-color: rgba(0, 0, 0, 0.4);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  min-height: 150%;
+  background-color: rgba(0, 0, 0, 0.4);
 }

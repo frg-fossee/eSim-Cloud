@@ -1,6 +1,7 @@
 import api from '../../utils/Api'
 import * as actions from './actions'
 
+// Api call for fetching component library list
 export const fetchLibraries = () => (dispatch) => {
 // SAMPLE Response from API
 // [
@@ -21,6 +22,8 @@ export const fetchLibraries = () => (dispatch) => {
     )
     .catch((err) => { console.error(err) })
 }
+
+// Api call for fetching components under specified library id
 export const fetchComponents = (libraryId) => (dispatch) => {
 // SAMPLE Response from API
 //   [
@@ -66,6 +69,7 @@ export const fetchComponents = (libraryId) => (dispatch) => {
     .catch((err) => { console.error(err) })
 }
 
+// Action to keep only one component list dropdown open at a time
 export const toggleCollapse = (id) => (dispatch) => {
   dispatch({
     type: actions.TOGGLE_COLLAPSE,
@@ -73,6 +77,7 @@ export const toggleCollapse = (id) => (dispatch) => {
   })
 }
 
+// Action to hide components list to display simulation parameters
 export const toggleSimulate = () => (dispatch) => {
   dispatch({
     type: actions.TOGGLE_SIMULATE

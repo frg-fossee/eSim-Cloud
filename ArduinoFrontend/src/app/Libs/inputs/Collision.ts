@@ -1,12 +1,20 @@
 /**
- * @param x position x
- * @param y position y
+ * Position as a Vector
  */
 export interface Vector {
+  /**
+   * X Position
+   */
   x: number;
+  /**
+   * Y Positon
+   */
   y: number;
+  // if require add Magnitude
 }
-// enum function for rotation of motor
+/**
+ * Orientation Between three points
+ */
 export enum Orienation {
   COLINEAR,
   CLOCKWISE,
@@ -87,6 +95,6 @@ export class Collision {
    * @param b coordinate b
    */
   static EuclideanDistance(a: Vector, b: Vector) {
-    return ((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y));
+    return Math.sqrt(((a.x - b.x) * (a.x - b.x)) + ((a.y - b.y) * (a.y - b.y)));
   }
 }

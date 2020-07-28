@@ -27,9 +27,10 @@
     "simulation": {},
     "info": {
         "name": "PhotoResistor",
-        "image": "https://commons.wikimedia.org/wiki/File:Photoresistors_-_three_sizes_-_mm_scale.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/3/33/Photoresistor_2.jpg",
         "description": "Light dependent resistors, LDRs or photoresistors are often used in circuits where it is necessary to detect the presence or the level of light.",
-        "properties": {
+        "Datasheet": "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf",
+            "properties": {
             "Max power dissipation": "200mW",
             "Max voltage": "200V (@0lux)",
             "Peak wavelength": "600nm",

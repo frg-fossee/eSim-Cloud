@@ -1,7 +1,7 @@
 {
   "name": "RGB LED",
   "className": "RGBLED",
-  "pointHalf": 4,
+  "pointHalf": 6,
   "pins": [
     {
       "x": -3,
@@ -42,8 +42,9 @@
   "simulation": {},
   "info": {
     "name": "RGB LED",
-    "image": "https://commons.wikimedia.org/wiki/File:RGB_LED.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/3/3d/RGB-Led-projection.jpg",
     "description": "RGB LED contains all three colors Red, Green, Blue. These 5mm size LEDs have four pins - Cathode is the longest pin. One for each color and a common cathode. Use this one LED for three status indicators or pulse width modulate all three and get mixed colors. So any combination of color can be generated.",
+    "DataSheet": "https://www.sparkfun.com/datasheets/Components/YSL-R596CR3G4B5C-C10.pdf",
     "properties": {
       "Size": "5mm LED RGB - Common Cathode",
       "Lens Type": "Diffused",

@@ -5,13 +5,14 @@ import 'brace/theme/monokai'
 import 'brace/theme/github'
 
 export default function Editor (props) {
+  // code editor for online spice simulator
   return (
 
     <AceEditor
       style={{ width: '100%', marginTop: '35px' }}
-      onChange = {props.onCodeChange}
-      value = {props.code}
-      theme = {props.dark.checkedA ? 'github' : 'monokai'}
+      onChange={props.onCodeChange}
+      value={props.code}
+      theme={props.dark.checkedA ? 'github' : 'monokai'}
       editorProps={{
         $blockScrolling: true
       }}

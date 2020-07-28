@@ -1,57 +1,57 @@
 <app-header title="Arduino on Cloud" color="cornflowerblue"></app-header>
 
+<div style="overflow: hidden;max-width:100vw;">
+  <div class="row" *ngIf="data" style="margin-top: 1em;">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <h2 style="margin-left: 1em;">{{data.name}}</h2>
+      <hr>
+      <div class="row">
+        <div class="col-md-7">
+          <div style="display: flex;">
+            <img style="max-width: 100%;margin: auto auto;" src="{{data.base64_image}}" alt="{{data.name}}">
+          </div>
+        </div>
+        <div class="col-md-5 data-body" style="padding-left: 30px;">
+          <h3 style="font-family: cursive;">Description</h3>
+          <p>{{data.description}}</p>
+          <button mat-raised-button color="primary" [routerLink]="['/simulator']"
+            [queryParams]="{id: data.save_id,offline: false}">
+            Run Simulation</button>
+          <div style="margin-top: 100px;"></div>
+          <div>Author Name: <label>{{data.owner}}</label></div>
+          <div>Created At: <label>{{data.save_time}}</label></div>
+          <div>Edited At: <label>{{data.create_time}}</label></div>
 
-<div id="innerdialog" style="display: block;">
-  <div id="dialogheader" style="display: flex; height:50px;border-radius: 5px">
-    <div
-      style="flex-basis: 100%;line-height: 50px;font-weight: bold; padding-left: 10px; font-size: x-large; padding-top: 10px">
-    </div>
-    <!--<div style="flex-basis: 20%; padding: 10px;float: right;">
-      <button style="position: relative; padding-top: 10px;background-color: transparent; border: none;float: right;"
-        (click)="closeProject()"><i class="fa fa-close"></i></button>
-    </div>-->
-  </div>
-  <hr>
-  <div id="projectimage" style="height: 470px;position: relative;">
-    <div
-      style="position: relative; float: left;background-color: white;  width: 50%;height: 460px; top: 10px; left: 15px">
-      <img style="position: absolute; left: 80px;max-width: 500px;max-height: 300px;"
-        alt="">
+          <a href="https://www.facebook.com/sharer/sharer.php?u={{shareURL}}" target="_blank">
+            <button mat-mini-fab color="primary" matTooltip="Share it on Facebook">
+              <i class="fab fa-facebook-f" style="font-size: medium;"></i>
+            </button>
+          </a>
 
-      <!-- <button mat-raised-button color="warn" style="margin-top: 60%;margin-left:23%"
-          (click)="DeleteCircuit(selected.id)">Delete Circuit</button> -->
-      <button mat-raised-button color="primary" [routerLink]="['/simulator']" style=" margin-top: 5%;margin-left:13%">Edit circuit</button>
-    </div>
-    <div style=" position: relative; height:460px; background-color:white;float: left; width: 49%; top: 10px">
-      <div
-        style="position: relative; margin-top: 10px;margin-left: 20px; width: 93%;height: 230px;background-color:white; float: left; overflow: auto">
-        <h5 style="font-size: 20px; font-weight: bold; font-family: cursive;margin-left: 20px;margin-top: 10px">
-          Description</h5>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url={{shareURL}}" target="_blank">
+            <button mat-mini-fab style="background-color: #0080FF;" matTooltip="Share it on Linked In">
+              <i class="fab fa-linkedin-in" style="font-size: x-large;"></i>
+            </button>
+          </a>
 
-        <p style="margin-left: 10px"></p>
+          <a href="http://www.reddit.com/submit?url={{shareURL}}" target="_blank">
+            <button mat-mini-fab style="background-color: #ff4500;" matTooltip="Share it on Reddit">
+              <i class='fab fa-reddit-alien' style='font-size:24px;'></i>
+            </button>
+          </a>
+          <a href="mailto:?subject={{shareName}}&body={{shareURL}}" target="_blank">
+            <button mat-mini-fab style="background-color: black;" matTooltip="Share it with Mail">
+              <i class="fa fa-envelope" style="font-size: medium;"></i>
+            </button>
+          </a>
+          <button mat-mini-fab style="background-color: black;" matTooltip="Copy Sharing URL">
+            <i class="fa fa-share-alt" style="font-size: medium;"></i>
+          </button>
+
+        </div>
       </div>
-      <div
-        style="position: relative;margin-top: 5px;margin-left: 20px; width: 93%; height: 210px; background-color: white; float: left;">
-        <h6 style="margin-left: 15px; margin-top: 15px;font-family: cursive">Author name: Navonil Das</h6>
-        <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
-        <h6 style="margin-left: 15px;font-family: cursive">Created At: 30/May/2020</h6>
-        <h6 style="margin-left: 15px;font-family: cursive">Edited At: 30/May/2020</h6>
-        <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
-      </div>
     </div>
+    <div class="col-md-1"></div>
   </div>
-
-  <!-- Comments
-  <hr>
-  <div style="height: 185px; width: 100%;">
-    <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
-      <h3 style="padding-left: 10px;font-weight: bolder; font-size: 22px;font-family: monospace">Comments</h3>
-      <form class="form-group">
-        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" style="width: 97%;"></textarea>
-      </form>
-      <button mat-raised-button disabled>Post Comment</button>
-    </div>
-  </div> -->
-
-
 </div>

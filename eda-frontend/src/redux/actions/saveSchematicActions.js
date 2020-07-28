@@ -3,6 +3,7 @@ import queryString from 'query-string'
 import api from '../../utils/Api'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
+import { setTitle } from './index'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -31,33 +32,36 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
   })
 }
 
-export const saveSchematic = (title, description, xml) => (dispatch, getState) => {
+// Api call to save new schematic or updating saved schematic.
+export const saveSchematic = (title, description, xml, base64) => (dispatch, getState) => {
   const body = {
     data_dump: xml,
-    base64_image: 'data:image/png;base64, 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',
+    base64_image: base64,
     name: title,
     description: description
   }
 
+  // Get token from localstorage
   const token = getState().authReducer.token
   const schSave = getState().saveSchematicReducer
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
 
   if (schSave.isSaved) {
-    // console.log('Already Saved')
+    //  Updating saved schemaic
     api.post('save/' + schSave.details.save_id, queryString.stringify(body), config)
       .then(
         (res) => {
-          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -66,10 +70,10 @@ export const saveSchematic = (title, description, xml) => (dispatch, getState) =
       )
       .catch((err) => { console.error(err) })
   } else {
+    // saving new schematic
     api.post('save', queryString.stringify(body), config)
       .then(
         (res) => {
-          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -80,15 +84,19 @@ export const saveSchematic = (title, description, xml) => (dispatch, getState) =
   }
 }
 
+// Action for Loading on-cloud saved schematics
 export const fetchSchematic = (saveId) => (dispatch, getState) => {
+  // Get token from localstorage
   const token = getState().authReducer.token
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
@@ -97,7 +105,6 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
   api.get('save/' + saveId, config)
     .then(
       (res) => {
-        // console.log('response', res)
         dispatch({
           type: actions.SET_SCH_SAVED,
           payload: res.data
@@ -112,15 +119,18 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
 }
 
 export const setSchShared = (share) => (dispatch, getState) => {
+  // Get token from localstorage
   const token = getState().authReducer.token
   const schSave = getState().saveSchematicReducer
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
@@ -144,10 +154,28 @@ export const setSchShared = (share) => (dispatch, getState) => {
     .catch((err) => { console.error(err) })
 }
 
+// Action for Loading Gallery schematics
 export const loadGallery = (Id) => (dispatch, getState) => {
   var data = GallerySchSample[Id]
 
+  dispatch({
+    type: actions.LOAD_GALLERY,
+    payload: data
+  })
+  dispatch(setTitle('* ' + data.name))
   dispatch(setSchTitle(data.name))
+  dispatch(setSchDescription(data.description))
+  dispatch(setSchXmlData(data.data_dump))
+  renderGalleryXML(data.data_dump)
+}
+
+// Action for Loading local exported schematics
+export const openLocalSch = (obj) => (dispatch, getState) => {
+  var data = obj
+
+  dispatch({ type: actions.CLEAR_DETAILS })
+  dispatch(setTitle('* ' + data.title))
+  dispatch(setSchTitle(data.title))
   dispatch(setSchDescription(data.description))
   dispatch(setSchXmlData(data.data_dump))
   renderGalleryXML(data.data_dump)

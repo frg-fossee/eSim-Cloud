@@ -22,6 +22,7 @@ class Graph extends Component {
   buildChart = () => {
     const myChartRef = this.chartRef.current.getContext('2d')
     const { x, y, labels, xscale, yscale, precision } = this.props
+    // ticks are the number of points to show on x axis
     const scales = {
       G: { value: 1000000000, ticks: 3 },
       M: { value: 1000000, ticks: 3 },
@@ -55,19 +56,23 @@ class Graph extends Component {
         } else {
           return `Time in ${xscale}S`
         }
-      }
-      if (labels[0] === 'v-sweep') {
+      } else if (labels[0] === 'v-sweep') {
         if (xscale === 'si') {
           return 'Voltage in V'
         } else {
           return `Voltage in ${xscale}V`
         }
-      }
-      if (labels[0] === 'frequency') {
+      } else if (labels[0] === 'frequency') {
         if (xscale === 'si') {
           return 'frequency in Hz'
         } else {
           return `frequency in ${xscale}Hz`
+        }
+      } else {
+        if (xscale === 'si') {
+          return `${labels[0]}`
+        } else {
+          return `${labels[0]} in ${xscale}`
         }
       }
     }
@@ -113,15 +118,10 @@ class Graph extends Component {
               },
               scaleLabel: {
                 display: true,
-                // labelString: labels[0] === 'time' ? `TIME in ${xscale}s` : (labels[0] === 'v-sweep' ? `VOLTAGE in ${xscale}v` : labels[0])
                 labelString: selectLabel()
               },
-              // ticks:{
-              //   source:'labels',
-              //   maxTicksLimit: 10,
-              // }
+
               ticks: {
-                // maxTicksLimit: 10
                 maxTicksLimit: scales[xscale].ticks
               }
             }
@@ -139,7 +139,6 @@ class Graph extends Component {
               ticks: {
                 beginAtZero: true,
                 fontSize: 15,
-                // maxTicksLimit: 10, //Set Y axes points
                 padding: 25
               }
             }

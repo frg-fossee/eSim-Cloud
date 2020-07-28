@@ -1,3 +1,4 @@
+// User Sign Up / Register page.
 import React, { useState, useEffect } from 'react'
 import {
   Container,
@@ -9,13 +10,18 @@ import {
   FormControlLabel,
   TextField,
   Card,
-  Avatar
+  Avatar,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
-import { Link as RouterLink, Redirect } from 'react-router-dom'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
+import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { signUp } from '../redux/actions/index'
+import { signUp, authDefault, googleLogin } from '../redux/actions/index'
+import google from '../static/google.png'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
+    margin: theme.spacing(1.5, 0)
   }
 }))
 
@@ -43,18 +49,30 @@ export default function SignUp () {
 
   const auth = useSelector(state => state.authReducer)
 
+  const dispatch = useDispatch()
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
+
   useEffect(() => {
+    dispatch(authDefault())
     document.title = 'Sign Up - eSim '
-  })
+  }, [dispatch])
+
+  const history = useHistory()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
-  const dispatch = useDispatch()
+  const [accept, setAccept] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
+  const handleClickShowPassword = () => setShowPassword(!showPassword)
+  const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
-  if (auth.isRegistered) {
-    return <Redirect to="/login" />
+  // Function call for google oAuth sign up.
+  const handelGoogleSignup = () => {
+    var host = window.location.protocol + '//' + window.location.host
+    dispatch(googleLogin(host))
   }
+
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>
@@ -64,6 +82,11 @@ export default function SignUp () {
 
         <Typography component="h1" variant="h5">
           Register | Sign Up
+        </Typography>
+
+        {/* Display's error messages while signing in */}
+        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.isRegistered ? 'secondary' : 'error'}>
+          {auth.regErrors}
         </Typography>
 
         <form className={classes.form} noValidate>
@@ -101,38 +124,65 @@ export default function SignUp () {
             fullWidth
             name="password"
             label="Password"
-            type="password"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    size="small"
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+            type={showPassword ? 'text' : 'password'}
             id="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox checked={accept} onChange={e => setAccept(e.target.checked)} color="primary" />}
             label="I accept the Terms of Use & Privacy Policy"
           />
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(signUp(email, username, password))}
+            onClick={() => dispatch(signUp(email, username, password, history))}
             className={classes.submit}
+            disabled={!accept}
           >
             Sign Up
           </Button>
-          <Grid container>
-            <Grid item style={{ marginLeft: 'auto' }} >
-              <Link component={RouterLink} to="/login" variant="body2">
-                {'Already have account? Login'}
-              </Link>
-            </Grid>
-          </Grid>
+          <Typography variant="body2" color="secondary" align="center" >Or</Typography>
+
+          {/* Google oAuth Sign Up option */}
+          <Button
+            fullWidth
+            variant="outlined"
+            color="primary"
+            onClick={handelGoogleSignup}
+            className={classes.submit}
+          >
+            <img alt="G" src={google} height="20" />&emsp; Sign Up With Google
+          </Button>
         </form>
+
+        <Grid container>
+          <Grid item style={{ margin: 'auto' }} >
+            <Link component={RouterLink} to="/login" variant="body2">
+              {'Already have account? Login'}
+            </Link>
+          </Grid>
+        </Grid>
       </Card>
       <Button
-        component={RouterLink}
-        to="/"
         fullWidth
+        onClick={() => { window.open(homeURL, '_self') }}
         color="default"
         className={classes.submit}
       >

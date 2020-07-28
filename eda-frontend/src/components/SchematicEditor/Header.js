@@ -37,19 +37,17 @@ const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     marginRight: theme.spacing(2)
   },
-  form: {
-    flexGrow: 1
-  },
   input: {
     marginLeft: theme.spacing(1),
-    flex: 1,
+    width: '200px',
     color: '#595959'
   },
   rightBlock: {
-    marginLeft: 'auto'
+    marginLeft: 'auto',
+    marginRight: theme.spacing(2)
   },
   button: {
-    marginRight: theme.spacing(1)
+    marginRight: theme.spacing(0.7)
   },
   small: {
     width: theme.spacing(3.7),
@@ -69,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Notification snackbar to give alert messages
 function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
@@ -121,7 +120,7 @@ function Header () {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
-  // Notification Snackbar
+  // handel notification snackbar open and close with message
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -136,7 +135,7 @@ function Header () {
     setSnacOpen(false)
   }
 
-  // Share Dialog box
+  // handel schematic Share Dialog box
   const [openShare, setShareOpen] = React.useState(false)
 
   const handleShareOpen = () => {
@@ -147,6 +146,7 @@ function Header () {
     setShareOpen(false)
   }
 
+  // change saved schematic share status
   const [shared, setShared] = React.useState(schSave.isShared)
 
   useEffect(() => {
@@ -170,9 +170,31 @@ function Header () {
     }
   }
 
+  // handel display format of last saved status
+  function getDate (jsonDate) {
+    var json = jsonDate
+    var date = new Date(json)
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+    const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
+    return `${day} ${month} ${hour}:${minute}:${second}`
+  }
+
+  // handel Copy Share Url
+  const textAreaRef = React.useRef(null)
+
+  function copyToClipboard (e) {
+    textAreaRef.current.select()
+    document.execCommand('copy')
+    e.target.focus()
+    setMessage('Copied Successfully!')
+    handleSnacClick()
+  }
+
   return (
     <Toolbar variant="dense" color="default">
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+
+      {/* Display logo */}
       <IconButton edge="start" className={classes.button} color="primary">
         <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
@@ -187,133 +209,151 @@ function Header () {
         </Link>
       </Typography>
 
+      {/* Input field for schematic title */}
       <Hidden xsDown>
-        <form className={classes.form} noValidate autoComplete="off">
-          <Input
-            className={classes.input}
-            color="secondary"
-            value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
-            onChange={titleHandler}
-            inputProps={{ 'aria-label': 'SchematicTitle' }}
-          />
-        </form>
+        <Input
+          className={classes.input}
+          color="secondary"
+          value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
+          onChange={titleHandler}
+          inputProps={{ 'aria-label': 'SchematicTitle' }}
+        />
       </Hidden>
 
-      <div className={classes.rightBlock}>
-        {auth.isAuthenticated === true
-          ? <Button
+      {/* Display last saved and shared option for saved schematics */}
+      {auth.isAuthenticated === true
+        ? <>
+          {(schSave.isSaved === true && schSave.details.save_time !== undefined)
+            ? <Typography
+              variant="body2"
+              style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
+            >
+              Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
+            </Typography>
+            : <></>
+          }
+          <Button
             size="small"
             variant={shared !== true ? 'outlined' : 'contained'}
             color="primary"
-            className={classes.button}
+            className={schSave.isSaved === true && schSave.details.save_time !== undefined ? classes.button : classes.rightBlock}
             startIcon={<ShareIcon />}
             onClick={handleShare}
           >
             <Hidden xsDown>Share</Hidden>
           </Button>
-          : <></>
-        }
+        </>
+        : <></>
+      }
 
-        <Dialog
-          open={openShare}
-          onClose={handleShareClose}
-          aria-labelledby="share-dialog-title"
-          aria-describedby="share-dialog-description"
-        >
-          <DialogTitle id="share-dialog-title">{'Share Your Schematic'}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="share-dialog-description">
-              <FormControlLabel
-                control={<Switch checked={shared} onChange={handleShareChange} name="shared" />}
-                label=": Sharing On"
+      {/* Share dialog box to get share url */}
+      <Dialog
+        open={openShare}
+        onClose={handleShareClose}
+        aria-labelledby="share-dialog-title"
+        aria-describedby="share-dialog-description"
+      >
+        <DialogTitle id="share-dialog-title">{'Share Your Schematic'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="share-dialog-description">
+            <FormControlLabel
+              control={<Switch checked={shared} onChange={handleShareChange} name="shared" />}
+              label=": Sharing On"
+            />
+          </DialogContentText>
+          <DialogContentText id="share-dialog-description">
+            {shared === true
+              ? <input
+                ref={textAreaRef}
+                value={`${window.location.protocol}\\\\${window.location.host}/eda/#/editor?id=${schSave.details.save_id}`}
+                readOnly
               />
-            </DialogContentText>
-            <DialogContentText id="share-dialog-description">
-              {shared === true
-                ? <>Link : <a href={window.location.href}>{window.location.href}</a></>
-                : <> Turn On sharing </>
-              }
-            </DialogContentText>
+              : <> Turn On sharing </>
+            }
+          </DialogContentText>
 
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleShareClose} color="primary" autoFocus>
-              close
+        </DialogContent>
+        <DialogActions>
+          {shared === true && document.queryCommandSupported('copy')
+            ? <Button onClick={copyToClipboard} color="primary" autoFocus>
+              Copy url
             </Button>
-          </DialogActions>
-        </Dialog>
+            : <></>
+          }
+          <Button onClick={handleShareClose} color="primary" autoFocus>
+            close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-        {
-          (!auth.isAuthenticated ? (<Button
-            size="small"
-            component={RouterLink}
-            to="/login"
-            color="primary"
-            variant="outlined"
-            className={classes.button}
-          >
-            Login
-          </Button>)
-            : (<>
+      {/* Display login option or user menu as per authenticated status */}
+      {
+        (!auth.isAuthenticated ? (<Button
+          size="small"
+          component={RouterLink}
+          to="/login"
+          style={{ marginLeft: 'auto' }}
+          color="primary"
+          variant="outlined"
+        >
+          Login
+        </Button>)
+          : (<>
 
-              <IconButton
-                edge="start"
-                className={classes.button}
-                style={{ marginLeft: 'auto' }}
-                color="primary"
-                aria-controls="simple-menu"
-                aria-haspopup="true"
-                onClick={handleClick}
+            <IconButton
+              edge="start"
+              color="primary"
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
+            >
+              <Avatar className={classes.purple}>
+                {auth.user.username.charAt(0).toUpperCase()}
+              </Avatar>
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+              TransitionComponent={Fade}
+              style={{ marginTop: '25px' }}
+            >
+              <MenuItem
+                target='_blank'
+                component={RouterLink}
+                to="/dashboard"
+                onClick={handleClose}
               >
-                <Avatar className={classes.purple}>
-                  {auth.user.username.charAt(0).toUpperCase()}
-                </Avatar>
-              </IconButton>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                TransitionComponent={Fade}
-                style={{ marginTop: '25px' }}
+                <ListItemText primary={auth.user.username} secondary={auth.user.email} />
+              </MenuItem>
+              <MenuItem
+                target='_blank'
+                component={RouterLink}
+                to="/dashboard/profile"
+                onClick={handleClose}
               >
-                <MenuItem
-                  target='_blank'
-                  component={RouterLink}
-                  to="/dashboard"
-                  onClick={handleClose}
-                >
-                  <ListItemText primary={auth.user.username} secondary={auth.user.email} />
-                </MenuItem>
-                <MenuItem
-                  target='_blank'
-                  component={RouterLink}
-                  to="/dashboard/profile"
-                  onClick={handleClose}
-                >
-                  My Profile
-                </MenuItem>
-                <MenuItem
-                  target='_blank'
-                  component={RouterLink}
-                  to="/dashboard/schematics"
-                  onClick={handleClose}
-                >
-                  My Schematics
-                </MenuItem>
-                <MenuItem onClick={() => {
-                  store.dispatch(logout())
-                  history.goBack()
-                }}>
-                  Logout
-                </MenuItem>
-              </Menu>
-            </>
-            )
+                My Profile
+              </MenuItem>
+              <MenuItem
+                target='_blank'
+                component={RouterLink}
+                to="/dashboard/schematics"
+                onClick={handleClose}
+              >
+                My Schematics
+              </MenuItem>
+              <MenuItem onClick={() => {
+                store.dispatch(logout(history))
+              }}>
+                Logout
+              </MenuItem>
+            </Menu>
+          </>
           )
-        }
-      </div>
+        )
+      }
     </Toolbar>
   )
 }

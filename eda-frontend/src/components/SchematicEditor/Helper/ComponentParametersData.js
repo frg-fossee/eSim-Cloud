@@ -8,7 +8,7 @@ const ComponentParameters = {
     VALUE: '',
     EXTRA_EXPRESSION: '',
     MODEL: '',
-    UNIT: 'F'
+    VALUE_UNIT: 'F'
   },
 
   D: {
@@ -198,7 +198,7 @@ const ComponentParameters = {
     VALUE: '',
     EXTRA_EXPRESSION: '',
     MODEL: '',
-    UNIT: 'H'
+    VALUE_UNIT: 'H'
   },
 
   M: {

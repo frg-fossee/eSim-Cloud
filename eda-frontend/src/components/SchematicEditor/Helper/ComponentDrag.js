@@ -8,7 +8,7 @@ import store from '../../../redux/store'
 import dot from '../../../static/dot.gif'
 
 // import ClipBoardFunct from './ClipBoard.js'
-import NetlistInfoFunct from './NetlistInfo.js'
+// import NetlistInfoFunct from './NetlistInfo.js'
 import ToolbarTools from './ToolbarTools.js'
 import KeyboardShorcuts from './KeyboardShorcuts.js'
 import { SideBar } from './SideBar.js'
@@ -75,6 +75,7 @@ export default function LoadGrid (container, sidebar, outline) {
     mxCell.prototype.targetVertex = false
     mxCell.prototype.tarx = 0
     mxCell.prototype.tary = 0
+    mxCell.prototype.PointsArray = null
     // mxCell.prototype.ConnectedNode = null
 
     // Enables guides
@@ -263,7 +264,7 @@ export default function LoadGrid (container, sidebar, outline) {
 
     SideBar(graph, sidebar)
     KeyboardShorcuts(graph)
-    NetlistInfoFunct(graph)
+    //NetlistInfoFunct(graph)
     ToolbarTools(graph)
 
     store.subscribe(() => {

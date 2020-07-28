@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink, useHistory } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import store from '../../redux/store'
 import { logout } from '../../redux/actions/index'
@@ -41,7 +41,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Common navbar for Dashboard, Home, Simulator, Gallery, etc.
 export function Header () {
+  const history = useHistory()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const auth = store.getState().authReducer
@@ -56,6 +58,7 @@ export function Header () {
 
   return (
     <>
+      {/* Display logo */}
       <IconButton edge="start" className={classes.button} color="primary">
         <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
@@ -69,6 +72,8 @@ export function Header () {
           eSim
         </Link>
       </Typography>
+
+      {/* Display relative link to other pages */}
       <nav>
         {
           (auth.isAuthenticated
@@ -158,6 +163,8 @@ export function Header () {
           )
         }
       </nav>
+
+      {/* Display login option or user menu as per authenticated status */}
       {
         (!auth.isAuthenticated ? (<Button
           size="small"
@@ -165,7 +172,6 @@ export function Header () {
           to="/login"
           color="primary"
           variant="outlined"
-          className={classes.button}
         >
           Login
         </Button>)
@@ -173,7 +179,6 @@ export function Header () {
 
             <IconButton
               edge="start"
-              className={classes.button}
               style={{ marginLeft: 'auto' }}
               color="primary"
               aria-controls="simple-menu"
@@ -215,7 +220,7 @@ export function Header () {
                 My Schematics
               </MenuItem>
               <MenuItem onClick={() => {
-                store.dispatch(logout())
+                store.dispatch(logout(history))
               }}>
                 Logout
               </MenuItem>

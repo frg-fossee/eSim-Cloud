@@ -1,3 +1,4 @@
+// Main Layout for user dashboard.
 import React, { useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { CssBaseline } from '@material-ui/core'
@@ -31,12 +32,13 @@ export default function Dashboard () {
     <div className={classes.root}>
       <CssBaseline />
 
+      {/* Schematic editor header and left side pane */}
       <Layout resToolbar={<Header />} sidebar={<DashboardSidebar />} />
 
       <LayoutMain>
         <div className={classes.toolbar} />
 
-        {/* Dashboard Subroutes */}
+        {/* Subroutes under dashboard section */}
         <Switch>
           <Route exact path="/dashboard" component={DashboardHome} />
           <Route exact path="/dashboard/profile" />

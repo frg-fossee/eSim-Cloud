@@ -1,15 +1,32 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
-
+/**
+ * Declare window so that custom created function don't throw error
+ */
 declare var window;
 /**
  * LED class
  */
 export class LED extends CircuitElement {
-  static colors: string[] = []; // Color of LED
-  static glowColors: string[] = []; // color to be shown while glowing
-  static colorNames: string[] = []; // Name of Color of LED
-  selectedIndex = 0; // Selectedindex wrt to color
+  /**
+   * Colors of LED
+   */
+  static colors: string[] = [];
+  /**
+   * color to be shown while glowing
+   */
+  static glowColors: string[] = [];
+  /**
+   * Name of Color of LED
+   */
+  static colorNames: string[] = [];
+  /**
+   * Selectedindex wrt to color
+   */
+  selectedIndex = 0;
+  /**
+   * Previous node value.
+   */
   prev = -2;
   /**
    * LED constructor
@@ -78,6 +95,9 @@ export class LED extends CircuitElement {
       fill: `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`
     });
   }
+  /**
+   * Get The Led Name
+   */
   getName() {
     // TODO: Change Accordingly to Color
     return `LED Red`;
@@ -115,6 +135,9 @@ export class LED extends CircuitElement {
       title: 'LED'
     };
   }
+  /**
+   * Called when start simulation.
+   */
   initSimulation(): void {
   }
   /** Function removes all the animations */
@@ -122,13 +145,15 @@ export class LED extends CircuitElement {
     this.prev = -2;
     this.elements[3].attr({ fill: 'none' });
   }
-  simulate(): void {
-  }
 }
 /**
  * RGBLED class
  */
 export class RGBLED extends CircuitElement {
+  /**
+   * Raphael Glow element
+   */
+  glow: any = null;
   /**
    * RGBLED constructor
    * @param canvas Raphael Canvas (Paper)
@@ -138,14 +163,47 @@ export class RGBLED extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('RGBLED', x, y, 'RGBLED.json', canvas);
   }
+  /**
+   * Initialize RGB LED
+   */
+  init() {
+    this.nodes[0].addValueListener((v) => {
+      this.nodes[1].setValue(v, this.nodes[0]);
+      this.anim();
+    });
+    this.nodes[2].addValueListener((v) => {
+      this.nodes[1].setValue(v, this.nodes[0]);
+      this.anim();
+    });
+    this.nodes[3].addValueListener((v) => {
+      this.nodes[1].setValue(v, this.nodes[0]);
+      this.anim();
+    });
+  }
   /** animation caller when start simulation is pressed */
   anim() {
-    // TODO: Remove
+    if (this.glow) {
+      this.glow.remove();
+      this.glow = null;
+    }
+    // Simulation Logic
+    let R = (this.nodes[0].value > 0) ? 255 : 0;
+    let B = (this.nodes[2].value > 0) ? 255 : 0;
+    let G = (this.nodes[3].value > 0) ? 255 : 0;
+    if (R === 0 && G === 0 && B === 0) {
+      this.elements[1].attr({
+        fill: 'none'
+      });
+      return;
+    }
+    if (R === 255 && G === 255 && B === 255) {
+      R = G = B = 209;
+    }
     this.elements[1].attr({
-      fill: 'rgba(255,0,0,0.8)'
+      fill: `rgba(${R},${G},${B},0.8)`
     });
-    this.elements[1].glow({
-      color: 'rgb(255,0,0)'
+    this.glow = this.elements[1].glow({
+      color: `rgb(${R},${G},${B})`
     });
   }
   /**
@@ -164,10 +222,21 @@ export class RGBLED extends CircuitElement {
       body
     };
   }
+  /**
+   * Called on start simulation
+   */
   initSimulation(): void {
   }
+  /**
+   * Remove Glow and clear the filling
+   */
   closeSimulation(): void {
-  }
-  simulate(): void {
+    if (this.glow) {
+      this.glow.remove();
+      this.glow = null;
+    }
+    this.elements[1].attr({
+      fill: 'none'
+    });
   }
 }

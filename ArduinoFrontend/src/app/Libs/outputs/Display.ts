@@ -1,5 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
-import { Point } from '../Point';
+
 /**
  * LCD16X2 Class
  */
@@ -29,21 +29,90 @@ export class LCD16X2 extends CircuitElement {
       title: 'LCD Display 16x2'
     };
   }
+
+  init() {
+
+    /**
+     * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
+     */
+    const grid: any = [];
+    let i: number;
+    let j: number;
+    let k: number;
+    let l: number;
+    let tempX: number;
+    let tempY: number;
+    let tempRowsX: number;
+    let tempColumnsY: number;
+    let posX = this.data.startX;
+    let posY = this.data.startY;
+    for (k = 0; k < this.data.rows; k++) { // Rows: 2
+      tempX = posX;
+      tempY = posY;
+      for (l = 0; l < this.data.columns; l++) { // Columns: 16 (Characters)
+        tempColumnsY = posY;
+        for (i = 0; i < this.data.gridRows; i++) { // Rows: 8
+          tempRowsX = posX;
+          for (j = 0; j < this.data.gridColumns; j++) { // Columns: 5 (Characters)
+            const temp = {
+              name: 'G' + k + l + i + j,
+              type: 'rectangle',
+              width: this.data.gridWidth,
+              height: this.data.gridHeight,
+              x: posX,
+              y: posY,
+              fill: this.data.barColor,
+            };
+            grid.push(temp);
+            posX = posX + this.data.gridWidth + this.data.intraSpacing;
+          } // Col ends
+          posX = tempRowsX;
+          posY = posY + this.data.gridHeight +  this.data.intraSpacing;
+        }
+        posX = posX + (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
+        posY = tempColumnsY;
+      }
+      posY = tempY + (this.data.gridRows * this.data.gridWidth) + (this.data.interSpacing * 1.5);
+      posX = tempX;
+    } // Row ends
+    this.DrawElement(this.canvas, grid);
+
+  }
+
+  /**
+   * Called on Start Simulation
+   */
   initSimulation(): void {
   }
+  /**
+   * Called on Stop Simulation
+   */
   closeSimulation(): void {
-  }
-  simulate(): void {
   }
 }
 /**
  * SevenSegment Class
  */
 export class SevenSegment extends CircuitElement {
+  /**
+   * The Seven Segment Bar Color
+   */
   static barColor: string;
+  /**
+   * The Seven Segment Bar glow color
+   */
   static barGlowColor: string;
+  /**
+   * The Bar mapping
+   */
   static mapping: number[] = [];
+  /**
+   * Stores list of Raphael Glow elements
+   */
   glows = [];
+  /**
+   * Map of Pin name to Circuit Node
+   */
   pinNamedMap: any = {};
   /**
    * SevenSegment constructor
@@ -128,13 +197,13 @@ export class SevenSegment extends CircuitElement {
       title: 'Seven Segment Display'
     };
   }
+  /**
+   * Called on Start Simulation
+   */
   initSimulation(): void {
   }
   /** Function removes all  animations */
   closeSimulation(): void {
     this.animate(0);
   }
-  simulate(): void {
-  }
-
 }

@@ -12,9 +12,11 @@ let currentPin, x_pos, y_pos
 let width, height, symbolName
 
 // we need to divide the svg width and height by the same number in order to maintain the aspect ratio.
-const fixed_number = 5
+const default_scale = 5
 
 function extractData (xml) {
+  // extracting metadata from the svg file.
+
   pinData = []
   metadata = xml.getElementsByTagName('metadata')
   const width = metadata[0].attributes[0].nodeValue
@@ -55,6 +57,10 @@ function extractData (xml) {
 }
 
 export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
+  // calls extractData and other MXGRAPH functions
+  // initialize information from the svg meta
+  // plots pinnumbers and component labels.
+
   var path = '../' + component.svg_path
 
   fetch(path)
@@ -69,7 +75,6 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       // console.log(data)
       return data
     }).then(function (data) {
-      // MX GRAPHS TRY BLOCK HAS BEEN SHIFTED HERE.
       const pins = []
       width = data.width
       height = data.height
@@ -96,13 +101,9 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       delete style[mxConstants.STYLE_STROKECOLOR] // transparent
       // delete style[mxConstants.STYLE_FILLCOLOR] // transparent
 
-      if (width <= 200 && height <= 200) {
-        width = width / 2.5
-        height = height / 2.5
-      } else {
-        width = width / fixed_number
-        height = height / fixed_number
-      }
+      // make the component images larger by reducing the denominator and smaller by increasing the denominator
+      width = width / default_scale
+      height = height / default_scale
 
       const v1 = graph.insertVertex(
         parent,
@@ -153,14 +154,15 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
 
       for (let i = 0; i < pinData.length; i++) {
         currentPin = pinData[i]
-        if (currentPin.pinShape === 'NC') continue
+        if (currentPin.pinName === 'NC') continue
         // move this to another file
-        x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / fixed_number)
-        y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / fixed_number) - 1
+        x_pos = (parseInt(width) / 2 + parseInt(currentPin.pinX) / default_scale)
+        y_pos = (parseInt(height) / 2 - parseInt(currentPin.pinY) / default_scale) - 1
 
         // move this to another file
         // eslint-disable-next-line
-        if (currentPin.pinOrientation === "L") {
+
+        if (currentPin.pinOrientation === 'L') {
           pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0.5, 'align=right;verticalAlign=bottom;rotation=0')
         } else if (currentPin.pinOrientation === 'R') {
           pins[i] = graph.insertVertex(v1, null, currentPin.pinNumber, x_pos, y_pos, 0.5, 0.5, 'align=left;verticalAlign=bottom;rotation=0')

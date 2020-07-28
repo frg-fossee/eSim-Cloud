@@ -5,11 +5,29 @@ import { isNull } from 'util';
  * PIR Sensor class
  */
 export class PIRSensor extends CircuitElement {
-  static curve: number[][]; // curve points of sensor
-  static handPoints: number[][]; // points of hand polygon
-  range: any; // range of sensor
-  backCurve: string; // backCurve(path) of sensor
-  hand: any; // hand is a Raphael Element
+  /**
+   * Curve points of sensor
+   */
+  static curve: number[][];
+  /**
+   * points of hand polygon
+   */
+  static handPoints: number[][];
+  /**
+   *  The backgound range of the sensor
+   */
+  range: any;
+  /**
+   * backCurve(path) of sensor
+   */
+  backCurve: string;
+  /**
+   * hand is a Raphael Element
+   */
+  hand: any;
+  /**
+   * Map of pin name to the circuit node.
+   */
   pinNameMap: any = {};
   /**
    * pushbutton constructor
@@ -43,7 +61,7 @@ export class PIRSensor extends CircuitElement {
    * @param title Component title
    */
   properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
-    const body = document.createElement('body');
+    const body = document.createElement('div');
     return {
       keyName: this.keyName,
       body,
@@ -145,7 +163,5 @@ export class PIRSensor extends CircuitElement {
     this.elements[1].hide();
     this.setDragListeners();
     this.setClickListener(null);
-  }
-  simulate(): void {
   }
 }

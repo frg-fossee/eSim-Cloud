@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Common layout for Dashboard and Schematic Editor
 function Layout ({ header, resToolbar, sidebar }) {
   const classes = useStyles()
   const [mobileOpen, setMobileOpen] = React.useState(false)
@@ -30,7 +31,7 @@ function Layout ({ header, resToolbar, sidebar }) {
 
   return (
     <>
-      {/* Header and Toolbar of Dashboard and Schematic Editor */}
+      {/* Header and Toolbar of layout */}
       <AppBar
         position="fixed"
         color="default"

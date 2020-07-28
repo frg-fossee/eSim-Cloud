@@ -4,12 +4,12 @@
     "pointHalf": 4,
     "pins": [
         {
-            "x": 0,
+            "x": -4,
             "y": 27,
             "name": "Positive"
         },
         {
-            "x": 0,
+            "x": -4,
             "y": 69,
             "name": "Negative"
         }
@@ -27,7 +27,7 @@
     "simulation": {},
     "info": {
         "name": "9V 6F 22",
-        "image": "https://images-na.ssl-images-amazon.com/images/I/61XIfRrztZL._AC_SL1000_.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Duracell_9_Volt_0849.jpg/323px-Duracell_9_Volt_0849.jpg",
         "description": "It is an affordable, reliable, dedicated low-power solution to provide sufficient energy to your application. Ideally used in circuits with low power consumption so that it can work for longer durations.",
         "properties": {
             "Nominal Voltage(V) ": "9V",
