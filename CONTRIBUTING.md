@@ -12,7 +12,7 @@ Contributions can be of different types. Some are listed below.
 * Update documentation
 
 ## Reporting Bug / Suggesting Features
-If you just want to report a bug in our system or want to suggest a new feature or improve UI, etc., then first browse through our existing issues to check whether this has been addressed or not. If not, feel free to create a new issue. Please read the guidelines given.
+If you just want to report a bug in our system or want to suggest a new feature or improve UI, etc., then first browse through our existing issues to check whether this has been addressed or not. If not, feel free to create a new issue. Please read the  [new issue guidelines](guidelines-checklist/new-issue-guidelines.md) given.
 
 ## Step 1: Assign/Create Issues
 
@@ -23,7 +23,7 @@ If you just want to report a bug in our system or want to suggest a new feature 
 
 ### New issues
 * Before you create a new issue on GitHub, first discuss your ideas about the new feature or notify the bug on our appropriate Discord channels. Our contributors will interact with you and help you take it further. 
-* Once the feature is approved or the bug is confirmed, based on your discussion with the contributors on our discord channel, create a new issue on GitHub. Please read the guidelines for creating a new issue.
+* Once the feature is approved or the bug is confirmed, based on your discussion with the contributors on our discord channel, create a new issue on GitHub. Please read the [guidelines](guidelines-checklist/new-issue-guidelines.md) for creating a new issue.
 
 ### Inactivity Period
 * If you have assigned the issue to yourself (existing or new), we request you to be active on your forked repository.
@@ -36,14 +36,14 @@ If you just want to report a bug in our system or want to suggest a new feature 
 * You must then identify the branch on which you would like to contribute. You are free to work on the existing branch, however, we recommend that you create a new branch (feature or bugfix) from the desired existing branch and work on the newly created branch. This way if we make some changes to the branch in our repo, you can upstream it at anytime for maintaining the updated codebase.
 
 ## Step 3: Contribute
-* Once the branch is chosen or created, you can start contributing (coding, documentation, test cases, etc.). Make sure that you follow the Contributing guidelines.
+* Once the branch is chosen or created, you can start contributing (coding, documentation, test cases, etc.). Make sure that you follow the [contributing guidelines](guidelines-checklist/contributing-guidelines.md).
 * We use GitHub Actions for continuous integrations that runs linting and testing operations.
 * There might be some changes to the original repository which will not reflect in your forked repository automatically. If you want to update it, sync it using the steps given in the link: https://help.github.com/articles/syncing-a-fork/
 
 ### Step 4: Make a pull request
 * When you feel that you are ready to merge your contributions into our repository, create a pull request.
 * Select an appropriate label from the list E.g. enhancement, bug fix, etc.
-* Please go through the pull request guidelines.
+* Please go through the [pull request guidelines](guidelines-checklist/pullrequest-guidelines.md).
 * Our reviewing team will review your pull request made and will interact with you by posting comments. You may be asked to modify incase there is any issue.
 * We request you to be active in responding to our comments so as to merge/close the issue.
 * Incase you do not respond to our comments within a week, we will close it. Feel free to open it again when you are ready to interact.
