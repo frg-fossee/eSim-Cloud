@@ -1,9 +1,7 @@
 # eSim Cloud and Arduino on Cloud
 [![CodeFactor](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud/badge)](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud)
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
-<a href="https://discord.gg/cZbDD8K">
-<img src="https://discordapp.com/api/guilds/737767491266281583/widget.png?style=shield" alt="Discord Server">
-</a>
+[![Discord](https://discordapp.com/api/guilds/737767491266281583/widget.png?style=shield)](https://discord.gg/cZbDD8K)
 
 
 Development branch status
