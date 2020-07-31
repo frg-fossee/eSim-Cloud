@@ -2,18 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 /**
- * Declare window so that custom created function don't throw error
- */
-declare var window;
-
-/**
  * Interface For Alert Dialog data
  * @param message Message to be shown in the alert box
  * @param buttonText Text to be shown on the confirmation button
  */
 interface AlertDialogData {
-  message: string,
-  buttonText?: string,
+  message: string;
+  buttonText?: string;
 }
 
 /**
