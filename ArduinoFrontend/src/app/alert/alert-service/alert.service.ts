@@ -9,7 +9,7 @@ export class AlertService {
 
   constructor(private dialog: MatDialog) { }
 
-  showAlert(message: string, buttonText: string = 'OK'){
+  showAlert(message: string, buttonText: string = 'OK') {
     const dialogRef = this.dialog.open(AlertModalComponent, {
       data: { message, buttonText }
     });
