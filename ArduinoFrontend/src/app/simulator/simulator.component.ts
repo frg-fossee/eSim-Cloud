@@ -435,11 +435,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // if projet id is uuid (online circuit)
     if (SaveOnline.isUUID(this.projectId)) {
       // Update Project to DB
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => alert('Updated'), this.projectId);
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => this.alertService.showAlert('Updated'), this.projectId);
     } else {
       // Save Project and show alert
       SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
-        alert('Saved');
+        this.alertService.showAlert('Saved');
         // add new quert parameters
         this.router.navigate(
           [],
@@ -461,7 +461,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProjectOff() {
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
-      alert('Project is already Online!');
+      this.alertService.showAlert('Project is already Online!');
       return;
     }
     // Save circuit if id is not presenr
@@ -497,7 +497,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   LoadOnlineProject(id) {
     const token = Login.getToken();
     if (!token) {
-      alert('Please Login');
+      this.alertService.showAlert('Please Login');
       return;
     }
 
@@ -508,11 +508,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       Workspace.Load(JSON.parse(data.data_dump));
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
-        alert('You are Not Authorized to view this circuit');
+        this.alertService.showAlert('You are Not Authorized to view this circuit');
         window.open('../../../', '_self');
         return;
       }
-      alert('Something Went Wrong');
+      this.alertService.showAlert('Something Went Wrong');
       console.log(err);
     });
   }
@@ -576,12 +576,12 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           // Load the project
           Workspace.Load(JSON.parse(out[i].data_dump));
         } else {
-          alert('No Item Found');
+          this.alertService.showAlert('No Item Found');
         }
         window['hideLoading']();
       }, err => {
         console.error(err);
-        alert('Failed to load From gallery!');
+        this.alertService.showAlert('Failed to load From gallery!');
         window['hideLoading']();
       });
     } else {
