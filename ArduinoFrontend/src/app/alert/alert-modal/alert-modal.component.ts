@@ -12,7 +12,7 @@ interface AlertDialogData {
 }
 
 /**
- * Class For Export Dialog Component
+ * Class For Alert Modal Component
  */
 @Component({
   selector: 'app-alert-modal',
@@ -21,7 +21,7 @@ interface AlertDialogData {
 })
 export class AlertModalComponent {
   /**
-   * Constructor For Export Dialog
+   * Constructor For Alert Modal
    * @param dialogRef Material Dialog Reference
    * @param data Data to be used in the alert box
    */
