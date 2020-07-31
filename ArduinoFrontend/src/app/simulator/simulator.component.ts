@@ -13,6 +13,7 @@ import { Login } from '../Libs/Login';
 import { SaveOnline } from '../Libs/SaveOnline';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { AlertModalComponent } from '../alert/alert-modal/alert-modal.component';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -427,7 +428,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProject() {
     // if Not logged in show message
     if (!(Login.getToken())) {
-      alert('Please Login! Before Login Save the Project Temporary.');
+      let dialogRef = this.dialog.open(AlertModalComponent, {
+        data: { message: 'Please login! Save the project temporarily before login.' }
+      });
+      dialogRef.afterClosed();
       return;
     }
     // if projet id is uuid (online circuit)
