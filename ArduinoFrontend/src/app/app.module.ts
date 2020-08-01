@@ -88,19 +88,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MatSnackBarModule
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [
-    {
-      provide: LocationStrategy,
-      useClass: HashLocationStrategy
-    }, {
-      provide: MatDialogRef,
-      useValue: {}
-    },
-    {
-      provide: MAT_DIALOG_DATA,
-      useValue: {}
-    },
-    AlertService],
+  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent],
   entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent],
   schemas: [
