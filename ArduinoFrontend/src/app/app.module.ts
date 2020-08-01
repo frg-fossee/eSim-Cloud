@@ -94,7 +94,11 @@ const monacoConfig: NgxMonacoEditorConfig = {
       provide: MatDialogRef,
       useValue: {}
     },
-    {provide: MAT_DIALOG_DATA,useValue:{}}, AlertService],
+    {
+      provide: MAT_DIALOG_DATA,
+      useValue: {}
+    },
+    AlertService],
   bootstrap: [AppComponent],
   entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent],
   schemas: [
