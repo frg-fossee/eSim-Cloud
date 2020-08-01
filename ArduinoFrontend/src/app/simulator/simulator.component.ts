@@ -429,7 +429,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProject() {
     // if Not logged in show message
     if (!(Login.getToken())) {
-      this.alertService.showAlert('Please login! Save the project temporarily before login.');
+      this.alertService.showAlert('Please login! Before Login Save the Project Temporary.');
       return;
     }
     // if projet id is uuid (online circuit)
