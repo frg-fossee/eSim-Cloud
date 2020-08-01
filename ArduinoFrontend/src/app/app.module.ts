@@ -24,7 +24,7 @@ import {
   MatTabsModule,
   MatSnackBarModule,
   MatIconModule,
-  MatTooltipModule,
+  MatTooltipModule
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
