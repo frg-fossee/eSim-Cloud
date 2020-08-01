@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material';
 import { environment } from 'src/environments/environment';
+import { AlertService } from '../alert/alert-service/alert.service';
 
 /**
  * For Handling Time ie. Prevent moment error
@@ -72,8 +73,9 @@ export class DashboardComponent implements OnInit {
    * @param api API Service
    * @param snackbar Material Snackbar
    * @param title Document Title
+   * @param alertService Alert Service
    */
-  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title) {
+  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title, private alertService: AlertService) {
     this.title.setTitle('Dashboard | Arduino On Cloud');
   }
   /**
@@ -128,7 +130,7 @@ export class DashboardComponent implements OnInit {
       SaveOffline.Delete(id, () => {
         this.items.splice(index, 1);
         this.closeProject();
-        alert('Done Deleting');
+        this.alertService.showAlert('Done Deleting');
         window['hideLoading']();
       });
     } else {
@@ -139,12 +141,12 @@ export class DashboardComponent implements OnInit {
           // Remove From the list
           this.online.splice(index, 1);
         } else {
-          alert('Something went wrong');
+          this.alertService.showAlert('Something went wrong');
         }
         this.closeProject();
         window['hideLoading']();
       }, err => {
-        alert('Something went wrong');
+        this.alertService.showAlert('Something went wrong');
         window['hideLoading']();
         console.log(err);
       });
@@ -159,7 +161,7 @@ export class DashboardComponent implements OnInit {
     const token = Login.getToken();
     this.EnableSharing(item.save_id, token, (v) => {
       item.shared = v.shared;
-      alert('Sharing Disabled!');
+      this.alertService.showAlert('Sharing Disabled!');
     }, false);
   }
   /**
@@ -196,11 +198,11 @@ export class DashboardComponent implements OnInit {
         console.log(out);
         this.online = out;
       }, err => {
-        alert('Something went wrong');
+        this.alertService.showAlert('Something went wrong');
         console.log(err);
       });
     } else {
-      alert('Please Login!');
+      this.alertService.showAlert('Please Login!');
     }
   }
   /**
@@ -219,7 +221,7 @@ export class DashboardComponent implements OnInit {
     const done = document.execCommand('copy');
     // if not able to copy show alert with url else show user a snackbar
     if (!done) {
-      alert('Not able to Copy ' + tmpEl.value);
+      this.alertService.showAlert('Not able to Copy ' + tmpEl.value);
     } else {
       this.snackbar.open('Copied', null, {
         duration: 2000
@@ -264,7 +266,7 @@ export class DashboardComponent implements OnInit {
     // Get token if logged in
     const token = Login.getToken();
     if (!token) {
-      alert('Please Login');
+      this.alertService.showAlert('Please Login');
       return;
     }
 
@@ -299,7 +301,7 @@ export class DashboardComponent implements OnInit {
           if (selected.shared) {
             window.open(map[index], '_blank');
           } else {
-            alert('Not Able to Share Circuit');
+            this.alertService.showAlert('Not Able to Share Circuit');
           }
         });
       }
@@ -315,7 +317,7 @@ export class DashboardComponent implements OnInit {
           if (selected.shared) {
             window.open(`mailto:?${back}`, '_blank');
           } else {
-            alert('Not Able to Share Circuit');
+            this.alertService.showAlert('Not Able to Share Circuit');
           }
         });
       }
@@ -330,7 +332,7 @@ export class DashboardComponent implements OnInit {
           if (selected.shared) {
             this.CopyUrlToClipBoard(copyUrl);
           } else {
-            alert('Not Able to Share Circuit');
+            this.alertService.showAlert('Not Able to Share Circuit');
           }
         });
       }
