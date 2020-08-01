@@ -15,6 +15,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AlertService } from './alert/alert-service/alert.service';
 
 import {
+  MatDialogModule,
   MatInputModule,
   MatButtonModule,
   MatTableModule,
@@ -24,9 +25,6 @@ import {
   MatSnackBarModule,
   MatIconModule,
   MatTooltipModule,
-  MatDialogModule,
-  MatDialogRef,
-  MAT_DIALOG_DATA
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -88,7 +86,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MatSnackBarModule
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
   entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent],
   schemas: [
