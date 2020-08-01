@@ -12,7 +12,6 @@ import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { AlertService } from './alert/alert-service/alert.service';
 
 import {
   MatDialogModule,
