@@ -12,9 +12,9 @@ import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { AlertService } from './alert/alert-service/alert.service';
 
 import {
-  MatDialogModule,
   MatInputModule,
   MatButtonModule,
   MatTableModule,
@@ -23,8 +23,9 @@ import {
   MatTabsModule,
   MatSnackBarModule,
   MatIconModule,
-  MatTooltipModule
+  MatTooltipModule,
 } from '@angular/material';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
@@ -85,7 +86,15 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MatSnackBarModule
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+  providers: [
+    {
+      provide: LocationStrategy,
+      useClass: HashLocationStrategy
+    }, {
+      provide: MatDialogRef,
+      useValue: {}
+    },
+    {provide: MAT_DIALOG_DATA,useValue:{}}, AlertService],
   bootstrap: [AppComponent],
   entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent],
   schemas: [
