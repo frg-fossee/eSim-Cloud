@@ -24,8 +24,10 @@ import {
   MatSnackBarModule,
   MatIconModule,
   MatTooltipModule,
+  MatDialogModule,
+  MatDialogRef,
+  MAT_DIALOG_DATA
 } from '@angular/material';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
