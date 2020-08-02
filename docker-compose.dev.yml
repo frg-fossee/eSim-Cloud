@@ -44,7 +44,8 @@ services:
     image: "docker.pkg.github.com/frg-fossee/esim-cloud/arduino-frontend:dev"
     build: ./ArduinoFrontend/
     command: >
-      npm start
+      sh -c "npm install &&
+             npm start"
 
     ports:
       - "4200:4200"
