@@ -65,7 +65,7 @@ export class SaveOffline {
       if (callback) {
         callback(mydata);
       }
-      AlertService.showAlert('Done updating.');
+      AlertService.showAlert('Done saved.');
     })) {
       return;
     }
