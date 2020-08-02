@@ -7,12 +7,17 @@ import { MatDialog } from '@angular/material';
 })
 export class AlertService {
 
-  constructor(private dialog: MatDialog) { }
+  private static dialog: MatDialog;
 
-  showAlert(message: string, buttonText: string = 'OK') {
-    const dialogRef = this.dialog.open(AlertModalComponent, {
+  constructor(private dialog: MatDialog) {
+    AlertService.dialog = dialog;
+  }
+
+  static showAlert(message: string, buttonText: string = 'OK') {
+    const dialogRef = AlertService.dialog.open(AlertModalComponent, {
       data: { message, buttonText }
     });
     dialogRef.afterClosed();
   }
+
 }

@@ -105,7 +105,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     private title: Title,
     private router: Router,
     private api: ApiService,
-    private alertService: AlertService,
   ) {
     // Initialize Global Variables
     Workspace.initializeGlobalFunctions();
@@ -429,17 +428,17 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProject() {
     // if Not logged in show message
     if (!(Login.getToken())) {
-      this.alertService.showAlert('Please login! Before Login Save the Project Temporary.');
+      AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
       return;
     }
     // if projet id is uuid (online circuit)
     if (SaveOnline.isUUID(this.projectId)) {
       // Update Project to DB
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => this.alertService.showAlert('Updated'), this.projectId);
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => AlertService.showAlert('Updated'), this.projectId);
     } else {
       // Save Project and show alert
       SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
-        this.alertService.showAlert('Saved');
+        AlertService.showAlert('Saved');
         // add new quert parameters
         this.router.navigate(
           [],
@@ -461,7 +460,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProjectOff() {
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
-      this.alertService.showAlert('Project is already Online!');
+      AlertService.showAlert('Project is already Online!');
       return;
     }
     // Save circuit if id is not presenr
@@ -497,7 +496,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   LoadOnlineProject(id) {
     const token = Login.getToken();
     if (!token) {
-      this.alertService.showAlert('Please Login');
+      AlertService.showAlert('Please Login');
       return;
     }
 
@@ -508,11 +507,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       Workspace.Load(JSON.parse(data.data_dump));
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
-        this.alertService.showAlert('You are Not Authorized to view this circuit');
+        AlertService.showAlert('You are Not Authorized to view this circuit');
         window.open('../../../', '_self');
         return;
       }
-      this.alertService.showAlert('Something Went Wrong');
+      AlertService.showAlert('Something Went Wrong');
       console.log(err);
     });
   }
@@ -576,12 +575,12 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           // Load the project
           Workspace.Load(JSON.parse(out[i].data_dump));
         } else {
-          this.alertService.showAlert('No Item Found');
+          AlertService.showAlert('No Item Found');
         }
         window['hideLoading']();
       }, err => {
         console.error(err);
-        this.alertService.showAlert('Failed to load From gallery!');
+        AlertService.showAlert('Failed to load From gallery!');
         window['hideLoading']();
       });
     } else {
