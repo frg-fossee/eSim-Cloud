@@ -120,8 +120,11 @@ class LCDCharacterPanel {
     }
   }
 
-  drawCharacter(character: string) {
-    const characterDisplayBytes = LCDUtils.getDisplayBytes(character);
+  clear() {
+    this.drawCharacter(LCDUtils.getBlankDisplayBytes());
+  }
+
+  drawCharacter(characterDisplayBytes) {
     for (let i = 0; i < this.N_ROW - 1; i++) {
       for (let j = 0; j < this.N_COLUMN; j++) {
         this.pixels[i][j].switch(characterDisplayBytes[i][j]);
@@ -179,6 +182,17 @@ export class LCD16X2 extends CircuitElement {
   autoCursorPosition = 0;
 
   /**
+   * 2-D Array of 8-bit characters representing DDRAM of the LCD
+   */
+  DDRAM: number[][];
+
+  /**
+   * 3-D array of character font:
+   * higher-bit -> lower-bit -> characterFont
+   */
+  CGROM: number[][];
+
+  /**
    * LCD16X2 constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
@@ -219,27 +233,35 @@ export class LCD16X2 extends CircuitElement {
     const registerType = this.getRegisterType();
     if (registerType === RegisterType.Data) {
       this.processData();
-      this.moveCursor(this.autoCursorPosition ? 'right' : 'left');
+      if (this.autoCursorPosition) {
+        this.moveCursorRight();
+      } else {
+        this.moveCursorLeft();
+      }
     } else if (registerType === RegisterType.Instruction) {
       this.processInstructions();
     }
   }
 
-  moveCursor(direction: string) {
+  moveCursorRight() {
     console.log(this.cursorPosition);
-    console.log('move cursor to', direction);
-    if (direction === 'right') {
-      this.cursorPosition[1] += 1;
-      if (this.cursorPosition[1] > 40) {
-        this.cursorPosition = [this.cursorPosition[0] + 1, 0];
-      }
-    } else {
-      this.cursorPosition[1] -= 1;
-      if (this.cursorPosition[1] < 0) {
-        this.cursorPosition[1] = 0;
-      }
+    console.log('move cursor to right');
+    this.cursorPosition[1] += 1;
+    if (this.cursorPosition[1] >= this.DDRAM[0].length) {
+      this.cursorPosition = [this.cursorPosition[0] + 1, 0];
     }
     console.log('movd: ');
+    console.log(this.cursorPosition);
+  }
+
+  moveCursorLeft() {
+    console.log(this.cursorPosition);
+    console.log('move cursor to left');
+    this.cursorPosition[1] -= 1;
+    if (this.cursorPosition[1] < 0) {
+      this.cursorPosition[1] = 0;
+    }
+    console.log('movd left: ');
     console.log(this.cursorPosition);
   }
 
@@ -252,34 +274,42 @@ export class LCD16X2 extends CircuitElement {
     if (log) {
       console.log(data);
     }
-    // returns output in this form "<DB7><DB6><DB5>...<DB0>"
-    return data;
+    // returns "<DB7><DB6><DB5>...<DB0>" parsed in binary format
+    return parseInt(data, 2);
+  }
+
+  getCharacterDisplayBytes(characterBits) {
+    const higherBits = (characterBits >> 4) & 0b1111;
+    const lowerBits = (characterBits) & 0b1111;
+    return this.CGROM[higherBits][lowerBits];
   }
 
   processData() {
-    const data = this.readDatabuses(false);
-    const character = String.fromCharCode(parseInt(data, 2));
+    const characterBits = this.readDatabuses(false);
     const characterPanel = this.characterPanels[`${this.cursorPosition.join(':')}`];
-    characterPanel.drawCharacter(character);
+    const characterDisplayBytes = this.getCharacterDisplayBytes(characterBits);
+    this.DDRAM[this.cursorPosition[0]][this.cursorPosition[1]] = characterBits;
+    characterPanel.drawCharacter(characterDisplayBytes);
   }
 
   clearDisplay() {
-    Object.values(this.characterPanels).forEach((panel: LCDCharacterPanel) => panel.drawCharacter(' '));
+    Object.values(this.characterPanels).forEach((panel: LCDCharacterPanel) => panel.clear());
   }
 
   processInstructions() {
     const data = this.readDatabuses();
     const instructionType = LCDUtils.getInstructionType(data);
-    console.log('received instruction type: ', instructionType, data);
+    const dataString = ('00000000' + data.toString(2)).substring(-8);
+    console.log('received instruction type: ', InstructionType[instructionType], dataString);
     if (instructionType === InstructionType.ClearDisplay) {
       this.clearDisplay();
     } else if (instructionType === InstructionType.CursorHome) {
       this.cursorPosition = [0, 0];
     } else if (instructionType === InstructionType.EntryModeSet) {
       // data: [0  0  0  0  0  1   I/D   S]
-      if (data[6] === '1') {
+      if (dataString[6] === '1') {
         this.autoCursorPosition = 1;
-      } else if (data[6] === '0') {
+      } else if (dataString[6] === '0') {
         this.autoCursorPosition = -1;
       }
     } else if (instructionType === InstructionType.DisplayOnOff) {
@@ -287,16 +317,10 @@ export class LCD16X2 extends CircuitElement {
     } else if (instructionType === InstructionType.CursorDisplayShift) {
       // TODO: display shift
       // data: [0   0   0   1  S/C R/L  *   * ]
-      if (data[5] === '0') {
-        this.cursorPosition[1] -= 1;
-        if (this.cursorPosition[1] < 0) {
-          this.cursorPosition[1] = 0;
-        }
-      } else if (data[5] === '1') {
-        this.cursorPosition[1] += 1;
-        if (this.cursorPosition[1] > 40) {
-          this.cursorPosition = [this.cursorPosition[0] + 1, 0];
-        }
+      if (dataString[5] === '0') {
+        this.moveCursorLeft();
+      } else if (dataString[5] === '1') {
+        this.moveCursorRight();
       }
     } else if (instructionType === InstructionType.FunctionSet) {
       // data: [0   0   1   DL  N   F   *   *]
@@ -343,8 +367,9 @@ export class LCD16X2 extends CircuitElement {
     let tempX: number;
     let tempY: number;
     let tempColumnsY: number;
-    let posX = this.data.startX + this.tx;
-    let posY = this.data.startY + this.ty;
+    let posX = this.data.startX;
+    let posY = this.data.startY;
+
     for (k = 0; k < this.data.rows; k++) { // Rows: 2
       tempX = posX;
       tempY = posY;
@@ -367,6 +392,9 @@ export class LCD16X2 extends CircuitElement {
       this.pinNamedMap[node.label] = node;
     }
 
+    this.CGROM = LCDUtils.generateCGROM();
+    this.DDRAM = LCDUtils.generateDDRAM(this.data.rows);
+
     // adding listeners to E listener
     this.pinNamedMap['E'].addValueListener(this.eSignalListener.bind(this));
   }
@@ -385,6 +413,7 @@ export class LCD16X2 extends CircuitElement {
    * Called on Start Simulation
    */
   initSimulation(): void {
+    this.cursorPosition = [0, 0];
   }
   /**
    * Called on Stop Simulation

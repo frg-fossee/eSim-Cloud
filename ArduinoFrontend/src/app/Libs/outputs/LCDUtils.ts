@@ -2,7 +2,7 @@
 import _ from 'lodash-transpose';
 
 // https://mil.ufl.edu/3744/docs/lcdmanual/commands.html
-const FontData8x7 = {
+const FontData5x8 = {
     ' ': [0x00, 0x00, 0x00, 0x00, 0x00],
     '!': [0x00, 0x00, 0x5F, 0x00, 0x00],
     '"': [0x00, 0x07, 0x00, 0x07, 0x00],
@@ -119,24 +119,69 @@ export enum InstructionType {
 }
 
 function hex2bin(hex) {
-  return ('00000000' + (parseInt(hex, 16)).toString(2)).substr(-8);
+  return ('00000000' + hex.toString(2)).substr(-8);
 }
 
 export class LCDUtils {
-    static getDisplayBytes(character, defaultCharacter = ' '): boolean[][] {
-        const hexReprArray = FontData8x7[character] || FontData8x7[defaultCharacter];
-        const binRepr = hexReprArray.map(hexRepr => hex2bin(hexRepr.toString(16)).split(''));
-        return _.transpose(binRepr).reverse();
-    }
+  static blankBytes: any = null;
 
-    static getInstructionType(databus: string) {
-        let firstOnePositionFromLeft = -1;
-        for (let i = 0; i < databus.length; i++) {
-            if (databus[i] === '1') {
-                firstOnePositionFromLeft = i;
-            }
-        }
-        const firstOnePositionFromRight = databus.length - firstOnePositionFromLeft;
-        return firstOnePositionFromRight;
+  static getDisplayBytes(character: number): boolean[][] {
+    const charString = String.fromCharCode(character);
+    if (!(charString in FontData5x8)) {
+        return LCDUtils.getBlankDisplayBytes();
+      }
+    const hexReprArray = FontData5x8[charString];
+    const binRepr = hexReprArray.map(hexRepr => hex2bin(hexRepr).split('').map(n => parseInt(n, 2) & 1));
+    return _.transpose(binRepr).reverse();
+  }
+
+  static getBlankDisplayBytes(): boolean[][] {
+    if (!LCDUtils.blankBytes) {
+      LCDUtils.blankBytes = LCDUtils.getDisplayBytes(' '.charCodeAt(0));
     }
+    return LCDUtils.blankBytes;
+  }
+
+  static generateCGROM() {
+    const CGROM = [[]];
+    for (let character = 0; character < 0xFF; character++) {
+      const higherBits = (character >> 4) & 0b1111;
+      const lowerBits = (character) & 0b1111;
+      CGROM[higherBits] = CGROM[higherBits] || [];
+      CGROM[higherBits][lowerBits] = LCDUtils.getDisplayBytes(character);
+    }
+    return CGROM;
+  }
+
+  static generateDDRAM(N_ROW) {
+    const blankBytes = LCDUtils.getBlankDisplayBytes();
+    if (N_ROW === 1) {
+      return [_.times(40, _.cloneDeep(blankBytes))];
+    } else if (N_ROW === 2) {
+      return [
+        _.times(40, _.cloneDeep(blankBytes)),
+        _.times(40, _.cloneDeep(blankBytes))
+      ];
+    } else if (N_ROW === 4) {
+      return [
+        _.times(20, _.cloneDeep(blankBytes)),
+        _.times(20, _.cloneDeep(blankBytes)),
+        _.times(20, _.cloneDeep(blankBytes)),
+        _.times(20, _.cloneDeep(blankBytes))
+      ];
+    }
+  }
+
+  static getInstructionType(databus: number) {
+      const dataBusBinary = Number(databus).toString(2);
+      let firstOnePositionFromLeft = -1;
+      for (let i = 0; i < dataBusBinary.length; i++) {
+          if (dataBusBinary[i] === '1') {
+              firstOnePositionFromLeft = i;
+              break;
+          }
+      }
+      const firstOnePositionFromRight = dataBusBinary.length - firstOnePositionFromLeft;
+      return firstOnePositionFromRight;
+  }
 }
