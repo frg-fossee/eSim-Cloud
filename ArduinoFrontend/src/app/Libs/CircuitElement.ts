@@ -136,26 +136,23 @@ export abstract class CircuitElement {
    * @param drawData Draw Data
    */
   DrawElement(canvas: any, drawData: any) {
+    const elementsDrawn = [];
     for (const item of drawData) {
+      let element;
       // Draw image
       if (item.type === 'image') {
-        this.elements.push(
-          canvas.image(
+        element = canvas.image(
             item.url,
             this.x + item.x,
             this.y + item.y,
             item.width,
             item.height
-          )
-        );
+          );
       } else if (item.type === 'path') {
-        this.elements.push(
-          this.DrawPath(canvas, item)
-        );
+        element = this.DrawPath(canvas, item);
       } else if (item.type === 'rectangle') {
         // Draw rectangle
-        this.elements.push(
-          canvas.rect(
+        element = canvas.rect(
             this.x + item.x,
             this.y + item.y,
             item.width,
@@ -164,24 +161,24 @@ export abstract class CircuitElement {
           ).attr({
             fill: item.fill || 'none',
             stroke: item.stroke || 'none'
-          })
-        );
+          });
       } else if (item.type === 'circle') {
         // Draw a circle
-        this.elements.push(
-          canvas.circle(
+        element = canvas.circle(
             this.x + item.x,
             this.y + item.y,
             item.radius,
           ).attr({
             fill: item.fill || 'none',
             stroke: item.stroke || 'none'
-          })
-        );
+          });
       } else if (item.type === 'polygon') {
-        this.DrawPolygon(canvas, item);
+        element = this.DrawPolygon(canvas, item);
       }
+      this.elements.push(element);
+      elementsDrawn.push(element);
     }
+    return elementsDrawn;
   }
   /**
    * Draws an Polygon
@@ -198,13 +195,13 @@ export abstract class CircuitElement {
       tmp += `${this.x + point[0]},${this.y + point[1]}L`;
     }
     tmp = tmp.substr(0, tmp.length - 1) + 'z';
-    this.elements.push(
-      canvas.path(tmp)
-        .attr({
-          fill: item.fill || 'none',
-          stroke: item.stroke || 'none'
-        })
-    );
+    const element = canvas.path(tmp)
+                  .attr({
+                    fill: item.fill || 'none',
+                    stroke: item.stroke || 'none'
+                  });
+    this.elements.push(element);
+    return element;
   }
   /**
    * Draw a Path
@@ -227,13 +224,13 @@ export abstract class CircuitElement {
     str = this.calcRelative(str, horizontal, canvas);
     str = this.calcRelative(str, vertical, canvas);
     str = this.calcRelative(str, sCurve, canvas);
-    this.elements.push(
-      canvas.path(str)
-        .attr({
-          fill: item.fill || 'none',
-          stroke: item.stroke || 'none'
-        })
-    );
+    const element = canvas.path(str)
+                    .attr({
+                      fill: item.fill || 'none',
+                      stroke: item.stroke || 'none'
+                    });
+    this.elements.push(element);
+    return element;
   }
   /**
    * Draw path relative to the component

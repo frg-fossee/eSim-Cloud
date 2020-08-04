@@ -1,7 +1,3 @@
-// import _ from 'lodash';
-import _ from 'lodash-transpose';
-
-// https://mil.ufl.edu/3744/docs/lcdmanual/commands.html
 const FontData5x8 = {
     ' ': [0x00, 0x00, 0x00, 0x00, 0x00],
     '!': [0x00, 0x00, 0x5F, 0x00, 0x00],
@@ -109,79 +105,40 @@ const FontData5x8 = {
     '°': [0x00, 0x00, 0x07, 0x05, 0x07]
   };
 
-export enum InstructionType {
-    ClearDisplay = 1,
-    CursorHome = 2,
-    EntryModeSet = 3,
-    DisplayOnOff = 4,
-    CursorDisplayShift = 5,
-    FunctionSet = 6,
-}
+let newFont = [];
+let allRows = {};
 
-function hex2bin(hex) {
-  return ('00000000' + hex.toString(2)).substr(-8);
-}
-
-export class LCDUtils {
-  static blankBytes: any = null;
-
-  static getDisplayBytes(character: number): boolean[][] {
-    const charString = String.fromCharCode(character);
-    if (!(charString in FontData5x8)) {
-        return LCDUtils.getBlankDisplayBytes();
-      }
-    const hexReprArray = FontData5x8[charString];
-    const binRepr = hexReprArray.map(hexRepr => hex2bin(hexRepr).split('').map(n => parseInt(n, 2) & 1));
-    return _.transpose(binRepr).reverse();
-  }
-
-  static getBlankDisplayBytes(): boolean[][] {
-    if (!LCDUtils.blankBytes) {
-      LCDUtils.blankBytes = LCDUtils.getDisplayBytes(' '.charCodeAt(0));
+Object.keys(FontData5x8).forEach(key => {
+    const rows = [];
+    const columns = [];
+    const char = key.charCodeAt(0);
+    const verticalRepr = FontData5x8[key];
+    if (char === 33) {
+        console.log(verticalRepr);
     }
-    return LCDUtils.blankBytes;
-  }
-
-  static generateCGROM() {
-    const CGROM = [[]];
-    for (let character = 0; character < 0xFF; character++) {
-      const higherBits = (character >> 4) & 0b1111;
-      const lowerBits = (character) & 0b1111;
-      CGROM[higherBits] = CGROM[higherBits] || [];
-      CGROM[higherBits][lowerBits] = LCDUtils.getDisplayBytes(character);
+    for (const num of verticalRepr) {
+        const column = ('00000000' + Number(num).toString(2)).substr(-8);
+        columns.push(column);
     }
-    return CGROM;
-  }
-
-  static generateDDRAM(N_ROW) {
-    const blankBytes = LCDUtils.getBlankDisplayBytes();
-    if (N_ROW === 1) {
-      return [_.times(40, _.cloneDeep(blankBytes))];
-    } else if (N_ROW === 2) {
-      return [
-        _.times(40, _.cloneDeep(blankBytes)),
-        _.times(40, _.cloneDeep(blankBytes))
-      ];
-    } else if (N_ROW === 4) {
-      return [
-        _.times(20, _.cloneDeep(blankBytes)),
-        _.times(20, _.cloneDeep(blankBytes)),
-        _.times(20, _.cloneDeep(blankBytes)),
-        _.times(20, _.cloneDeep(blankBytes))
-      ];
+    if (char === 33) {
+        console.log(columns);
     }
-  }
+    for (let i = 0; i < 8; i++) {
+        let row = '000';
+        for (const col of columns) {
+            row += col[i];
+        }
+        rows[i] = row;
+    }
+    allRows[char] = rows;
+});
 
-  static getInstructionType(databus: number) {
-      const dataBusBinary = Number(databus).toString(2);
-      let firstOnePositionFromLeft = -1;
-      for (let i = 0; i < dataBusBinary.length; i++) {
-          if (dataBusBinary[i] === '1') {
-              firstOnePositionFromLeft = i;
-              break;
-          }
-      }
-      const firstOnePositionFromRight = dataBusBinary.length - firstOnePositionFromLeft;
-      return firstOnePositionFromRight;
-  }
-}
+console.log(allRows[33]);
+for (let i = 0x00; i < 0xFF; i++) {
+    let rs = allRows[i];
+    rs = rs || [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+    if (rs) {
+        newFont[i] = rs.reverse().map(r => '0x' + ('00' + parseInt(r, 2).toString(16)).substr(-2));
+    }
+    console.log("[", newFont[i].join(', '), "], // 0x" + ('00' + i.toString(16)).substr(-2));
+};

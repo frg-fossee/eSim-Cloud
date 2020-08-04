@@ -1,6 +1,15 @@
 import { CircuitElement } from '../CircuitElement';
-import { LCDUtils, InstructionType } from './LCDUtils';
+import {
+  DataDisplayState, DataProcessingMode, BitState,
+  Font8x5DisplayState, Font10x5DisplayState,
+  FourBitState, EightBitState,
+  WriteDataProcessingMode, ReadDataProcessingMode,
+  RegisterState, DataRegisterState, InstructionRegisterState,
+} from './LCD/LCDStates';
 import _ from 'lodash';
+import { LCDCharacterPanel } from './LCD/LCDPanel';
+import { DDRAM, CGROM } from './LCD/MemorySchema';
+import { MathUtils } from '../Utils';
 
 enum RegisterType {
   Instruction = 0, Data = 1
@@ -8,155 +17,6 @@ enum RegisterType {
 
 enum DataMode {
   Write = 0, Read = 1
-}
-
-
-class LCDPixel {
-  /**
-   * Index of the parent grid
-   */
-  parentIndex: [number, number];
-
-  /**
-   * Self-index inside the parent grid
-   */
-  index: [number, number];
-
-  posX: number;
-
-  posY: number;
-
-  width: number;
-
-  height: number;
-
-  dimColor: string;
-
-  glowColor: string;
-
-  isOn: boolean;
-
-  brightness: number;
-
-  constructor(parentIndex: [number, number], index: [number, number], posX: number,
-              posY: number, width: number, height: number, dimColor: string, glowColor: string) {
-    this.parentIndex = parentIndex;
-    this.index = index;
-    this.posX = posX;
-    this.posY = posY;
-    this.width = width;
-    this.height = height;
-    this.dimColor = dimColor;
-    this.glowColor = glowColor;
-    this.isOn = false;
-    this.brightness = 100;
-  }
-
-  switch(value) {
-    this.isOn = parseInt(value, 2) && true;
-  }
-
-  getColor() {
-    return this.isOn ? this.glowColor : this.dimColor;
-  }
-
-  getName() {
-    return `G:${this.parentIndex[0]}:${this.parentIndex[1]}:${this.index[0]}:${this.index[1]}`;
-  }
-
-  getCanvasRepr() {
-    return {
-      name: this.getName(),
-      type: 'rectangle',
-      width: this.width,
-      height: this.height,
-      x: this.posX,
-      y: this.posY,
-      fill: this.getColor(),
-    };
-  }
-}
-
-class LCDCharacterPanel {
-
-  N_ROW: number;
-
-  N_COLUMN: number;
-
-  index: [number, number];
-  pixels: LCDPixel[][];
-  posX: number;
-  posY: number;
-  pixelWidth: number;
-  pixelHeight: number;
-  barColor: string;
-  barGlowColor: string;
-  intraSpacing: number;
-
-  initialiseLCDPixels() {
-    let tempRowsX: number;
-    let posX = this.posX;
-    let posY = this.posY;
-
-    this.pixels = [[]];
-    for (let i = 0; i < this.N_ROW; i++) {
-      tempRowsX = posX;
-      this.pixels[i] = [];
-      for (let j = 0; j < this.N_COLUMN; j++) {
-        this.pixels[i][j] = new LCDPixel(
-          this.index,
-          [i, j],
-          posX,
-          posY,
-          this.pixelWidth,
-          this.pixelHeight,
-          this.barColor,
-          this.barGlowColor
-        );
-        posX = posX + this.pixelWidth + this.intraSpacing;
-      }
-      posX = tempRowsX;
-      posY = posY + this.pixelHeight +  this.intraSpacing;
-    }
-  }
-
-  clear() {
-    this.drawCharacter(LCDUtils.getBlankDisplayBytes());
-  }
-
-  drawCharacter(characterDisplayBytes) {
-    for (let i = 0; i < this.N_ROW - 1; i++) {
-      for (let j = 0; j < this.N_COLUMN; j++) {
-        this.pixels[i][j].switch(characterDisplayBytes[i][j]);
-      }
-    }
-  }
-
-  getCanvasRepr(): any[] {
-    const canvasGrid = [];
-    for (const rowPixels of this.pixels) {
-      for (const pixel of rowPixels) {
-        canvasGrid.push(pixel.getCanvasRepr());
-      }
-    }
-    return canvasGrid;
-  }
-
-  constructor(index: [number, number], N_ROW: number, N_COLUMN: number,
-              posX: number, posY: number, pixelWidth: number, pixelHeight: number,
-              barColor: string, barGlowColor: string, intraSpacing: number) {
-    this.index = index;
-    this.N_ROW = N_ROW;
-    this.N_COLUMN = N_COLUMN;
-    this.posX = posX;
-    this.posY = posY;
-    this.pixelHeight = pixelHeight;
-    this.pixelWidth = pixelWidth;
-    this.barColor = barColor;
-    this.barGlowColor = barGlowColor;
-    this.intraSpacing = intraSpacing;
-    this.initialiseLCDPixels();
-  }
 }
 
 /**
@@ -170,27 +30,101 @@ export class LCD16X2 extends CircuitElement {
 
   cursorPosition: [number, number] = [0, 0];
 
-  /**
-   * Map from character panel index to character panel
-   */
-  characterPanels: any = {};
-
   previousEValue = 0;
 
   isDisplayOn = false;
 
-  autoCursorPosition = 0;
+  autoCursorShift = 0;
+
+  autoDisplayShift = 0;
 
   /**
    * 2-D Array of 8-bit characters representing DDRAM of the LCD
    */
-  DDRAM: number[][];
+  ddRam: DDRAM;
 
   /**
    * 3-D array of character font:
    * higher-bit -> lower-bit -> characterFont
    */
-  CGROM: number[][];
+  cgRom: CGROM;
+
+  /**
+   * Map from character panel index to character panel
+   */
+  characterPanels: {[key: string]: LCDCharacterPanel} = {};
+
+  /**
+   * Data processing mode of LCD: Read/Write
+   */
+  dataProcessingMode: DataProcessingMode;
+
+  /**
+   * Write Data processing concrete object
+   */
+  writeDataMode: WriteDataProcessingMode;
+
+  /**
+   * Read Data processing concrete object
+   */
+  readDataMode: ReadDataProcessingMode;
+
+  /**
+   * Bit state of LCD: 4-bit/8-bit
+   */
+  bitState: BitState;
+
+  /**
+   * Concrete 4-bit state
+   */
+  fourBitState: FourBitState;
+
+  /**
+   * Concrete 8-bit state
+   */
+  eightBitState: EightBitState;
+
+  /**
+   * Data display state of LCD: Font 10x5 vs 10x8
+   */
+  dataDisplayState: DataDisplayState;
+
+  /**
+   * Concrete data display state for 8x5 fonts
+   */
+  font8x5DisplayState: Font8x5DisplayState;
+
+  /**
+   * Concrete data display state for 10x5 fonts
+   */
+  font10x5DisplayState: Font10x5DisplayState;
+
+  /**
+   * Register state of the LCD
+   */
+  registerState: RegisterState;
+
+  /**
+   * Data Register state's concrete class
+   */
+  dataRegisterState: DataRegisterState;
+
+  /**
+   * Instruction register state's concrete class
+   */
+  instructionRegisterState: InstructionRegisterState;
+
+  /**
+   * Start index (left-top) of the DDROM being displayed on the LCF
+   */
+  displayStartIndex: [number, number] = [0, 0];
+
+  /**
+   * End index (right-bottom) of the DDROM being displayed on the LCF
+   */
+  displayEndIndex: [number, number];
+
+  currentPixels: Set<any> = new Set();
 
   /**
    * LCD16X2 constructor
@@ -201,6 +135,7 @@ export class LCD16X2 extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('LCD16X2', x, y, 'LCD16X2.json', canvas);
   }
+
   /**
    * Function provides component details
    * @param keyName Unique Class name
@@ -222,162 +157,183 @@ export class LCD16X2 extends CircuitElement {
     return this.pinNamedMap['RS'].value & 1;
   }
 
+  loadRegisterState(): void {
+    const registerType = this.getRegisterType();
+    this.registerState = registerType === RegisterType.Data ? this.dataRegisterState : this.instructionRegisterState;
+  }
+
+  loadDataMode(): void {
+    const dataMode = this.getDataMode();
+    this.dataProcessingMode = dataMode === DataMode.Read ? this.readDataMode : this.writeDataMode;
+  }
+
   getDataMode(): DataMode {
     return this.pinNamedMap['RW'].value & 1;
   }
 
-  /**
-   * Processes the data registered on data buses
-   */
-  latchData(): void {
-    const registerType = this.getRegisterType();
-    if (registerType === RegisterType.Data) {
-      this.processData();
-      if (this.autoCursorPosition) {
-        this.moveCursorRight();
-      } else {
-        this.moveCursorLeft();
-      }
-    } else if (registerType === RegisterType.Instruction) {
-      this.processInstructions();
-    }
-  }
-
   moveCursorRight() {
-    console.log(this.cursorPosition);
-    console.log('move cursor to right');
     this.cursorPosition[1] += 1;
-    if (this.cursorPosition[1] >= this.DDRAM[0].length) {
+    if (this.cursorPosition[1] >= this.ddRam.N_COLUMN) {
       this.cursorPosition = [this.cursorPosition[0] + 1, 0];
     }
-    console.log('movd: ');
-    console.log(this.cursorPosition);
   }
 
   moveCursorLeft() {
-    console.log(this.cursorPosition);
-    console.log('move cursor to left');
     this.cursorPosition[1] -= 1;
     if (this.cursorPosition[1] < 0) {
       this.cursorPosition[1] = 0;
     }
-    console.log('movd left: ');
-    console.log(this.cursorPosition);
   }
 
-  readDatabuses(log = false) {
-    let data = '';
+  isInSight(index: [number, number]) {
+    return MathUtils.isPointBetween(index, this.displayStartIndex, this.displayEndIndex);
+  }
 
-    for (let i = 7; i >= 0; i--) {
-      data += (this.pinNamedMap[`DB${i}`].value > 0 ? '1' : '0');
+  shiftDisplay(numSteps: number, stepSize: number) {
+    for (const characterPanel of Object.values(this.characterPanels)) {
+      const oldColumnIndex = characterPanel.displayIndex[1];
+      const newColumnIndex = MathUtils.modulo(oldColumnIndex - numSteps, this.ddRam.N_COLUMN);
+      characterPanel.displayIndex[1] = newColumnIndex;
+
+      characterPanel.hidden  = !this.isInSight(characterPanel.displayIndex);
+      characterPanel.shift((newColumnIndex - oldColumnIndex) * stepSize);
     }
-    if (log) {
-      console.log(data);
-    }
-    // returns "<DB7><DB6><DB5>...<DB0>" parsed in binary format
-    return parseInt(data, 2);
   }
 
-  getCharacterDisplayBytes(characterBits) {
-    const higherBits = (characterBits >> 4) & 0b1111;
-    const lowerBits = (characterBits) & 0b1111;
-    return this.CGROM[higherBits][lowerBits];
+  scrollDisplayLeft() {
+    const singleStep = (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
+    this.shiftDisplay(-1, singleStep);
   }
 
-  processData() {
-    const characterBits = this.readDatabuses(false);
-    const characterPanel = this.characterPanels[`${this.cursorPosition.join(':')}`];
-    const characterDisplayBytes = this.getCharacterDisplayBytes(characterBits);
-    this.DDRAM[this.cursorPosition[0]][this.cursorPosition[1]] = characterBits;
-    characterPanel.drawCharacter(characterDisplayBytes);
+  scrollDisplayRight() {
+    const singleStep = (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
+    this.shiftDisplay(1, singleStep);
+  }
+
+  getCharacterPanel(index) {
+    return this.characterPanels[`${index[0]}:${index[1]}`];
   }
 
   clearDisplay() {
     Object.values(this.characterPanels).forEach((panel: LCDCharacterPanel) => panel.clear());
   }
 
-  processInstructions() {
-    const data = this.readDatabuses();
-    const instructionType = LCDUtils.getInstructionType(data);
-    const dataString = ('00000000' + data.toString(2)).substring(-8);
-    console.log('received instruction type: ', InstructionType[instructionType], dataString);
-    if (instructionType === InstructionType.ClearDisplay) {
-      this.clearDisplay();
-    } else if (instructionType === InstructionType.CursorHome) {
-      this.cursorPosition = [0, 0];
-    } else if (instructionType === InstructionType.EntryModeSet) {
-      // data: [0  0  0  0  0  1   I/D   S]
-      if (dataString[6] === '1') {
-        this.autoCursorPosition = 1;
-      } else if (dataString[6] === '0') {
-        this.autoCursorPosition = -1;
-      }
-    } else if (instructionType === InstructionType.DisplayOnOff) {
-      this.isDisplayOn = !this.isDisplayOn;
-    } else if (instructionType === InstructionType.CursorDisplayShift) {
-      // TODO: display shift
-      // data: [0   0   0   1  S/C R/L  *   * ]
-      if (dataString[5] === '0') {
-        this.moveCursorLeft();
-      } else if (dataString[5] === '1') {
-        this.moveCursorRight();
-      }
-    } else if (instructionType === InstructionType.FunctionSet) {
-      // data: [0   0   1   DL  N   F   *   *]
-      // TODO: 4-bit data
-      console.log('Function set instruction received.')
-    }
-  }
-
   eSignalListener(newValue) {
     const prevValue = this.previousEValue;
+
+    // identifying high-low pulse
     if (prevValue > 0 && newValue === 0) {
-      this.latchData();
-      this.redrawLCD();
+      this.loadRegisterState();
+      this.loadDataMode();
+      this.dataProcessingMode.processData();
+      this.refreshLCD();
     }
     this.previousEValue = newValue;
   }
 
-  redrawLCD() {
-    const gridForCanvas: object = _.flatten(Object.values(this.characterPanels).map((panel: LCDCharacterPanel) => panel.getCanvasRepr()));
-    this.DrawElement(this.canvas, gridForCanvas);
+  /**
+   * Get set of panels which are in the view of LCD
+   */
+  getDisplayablePanels(): Set<LCDCharacterPanel> {
+    const result = new Set<LCDCharacterPanel>();
+    for (const characterPanel of Object.values(this.characterPanels)) {
+      if (MathUtils.isPointBetween(characterPanel.displayIndex, this.displayStartIndex, this.displayEndIndex)) {
+        result.add(characterPanel);
+      }
+    }
+    return result;
+  }
+
+  refreshLCD() {
+    const displayablePanels = this.getDisplayablePanels();
+    for (const panel of Object.values(this.characterPanels)) {
+      const show = displayablePanels.has(panel);
+      for (const pixel of _.flatten(panel.pixels)) {
+        if (pixel.canvas) {
+          pixel.refresh();
+        } else {
+          pixel.canvas = this.DrawElement(this.canvas, [pixel.getCanvasRepr()])[0];
+          pixel.canvas.transform(`t${this.tx},${this.ty}`);
+          if (!show) {
+            pixel.hide();
+          }
+        }
+      }
+    }
   }
 
   /**
-   * @param character character in the form of byte array
-   * @param cursorPosition cursor position [row, column]
+   * @param bitState new bit state
    */
-  drawCharacter(characterBinary, cursorPosition) {
-    const parentIndex = [...cursorPosition];
-    const character = String.fromCharCode(parseInt(characterBinary, 2));
-    const displayBytes = LCDUtils.getDisplayBytes(character);
-
+  setBitState(bitState: BitState) {
+    this.bitState = bitState;
   }
 
-  getCharacterPanel(index: [number, number]): LCDCharacterPanel {
-    return this.characterPanels[`${index.join(':')}`];
+  /**
+   * @param dataDisplayState new data display state
+   */
+  setDataDisplayState(dataDisplayState: DataDisplayState) {
+    this.dataDisplayState = dataDisplayState;
+  }
+
+  /**
+   * @param dataProcessingMode new data processing mode
+   */
+  setDataProcessingMode(dataProcessingMode: DataProcessingMode) {
+    this.dataProcessingMode = dataProcessingMode;
   }
 
   init() {
     /**
      * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
      */
-    let k: number;
-    let l: number;
+    // Setting cursor to home
+    this.cursorPosition = [0, 0];
+
+    // Initialising data display state
+    this.font8x5DisplayState = new Font8x5DisplayState(this);
+    this.font10x5DisplayState = new Font10x5DisplayState(this);
+    this.dataDisplayState = this.font8x5DisplayState;
+
+    // Initialising data processing state
+    this.readDataMode = new ReadDataProcessingMode(this);
+    this.writeDataMode = new WriteDataProcessingMode(this);
+    this.dataProcessingMode = this.readDataMode;
+
+    // Initialising bit mode state
+    this.fourBitState = new FourBitState(this);
+    this.eightBitState = new EightBitState(this);
+    this.bitState = this.eightBitState;
+
+    // Initialising register state
+    this.dataRegisterState = new DataRegisterState(this);
+    this.instructionRegisterState = new InstructionRegisterState(this);
+    this.registerState = this.instructionRegisterState;
+
+    // Setting display start and end indices
+    this.displayStartIndex = [0, 0];
+    this.displayEndIndex = [this.data.rows, this.data.columns];
+
+    // Initialising CGROM and DDRAM
+    this.cgRom = new CGROM(this.dataDisplayState.getFontSize());
+    this.ddRam = DDRAM.createDDRAMForLCD(this.data.rows);
+
     let tempX: number;
     let tempY: number;
     let tempColumnsY: number;
     let posX = this.data.startX;
     let posY = this.data.startY;
 
-    for (k = 0; k < this.data.rows; k++) { // Rows: 2
+    for (let k = 0; k < this.ddRam.N_ROW; k++) { // Rows: 2
       tempX = posX;
       tempY = posY;
-      for (l = 0; l < this.data.columns; l++) { // Columns: 16 (Characters)
+      for (let l = 0; l < this.ddRam.N_COLUMN; l++) { // Columns: 16 (Characters)
         tempColumnsY = posY;
+        const hidden = k >= this.data.rows || l >= this.data.columns;
         const characterPanel = new LCDCharacterPanel([k, l], this.data.gridRows, this.data.gridColumns,
-                                                      posX, posY, this.data.gridHeight, this.data.gridWidth,
-                                                      this.data.barColor, this.data.barGlowColor, this.data.intraSpacing);
+                                                      posX, posY, this.x, this.y, this.data.gridHeight, this.data.gridWidth,
+                                                      this.data.barColor, this.data.barGlowColor, this.data.intraSpacing,
+                                                      this.displayStartIndex, this.displayEndIndex, [k, l], hidden);
         this.characterPanels[characterPanel.index.join(':')] = characterPanel;
 
         posX = posX + (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
@@ -387,13 +343,11 @@ export class LCD16X2 extends CircuitElement {
       posX = tempX;
     } // Row ends
 
-    this.redrawLCD();
+    this.refreshLCD();
+
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
     }
-
-    this.CGROM = LCDUtils.generateCGROM();
-    this.DDRAM = LCDUtils.generateDDRAM(this.data.rows);
 
     // adding listeners to E listener
     this.pinNamedMap['E'].addValueListener(this.eSignalListener.bind(this));
@@ -401,24 +355,20 @@ export class LCD16X2 extends CircuitElement {
 
   /** Simulation Logic */
   logic(_, node) {
-    console.log(node.label, node.value);
-    // const db4Value = this.pinNamedMap['DB4'].value;
-    // const db5Value = this.pinNamedMap['DB5'].value;
-    // const db6Value = this.pinNamedMap['DB6'].value;
-    // const db7Value = this.pinNamedMap['DB7'].value;
-    // console.log(db4Value, db5Value, db6Value, db7Value);
+    // console.log(node.label, node.value);
   }
 
   /**
    * Called on Start Simulation
    */
   initSimulation(): void {
-    this.cursorPosition = [0, 0];
   }
   /**
    * Called on Stop Simulation
    */
   closeSimulation(): void {
+    // this.elements.remove();
+    this.init();
   }
 }
 /**
