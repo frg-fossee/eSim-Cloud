@@ -74,7 +74,7 @@ export class DashboardComponent implements OnInit {
    * @param snackbar Material Snackbar
    * @param title Document Title
    */
-  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title) {
+  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title, private alertService: AlertService) {
     this.title.setTitle('Dashboard | Arduino On Cloud');
   }
   /**
@@ -109,18 +109,14 @@ export class DashboardComponent implements OnInit {
       this.onCloudMessage = 'Please Login to See Circuit';
     }
   }
+
   /**
-   * Delete the Project from Database
+   * Function to call when user confirms the ciruit deletion
    * @param id Project id
    * @param offline Is Offline Circuit
    * @param index Project's index in their list
    */
-  DeleteCircuit(id, offline, index) {
-    // ASK for user confirmation
-    const ok = confirm('Are You Sure You want to Delete Circuit');
-    if (!ok) {
-      return;
-    }
+  private deleteCircuitConfirm(id, offline, index) {
     // Show loading animation
     window['showLoading']();
 
@@ -150,8 +146,19 @@ export class DashboardComponent implements OnInit {
         console.log(err);
       });
     }
-
   }
+
+  /**
+   * Delete the Project from Database
+   * @param id Project id
+   * @param offline Is Offline Circuit
+   * @param index Project's index in their list
+   */
+  DeleteCircuit(id, offline, index) {
+    // ASK for user confirmation
+    AlertService.showConfirm('Are You Sure You want to Delete Circuit', () => this.deleteCircuitConfirm(id, offline, index));
+  }
+
   /**
    * Disanle Project Sharing
    * @param item Project Card Object
