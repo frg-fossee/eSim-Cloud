@@ -105,6 +105,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     private title: Title,
     private router: Router,
     private api: ApiService,
+    private alertService: AlertService,
   ) {
     // Initialize Global Variables
     Workspace.initializeGlobalFunctions();

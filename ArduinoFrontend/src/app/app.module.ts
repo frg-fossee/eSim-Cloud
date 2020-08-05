@@ -34,6 +34,7 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { HeaderComponent } from './header/header.component';
 import { ViewProjectComponent } from './view-project/view-project.component';
 import { AlertModalComponent } from './alert/alert-modal/alert-modal.component';
+import { AlertService } from './alert/alert-service/alert.service';
 
 /**
  * Monaco OnLoad Function
@@ -85,7 +86,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MatSnackBarModule
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, AlertService],
   bootstrap: [AppComponent],
   entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent],
   schemas: [
