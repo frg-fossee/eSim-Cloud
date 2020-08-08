@@ -29,6 +29,9 @@ export class LCD16X2 extends CircuitElement {
    */
   pinNamedMap: any = {};
 
+  /**
+   * Previous value at the `E` node
+   */
   previousEValue = 0;
 
   isDisplayOn = false;
@@ -179,44 +182,90 @@ export class LCD16X2 extends CircuitElement {
     };
   }
 
+  /**
+   * Turns on/off the display
+   * @param isDisplayOn true for switching on, false for off
+   */
   setDisplayOn(isDisplayOn: boolean) {
     this.isDisplayOn = isDisplayOn;
   }
 
+  /**
+   * Turns on/off the cursor
+   * @param isCursorOn true for switching on, false for off
+   */
   setCursorOn(isCursorOn: boolean) {
     this.isCursorOn = isCursorOn;
   }
 
+  /**
+   * Sets cursor blink on/off
+   * @param isCursorPositionCharBlinkOn true for switching on, false for off
+   */
   setCursorPositionCharBlink(isCursorPositionCharBlinkOn: boolean) {
     this.isCursorPositionCharBlinkOn = isCursorPositionCharBlinkOn;
   }
 
+  /**
+   * Sets address of the DDRAM
+   * @param address new address for the DDRAM
+   */
   setDdRamAddress(address): void {
     this.ddRamAddress = address;
   }
 
+  /**
+   * Gets the voltage input at VCC node
+   */
+  getVCC(): number {
+    return this.pinNamedMap['VCC'].value;
+  }
+
+  /**
+   * Gets the voltage input at GND node
+   */
+  getGND(): number {
+    return this.pinNamedMap['GND'].value;
+  }
+
+  /**
+   * Gets the current register type of the lcd
+   */
   private getRegisterType(): RegisterType {
     return this.pinNamedMap['RS'].value & 1;
   }
 
+  /**
+   * Gets the data mode of the lcd
+   */
+  private getDataMode(): DataMode {
+    return this.pinNamedMap['RW'].value & 1;
+  }
+
+  /**
+   * Updates the registerState to sync it with the value at node 'RS'
+   */
   private loadRegisterState(): void {
     const registerType = this.getRegisterType();
     this.registerState = registerType === RegisterType.Data ? this.dataRegisterState : this.instructionRegisterState;
   }
 
+  /**
+   * Updates the dataProcessingMode to sync it with the value at node 'RW'
+   */
   private loadDataMode(): void {
     const dataMode = this.getDataMode();
     this.dataProcessingMode = dataMode === DataMode.Read ? this.readDataMode : this.writeDataMode;
-  }
-
-  private getDataMode(): DataMode {
-    return this.pinNamedMap['RW'].value & 1;
   }
 
   private setBusyFlag(value: boolean): void{
     this.busyFlag = value;
   }
 
+  /**
+   * Gets the active ram and its address
+   * An LCD can have either CGRAM or DDRAM active while reading/writing the data.
+   */
   getActiveRamAndAddress(): [RAM, number] {
     if (this.activeAddress === ActiveAddress.CGRAM) {
       return [this.cgRam, this.cgRamAddress];
@@ -224,24 +273,26 @@ export class LCD16X2 extends CircuitElement {
     return [this.ddRam, this.ddRamAddress];
   }
 
-  getVCC(): number {
-    return this.pinNamedMap['VCC'].value;
-  }
-
-  getGND(): number {
-    return this.pinNamedMap['GND'].value;
-  }
-
+  /**
+   * Gets the chacracter panel at the current DDRAM address
+   */
   getCurrentCharacterPanel() {
     return this.getCharacterPanel(this.ddRamAddress);
   }
 
+  /**
+   * Moves the address of the CGRAM
+   * @param distance distance by which to move the address
+   */
   moveCgRamAddress(distance: number) {
     this.cgRamAddress += distance;
   }
 
-  moveCursor(direction) {
-    // direction: 1 for right, -1 for left
+  /**
+   * Moves cursor by one step in either left/right direction
+   * @param direction direction of the movement, 1 for right, -1 for left
+   */
+  moveCursor(direction: 1 | -1) {
     let currentPanel = this.getCurrentCharacterPanel();
     currentPanel.changeCursorDisplay(false);
     currentPanel.setBlinking(false);
@@ -266,10 +317,18 @@ export class LCD16X2 extends CircuitElement {
     currentPanel.setBlinking(true);
   }
 
+  /**
+   * Checks if a character panel with displayIndex `index` is in sight of the LCD or not
+   * @param index index to check
+   */
   private isInSight(index: [number, number]) {
     return MathUtils.isPointBetween(index, this.displayStartIndex, this.displayEndIndex);
   }
 
+  /**
+   * Shifts the display with `numSteps` steps
+   * @param numSteps number of steps to move the display with
+   */
   private shiftDisplay(numSteps: number) {
     const stepSize = this.getInterSpacingHorizontal();
     for (const characterPanel of Object.values(this.characterPanels)) {
@@ -282,24 +341,41 @@ export class LCD16X2 extends CircuitElement {
     }
   }
 
+  /**
+   * Scrolls the display to one step left
+   */
   scrollDisplayLeft() {
     this.shiftDisplay(-1);
   }
 
+  /**
+   * Scrolls the display to one step right
+   */
   scrollDisplayRight() {
     this.shiftDisplay(1);
   }
 
+  /**
+   * Gets the character panel at the given ddram address
+   * @param address ddRam address
+   */
   getCharacterPanel(address) {
     // converting address to [i, j]
     const index = this.ddRam.convertAddressToIndex(address);
     return this.characterPanels[`${index[0]}:${index[1]}`];
   }
 
+  /**
+   * Clears the display of the lcd
+   */
   clearDisplay() {
     Object.values(this.characterPanels).forEach((panel: LCDCharacterPanel) => panel.clear());
   }
 
+  /**
+   * event listener for node `E`
+   * @param newValue at the node `E`
+   */
   eSignalListener(newValue) {
     const vcc = this.getVCC();
     if (vcc < 3.3 || vcc > 5) {
@@ -335,6 +411,9 @@ export class LCD16X2 extends CircuitElement {
     return result;
   }
 
+  /**
+   * Refreshs LCD to take in account recent changes
+   */
   refreshLCD() {
     const displayablePanels = this.getDisplayablePanels();
     for (const panel of Object.values(this.characterPanels)) {
@@ -385,10 +464,16 @@ export class LCD16X2 extends CircuitElement {
     this.dataProcessingMode = dataProcessingMode;
   }
 
+  /**
+   * Returns the horizontal spacing between two consecutive character panels
+   */
   getInterSpacingHorizontal() {
     return (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
   }
 
+  /**
+   * Resets the lcd by initializing all the variables
+   */
   reset() {
 
     this.isDisplayOn = false;
@@ -428,6 +513,9 @@ export class LCD16X2 extends CircuitElement {
     this.setDisplayToHome();
   }
 
+  /**
+   * Sets the display to home position
+   */
   setDisplayToHome() {
     // shifting panels to their original position
     const panel00 = this.characterPanels['0:0'];
