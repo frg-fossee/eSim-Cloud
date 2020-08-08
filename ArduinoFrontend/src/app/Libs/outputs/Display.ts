@@ -293,10 +293,6 @@ export class LCD16X2 extends CircuitElement {
    * @param direction direction of the movement, 1 for right, -1 for left
    */
   moveCursor(direction: 1 | -1) {
-    let currentPanel = this.getCurrentCharacterPanel();
-    currentPanel.changeCursorDisplay(false);
-    currentPanel.setBlinking(false);
-
     let newDdRamAddress = this.ddRamAddress + direction;
 
     // applying max value condition
@@ -311,10 +307,6 @@ export class LCD16X2 extends CircuitElement {
     }
 
     this.ddRamAddress = newDdRamAddress;
-
-    currentPanel = this.getCurrentCharacterPanel();
-    currentPanel.changeCursorDisplay(true);
-    currentPanel.setBlinking(true);
   }
 
   /**
@@ -399,16 +391,14 @@ export class LCD16X2 extends CircuitElement {
   }
 
   /**
-   * Get set of panels which are in the view of LCD
+   * Get set of panels which are in the view of the LCD
    */
   getDisplayablePanels(): Set<LCDCharacterPanel> {
-    const result = new Set<LCDCharacterPanel>();
-    for (const characterPanel of Object.values(this.characterPanels)) {
-      if (MathUtils.isPointBetween(characterPanel.displayIndex, this.displayStartIndex, this.displayEndIndex)) {
-        result.add(characterPanel);
-      }
-    }
-    return result;
+    const filteredPanels = Object.values(this.characterPanels)
+                                .filter(panel =>
+                                  MathUtils.isPointBetween(panel.displayIndex, this.displayStartIndex, this.displayEndIndex
+                                ));
+    return new Set(filteredPanels);
   }
 
   /**
@@ -422,14 +412,19 @@ export class LCD16X2 extends CircuitElement {
 
       // turning cursor on and off
       panel.changeCursorDisplay(false);
+      panel.setBlinking(false);
+
       if (this.isCursorOn) {
         if (this.ddRamAddress === address) {
+          if (this.isCursorPositionCharBlinkOn) {
+            panel.setBlinking(true);
+          }
           panel.changeCursorDisplay(true);
         }
       }
 
       // refreshing canvas of all the pixels
-      for (const pixel of _.flatten(panel.pixels)) {
+      panel.pixels.forEach(pixelRow => pixelRow.forEach(pixel => {
         if (pixel.canvas) {
           pixel.refresh();
         } else {
@@ -439,7 +434,7 @@ export class LCD16X2 extends CircuitElement {
             pixel.hide();
           }
         }
-      }
+      }));
     }
   }
 
@@ -511,6 +506,7 @@ export class LCD16X2 extends CircuitElement {
 
     this.clearDisplay();
     this.setDisplayToHome();
+    this.refreshLCD();
   }
 
   /**

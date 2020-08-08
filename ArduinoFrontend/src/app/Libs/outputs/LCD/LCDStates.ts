@@ -149,18 +149,6 @@ export class Font8x5DisplayState implements DataDisplayState {
     return FontSize._8x5;
   }
 
-  drawCursor() {
-    if (this.lcd.isCursorOn) {
-      const characterPanel = this.lcd.getCurrentCharacterPanel();
-      characterPanel.changeCursorDisplay(true);
-    }
-
-    if (this.lcd.isCursorPositionCharBlinkOn) {
-      const characterPanel = this.lcd.getCurrentCharacterPanel();
-      characterPanel.setBlinking(true);
-    }
-  }
-
   displayData(characterDisplayBytes: number[][]) {
     if (!this.lcd.isDisplayOn) {
       return;
@@ -168,7 +156,6 @@ export class Font8x5DisplayState implements DataDisplayState {
 
     const currentPanel = this.lcd.getCurrentCharacterPanel();
     currentPanel.drawCharacter(characterDisplayBytes);
-    this.drawCursor();
   }
 
   generateCharacterPanels() {
@@ -223,9 +210,9 @@ export class DataRegisterState implements RegisterState {
 
     const [activeRam, address] = this.lcd.getActiveRamAndAddress();
     activeRam.write(address, characterBits);
-    if (this.lcd.activeAddress === ActiveAddress.CGRAM) {
-      console.log('Wrote to CGRAM', characterBits, ' at address ', address);
-    }
+    // if (this.lcd.activeAddress === ActiveAddress.CGRAM) {
+    //   console.log('Wrote to CGRAM', characterBits, ' at address ', address);
+    // }
 
     if (this.lcd.activeAddress === ActiveAddress.DDRAM) {
       let characterDisplayBytes = [];
@@ -364,12 +351,12 @@ export class InstructionRegisterState implements RegisterState {
     if (waitingForData) {
       return;
     }
-    console.log('higher, lower bits:', higherBits.toString(2), lowerBits.toString(2));
+    // console.log('higher, lower bits:', higherBits.toString(2), lowerBits.toString(2));
 
     const data = (higherBits << 4) | lowerBits;
     const instructionType = InstructionRegisterState.getInstructionType(data);
 
-    console.log('received instruction type: ', InstructionType[instructionType], data.toString(2));
+    // console.log('received instruction type: ', InstructionType[instructionType], data.toString(2));
 
     const functionToCall = {
       [InstructionType.ClearDisplay]: this.clearDisplay,

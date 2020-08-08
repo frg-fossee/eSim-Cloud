@@ -1,6 +1,10 @@
 import { LCDUtils } from './LCDUtils';
 import { MathUtils } from '../../Utils';
+import { timingSafeEqual } from 'crypto';
 
+/**
+ * LCDPixel: Class prototype for the pixels inside a LCD Character panel
+ */
 export class LCDPixel {
   /**
    * Index of the parent grid
@@ -12,32 +16,77 @@ export class LCDPixel {
    */
   index: [number, number];
 
+  /**
+   * x-coordinate of the pixel with respect to the lcd
+   */
   posX: number;
 
+  /**
+   * y-coordinate of the pixel with respect to the lcd
+   */
   posY: number;
 
+  /**
+   * width of the pixel
+   */
   width: number;
 
+  /**
+   * height of the pixel
+   */
   height: number;
 
+  /**
+   * color of the pixel when it is switched off
+   */
   dimColor: string;
 
+  /**
+   * color of the pixel when it is switched on
+   */
   glowColor: string;
 
+  /**
+   * switch status of the pixel: true when on, false when off
+   */
   isOn: boolean;
 
+  /**
+   * brightness i.e., opacity of the pixel
+   */
   brightness: number;
 
+  /**
+   * Raphael canvas component of the pixel
+   */
   canvas: any;
 
+  /**
+   * Boolean flag to store if any changes are pending to be rendered.
+   * Pending changes are rendered upon calling the `refresh` method.
+   */
   changesPending: boolean;
 
+  /**
+   * x-coordinate of the lcd of which the pixel is a part of
+   */
   lcdX: number;
 
+  /**
+   * y-coordinate of the lcd of which the pixel is a part of
+   */
   lcdY: number;
 
+  /**
+   * Show/hide status of the pixel
+   */
   hidden: boolean;
 
+  /**
+   * Blink status of the pixel
+   * true when the pixel is hidden while blinking
+   * false when the pixel is shown while blinking
+   */
   blinkHidden = false;
 
   constructor(parentIndex: [number, number], index: [number, number], posX: number,
@@ -68,7 +117,8 @@ export class LCDPixel {
     this.canvas.attr({
       x: this.posX + this.lcdX
     });
-    // if the state changes
+
+    // if the state changes, then take it in effect
     if (this.hidden !== hidden) {
       if (hidden) {
         this.hide();
@@ -78,6 +128,10 @@ export class LCDPixel {
     }
   }
 
+  /**
+   * Switch the pixel to on/off
+   * @param value true to switch on, false to switch off
+   */
   switch(value) {
     const prevValue = this.isOn;
     this.isOn = parseInt(value, 2) && true;
@@ -86,14 +140,23 @@ export class LCDPixel {
     }
   }
 
+  /**
+   * get the color of the pixel
+   */
   getColor() {
     return this.isOn ? this.glowColor : this.dimColor;
   }
 
+  /**
+   * get the name of the pixel
+   */
   getName() {
     return `G:${this.parentIndex[0]}:${this.parentIndex[1]}:${this.index[0]}:${this.index[1]}`;
   }
 
+  /**
+   * get the canvas representation of the pixel
+   */
   getCanvasRepr() {
     return {
       name: this.getName(),
@@ -106,16 +169,25 @@ export class LCDPixel {
     };
   }
 
+  /**
+   * shows the pixel
+   */
   show() {
     this.hidden = false;
     this.canvas.show();
   }
 
+  /**
+   * hides the pixel
+   */
   hide() {
     this.hidden = true;
     this.canvas.hide();
   }
 
+  /**
+   * turn on blinking
+   */
   blinkOn() {
     this.blinkHidden = true;
     this.canvas.attr({
@@ -123,13 +195,21 @@ export class LCDPixel {
     });
   }
 
+  /**
+   * turn off blinking
+   */
   blinkOff() {
-    this.blinkHidden = false;
-    this.canvas.attr({
-      fill: this.getColor()
-    });
+    if (this.blinkHidden && this.canvas) {
+      this.canvas.attr({
+        fill: this.getColor()
+      });
+      this.blinkHidden = false;
+    }
   }
 
+  /**
+   * Refreshes the pixel if changes are pending, else does nothing
+   */
   refresh() {
     if (this.changesPending) {
       this.canvas.attr({
@@ -165,6 +245,7 @@ export class LCDCharacterPanel {
     displayIndex: [number, number];
     hidden: boolean;
     blinkFunction: any;
+    containsCursor: boolean;
 
     shift(distance: number) {
         this.posX += distance;
@@ -224,12 +305,16 @@ export class LCDCharacterPanel {
     }
 
     changeCursorDisplay(show: boolean) {
+      if (this.containsCursor === show) {
+        return;
+      }
       for (let j = 0; j < this.N_COLUMN; j++) {
         this.pixels[this.N_ROW - 1][j].switch(show ? 1 : 0);
       }
       if (!show) {
         clearInterval(this.blinkFunction);
       }
+      this.containsCursor = show;
     }
 
     private blink() {
@@ -241,15 +326,17 @@ export class LCDCharacterPanel {
             pixel.blinkOn();
           }
         }));
-      }, 700);
+      }, 600);
     }
 
     setBlinking(value: boolean) {
       if (value) {
         this.blink();
-      } else {
-        clearInterval(this.blinkFunction);
-      }
+      } else if (this.blinkFunction) {
+          clearInterval(this.blinkFunction);
+          this.blinkFunction = null;
+          this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.blinkOff()));
+        }
     }
 
     getCanvasRepr(): any[] {
