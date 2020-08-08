@@ -3,17 +3,21 @@ import { LCDUtils, FontSize } from './LCDUtils';
 
 // https://www.8051projects.net/lcd-interfacing/basics.php
 
+export interface RAM {
+    read(address: number): any;
+    write(address: number, data: any): void;
+}
+
 /**
  * DDRAM
  */
-export class DDRAM {
-    memory: any[][];
+export class DDRAM implements RAM {
+    memory: any[];
     N_ROW: number;
     N_COLUMN: number;
-    pointer: [number, number];
 
     constructor(N_ROW: number, N_COLUMN: number) {
-        this.memory = _.times(N_ROW, () => _.times(N_COLUMN, _.constant(0x00)));
+        this.memory = _.times(1 << 7, 0);
         this.N_ROW = N_ROW;
         this.N_COLUMN = N_COLUMN;
     }
@@ -28,23 +32,46 @@ export class DDRAM {
         }
     }
 
-    validateIndex(index: [number, number]) {
-        if (index[0] >= this.N_ROW || index[0] < 0) {
-            throw Error('Invalid index.');
+    convertIndexToAddress(index: [number, number]): number {
+        if (this.N_ROW === 1) {
+            return index[1];
         }
-        if (index[1] >= this.N_COLUMN || index[1] < 0) {
+        if (this.N_ROW === 2) {
+            const address = index[0] * 0x40 + index[1];
+            return address;
+        }
+        // TODO: implement 4 rows
+    }
+
+    convertAddressToIndex(address: number): [number, number] {
+        if (this.N_ROW === 1) {
+            return [0, address];
+        }
+        if (this.N_ROW === 2) {
+            return [Math.floor(address / 0x40), address % 0x40];
+        }
+        // TODO: implement 4 rows
+    }
+
+    validateIndex(address: number) {
+        if (address < 0x00 || address >= 0x7F) {
             throw Error('Invalid index.');
         }
     }
 
-    readRAM(index: [number, number]) {
-        this.validateIndex(index);
-        return this.memory[index[0]][index[1]];
+    read(address: number): number {
+        this.validateIndex(address);
+        return this.memory[address];
     }
 
-    writeToRAM(index: [number, number], data: number) {
-        this.validateIndex(index);
-        this.memory[index[0]][index[1]] = data;
+    readAtIndex(index: [number, number]): number {
+        const address = this.convertIndexToAddress(index);
+        return this.memory[address];
+    }
+
+    write(address: number, data: number) {
+        this.validateIndex(address);
+        this.memory[address] = data;
     }
 }
 
@@ -53,8 +80,9 @@ export class DDRAM {
  * CGROM
  */
 export class CGROM {
+
     memory: any[][];
-    fontSize: [number, number];
+    fontSize: FontSize;
     N_ROW = 16;
     N_COLUMN = 16;
 
@@ -70,8 +98,39 @@ export class CGROM {
         }
     }
 
-    readROM(higherBit: number, lowerBit: number) {
+    readROM(higherBit: number, lowerBit: number): number[][] {
         return this.memory[higherBit][lowerBit];
     }
 }
 
+/**
+ * CGRAM class
+ */
+export class CGRAM implements RAM {
+    memory: {[key: number]: number} = {};
+
+    constructor() {}
+
+    validateAddress(address) {
+        if (address < 0x40 || address >= 0x80) {
+            return false;
+        }
+        return true;
+    }
+
+    read(address: number): number[] {
+        if (!this.validateAddress(address)) {
+            console.log('Invalid address provided to CGRAM while reading.');
+            return;
+        }
+        return LCDUtils.convertHexToBinaryArray(this.memory[address]);
+    }
+
+    write(address: number, data: number) {
+        if (!this.validateAddress(address)) {
+            console.log('Invalid address provided to CGRAM while writing.');
+            return;
+        }
+        this.memory[address] = data;
+    }
+}

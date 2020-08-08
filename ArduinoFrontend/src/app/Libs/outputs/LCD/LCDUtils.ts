@@ -284,16 +284,19 @@ function hex2bin(hex, offset = 0) {
 export class LCDUtils {
   static blankBytes: any = null;
 
-  static getDisplayBytes(character: number, fontSize: FontSize = FontSize._8x5) {
+  static getDisplayBytes(character: number, fontSize: FontSize = FontSize._8x5): number[][] {
     const hexReprArray = FontData5x8[character];
     if (!hexReprArray) {
       return LCDUtils.getBlankDisplayBytes();
     }
-    const binRepr = hexReprArray.map(hexRow => hex2bin(hexRow, 3).split('').map(n => parseInt(n, 2) & 1));
-    return binRepr;
+    return hexReprArray.map(LCDUtils.convertHexToBinaryArray);
   }
 
-  static getBlankDisplayBytes(): boolean[][] {
+  static convertHexToBinaryArray(hex: number): number[] {
+    return hex2bin(hex, 3).split('').map(n => parseInt(n, 2) & 1);
+  }
+
+  static getBlankDisplayBytes(): number[][] {
     if (!LCDUtils.blankBytes) {
       LCDUtils.blankBytes = LCDUtils.getDisplayBytes(' '.charCodeAt(0));
     }

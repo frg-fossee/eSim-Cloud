@@ -5,10 +5,11 @@ import {
   FourBitState, EightBitState,
   WriteDataProcessingMode, ReadDataProcessingMode,
   RegisterState, DataRegisterState, InstructionRegisterState,
+  ActiveAddress,
 } from './LCD/LCDStates';
 import _ from 'lodash';
 import { LCDCharacterPanel } from './LCD/LCDPanel';
-import { DDRAM, CGROM } from './LCD/MemorySchema';
+import { DDRAM, CGROM, CGRAM, RAM } from './LCD/MemorySchema';
 import { MathUtils } from '../Utils';
 
 enum RegisterType {
@@ -28,11 +29,13 @@ export class LCD16X2 extends CircuitElement {
    */
   pinNamedMap: any = {};
 
-  cursorPosition: [number, number] = [0, 0];
-
   previousEValue = 0;
 
   isDisplayOn = false;
+
+  isCursorOn = false;
+
+  isCursorPositionCharBlinkOn = false;
 
   autoCursorShift = 0;
 
@@ -48,6 +51,26 @@ export class LCD16X2 extends CircuitElement {
    * higher-bit -> lower-bit -> characterFont
    */
   cgRom: CGROM;
+
+  /**
+   * 64-byte CGRAM
+   */
+  cgRam: CGRAM;
+
+  /**
+   * Address of the DDRAM
+   */
+  ddRamAddress: number;
+
+  /**
+   * Address of the CGRAM
+   */
+  cgRamAddress: number;
+
+  /**
+   * Current Active address
+   */
+  activeAddress: ActiveAddress;
 
   /**
    * Map from character panel index to character panel
@@ -124,7 +147,10 @@ export class LCD16X2 extends CircuitElement {
    */
   displayEndIndex: [number, number];
 
-  currentPixels: Set<any> = new Set();
+  /**
+   * Busy flag of the lcd
+   */
+  busyFlag = false;
 
   /**
    * LCD16X2 constructor
@@ -153,43 +179,99 @@ export class LCD16X2 extends CircuitElement {
     };
   }
 
-  getRegisterType(): RegisterType {
+  setDisplayOn(isDisplayOn: boolean) {
+    this.isDisplayOn = isDisplayOn;
+  }
+
+  setCursorOn(isCursorOn: boolean) {
+    this.isCursorOn = isCursorOn;
+  }
+
+  setCursorPositionCharBlink(isCursorPositionCharBlinkOn: boolean) {
+    this.isCursorPositionCharBlinkOn = isCursorPositionCharBlinkOn;
+  }
+
+  setDdRamAddress(address): void {
+    this.ddRamAddress = address;
+  }
+
+  private getRegisterType(): RegisterType {
     return this.pinNamedMap['RS'].value & 1;
   }
 
-  loadRegisterState(): void {
+  private loadRegisterState(): void {
     const registerType = this.getRegisterType();
     this.registerState = registerType === RegisterType.Data ? this.dataRegisterState : this.instructionRegisterState;
   }
 
-  loadDataMode(): void {
+  private loadDataMode(): void {
     const dataMode = this.getDataMode();
     this.dataProcessingMode = dataMode === DataMode.Read ? this.readDataMode : this.writeDataMode;
   }
 
-  getDataMode(): DataMode {
+  private getDataMode(): DataMode {
     return this.pinNamedMap['RW'].value & 1;
   }
 
-  moveCursorRight() {
-    this.cursorPosition[1] += 1;
-    if (this.cursorPosition[1] >= this.ddRam.N_COLUMN) {
-      this.cursorPosition = [this.cursorPosition[0] + 1, 0];
-    }
+  private setBusyFlag(value: boolean): void{
+    this.busyFlag = value;
   }
 
-  moveCursorLeft() {
-    this.cursorPosition[1] -= 1;
-    if (this.cursorPosition[1] < 0) {
-      this.cursorPosition[1] = 0;
+  getActiveRamAndAddress(): [RAM, number] {
+    if (this.activeAddress === ActiveAddress.CGRAM) {
+      return [this.cgRam, this.cgRamAddress];
     }
+    return [this.ddRam, this.ddRamAddress];
   }
 
-  isInSight(index: [number, number]) {
+  getVCC(): number {
+    return this.pinNamedMap['VCC'].value;
+  }
+
+  getGND(): number {
+    return this.pinNamedMap['GND'].value;
+  }
+
+  getCurrentCharacterPanel() {
+    return this.getCharacterPanel(this.ddRamAddress);
+  }
+
+  moveCgRamAddress(distance: number) {
+    this.cgRamAddress += distance;
+  }
+
+  moveCursor(direction) {
+    // direction: 1 for right, -1 for left
+    let currentPanel = this.getCurrentCharacterPanel();
+    currentPanel.changeCursorDisplay(false);
+    currentPanel.setBlinking(false);
+
+    let newDdRamAddress = this.ddRamAddress + direction;
+
+    // applying max value condition
+    newDdRamAddress = Math.min(0x67, newDdRamAddress);
+
+    // applying min value condition
+    newDdRamAddress = Math.max(0x00, newDdRamAddress);
+
+    // applying [0x27, 0x40] condition
+    if (newDdRamAddress > 0x27 && newDdRamAddress < 0x40) {
+      newDdRamAddress = direction > 0 ? 0x40 : 0x27;
+    }
+
+    this.ddRamAddress = newDdRamAddress;
+
+    currentPanel = this.getCurrentCharacterPanel();
+    currentPanel.changeCursorDisplay(true);
+    currentPanel.setBlinking(true);
+  }
+
+  private isInSight(index: [number, number]) {
     return MathUtils.isPointBetween(index, this.displayStartIndex, this.displayEndIndex);
   }
 
-  shiftDisplay(numSteps: number, stepSize: number) {
+  private shiftDisplay(numSteps: number) {
+    const stepSize = this.getInterSpacingHorizontal();
     for (const characterPanel of Object.values(this.characterPanels)) {
       const oldColumnIndex = characterPanel.displayIndex[1];
       const newColumnIndex = MathUtils.modulo(oldColumnIndex - numSteps, this.ddRam.N_COLUMN);
@@ -201,16 +283,16 @@ export class LCD16X2 extends CircuitElement {
   }
 
   scrollDisplayLeft() {
-    const singleStep = (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
-    this.shiftDisplay(-1, singleStep);
+    this.shiftDisplay(-1);
   }
 
   scrollDisplayRight() {
-    const singleStep = (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
-    this.shiftDisplay(1, singleStep);
+    this.shiftDisplay(1);
   }
 
-  getCharacterPanel(index) {
+  getCharacterPanel(address) {
+    // converting address to [i, j]
+    const index = this.ddRam.convertAddressToIndex(address);
     return this.characterPanels[`${index[0]}:${index[1]}`];
   }
 
@@ -219,6 +301,14 @@ export class LCD16X2 extends CircuitElement {
   }
 
   eSignalListener(newValue) {
+    const vcc = this.getVCC();
+    if (vcc < 3.3 || vcc > 5) {
+      console.log('Not enough power supply.');
+      return;
+    }
+
+    this.setBusyFlag(true);
+
     const prevValue = this.previousEValue;
 
     // identifying high-low pulse
@@ -229,6 +319,7 @@ export class LCD16X2 extends CircuitElement {
       this.refreshLCD();
     }
     this.previousEValue = newValue;
+    this.setBusyFlag(false);
   }
 
   /**
@@ -248,6 +339,17 @@ export class LCD16X2 extends CircuitElement {
     const displayablePanels = this.getDisplayablePanels();
     for (const panel of Object.values(this.characterPanels)) {
       const show = displayablePanels.has(panel);
+      const address = this.ddRam.convertIndexToAddress(panel.index);
+
+      // turning cursor on and off
+      panel.changeCursorDisplay(false);
+      if (this.isCursorOn) {
+        if (this.ddRamAddress === address) {
+          panel.changeCursorDisplay(true);
+        }
+      }
+
+      // refreshing canvas of all the pixels
       for (const pixel of _.flatten(panel.pixels)) {
         if (pixel.canvas) {
           pixel.refresh();
@@ -283,12 +385,15 @@ export class LCD16X2 extends CircuitElement {
     this.dataProcessingMode = dataProcessingMode;
   }
 
-  init() {
-    /**
-     * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
-     */
-    // Setting cursor to home
-    this.cursorPosition = [0, 0];
+  getInterSpacingHorizontal() {
+    return (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
+  }
+
+  reset() {
+
+    this.isDisplayOn = false;
+    this.isCursorOn = false;
+    this.isCursorPositionCharBlinkOn = false;
 
     // Initialising data display state
     this.font8x5DisplayState = new Font8x5DisplayState(this);
@@ -317,6 +422,30 @@ export class LCD16X2 extends CircuitElement {
     // Initialising CGROM and DDRAM
     this.cgRom = new CGROM(this.dataDisplayState.getFontSize());
     this.ddRam = DDRAM.createDDRAMForLCD(this.data.rows);
+    this.cgRam = new CGRAM();
+
+    this.clearDisplay();
+    this.setDisplayToHome();
+  }
+
+  setDisplayToHome() {
+    // shifting panels to their original position
+    const panel00 = this.characterPanels['0:0'];
+    if (!panel00) {
+      return;
+    }
+
+    const offset = panel00.displayIndex[1] - panel00.index[1];
+    this.shiftDisplay(offset);
+  }
+
+  init() {
+    /**
+     * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
+     */
+
+    // Resets the lcd's properties
+    this.reset();
 
     let tempX: number;
     let tempY: number;
@@ -336,7 +465,7 @@ export class LCD16X2 extends CircuitElement {
                                                       this.displayStartIndex, this.displayEndIndex, [k, l], hidden);
         this.characterPanels[characterPanel.index.join(':')] = characterPanel;
 
-        posX = posX + (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
+        posX = posX + this.getInterSpacingHorizontal();
         posY = tempColumnsY;
       }
       posY = tempY + (this.data.gridRows * this.data.gridWidth) + (this.data.interSpacing * 1.5);
@@ -368,7 +497,7 @@ export class LCD16X2 extends CircuitElement {
    */
   closeSimulation(): void {
     // this.elements.remove();
-    this.init();
+    this.reset();
   }
 }
 /**

@@ -38,6 +38,8 @@ export class LCDPixel {
 
   hidden: boolean;
 
+  blinkHidden = false;
+
   constructor(parentIndex: [number, number], index: [number, number], posX: number,
               posY: number, lcdX: number, lcdY: number, width: number, height: number, dimColor: string, glowColor: string) {
     this.parentIndex = parentIndex;
@@ -114,6 +116,20 @@ export class LCDPixel {
     this.canvas.hide();
   }
 
+  blinkOn() {
+    this.blinkHidden = true;
+    this.canvas.attr({
+      fill: '#000'
+    });
+  }
+
+  blinkOff() {
+    this.blinkHidden = false;
+    this.canvas.attr({
+      fill: this.getColor()
+    });
+  }
+
   refresh() {
     if (this.changesPending) {
       this.canvas.attr({
@@ -148,13 +164,14 @@ export class LCDCharacterPanel {
     lcdDisplayEndIndex: [number, number];
     displayIndex: [number, number];
     hidden: boolean;
+    blinkFunction: any;
 
     shift(distance: number) {
         this.posX += distance;
         this.shiftPixels(distance);
     }
 
-    shiftPixels(distance: number) {
+    private shiftPixels(distance: number) {
       for (let i = 0; i < this.N_ROW; i++) {
         for (let j = 0; j < this.N_COLUMN; j++) {
           this.pixels[i][j].shift(distance, this.hidden);
@@ -192,7 +209,10 @@ export class LCDCharacterPanel {
     }
 
     clear() {
+      this.changeCursorDisplay(false);
       this.drawCharacter(LCDUtils.getBlankDisplayBytes());
+      this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.refresh()));
+      clearInterval(this.blinkFunction);
     }
 
     drawCharacter(characterDisplayBytes) {
@@ -200,6 +220,35 @@ export class LCDCharacterPanel {
         for (let j = 0; j < this.N_COLUMN; j++) {
           this.pixels[i][j].switch(characterDisplayBytes[i][j]);
         }
+      }
+    }
+
+    changeCursorDisplay(show: boolean) {
+      for (let j = 0; j < this.N_COLUMN; j++) {
+        this.pixels[this.N_ROW - 1][j].switch(show ? 1 : 0);
+      }
+      if (!show) {
+        clearInterval(this.blinkFunction);
+      }
+    }
+
+    private blink() {
+      this.blinkFunction = setInterval(() => {
+        this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => {
+          if (pixel.blinkHidden) {
+            pixel.blinkOff();
+          } else {
+            pixel.blinkOn();
+          }
+        }));
+      }, 700);
+    }
+
+    setBlinking(value: boolean) {
+      if (value) {
+        this.blink();
+      } else {
+        clearInterval(this.blinkFunction);
       }
     }
 

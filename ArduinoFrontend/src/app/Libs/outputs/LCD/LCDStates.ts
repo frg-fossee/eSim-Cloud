@@ -2,6 +2,10 @@ import { LCDCharacterPanel } from './LCDPanel';
 import { LCD16X2 } from '../Display';
 import { InstructionType, FontSize } from './LCDUtils';
 
+export enum ActiveAddress {
+  CGRAM = 0, DDRAM = 1
+}
+
 /**
  * Data processor interface
  */
@@ -55,9 +59,16 @@ export interface BitState {
  * 4-bit state
  */
 export class FourBitState implements BitState {
+
+  constructor(lcd: LCD16X2) {
+    this.lcd = lcd;
+    this.waitingForData = false;
+  }
   lcd: LCD16X2;
   waitingForData: boolean;
   higherBits = -1;
+
+  writeData: () => void;
 
   readData(): [number, number] {
     let data = 0;
@@ -69,6 +80,7 @@ export class FourBitState implements BitState {
     data = data >> 1;
 
     if (this.waitingForData) {
+      this.waitingForData = false;
       return [this.higherBits, data];
     }
 
@@ -80,20 +92,19 @@ export class FourBitState implements BitState {
   isWaitingForMoreData() {
     return this.waitingForData;
   }
-
-  writeData: () => void;
-
-  constructor(lcd: LCD16X2) {
-    this.lcd = lcd;
-    this.waitingForData = false;
-  }
 }
 
 /**
  * 8-bit state
  */
 export class EightBitState implements BitState {
+
+  constructor(lcd: LCD16X2) {
+    this.lcd = lcd;
+  }
   lcd: LCD16X2;
+
+  writeData: () => void;
 
   readData(): [number, number] {
     let data = 0;
@@ -111,19 +122,13 @@ export class EightBitState implements BitState {
   isWaitingForMoreData() {
     return false;
   }
-
-  writeData: () => void;
-
-  constructor(lcd: LCD16X2) {
-    this.lcd = lcd;
-  }
 }
 
 /**
  * Data display interface
  */
 export interface DataDisplayState {
-  displayData: () => void;
+  displayData: (characterDisplayBytes: number[][]) => void;
   generateCharacterPanels: () => void;
   getFontSize: () => FontSize;
 }
@@ -144,8 +149,26 @@ export class Font8x5DisplayState implements DataDisplayState {
     return FontSize._8x5;
   }
 
-  displayData() {
+  drawCursor() {
+    if (this.lcd.isCursorOn) {
+      const characterPanel = this.lcd.getCurrentCharacterPanel();
+      characterPanel.changeCursorDisplay(true);
+    }
 
+    if (this.lcd.isCursorPositionCharBlinkOn) {
+      const characterPanel = this.lcd.getCurrentCharacterPanel();
+      characterPanel.setBlinking(true);
+    }
+  }
+
+  displayData(characterDisplayBytes: number[][]) {
+    if (!this.lcd.isDisplayOn) {
+      return;
+    }
+
+    const currentPanel = this.lcd.getCurrentCharacterPanel();
+    currentPanel.drawCharacter(characterDisplayBytes);
+    this.drawCursor();
   }
 
   generateCharacterPanels() {
@@ -169,7 +192,7 @@ export class Font10x5DisplayState implements DataDisplayState {
     return FontSize._10x5;
   }
 
-  displayData() {
+  displayData(characterDisplayBytes: number[][]) {
 
   }
 
@@ -196,24 +219,45 @@ export class DataRegisterState implements RegisterState {
     if (waitingForData) {
       return;
     }
-
-    const characterPanel = this.lcd.getCharacterPanel(this.lcd.cursorPosition);
-    const characterDisplayBytes = this.lcd.cgRom.readROM(higherBits, lowerBits);
-
     const characterBits = (higherBits << 4) | lowerBits;
-    this.lcd.ddRam.writeToRAM(this.lcd.cursorPosition, characterBits);
-    characterPanel.drawCharacter(characterDisplayBytes);
+
+    const [activeRam, address] = this.lcd.getActiveRamAndAddress();
+    activeRam.write(address, characterBits);
+    if (this.lcd.activeAddress === ActiveAddress.CGRAM) {
+      console.log('Wrote to CGRAM', characterBits, ' at address ', address);
+    }
+
+    if (this.lcd.activeAddress === ActiveAddress.DDRAM) {
+      let characterDisplayBytes = [];
+      // when writing to DDRAM
+      if (higherBits === 0) {
+        for (let i = 0; i < 8; i++) {
+          characterDisplayBytes.push(this.lcd.cgRam.read(0x40 + (lowerBits * 8) + i));
+        }
+      } else {
+        characterDisplayBytes = this.lcd.cgRom.readROM(higherBits, lowerBits);
+      }
+      this.lcd.dataDisplayState.displayData(characterDisplayBytes);
+
+      if (this.lcd.autoCursorShift) {
+        // move cursor to right
+        this.lcd.moveCursor(1);
+        if (this.lcd.autoDisplayShift) {
+          this.lcd.scrollDisplayRight();
+        }
+      } else {
+        // move cursor to left
+        this.lcd.moveCursor(-1);
+        if (this.lcd.autoDisplayShift) {
+          this.lcd.scrollDisplayLeft();
+        }
+      }
+    }
 
     if (this.lcd.autoCursorShift) {
-      this.lcd.moveCursorRight();
-      if (this.lcd.autoDisplayShift) {
-        this.lcd.scrollDisplayRight();
-      }
+      this.lcd.moveCgRamAddress(1);
     } else {
-      this.lcd.moveCursorLeft();
-      if (this.lcd.autoDisplayShift) {
-        this.lcd.scrollDisplayLeft();
-      }
+      this.lcd.moveCgRamAddress(-1);
     }
   }
 }
@@ -234,12 +278,13 @@ export class InstructionRegisterState implements RegisterState {
     return firstOnePositionFromRight;
   }
 
-  clearDisplay(data) {
+  clearDisplay() {
     this.lcd.clearDisplay();
   }
 
-  setCursorHome(data) {
-    this.lcd.cursorPosition = [0, 0];
+  setCursorHome() {
+    this.lcd.setDdRamAddress(0x00);
+    this.lcd.setDisplayToHome();
   }
 
   setEntryMode(data) {
@@ -260,7 +305,14 @@ export class InstructionRegisterState implements RegisterState {
   }
 
   displayOnOff(data) {
-    this.lcd.isDisplayOn = !this.lcd.isDisplayOn;
+    const displayOnOff = (data >> 2) & 1;
+    this.lcd.setDisplayOn(displayOnOff && true);
+
+    const cursorOnOff = (data >> 1) & 1;
+    this.lcd.setCursorOn(cursorOnOff && true);
+
+    const blinkCursorPositionCharacter = data & 1;
+    this.lcd.setCursorPositionCharBlink(blinkCursorPositionCharacter && true);
   }
 
   shiftCursorAndDisplay(data) {
@@ -270,12 +322,12 @@ export class InstructionRegisterState implements RegisterState {
       const sSlashC = (data >> 3) & 1;
 
       if (!(rSlashL & 1)) {
-        this.lcd.moveCursorLeft();
+        this.lcd.moveCursor(-1);
         if (sSlashC & 1) {
           this.lcd.scrollDisplayLeft();
         }
       } else if (rSlashL & 1) {
-        this.lcd.moveCursorRight();
+        this.lcd.moveCursor(1);
         if (sSlashC & 1) {
           this.lcd.scrollDisplayRight();
         }
@@ -283,7 +335,7 @@ export class InstructionRegisterState implements RegisterState {
   }
 
   setFunction(data) {
-    // 0   0   0   0   1   DL  N   F   *   * 
+    // 0   0   0   0   1   DL  N   F   *   *
     const dataLength = (data >> 4) & 1;
     if (dataLength & 1) {
       this.lcd.setBitState(this.lcd.eightBitState);
@@ -297,11 +349,13 @@ export class InstructionRegisterState implements RegisterState {
   }
 
   setCGRAMAddress(data) {
-
+    this.lcd.cgRamAddress = 0x40 + (data & 0x3F);
+    this.lcd.activeAddress = ActiveAddress.CGRAM;
   }
 
   setDDRAMAddress(data) {
-     
+    this.lcd.setDdRamAddress(data & 0x7F);
+    this.lcd.activeAddress = ActiveAddress.DDRAM;
   }
 
   processData() {
