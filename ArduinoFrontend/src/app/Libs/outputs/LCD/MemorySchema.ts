@@ -94,7 +94,7 @@ export class CGROM {
           const higherBits = (character >> 4) & 0b1111;
           const lowerBits = (character) & 0b1111;
           this.memory[higherBits] = this.memory[higherBits] || [];
-          this.memory[higherBits][lowerBits] = LCDUtils.getDisplayBytes(character);
+          this.memory[higherBits][lowerBits] = LCDUtils.getDisplayBytes(character, fontSize);
         }
     }
 

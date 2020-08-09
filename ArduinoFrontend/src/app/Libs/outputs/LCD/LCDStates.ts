@@ -129,8 +129,12 @@ export class EightBitState implements BitState {
  */
 export interface DataDisplayState {
   displayData: (characterDisplayBytes: number[][]) => void;
-  generateCharacterPanels: () => void;
   getFontSize: () => FontSize;
+  getGridRows: () => number;
+  getGridColumns: () => number;
+  getRows: () => number;
+  getColumns: () => number;
+  setNLines: (nLines: number) => void;
 }
 
 /**
@@ -141,8 +145,35 @@ export class Font8x5DisplayState implements DataDisplayState {
 
   lcd: LCD16X2;
 
+  nLines: number;
+
   constructor(lcd: LCD16X2) {
     this.lcd = lcd;
+  }
+
+  // TODO: To implement the following 4 functions for different size LCDS
+  // Currently it's only for 16x2 LCD
+
+  getGridRows() {
+    return 8;
+  }
+
+  getGridColumns() {
+    return 5;
+  }
+
+  getRows() {
+    return 2;
+  }
+
+  getColumns() {
+    return 16;
+  }
+
+  setNLines(nLines: number) {
+    if (this.nLines !== nLines) {
+      this.nLines = nLines;
+    }
   }
 
   getFontSize() {
@@ -157,10 +188,6 @@ export class Font8x5DisplayState implements DataDisplayState {
     const currentPanel = this.lcd.getCurrentCharacterPanel();
     currentPanel.drawCharacter(characterDisplayBytes);
   }
-
-  generateCharacterPanels() {
-
-  }
 }
 
 /**
@@ -171,8 +198,35 @@ export class Font10x5DisplayState implements DataDisplayState {
 
   lcd: LCD16X2;
 
+  nLines: number;
+
   constructor(lcd: LCD16X2) {
     this.lcd = lcd;
+  }
+
+  setNLines(nLines: number) {
+    if (this.nLines !== nLines) {
+      this.nLines = nLines;
+    }
+  }
+
+  // TODO: To implement the following 4 functions for different size LCDS
+  // Currently it's only for 16x2 LCD
+
+  getGridRows() {
+    return 10;
+  }
+
+  getGridColumns() {
+    return 5;
+  }
+
+  getRows() {
+    return 1;
+  }
+
+  getColumns() {
+    return 16;
   }
 
   getFontSize() {
@@ -180,12 +234,14 @@ export class Font10x5DisplayState implements DataDisplayState {
   }
 
   displayData(characterDisplayBytes: number[][]) {
+    if (!this.lcd.isDisplayOn) {
+      return;
+    }
 
+    const currentPanel = this.lcd.getCurrentCharacterPanel();
+    currentPanel.drawCharacter(characterDisplayBytes);
   }
 
-  generateCharacterPanels() {
-
-  }
 }
 
 export interface RegisterState {
@@ -210,9 +266,6 @@ export class DataRegisterState implements RegisterState {
 
     const [activeRam, address] = this.lcd.getActiveRamAndAddress();
     activeRam.write(address, characterBits);
-    // if (this.lcd.activeAddress === ActiveAddress.CGRAM) {
-    //   console.log('Wrote to CGRAM', characterBits, ' at address ', address);
-    // }
 
     if (this.lcd.activeAddress === ActiveAddress.DDRAM) {
       let characterDisplayBytes = [];
@@ -331,8 +384,21 @@ export class InstructionRegisterState implements RegisterState {
     }
 
     const numLines = (data >> 3) & 1;
-
     const characterFont = (data >> 2) & 1;
+
+    if (numLines & 1) {
+      // N = 1 => 2 lines
+      this.lcd.setDataDisplayState(this.lcd.font8x5DisplayState, 2);
+    } else {
+      // N = 0 => 1 line
+      if (characterFont & 1) {
+        // F = 1 => 10x5
+        this.lcd.setDataDisplayState(this.lcd.font10x5DisplayState, 1);
+      } else {
+        // F = 0 => 8x5
+        this.lcd.setDataDisplayState(this.lcd.font8x5DisplayState, 1);
+      }
+    }
   }
 
   setCGRAMAddress(data) {

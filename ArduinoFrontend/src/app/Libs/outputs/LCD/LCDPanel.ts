@@ -140,6 +140,12 @@ export class LCDPixel {
     }
   }
 
+  destroy() {
+    if (this.canvas) {
+      this.canvas.remove();
+    }
+  }
+
   /**
    * get the color of the pixel
    */
@@ -260,6 +266,10 @@ export class LCDCharacterPanel {
       }
     }
 
+    destroy() {
+      this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.destroy()));
+    }
+
     initialiseLCDPixels() {
       let tempRowsX: number;
       let posX = this.posX;
@@ -297,9 +307,16 @@ export class LCDCharacterPanel {
     }
 
     drawCharacter(characterDisplayBytes) {
+      let byte = null;
       for (let i = 0; i < this.N_ROW - 1; i++) {
         for (let j = 0; j < this.N_COLUMN; j++) {
-          this.pixels[i][j].switch(characterDisplayBytes[i][j]);
+          try {
+            byte = characterDisplayBytes[i][j];
+          } catch (e) {
+            // if byte is absent for some reason, switch the pixel off
+            byte = 0;
+          }
+          this.pixels[i][j].switch(byte);
         }
       }
     }

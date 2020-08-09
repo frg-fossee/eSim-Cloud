@@ -448,8 +448,14 @@ export class LCD16X2 extends CircuitElement {
   /**
    * @param dataDisplayState new data display state
    */
-  setDataDisplayState(dataDisplayState: DataDisplayState) {
+  setDataDisplayState(dataDisplayState: DataDisplayState, numLines?: number) {
     this.dataDisplayState = dataDisplayState;
+    if (numLines) {
+      this.dataDisplayState.setNLines(numLines);
+    }
+    this.createDdRam();
+    this.createCgRom();
+    this.generateCharacterPanels();
   }
 
   /**
@@ -464,6 +470,13 @@ export class LCD16X2 extends CircuitElement {
    */
   getInterSpacingHorizontal() {
     return (this.data.gridColumns * this.data.gridWidth) + this.data.interSpacing;
+  }
+
+  /**
+   * Returns the vertical spacing between two consecutive character panels
+   */
+  getInterSpacingVertical() {
+    return (this.data.gridRows * this.data.gridWidth) + (this.data.interSpacing * 1.5);
   }
 
   /**
@@ -499,9 +512,9 @@ export class LCD16X2 extends CircuitElement {
     this.displayStartIndex = [0, 0];
     this.displayEndIndex = [this.data.rows, this.data.columns];
 
-    // Initialising CGROM and DDRAM
-    this.cgRom = new CGROM(this.dataDisplayState.getFontSize());
-    this.ddRam = DDRAM.createDDRAMForLCD(this.data.rows);
+    // Initialising CGROM, DDRAM, and CGRAM
+    this.createCgRom();
+    this.createDdRam();
     this.cgRam = new CGRAM();
 
     this.clearDisplay();
@@ -523,6 +536,51 @@ export class LCD16X2 extends CircuitElement {
     this.shiftDisplay(offset);
   }
 
+  createDdRam() {
+    this.ddRam = DDRAM.createDDRAMForLCD(this.dataDisplayState.getRows());
+  }
+
+  createCgRom() {
+    this.cgRom = new CGROM(this.dataDisplayState.getFontSize());
+  }
+
+  /**
+   * Generates character panels inside the lcd
+   */
+  generateCharacterPanels() {
+    Object.values(this.characterPanels).forEach(panel => panel.destroy());
+
+    let tempX: number;
+    let tempY: number;
+    let tempColumnsY: number;
+    let posX = this.data.startX;
+    let posY = this.data.startY;
+
+    const gridRows = this.dataDisplayState.getGridRows();
+    const gridColumns = this.dataDisplayState.getGridColumns();
+    const rows = this.dataDisplayState.getRows();
+    const columns = this.dataDisplayState.getColumns();
+
+    for (let k = 0; k < this.ddRam.N_ROW; k++) { // Rows: 1
+      tempX = posX;
+      tempY = posY;
+      for (let l = 0; l < this.ddRam.N_COLUMN; l++) { // Columns: 16 (Characters)
+        tempColumnsY = posY;
+        const hidden = k >= rows || l >= columns;
+        const characterPanel = new LCDCharacterPanel([k, l], gridRows, gridColumns, posX, posY, this.x, this.y,
+                                                      this.data.gridHeight, this.data.gridWidth,
+                                                      this.data.barColor, this.data.barGlowColor, this.data.intraSpacing,
+                                                      this.displayStartIndex, this.displayEndIndex, [k, l], hidden);
+        this.characterPanels[characterPanel.index.join(':')] = characterPanel;
+
+        posX = posX + this.getInterSpacingHorizontal();
+        posY = tempColumnsY;
+      }
+      posY = tempY + this.getInterSpacingVertical();
+      posX = tempX;
+    } // Row ends
+  }
+
   init() {
     /**
      * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
@@ -531,31 +589,10 @@ export class LCD16X2 extends CircuitElement {
     // Resets the lcd's properties
     this.reset();
 
-    let tempX: number;
-    let tempY: number;
-    let tempColumnsY: number;
-    let posX = this.data.startX;
-    let posY = this.data.startY;
+    // Generates the character panels
+    this.generateCharacterPanels();
 
-    for (let k = 0; k < this.ddRam.N_ROW; k++) { // Rows: 2
-      tempX = posX;
-      tempY = posY;
-      for (let l = 0; l < this.ddRam.N_COLUMN; l++) { // Columns: 16 (Characters)
-        tempColumnsY = posY;
-        const hidden = k >= this.data.rows || l >= this.data.columns;
-        const characterPanel = new LCDCharacterPanel([k, l], this.data.gridRows, this.data.gridColumns,
-                                                      posX, posY, this.x, this.y, this.data.gridHeight, this.data.gridWidth,
-                                                      this.data.barColor, this.data.barGlowColor, this.data.intraSpacing,
-                                                      this.displayStartIndex, this.displayEndIndex, [k, l], hidden);
-        this.characterPanels[characterPanel.index.join(':')] = characterPanel;
-
-        posX = posX + this.getInterSpacingHorizontal();
-        posY = tempColumnsY;
-      }
-      posY = tempY + (this.data.gridRows * this.data.gridWidth) + (this.data.interSpacing * 1.5);
-      posX = tempX;
-    } // Row ends
-
+    // Refreshes the LCD
     this.refreshLCD();
 
     for (const node of this.nodes) {
