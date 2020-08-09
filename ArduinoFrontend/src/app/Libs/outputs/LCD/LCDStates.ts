@@ -64,12 +64,27 @@ export class FourBitState implements BitState {
     this.lcd = lcd;
     this.waitingForData = false;
   }
+
+  /**
+   * LCD object
+   */
   lcd: LCD16X2;
+
+  /**
+   * is waiting for more data to come?
+   */
   waitingForData: boolean;
+
+  /**
+   * temporary variable to store the higher bits read before the data-waiting state
+   */
   higherBits = -1;
 
   writeData: () => void;
 
+  /**
+   * Reads the data from the databuses
+   */
   readData(): [number, number] {
     let data = 0;
 
@@ -80,15 +95,23 @@ export class FourBitState implements BitState {
     data = data >> 1;
 
     if (this.waitingForData) {
+      // if the state was earlier waiting for more data,
+      // return the complete data now
       this.waitingForData = false;
       return [this.higherBits, data];
     }
 
+    // if the state was not in data-waiting state,
+    // now since it has received first set of 4 bits
+    // move it to the waiting state and store the higher bits
     this.higherBits = data;
     this.waitingForData = true;
     return [-1, -1];
   }
 
+  /**
+   * Returns if the state is waiting for more data
+   */
   isWaitingForMoreData() {
     return this.waitingForData;
   }
@@ -102,10 +125,17 @@ export class EightBitState implements BitState {
   constructor(lcd: LCD16X2) {
     this.lcd = lcd;
   }
+
+  /**
+   * LCD object
+   */
   lcd: LCD16X2;
 
   writeData: () => void;
 
+  /**
+   * Reads the data from the databuses
+   */
   readData(): [number, number] {
     let data = 0;
 
@@ -119,7 +149,12 @@ export class EightBitState implements BitState {
     return [(data >> 4) & 0b1111, data & 0b1111];
   }
 
+  /**
+   * Returns if the state is waiting for more data
+   */
   isWaitingForMoreData() {
+    // 8-bit mode never goes in to data-waiting mode,
+    // hence returning false
     return false;
   }
 }
@@ -130,8 +165,8 @@ export class EightBitState implements BitState {
 export interface DataDisplayState {
   displayData: (characterDisplayBytes: number[][]) => void;
   getFontSize: () => FontSize;
-  getGridRows: () => number;
-  getGridColumns: () => number;
+  getPixelRows: () => number;
+  getPixelColumns: () => number;
   getRows: () => number;
   getColumns: () => number;
   setNLines: (nLines: number) => void;
@@ -141,45 +176,76 @@ export interface DataDisplayState {
  * Font8x5 display class
  */
 export class Font8x5DisplayState implements DataDisplayState {
+  /**
+   * Map of character panel's name to the character panel
+   */
   characterPanels: any = {};
 
+  /**
+   * LCD object
+   */
   lcd: LCD16X2;
 
+  /**
+   * Number of lines in the lcd
+   */
   nLines: number;
 
   constructor(lcd: LCD16X2) {
     this.lcd = lcd;
   }
 
-  // TODO: To implement the following 4 functions for different size LCDS
+  // TODO: To implement the following 4 functions for different size LCDs
   // Currently it's only for 16x2 LCD
 
-  getGridRows() {
+  /**
+   * Returns the number of pixels' rows inside the character panel
+   */
+  getPixelRows() {
     return 8;
   }
-
-  getGridColumns() {
+  /**
+   * Returns the number of pixels' columns inside the character panel
+   */
+  getPixelColumns() {
     return 5;
   }
 
+  /**
+   * Returns the number of character panel's rows inside the lcd
+   */
   getRows() {
-    return 2;
+    return this.nLines;
   }
 
+  /**
+   * Returns the number of character panel's columns inside the lcd
+   */
   getColumns() {
     return 16;
   }
 
+  /**
+   * Sets the number of lines on the lcd
+   * @param nLines number of lines
+   */
   setNLines(nLines: number) {
     if (this.nLines !== nLines) {
       this.nLines = nLines;
     }
   }
 
+  /**
+   * Returns font size of the state
+   */
   getFontSize() {
     return FontSize._8x5;
   }
 
+  /**
+   * Displays the input data on the panel located at current ddram address of the lcd
+   * @param characterDisplayBytes array of bytes to be displayed on the current panel
+   */
   displayData(characterDisplayBytes: number[][]) {
     if (!this.lcd.isDisplayOn) {
       return;
@@ -194,10 +260,19 @@ export class Font8x5DisplayState implements DataDisplayState {
  * Font10x5 display class
  */
 export class Font10x5DisplayState implements DataDisplayState {
+  /**
+   * Map of character panel's name to the character panel
+   */
   characterPanels: any = {};
 
+  /**
+   * LCD object
+   */
   lcd: LCD16X2;
 
+  /**
+   * Number of lines in the lcd
+   */
   nLines: number;
 
   constructor(lcd: LCD16X2) {
@@ -213,26 +288,44 @@ export class Font10x5DisplayState implements DataDisplayState {
   // TODO: To implement the following 4 functions for different size LCDS
   // Currently it's only for 16x2 LCD
 
-  getGridRows() {
+  /**
+   * Returns the number of pixels' rows inside the character panel
+   */
+  getPixelRows() {
     return 10;
   }
-
-  getGridColumns() {
+  /**
+   * Returns the number of pixels' columns inside the character panel
+   */
+  getPixelColumns() {
     return 5;
   }
 
+  /**
+   * Returns the number of character panel's rows inside the lcd
+   */
   getRows() {
-    return 1;
+    return this.nLines;
   }
 
+  /**
+   * Returns the number of character panel's columns inside the lcd
+   */
   getColumns() {
     return 16;
   }
 
+  /**
+   * Returns font size of the state
+   */
   getFontSize() {
     return FontSize._10x5;
   }
 
+  /**
+   * Displays the input data on the panel located at current ddram address of the lcd
+   * @param characterDisplayBytes array of bytes to be displayed on the current panel
+   */
   displayData(characterDisplayBytes: number[][]) {
     if (!this.lcd.isDisplayOn) {
       return;

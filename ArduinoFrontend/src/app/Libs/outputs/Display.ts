@@ -556,8 +556,8 @@ export class LCD16X2 extends CircuitElement {
     let posX = this.data.startX;
     let posY = this.data.startY;
 
-    const gridRows = this.dataDisplayState.getGridRows();
-    const gridColumns = this.dataDisplayState.getGridColumns();
+    const gridRows = this.dataDisplayState.getPixelRows();
+    const gridColumns = this.dataDisplayState.getPixelColumns();
     const rows = this.dataDisplayState.getRows();
     const columns = this.dataDisplayState.getColumns();
 
@@ -570,7 +570,7 @@ export class LCD16X2 extends CircuitElement {
         const characterPanel = new LCDCharacterPanel([k, l], gridRows, gridColumns, posX, posY, this.x, this.y,
                                                       this.data.gridHeight, this.data.gridWidth,
                                                       this.data.barColor, this.data.barGlowColor, this.data.intraSpacing,
-                                                      this.displayStartIndex, this.displayEndIndex, [k, l], hidden);
+                                                      [k, l], hidden);
         this.characterPanels[characterPanel.index.join(':')] = characterPanel;
 
         posX = posX + this.getInterSpacingHorizontal();

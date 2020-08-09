@@ -230,163 +230,275 @@ export class LCDPixel {
 
 
 export class LCDCharacterPanel {
+  /**
+   * number of rows of children pixels
+   */
+  N_ROW: number;
 
-    N_ROW: number;
+  /**
+   * number of columns of children pixels
+   */
+  N_COLUMN: number;
 
-    N_COLUMN: number;
+  /**
+   * Position index of the character panel within the lcd
+   */
+  index: [number, number];
 
-    index: [number, number];
-    pixels: LCDPixel[][];
-    posX: number;
-    posY: number;
-    lcdX: number;
-    lcdY: number;
-    pixelWidth: number;
-    pixelHeight: number;
-    barColor: string;
-    barGlowColor: string;
-    intraSpacing: number;
-    lcdDisplayStartIndex: [number, number];
-    lcdDisplayEndIndex: [number, number];
-    displayIndex: [number, number];
-    hidden: boolean;
-    blinkFunction: any;
-    containsCursor: boolean;
+  /**
+   * Array of the chldren pixels
+   */
+  pixels: LCDPixel[][];
 
-    shift(distance: number) {
-        this.posX += distance;
-        this.shiftPixels(distance);
-    }
+  /**
+   * x-coordinate of the character panel wrt to the lcd
+   */
+  posX: number;
 
-    private shiftPixels(distance: number) {
-      for (let i = 0; i < this.N_ROW; i++) {
-        for (let j = 0; j < this.N_COLUMN; j++) {
-          this.pixels[i][j].shift(distance, this.hidden);
-        }
-      }
-    }
+  /**
+   * y-coordinate of the character panel wrt to the lcd
+   */
+  posY: number;
 
-    destroy() {
-      this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.destroy()));
-    }
+  /**
+   * x-coordinate of the lcd
+   */
+  lcdX: number;
 
-    initialiseLCDPixels() {
-      let tempRowsX: number;
-      let posX = this.posX;
-      let posY = this.posY;
+  /**
+   * y-coordinate of the lcd
+   */
+  lcdY: number;
 
-      this.pixels = [[]];
-      for (let i = 0; i < this.N_ROW; i++) {
-        tempRowsX = posX;
-        this.pixels[i] = [];
-        for (let j = 0; j < this.N_COLUMN; j++) {
-          this.pixels[i][j] = new LCDPixel(
-            this.index,
-            [i, j],
-            posX,
-            posY,
-            this.lcdX,
-            this.lcdY,
-            this.pixelWidth,
-            this.pixelHeight,
-            this.barColor,
-            this.barGlowColor
-          );
-          posX = posX + this.pixelWidth + this.intraSpacing;
-        }
-        posX = tempRowsX;
-        posY = posY + this.pixelHeight +  this.intraSpacing;
-      }
-    }
+  /**
+   * width of the children pixels
+   */
+  pixelWidth: number;
 
-    clear() {
-      this.changeCursorDisplay(false);
-      this.drawCharacter(LCDUtils.getBlankDisplayBytes());
-      this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.refresh()));
-      clearInterval(this.blinkFunction);
-    }
+  /**
+   * height of the children pixels
+   */
+  pixelHeight: number;
 
-    drawCharacter(characterDisplayBytes) {
-      let byte = null;
-      for (let i = 0; i < this.N_ROW - 1; i++) {
-        for (let j = 0; j < this.N_COLUMN; j++) {
-          try {
-            byte = characterDisplayBytes[i][j];
-          } catch (e) {
-            // if byte is absent for some reason, switch the pixel off
-            byte = 0;
-          }
-          this.pixels[i][j].switch(byte);
-        }
-      }
-    }
+  /**
+   * color of the children pixels when they're turned off
+   */
+  barColor: string;
 
-    changeCursorDisplay(show: boolean) {
-      if (this.containsCursor === show) {
-        return;
-      }
+  /**
+   * color of the children pixels when they're turned on
+   */
+  barGlowColor: string;
+
+  /**
+   * Horizontal/vertical spacing between the adjacent children pixels
+   */
+  intraSpacing: number;
+
+  /**
+   * Display index of the character panel on the lcd
+   */
+  displayIndex: [number, number];
+
+  /**
+   * Is the character panel out of view on the lcd
+   */
+  hidden: boolean;
+
+  /**
+   * variable to store the interval function during the blinking
+   */
+  blinkFunction: any;
+
+  /**
+   * does the panel contain the cursor?
+   */
+  containsCursor: boolean;
+
+  /**
+   * Constructor
+   * @param index index of the character panel
+   * @param N_ROW number of rows of pixels
+   * @param N_COLUMN number of columns of pixels
+   * @param posX x-coordinate of the character panel wrt to the lcd
+   * @param posY y-coordinate of the character panel wrt to the lcd
+   * @param lcdX x-coordinate of the lcd
+   * @param lcdY y-coordinate of the lcd
+   * @param pixelWidth width of the child pixel
+   * @param pixelHeight height of the child pixel
+   * @param barColor color of the children pixels when they're off
+   * @param barGlowColor color of the children pixels when they're on
+   * @param intraSpacing Horizontal/vertical space between each adjacent pixel
+   * @param displayIndex Display index of the character panel
+   * @param hidden Is the character panel hidden?
+   */
+  constructor(index: [number, number], N_ROW: number, N_COLUMN: number,
+              posX: number, posY: number, lcdX: number, lcdY: number,
+              pixelWidth: number, pixelHeight: number, barColor: string,
+              barGlowColor: string, intraSpacing: number,
+              displayIndex: [number, number], hidden: boolean) {
+    this.index = index;
+    this.N_ROW = N_ROW;
+    this.N_COLUMN = N_COLUMN;
+    this.posX = posX;
+    this.posY = posY;
+    this.lcdX = lcdX;
+    this.lcdY = lcdY;
+    this.pixelHeight = pixelHeight;
+    this.pixelWidth = pixelWidth;
+    this.barColor = barColor;
+    this.barGlowColor = barGlowColor;
+    this.intraSpacing = intraSpacing;
+    this.displayIndex = displayIndex;
+    this.hidden = hidden;
+    this.initialiseLCDPixels();
+  }
+
+  /**
+   * Shifts the panel by distance `distance`
+   * @param distance distance by which to move the panel
+   */
+  shift(distance: number) {
+      this.posX += distance;
+      this.shiftPixels(distance);
+  }
+
+  /**
+   * Shift the children pixels by distance `distance`
+   * @param distance distance by which to move the children pixels
+   */
+  private shiftPixels(distance: number) {
+    for (let i = 0; i < this.N_ROW; i++) {
       for (let j = 0; j < this.N_COLUMN; j++) {
-        this.pixels[this.N_ROW - 1][j].switch(show ? 1 : 0);
+        this.pixels[i][j].shift(distance, this.hidden);
       }
-      if (!show) {
-        clearInterval(this.blinkFunction);
-      }
-      this.containsCursor = show;
-    }
-
-    private blink() {
-      this.blinkFunction = setInterval(() => {
-        this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => {
-          if (pixel.blinkHidden) {
-            pixel.blinkOff();
-          } else {
-            pixel.blinkOn();
-          }
-        }));
-      }, 600);
-    }
-
-    setBlinking(value: boolean) {
-      if (value) {
-        this.blink();
-      } else if (this.blinkFunction) {
-          clearInterval(this.blinkFunction);
-          this.blinkFunction = null;
-          this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.blinkOff()));
-        }
-    }
-
-    getCanvasRepr(): any[] {
-      const canvasGrid = [];
-      for (const rowPixels of this.pixels) {
-        for (const pixel of rowPixels) {
-          canvasGrid.push(pixel.getCanvasRepr());
-        }
-      }
-      return canvasGrid;
-    }
-
-    constructor(index: [number, number], N_ROW: number, N_COLUMN: number,
-                posX: number, posY: number, lcdX: number, lcdY: number,
-                pixelWidth: number, pixelHeight: number, barColor: string,
-                barGlowColor: string, intraSpacing: number, lcdDisplayStartIndex: [number, number],
-                lcdDisplayEndIndex: [number, number], displayIndex: [number, number], hidden: boolean) {
-      this.index = index;
-      this.N_ROW = N_ROW;
-      this.N_COLUMN = N_COLUMN;
-      this.posX = posX;
-      this.posY = posY;
-      this.lcdX = lcdX;
-      this.lcdY = lcdY;
-      this.pixelHeight = pixelHeight;
-      this.pixelWidth = pixelWidth;
-      this.barColor = barColor;
-      this.barGlowColor = barGlowColor;
-      this.intraSpacing = intraSpacing;
-      this.lcdDisplayStartIndex = lcdDisplayStartIndex;
-      this.lcdDisplayEndIndex = lcdDisplayEndIndex;
-      this.displayIndex = displayIndex;
-      this.hidden = hidden;
-      this.initialiseLCDPixels();
     }
   }
+
+  /**
+   * Destroys the canvas of all the pixels inside the panel
+   */
+  destroy() {
+    this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.destroy()));
+  }
+
+  /**
+   * Initialises all the contained pixels
+   */
+  initialiseLCDPixels() {
+    let tempRowsX: number;
+    let posX = this.posX;
+    let posY = this.posY;
+
+    this.pixels = [[]];
+    for (let i = 0; i < this.N_ROW; i++) {
+      tempRowsX = posX;
+      this.pixels[i] = [];
+      for (let j = 0; j < this.N_COLUMN; j++) {
+        this.pixels[i][j] = new LCDPixel(
+          this.index,
+          [i, j],
+          posX,
+          posY,
+          this.lcdX,
+          this.lcdY,
+          this.pixelWidth,
+          this.pixelHeight,
+          this.barColor,
+          this.barGlowColor
+        );
+        posX = posX + this.pixelWidth + this.intraSpacing;
+      }
+      posX = tempRowsX;
+      posY = posY + this.pixelHeight +  this.intraSpacing;
+    }
+  }
+
+  /**
+   * Clears the panel by turning off all the pixels
+   */
+  clear() {
+    this.changeCursorDisplay(false);
+    this.drawCharacter(LCDUtils.getBlankDisplayBytes());
+    this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.refresh()));
+    clearInterval(this.blinkFunction);
+  }
+
+  /**
+   * Prints the bytes on the character panel
+   * @param characterDisplayBytes array of bytes to display on the panel
+   */
+  drawCharacter(characterDisplayBytes: number[][]) {
+    let byte = null;
+    for (let i = 0; i < this.N_ROW - 1; i++) {
+      for (let j = 0; j < this.N_COLUMN; j++) {
+        try {
+          byte = characterDisplayBytes[i][j];
+        } catch (e) {
+          // if byte is absent for some reason, switch the pixel off
+          byte = 0;
+        }
+        this.pixels[i][j].switch(byte);
+      }
+    }
+  }
+
+  /**
+   * Adds/remove the cursor display on the panel
+   * @param show true to add the cursor, false to remove it
+   */
+  changeCursorDisplay(show: boolean) {
+    if (this.containsCursor === show) {
+      return;
+    }
+    for (let j = 0; j < this.N_COLUMN; j++) {
+      this.pixels[this.N_ROW - 1][j].switch(show ? 1 : 0);
+    }
+    if (!show) {
+      clearInterval(this.blinkFunction);
+    }
+    this.containsCursor = show;
+  }
+
+  /**
+   * Starts blinking the panel
+   */
+  private blink() {
+    this.blinkFunction = setInterval(() => {
+      this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => {
+        if (pixel.blinkHidden) {
+          pixel.blinkOff();
+        } else {
+          pixel.blinkOn();
+        }
+      }));
+    }, 600);
+  }
+
+  /**
+   * Turns on/off blinking on the panel
+   * @param value true to turn on, false to turn off
+   */
+  setBlinking(value: boolean) {
+    if (value) {
+      this.blink();
+    } else if (this.blinkFunction) {
+        clearInterval(this.blinkFunction);
+        this.blinkFunction = null;
+        this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => pixel.blinkOff()));
+      }
+  }
+
+  /**
+   * Returns the Rafael canvas representation of the panel
+   */
+  getCanvasRepr(): any[] {
+    const canvasGrid = [];
+    for (const rowPixels of this.pixels) {
+      for (const pixel of rowPixels) {
+        canvasGrid.push(pixel.getCanvasRepr());
+      }
+    }
+    return canvasGrid;
+  }
+}
