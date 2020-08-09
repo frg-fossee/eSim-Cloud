@@ -1,6 +1,13 @@
 import { LCDUtils } from './LCDUtils';
-import { MathUtils } from '../../Utils';
-import { timingSafeEqual } from 'crypto';
+import chroma from 'chroma-js';
+import LRU from 'lru-cache';
+
+const COLOR_SCALING_MAP = new LRU({
+  max: 5000,
+  length(n, key) { return n * 2 + key.length; },
+  dispose(key, n) { n.close(); },
+  maxAge: 1000 * 60 * 60
+});
 
 /**
  * LCDPixel: Class prototype for the pixels inside a LCD Character panel
@@ -90,7 +97,8 @@ export class LCDPixel {
   blinkHidden = false;
 
   constructor(parentIndex: [number, number], index: [number, number], posX: number,
-              posY: number, lcdX: number, lcdY: number, width: number, height: number, dimColor: string, glowColor: string) {
+              posY: number, lcdX: number, lcdY: number, width: number, height: number,
+              dimColor: string, glowColor: string) {
     this.parentIndex = parentIndex;
     this.index = index;
     this.posX = posX;
@@ -106,6 +114,17 @@ export class LCDPixel {
     this.canvas = null;
     this.changesPending = false;
     this.hidden = false;
+  }
+
+  /**
+   * @param value color value
+   */
+  fillColor(color) {
+    if (this.canvas) {
+      this.canvas.attr({
+        fill: color
+      });
+    }
   }
 
   /**
@@ -316,6 +335,11 @@ export class LCDCharacterPanel {
   containsCursor: boolean;
 
   /**
+   * contrast of the lcd
+   */
+  contrast = 100;
+
+  /**
    * Constructor
    * @param index index of the character panel
    * @param N_ROW number of rows of pixels
@@ -331,12 +355,13 @@ export class LCDCharacterPanel {
    * @param intraSpacing Horizontal/vertical space between each adjacent pixel
    * @param displayIndex Display index of the character panel
    * @param hidden Is the character panel hidden?
+   * @param contrast contrast of the lcd
    */
   constructor(index: [number, number], N_ROW: number, N_COLUMN: number,
               posX: number, posY: number, lcdX: number, lcdY: number,
               pixelWidth: number, pixelHeight: number, barColor: string,
               barGlowColor: string, intraSpacing: number,
-              displayIndex: [number, number], hidden: boolean) {
+              displayIndex: [number, number], hidden: boolean, contrast: number) {
     this.index = index;
     this.N_ROW = N_ROW;
     this.N_COLUMN = N_COLUMN;
@@ -351,7 +376,30 @@ export class LCDCharacterPanel {
     this.intraSpacing = intraSpacing;
     this.displayIndex = displayIndex;
     this.hidden = hidden;
+    this.contrast = contrast;
     this.initialiseLCDPixels();
+  }
+
+  /**
+   * changes the contrast of the character panel
+   * @param value contrast value between 0 and 100
+   */
+  setContrast(value) {
+    this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => {
+      const currentColor = pixel.getColor();
+      let newColorScale = COLOR_SCALING_MAP.get(currentColor);
+
+      if (!newColorScale) {
+        newColorScale = chroma.scale([this.barColor, currentColor]);
+        COLOR_SCALING_MAP.set(currentColor, newColorScale);
+      }
+
+      const newColor = newColorScale(value / 100).hex();
+
+      if (newColor !== currentColor) {
+        pixel.fillColor(newColor);
+      }
+    }));
   }
 
   /**

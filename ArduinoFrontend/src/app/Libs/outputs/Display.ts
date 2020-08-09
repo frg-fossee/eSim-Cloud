@@ -5,25 +5,28 @@ import {
   FourBitState, EightBitState,
   WriteDataProcessingMode, ReadDataProcessingMode,
   RegisterState, DataRegisterState, InstructionRegisterState,
-  ActiveAddress,
+  ActiveAddress, RegisterType, DataMode,
 } from './LCD/LCDStates';
 import _ from 'lodash';
 import { LCDCharacterPanel } from './LCD/LCDPanel';
 import { DDRAM, CGROM, CGRAM, RAM } from './LCD/MemorySchema';
-import { MathUtils } from '../Utils';
-
-enum RegisterType {
-  Instruction = 0, Data = 1
-}
-
-enum DataMode {
-  Write = 0, Read = 1
-}
+import { MathUtils } from '../MathUtils';
+import { ArduinoUno } from './Arduino';
 
 /**
  * LCD16X2 Class
  */
 export class LCD16X2 extends CircuitElement {
+  /**
+   * The Connected Arduino
+   */
+  arduino: CircuitElement = null;
+
+  /**
+   * Variable to state if the LCD is connected properly or not.
+   */
+  connected = true;
+
   /**
    * Map of pin name to Circuit Node
    */
@@ -33,6 +36,11 @@ export class LCD16X2 extends CircuitElement {
    * Previous value at the `E` node
    */
   previousEValue = 0;
+
+  /**
+   * Previous value at `V0` node
+   */
+  previousV0Value = 0;
 
   isDisplayOn = false;
 
@@ -229,16 +237,23 @@ export class LCD16X2 extends CircuitElement {
   }
 
   /**
+   * Gets the voltage input at V0 node
+   */
+  getV0(): number {
+    return this.pinNamedMap['V0'].value;
+  }
+
+  /**
    * Gets the current register type of the lcd
    */
-  private getRegisterType(): RegisterType {
+  getRegisterType(): RegisterType {
     return this.pinNamedMap['RS'].value & 1;
   }
 
   /**
    * Gets the data mode of the lcd
    */
-  private getDataMode(): DataMode {
+  getDataMode(): DataMode {
     return this.pinNamedMap['RW'].value & 1;
   }
 
@@ -365,8 +380,25 @@ export class LCD16X2 extends CircuitElement {
   }
 
   /**
+   * event listener for node 'V0
+   * @param newValue new value at node 'V0'
+   * @param prevValue previous value at node 'V0'
+   */
+  v0Listener(newValue, prevValue) {
+    if (prevValue !== newValue) {
+      let newContrast = newValue / this.getVCC() * 100;
+
+      // bounding the value between 0 and 100
+      newContrast = Math.min(100, newContrast);
+      newContrast = Math.max(0, newContrast);
+      Object.values(this.characterPanels).forEach(panel => panel.setContrast(newContrast));
+    }
+    // prevValue = newValue;
+  }
+
+  /**
    * event listener for node `E`
-   * @param newValue at the node `E`
+   * @param newValue new value at the node `E`
    */
   eSignalListener(newValue) {
     const vcc = this.getVCC();
@@ -489,8 +521,8 @@ export class LCD16X2 extends CircuitElement {
     this.isCursorPositionCharBlinkOn = false;
 
     // Initialising data display state
-    this.font8x5DisplayState = new Font8x5DisplayState(this);
-    this.font10x5DisplayState = new Font10x5DisplayState(this);
+    this.font8x5DisplayState = new Font8x5DisplayState(this, 2);
+    this.font10x5DisplayState = new Font10x5DisplayState(this, 1);
     this.dataDisplayState = this.font8x5DisplayState;
 
     // Initialising data processing state
@@ -536,10 +568,16 @@ export class LCD16X2 extends CircuitElement {
     this.shiftDisplay(offset);
   }
 
+  /**
+   * Generates the DDRAM for the LCD
+   */
   createDdRam() {
     this.ddRam = DDRAM.createDDRAMForLCD(this.dataDisplayState.getRows());
   }
 
+  /**
+   * Generates the CGROM for the LCD
+   */
   createCgRom() {
     this.cgRom = new CGROM(this.dataDisplayState.getFontSize());
   }
@@ -550,34 +588,27 @@ export class LCD16X2 extends CircuitElement {
   generateCharacterPanels() {
     Object.values(this.characterPanels).forEach(panel => panel.destroy());
 
-    let tempX: number;
-    let tempY: number;
-    let tempColumnsY: number;
-    let posX = this.data.startX;
-    let posY = this.data.startY;
+    const posX = this.data.startX;
+    const posY = this.data.startY;
 
+    // Getting the number of pixel/panel rows, columns from the active data display state
     const gridRows = this.dataDisplayState.getPixelRows();
     const gridColumns = this.dataDisplayState.getPixelColumns();
     const rows = this.dataDisplayState.getRows();
     const columns = this.dataDisplayState.getColumns();
 
     for (let k = 0; k < this.ddRam.N_ROW; k++) { // Rows: 1
-      tempX = posX;
-      tempY = posY;
       for (let l = 0; l < this.ddRam.N_COLUMN; l++) { // Columns: 16 (Characters)
-        tempColumnsY = posY;
+        const panelPosX = posX + l * this.getInterSpacingHorizontal();
+        const panelPosY = posY + k * this.getInterSpacingVertical();
+
         const hidden = k >= rows || l >= columns;
-        const characterPanel = new LCDCharacterPanel([k, l], gridRows, gridColumns, posX, posY, this.x, this.y,
+        const characterPanel = new LCDCharacterPanel([k, l], gridRows, gridColumns, panelPosX, panelPosY, this.x, this.y,
                                                       this.data.gridHeight, this.data.gridWidth,
                                                       this.data.barColor, this.data.barGlowColor, this.data.intraSpacing,
-                                                      [k, l], hidden);
+                                                      [k, l], hidden, 100);
         this.characterPanels[characterPanel.index.join(':')] = characterPanel;
-
-        posX = posX + this.getInterSpacingHorizontal();
-        posY = tempColumnsY;
       }
-      posY = tempY + this.getInterSpacingVertical();
-      posX = tempX;
     } // Row ends
   }
 
@@ -601,6 +632,7 @@ export class LCD16X2 extends CircuitElement {
 
     // adding listeners to E listener
     this.pinNamedMap['E'].addValueListener(this.eSignalListener.bind(this));
+    // this.pinNamedMap['V0'].addValueListener(this.v0Listener.bind(this));
   }
 
   /** Simulation Logic */
@@ -612,6 +644,31 @@ export class LCD16X2 extends CircuitElement {
    * Called on Start Simulation
    */
   initSimulation(): void {
+    // Check connection
+
+    // Get the V0 pin
+    let connectedPin = null;
+    const v0Pin = this.nodes[2];
+
+    if (v0Pin.connectedTo.start && v0Pin.connectedTo.start.parent.keyName === 'ArduinoUno') {
+      this.arduino = v0Pin.connectedTo.start.parent;
+      connectedPin = v0Pin.connectedTo.start;
+    }
+
+    if (this.arduino === null && v0Pin.connectedTo.end && v0Pin.connectedTo.end.parent.keyName === 'ArduinoUno') {
+      this.arduino = v0Pin.connectedTo.end.parent;
+      connectedPin = v0Pin.connectedTo.end;
+    } else {
+      window['showToast']('Arduino Not Found!');
+      this.connected = false;
+      return;
+    }
+
+    this.connected = true;
+
+    // Add PWM event on arduino
+    (this.arduino as ArduinoUno).addServo(connectedPin, this.v0Listener.bind(this));
+
   }
   /**
    * Called on Stop Simulation

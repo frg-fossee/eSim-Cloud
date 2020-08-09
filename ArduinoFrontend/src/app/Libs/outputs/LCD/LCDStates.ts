@@ -7,6 +7,20 @@ export enum ActiveAddress {
 }
 
 /**
+ * Register type enum for the LCD
+ */
+export enum RegisterType {
+  Instruction = 0, Data = 1
+}
+
+/**
+ * DataMode type enum for the LCD
+ */
+export enum DataMode {
+  Write = 0, Read = 1
+}
+
+/**
  * Data processor interface
  */
 export interface DataProcessingMode {
@@ -35,6 +49,7 @@ export class ReadDataProcessingMode implements DataProcessingMode {
   lcd: LCD16X2;
 
   processData() {
+    // if (this.lcd.getRegisterType() === RegisterType)
     console.log('Read data processing.');
   }
 
@@ -191,8 +206,9 @@ export class Font8x5DisplayState implements DataDisplayState {
    */
   nLines: number;
 
-  constructor(lcd: LCD16X2) {
+  constructor(lcd: LCD16X2, nLines: number) {
     this.lcd = lcd;
+    this.nLines = nLines;
   }
 
   // TODO: To implement the following 4 functions for different size LCDs
@@ -275,8 +291,9 @@ export class Font10x5DisplayState implements DataDisplayState {
    */
   nLines: number;
 
-  constructor(lcd: LCD16X2) {
+  constructor(lcd: LCD16X2, nLines: number) {
     this.lcd = lcd;
+    this.nLines = nLines;
   }
 
   setNLines(nLines: number) {
