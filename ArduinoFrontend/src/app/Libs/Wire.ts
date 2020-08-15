@@ -156,9 +156,9 @@ export class Wire {
         pathArray.push(`L${this.points[i][0]},${this.points[i][1]}`);
       }
       pathArray.push(`L${x},${y}`);
+
       // Update path
       const path = pathArray.join(' ');
-      // this.element = this.canvas.path(path);
       this.element.attr('path', path);
     } else {
       // Draw a line
