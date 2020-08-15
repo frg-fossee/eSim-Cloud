@@ -647,27 +647,27 @@ export class LCD16X2 extends CircuitElement {
     // Check connection
 
     // Get the V0 pin
-    let connectedPin = null;
-    const v0Pin = this.nodes[2];
+    // let connectedPin = null;
+    // const v0Pin = this.nodes[2];
 
-    if (v0Pin.connectedTo.start && v0Pin.connectedTo.start.parent.keyName === 'ArduinoUno') {
-      this.arduino = v0Pin.connectedTo.start.parent;
-      connectedPin = v0Pin.connectedTo.start;
-    }
+    // if (v0Pin.connectedTo.start && v0Pin.connectedTo.start.parent.keyName === 'ArduinoUno') {
+    //   this.arduino = v0Pin.connectedTo.start.parent;
+    //   connectedPin = v0Pin.connectedTo.start;
+    // }
 
-    if (this.arduino === null && v0Pin.connectedTo.end && v0Pin.connectedTo.end.parent.keyName === 'ArduinoUno') {
-      this.arduino = v0Pin.connectedTo.end.parent;
-      connectedPin = v0Pin.connectedTo.end;
-    } else {
-      window['showToast']('Arduino Not Found!');
-      this.connected = false;
-      return;
-    }
+    // if (this.arduino === null && v0Pin.connectedTo.end && v0Pin.connectedTo.end.parent.keyName === 'ArduinoUno') {
+    //   this.arduino = v0Pin.connectedTo.end.parent;
+    //   connectedPin = v0Pin.connectedTo.end;
+    // } else {
+    //   window['showToast']('Arduino Not Found!');
+    //   this.connected = false;
+    //   return;
+    // }
 
-    this.connected = true;
+    // this.connected = true;
 
-    // Add PWM event on arduino
-    (this.arduino as ArduinoUno).addServo(connectedPin, this.v0Listener.bind(this));
+    // // Add PWM event on arduino
+    // (this.arduino as ArduinoUno).addServo(connectedPin, this.v0Listener.bind(this));
 
   }
   /**
