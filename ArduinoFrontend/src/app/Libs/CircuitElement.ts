@@ -149,7 +149,7 @@ export abstract class CircuitElement {
             item.height
           );
       } else if (item.type === 'path') {
-        this.DrawPath(canvas, item);
+        element = this.DrawPath(canvas, item);
       } else if (item.type === 'rectangle') {
         // Draw rectangle
         element = canvas.rect(
@@ -173,7 +173,7 @@ export abstract class CircuitElement {
             stroke: item.stroke || 'none'
           });
       } else if (item.type === 'polygon') {
-        this.DrawPolygon(canvas, item);
+        element = this.DrawPolygon(canvas, item);
       }
       this.elements.push(element);
       elementsDrawn.push(element);
@@ -195,13 +195,11 @@ export abstract class CircuitElement {
       tmp += `${this.x + point[0]},${this.y + point[1]}L`;
     }
     tmp = tmp.substr(0, tmp.length - 1) + 'z';
-    const element = canvas.path(tmp)
+    return canvas.path(tmp)
                   .attr({
                     fill: item.fill || 'none',
                     stroke: item.stroke || 'none'
                   });
-    this.elements.push(element);
-    return element;
   }
   /**
    * Draw a Path
@@ -224,13 +222,11 @@ export abstract class CircuitElement {
     str = this.calcRelative(str, horizontal, canvas);
     str = this.calcRelative(str, vertical, canvas);
     str = this.calcRelative(str, sCurve, canvas);
-    const element = canvas.path(str)
+    return canvas.path(str)
                     .attr({
                       fill: item.fill || 'none',
                       stroke: item.stroke || 'none'
                     });
-    this.elements.push(element);
-    return element;
   }
   /**
    * Draw path relative to the component
