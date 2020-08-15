@@ -58,7 +58,7 @@ export class Wire {
   }
 
   /**
-   *
+   * Adds a new coordinate (x, y) to the wire
    * @param x x-coordinate of cursor
    * @param y y-coordinate of cursor
    * @param isPerpendicular is the point to be drawn perpendicular
@@ -75,7 +75,7 @@ export class Wire {
 
     this.add(newX, newY);
 
-    // draw the line to previous point to cursor's current position
+    // draw the line from the previous point to cursor's current position
     if (isPerpendicular) {
       this.drawPerpendicular(x, y);
     } else {
