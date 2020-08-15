@@ -264,7 +264,7 @@ export class Workspace {
       // if selected item is wire and it is not connected then add the point
       if (window.Selected.end == null) {
         const pt = Workspace.svgPoint(event.clientX, event.clientY);
-        window.Selected.add(pt.x, pt.y);
+        window.Selected.addPoint(pt.x, pt.y, event.shiftKey);
         return;
       }
     }
@@ -284,15 +284,26 @@ export class Workspace {
   static click(event: MouseEvent) {
   }
   /**
+   * Returns true if current selected item is wire
+   */
+  private static isWireSelected(): boolean {
+    return window['isSelected'] && (window['Selected'] instanceof Wire);
+  }
+
+  /**
    * Event Listener for mouseMove on html body
    * @param event MouseMove
    */
   static mouseMove(event: MouseEvent) {
     event.preventDefault();
     // if wire is selected then draw temporary lines
-    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+    if (Workspace.isWireSelected()) {
       const pt = Workspace.svgPoint(event.clientX - 2, event.clientY - 2);
-      window.Selected.draw(pt.x, pt.y);
+      if (event.shiftKey) {
+        window.Selected.drawPerpendicular(pt.x, pt.y);
+      } else {
+        window.Selected.draw(pt.x, pt.y);
+      }
     } else {
       // deselect item
       if (window.Selected && window.Selected.deselect) {
@@ -399,12 +410,19 @@ export class Workspace {
     const pt = Workspace.svgPoint(event.clientX, event.clientY);
     Workspace.addComponent(className, pt.x, pt.y, 0, 0);
   }
+
   /**
    * Key down event on workspace.
    * @param event Keyboard Event
    */
   static keyDown(event: KeyboardEvent) {
+    if (event.shiftKey) {
+      if (Workspace.isWireSelected()) {
+        window.Selected.togglePerpendicularLine(true);
+      }
+    }
   }
+
   /**
    * Key Press event on workspace.
    * @param event Keyboard Event
@@ -445,6 +463,11 @@ export class Workspace {
     }
     if (event.key === 'F5') {
       // TODO: Start Simulation
+    }
+    if (event.key === 'Shift') {
+      if (Workspace.isWireSelected()) {
+        window.Selected.togglePerpendicularLine(false);
+      }
     }
   }
   /**

@@ -40,6 +40,10 @@ export class Wire {
    * Id of the Wire
    */
   id: number;
+  /**
+   * Temporary point (which was used to draw perpendicular last time) of the wire while in drawing status
+   */
+  lastTempPoint: [number, number];
 
   /**
    * Constructor of wire
@@ -54,28 +58,113 @@ export class Wire {
   }
 
   /**
+   *
+   * @param x x-coordinate of cursor
+   * @param y y-coordinate of cursor
+   * @param isPerpendicular is the point to be drawn perpendicular
+   */
+  addPoint(x: number, y: number, isPerpendicular = false) {
+    let newX = x;
+    let newY = y;
+
+    if (isPerpendicular) {
+      const n = this.points.length;
+      const [previousX, previousY] = this.points[n - 1];
+      [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
+    }
+
+    this.add(newX, newY);
+
+    // draw the line to previous point to cursor's current position
+    if (isPerpendicular) {
+      this.drawPerpendicular(x, y);
+    } else {
+      this.draw(x, y);
+    }
+  }
+
+  /**
+   * Makes the current temporary line perpendicular depending on current x and y
+   */
+  togglePerpendicularLine(toggle: boolean) {
+    const currentPathAttrs = this.element.attrs.path;
+    const n = currentPathAttrs.length;
+    const [x, y] = currentPathAttrs[n - 1].slice(1);
+
+    let newX = null;
+    let newY = null;
+
+    if (toggle) {
+      // if toggle is true, draw perpendicular lines
+      const [previousX, previousY] = currentPathAttrs[n - 2].slice(1);
+      [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
+    } else {
+      [newX, newY] = this.lastTempPoint;
+    }
+
+    this.drawWire(newX, newY);
+  }
+
+  /**
+   * draws perpendicular lines based on current x, y coordinates
+   * @param x x-coordinate of cursor
+   * @param y y-coordinate of cursor
+   */
+  drawPerpendicular(x: number, y: number) {
+    this.lastTempPoint = [x, y];
+    const n = this.points.length;
+    const [previousX, previousY] = this.points[n - 1];
+    const [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
+    this.drawWire(newX, newY);
+  }
+
+  /**
+   * Draws wire to (x, y)
+   * @param x x-coordinate
+   * @param y y-coordiante
+   */
+  draw(x: number, y: number) {
+    this.lastTempPoint = [x, y];
+    this.drawWire(x, y);
+  }
+
+  /**
+   * Returns x, y for perpendicular lines
+   * @param x current x-coordinate
+   * @param y current y-coordinate
+   * @param previousX previous x-coordinate
+   * @param previousY previous y-coordinate
+   */
+  private getPerpendicularXY(x: number, y: number, previousX: number, previousY: number) {
+    const delX = Math.abs(x - previousX);
+    const delY = Math.abs(y - previousY);
+    return (delX > delY) ? [x, previousY] : [previousX, y];
+  }
+
+  /**
    *  Draws wire on the canvas
    * @param x x position of point
    * @param y y position of point
    */
-  draw(x: number, y: number) {
+  private drawWire(x: number, y: number) {
     // remove the wire
-    if (this.element) {
-      this.element.remove();
-    }
-
     if (this.points.length > 1) {
       // Move to First point
-      let inp = 'M' + this.points[0][0] + ',' + this.points[0][1] + ' ';
+      const pathArray = [`M${this.points[0][0]},${this.points[0][1]}`];
       // Draw lines to other points
       for (let i = 1; i < this.points.length; ++i) {
-        inp += 'L' + this.points[i][0] + ',' + this.points[i][1] + ' ';
+        pathArray.push(`L${this.points[i][0]},${this.points[i][1]}`);
       }
-      inp += x + ',' + y;
+      pathArray.push(`L${x},${y}`);
       // Update path
-      this.element = this.canvas.path(inp);
+      const path = pathArray.join(' ');
+      // this.element = this.canvas.path(path);
+      this.element.attr('path', path);
     } else {
       // Draw a line
+      if (this.element) {
+        this.element.remove();
+      }
       this.element = this.canvas.path('M' + this.points[0][0] + ',' + this.points[0][1] + 'L' + x + ',' + y);
     }
   }
@@ -85,7 +174,7 @@ export class Wire {
    * @param x x position
    * @param y y position
    */
-  add(x: number, y: number) {
+  private add(x: number, y: number) {
     this.points.push([x, y]);
   }
   /**
