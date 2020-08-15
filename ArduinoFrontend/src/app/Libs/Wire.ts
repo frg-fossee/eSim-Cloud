@@ -85,6 +85,8 @@ export class Wire {
 
   /**
    * Makes the current temporary line perpendicular depending on current x and y
+   * @param toggle: true to draw perpendicular line upto current cursor's position
+   * false to undo the current perpendicular status
    */
   togglePerpendicularLine(toggle: boolean) {
     const currentPathAttrs = this.element.attrs.path;
