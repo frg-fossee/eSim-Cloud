@@ -33,6 +33,8 @@ import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { HeaderComponent } from './header/header.component';
 import { ViewProjectComponent } from './view-project/view-project.component';
+import { AlertModalComponent } from './alert/alert-modal/alert-modal.component';
+import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.component';
 
 /**
  * Monaco OnLoad Function
@@ -63,6 +65,8 @@ const monacoConfig: NgxMonacoEditorConfig = {
     GalleryComponent,
     ViewProjectComponent,
     HeaderComponent,
+    AlertModalComponent,
+    ConfirmModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -85,7 +89,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent],
+  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent, ConfirmModalComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

@@ -10,12 +10,13 @@ def extract_data_from_ngspice_output(pathToFile):
     try:
         with open(pathToFile, 'r') as f:
             f_contents = f.readlines()
-            graph = True
+            graph = False
 
             curernt_headers = []
             total_number_of_tables = 0
-            if('=' in f_contents[0]):
-                graph = False
+            if(len(f_contents) > 3):
+                if('---' in f_contents[2]):
+                    graph = True
 
             if(not graph):
                 json_data = {"data": [], "graph": "false"}
