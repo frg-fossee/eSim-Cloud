@@ -149,7 +149,7 @@ export abstract class CircuitElement {
             item.height
           );
       } else if (item.type === 'path') {
-        element = this.DrawPath(canvas, item);
+        this.DrawPath(canvas, item);
       } else if (item.type === 'rectangle') {
         // Draw rectangle
         element = canvas.rect(
@@ -173,7 +173,7 @@ export abstract class CircuitElement {
             stroke: item.stroke || 'none'
           });
       } else if (item.type === 'polygon') {
-        element = this.DrawPolygon(canvas, item);
+        this.DrawPolygon(canvas, item);
       }
       this.elements.push(element);
       elementsDrawn.push(element);
