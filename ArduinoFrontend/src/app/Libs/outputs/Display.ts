@@ -273,7 +273,7 @@ export class LCD16X2 extends CircuitElement {
     this.dataProcessingMode = dataMode === DataMode.Read ? this.readDataMode : this.writeDataMode;
   }
 
-  private setBusyFlag(value: boolean): void{
+  private setBusyFlag(value: boolean): void {
     this.busyFlag = value;
   }
 
@@ -386,14 +386,13 @@ export class LCD16X2 extends CircuitElement {
    */
   v0Listener(newValue, prevValue) {
     if (prevValue !== newValue) {
-      let newContrast = newValue / this.getVCC() * 100;
+      let newContrast = newValue / 500 * 100;
 
       // bounding the value between 0 and 100
       newContrast = Math.min(100, newContrast);
       newContrast = Math.max(0, newContrast);
       Object.values(this.characterPanels).forEach(panel => panel.setContrast(newContrast));
     }
-    // prevValue = newValue;
   }
 
   /**
@@ -647,27 +646,31 @@ export class LCD16X2 extends CircuitElement {
     // Check connection
 
     // Get the V0 pin
-    // let connectedPin = null;
-    // const v0Pin = this.nodes[2];
+    let connectedPin = null;
+    const v0Pin = this.nodes[2];
 
-    // if (v0Pin.connectedTo.start && v0Pin.connectedTo.start.parent.keyName === 'ArduinoUno') {
-    //   this.arduino = v0Pin.connectedTo.start.parent;
-    //   connectedPin = v0Pin.connectedTo.start;
-    // }
+    if (!v0Pin.connectedTo) {
+      return;
+    }
 
-    // if (this.arduino === null && v0Pin.connectedTo.end && v0Pin.connectedTo.end.parent.keyName === 'ArduinoUno') {
-    //   this.arduino = v0Pin.connectedTo.end.parent;
-    //   connectedPin = v0Pin.connectedTo.end;
-    // } else {
-    //   window['showToast']('Arduino Not Found!');
-    //   this.connected = false;
-    //   return;
-    // }
+    if (v0Pin.connectedTo.start && v0Pin.connectedTo.start.parent.keyName === 'ArduinoUno') {
+      this.arduino = v0Pin.connectedTo.start.parent;
+      connectedPin = v0Pin.connectedTo.start;
+    }
 
-    // this.connected = true;
+    if (this.arduino === null && v0Pin.connectedTo.end && v0Pin.connectedTo.end.parent.keyName === 'ArduinoUno') {
+      this.arduino = v0Pin.connectedTo.end.parent;
+      connectedPin = v0Pin.connectedTo.end;
+    } else {
+      window['showToast']('Arduino Not Found!');
+      this.connected = false;
+      return;
+    }
 
-    // // Add PWM event on arduino
-    // (this.arduino as ArduinoUno).addServo(connectedPin, this.v0Listener.bind(this));
+    this.connected = true;
+
+    // Add PWM event on arduino
+    (this.arduino as ArduinoUno).addPWM(connectedPin, this.v0Listener.bind(this));
 
   }
   /**
@@ -675,6 +678,7 @@ export class LCD16X2 extends CircuitElement {
    */
   closeSimulation(): void {
     // this.elements.remove();
+    this.arduino = null;
     this.reset();
   }
 }

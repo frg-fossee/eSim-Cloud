@@ -96,6 +96,11 @@ export class LCDPixel {
    */
   blinkHidden = false;
 
+  /**
+   * Contrast of the pixel
+   */
+  contrast = 100;
+
   constructor(parentIndex: [number, number], index: [number, number], posX: number,
               posY: number, lcdX: number, lcdY: number, width: number, height: number,
               dimColor: string, glowColor: string) {
@@ -124,6 +129,15 @@ export class LCDPixel {
       this.canvas.attr({
         fill: color
       });
+    }
+  }
+
+  setContrast(value) {
+    const currentColor = this.getColor();
+    this.contrast = value;
+    const newColor = this.getColor();
+    if (newColor !== currentColor) {
+      this.fillColor(newColor);
     }
   }
 
@@ -166,10 +180,26 @@ export class LCDPixel {
   }
 
   /**
-   * get the color of the pixel
+   * get the raw color of the pixel
    */
-  getColor() {
+  getRawColor() {
     return this.isOn ? this.glowColor : this.dimColor;
+  }
+
+  /**
+   * gets contrast-adjust color
+   */
+  getColor(rawColor?: string) {
+    rawColor = rawColor || this.getRawColor();
+    let newColorScale = COLOR_SCALING_MAP.get(rawColor);
+
+    if (!newColorScale) {
+      newColorScale = chroma.scale([this.dimColor, rawColor]);
+      COLOR_SCALING_MAP.set(rawColor, newColorScale);
+    }
+
+    const newColor = newColorScale(this.contrast / 100).hex();
+    return newColor;
   }
 
   /**
@@ -216,7 +246,7 @@ export class LCDPixel {
   blinkOn() {
     this.blinkHidden = true;
     this.canvas.attr({
-      fill: '#000'
+      fill: this.getColor(this.glowColor)
     });
   }
 
@@ -386,19 +416,7 @@ export class LCDCharacterPanel {
    */
   setContrast(value) {
     this.pixels.forEach(pixelRow => pixelRow.forEach(pixel => {
-      const currentColor = pixel.getColor();
-      let newColorScale = COLOR_SCALING_MAP.get(currentColor);
-
-      if (!newColorScale) {
-        newColorScale = chroma.scale([this.barColor, currentColor]);
-        COLOR_SCALING_MAP.set(currentColor, newColorScale);
-      }
-
-      const newColor = newColorScale(value / 100).hex();
-
-      if (newColor !== currentColor) {
-        pixel.fillColor(newColor);
-      }
+      pixel.setContrast(value);
     }));
   }
 
