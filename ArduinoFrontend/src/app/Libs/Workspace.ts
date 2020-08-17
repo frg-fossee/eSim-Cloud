@@ -420,9 +420,15 @@ export class Workspace {
       return;
     }
     // console.log([event.ctrlKey, event.key]);
-    if (event.key === 'Delete') {
+    if (event.key === 'Delete' || event.key === 'Backspace') {
       // Backspace or Delete
       Workspace.DeleteComponent();
+    }
+    if (event.key === 'Escape') {
+      // terminate current wire connection if in progress
+      if (window.Selected instanceof Wire && !window.Selected.isConnected()) {
+        Workspace.DeleteComponent();
+      }
     }
     if (event.ctrlKey && (event.key === 'c' || event.key === 'C')) {
       // Copy
