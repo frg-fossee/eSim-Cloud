@@ -40,7 +40,7 @@ If you just want to report a bug in our system or want to suggest a new feature 
 * We use GitHub Actions for continuous integrations that runs linting and testing operations.
 * There might be some changes to the original repository which will not reflect in your forked repository automatically. If you want to update it, sync it using the steps given in the link: https://help.github.com/articles/syncing-a-fork/
 
-### Step 4: Make a pull request
+## Step 4: Make a pull request
 * When you feel that you are ready to merge your contributions into our repository, create a pull request.
 * Select an appropriate label from the list E.g. enhancement, bug fix, etc.
 * Please go through the [pull request guidelines](guidelines-checklist/pullrequest-guidelines.md).
