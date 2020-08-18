@@ -8,6 +8,6 @@ Contributing
     :glob:
 
     Contributing.rst
-    Guidelines.rst
+    ContributingGuidelines.rst
     NewIssue.rst
     PullRequest.rst
