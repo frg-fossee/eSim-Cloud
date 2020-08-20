@@ -1,8 +1,9 @@
 # eSim and Arduino on Cloud
 
-[![CodeFactor](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud/badge)](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud)
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
 [![Discord](https://discordapp.com/api/guilds/737767491266281583/widget.png?style=shield)](https://discord.gg/cZbDD8K)
+
+[![CodeFactor](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud/badge)](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-important)](https://img.shields.io/badge/PRs-welcome-important)
 ![Django Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Django%20Build%20and%20Tests/badge.svg?branch=develop)
 ![Angular Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Angular%20Build%20and%20Tests/badge.svg?branch=develop)
@@ -23,15 +24,12 @@ This system allows the users to drag and drop Arduino components from the left p
 ![Arduino Demo](demo/demo-arduino.gif)
 
 ## Installation
-Docker and docker-compose will be required for production and development environments. 
 
-### Install Docker, Docker-compose, clone repo
-https://docs.docker.com/get-docker/
-
-https://docs.docker.com/compose/install/
-
-```git clone https://github.com/frg-fossee/eSim-Cloud.git```
-
+### Basic Setup
+* [Docker](https://docs.docker.com/get-docker/) and [docker-compose](https://docs.docker.com/compose/install/) will be required for production and development environments. 
+* Make sure that you install both of them specific to your OS and version (Linux, Windows, Mac)
+* ```git clone https://github.com/frg-fossee/eSim-Cloud.git```
+* ```cd eSim-Cloud```
 
 ### Production Environment
 * Setup env (Change default credentials)
