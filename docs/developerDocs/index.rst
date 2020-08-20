@@ -8,3 +8,4 @@ Developer docs
     :glob:
 
     apidocs.rst
+    dbswitch.rst
