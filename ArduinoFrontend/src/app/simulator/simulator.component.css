@@ -19,6 +19,13 @@
   stroke-opacity: 0 !important;
 }
 
+.mynode.highlight {
+  fill: #f00 !important;
+  stroke: black !important;
+  fill-opacity: 1 !important;
+  stroke-opacity: 1 !important;
+}
+
 .grabbing {
   cursor: grabbing !important;
   cursor: -moz-grabbing !important;

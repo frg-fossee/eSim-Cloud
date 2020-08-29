@@ -161,7 +161,14 @@ export class Wire {
 
       // Update path
       const path = pathArray.join(' ');
-      this.element.attr('path', path);
+
+      if (this.element) {
+        // if element is already present, update its path.
+        this.element.attr('path', path);
+      } else {
+        // else create a new path
+        this.element = this.canvas.path(path);
+      }
     } else {
       // Draw a line
       if (this.element) {

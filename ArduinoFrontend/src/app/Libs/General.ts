@@ -1,5 +1,27 @@
 import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
+import { areBoundingBoxesIntersecting } from './RaphaelUtils';
+import _ from 'lodash';
+import { Wire } from './Wire';
+
+/**
+ * Declare window so that custom created function don't throw error
+ */
+declare var window;
+
+/**
+ * Node tuple class to store breadboard node and element node which are in proximity
+ */
+class BreadboardProximityNodeTuple {
+  breadboardNode: Point;
+  elementNode: Point;
+
+  constructor(breadboardNode: Point, elementNode: Point) {
+    this.breadboardNode = breadboardNode;
+    this.elementNode = elementNode;
+  }
+}
+
 /**
  * Resistor Class
  */
@@ -259,6 +281,17 @@ export class BreadBoard extends CircuitElement {
    * Nodes that are connected
    */
   public joined: Point[] = [];
+
+  /**
+   * List to store current nodes in the proximity of any of the breadboard' node
+   */
+  public highlightedPoints: BreadboardProximityNodeTuple[] = [];
+
+  /**
+   * Nodes sorted by 'x' and 'y' position
+   */
+  public sortedNodes: Point[] = [];
+
   /**
    * Breadboard constructor
    * @param canvas Raphael Canvas (Paper)
@@ -267,9 +300,91 @@ export class BreadBoard extends CircuitElement {
    */
   constructor(public canvas: any, x: number, y: number) {
     super('BreadBoard', x, y, 'Breadboard.json', canvas);
+    this.subsribeToDrag(this.onOtherComponentDrag.bind(this));
+    this.subscribeToDragStop(this.onOtherComponentDragStop.bind(this));
   }
+
+  /**
+   * Subscribes to drag listener of the workspace
+   * @param fn listener functino
+   */
+  subsribeToDrag(fn) {
+    // copied the function from Workspace here to avoid circular dependency. TODO: resolve file dependencies
+    window['DragListeners'].push(fn);
+  }
+
+  /**
+   * Subscribes to drag stop listener of the workspace
+   * @param fn listener function
+   */
+  subscribeToDragStop(fn) {
+    window['DragStopListeners'].push(fn);
+  }
+
+  /**
+   * Resets highlighted points
+   */
+  resetHighlightedPoints() {
+    if (this.highlightedPoints.length > 0) {
+      this.highlightedPoints.forEach(nodeTuple => nodeTuple.breadboardNode.undoHighlight());
+      this.highlightedPoints = [];
+    }
+  }
+
+  /**
+   * Listens for drag of other circuit elements in the workspace
+   */
+  onOtherComponentDrag(element) {
+    const bBox = this.elements.getBBox();
+    const elementBBox = element.elements.getBBox();
+
+    this.resetHighlightedPoints();
+
+    if (!areBoundingBoxesIntersecting(bBox, elementBBox)) {
+      return;
+    }
+
+    const nearestNodesFound = [];
+    for (const node of element.nodes) {
+      if (node.isConnected()) {
+        continue;
+      }
+      const nearestNode = this.getNearestNodes(node.x, node.y);
+      if (nearestNode) {
+        nearestNodesFound.push(new BreadboardProximityNodeTuple(nearestNode, node));
+      }
+    }
+
+    for (const node of nearestNodesFound) {
+      node.breadboardNode.highlight();
+    }
+
+    this.highlightedPoints = nearestNodesFound;
+  }
+
+  /**
+   * Listener to handle when dragging of a component stops
+   */
+  onOtherComponentDragStop() {
+    // connect highlightedPoints
+    if (this.highlightedPoints.length === 0) {
+      return;
+    }
+
+    for (const nodeTuple of this.highlightedPoints) {
+      const wire = new Wire(window.canvas, nodeTuple.breadboardNode);
+      wire.addPoint(nodeTuple.elementNode.x, nodeTuple.elementNode.y);
+      wire.connect(nodeTuple.elementNode, true);
+      nodeTuple.elementNode.connectWire(wire);
+    }
+
+    this.resetHighlightedPoints();
+  }
+
   /** init is called when the component is complety drawn to the canvas */
   init() {
+    this.sortedNodes = _.sortBy(this.nodes, ['x', 'y']);
+
     // add a connect callback listener
     for (const node of this.nodes) {
       node.connectCallback = (item) => {
@@ -338,6 +453,35 @@ export class BreadBoard extends CircuitElement {
       title: this.title
     };
   }
+
+  isPointWithinBbox(boundingBox, x, y): boolean {
+    return ((x < boundingBox.cx && x > boundingBox.cx - 1.2 * boundingBox.width) &&
+            (y < boundingBox.cy && y > boundingBox.cy - 1.2 * boundingBox.height));
+  }
+
+  shortlistNodes(x, y) {
+    const xIndex = _.sortedIndexBy(this.sortedNodes, {x}, 'x');
+
+    const shortlistedStartX = Math.max(xIndex - 1, 0);
+    const shortlistedEndX = Math.min(xIndex + 1, this.sortedNodes.length - 1);
+
+    // finding all the nodes with x coordinate near `x` argument
+    const startXIndex = _.sortedIndexBy(this.sortedNodes, {x: this.sortedNodes[shortlistedStartX].x}, 'x');
+    const lastXIndex = _.sortedIndexBy(this.sortedNodes, {x: this.sortedNodes[shortlistedEndX].x}, 'x');
+
+    return this.sortedNodes.slice(startXIndex, lastXIndex);
+  }
+
+  getNearestNodes(x, y) {
+    // this.elements.getElementByPoint()
+    const nodesToSearch = this.shortlistNodes(x, y);
+    for (const node of this.nodes) {
+      if (this.isPointWithinBbox(node.body.getBBox(), x, y)) {
+        return node;
+      }
+    }
+  }
+
   /**
    * Initialize Breadboard for simultion
    */

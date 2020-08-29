@@ -137,17 +137,7 @@ export class Point {
         return;
       }
       if ((window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
-        // if selected item is wire then connect the wire with the node
-        // console.log([]);
-        if (window.Selected.start === this) { return; }
-        this.connectedTo = window.Selected;
-        window['Selected'].connect(this, true);
-        window.Selected.deselect();
-        if (window['Selected'].start && window['Selected'].end) {
-          window['scope']['wires'].push(window['Selected']);
-        } else {
-          window['showToast']('Wire was not connected properly !');
-        }
+        this.connectWire(window['Selected']);
         window['isSelected'] = false; // deselect object
         window['Selected'] = null;
       } else {
@@ -165,6 +155,24 @@ export class Point {
 
   }
 
+  isConnected(): boolean {
+    return !!this.connectedTo;
+  }
+
+  connectWire(wire) {
+    // if selected item is wire then connect the wire with the node
+    // console.log([]);
+    if (wire.start === this) { return; }
+    this.connectedTo = wire;
+    wire.connect(this, true);
+    wire.deselect();
+    if (wire.start && wire.end) {
+      window['scope']['wires'].push(wire);
+    } else {
+      window['showToast']('Wire was not connected properly !');
+    }
+  }
+
   /**
    * Set Hover and Hover close Callback
    * @param callback Hover Callback
@@ -180,6 +188,14 @@ export class Point {
    */
   position() {
     return [this.x + this.half, this.y + this.half];
+  }
+
+  highlight() {
+    this.body.node.setAttribute('class', 'mynode highlight');
+  }
+
+  undoHighlight() {
+    this.body.node.setAttribute('class', 'mynode');
   }
 
   /**
