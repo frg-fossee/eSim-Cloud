@@ -4,8 +4,7 @@ eSim and Arduino on Cloud
 <h6 align="center"> 
 
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
-![Discord](https://img.shields.io/discord/737767491266281583?color=blue&label=chat%20with%20us&logo=discord)
-
+[![Discord](https://img.shields.io/discord/737767491266281583?color=blue&label=chat%20with%20us&logo=discord)](https://discord.gg/cZbDD8K)
 
 [![CodeFactor](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud/badge)](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-important)](https://img.shields.io/badge/PRs-welcome-important)
