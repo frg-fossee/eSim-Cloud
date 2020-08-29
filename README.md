@@ -1,15 +1,23 @@
-# eSim and Arduino on Cloud
+<h1 align="center"> 
+eSim and Arduino on Cloud 
+</h1>
+<h6 align="center"> 
 
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
-[![Discord](https://discordapp.com/api/guilds/737767491266281583/widget.png?style=shield)](https://discord.gg/cZbDD8K)
+![Discord](https://img.shields.io/discord/737767491266281583?color=blue&label=chat%20with%20us&logo=discord)
+
 
 [![CodeFactor](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud/badge)](https://www.codefactor.io/repository/github/frg-fossee/esim-cloud)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-important)](https://img.shields.io/badge/PRs-welcome-important)
+![GitHub repo size](https://img.shields.io/github/repo-size/frg-fossee/eSim-Cloud?color=ff69b4&logo=git&logoColor=ff69b4)
 ![Django Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Django%20Build%20and%20Tests/badge.svg?branch=develop)
 ![Angular Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/Angular%20Build%20and%20Tests/badge.svg?branch=develop)
 ![React Build and Tests](https://github.com/frg-fossee/eSim-Cloud/workflows/React%20Build%20and%20Tests/badge.svg?branch=develop)
 ![Containers](https://github.com/frg-fossee/eSim-Cloud/workflows/Containers/badge.svg)
 ![ESLint eda-frontend](https://github.com/frg-fossee/eSim-Cloud/workflows/ESLint%20eda-frontend/badge.svg?branch=develop)
+
+[Contributing](#Contributing) | [Credits](#Credits)
+</h6>
 
 ---
 
@@ -98,5 +106,33 @@ This system allows the users to drag and drop Arduino components from the left p
    $ sudo ./first_run.dev.sh
 ```
 
+## Tech stack
+* Simulation backend
+  * ngspice (eSim)
+  * Arduino compiler 
+* Middleware
+  * Django 
+  * REST APIs 
+  * Celery 
+  * Redis 
+* Frontend
+  * React
+  * mxgraph
+  * Angular
+  * RaphaelJS
+  * AVR8js simulator
+* Database
+  * MySQL
+  * Postgres
+  * MongoDB
+* Production
+  * nginx
+  * dockers
+* Testing
+  * GitHub actions  
+
 ## Docker Containers
 ![Docker Containers](docs/images/docker.png)
+
+## Contributing 
+Want to contribute? See our [contributing guidelines](CONTRIBUTING.md). Contributions in any form are welcome.
