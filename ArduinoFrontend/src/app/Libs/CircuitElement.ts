@@ -331,6 +331,7 @@ export abstract class CircuitElement {
    */
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
+      this.elements.toFront();
       if (window['Selected'] && (window['Selected'] instanceof Wire)) {
         if ((isNull(window['Selected'].start) || isNull(window['Selected'].end))) {
           return;
