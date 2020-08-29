@@ -1,4 +1,4 @@
-import { LCDPixel } from "./LCDPanel"
+import { LCDPixel } from './LCDPanel';
 import { LCD16X2 } from '../Display';
 
 declare  var Raphael;
@@ -9,7 +9,7 @@ describe('LCDPanel', () => {
   let canvas: any;
 
   beforeEach(() => {
-    canvas = Raphael('holder', '100%', '100%')
+    canvas = Raphael('holder', '100%', '100%');
     lcd = new LCD16X2(window['canvas'].set(), 300, 350);
     lcdPixel = new LCDPixel([5, 5], [6, 6], 100, 100, 300, 350, 5, 5, '#000', '#FFF');
   });

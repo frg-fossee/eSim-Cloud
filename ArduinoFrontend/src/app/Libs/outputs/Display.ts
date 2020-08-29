@@ -7,7 +7,6 @@ import {
   RegisterState, DataRegisterState, InstructionRegisterState,
   ActiveAddress, RegisterType, DataMode,
 } from './LCD/LCDStates';
-import _ from 'lodash';
 import { LCDCharacterPanel } from './LCD/LCDPanel';
 import { DDRAM, CGROM, CGRAM, RAM } from './LCD/MemorySchema';
 import { MathUtils } from '../MathUtils';
