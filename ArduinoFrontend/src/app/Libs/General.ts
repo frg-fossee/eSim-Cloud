@@ -375,35 +375,37 @@ export class BreadBoard extends CircuitElement {
     if (!areBoundingBoxesIntersecting(bBox, elementBBox)) {
       return;
     }
+    // unsolder element if it's soldered to either of the breadboard's node
     this.maybeUnsolderElement(element);
 
-    const nearestNodesFound = [];
+    // for all the nodes of the elements, find the nodes in proximity to the nodes of the breadboard
+    // and add them to this.highlightedPoints
     for (const node of element.nodes) {
       if (node.isConnected()) {
         continue;
       }
       const nearestNode = this.getNearestNodes(node.x, node.y);
       if (nearestNode) {
-        nearestNodesFound.push(new BreadboardProximityNodeTuple(nearestNode, node));
+        this.highlightedPoints.push(new BreadboardProximityNodeTuple(nearestNode, node));
       }
     }
 
-    for (const node of nearestNodesFound) {
+    // highlight points stored in highlightedPoints
+    for (const node of this.highlightedPoints) {
       node.breadboardNode.highlight();
     }
-
-    this.highlightedPoints = nearestNodesFound;
   }
 
   /**
    * Listener to handle when dragging of a component stops
    */
   onOtherComponentDragStop() {
-    // connect highlightedPoints
+    // if no highlighted points when the dragging stops, return
     if (this.highlightedPoints.length === 0) {
       return;
     }
 
+    // connect highlightedPoints
     for (const nodeTuple of this.highlightedPoints) {
       const wire = nodeTuple.breadboardNode.solderWire();
       wire.addPoint(nodeTuple.elementNode.x, nodeTuple.elementNode.y);
