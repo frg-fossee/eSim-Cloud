@@ -36,6 +36,11 @@ export class Point {
   connectedTo: Wire = null;
 
   /**
+   * Is the point soldered with wire.
+   */
+  private soldered = false;
+
+  /**
    * Hover callback called on hover over node
    */
   hoverCallback: any = null;
@@ -143,10 +148,9 @@ export class Point {
       } else {
         // if nothing is selected create a new wire object
         window.isSelected = true;
-        const tmp = new Wire(this.canvas, this);
-        this.connectedTo = tmp;
+        const wire = this.startNewWire();
         // select the wire and insert into the scope of circuit
-        window.Selected = tmp;
+        window.Selected = wire;
       }
       if (this.connectCallback) {
         this.connectCallback(this);
@@ -157,6 +161,37 @@ export class Point {
 
   isConnected(): boolean {
     return !!this.connectedTo;
+  }
+
+  isSoldered(): boolean {
+    return this.soldered;
+  }
+
+  /**
+   * Solders wire to the point
+   * @param wire wire to solder (if existing wire, else pass empty to create a new wire at the node)
+   */
+  solderWire(wire?): Wire {
+    if (!wire) {
+      wire = this.startNewWire();
+    }
+    this.soldered = true;
+    const newClass = `${this.body.node.getAttribute('class')} solder-highlight`;
+    this.body.node.setAttribute('class', newClass);
+    return wire;
+  }
+
+  /**
+   * Unsolders wire to the point
+   * @param wire wire to unsolder
+   */
+  unsolderWire() {
+    if (this.connectedTo) {
+      this.connectedTo.remove();
+      this.soldered = false;
+      const newClass = this.body.node.getAttribute('class').replace(' solder-highlight', '');
+      this.body.node.setAttribute('class', newClass);
+    }
   }
 
   connectWire(wire) {
@@ -171,6 +206,15 @@ export class Point {
     } else {
       window['showToast']('Wire was not connected properly !');
     }
+  }
+
+  /**
+   * Creates and originates new wire at the point
+   */
+  startNewWire() {
+    const wire = new Wire(this.canvas, this);
+    this.connectedTo = wire;
+    return wire;
   }
 
   /**
@@ -191,11 +235,13 @@ export class Point {
   }
 
   highlight() {
-    this.body.node.setAttribute('class', 'mynode highlight');
+    const newClass = `${this.body.node.getAttribute('class')} highlight`;
+    this.body.node.setAttribute('class', newClass);
   }
 
   undoHighlight() {
-    this.body.node.setAttribute('class', 'mynode');
+    const newClass = this.body.node.getAttribute('class').replace(' highlight', '');
+    this.body.node.setAttribute('class', newClass);
   }
 
   /**

@@ -278,6 +278,11 @@ export class Resistor extends CircuitElement {
  */
 export class BreadBoard extends CircuitElement {
   /**
+   * Minimum distance of node to be classified as in proximity
+   */
+  static PROXIMITY_DISTANCE = 20;
+
+  /**
    * Nodes that are connected
    */
   public joined: Point[] = [];
@@ -291,6 +296,11 @@ export class BreadBoard extends CircuitElement {
    * Nodes sorted by 'x' and 'y' position
    */
   public sortedNodes: Point[] = [];
+
+  /**
+   * Cached list of nodes that are soldered
+   */
+  private solderedNodes: Point[] = [];
 
   /**
    * Breadboard constructor
@@ -332,6 +342,28 @@ export class BreadBoard extends CircuitElement {
   }
 
   /**
+   * Returns list of soldered elements on the breadboard
+   */
+  getSolderedElements() {
+    return this.solderedNodes.map(node => node.connectedTo);
+  }
+
+  /**
+   * Unsolders element from the breadboard if soldered
+   * @param element element to find and unsolder
+   */
+  private maybeUnsolderElement(element) {
+    const elementNodesWires = element.nodes.map(node => node.connectedTo);
+    const solderedNodes = [...this.solderedNodes];
+    for (const breadboardNode of solderedNodes) {
+      if (elementNodesWires.includes(breadboardNode.connectedTo)) {
+        breadboardNode.unsolderWire();
+        _.remove(this.solderedNodes, breadboardNode);
+      }
+    }
+  }
+
+  /**
    * Listens for drag of other circuit elements in the workspace
    */
   onOtherComponentDrag(element) {
@@ -343,6 +375,7 @@ export class BreadBoard extends CircuitElement {
     if (!areBoundingBoxesIntersecting(bBox, elementBBox)) {
       return;
     }
+    this.maybeUnsolderElement(element);
 
     const nearestNodesFound = [];
     for (const node of element.nodes) {
@@ -372,10 +405,12 @@ export class BreadBoard extends CircuitElement {
     }
 
     for (const nodeTuple of this.highlightedPoints) {
-      const wire = new Wire(window.canvas, nodeTuple.breadboardNode);
+      const wire = nodeTuple.breadboardNode.solderWire();
       wire.addPoint(nodeTuple.elementNode.x, nodeTuple.elementNode.y);
-      wire.connect(nodeTuple.elementNode, true);
+      // wire.connect(nodeTuple.elementNode, true);
       nodeTuple.elementNode.connectWire(wire);
+
+      this.solderedNodes.push(nodeTuple.breadboardNode);
     }
 
     this.resetHighlightedPoints();
@@ -460,22 +495,16 @@ export class BreadBoard extends CircuitElement {
   }
 
   shortlistNodes(x, y) {
-    const xIndex = _.sortedIndexBy(this.sortedNodes, {x}, 'x');
+    const xIndexFrom = _.sortedIndexBy(this.sortedNodes, {x: x - BreadBoard.PROXIMITY_DISTANCE}, 'x');
+    const xIndexTo = _.sortedLastIndexBy(this.sortedNodes, {x: x + BreadBoard.PROXIMITY_DISTANCE}, 'x');
 
-    const shortlistedStartX = Math.max(xIndex - 1, 0);
-    const shortlistedEndX = Math.min(xIndex + 1, this.sortedNodes.length - 1);
-
-    // finding all the nodes with x coordinate near `x` argument
-    const startXIndex = _.sortedIndexBy(this.sortedNodes, {x: this.sortedNodes[shortlistedStartX].x}, 'x');
-    const lastXIndex = _.sortedIndexBy(this.sortedNodes, {x: this.sortedNodes[shortlistedEndX].x}, 'x');
-
-    return this.sortedNodes.slice(startXIndex, lastXIndex);
+    return this.sortedNodes.slice(xIndexFrom, xIndexTo);
   }
 
   getNearestNodes(x, y) {
     // this.elements.getElementByPoint()
     const nodesToSearch = this.shortlistNodes(x, y);
-    for (const node of this.nodes) {
+    for (const node of nodesToSearch) {
       if (this.isPointWithinBbox(node.body.getBBox(), x, y)) {
         return node;
       }
