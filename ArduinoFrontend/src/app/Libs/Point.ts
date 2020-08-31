@@ -188,10 +188,10 @@ export class Point {
   unsolderWire() {
     if (this.connectedTo) {
       this.connectedTo.remove();
-      this.soldered = false;
-      const newClass = this.body.node.getAttribute('class').replace(' solder-highlight', '');
-      this.body.node.setAttribute('class', newClass);
     }
+    this.soldered = false;
+    const newClass = this.body.node.getAttribute('class').replace(' solder-highlight', '');
+    this.body.node.setAttribute('class', newClass);
   }
 
   connectWire(wire) {
@@ -299,6 +299,16 @@ export class Point {
       x: this.x,
       y: this.y
     });
+  }
+
+  /**
+   * Disconnects the point to wire
+   */
+  disconnect() {
+    this.connectedTo = null;
+    if (this.isSoldered()) {
+      this.unsolderWire();
+    }
   }
 
   /**

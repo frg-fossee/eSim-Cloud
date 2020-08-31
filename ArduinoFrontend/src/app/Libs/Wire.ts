@@ -423,11 +423,11 @@ export class Wire {
     this.element.remove();
     // Clear connection from start node
     if (this.start) {
-      this.start.connectedTo = null;
+      this.start.disconnect();
     }
     // Clear connection from end node
     if (this.end) {
-      this.end.connectedTo = null;
+      this.end.disconnect();
     }
     this.start = null;
     this.end = null;
