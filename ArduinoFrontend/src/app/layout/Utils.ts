@@ -343,7 +343,7 @@ export class Utils {
             continue;
         }
     }
-// }
+}
 
 // function test() {
 //     const point1 = new Point(0, 0);
