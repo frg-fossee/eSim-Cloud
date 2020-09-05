@@ -183,11 +183,10 @@ export class Point {
 
   /**
    * Unsolders wire to the point
-   * @param wire wire to unsolder
    */
   unsolderWire() {
     if (this.connectedTo) {
-      this.connectedTo.remove();
+      this.connectedTo.delete();
     }
     this.soldered = false;
     const newClass = this.body.node.getAttribute('class').replace(' solder-highlight', '');

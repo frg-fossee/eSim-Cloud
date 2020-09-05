@@ -358,7 +358,7 @@ export class BreadBoard extends CircuitElement {
     for (const breadboardNode of solderedNodes) {
       if (elementNodesWires.includes(breadboardNode.connectedTo)) {
         breadboardNode.unsolderWire();
-        _.remove(this.solderedNodes, breadboardNode);
+        _.remove(this.solderedNodes, node => node === breadboardNode);
       }
     }
   }

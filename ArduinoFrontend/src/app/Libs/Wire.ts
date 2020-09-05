@@ -1,4 +1,5 @@
 import { Point } from './Point';
+import _ from 'lodash';
 
 /**
  * To prevent window from throwing error
@@ -440,5 +441,13 @@ export class Wire {
     this.start = null;
     this.end = null;
     this.element = null;
+  }
+
+  /**
+   * Removes the wire from window.scope and canvas
+   */
+  delete() {
+    _.remove(window.scope.wires, wire => wire === this);
+    this.remove();
   }
 }
