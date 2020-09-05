@@ -72,7 +72,7 @@ export class Wire {
 
     this.element.mouseover(() => {
       // only glow if the wire has a start and an end
-      if (this.start && this.end && (!window.Selected || (window.Selected && window.Selected === this))) {
+      if (this.start && this.end) {
         this.glows.push(
           this.element.glow({
             color: this.color
