@@ -545,7 +545,6 @@ export class LCD16X2 extends CircuitElement {
     // Initialising CGROM, DDRAM, and CGRAM
     this.createCgRom();
     this.createDdRam();
-    this.setDdRamAddress(0x00);
     this.cgRam = new CGRAM();
 
     this.clearDisplay();
