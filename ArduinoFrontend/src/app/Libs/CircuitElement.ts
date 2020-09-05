@@ -276,6 +276,7 @@ export abstract class CircuitElement {
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
+      // this.elements.translate(dx - fdx,  dy - fdy);
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
       // tmpx = this.tx + dx;
       // tmpy = this.ty + dy;
@@ -287,13 +288,13 @@ export abstract class CircuitElement {
     }, () => {
       fdx = 0;
       fdy = 0;
-      tmpar = [];
-      for (const node of this.nodes) {
-        // node.remainHidden();
-        tmpar.push(
-          [node.x, node.y]
-        );
-      }
+      tmpar = this.nodes.map(node => [node.x, node.y]);
+      // for (const node of this.nodes) {
+      //   // node.remainHidden();
+      //   tmpar.push(
+      //     [node.x, node.y]
+      //   );
+      // }
     }, () => {
       // for (const node of this.nodes) {
       //   node.relativeMove(fdx, fdy);

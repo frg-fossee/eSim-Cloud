@@ -58,6 +58,34 @@ export class Wire {
   }
 
   /**
+   * Creates path element for the wire
+   * @param element canvas element
+   */
+  createElement(element) {
+    if (this.element) {
+      this.removeGlows();
+      this.element.remove();
+    }
+
+    this.element = element;
+    this.element.attr({ 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '4', stroke: this.color });
+
+    this.element.mouseover(() => {
+      // only glow if the wire has a start and an end
+      if (this.start && this.end && (!window.Selected || (window.Selected && window.Selected === this))) {
+        this.glows.push(
+          this.element.glow({
+            color: this.color
+          })
+        );
+      }
+    });
+
+    this.element.mouseout(() => {
+      this.removeGlows();
+    });
+  }
+  /**
    * Adds a new coordinate (x, y) to the wire
    * @param x x-coordinate of cursor
    * @param y y-coordinate of cursor
@@ -144,31 +172,39 @@ export class Wire {
   }
 
   /**
-   *  Draws wire on the canvas
-   * @param x x position of point
-   * @param y y position of point
+   * updates the path of the wire
+   * @param newPath new path of the wire
    */
-  private drawWire(x: number, y: number) {
-    // remove the wire
-    if (this.points.length > 1) {
-      // Move to First point
+  private updateWirePath(newPath: string) {
+    if (this.element) {
+      // only update the path if the new path is different
+      if (this.element.attrs.path.toString() !== newPath) {
+        this.element.attr('path', newPath);
+      }
+    } else {
+      this.createElement(this.canvas.path(newPath));
+    }
+  }
+
+  /**
+   *  Draws wire on the canvas
+   * @param x x position of point to be added
+   * @param y y position of point to be added
+   */
+  private drawWire(x?: number, y?: number) {
       const pathArray = [`M${this.points[0][0]},${this.points[0][1]}`];
       // Draw lines to other points
       for (let i = 1; i < this.points.length; ++i) {
         pathArray.push(`L${this.points[i][0]},${this.points[i][1]}`);
       }
-      pathArray.push(`L${x},${y}`);
+
+      if (x && y) {
+        pathArray.push(`L${x},${y}`);
+      }
 
       // Update path
-      const path = pathArray.join(' ');
-      this.element.attr('path', path);
-    } else {
-      // Draw a line
-      if (this.element) {
-        this.element.remove();
-      }
-      this.element = this.canvas.path('M' + this.points[0][0] + ',' + this.points[0][1] + 'L' + x + ',' + y);
-    }
+      const path = pathArray.join('');
+      this.updateWirePath(path);
   }
 
   /**
@@ -311,42 +347,10 @@ export class Wire {
       // Update the start and ending position
       this.points[0] = this.start.position();
       this.points[this.points.length - 1] = this.end.position();
-      // Remove from canvas
-      if (this.element) {
-        this.element.remove();
-      }
-
-      // Draw a Lines
-      if (this.points.length > 2) {
-        let inp = `M${this.points[0][0]},${this.points[0][1]}`;
-        for (let i = 1; i < this.points.length; ++i) {
-          if (i - 1 < this.joints.length) {
-            this.joints[i - 1].toFront();
-          }
-          inp += ` L${this.points[i][0]},${this.points[i][1]}`;
-        }
-        this.element = this.canvas.path(inp);
-      } else {
-        // Draw a line
-        this.element = this.canvas.path(`M${this.points[0][0]},${this.points[0][1]}L${this.points[1][0]},${this.points[1][1]}`);
-      }
+      this.drawWire();
       // set click listener
       this.element.click(() => {
         this.handleClick();
-      });
-      // change attribute
-      this.element.attr({ 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '4', stroke: this.color });
-      if (this.glows.length > 0) {
-        // this.glow.remove();
-        this.removeGlows();
-      }
-      this.element.mouseover(() => {
-        this.glows.push(
-          this.element.glow({
-            color: this.color
-          })
-        );
-
       });
       return true;
     }
