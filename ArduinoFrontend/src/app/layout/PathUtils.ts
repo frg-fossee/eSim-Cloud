@@ -3,7 +3,7 @@ import _ from 'lodash';
 // const _ = require('lodash');
 
 // Minimum unit distance to use in resolving the paths
-const DELTA_DISTANCE = 10;
+const DELTA_DISTANCE = 15;
 
 // Path priority map.
 // Moving in the same direction is the most prior while searching for the optimal path.
@@ -15,8 +15,45 @@ const PATH_PRIORITY = {
 };
 
 export class Utils {
-    static areLinesSuperimposing(line1: Line, line2: Line) {
-        return line1.doesLineSuperimpose(line2);
+
+    static getOptimalPath(src: Point, dest: Point, srcParentBlock: Block, destParentBlock: Block, canvas: Canvas): [Path, string] {
+        const srcPoint = Utils.getPointAwayFromPort(src, srcParentBlock, canvas);
+        const destPoint = Utils.getPointAwayFromPort(dest, destParentBlock, canvas);
+
+        const srcOrientation = srcParentBlock.getRelativeOrientation(src);
+        const destOrientation = destParentBlock.getRelativeOrientation(dest);
+
+        const dpDict = {};
+
+        let middlePath = Utils.getOptimalPathRecursive(srcPoint, destPoint, srcOrientation, destOrientation, canvas, dpDict);
+        if (!middlePath) {
+            // try with destinatino as source.
+            middlePath = Utils.getOptimalPathRecursive(destPoint, srcPoint, destOrientation, srcOrientation, canvas, dpDict);
+            if (!middlePath) {
+                return [null, 'Optimal paths could not be found. Try adjusting some of the components.'];
+            }
+            middlePath = middlePath.reverse();
+        }
+        const result = new Path([src, ...middlePath.getAllPoints(), dest]);
+        result.simplify();
+        return [result, null];
+    }
+
+    /**
+     * Checks if there are any overlapping bounding boxes on the canvas
+     * Returns false if none found, else true and the two overlapping elements
+     * @param canvas: canvas
+     */
+    static isCanvasInvalid(canvas: Canvas): [boolean, CanvasElement, CanvasElement] {
+        const elements = canvas.getParentBlocks();
+        for (let i = 0; i < elements.length; i++) {
+            for (let j = i + 1; j < elements.length; j++) {
+                if (CanvasUtils.doElementsIntersect(elements[i], elements[j])[0]) {
+                    return [true, elements[i], elements[j]];
+                }
+            }
+        }
+        return [false, null, null];
     }
 
     private static getDirectPaths(src: Point, dest: Point): Path[] {
@@ -38,9 +75,9 @@ export class Utils {
     static checkObstacles(path: Path, canvas: Canvas): [boolean, Line, CanvasElement] {
         for (const element of canvas.getElements()) {
             const boundary = CanvasUtils.getBoundary(element);
-            const [isSuperImpose, lineSuperImposing, line] = path.doesPathSuperimpose(boundary);
+            const [isSuperImpose, superImposingLineOfPath, superImposingLineOfBoundary] = path.doesPathSuperimpose(boundary);
             if (isSuperImpose) {
-                return [true, lineSuperImposing, element];
+                return [true, superImposingLineOfPath, element];
             }
             if (element instanceof Block) {
                 const [isIntersect, pathLine, blockLine] = CanvasUtils.doElementsIntersect(element, path);
@@ -61,8 +98,8 @@ export class Utils {
 
         const tryHorizontal = () => {
             // console.log('Trying horizontal lines..');
-            const srcLine = new Line(point1, new Point(point1.getX(), point2.getY()));
-            const destLine = new Line(point2, new Point(point2.getX(), point1.getY()));
+            const srcLine = new Path([point1, new Point(point1.getX(), point2.getY())]);
+            const destLine = new Path([point2, new Point(point2.getX(), point1.getY())]);
             const tryYRange = (yMin: number, yMax: number) => {
                 for (const y of _.range(yMin, yMax, DELTA_DISTANCE)) {
                     const line = new Line(new Point(minX, y), new Point(maxX, y));
@@ -91,7 +128,7 @@ export class Utils {
             tryYRange(minY + DELTA_DISTANCE, maxY);
             let trials = 1;
             let [prevMin, prevMax] = [minY, maxY + DELTA_DISTANCE];
-            while (result.length === 0 && trials < 10) {
+            while (result.length === 0 && trials < 40) {
                 // console.log('Trying horizontal lines.. with trials, ', trials);
                 const currMin = prevMin - trials * DELTA_DISTANCE;
                 const currMax = prevMax + trials * DELTA_DISTANCE;
@@ -106,8 +143,8 @@ export class Utils {
         };
 
         const tryVertical = () => {
-            const srcLine = new Line(point1, new Point(point2.getX(), point1.getY()));
-            const destLine = new Line(point2, new Point(point1.getX(), point2.getY()));
+            const srcLine = new Path([point1, new Point(point2.getX(), point1.getY())]);
+            const destLine = new Path([point2, new Point(point1.getX(), point2.getY())]);
             const tryXRange = (xMin: number, xMax: number) => {
                 for (const x of _.range(xMin, xMax, DELTA_DISTANCE)) {
                     const line = new Line(new Point(x, minY), new Point(x, maxY));
@@ -136,7 +173,7 @@ export class Utils {
             tryXRange(minX + DELTA_DISTANCE, maxX);
             let trials = 1;
             let [prevMin, prevMax] = [minX, maxX + DELTA_DISTANCE];
-            while (result.length === 0 && trials < 10) {
+            while (result.length === 0 && trials < 40) {
                 const currMin = prevMin - trials * DELTA_DISTANCE;
                 const currMax = prevMax + trials * DELTA_DISTANCE;
                 tryXRange(currMin, prevMin);
@@ -198,6 +235,12 @@ export class Utils {
         return widestRange[Math.floor(widestRange.length / 2)];
     }
 
+    /**
+     * Calculates a point away from the parent block to start the path with
+     * @param point origin point
+     * @param parentBlock parent block of the point
+     * @param canvas canvas
+     */
     static getPointAwayFromPort(point: Point, parentBlock: Block, canvas: Canvas): Point {
         let result = parentBlock.getPointAwayFromPort(point, DELTA_DISTANCE);
         while (CanvasUtils.doesPointLieOnCanvaspath(canvas, result)) {
@@ -206,32 +249,23 @@ export class Utils {
         return result;
     }
 
-    static getOptimalPath(src: Point, dest: Point, srcParentBlock: Block, destParentBlock: Block, canvas: Canvas): Path {
-        const srcPoint = Utils.getPointAwayFromPort(src, srcParentBlock, canvas);
-        const destPoint = Utils.getPointAwayFromPort(dest, destParentBlock, canvas);
-
-        const srcOrientation = srcParentBlock.getRelativeOrientation(src);
-        const destOrientation = destParentBlock.getRelativeOrientation(dest);
-
-        const dpDict = {};
-
-        let middlePath = Utils.getOptimalPathRecursive(srcPoint, destPoint, srcOrientation, destOrientation, canvas, dpDict);
-        if (!middlePath) {
-            // try with destinatino as source.
-            middlePath = Utils.getOptimalPathRecursive(destPoint, srcPoint, destOrientation, srcOrientation, canvas, dpDict);
-            middlePath = middlePath.reverse();
-            if (!middlePath) {
-                return null;
-            }
-        }
-        return new Path([src, ...middlePath.getAllPoints(), dest]).simplify();
-    }
-
-    static getOptimalPathRecursive(src: Point, dest: Point, srcOrientation: Orientation,
-                                   destOrientation: Orientation, canvas: Canvas, dpDict: {[key: string]: Path} = {},
-                                   nRecursions: number = 20): Path {
+    /**
+     * Returns the optimal path recursively with specified maximum recursion depth
+     * @param src source point
+     * @param dest destination point
+     * @param srcOrientation orientation of the source point wrt its parent
+     * @param destOrientation orientation of  the destination point wrt its parent
+     * @param canvas canvas
+     * @param dpDict cached dictionary of paths calculated in previous recursions
+     * @param nRecursions max number of recursions allowed
+     */
+    private static getOptimalPathRecursive(src: Point, dest: Point, srcOrientation: Orientation,
+                                           destOrientation: Orientation, canvas: Canvas, dpDict: {[key: string]: Path} = {},
+                                           nRecursions: number = 10): Path {
         // console.log("Recursion number: ", nRecursions);
         const directPaths = Utils.getDirectPaths(src, dest);
+
+        // sorting possible direct paths based on orientation of source and destination
         directPaths.sort((path1, path2) => {
             const orientation1 = path1.getFirstVectorOrientation();
             const orientation2 = path2.getFirstVectorOrientation();
@@ -239,7 +273,7 @@ export class Utils {
             const diff1 = MathHelper.modulo(orientation1 - srcOrientation, 360);
             const diff2 = MathHelper.modulo(orientation2 - srcOrientation, 360);
 
-            return PATH_PRIORITY[diff1] - PATH_PRIORITY[diff2];
+            return PATH_PRIORITY[diff1] > PATH_PRIORITY[diff2] ? 1 : -1;
         });
 
         let lineWithObstacle: Line;
@@ -413,4 +447,18 @@ export class Utils {
 //     console.log(path);
 // }
 
-// test2();
+// function test3() {
+//     const points = [
+//         new Point(0, 0),
+//         new Point(5, 0),
+//         new Point(5, 5),
+//         new Point(3, 5),
+//         new Point(3, -2)
+//     ];
+//     const path = new Path(points);
+//     console.log(path.toString());
+//     path.simplify();
+//     console.log(path.toString());
+// }
+
+// test3();

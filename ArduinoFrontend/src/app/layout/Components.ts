@@ -19,6 +19,7 @@ export enum Orientation {
 }
 
 export abstract class CanvasElement {
+    abstract getName(): string;
 }
 
 export class Vector {
@@ -148,6 +149,10 @@ export class Point {
     calculateDistance(point: Point) {
         return Math.sqrt((this.x - point.x) ** 2 + (this.y - point.y) ** 2);
     }
+
+    equals(point: Point) {
+        return (this.x === point.getX()) && (this.y === point.getY());
+    }
 }
 
 export class Line {
@@ -170,6 +175,10 @@ export class Line {
         return `${this.point1} --> ${this.point2}`;
     }
 
+    subtractLine(line: Line): Line {
+        return;
+    }
+
     doesLineSuperimpose(line: Line): boolean {
         const slope1 = this.getSlope();
         const slope2 = line.getSlope();
@@ -182,7 +191,7 @@ export class Line {
         return false;
     }
 
-    doesLineIntersect(line: Line): boolean {
+    doesLineIntersect(line: Line): [boolean, Point] {
         // returns true iff the line from (a,b)->(c,d) intersects with (p,q)->(r,s)
         const [a, b] = [this.point1.getX(), this.point1.getY()];
         const [c, d] = [this.point2.getX(), this.point2.getY()];
@@ -191,11 +200,16 @@ export class Line {
 
         const det = (c - a) * (s - q) - (r - p) * (d - b);
         if (det === 0) {
-            return false;
+            return [false, null];
         } else {
             const lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det;
             const gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det;
-            return (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+            const isIntersect = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1);
+            let intersectionPoint = null;
+            if (isIntersect) {
+                intersectionPoint = Point.loadFromVector(this.point1.getVector().add(this.getVector().multiply(lambda)));
+            }
+            return [isIntersect, intersectionPoint];
         }
     }
 
@@ -235,6 +249,11 @@ export class Line {
     containsPoint(p: Point): boolean {
         return MathHelper.areNumbersClose(this.point1.calculateDistance(p) + this.point2.calculateDistance(p), this.getLength());
     }
+
+    equals(line: Line): boolean {
+        return (this.point1.equals(line.getPoint1()) && this.point2.equals(line.getPoint2())) ||
+        (this.point2.equals(line.getPoint1()) && this.point1.equals(line.getPoint2()));
+    }
 }
 
 
@@ -268,7 +287,29 @@ export class Path extends CanvasElement {
         return [false, null, null];
     }
 
-    simplify(): Path {
+    getName(): string {
+        return null;
+    }
+
+    private mergePoints(): void {
+        const allPoints = this.getAllPoints();
+        let prevPoint = allPoints[0];
+        const newPoints = [prevPoint];
+
+        for (const point of allPoints.slice(1)) {
+            if (!point.equals(prevPoint)) {
+                newPoints.push(point);
+            }
+            prevPoint = point;
+        }
+        this.points = newPoints;
+    }
+
+    /**
+     * Merges collinear points on the path
+     */
+    private mergeCollinearPoints(): void {
+        this.mergePoints();
         const lineSegments = this.getAllLineSegments();
         let prevLine = lineSegments[0];
 
@@ -277,11 +318,12 @@ export class Path extends CanvasElement {
 
         // merging collinear points
         let line = null;
-        for (line of lineSegments.splice(1)) {
+        for (line of lineSegments.slice(1)) {
             const prevSlope = prevLine.getSlope();
             prevLine = line;
 
             const currSlope = line.getSlope();
+
             if (MathHelper.areNumbersClose(currSlope, prevSlope)) {
                 continue;
             }
@@ -291,7 +333,30 @@ export class Path extends CanvasElement {
             newPoints.push(line.getPoint1());
         }
         newPoints.push(line.getPoint2());
-        return new Path(newPoints);
+        this.points = newPoints;
+    }
+
+    private deleteCycles(i?) {
+        const lineSegments = this.getAllLineSegments();
+        // TODO: Make this O(nlogn) when. O(n**2) should work fine for ~100-length paths
+        for (i = (i || 0); i < lineSegments.length; i++) {
+            for (let j = i + 1; j < lineSegments.length; j++) {
+                const line1 = lineSegments[i];
+                const line2 = lineSegments[j];
+                const [intersect, pointX] = line1.doesLineIntersect(line2);
+                if (intersect) {
+                    this.points = [...this.points.slice(0, i + 1), pointX, ...this.points.slice(j + 1)];
+                    this.deleteCycles(i);
+                    return;
+                }
+                line1.doesLineSuperimpose(line2);
+            }
+        }
+    }
+
+    simplify(): void {
+        this.mergeCollinearPoints();
+        this.deleteCycles();
     }
 
     getAllLineSegments(): Line[] {
@@ -317,7 +382,7 @@ export class Path extends CanvasElement {
     }
 
     toString(): string {
-        return this.points.map(p => p.toString()).join(', ');
+        return this.points.map(p => p.toString()).join('\n');
     }
 
     containsPoint(point: Point): boolean {
@@ -363,7 +428,7 @@ export class Path extends CanvasElement {
      * Reverses the path and return a new instance
      */
     reverse(): Path {
-        return new Path(_.reverse(this.getAllPoints));
+        return new Path(_.reverse(this.getAllPoints()));
     }
 
     /**
@@ -392,19 +457,46 @@ export class Path extends CanvasElement {
 
 export class Block extends CanvasElement {
     /**
-     * diagonal point 1
+     * Point 1 -------------- Point 2
+     *         |            |
+     *         |            |
+     *         |            |
+     *         |            |
+     * Point 4 -------------- Point 3
+     */
+
+    /**
+     * diagonal 1 point 1
      */
     private point1: Point;
 
     /**
-     * diagonal point 2
+     * diagonal 1 point 2
+     */
+    private point3: Point;
+
+    /**
+     * diagonal 2 point 1
      */
     private point2: Point;
 
-    constructor(point1: Point, point2: Point) {
+    /**
+     * diagonal 2 point 2
+     */
+    private point4: Point;
+
+    private name: string;
+
+    private isChildBlock = false;
+
+    constructor(point1: Point, point3: Point, isChildBlock = false, name?) {
         super();
         this.point1 = point1;
-        this.point2 = point2;
+        this.point3 = point3;
+        this.isChildBlock = isChildBlock;
+        this.point2 = new Point(point3.getX(), point1.getY());
+        this.point4 = new Point(point1.getX(), point3.getY());
+        this.name = name;
     }
 
     getBoundary(): Path {
@@ -412,21 +504,28 @@ export class Block extends CanvasElement {
         return new Path([...allPoints, allPoints[0]]);
     }
 
+    isChild(): boolean {
+        return this.isChildBlock;
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
     /**
      * checks if the point p is inside or on the block
      * @param p point
      */
     containsPoint(p: Point): boolean {
-        const xMax = Math.max(this.point1.getX(), this.point2.getX());
-        const xMin = Math.min(this.point1.getX(), this.point2.getX());
-        const yMax = Math.max(this.point1.getY(), this.point2.getY());
-        const yMin = Math.min(this.point1.getY(), this.point2.getY());
+        const xMax = this.getMaxX();
+        const xMin = this.getMinX();
+        const yMax = this.getMaxY();
+        const yMin = this.getMinY();
         return (p.getX() >= xMin) && (p.getX() <= xMax) && (p.getY() >= yMin) && (p.getY() <= yMax);
     }
 
     getAllVertices(): Point[] {
-        const [point3, point4] = this.getOtherTwoPoints();
-        return [this.point1, point3, this.point2, point4];
+        return [this.point1, this.point2, this.point3, this.point4];
     }
 
     getPoint1(): Point {
@@ -437,43 +536,50 @@ export class Block extends CanvasElement {
         return this.point2;
     }
 
+    getPoint3(): Point {
+        return this.point3;
+    }
+
+    getPoint4(): Point {
+        return this.point4;
+    }
+
     getMinX(): number {
-        return Math.min(this.point1.getX(), this.point2.getX());
+        return Math.min(this.point1.getX(), this.point3.getX());
     }
 
     getMaxX(): number {
-        return Math.max(this.point1.getX(), this.point2.getX());
+        return Math.max(this.point1.getX(), this.point3.getX());
     }
 
     getMinY(): number {
-        return Math.min(this.point1.getY(), this.point2.getY());
+        return Math.min(this.point1.getY(), this.point3.getY());
     }
 
     getMaxY(): number {
-        return Math.max(this.point1.getY(), this.point2.getY());
+        return Math.max(this.point1.getY(), this.point3.getY());
     }
 
     /**
      * Returns the tuple of other two diagonal points
      */
     getOtherTwoPoints(): [Point, Point] {
-        return [new Point(this.point1.getX(), this.point2.getY()), new Point(this.point2.getX(), this.point1.getY())];
+        return [this.point2, this.point4];
     }
 
     /**
      * Returns the two diagonal vector of the block
      */
     getDiagonals(): [Vector, Vector] {
-        const [point3, point4] = this.getOtherTwoPoints();
-        return [this.point1.subtract(this.point2), point3.subtract(point4)];
+        return [this.point1.subtract(this.point3), this.point2.subtract(this.point4)];
     }
 
     /**
      * Returns mid-point of the block
      */
     getCenter(): Point {
-        const midX = (this.point1.getX() + this.point2.getX()) / 2;
-        const midY = (this.point1.getY() + this.point2.getY()) / 2;
+        const midX = (this.point1.getX() + this.point3.getX()) / 2;
+        const midY = (this.point1.getY() + this.point3.getY()) / 2;
         return new Point(midX, midY);
     }
 
@@ -540,11 +646,16 @@ export class Canvas {
     }
 
     getElements(): CanvasElement[] {
-        return this.elements;
+        return [...this.elements];
     }
 
     getBlocks(): Block[] {
         return this.elements.filter(element => element instanceof Block).map(element => (element as Block));
+    }
+
+    getParentBlocks(): Block[] {
+        return this.elements.filter(element => (element instanceof Block) && (!(element as Block).isChild()))
+                            .map(element => (element as Block));
     }
 
     getPaths(): Path[] {
@@ -572,7 +683,7 @@ export class CanvasUtils {
         const lineSegments = block.getBoundary().getAllLineSegments();
         for (const line of path.getAllLineSegments()) {
             for (const blockLine of lineSegments) {
-                if (line.doesLineIntersect(blockLine)) {
+                if (line.doesLineIntersect(blockLine)[0]) {
                     return [true, line, blockLine];
                 }
             }

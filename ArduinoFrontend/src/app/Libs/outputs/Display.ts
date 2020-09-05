@@ -11,6 +11,7 @@ import { LCDCharacterPanel } from './LCD/LCDPanel';
 import { DDRAM, CGROM, CGRAM, RAM } from './LCD/MemorySchema';
 import { MathUtils } from '../MathUtils';
 import { ArduinoUno } from './Arduino';
+import { BoundingBox } from '../Geometry';
 
 /**
  * LCD16X2 Class
@@ -187,6 +188,17 @@ export class LCD16X2 extends CircuitElement {
       body,
       title: 'LCD Display 16x2'
     };
+  }
+
+  /**
+   * Returns the bounding box for the LCD
+   */
+  getBoundingBox(): BoundingBox {
+    const lcdImageElement = this.elements.items.find(el => el.type === 'image')[0];
+    const lcdBBox = lcdImageElement.getBBox();
+    lcdBBox.x += this.tx;
+    lcdBBox.y += this.ty;
+    return BoundingBox.loadFromRaphaelBbox(lcdBBox);
   }
 
   /**

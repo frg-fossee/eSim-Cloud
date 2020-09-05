@@ -91,6 +91,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   username: string;
   /**
+   * Is autolayout in progress?
+   */
+  isAutoLayoutInProgress = false;
+  /**
    * Simulator Component constructor
    * @param aroute Activated Route
    * @param dialog Material Dialog
@@ -394,7 +398,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
 
   autoLayout() {
+    // this.isAutoLayoutInProgress = true;
     LayoutUtils.solveAutoLayout();
+    // this.isAutoLayoutInProgress = false;
   }
 
   /** Functions opens Info Dailog Box on selecting the component */

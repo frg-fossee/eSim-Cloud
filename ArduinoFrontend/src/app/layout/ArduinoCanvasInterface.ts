@@ -1,8 +1,11 @@
 import { Canvas, Point, Block, Path } from './Components';
 import { CircuitElement } from '../Libs/CircuitElement';
 import { Wire } from '../Libs/Wire';
-import { Utils } from './Utils';
+import { Point as NodePoint } from '../Libs/Point';
+import { Utils } from './PathUtils';
 import _ from 'lodash';
+import { AlertService } from '../alert/alert-service/alert.service';
+import { BoundingBox } from '../Libs/Geometry';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -28,10 +31,23 @@ class PathProblem {
 export class LayoutUtils {
     static solveAutoLayout() {
         const canvas = LayoutUtils.generateCanvas();
-        const problemPaths = LayoutUtils.getSourcesAndDestsToSolve();
 
+        const [isInvalid, overlappingEl1, overlappingEl2] = Utils.isCanvasInvalid(canvas);
+        if  (!isInvalid) {
+            LayoutUtils.continueSaveLayout(canvas);
+        } else {
+            AlertService.showConfirm(
+                `Bounding boxes of ${overlappingEl1.getName()} and ${overlappingEl2.getName()} are overlapping.
+                 Do you want to continue anyway?`,
+                () => LayoutUtils.continueSaveLayout(canvas)
+            );
+        }
+    }
+
+    private static continueSaveLayout(canvas: Canvas): void {
+        const problemPaths = LayoutUtils.getSourcesAndDestsToSolve();
         for (const path of problemPaths) {
-            const solvedPath = Utils.getOptimalPath(path.source, path.destination, path.sourceBlock, path.destinationBlock, canvas);
+            const [solvedPath, msg] = Utils.getOptimalPath(path.source, path.destination, path.sourceBlock, path.destinationBlock, canvas);
             if (!solvedPath) {
                 continue;
             }
@@ -46,7 +62,13 @@ export class LayoutUtils {
         let canvasElements = allElements.map(LayoutUtils.convertCircuitElementToBlock);
 
         const allNodes = _.flatten(allElements.map(element => element.nodes));
-        canvasElements = canvasElements.concat(allNodes.map(node => LayoutUtils.convertBoundingBoxToBlock(node.body.getBBox())));
+        canvasElements = canvasElements.concat(
+            allNodes.map(
+                (node: NodePoint) => LayoutUtils.convertBoundingBoxToBlock(
+                    node.getBoundingBox(), `${node.label} of ${node.parent.getName()}`, true
+                )
+            )
+        );
 
         return new Canvas(canvasElements);
     }
@@ -61,14 +83,14 @@ export class LayoutUtils {
     }
 
     static convertCircuitElementToBlock(element: CircuitElement): Block {
-        return LayoutUtils.convertBoundingBoxToBlock(element.elements.getBBox());
+        return LayoutUtils.convertBoundingBoxToBlock(element.getBoundingBox(), element.getName());
     }
 
-    static convertBoundingBoxToBlock(boundingBox: any): Block {
+    static convertBoundingBoxToBlock(boundingBox: BoundingBox, name = 'Unnamed', isChild: boolean = false): Block {
         const diagonalPoint1 = new Point(boundingBox.x, boundingBox.y);
         const diagonalPoint2 = new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height);
 
-        return new Block(diagonalPoint1, diagonalPoint2);
+        return new Block(diagonalPoint1, diagonalPoint2, isChild, name);
     }
 
     static getSourcesAndDestsToSolve(): PathProblem[] {
