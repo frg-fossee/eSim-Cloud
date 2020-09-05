@@ -84,6 +84,11 @@ export class Wire {
     this.element.mouseout(() => {
       this.removeGlows();
     });
+
+    // set click listener
+    this.element.click(() => {
+      this.handleClick();
+    });
   }
   /**
    * Adds a new coordinate (x, y) to the wire
@@ -348,10 +353,6 @@ export class Wire {
       this.points[0] = this.start.position();
       this.points[this.points.length - 1] = this.end.position();
       this.drawWire();
-      // set click listener
-      this.element.click(() => {
-        this.handleClick();
-      });
       return true;
     }
     return false;
