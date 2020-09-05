@@ -197,18 +197,17 @@ export class Wire {
    * @param y y position of point to be added
    */
   private drawWire(x?: number, y?: number) {
-      const pathArray = [`M${this.points[0][0]},${this.points[0][1]}`];
+      let path = `M${this.points[0][0]},${this.points[0][1]}`;
       // Draw lines to other points
       for (let i = 1; i < this.points.length; ++i) {
-        pathArray.push(`L${this.points[i][0]},${this.points[i][1]}`);
+        path += `L${this.points[i][0]},${this.points[i][1]}`;
       }
 
       if (x && y) {
-        pathArray.push(`L${x},${y}`);
+        path += `L${x},${y}`;
       }
 
       // Update path
-      const path = pathArray.join('');
       this.updateWirePath(path);
   }
 
