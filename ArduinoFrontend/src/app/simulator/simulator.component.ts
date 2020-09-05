@@ -14,6 +14,7 @@ import { SaveOnline } from '../Libs/SaveOnline';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
+import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -391,6 +392,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       Workspace.zoomOut();
     }
   }
+
+  autoLayout() {
+    LayoutUtils.solveAutoLayout();
+  }
+
   /** Functions opens Info Dailog Box on selecting the component */
   openInfo() {
     const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
