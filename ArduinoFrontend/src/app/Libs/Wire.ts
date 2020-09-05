@@ -378,12 +378,14 @@ export class Wire {
       start: {
         id: this.start.parent.id,
         keyName: this.start.parent.keyName,
-        pid: this.start.id
+        pid: this.start.id,
+        isSoldered: this.start.isSoldered()
       },
       end: {
         id: this.end.parent.id,
         keyName: this.end.parent.keyName,
-        pid: this.end.id
+        pid: this.end.id,
+        isSoldered: this.end.isSoldered()
       }
     };
   }
@@ -394,6 +396,12 @@ export class Wire {
   load(data) {
     this.color = data.color;
     this.points = data.points;
+    if (data.start.isSoldered) {
+      this.start.solderWire();
+    }
+    if (data.end.isSoldered) {
+      this.end.solderWire();
+    }
   }
   /**
    * Remove Glow of Wire

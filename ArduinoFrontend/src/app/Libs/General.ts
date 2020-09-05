@@ -300,7 +300,7 @@ export class BreadBoard extends CircuitElement {
   /**
    * Cached list of nodes that are soldered
    */
-  private solderedNodes: Point[] = [];
+  private solderedNodes: Point[] = null;
 
   /**
    * Breadboard constructor
@@ -345,7 +345,7 @@ export class BreadBoard extends CircuitElement {
    * Returns list of soldered elements on the breadboard
    */
   getSolderedElements() {
-    return this.solderedNodes.map(node => node.connectedTo);
+    return this.getSolderedNodes().map(node => node.connectedTo);
   }
 
   /**
@@ -354,7 +354,7 @@ export class BreadBoard extends CircuitElement {
    */
   private maybeUnsolderElement(element) {
     const elementNodesWires = element.nodes.map(node => node.connectedTo);
-    const solderedNodes = [...this.solderedNodes];
+    const solderedNodes = [...this.getSolderedNodes()];
     for (const breadboardNode of solderedNodes) {
       if (elementNodesWires.includes(breadboardNode.connectedTo)) {
         breadboardNode.unsolderWire();
@@ -411,8 +411,7 @@ export class BreadBoard extends CircuitElement {
       wire.addPoint(nodeTuple.elementNode.x, nodeTuple.elementNode.y);
       // wire.connect(nodeTuple.elementNode, true);
       nodeTuple.elementNode.connectWire(wire);
-
-      this.solderedNodes.push(nodeTuple.breadboardNode);
+      this.addSolderedNode(nodeTuple.breadboardNode);
     }
 
     this.resetHighlightedPoints();
@@ -428,6 +427,8 @@ export class BreadBoard extends CircuitElement {
         this.joined.push(item);
       };
     }
+    this.elements.toBack();
+
     // Remove the drag event
     this.elements.undrag();
     let tmpx = 0;
@@ -491,11 +492,23 @@ export class BreadBoard extends CircuitElement {
     };
   }
 
+  /**
+   * Checks if the point is inside the passed bounding box
+   * TODO: move the function to a utils
+   * @param boundingBox: Raphael Bounding box object
+   * @param x: x-coordinate of the point
+   * @param y: y-coordinate of the point
+   */
   isPointWithinBbox(boundingBox, x, y): boolean {
     return ((x < boundingBox.cx && x > boundingBox.cx - 1.2 * boundingBox.width) &&
             (y < boundingBox.cy && y > boundingBox.cy - 1.2 * boundingBox.height));
   }
 
+  /**
+   * Returns the shortlisted list of the nodes within the proximity of (x, y) coordinate
+   * @param x: x-coordinate
+   * @param y: y-coordinate
+   */
   shortlistNodes(x, y) {
     const xIndexFrom = _.sortedIndexBy(this.sortedNodes, {x: x - BreadBoard.PROXIMITY_DISTANCE}, 'x');
     const xIndexTo = _.sortedLastIndexBy(this.sortedNodes, {x: x + BreadBoard.PROXIMITY_DISTANCE}, 'x');
@@ -503,6 +516,11 @@ export class BreadBoard extends CircuitElement {
     return this.sortedNodes.slice(xIndexFrom, xIndexTo);
   }
 
+  /**
+   * Returns the nearest node on the breadboard to the passed coordinate
+   * @param x: x-coordinate
+   * @param y: y-coordinate
+   */
   getNearestNodes(x, y) {
     // this.elements.getElementByPoint()
     const nodesToSearch = this.shortlistNodes(x, y);
@@ -511,6 +529,27 @@ export class BreadBoard extends CircuitElement {
         return node;
       }
     }
+  }
+
+  /**
+   * Returns the list of nodes that are soldered on the breadboard
+   */
+  getSolderedNodes() {
+    if (this.solderedNodes == null) {
+      this.solderedNodes = this.nodes.filter(node => node.isSoldered());
+    }
+    return this.solderedNodes;
+  }
+
+  /**
+   * Adds soldered nodes to the cache
+   * @param node node
+   */
+  addSolderedNode(node) {
+    if (this.solderedNodes == null) {
+      this.solderedNodes = [];
+    }
+    this.solderedNodes.push(node);
   }
 
   /**
