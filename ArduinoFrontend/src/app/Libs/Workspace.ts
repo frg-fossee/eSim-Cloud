@@ -133,7 +133,47 @@ export class Workspace {
       body: document.querySelector('#propertybox .body'),
       mousedown: false
     };
+    window['DragListeners'] = [];
+    window['DragStopListeners'] = [];
+
+    window['onDragEvent'] = Workspace.onDragEvent;
+    window['onDragStopEvent'] = Workspace.onDragStopEvent;
   }
+
+  /**
+   * Handler for drag stop event
+   */
+  static onDragStopEvent(element) {
+    for (const fn of window.DragStopListeners) {
+      fn(element);
+    }
+  }
+
+  /**
+   * Handler for drag event
+   */
+  static onDragEvent(element) {
+    for (const fn of window.DragListeners) {
+      fn(element);
+    }
+  }
+
+  /**
+   * Subscribes to drag event of element in the workspace
+   * @param fn listener function
+   */
+  static subsribeToDrag(fn) {
+    window['DragListeners'].push(fn);
+  }
+
+  /**
+   * Subscribes to drag stop event of element in the workspace
+   * @param fn listener function
+   */
+  static subsribeToDragStop(fn) {
+    window['DragStopListeners'].push(fn);
+  }
+
   /**
    * Initialize Property Box
    * @param toggle Callback For Property Box
