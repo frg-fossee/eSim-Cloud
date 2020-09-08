@@ -585,7 +585,7 @@ export class LCD16X2 extends CircuitElement {
    * Generates character panels inside the lcd
    */
   generateCharacterPanels() {
-    Object.values(this.characterPanels).forEach(panel => panel.destroy());
+    this.destroyCharacterPanels();
 
     const posX = this.data.startX;
     const posY = this.data.startY;
@@ -611,6 +611,13 @@ export class LCD16X2 extends CircuitElement {
     } // Row ends
   }
 
+  /**
+   * destroys all the character panels
+   */
+  destroyCharacterPanels() {
+    Object.values(this.characterPanels).forEach(panel => panel.destroy());
+  }
+
   init() {
     /**
      * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
@@ -618,9 +625,6 @@ export class LCD16X2 extends CircuitElement {
 
     // Resets the lcd's properties
     this.reset();
-
-    // Generates the character panels
-    this.generateCharacterPanels();
 
     // Refreshes the LCD
     this.refreshLCD();
@@ -643,7 +647,8 @@ export class LCD16X2 extends CircuitElement {
    * Called on Start Simulation
    */
   initSimulation(): void {
-    // Check connection
+    // Generates the character panels
+    this.generateCharacterPanels();
 
     // Get the V0 pin
     let connectedPin = null;
@@ -680,6 +685,7 @@ export class LCD16X2 extends CircuitElement {
     // this.elements.remove();
     this.arduino = null;
     this.reset();
+    this.destroyCharacterPanels();
   }
 }
 /**
