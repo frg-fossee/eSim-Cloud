@@ -56,6 +56,8 @@ const searchOptionsList = ['NAME', 'KEYWORD', 'DESCRIPTION', 'COMPONENT_LIBRARY'
 export default function ComponentSidebar ({ compRef }) {
   const classes = useStyles()
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
+  const domainCurrent = useSelector(state => state.DomainActionsReducer.activeDomain)
+
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
   const components = useSelector(state => state.schematicEditorReducer.components)
   const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
@@ -127,8 +129,8 @@ export default function ComponentSidebar ({ compRef }) {
 
   // For Fetching Libraries
   useEffect(() => {
-    dispatch(fetchLibraries())
-  }, [dispatch])
+    dispatch(fetchLibraries(domainCurrent))
+  }, [dispatch, domainCurrent])
 
   // Used to chunk array
   const chunk = (array, size) => {

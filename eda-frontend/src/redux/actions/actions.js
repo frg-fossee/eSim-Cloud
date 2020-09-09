@@ -1,3 +1,6 @@
+// Actions for handling main screen
+export const FETCH_DOMAINS = 'FETCH_DOMAINS'
+
 // Actions for schematic editor
 export const FETCH_LIBRARIES = 'FETCH_LIBRARIES'
 export const TOGGLE_COLLAPSE = 'TOGGLE_COLLAPSE'

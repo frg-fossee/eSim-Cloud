@@ -16,6 +16,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from django.conf.urls import url, include
 from arduinoAPI import urls as arduinoURLs
+from domainsAPI import urls as domainsURLs
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -34,6 +35,9 @@ urlpatterns = [
 
     # Simulation API Routes
     path('api/simulation/', include(simulationURLs)),
+
+    # domainsAPI routes
+    path('api/', include(domainsURLs)),
 
     # libAPI routes
     path('api/', include(libURLs)),

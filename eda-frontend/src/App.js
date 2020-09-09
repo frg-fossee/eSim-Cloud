@@ -14,6 +14,7 @@ import Gallery from './pages/Gallery'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 
+import { fetchDomains } from './redux/actions/index'
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
 
@@ -57,6 +58,12 @@ function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
 }
 
 function App () {
+  const dispatch = useDispatch()
+ 
+  useEffect(() => {
+    dispatch(fetchDomains())
+  }, [dispatch])
+
   return (
     // Handles Routing for an application
     <HashRouter>

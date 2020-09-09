@@ -1,12 +1,13 @@
 // Main layout for home page.
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import { Link as RouterLink } from 'react-router-dom'
-import logo from '../static/logo.png'
+// import logo from '../static/logo.png'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -14,17 +15,36 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const DomainInfo = (props) => {
+  const domains = useSelector(state => state.DomainActionsReducer.domains)
+  const current = useSelector(state => state.DomainActionsReducer.activeDomain)
+  var info;
+
+  domains.forEach ( d => {
+    if (current === d.name) {
+      if (props.value === 'title') 
+        info = d.title
+      if (props.value === 'message') 
+        info = d.message
+      if (props.value === 'logo' )
+        info = <img src={'../' + d.logo_path} width='120' height='120' alt='Logo' /> 
+    }
+  })
+  return <div>{info}</div>
+};
+
 export default function Home () {
   const classes = useStyles()
+  //const dispatch = useDispatch()
 
-  useEffect(() => {
-    document.title = 'eSim'
-  })
+  // useEffect(() => {
+  //   dispatch(fetchDomains())
+  // }, [dispatch])
 
   return (
     <Container maxWidth="sm" component="main" className={classes.header}>
       <center>
-        <img src={logo} width='120' height='120' alt='Logo' />
+        <DomainInfo value='logo' />
       </center>
       <Typography
         component="h1"
@@ -33,7 +53,7 @@ export default function Home () {
         color="textPrimary"
         gutterBottom
       >
-        eSim on Cloud
+        <DomainInfo value='title' /> 
       </Typography>
       <Typography
         variant="h5"
@@ -41,7 +61,7 @@ export default function Home () {
         color="textSecondary"
         component="p"
       >
-        Online Circuit Simulator
+        <DomainInfo value='message' />
         <br></br>
         <br></br>
         <Button

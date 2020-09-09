@@ -14,6 +14,7 @@ services:
       - ./esim-cloud-backend/static:/usr/share/nginx/django_static
       - ./esim-cloud-backend/file_storage:/usr/share/nginx/django_file_storage
       - ./esim-cloud-backend/kicad-symbols/:/usr/share/nginx/kicad-libs
+      - ./esim-cloud-backend/images/:/usr/share/nginx/images
     depends_on:
       - django
       - eda-frontend
