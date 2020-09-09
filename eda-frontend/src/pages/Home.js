@@ -20,7 +20,7 @@ const DomainInfo = (props) => {
   const current = useSelector(state => state.DomainActionsReducer.activeDomain)
   var info
 
-  domains.forEach ( d => {
+  domains.forEach(d => {
     if (current === d.name) {
       if (props.value === 'title') {
         info = d.title
@@ -32,7 +32,7 @@ const DomainInfo = (props) => {
         info = <img src={'../' + d.logo_path} width='120' height='120' alt='Logo' />
       }
     }
-  })
+  });
   return <div>{info}</div>
 }
 

@@ -27,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 export default function SchematiEditor (props) {
-  //console.log(useSelector(state => state.DomainActionsReducer.activeDomain))
   const classes = useStyles()
   const compRef = React.createRef()
   const gridRef = React.createRef()

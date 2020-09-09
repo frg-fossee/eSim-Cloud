@@ -12,7 +12,7 @@ export default function (state = InitialState, action) {
     case actions.FETCH_DOMAINS: {
       return {
         ...state,
-        activeDomain: params, 
+        activeDomain: params,
         domains: action.payload
       }
     }

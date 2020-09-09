@@ -5,12 +5,12 @@ import * as actions from './actions'
 export const fetchDomains = () => (dispatch) => {
   // SAMPLE Response from API
   // [
-    // {
-    // "name": "eSim",
-    // "logo": "logo path"
-    // },
+  // {
+  // "name": "eSim",
+  // "logo": "logo path"
+  // },
   // ] -- Multiple dicts in array
-  api.get('domains/') //to be changed
+  api.get('domains/') // to be changed
     .then(
       (res) => {
         dispatch({
