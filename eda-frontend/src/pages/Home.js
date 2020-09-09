@@ -18,24 +18,27 @@ const useStyles = makeStyles((theme) => ({
 const DomainInfo = (props) => {
   const domains = useSelector(state => state.DomainActionsReducer.domains)
   const current = useSelector(state => state.DomainActionsReducer.activeDomain)
-  var info;
+  var info
 
   domains.forEach ( d => {
     if (current === d.name) {
-      if (props.value === 'title') 
+      if (props.value === 'title') {
         info = d.title
-      if (props.value === 'message') 
+      }
+      if (props.value === 'message') {
         info = d.message
-      if (props.value === 'logo' )
-        info = <img src={'../' + d.logo_path} width='120' height='120' alt='Logo' /> 
+      }
+      if (props.value === 'logo') {
+        info = <img src={'../' + d.logo_path} width='120' height='120' alt='Logo' />
+      }
     }
   })
   return <div>{info}</div>
-};
+}
 
 export default function Home () {
   const classes = useStyles()
-  //const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   // useEffect(() => {
   //   dispatch(fetchDomains())
@@ -53,7 +56,7 @@ export default function Home () {
         color="textPrimary"
         gutterBottom
       >
-        <DomainInfo value='title' /> 
+        <DomainInfo value='title' />
       </Typography>
       <Typography
         variant="h5"

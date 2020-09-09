@@ -27,7 +27,7 @@ export const fetchLibraries = (props) => (dispatch) => {
 // Api call for fetching components under specified library id
 export const fetchComponents = (libraryId) => (dispatch) => {
 // SAMPLE Response from API
-//   [
+// [
   // {
   //   "id": 14221,
   //   "name": "BAT54ADW",

@@ -14,9 +14,8 @@ import Gallery from './pages/Gallery'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 
-import { fetchDomains } from './redux/actions/index'
+import { fetchDomains, loadUser } from './redux/actions/index'
 import { useSelector, useDispatch } from 'react-redux'
-import { loadUser } from './redux/actions/index'
 
 // Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
 // and restricted routes disabled for authenticated users. [ e.g : login , signup ]
@@ -59,7 +58,7 @@ function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
 
 function App () {
   const dispatch = useDispatch()
- 
+
   useEffect(() => {
     dispatch(fetchDomains())
   }, [dispatch])
