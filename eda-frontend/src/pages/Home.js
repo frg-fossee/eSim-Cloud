@@ -32,7 +32,7 @@ const DomainInfo = (props) => {
         info = <img src={'../' + d.logo_path} width='120' height='120' alt='Logo' />
       }
     }
-  });
+  })
   return <div>{info}</div>
 }
 
