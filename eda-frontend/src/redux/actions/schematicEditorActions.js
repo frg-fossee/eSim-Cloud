@@ -1,7 +1,8 @@
 import api from '../../utils/Api'
 import * as actions from './actions'
 
-// Api call for fetching component library list
+// Api call for fetching component library list based on domain
+// props contain the domain name
 export const fetchLibraries = (props) => (dispatch) => {
 // SAMPLE Response from API
 // [
@@ -11,8 +12,7 @@ export const fetchLibraries = (props) => (dispatch) => {
   //   "saved_on": "2020-05-19T14:06:02.351977Z"
   // },
 // ] -- Multiple dicts in array
-// api.get(props + '/libraries/')   To Do: for fetching libraries based on domain
-  api.get('libraries/')
+  api.get(props + '/libraries/')
     .then(
       (res) => {
         dispatch({
