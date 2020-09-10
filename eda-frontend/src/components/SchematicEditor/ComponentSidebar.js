@@ -115,7 +115,7 @@ export default function ComponentSidebar ({ compRef }) {
         .catch((err) => { console.error(err) })
       setLoading(false)
     }, 800)
-  }, [searchText, searchOption])
+  }, [searchText, searchOption, domainCurrent])
 
   const handleCollapse = (id) => {
     // Fetches Components for given library if not already fetched
