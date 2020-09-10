@@ -101,7 +101,7 @@ export default function ComponentSidebar ({ compRef }) {
       // call api here
       setLoading(true)
 
-      api.get(`components/?${searchOptions[searchOption]}=${searchText}`)
+      api.get(domainCurrent + `/components/?${searchOptions[searchOption]}=${searchText}`)
         .then(
           (res) => {
             if (res.data.length === 0) {
@@ -120,7 +120,7 @@ export default function ComponentSidebar ({ compRef }) {
   const handleCollapse = (id) => {
     // Fetches Components for given library if not already fetched
     if (collapse[id] === false && components[id].length === 0) {
-      dispatch(fetchComponents(id))
+      dispatch(fetchComponents(id, domainCurrent))
     }
 
     // Updates state of collapse to show/hide dropdown

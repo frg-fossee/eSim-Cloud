@@ -25,7 +25,7 @@ export const fetchLibraries = (props) => (dispatch) => {
 }
 
 // Api call for fetching components under specified library id
-export const fetchComponents = (libraryId) => (dispatch) => {
+export const fetchComponents = (libraryId, domainCurrent) => (dispatch) => {
 // SAMPLE Response from API
 // [
   // {
@@ -57,7 +57,8 @@ export const fetchComponents = (libraryId) => (dispatch) => {
   //   ]
   // },
 // ] -- Multiple dicts in array
-  const url = 'components/?component_library=' + parseInt(libraryId)
+  const url = domainCurrent + '/components/?component_library=' + parseInt(libraryId)
+  console.log(url)
   api.get(url)
     .then(
       (res) => {

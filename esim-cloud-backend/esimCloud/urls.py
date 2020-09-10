@@ -17,6 +17,7 @@ from drf_yasg import openapi
 from django.conf.urls import url, include
 from arduinoAPI import urls as arduinoURLs
 from domainsAPI import urls as domainsURLs
+from xCosAPI import urls as xCosURLs
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -41,6 +42,9 @@ urlpatterns = [
 
     # libAPI routes
     path('api/', include(libURLs)),
+
+    # xCosAPI routes
+    path('api/', include(xCosURLs)),
 
     # libAPI routes
     path('api/', include(saveURLs)),

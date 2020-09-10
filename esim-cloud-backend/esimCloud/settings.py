@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'saveAPI',
     'publishAPI',
     'arduinoAPI',
-    'domainsAPI'
+    'domainsAPI',
+    'xCosAPI'
 ]
 
 MIDDLEWARE = [
