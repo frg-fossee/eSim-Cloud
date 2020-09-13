@@ -320,7 +320,7 @@ export class LCD16X2 extends CircuitElement {
       newDdRamAddress = direction > 0 ? 0x40 : 0x27;
     }
 
-    this.ddRamAddress = newDdRamAddress;
+    this.setDdRamAddress(newDdRamAddress);
   }
 
   /**
@@ -395,12 +395,22 @@ export class LCD16X2 extends CircuitElement {
   }
 
   /**
+   * Checks if power supply is enough
+   */
+  isPowerSupplyEnough() {
+    const vcc = this.getVCC();
+    if (vcc < 3.3 || vcc > 5) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * event listener for node `E`
    * @param newValue new value at the node `E`
    */
   eSignalListener(newValue) {
-    const vcc = this.getVCC();
-    if (vcc < 3.3 || vcc > 5) {
+    if (!this.isPowerSupplyEnough()) {
       console.log('Not enough power supply.');
       return;
     }
@@ -655,6 +665,7 @@ export class LCD16X2 extends CircuitElement {
     const v0Pin = this.nodes[2];
 
     if (!v0Pin.connectedTo) {
+      window['showToast']('V0 pin of the LCD is not connected to power source.');
       return;
     }
 
@@ -667,7 +678,6 @@ export class LCD16X2 extends CircuitElement {
       this.arduino = v0Pin.connectedTo.end.parent;
       connectedPin = v0Pin.connectedTo.end;
     } else {
-      window['showToast']('Arduino Not Found!');
       this.connected = false;
       return;
     }

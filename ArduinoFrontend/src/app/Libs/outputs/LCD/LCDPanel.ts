@@ -147,6 +147,12 @@ export class LCDPixel {
    */
   shift(distance, hidden) {
     this.posX += distance;
+
+    // if canvas is not set yet, return
+    if (!this.canvas) {
+      return;
+    }
+
     this.canvas.attr({
       x: this.posX + this.lcdX
     });
@@ -266,7 +272,7 @@ export class LCDPixel {
    * Refreshes the pixel if changes are pending, else does nothing
    */
   refresh() {
-    if (this.changesPending) {
+    if (this.changesPending && this.canvas) {
       this.canvas.attr({
         x: this.posX + this.lcdX,
         y: this.posY + this.lcdY,

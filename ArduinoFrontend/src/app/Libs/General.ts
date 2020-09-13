@@ -561,16 +561,16 @@ export class BreadBoard extends CircuitElement {
     // Stores set of node which has same y values
     const ytemp = {};
 
-    for (const node of this.joined) {
+    for (const node of this.nodes) {
       // Add a Node value change listener
-      node.addValueListener((v, cby, par) => {
-        if (par.x === par.x && cby.y === par.y) {
+      node.addValueListener((value, calledBy, parent) => {
+        if (calledBy.y === parent.y) {
           return;
         }
         if (node.label === '+' || node.label === '-') {
           for (const neigh of ytemp[node.y]) {
             if (neigh.x !== node.x) {
-              neigh.setValue(v, neigh);
+              neigh.setValue(value, neigh);
             }
           }
         } else {
@@ -578,14 +578,14 @@ export class BreadBoard extends CircuitElement {
           if (op >= 102) {
             for (const neigh of xtemp[node.x]) {
               if (neigh.y !== node.y && neigh.label.charCodeAt(0) >= 102) {
-                neigh.setValue(v, neigh);
+                neigh.setValue(value, neigh);
               }
             }
           }
           if (op <= 101) {
             for (const neigh of xtemp[node.x]) {
               if (neigh.y !== node.y && neigh.label.charCodeAt(0) <= 101) {
-                neigh.setValue(v, neigh);
+                neigh.setValue(value, neigh);
               }
             }
           }
