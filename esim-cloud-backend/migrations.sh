@@ -10,3 +10,5 @@ python manage.py collectstatic --noinput
 rm -r kicad-symbols/symbol_svgs/
 python manage.py seed_libs --clear
 python manage.py seed_libs --location kicad-symbols/
+python manage.py seed_xCos_libs --clear
+python manage.py seed_xCos_libs --location images/xcos_symbols
