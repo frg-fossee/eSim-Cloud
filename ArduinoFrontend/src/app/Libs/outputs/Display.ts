@@ -655,6 +655,7 @@ export class LCD16X2 extends CircuitElement {
     const v0Pin = this.nodes[2];
 
     if (!v0Pin.connectedTo) {
+      window['showToast']('V0 pin of the LCD is not connected to power source.');
       return;
     }
 
@@ -667,7 +668,6 @@ export class LCD16X2 extends CircuitElement {
       this.arduino = v0Pin.connectedTo.end.parent;
       connectedPin = v0Pin.connectedTo.end;
     } else {
-      window['showToast']('Arduino Not Found!');
       this.connected = false;
       return;
     }
