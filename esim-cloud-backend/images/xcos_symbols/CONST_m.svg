@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 49 41"
+   height="41"
+   width="49"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAApCAIAAAATe1a9AAABx0lEQVR42sXYyWrCYBDA8VwEX8CD
+TxMxB0XEu4I3Ke77rgfx4Mv4FIonD11oG5qWtmJbutjFLnQhDe1YrJSkzodfMPMDjzP5EyWJETRN
+Gw6HqVQqm81urF80Gg0Gg7Isfy0nQFAoFOr1eptWGQwGPp9PUZSlTel0ut/vb1kLjiiKIta0TUGS
+pKVN8AXvUMDOUywW26WANcXj8T0KjKZ9ClhTIpGQKWBNyWTygAKjSaGANcFd5ZACo+mIAuM6fkwB
+a8pkMicUGE2nFLAmeGwarU74NeJls9larZaqqv805XK5MS9oMjMLnE6nsWzWdMYLlpqZXdCVCfl8
+/pwXrDMzq7MomzVd8IJFZmZ1XC5XIBDwer1CoVC45AWLzMz+rel0OpFIpNvtzs5TsVi84gXrzMwa
+a+a/J2i6Xp3utHNssNvtxpp5U6lUuqHgcDiMNfOmcrl8SwG7jkPTHQWsqVKp3FNgND1QwJqq1eoj
+BaypVqs9UWA0PVPAmur1+gsFrKnRaLxSYDS9UcCams3mOwVG0wcFrKndbqsUsPd08L9lOp1+Wmsy
+mWBN8HgVDofhRq1ZBY7ldrux977wgSy/3+/xeMT1k34gQeAbf3jyQ+n/JLQAAAAASUVORK5CYII=
+"
+     preserveAspectRatio="none"
+     height="41"
+     width="49" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

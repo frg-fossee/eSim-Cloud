@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 29 21"
+   height="21"
+   width="29"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB0AAAAVCAIAAAA1onI1AAAA8ElEQVR42sWVIQ6EMBBFewlEHUfh
+BFUIJALBLbaq16ioQPQAkCB6KAQCsduELOnO0DLdLNmvJy8/v3+m7ElT3/ePuLqu27YtnGcU6DzP
+xpj0wDAM2dy2bYEdLGD5muucS5s9LGutM7g+2Uuz2PIFdxxHilk8zIqikFLGHJ089Fux+Y8xzjmm
+g8gAPf0YLBSgJ5KNcY/yMKydPk0TqCSRu5f9hFtVlRDC05dl+YLr1TQNJCqlfPbW2t/4DYlHprgM
+GfmWZYmJiT6A0KJ9qOsaExP9JS7nbftG2XoiN+M+3HjPiPcXLOdf/wvK/7auazj/Avl7FCnEfv0T
+AAAAAElFTkSuQmCC
+"
+     preserveAspectRatio="none"
+     height="21"
+     width="29" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

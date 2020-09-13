@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 41 29"
+   height="29"
+   width="41"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAAdCAIAAAC46dIaAAABmElEQVR42s2Wv8qCUBTADzQ6NEZb
+9AbR0lZjEuLSE4REbQ0NDYVbDQ0OvUK4RPQG4SC9RC8gNjQ0hDjc72Qo/TH7zrH8vsNFrqL3x++e
+41EQ1CgUBMDjKJVEu01dCcjs6TSGjRdXq++zMYrFO3CjITRN+H4m7Ad1ljSXfavOlU7BjtS50inY
+V/V6nS2djo3GzSZb+h37fBa6njTKZTGZJN1wPLLYCDaMy5Ed+OxwKA4HIhtTmBJ8jdPpUhAv8PDS
+GB/7SOC2o33cavD5rY617/We7eHr4Mh+MHgoPWCDLcsCgO12S7DHzb/BA7u4NE2r1WqdTodW+fN5
+RAFecfm+n8/n9/u9JEme59Hw+N4HeODl2DRNRVFwoqrqcrkkl16gCmI2S+4+sdFqtdbrNU42m40s
+y5y2o+scb9d1c7kchIFzx3Fo3otF4E3Pt2EY/X4/Ou12u3iFYDweh/mm13m1Wt3tdtGpbduVSoVQ
+52GKIYvGEm31aBT3fmfT1+7baib9HFd7Amf1HYsD/8Pv9x//t/zyf+3tSOyYP2aJBfd/6/jNAAAA
+AElFTkSuQmCC
+"
+     preserveAspectRatio="none"
+     height="29"
+     width="41" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

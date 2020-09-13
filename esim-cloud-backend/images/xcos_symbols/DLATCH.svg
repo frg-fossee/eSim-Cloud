@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 57 61"
+   height="61"
+   width="57"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADkAAAA9CAIAAACY61bEAAAEK0lEQVR42uWaSUgbURjHA654VxDc
+FaNXUQkq6NGDePIm6EENapSocYsLiqjgQVBEFFdQXFBxwe0oiNfWLmkbNS7pmta1+5K09m8HxqDv
+TSYPkgfp7zB8efne5Dczb2a+D6K4pmO1WvV6fW5ubmFhodqV5OfnFxQU7O7uXkuikBDNysqanp5+
+4BY2NjZycnJ0Oh2LK87ozMzMQ/eCEzw8POy0a15e3q7bwQlWqVROuxYVFT3iQVpamtOuxcXFj3mQ
+np7u0a4lJSVPeMDo+pQHLK6lpaUGHjC6PuOBp7tqNJrnPGB0fcEDFteysjIjDxhd93gg5RoYGNja
+2ooK8M4X5eXl+yQU//D19Y2NjW1padmXpKurKyIiwtvbOzIyEvG+DHx8fIg+N64CwcHBdzLgekAC
+yUKwtLSkVCrb2toOKPT390N0fX0dMbahoaEYOXAEzefW9X6GQ1ewsLAAXdqvJiQkTE5Oih8RY0Sm
+K9FYcR8hA+vVRAIJYoxLhsVgooCvkGCf7O/vb3IEzQfGBNeMjIzs7Ozw8PBDEkgQY5wGCB1SwFdI
+sE+G66EjaD6ZmZl3Rzs7O9EJzs/PYw0ckUCaGC8uLsbHxx9RSExMnJqaEj+iI0pOTj5yBM3n9rze
+GcXi0Gq1xySQLAQrKysxMTHt7e3HFAYGBkJCQjY3NxFji3hsbOzYETSfm/WKW/X+KKioqDghIezL
+y8srLi6uo6PjRJKenh48rYQp3d3dJzLAOiH63Lii070/KuHKBtp/LACUJg4z8bwn+ki9t+Bq5gHL
+O7aysvIlDxhdX/GAxbWqquo1Dxhd3/DA0111Ot1bHjC6vuMBi2t1dbWFB4yu73nA4lpTU/OBByz9
+loTr4OAgKiyUp6hxe3t7aWmoV8S4r68vKioKvRQmIpZwZem34HpKYnR0FL+6tbWF2GAwoCA6pYDd
+CsH4+DimbG9vI8YWR4gRiVlO91u1tbVnJFBBr62tnckAOxQCVFjLy8viOGKMSMxyut/CvXVOAtcI
+R38uA+xKCPz8/OynIEaRKjHL6X4LV+2CBFxx9BcyCAgIEAK42k9BDFfaLJZ+C+uVuC+sATT7clyD
+goKEQKVSoeERx1dXV1NSUuS4yu236urqLklMTExER0fjFkFsNBrVavWlIzAlLCxsZ2cHMbaI5+bm
+aMks/VZ9ff0VhZGREaVSiZYLc/H8oqXhJ8V4aGgIRyh4oGe8osPSb8H1owvQaDSpqamoUWgJLP2W
+Xq//xAOWdyxcP/OAxbWhoeELD/4D1688YHFtbGz8xgNG1+88YHFtamr6wQNG15888HTX5ubmXzxg
+cdVqtVa3Y7PZWP7vgprQZDLZ3AuqNhSQTruazWbUpr/dyN7ensQfnqRchUcsSji8S/64HnS2ELVY
+LIyuYHZ2NikpCWso3ZVg/xKXXuQvl6XQq4ZASXsAAAAASUVORK5CYII=
+"
+     preserveAspectRatio="none"
+     height="61"
+     width="57" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

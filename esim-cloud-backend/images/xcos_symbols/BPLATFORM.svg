@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 49 49"
+   height="49"
+   width="49"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADEAAAAxCAIAAAD8/tZLAAAEO0lEQVR42sWY/U9TVxjH+SeIaUxI
+wx+wZMmmm0PtmAu6TZZt9Re2TJQr3La0vL8EWIqUFhIcorguZptsxY4lXfx1MQMTkF+IQzEg0TKs
+Qht6aS11G74Epfuyk1RWeh/uObx9cn5o7+k553Ofc+9zn9uMxGaxa1ciIyO16fUJo5F3poxNc3K5
+0jjhoM+3c05Ap/ufkMGQkKTE0tKOOqWESihIm+20OlSiQdoCp2SoRIO0BU4sVAcPCgdpa5wQocOH
+hYNEOS0vL/v9/oqKivLy8mJOJnfvliWJa4jZbK6vr1cUhXKCUEFBweDg4M3tYnh4WJblSCSi6lRZ
+WTk0NHRLM82O1rcOGF57Yw9r+Iwjo6Ojt3iAlt1uV3Wy2WxjmpFkEzzeefc9e0vL9z09zvZ2w/t5
+OILjCMAYDw6HQ9UJYbytjdOtTixfcPx4IDAdi0VZC4WCJ06V4Dh6b/NAxclkMo1r4MaNP7BNObmH
+/pyeSgoltRAt9I6MjIxrZsUpMzOzubl5aU0uwY0woQFvXx+CgS1LEWINm4je3sveCc2sODF0Ol2K
+GZzuaOC7Hy5h1R89nrROvd7L6HVfvHhHM6+c1ppZLJZJDfze349VEY+0ThfcbvT2/OSZ1Eyq02oz
+xOmuNvI/O4aFf71yZa3T54Un0DVw7dpdzaR3MhgM+fn5WVlZ97TRPzCwJ2f/63vf7uruxnXNbMLK
+3JmzZyH0ReHJezykOsHG5XJJkuTz+bB3fs38dvVq3kdHYbB3/4Evi4qQBfYZcvEVIUTa9PPwymm1
+DbuerFbrFA84xa+7zn3w8Scsjx868mFrW/v4+MQUJytOer0+xSaZx6d3ghUno9GYYsMoKyu7vxNQ
+eRxOARXwRNtIC5BQTiibHqiQfPiLtQcklBOquRkVMC9uLu8vfbwNozB2hmQdp1kVMC8WSJu46YZR
+GDtLQjmhpguqsEGnIMk6TiEVNrh3IRLKqaqqak6FDV7jcySUU3V1dVgFj9er1uRS69FPjZc8HuI3
+YZJ1nBR+TpktiEShVDwbDCpCUE41NTXz/ARDoWJLKdN6+HBGYAbKqba2NipEMqnikSwwnKrH4fSI
+n7lwuKTUCiGUK8FgSGAGqh6vq6uLcYJX2KRQWFFiQlD1OJwWOOk8d57tGtLxgihUPY69e8wJzlK2
+2uB0sliej0QeC0HV49nZ2X/xE4lGmVZRiUlR5gVmoOpx7N3fQiQTfVf3BYHhVD3e0NDwDz+PYjGT
+rYzFKRKJCsxA1eONjY1POMFZMiFJNi/E40+EoOpxOD3l5Pw3brZr9wOBp6JQebypqekZJ4uLi1+d
+bmEvUjfHxp4JsY7TcyG63d/infjNfTm9P/cJDKecnE7nkiiD16/n5h1p7zgjMJb6n66zszMej7/Y
+XpAzKSfcRNg+PBRfbhcsYVL/+zKtjo6OtrY2+9bj+A8IYd1/ATfcwTugGhNQAAAAAElFTkSuQmCC
+
+"
+     preserveAspectRatio="none"
+     height="49"
+     width="49" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 69 49"
+   height="49"
+   width="69"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEUAAAAxCAIAAAADXPOpAAACwElEQVR42tWau2/aUBSHGTJE2VGE
+svBPoJgICcYMiMkbA0hYqGCe4v0YmBiyZEViQGIByUNG/otS1BbRlj6goLRJk6bpC+oWeqgjQp1w
+b7GBcj55uMccwf34XWyM0YzXw+7uWKORb3r9mGWX+zqaNfnk8/f4wE5BwOkD6HR/yVgsY44biyJa
+H1lEKwhnvT6zEa0mnLX7TCNaTThr95EiMptXFM7/8IFkDg9XFA7FRxTFVCplt9s5jnMvj+be3oPl
+PaHD4XC5XPV6neIDMlartVKpPNx4arUay7KRSITkA8lUq9U6HpxOZ7FYnOsDOT5CBQTFMMxcH1ia
+DWyYTKa5Ph6P5zE2zGbzXB+v1/sEGxSfp9gg+fA838QGycfn87WwQfF5hg2Sj9/vf44Nis8LbJB8
+AoHAS2yQfILB4CtsUHxeY2Pio9Vqc7mceOdqMRQKvVHHld8/2tmB7Yrn1fT8OxMfCZ1OJ7MKh8Nd
+FVwcHQ3293uNBmwDoxFKZT0Lcetz1wp83qoAJnomCNIYBgODQVnPQsh9Zq1gvfVUMNre7nW7N0W3
+OykV9SzE/T4Wi8Vms+n1+r4KxhrNbDna2lLWsxByHzDJ5/McxwmCAOvtVAXwZp/2+zcFzBVKRT0L
+ceszayJ9fqLR6DsVDBnm8uREGsMASmU9CzHxgXUlM5EAn/cquD4+/mE0njeb563W8OAAyulDsMyo
+PcqY+LAsKzORiMViZ+r4GgpJ5xYYzO4HH2qPMkjfD+Lx+AdsUHwusEHySSQSl9ig+HzEBsknmUx+
+wgbJJ5VKXWOD4vMZGySfdDr9BRskn0wm8w0bFJ/v2CD5ZLPZATYov1cNsUG6/wPn03a7LeKhUCiU
+y+W5Pp1Ox+12/0RCq9ViGIZyvx4OCTzPw3H912ZTKpWYP9eC9P9TVKtVg8EA69K8qcDcYJlNJ/wb
+fBA7+oS2v5EAAAAASUVORK5CYII=
+"
+     preserveAspectRatio="none"
+     height="49"
+     width="69" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

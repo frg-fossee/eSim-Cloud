@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 69 49"
+   height="49"
+   width="69"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEUAAAAxCAIAAAADXPOpAAAE2ElEQVR42tWZS0gjSRjHA2IcVESQ
+qFEREUEUPKgoWYhEfKAH8ZSDoKBoEDU+ia/4Qi85it5EEUWUKAqCB8WLrAdBEdeVXWVmzDzcB7M7
+7jrsg33gLu4/+9E1bXdSndGJY/2Q5quv6quqf3/V1dVGd+Of6+trp9NZXV1ts9kaHyu1tbUNDQ3H
+x8c0Zx1HTEVFhdvt/uLRs7W1ZbVaHQ4HTw8ys7y8fCwOdXV1MzMzfvUgj18KBRJlMpn86sHSPBEN
+s9nsV09zc/NXomGxWPzqaWlp+Vo0NPScigZPj91uPxMNnp7W1tanErrbPPUDpypA7tmDhp5nEhjm
+WQAE2Cx4PfD0tLW1PZfAMM9vg0PQxMQE2ZOTkyjKE0ghIyMjBoMhJCSEdQI7Pj4ebz3y7O7u5uTk
+wMlC5D3cAQ095xKK9UbOgoKCpaUlnCFgsGbykJqaGuw557dZX19PTEwku6ioCLsO7qs86vwe8PS0
+t7e/kMAwL1QcHR1lZGRkZmYeHh6qm9E9ZsXZ2dnU1FRKBa7k1Ov1mIS8T58DBQ5PT0dHx0sJDPNS
+xfb2NpZTXFzc3t6eupkiJCYmZmVlBYbH42FV0IOivJnPgQJHQ88rCQzz6jbYTNLT0xcXF3Hjs7Ky
+kAo4MT+co3yGREREbGxs4BY2NTWxKqw37DpwsmbyHu6AVw/u8ejoKL4OFHo6OztfSyieH3iqqqpc
+LhfV4rlHEQZCMCFqQFfG+Pg4JIWHh3d3d7Oq/f397OxsWoTkkfdwB7x6CKPRqFDV1dX1jWi816NW
+BT3fioZSj1wVUv+daPjWU1hYWFlZmZKS8r1oKPVACZ5ym822urqK9fZGNN7rkSuh5wcb0Q+i4dWD
+daVQQkDPjx8I7otPO9ixDK8eq9WqUEL09PS8/UAwj7d35T6xDN75oLe39ycZdO5KSEjAAZQ8Jycn
++fn59DakBgwqXlxcREdH47VN7XGGiIqKoqKiN3UsGwIH8NDQUFxhs5ngDR4ZGRkbGzs/Py+fpIae
+n1Xs7OwkJyeTXV5e7nA4Li8vWS1GUtj19fUYmzwwUPTXmzoWlJSUOJ1OGLjicMRqx8bGMO7a2hoL
+J3h6+vr6riRwlExLS2OnY3KGhYXhllzJQK3CPjg4SEpKopsHA0V/valj5UNgLcFmtWxcFk5o6Hkn
+gTPe5uYmDLo95MQAKL6Twarkttlsnpubw7EVBqc3n7FsCGQDNqclwdPT39//iwQWK74lEYBDA7og
+Z1lZGfYMOFkzDIlnhmzWDNn47H/cbjenN5+xpaWlg4ODMHAtLi5W1CpswNODJfurxPT0NCaB0/Hw
+8DC6ICc+GfLy8mjZkAchmBYVmRNgpWGh83vzGXt2doYhsB/k5uaenp6SU96z3AYaen4TDZ6egYGB
+30WDpwdL9g/R0NDzp2jw9AwNDf0lGhr/r/pbNHi//+B96vF4rsVhampqYWHBrx683RobG/8RBLwM
+TSYT7/dg2hLsdjv29X8fNzhPQQy+5zT0AJzn8YbGurTcjyu9/kanU/y9efLkc4Phnj1jblhmbMIa
+ej4aLpdaj9e5uvpxx3koPcBovCWmsPDGZrtRfReLo0eRoiAk52H1yFMUnOQ8uB6WouAk58H1UIos
+liAl51PoQWbKy4OUnE+hB5SUBCk54D/egEvm9RdqGAAAAABJRU5ErkJggg==
+"
+     preserveAspectRatio="none"
+     height="49"
+     width="69" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

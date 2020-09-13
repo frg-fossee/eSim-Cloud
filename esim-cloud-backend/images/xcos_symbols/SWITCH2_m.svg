@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 57 63"
+   height="63"
+   width="57"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADkAAAA/CAIAAADVI/fPAAAE0ElEQVR42u2ZWUhjVxjHIwo+BFER
+g0qIy4soiD4IxoiiPgkuDyoiAUGiFBdccQkqKLgjiApV8UFQREQRURCJPhk0SNAudDKx1i5YS+s4
+MzG2dMHW6Z85cJvGe2/u/cokUvJ/CMdzznfOL99ZvvNFxTsBPT4+XlxctLW1tba2fvTh1dDQYDQa
+b25u3glLIdQAUL1ef3h4+Im3dHR0VFdXd3t7K5u1vb3dbDZ/6l0Bt7+/XzZrc3PzZ77Q4OCgbFYs
+x+e+EMWv9fX1X/hCYqyRkZEDAwMPDw9uDTiYL2QKXlG46AVJYqxM0dHRbsRgtckXbh+MMz8/HxcX
+ZyPJM+tT4sbGxpfytb+/n56ejjukqKjoJUlSWV2J4ddzknQ6XVpaWldXF81cHmtubm5JSYlGo/mS
+pJmZGQyyurpKM5fKCsqRkZHa2tqNjQ3sgQuS7HY7hsJNSTP3zOpKyfZrU1PTV1SVlZWRbcVYcWDd
+KLm49TVVGRkZZFsx1vLycjdKppaWlm+owmYl21LiFli/pUqtVpNtKXELz9bvqMJziWyrVCp5ecTi
+Fl7ZV1RlZmaSbYV4xOIWWL+nan19nWwrxCMWt7AHrqmqqKhw/RORc3R0FPe8FFshHhALxi3cZT9Q
+hfcAV15aWsJQGHZsbEyKrRBPQUGBYNzCHviRqqmpKXxaLJa8vDw2ssFguLy8lGIrxPOPX5/GrY6O
+jp+o0mq1MA8KCsLIiAsmk0m6rRCPWNzCZDckraysREREYL6YmJjp6WksqyzzsLAwXh6xuNXZ2flK
+ps7OzrKyskAZEBBQU1OD58sr+UpOTublEYtbeIC+liw4D+8yXOMABS7O02uqKHELrG+kaW5uLj4+
+HpQqlWp8fBw1wH1DFSXf6u7ufutJx8fHuE1gjmNUVVWFm5zV7+zsvKWKkm+B1eFwIEB/LKDS0tLg
+4GBYpaSkWK1Wh4v0er2DTyKj4UZjfSj5FvaA0+mcnZ1VCCs0NHRhYQEL5/y3jEajk08io6GJ9aHk
+WwkJCff391jWOWGh9Z5PaOKtFxkNr0HWh5JvYQ/8TFV2djbZlpJv9fT0/ELV3t4e2ZaSb/X29v5K
+VWxsLNmWkm+B9Teqzs/PybaUfKuvr+93qnJycsi2RNY/fCEK6/Dw8IMvRPlde3Jy8u7u7k/vCrGA
+woqrDtsAMekvb4kFAsr/YRjuxMQE0rr+D6/B9xIB9cD63ORn9bP6Wf2sCt73LBIpZFFIg7wEoVAQ
+WVnh9PQUuMgunrVfufLJyQlw2SdXiWCo0WiQkbKf/kJCQqKiojY3N11HCAwMVKvVu7u7XA2e80ql
+UqVSoefQ0BArb29vu016dXWl0+lgzutpMVZgYTOgkJ+fz9EsLi4aDAbWExEYfUwmE5ILt3GwLFwl
+Y0XPg4OD8PBwruzagRWKi4vxCEGrbL9yrBaLhXNtUlKS3W5nPblB4QlWgC8TExOZY7hK1568Vtyk
+mE4I1PMeSE1NZWW4dmtrCy6srKx82pMrY2XNZjP7nlwlb0/X8n9ltVqtcCF3tuBacCM5sdlsIrNi
++2L1MR9SdgJrYWGhvD3Alu/pJQBQ7CfxWZeXl4GLo4MDRGC9vr7WarVSz5aQ8F2rq6vZTn3WcSv4
+vdbW1vwx1s/qZ/0/sv4NpEM3uIo3I5kAAAAASUVORK5CYII=
+"
+     preserveAspectRatio="none"
+     height="63"
+     width="57" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>

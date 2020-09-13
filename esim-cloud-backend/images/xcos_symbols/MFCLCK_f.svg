@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   viewBox="0 0 61 57"
+   height="57"
+   width="61"
+   id="svg2"
+   version="1.1">
+  <defs
+     id="defs6" />
+  <image
+     y="0"
+     x="0"
+     id="image10"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD0AAAA5CAIAAAAKkbSoAAAEV0lEQVR42tWaS0gbQRjHB9SYsxBF
+9BDBF+JJUXIQEjRiDnoyeFFQMIRqfL+j4tGrCiqCiCKCgeDBiyIiFE9ebFrbiLbR1j6wrS+0pQ/S
+kv6HXbZprLOY3cXMj7B8++03s//9diY7m3wkpC4pKSFCIj9GY8huV/c8RGXdo6P/0Q2n1xvbukFq
+6j+iLZaQwxEKBmNed0TKNUi2NrrDU65NsjXTLaVcm2RrpltIudmsUbK11I1M22waJVvUHQwG3W53
+bW2tw+Fwqsd+Wtoj9Tqsr69vbGz0+XyiboiurKxcXl5+EvOsr6/b7fbu7m6qG5n2eDw+fmhoaJid
+nSXI/1OuQOJNJhPB0HnGGyUlJaSpqek5b5jNZtLc3PyCN0Tdft6gul0u177ajI2NJSUlEUL2tYHq
+bmlpOWCC04+Pj0u7k5OT8LCbJCcnr62tHWiGqPuQCVRmZ2dLu7DhkW1yqCVUd2tr60smEJGXlzcx
+MQF7eno6Pz8fHna8hLA7MjJiMBji4uKwu7Ozg2/f+Pj4jIwMr9crNNna2srKytLpdJhs7M4FRN2v
+mKAjrAJycnJgY4uHKzyyTcLturo6fAkIu1hT4OJhoB9IF5wWi6WjowNGZ2enbOeA6m5raztigo6w
+LSsrq66utlqtkke2iWQjQ9IukirdDdwBwanX66EGhnB/juSgutvb24+ZoCNsNzY2cJrNzU3JI9vk
+tg2ge29vLyIeugOBAAzh/hzLIep+zQQdyXoYARHBVVVVNTU1yOvu7i4Wd4KztLS0q6sLBtZ6sp0D
+qhsD6w0TdHSX5/ah2/6IGCzoIB1ZT09Pn5qaEpzb29u5ubmYrFh03NVnOFQ3psLbWAK6ZWNE3e9i
+CdwK2RiqGwPrPW+Iuj/wBtWNKXzKG1R3T0/Px3uCqaNpvCyi7k/3BDo0jZeF6u7t7f18T6BD03hZ
+qO6+vr5zJngPLS4uxkMepxc8koFDBQUFCQkJ2MJmx+MZCf/CwsK5YkTdF0xsNhvm7tnZmeSBDsHA
+MsvtdsPAFs9qRjwW+7i21dXVCzWguvv7+y+ZJCYm4hLDPdARcQj3DjYjPjMzc25u7lIlRN1XTKAD
+lxjugY6IQ8gubEb8ysqK0WjEKvxKDajugYGBayYVFRWYu4iWPNAhGOXl5UNDQzCwxQKdHY+XD6yl
+8JZ1rRiqG0PzhgmGZlFRkTDPBI9k4NUahzAvCwsL/X6/bPzS0hKkY4LeKEPU/YU3qO7BwcGvvEF1
+Y2h+4w1R93feoLqHh4d/8Ib4O8RP3qC/f+O5EwgEgvwwMzOzuLhITk5OnE7nL07Aw8FkMon/A2Jq
+ulwufC/+jm3m5+chGu8Nf/939Xg8eMhh3JjluNTpbldqnOr1jw0GTdtCG4aHgv+LlVSYqFedQhSV
+O0RR9KBSdQpRVO4QRcJUqk4h0Zc7RJ0wNapTSPTlDlEnTI3qFPIwFSaKq1PIw1SYKK5OUVY3Y7VG
+X86jpG0o9AdEZCPEWsMlBAAAAABJRU5ErkJggg==
+"
+     preserveAspectRatio="none"
+     height="57"
+     width="61" />
+<metadata width="169" height="181" symbolPrefix="C" cmpPartDmgLabel="1:A" nameOfSymbol="C-CAP-1-A"><p-1><x>-85</x><y>40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-1><p-2><x>-85</x><y>-40</y><type>P
+                        </type><name>~</name><orientation>R</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-2><p-3><x>85</x><y>0</y><type>P
+                        </type><name>~</name><orientation>L</orientation>
+                        <length>2</length><pinShape></pinShape>
+                        </p-3></metadata>
+</svg>
