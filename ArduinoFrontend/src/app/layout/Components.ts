@@ -143,7 +143,7 @@ export class Vector {
  */
 export class OrientationUtil {
     public static getUnitVector(orientation: Orientation) {
-        switch(orientation) {
+        switch (orientation) {
             case Orientation.North:
                 return new Vector(0, 1);
             case Orientation.South:

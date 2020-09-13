@@ -71,12 +71,12 @@ export class Utils {
      *                  dest(x)
      *
      *          `OR`
-     * 
+     *
      *  src (x)
      *       |
      *       ---------dest(x)
      * depending on the alignment
-     * @param src source 
+     * @param src source
      * @param dest destination
      */
     private static getDirectPaths(src: Point, dest: Point): Path[] {
