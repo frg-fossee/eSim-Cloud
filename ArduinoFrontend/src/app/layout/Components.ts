@@ -2,6 +2,12 @@ import _ from 'lodash';
 // const _ =  require('lodash');
 
 export class MathHelper {
+    /**
+     * Checks if two numbers are close
+     * @param x number 1
+     * @param y number 2
+     * @param decimals number of decimals up to which equality is to be checked
+     */
     static areNumbersClose(x: number, y: number, decimals: number = 8) {
         if (isFinite(x) || isFinite(y)) {
             return Math.abs(x - y) < (10 ** (-1 * decimals));
@@ -9,21 +15,43 @@ export class MathHelper {
         return true;
     }
 
+    /**
+     * Computes n mod m
+     * @param n number n
+     * @param m number m
+     */
     static modulo(n: number, m: number) {
         return ((n % m) + m) % m;
     }
 }
 
+/**
+ * Orientation enum
+ */
 export enum Orientation {
     North = 90, East = 0, South = 270, West = 180
 }
 
+/**
+ * Abstract class for CanvasElement
+ */
 export abstract class CanvasElement {
     abstract getName(): string;
 }
 
+/**
+ * Vector class
+ * x î + y j
+ */
 export class Vector {
+    /**
+     * magnitude in i direction
+     */
     private x: number;
+
+    /**
+     * magnitude in j direction
+     */
     private y: number;
 
     constructor(x: number, y: number) {
@@ -31,34 +59,62 @@ export class Vector {
         this.y = y;
     }
 
+    /**
+     * Returns x component of the vector
+     */
     getX(): number {
         return this.x;
     }
 
+    /**
+     * Returns y component of the vector
+     */
     getY(): number {
         return this.y;
     }
 
+    /**
+     * Adds a vector
+     * @param vector vector to be added
+     */
     add(vector: Vector) {
         return new Vector(this.x + vector.x, this.y + vector.y);
     }
 
+    /**
+     * Subtracts a vector
+     * @param vector vector to be subtracted
+     */
     subtract(vector: Vector) {
         return new Vector(this.x - vector.x, this.y - vector.y);
     }
 
+    /**
+     * Multiplies with a scalar
+     * @param factor scalar number to be multiplied with the vector
+     */
     multiply(factor: number): Vector {
         return new Vector(this.x * factor, this.y * factor);
     }
 
+    /**
+     * Computes dot product with another vector
+     * @param vector vector instance
+     */
     dotProduct(vector: Vector): number {
         return vector.getX() * this.x + vector.getY() * this.y;
     }
 
+    /**
+     * Computes the slope of the vector
+     */
     getSlope(): number {
         return this.y / this.x;
     }
 
+    /**
+     * Returns the closest orientation of the vector
+     */
     getApproxOrientation(): Orientation {
         const absRelativeSlope = Math.abs(this.getSlope());
 
@@ -69,6 +125,9 @@ export class Vector {
         }
     }
 
+    /**
+     * Returns Orientation of the vector if it's horizontal or vertical
+     */
     getOrientation(): Orientation {
         if (this.x === 0) {
             return this.y > 0 ? Orientation.North : Orientation.South;
@@ -79,6 +138,9 @@ export class Vector {
     }
 }
 
+/**
+ * Utilities methods for Orientation enum
+ */
 export class OrientationUtil {
     public static getUnitVector(orientation: Orientation) {
         switch(orientation) {
@@ -93,15 +155,28 @@ export class OrientationUtil {
         }
     }
 
+    /**
+     * Adds two orientations
+     * @param orientation1 orientation instance 1
+     * @param orientation2 orientation instance 2
+     */
     public static addOrientations(orientation1: Orientation, orientation2: Orientation): Orientation {
         return MathHelper.modulo(orientation1 + orientation2, 360);
     }
 
+    /**
+     * Subtracts two orientations
+     * @param orientation1 orientation instance 1
+     * @param orientation2 orientation instance 2
+     */
     public static subtractOrientations(orientation1: Orientation, orientation2: Orientation): Orientation {
         return MathHelper.modulo(orientation1 - orientation2, 360);
     }
 }
 
+/**
+ * Cartesian-plane Point class
+ */
 export class Point {
     /**
      * x-coordinate of the point
@@ -118,43 +193,80 @@ export class Point {
         this.y = y;
     }
 
+    /**
+     * Loads point from a vector instance
+     * @param vector vector instance
+     */
     static loadFromVector(vector: Vector) {
         return new Point(vector.getX(), vector.getY());
     }
 
+    /**
+     * Returns string representation of the point
+     */
     toString(): string {
         return `(${this.x}, ${this.y})`;
     }
 
+    /**
+     * Returns x-coordinate of the point
+     */
     getX(): number {
         return this.x;
     }
 
+    /**
+     * Returns y-coordinate of the point
+     */
     getY(): number {
         return this.y;
     }
 
+    /**
+     * Adds another point and returns the resultant vector
+     * @param point point to be added
+     */
     add(point: Point) {
         return this.getVector().add(point.getVector());
     }
 
+    /**
+     * Subtracts another point and returns the resultant vector
+     * @param point point to be added
+     */
     subtract(point: Point) {
         return this.getVector().subtract(point.getVector());
     }
 
+    /**
+     * Converts to an instance of Vector class
+     */
     getVector(): Vector {
         return new Vector(this.x, this.y);
     }
 
+    /**
+     * Computes the distance from another point
+     * @param point another point
+     */
     calculateDistance(point: Point) {
         return Math.sqrt((this.x - point.x) ** 2 + (this.y - point.y) ** 2);
     }
 
+    /**
+     * Checks if the point is equal to another point
+     * @param point another point
+     */
     equals(point: Point) {
         return (this.x === point.getX()) && (this.y === point.getY());
     }
 }
 
+/**
+ * Line class
+ * (x)---------------(x)
+ * point1           point2
+ */
 export class Line {
     /**
      * Point 1 of the line
@@ -171,14 +283,17 @@ export class Line {
         this.point2 = point2;
     }
 
+    /**
+     * Returns string representation of the line
+     */
     toString(): string {
         return `${this.point1} --> ${this.point2}`;
     }
 
-    subtractLine(line: Line): Line {
-        return;
-    }
-
+    /**
+     * Checks if the line superimposes with another line
+     * @param line another line
+     */
     doesLineSuperimpose(line: Line): boolean {
         const slope1 = this.getSlope();
         const slope2 = line.getSlope();
@@ -191,6 +306,10 @@ export class Line {
         return false;
     }
 
+    /**
+     * Checks if the line intersects with another line
+     * @param line another line
+     */
     doesLineIntersect(line: Line): [boolean, Point] {
         // returns true iff the line from (a,b)->(c,d) intersects with (p,q)->(r,s)
         const [a, b] = [this.point1.getX(), this.point1.getY()];
@@ -213,43 +332,75 @@ export class Line {
         }
     }
 
+    /**
+     * Converts the line to a vector representation
+     */
     getVector(): Vector {
         return this.point2.subtract(this.point1);
     }
 
+    /**
+     * Checks if the line is horizontal
+     */
     isHorizontal(): boolean {
         return this.getSlope() === 0;
     }
 
+    /**
+     * Checks if the line is vertical
+     */
     isVertical(): boolean {
         return !isFinite(this.getSlope());
     }
 
+    /**
+     * Returns the array of the two ends of the line
+     */
     getEnds(): [Point, Point] {
         return [this.getPoint1(), this.getPoint2()];
     }
 
+    /**
+     * Returns point1 of the line
+     */
     getPoint1(): Point {
         return this.point1;
     }
 
+    /**
+     * Returns point2 of the line
+     */
     getPoint2(): Point {
         return this.point2;
     }
 
+    /**
+     * Computes the length of the line
+     */
     getLength(): number {
         return this.point1.calculateDistance(this.point2);
     }
 
+    /**
+     * Computes the slope of the line
+     */
     getSlope(): number {
         const lineVector = this.point1.subtract(this.point2);
-        return lineVector.getY() / lineVector.getX();
+        return lineVector.getSlope();
     }
 
+    /**
+     * Checks if a point lies on the line
+     * @param p point instance
+     */
     containsPoint(p: Point): boolean {
         return MathHelper.areNumbersClose(this.point1.calculateDistance(p) + this.point2.calculateDistance(p), this.getLength());
     }
 
+    /**
+     * Checks if the line equals another line
+     * @param line another line
+     */
     equals(line: Line): boolean {
         return (this.point1.equals(line.getPoint1()) && this.point2.equals(line.getPoint2())) ||
         (this.point2.equals(line.getPoint1()) && this.point1.equals(line.getPoint2()));
@@ -257,6 +408,10 @@ export class Line {
 }
 
 
+/**
+ * Path class
+ * A path is made up of multiple line segments or multiple points
+ */
 export class Path extends CanvasElement {
     /**
      * Lines inside the path
@@ -268,10 +423,19 @@ export class Path extends CanvasElement {
         this.points = points;
     }
 
+    /**
+     * Loads a single-line path from a Line object
+     * @param line line instance
+     */
     static loadFromLine(line: Line): Path {
         return new Path(line.getEnds());
     }
 
+    /**
+     * Checks if the path superimposes with another path anywhere
+     * @param path another path
+     * Returns [does path superimposes?, line of the path (this) that superimposes, line of the another path that superimposes]
+     */
     doesPathSuperimpose(path: Path): [boolean, Line, Line] {
         const lineSegments = path.getAllLineSegments();
         const thisLineSegments = this.getAllLineSegments();
@@ -291,6 +455,9 @@ export class Path extends CanvasElement {
         return null;
     }
 
+    /**
+     * Merges all the mergeable points in the path
+     */
     private mergePoints(): void {
         const allPoints = this.getAllPoints();
         let prevPoint = allPoints[0];
@@ -336,6 +503,10 @@ export class Path extends CanvasElement {
         this.points = newPoints;
     }
 
+    /**
+     * Detects and deletes all the cycles in the path
+     * @param i starting point index
+     */
     private deleteCycles(i?) {
         const lineSegments = this.getAllLineSegments();
         // TODO: Make this O(nlogn) when. O(n**2) should work fine for ~100-length paths
@@ -354,11 +525,17 @@ export class Path extends CanvasElement {
         }
     }
 
+    /**
+     * Simplifies the path by removing collinear points and cycles
+     */
     simplify(): void {
         this.mergeCollinearPoints();
         this.deleteCycles();
     }
 
+    /**
+     * Returns array of all line segments in the path
+     */
     getAllLineSegments(): Line[] {
         const result = [];
         let prevPoint = this.points[0];
@@ -369,10 +546,18 @@ export class Path extends CanvasElement {
         return result;
     }
 
+    /**
+     * Returns number of points in the path
+     */
     getNumberOfPoints() {
         return this.points.length;
     }
 
+    /**
+     * Returns the orientation of the line made by points at two indices
+     * @param pointIndex1 point 1 index
+     * @param pointIndex2 point 2 index
+     */
     private getLineSegmentOrientation(pointIndex1, pointIndex2) {
         const point1 = this.getAllPoints()[pointIndex1];
         const point2 = this.getAllPoints()[pointIndex2];
@@ -381,10 +566,17 @@ export class Path extends CanvasElement {
         return vector.getOrientation();
     }
 
+    /**
+     * Returns the string representation of the path
+     */
     toString(): string {
         return this.points.map(p => p.toString()).join('\n');
     }
 
+    /**
+     * Checks if the path contains a point
+     * @param point point
+     */
     containsPoint(point: Point): boolean {
         for (const line of this.getAllLineSegments()) {
             if (line.containsPoint(point)) {
