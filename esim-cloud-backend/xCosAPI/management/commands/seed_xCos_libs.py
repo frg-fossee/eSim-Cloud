@@ -65,6 +65,7 @@ def seed_libraries(self, location):
 
             block = Blocks(
                 name=node.attrib["name"],
+                full_name=node.attrib["name"],
                 svg_path=file,
                 thumbnail_path=file,
                 component_library=category
