@@ -16,6 +16,14 @@ const PATH_PRIORITY = {
 
 export class Utils {
 
+    /**
+     * Computes the optimal path between src and dest
+     * @param src source
+     * @param dest destination
+     * @param srcParentBlock parent block of the source point
+     * @param destParentBlock parent block of the destination point
+     * @param canvas canvas instance
+     */
     static getOptimalPath(src: Point, dest: Point, srcParentBlock: Block, destParentBlock: Block, canvas: Canvas): [Path, string] {
         const srcPoint = Utils.getPointAwayFromPort(src, srcParentBlock, canvas);
         const destPoint = Utils.getPointAwayFromPort(dest, destParentBlock, canvas);
@@ -56,6 +64,21 @@ export class Utils {
         return [false, null, null];
     }
 
+    /**
+     * Returns the direct path between src and dest if possible
+     *  src (x)---------------
+     *                       |
+     *                  dest(x)
+     *
+     *          `OR`
+     * 
+     *  src (x)
+     *       |
+     *       ---------dest(x)
+     * depending on the alignment
+     * @param src source 
+     * @param dest destination
+     */
     private static getDirectPaths(src: Point, dest: Point): Path[] {
         if (CanvasUtils.arePointsAligned(src, dest)) {
             return [new Path([src, dest])];
@@ -90,7 +113,15 @@ export class Utils {
         return [false, null, null];
     }
 
+    /**
+     * Returns the possible intermediary horizontal/vertical lines between the source and destination
+     * @param point1 source
+     * @param point2 destination
+     * @param canvas canvas
+     * @param isHorizontal preferred alignment of the path wrt source
+     */
     static getIntermediaryLines(point1: Point, point2: Point, canvas: Canvas, isHorizontal: boolean): [Line[], boolean] {
+        // TODO: refactor function for readability
         const result = [];
         const block = new Block(point1, point2);
         const [minX, maxX, minY, maxY] = [block.getMinX(), block.getMaxX(), block.getMinY(), block.getMaxY()];
@@ -196,6 +227,11 @@ export class Utils {
         return [result, isHorizontal];
     }
 
+    /**
+     * chooses the line while optimizing for the elegant layout
+     * @param lineList list of lines
+     * @param isOrientationHorizontal orientation of the lines
+     */
     static chooseLine(lineList: Line[], isOrientationHorizontal: boolean): Line {
         // split into ranges
         const getProperty = isOrientationHorizontal ? Point.prototype.getY : Point.prototype.getX;

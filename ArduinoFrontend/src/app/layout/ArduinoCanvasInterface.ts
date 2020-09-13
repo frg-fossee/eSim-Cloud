@@ -29,6 +29,9 @@ class PathProblem {
 }
 
 export class LayoutUtils {
+    /**
+     * Solves auto layout problem for `Arduino on Cloud` circuits
+     */
     static solveAutoLayout() {
         const canvas = LayoutUtils.generateCanvas();
 
@@ -44,6 +47,10 @@ export class LayoutUtils {
         }
     }
 
+    /**
+     * Sub function of `solveAutoLayout`, to be triggered on continuation
+     * @param canvas canvas
+     */
     private static continueSaveLayout(canvas: Canvas): void {
         const problemPaths = LayoutUtils.getSourcesAndDestsToSolve();
         for (const path of problemPaths) {
@@ -57,6 +64,9 @@ export class LayoutUtils {
         }
     }
 
+    /**
+     * Converts the circuit to canvas structure
+     */
     static generateCanvas(): Canvas {
         const allElements = LayoutUtils.getAllCircuitElements().filter(el => !(el instanceof Wire));
         let canvasElements = allElements.map(LayoutUtils.convertCircuitElementToBlock);
@@ -73,6 +83,11 @@ export class LayoutUtils {
         return new Canvas(canvasElements);
     }
 
+    /**
+     * Updates the path of the wire
+     * @param wire wire object
+     * @param path new path to be assigned
+     */
     static updateWirePath(wire: Wire, path: Path): void {
         let i = 1;
         const allPoints = path.getAllPoints();
@@ -82,10 +97,20 @@ export class LayoutUtils {
         }
     }
 
+    /**
+     * Converts any circuit element to Block object required for canvas
+     * @param element circuit element instance
+     */
     static convertCircuitElementToBlock(element: CircuitElement): Block {
         return LayoutUtils.convertBoundingBoxToBlock(element.getBoundingBox(), element.getName());
     }
 
+    /**
+     * Converts bounding box to Block object
+     * @param boundingBox Bounding box
+     * @param name name of the element
+     * @param isChild contains parent?
+     */
     static convertBoundingBoxToBlock(boundingBox: BoundingBox, name = 'Unnamed', isChild: boolean = false): Block {
         const diagonalPoint1 = new Point(boundingBox.x, boundingBox.y);
         const diagonalPoint2 = new Point(boundingBox.x + boundingBox.width, boundingBox.y + boundingBox.height);
@@ -93,6 +118,9 @@ export class LayoutUtils {
         return new Block(diagonalPoint1, diagonalPoint2, isChild, name);
     }
 
+    /**
+     * Gets all the sources and destinations of all the wires on the canvas
+     */
     static getSourcesAndDestsToSolve(): PathProblem[] {
         const allWires = LayoutUtils.getAllWires();
         const result: PathProblem[] = [];
@@ -105,6 +133,10 @@ export class LayoutUtils {
         return result;
     }
 
+    /**
+     * Returns source and destination of a given wire
+     * @param wire wire instance
+     */
     static getSourceAndDestinationForWire(wire: Wire): [Point, Point] {
         const start = wire.points[0];
         const source = new Point(start[0], start[1]);
@@ -115,15 +147,25 @@ export class LayoutUtils {
         return [source, dest];
     }
 
+    /**
+     * Converts a wire to a Path object
+     * @param wire wire instance
+     */
     static convertWireToPath(wire: Wire): Path {
         const points = wire.points.map(point => new Point(point[0], point[1]));
         return new Path(points);
     }
 
+    /**
+     * Returns list of all wires present in the circuit
+     */
     static getAllWires(): Wire[] {
         return Object.values(window.scope.wires);
     }
 
+    /**
+     * Returns list of all circuit elements on the canvas
+     */
     static getAllCircuitElements(): CircuitElement[] {
         return _.flatten(Object.values(window.scope));
     }
