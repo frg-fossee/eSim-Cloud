@@ -53,7 +53,7 @@ def seed_libraries(self, location):
                 lib_output_location
             )
             library = Library(
-                library_name=file,
+                library_name=file[:-4],
             )
             library.save()
             logger.info('Created Library Object')
