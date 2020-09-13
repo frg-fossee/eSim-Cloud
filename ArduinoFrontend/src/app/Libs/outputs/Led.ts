@@ -67,6 +67,13 @@ export class LED extends CircuitElement {
       fill: LED.colors[this.selectedIndex]
     });
   }
+  /**
+   * fills color in the led
+   * @param color color
+   */
+  fillColor(color) {
+    this.elements[3].attr({ fill: color });
+  }
   /** Simulation Logic */
   logic(val: number) {
     // console.log(val);
@@ -79,21 +86,26 @@ export class LED extends CircuitElement {
       if (val >= 5) {
         this.anim();
       } else {
-        this.elements[3].attr({ fill: 'none' });
+        this.fillColor('none');
       }
       if (val >= 0) {
         this.nodes[1].setValue(val, null);
       }
     } else {
       // TODO: Show Toast
+      this.handleConnectionError();
       window.showToast('LED is not Connected properly');
     }
   }
+  /**
+   * Handles connection error
+   */
+  handleConnectionError() {
+    this.fillColor('none');
+  }
   /** animation caller when start simulation is pressed */
   anim() {
-    this.elements[3].attr({
-      fill: `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`
-    });
+    this.fillColor(`r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`);
   }
   /**
    * Get The Led Name
@@ -143,7 +155,7 @@ export class LED extends CircuitElement {
   /** Function removes all the animations */
   closeSimulation(): void {
     this.prev = -2;
-    this.elements[3].attr({ fill: 'none' });
+    this.fillColor('none');
   }
 }
 /**
@@ -223,6 +235,21 @@ export class RGBLED extends CircuitElement {
     };
   }
   /**
+   * Removes glow
+   */
+  removeGlow() {
+    if (this.glow) {
+      this.glow.remove();
+      this.glow = null;
+    }
+  }
+  /**
+   * Handles connection error
+   */
+  handleConnectionError() {
+    this.removeGlow();
+  }
+  /**
    * Called on start simulation
    */
   initSimulation(): void {
@@ -231,10 +258,7 @@ export class RGBLED extends CircuitElement {
    * Remove Glow and clear the filling
    */
   closeSimulation(): void {
-    if (this.glow) {
-      this.glow.remove();
-      this.glow = null;
-    }
+    this.removeGlow();
     this.elements[1].attr({
       fill: 'none'
     });
