@@ -21,7 +21,7 @@ class Blocks(models.Model):
     keyword = models.CharField(max_length=200)
     symbol_prefix = models.CharField(max_length=10)
     component_library = models.ForeignKey(
-        Categories, on_delete=models.CASCADE, null=False, related_name='library')
+        Categories, on_delete=models.CASCADE, null=False, related_name='categories')
 
     # For Django Admin Panel
     def image_tag(self):

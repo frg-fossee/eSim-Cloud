@@ -11,7 +11,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
         fields = ('library_name', 'saved_on', 'id')
 
 
-class BlocksSerializer(serializers.ModelSerializer):
+class BlocksSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Blocks
         fields = (
