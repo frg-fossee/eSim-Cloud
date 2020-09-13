@@ -147,6 +147,12 @@ export class LCDPixel {
    */
   shift(distance, hidden) {
     this.posX += distance;
+
+    // if canvas is not set yet, return
+    if (!this.canvas) {
+      return;
+    }
+
     this.canvas.attr({
       x: this.posX + this.lcdX
     });
