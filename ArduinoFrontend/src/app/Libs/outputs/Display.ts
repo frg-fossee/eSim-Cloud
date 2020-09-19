@@ -11,6 +11,8 @@ import { LCDCharacterPanel } from './LCD/LCDPanel';
 import { DDRAM, CGROM, CGRAM, RAM } from './LCD/MemorySchema';
 import { MathUtils } from '../MathUtils';
 import { ArduinoUno } from './Arduino';
+import { Point } from '../Point';
+import { BreadBoard } from '../General';
 
 /**
  * LCD16X2 Class
@@ -661,7 +663,7 @@ export class LCD16X2 extends CircuitElement {
     this.generateCharacterPanels();
 
     // Get the V0 pin
-    let connectedPin = null;
+    let connectedPin: Point = null;
     const v0Pin = this.nodes[2];
 
     if (!v0Pin.connectedTo) {
@@ -669,20 +671,41 @@ export class LCD16X2 extends CircuitElement {
       return;
     }
 
-    if (v0Pin.connectedTo.start && v0Pin.connectedTo.start.parent.keyName === 'ArduinoUno') {
-      this.arduino = v0Pin.connectedTo.start.parent;
-      connectedPin = v0Pin.connectedTo.start;
-    }
+    const v0wire = v0Pin.connectedTo;
+    connectedPin = v0wire.start.parent === this ? v0wire.end : v0wire.start;
 
-    if (this.arduino === null && v0Pin.connectedTo.end && v0Pin.connectedTo.end.parent.keyName === 'ArduinoUno') {
-      this.arduino = v0Pin.connectedTo.end.parent;
-      connectedPin = v0Pin.connectedTo.end;
-    } else {
-      this.connected = false;
-      return;
-    }
+    if (connectedPin.parent.keyName === 'ArduinoUno') {
+      this.arduino = connectedPin.parent;
+    } else if (connectedPin.parent.keyName === 'BreadBoard') {
+      const breadboard = connectedPin.parent as BreadBoard;
 
-    this.connected = true;
+      const connectedRow = connectedPin.label.charCodeAt(0);
+      const isConnectedRowInFirstBlock = connectedRow <= 101;
+
+      for (const neighbor of breadboard.sameXNodes[connectedPin.x]) {
+        const neighborRow = neighbor.label.charCodeAt(0);
+        const isSameBlock = neighborRow <= 101 === isConnectedRowInFirstBlock;
+
+        if (neighbor.y !== connectedPin.y && isSameBlock) {
+          if (neighbor.connectedTo) {
+            let arduinoPin = null;
+
+            if (neighbor.connectedTo.start.parent.keyName === 'ArduinoUno') {
+              arduinoPin = neighbor.connectedTo.start;
+            } else if (neighbor.connectedTo.end.parent.keyName === 'ArduinoUno') {
+              arduinoPin = neighbor.connectedTo.end;
+            }
+
+            if (arduinoPin) {
+              this.arduino = arduinoPin.parent;
+              connectedPin = arduinoPin;
+              this.connected = true;
+              break;
+            }
+          }
+        }
+      }
+    }
 
     // Add PWM event on arduino
     (this.arduino as ArduinoUno).addPWM(connectedPin, this.v0Listener.bind(this));

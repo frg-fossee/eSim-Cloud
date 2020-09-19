@@ -303,6 +303,16 @@ export class BreadBoard extends CircuitElement {
   private solderedNodes: Point[] = null;
 
   /**
+   * Map of x and nodes with x-coordinates as x
+   */
+  public sameXNodes: {[key: string]: Point[]} = {};
+
+  /**
+   * Map of y and nodes with y-coordinates as y
+   */
+  public sameYNodes: {[key: string]: Point[]} = {};
+
+  /**
    * Breadboard constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
@@ -420,6 +430,17 @@ export class BreadBoard extends CircuitElement {
   /** init is called when the component is complety drawn to the canvas */
   init() {
     this.sortedNodes = _.sortBy(this.nodes, ['x', 'y']);
+
+    // initialise sameX and sameY node sets
+    for (const node of this.nodes) {
+      // create the set for x
+      this.sameXNodes[node.x] = this.sameXNodes[node.x] || [];
+      this.sameXNodes[node.x].push(node);
+
+      // Create the set for y
+      this.sameYNodes[node.y] = this.sameYNodes[node.y] || [];
+      this.sameYNodes[node.y].push(node);
+    }
 
     // add a connect callback listener
     for (const node of this.nodes) {
@@ -557,9 +578,9 @@ export class BreadBoard extends CircuitElement {
    */
   initSimulation(): void {
     // Stores set of node which has same x values
-    const xtemp = {};
+    const xtemp = this.sameXNodes;
     // Stores set of node which has same y values
-    const ytemp = {};
+    const ytemp = this.sameYNodes;
 
     for (const node of this.nodes) {
       // Add a Node value change listener
@@ -590,19 +611,7 @@ export class BreadBoard extends CircuitElement {
             }
           }
         }
-
       });
-
-      // create the set for x
-      if (!(node.x in xtemp)) {
-        xtemp[node.x] = [];
-      }
-      xtemp[node.x].push(node);
-      // Create the set for y
-      if (!(node.y in ytemp)) {
-        ytemp[node.y] = [];
-      }
-      ytemp[node.y].push(node);
     }
 
   }
