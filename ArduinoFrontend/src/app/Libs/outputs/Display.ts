@@ -674,6 +674,7 @@ export class LCD16X2 extends CircuitElement {
     const v0wire = v0Pin.connectedTo;
     connectedPin = v0wire.start.parent === this ? v0wire.end : v0wire.start;
 
+    // finding the arduino connected to the LCD to start PWM
     if (connectedPin.parent.keyName === 'ArduinoUno') {
       this.arduino = connectedPin.parent;
     } else if (connectedPin.parent.keyName === 'BreadBoard') {
@@ -682,6 +683,7 @@ export class LCD16X2 extends CircuitElement {
       const connectedRow = connectedPin.label.charCodeAt(0);
       const isConnectedRowInFirstBlock = connectedRow <= 101;
 
+      // checking for all the nodes with the same x-coordinate
       for (const neighbor of breadboard.sameXNodes[connectedPin.x]) {
         const neighborRow = neighbor.label.charCodeAt(0);
         const isSameBlock = neighborRow <= 101 === isConnectedRowInFirstBlock;
