@@ -417,7 +417,7 @@ export class Workspace {
    * @param event keyup Event
    */
   static keyUp(event: KeyboardEvent) {
-	
+
     if (window.isCodeEditorOpened) {
       return;
     }
@@ -436,7 +436,7 @@ export class Workspace {
     }
     if (event.ctrlKey && (event.key === 'a' || event.key === 'A')) {
       // paste
-      Workspace.rotateComponent(); 
+      Workspace.rotateComponent();
 
     }
     if (event.ctrlKey && (event.key === '+')) {
@@ -449,7 +449,7 @@ export class Workspace {
     }
     if (event.ctrlKey && (event.key === 'k' || event.key === 'K')) {
       // TODO: Open Code Editor
-    }  
+    }
     if (event.key === 'F5') {
       // TODO: Start Simulation
     }
@@ -790,7 +790,7 @@ export class Workspace {
       let y = +ele.style.top.replace('px', '');
       // console.log([x, y]);
       const key = Workspace.copiedItem.keyName;
-	if (x === 0 && y === 0) {
+	     if (x === 0 && y === 0) {
         x = Workspace.copiedItem.x + 100;
         y = Workspace.copiedItem.y + 100;
       }
@@ -801,40 +801,39 @@ export class Workspace {
       window['scope'][key].push(obj);
       // obj.copy(Workspace.copiedItem)
     }
-     
-  }
-	static rotateComponent(){
-	
-    // console.log(Workspace.copiedItem);
-	//const ele = d('wrapper');
-	
-	//	ele.style.transform='rotate(180deg)';
-	//Workspace.copiedItem=ele;
 
-     
+  }
+	static rotateComponent() {
+
+    // console.log(Workspace.copiedItem);
+	// const ele = d('wrapper');
+
+	// 	ele.style.transform='rotate(180deg)';
+	// Workspace.copiedItem=ele;
+
+
 
       // get the component id
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
       // get the component keyname
       const items = window.scope[key];
-  
-          // remove from DOM
-          window.Selected.rotate();
-          window.Selected = null;
-          window.isSelected = false;
-          
 
-       
-            
-          
+      window.Selected.rotate();
+      window.Selected = null;
+      window.isSelected = false;
+
+
+
+
+
       // Hide Property box
-      //window.hideProperties();
-   
+      // window.hideProperties();
+
   }
 
-    
-  
+
+
 
   /** Function called to clear output in console */
   static ClearConsole() {
@@ -1027,4 +1026,4 @@ export class Workspace {
     // Hide Loading animation
     window.hideLoading();
   }
-}class W extends Workspace{}
+}class W extends Workspace {}

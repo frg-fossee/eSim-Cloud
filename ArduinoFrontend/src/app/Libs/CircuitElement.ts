@@ -415,32 +415,32 @@ export abstract class CircuitElement {
     }
     this.delete();
   }
-  rotate(): void{
+  rotate(): void {
 	this.elements.rotate(90);
-	
+
       }
-	
+
 	}
   /**
    * Inherit this function to remove some variable
    */
-  delete() { }
+delete(); { }
   /**
    * Return the Name of the component.Can be inheriter to return custom name.
    */
-  getName() { return this.title; }
+getName(); { return this.title; }
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box
    */
-  abstract properties(): { keyName: string, id: number, body: HTMLElement, title: string };
+abstract; properties(); : { keyName: string, id; : number, body; : HTMLElement, title; : string; }
   /**
    * Initialize variable required for simulation
    * Called before simulation
    */
-  abstract initSimulation(): void;
+abstract; initSimulation(); : void;
   /**
    * Called when Stop Simulation
    */
-  abstract closeSimulation(): void;
+abstract; closeSimulation(); : void;
 }
