@@ -204,6 +204,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     holder.addEventListener('drop', Workspace.drop, true);
     holder.addEventListener('wheel', Workspace.mouseWheel, true);
     holder.addEventListener('paste', Workspace.paste, true);
+    holder.addEventListener('rotate', Workspace.rotate, true);
     document.body.addEventListener('mousemove', Workspace.bodyMouseMove);
     document.body.addEventListener('mouseup', Workspace.bodyMouseUp);
     document.body.addEventListener('keydown', Workspace.keyDown, true);
@@ -416,6 +417,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /** Function pastes the component */
   paste() {
     Workspace.pasteComponent();
+    Workspace.hideContextMenu();
+  }
+  rotate() {
+    Workspace.rotateComponent();
     Workspace.hideContextMenu();
   }
   /** Function copy the component */

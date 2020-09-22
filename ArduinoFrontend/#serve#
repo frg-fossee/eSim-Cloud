@@ -1,0 +1,3 @@
+ng lint
+ng test
+npm run doc

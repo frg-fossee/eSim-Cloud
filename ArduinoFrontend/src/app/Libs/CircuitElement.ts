@@ -415,6 +415,12 @@ export abstract class CircuitElement {
     }
     this.delete();
   }
+  rotate(): void{
+	this.elements.rotate(90);
+	
+      }
+	
+	}
   /**
    * Inherit this function to remove some variable
    */
