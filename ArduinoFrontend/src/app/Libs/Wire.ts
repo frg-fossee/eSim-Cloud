@@ -405,8 +405,10 @@ export class Wire {
    * Remove Glow of Wire
    */
   private removeGlows() {
-    while (this.glows.length !== 0) {
-      this.glows.pop().remove();
+    if (this.glows) {
+      while (this.glows.length !== 0) {
+        this.glows.pop().remove();
+      }
     }
   }
   /**
