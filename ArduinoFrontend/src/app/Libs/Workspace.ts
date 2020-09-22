@@ -1,16 +1,16 @@
+import { isNull, isUndefined } from 'util';
 import { Utils } from './Utils';
 import { Wire } from './Wire';
 import { ArduinoUno } from './outputs/Arduino';
 import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
-import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 
 /**
  * Declare window so that custom created function don't throw error
  */
-declare var window;
+declare let window;
 
 // Enum function for Colour values to print in console
 export enum ConsoleType { INFO, WARN, ERROR, OUTPUT }
@@ -22,35 +22,41 @@ export class Workspace {
    * The Worspace Translation x value
    */
   static translateX = 0.0;
+
   /**
    * The Worspace Translation y value
    */
   static translateY = 0.0;
+
   /**
    * Stores scaling factor value for zoom in/out
    */
   static scale = 1.0;
+
   /**
    * zoomin/out increments by 0.01
    */
   static readonly zooomIncrement = 0.01;
+
   /**
    * Translation Rate while holding and moving canvas
    */
   static readonly translateRate = 0.25;
+
   /**
    * tores initial position values for x and y
    */
   static moveCanvas = {
     x: 0,
     y: 0,
-    start: false
+    start: false,
   };
 
   /**
    * Stores value of copied component
    */
   static copiedItem: any;
+
   /**
    * If simulation is on progress or not
    */
@@ -60,7 +66,7 @@ export class Workspace {
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
-    const ele = (window['canvas'].canvas as HTMLElement);
+    const ele = (window.canvas.canvas as HTMLElement);
     ele.setAttribute('transform', `scale(
       ${Workspace.scale},
       ${Workspace.scale})
@@ -73,7 +79,7 @@ export class Workspace {
   static zoomOut() {
     Workspace.scale = Math.max(0.1, Workspace.scale - Workspace.zooomIncrement);
     Workspace.scale = Math.max(0.1, Workspace.scale - Workspace.zooomIncrement);
-    const ele = (window['canvas'].canvas as HTMLElement);
+    const ele = (window.canvas.canvas as HTMLElement);
     ele.setAttribute('transform', `scale(
       ${Workspace.scale},
       ${Workspace.scale})
@@ -92,6 +98,7 @@ export class Workspace {
     }
     return value;
   }
+
   /**
    * Initialize Global Variables
    * @param canvas Raphael Paper (Canvas)
@@ -100,73 +107,75 @@ export class Workspace {
     Workspace.simulating = false;
     Workspace.copiedItem = null;
     Workspace.moveCanvas = {
-      x: 0, y: 0, start: false
+      x: 0, y: 0, start: false,
     };
     Workspace.scale = 1.0;
     Workspace.translateY = 0.0;
     Workspace.translateX = 0.0;
-    window['canvas'] = canvas;
-    window['holder'] = document.getElementById('holder').getBoundingClientRect();
-    window['holder_svg'] = document.querySelector('#holder > svg');
-    window['ArduinoUno_name'] = {};
+    window.canvas = canvas;
+    window.holder = document.getElementById('holder').getBoundingClientRect();
+    window.holder_svg = document.querySelector('#holder > svg');
+    window.ArduinoUno_name = {};
     window.scope = null;
     // Stores all the Circuit Information
-    window['scope'] = {
-      wires: []
+    window.scope = {
+      wires: [],
     };
     for (const key in Utils.components) {
-      if (window['scope'][key] === null || window['scope'][key] === undefined) {
-        window['scope'][key] = [];
+      if (window.scope[key] === null || window.scope[key] === undefined) {
+        window.scope[key] = [];
       }
     }
     // True when simulation takes place
-    window['isSimulating'] = false;
+    window.isSimulating = false;
     // Stores the reference to the selected circuit component
-    window['Selected'] = null;
+    window.Selected = null;
     // True when a component is selected
-    window['isSelected'] = false;
+    window.isSelected = false;
     // Intialize a variable for Property Box
-    window['property_box'] = {
+    window.property_box = {
       x: 0,
       y: 0,
       element: document.getElementById('propertybox'),
       title: document.querySelector('#propertybox .title'),
       body: document.querySelector('#propertybox .body'),
-      mousedown: false
+      mousedown: false,
     };
   }
+
   /**
    * Initialize Property Box
    * @param toggle Callback For Property Box
    */
   static initProperty(toggle: (state: boolean) => void) {
     // Global Function to Show Properties of Circuit Component
-    window['showProperty'] = (callback: any) => {
+    window.showProperty = (callback: any) => {
       const data = callback();
-      window['property_box'].element.setAttribute('key', data.keyName);
-      window['property_box'].title.innerText = data.title;
-      window['property_box'].body.innerHTML = '';
-      window['property_box'].body.appendChild(data.body);
+      window.property_box.element.setAttribute('key', data.keyName);
+      window.property_box.title.innerText = data.title;
+      window.property_box.body.innerHTML = '';
+      window.property_box.body.appendChild(data.body);
       toggle(false);
     };
     // Global Function to Hide Properties of Circuit Component
-    window['hideProperties'] = () => {
+    window.hideProperties = () => {
       if (window.Selected && window.Selected.deselect) {
         window.Selected.deselect();
       }
-      window['Selected'] = null;
-      window['isSelected'] = false;
-      window['property_box'].body.innerHTML = '';
-      window['property_box'].title.innerText = 'Project Info';
+      window.Selected = null;
+      window.isSelected = false;
+      window.property_box.body.innerHTML = '';
+      window.property_box.title.innerText = 'Project Info';
       toggle(true);
     };
   }
+
   /**
    * Initialize Global Functions
    */
   static initializeGlobalFunctions() {
     // Global Function to show Popup Bubble
-    window['showBubble'] = (label: string, x: number, y: number) => {
+    window.showBubble = (label: string, x: number, y: number) => {
       // id label is empty don't show anything
       if (label === '') { return; }
       const ele = document.getElementById('bubblebox');
@@ -176,12 +185,12 @@ export class Workspace {
       ele.style.left = `${(x - ele.clientWidth / 2)}px`;
     };
     // Global Function to hide Popub Bubble
-    window['hideBubble'] = () => {
+    window.hideBubble = () => {
       const ele = document.getElementById('bubblebox');
       ele.style.display = 'none';
     };
     // Global Function to show Toast Message
-    window['showToast'] = (message: string) => {
+    window.showToast = (message: string) => {
       const ele = document.getElementById('ToastMessage');
 
       ele.style.display = 'block';
@@ -190,10 +199,9 @@ export class Workspace {
       setTimeout(() => {
         ele.style.display = 'none';
       }, 10000);
-
     };
     // Global Function to print output in Console
-    window['printConsole'] = (textmsg: string, type: ConsoleType) => {
+    window.printConsole = (textmsg: string, type: ConsoleType) => {
       const msg = document.getElementById('msg');
       const container = document.createElement('label');
       container.innerText = textmsg;
@@ -211,6 +219,7 @@ export class Workspace {
       msg.appendChild(container);
     };
   }
+
   /**
    * Before Unload Event Handler
    * @param event Before Unload Event
@@ -219,6 +228,7 @@ export class Workspace {
     event.preventDefault();
     event.returnValue = 'did you save the stuff?';
   }
+
   /**
    * Event Listener for mousemove on html body
    * @param event Mouse Event
@@ -227,19 +237,20 @@ export class Workspace {
     if (Workspace.moveCanvas.start) {
       const dx = (event.clientX - Workspace.moveCanvas.x) * Workspace.translateRate;
       const dy = (event.clientY - Workspace.moveCanvas.y) * Workspace.translateRate;
-      const ele = (window['canvas'].canvas as HTMLElement);
+      const ele = (window.canvas.canvas as HTMLElement);
       ele.setAttribute('transform', `scale(
         ${Workspace.scale},
         ${Workspace.scale})
         translate(${Workspace.translateX + dx},
         ${Workspace.translateY + dy})`);
     }
-    if (window['property_box'].start) {
-      const el = window['property_box'].element;
-      el.style.left = `${Workspace.minMax(0, window.innerWidth - 220, event.clientX - window['property_box'].x)}px`;
-      el.style.top = `${Workspace.minMax(0, window.innerHeight - 50, event.clientY - window['property_box'].y)}px`;
+    if (window.property_box.start) {
+      const el = window.property_box.element;
+      el.style.left = `${Workspace.minMax(0, window.innerWidth - 220, event.clientX - window.property_box.x)}px`;
+      el.style.top = `${Workspace.minMax(0, window.innerHeight - 50, event.clientY - window.property_box.y)}px`;
     }
   }
+
   /**
    * Event Listener for mouseup on html body
    * @param event Mouse Event
@@ -253,15 +264,16 @@ export class Workspace {
       Workspace.moveCanvas.start = false;
       document.getElementById('holder').classList.remove('grabbing');
     }
-    window['property_box'].start = false;
+    window.property_box.start = false;
   }
+
   /**
    * Event Listener for mousedown on html body
    * @param event MouseDown
    */
   static mouseDown(event: MouseEvent) {
     Workspace.hideContextMenu();
-    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+    if (window.isSelected && (window.Selected instanceof Wire)) {
       // if selected item is wire and it is not connected then add the point
       if (window.Selected.end == null) {
         const pt = Workspace.svgPoint(event.clientX, event.clientY);
@@ -273,17 +285,19 @@ export class Workspace {
       Workspace.moveCanvas = {
         x: event.clientX,
         y: event.clientY,
-        start: true
+        start: true,
       };
       document.getElementById('holder').classList.add('grabbing');
     }
   }
+
   /**
    * Event Handler On clicking on workspace
    * @param event Mouse Click event
    */
   static click(event: MouseEvent) {
   }
+
   /**
    * Event Listener for mouseMove on html body
    * @param event MouseMove
@@ -291,7 +305,7 @@ export class Workspace {
   static mouseMove(event: MouseEvent) {
     event.preventDefault();
     // if wire is selected then draw temporary lines
-    if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
+    if (window.isSelected && (window.Selected instanceof Wire)) {
       const pt = Workspace.svgPoint(event.clientX - 2, event.clientY - 2);
       window.Selected.draw(pt.x, pt.y);
     } else {
@@ -318,7 +332,7 @@ export class Workspace {
 
   static mouseOut(event: MouseEvent) {
 
-  }*/
+  } */
   /**
    * Event handler for mouse up on workspace.
    * @param event Mouse Event
@@ -344,14 +358,15 @@ export class Workspace {
   static hideContextMenu() {
     const element = document.getElementById('contextMenu');
     element.style.display = 'none';
-
   }
+
   /**
    * Event handler for copy on workspace.
    * @param event Clipboard Event
    */
   static copy(event: ClipboardEvent) {
   }
+
   /**
    * Event handler for CUT on workspace.
    * @param event Clipboard Event
@@ -364,7 +379,7 @@ export class Workspace {
    * @param event DoubleClick
    */
   static doubleClick(event: MouseEvent) {
-    if (window['isSelected'] && (window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
+    if (window.isSelected && (window.Selected instanceof Wire) && !window.Selected.isConnected()) {
       return;
     }
     if ((event.target as HTMLElement).tagName !== 'svg') {
@@ -373,6 +388,7 @@ export class Workspace {
     // deselect item
     window.hideProperties();
   }
+
   /**
    * function drags element to valid drop target
    * @param event DragEvent
@@ -381,6 +397,7 @@ export class Workspace {
     event.preventDefault();
     event.stopPropagation();
   }
+
   /**
    * function drags element over a valid drop target
    * @param event DragEvent
@@ -389,6 +406,7 @@ export class Workspace {
     event.preventDefault();
     event.stopPropagation();
   }
+
   /**
    * function drop element at drop target
    * @param event DragEvent
@@ -400,24 +418,26 @@ export class Workspace {
     const pt = Workspace.svgPoint(event.clientX, event.clientY);
     Workspace.addComponent(className, pt.x, pt.y, 0, 0);
   }
+
   /**
    * Key down event on workspace.
    * @param event Keyboard Event
    */
   static keyDown(event: KeyboardEvent) {
   }
+
   /**
    * Key Press event on workspace.
    * @param event Keyboard Event
    */
   static keyPress(event: KeyboardEvent) {
   }
+
   /**
    * event Listener to perform Keyboard Shortcut operations
    * @param event keyup Event
    */
   static keyUp(event: KeyboardEvent) {
-
     if (window.isCodeEditorOpened) {
       return;
     }
@@ -437,7 +457,6 @@ export class Workspace {
     if (event.ctrlKey && (event.key === 'a' || event.key === 'A')) {
       // paste
       Workspace.rotateComponent();
-
     }
     if (event.ctrlKey && (event.key === '+')) {
       // CTRL + +
@@ -454,6 +473,7 @@ export class Workspace {
       // TODO: Start Simulation
     }
   }
+
   /**
    * Event Listener for zoom in/zoom out on workspace
    * @param event MouseWheel Event
@@ -466,18 +486,21 @@ export class Workspace {
       Workspace.zoomOut();
     }
   }
+
   /**
    * Event handler for paste.
    * @param event Clipboard Event
    */
   static paste(event: ClipboardEvent) {
   }
+
   /**
    * Event handler for paste.
    * @param event Clipboard Event
    */
   static rotate(event: ClipboardEvent) {
   }
+
   /**
    * Function adds components by providing their keynames
    * @param classString string
@@ -489,29 +512,32 @@ export class Workspace {
   static addComponent(classString: string, x: number, y: number, offsetX: number, offsetY: number) {
     const myClass = Utils.components[classString].className;
     const obj = new myClass(
-      window['canvas'],
+      window.canvas,
       x - offsetX,
-      y - offsetY
+      y - offsetY,
     );
-    window['scope'][classString].push(obj);
+    window.scope[classString].push(obj);
   }
+
   /** Function updates the position of wires */
   static updateWires() {
-    for (const z of window['scope']['wires']) {
+    for (const z of window.scope.wires) {
       z.update();
     }
   }
+
   /**
    * Function returns point translated according to the svg
    * @param x number
    * @param y number
    */
   static svgPoint(x, y) {
-    const pt = window['holder_svg'].createSVGPoint();
+    const pt = window.holder_svg.createSVGPoint();
     pt.x = x;
     pt.y = y;
     return pt.matrixTransform(window.canvas.canvas.getScreenCTM().inverse());
   }
+
   /**
    * This function is required by deleteComponent() to recursively remove item
    * @param obj any
@@ -525,6 +551,7 @@ export class Workspace {
       }
     }
   }
+
   /**
    * Function saves the circuit Offline
    * @param name string
@@ -546,14 +573,14 @@ export class Workspace {
       canvas: {
         x: Workspace.translateX,
         y: Workspace.translateY,
-        scale: Workspace.scale
+        scale: Workspace.scale,
       },
       project: {
         name,
         description,
         created_at: Date.now(),
-        updated_at: Date.now()
-      }
+        updated_at: Date.now(),
+      },
     };
     // For each item in the scope
     for (const key in window.scope) {
@@ -569,8 +596,8 @@ export class Workspace {
       }
     }
     // Save the Thumbnail for the circuit
-    Download.ExportImage(ImageType.PNG).then(v => {
-      saveObj.project['image'] = v; // Add the base64 image
+    Download.ExportImage(ImageType.PNG).then((v) => {
+      saveObj.project.image = v; // Add the base64 image
       // console.log(saveObj);
       // Save or Update Circuit Ofline
       if (toUpdate) {
@@ -579,7 +606,6 @@ export class Workspace {
         SaveOffline.Save(saveObj, callback);
       }
     });
-
   }
 
   /**
@@ -598,7 +624,7 @@ export class Workspace {
 
     // Update the translation and scaling
     window.queue = 0;
-    const ele = (window['canvas'].canvas as HTMLElement);
+    const ele = (window.canvas.canvas as HTMLElement);
     ele.setAttribute('transform', `scale(
       ${Workspace.scale},
       ${Workspace.scale})
@@ -614,7 +640,7 @@ export class Workspace {
       // if key is not related to circuit then continue
       if (key !== 'id' && key !== 'canvas' && key !== 'project' && key !== 'wires') {
         // Initialize an array
-        window['scope'][key] = [];
+        window.scope[key] = [];
 
         // Get the data for respective component
         const components = data[key];
@@ -624,20 +650,19 @@ export class Workspace {
           const myClass = Utils.components[key].className;
           // Create Component Object from class
           const obj = new myClass(
-            window['canvas'],
+            window.canvas,
             comp.x,
-            comp.y
+            comp.y,
           );
 
           window.queue += 1;
           // Add to scope
-          window['scope'][key].push(obj);
+          window.scope[key].push(obj);
           // Load data for each object
           if (obj.load) {
             obj.load(comp);
           }
         }
-
       }
     }
     // Wait until all components are drawn
@@ -650,8 +675,8 @@ export class Workspace {
         window.hideLoading();
       }
     }, 100);
-
   }
+
   /** This function recreates the wire object */
   static LoadWires(wires: any[]) {
     if (isNull(wires) || isUndefined(wires)) {
@@ -659,7 +684,7 @@ export class Workspace {
     }
 
     for (const w of wires) {
-      const points = w.points;
+      const { points } = w;
       let start: Point = null;
       let end: Point = null;
 
@@ -689,7 +714,7 @@ export class Workspace {
         start.connectedTo = tmp;
         end.connectedTo = tmp;
         tmp.connect(end, true, true);
-        window['scope']['wires'].push(tmp);
+        window.scope.wires.push(tmp);
         tmp.update();
         if (start.connectCallback) {
           start.connectCallback(start);
@@ -702,16 +727,14 @@ export class Workspace {
         // alert('something went wrong');
       }
     }
-
   }
 
   /** Function to delete component fro Workspace */
   static DeleteComponent() {
-
     // Check if component is selected
-    if (window['Selected']) {
+    if (window.Selected) {
       // is selected component is an arduini uno then show confirm message
-      if (window['Selected'] instanceof ArduinoUno) {
+      if (window.Selected instanceof ArduinoUno) {
         const ans = confirm('The Respective code will also be lost!');
         if (!ans) {
           return;
@@ -764,15 +787,15 @@ export class Workspace {
       // Hide Property box
       window.hideProperties();
     } else {
-      window['showToast']('No Element Selected');
+      window.showToast('No Element Selected');
     }
   }
 
   /** Function to copy component fro Workspace */
   static copyComponent() {
-    if (window['Selected']) {
-      if (window['Selected'] instanceof Wire) {
-        window['showToast']('You Can\'t Copy Wire');
+    if (window.Selected) {
+      if (window.Selected instanceof Wire) {
+        window.showToast('You Can\'t Copy Wire');
         return;
       }
       Workspace.copiedItem = window.Selected;
@@ -797,43 +820,32 @@ export class Workspace {
       const pt = Workspace.svgPoint(x, y);
       // Workspace.addComponent(Workspace.copiedItem, pt.x, pt.y, 0, 0);
       const myClass = Utils.components[key].className;
-      const obj = new myClass(window['canvas'], pt.x, pt.y);
-      window['scope'][key].push(obj);
+      const obj = new myClass(window.canvas, pt.x, pt.y);
+      window.scope[key].push(obj);
       // obj.copy(Workspace.copiedItem)
     }
-
   }
-	static rotateComponent() {
 
+  static rotateComponent() {
     // console.log(Workspace.copiedItem);
-	// const ele = d('wrapper');
+    // const ele = d('wrapper');
 
-	// 	ele.style.transform='rotate(180deg)';
-	// Workspace.copiedItem=ele;
+    // 	ele.style.transform='rotate(180deg)';
+    // Workspace.copiedItem=ele;
 
+    // get the component id
+    const uid = window.Selected.id;
+    const key = window.Selected.keyName;
+    // get the component keyname
+    const items = window.scope[key];
 
+    window.Selected.rotate();
+    window.Selected = null;
+    window.isSelected = false;
 
-      // get the component id
-      const uid = window.Selected.id;
-      const key = window.Selected.keyName;
-      // get the component keyname
-      const items = window.scope[key];
-
-      window.Selected.rotate();
-      window.Selected = null;
-      window.isSelected = false;
-
-
-
-
-
-      // Hide Property box
-      // window.hideProperties();
-
+    // Hide Property box
+    // window.hideProperties();
   }
-
-
-
 
   /** Function called to clear output in console */
   static ClearConsole() {
@@ -873,18 +885,18 @@ export class Workspace {
 
     window.printConsole('Compiling Source Code', ConsoleType.INFO);
 
-    api.compileCode(toSend).subscribe(v => {
+    api.compileCode(toSend).subscribe((v) => {
       const taskid = v.uuid; // Get Compilation id
 
       const temp = setInterval(() => {
-        api.getHex(taskid).subscribe(hex => {
+        api.getHex(taskid).subscribe((hex) => {
           if (hex.state === 'SUCCESS' && !hex.details.error) {
             clearInterval(temp);
             let SUCCESS = true;
             for (const k in hex.details) {
               if (hex.details[k]) {
                 const d = hex.details[k];
-                window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                window.printConsole(`For Arduino ${nameMap[k].name}`, ConsoleType.INFO);
                 if (d.output && d.data) {
                   window.printConsole(d.output, ConsoleType.OUTPUT);
                   nameMap[k].hex = d.data;
@@ -906,13 +918,13 @@ export class Workspace {
           }
         });
       }, 2000);
-    }, error => {
+    }, (error) => {
       window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
       console.log(error);
       callback();
     });
-
   }
+
   /**
    * Start Simulation
    */
@@ -964,6 +976,7 @@ export class Workspace {
     // Update the simulation status
     Workspace.simulating = true;
   }
+
   /**
    * Function called when StopSimulation button is triggered
    * @param callback Callback when simulation is stopped
@@ -996,6 +1009,7 @@ export class Workspace {
     Workspace.simulating = false;
     callback();
   }
+
   /**
    * Function to clear the workspace
    */
@@ -1020,10 +1034,10 @@ export class Workspace {
     window.Selected = null;
     window.isSelected = false;
     // Reinitialize variables
-    Workspace.initalizeGlobalVariables(window['canvas']);
+    Workspace.initalizeGlobalVariables(window.canvas);
     // Hide Property box
     window.hideProperties();
     // Hide Loading animation
     window.hideLoading();
   }
-}class W extends Workspace {}
+} class W extends Workspace {}
