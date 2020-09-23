@@ -357,7 +357,12 @@ export class Workspace {
    */
   static cut(event: ClipboardEvent) {
   }
-
+  /**
+   * Event handler for ROTATE on workspace.
+   * @param event Clipboard Event
+   */
+  static rotate(event: ClipboardEvent) {
+  }
   /**
    * function deselects the item on Canvas
    * @param event DoubleClick
@@ -427,6 +432,10 @@ export class Workspace {
     if (event.ctrlKey && (event.key === 'c' || event.key === 'C')) {
       // Copy
       Workspace.copyComponent();
+    }
+    if (event.ctrlKey && (event.key === 'a' || event.key === 'A')) {
+      // Rotate
+      Workspace.rotateComponent();
     }
     if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
       // paste
@@ -789,6 +798,14 @@ export class Workspace {
       // obj.copy(Workspace.copiedItem)
     }
   }
+
+  /** Function to paste component fro Workspace */
+  static rotateComponent() {
+
+      window.Selected.rotate();
+      window.Selected = null;
+      window.isSelected = false;
+}
 
   /** Function called to clear output in console */
   static ClearConsole() {
