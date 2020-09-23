@@ -97,7 +97,7 @@
     "simulation": {},
     "data": {
         "barColor": "#A0C533",
-        "barGlowColor": "#FFFFFF",
+        "barGlowColor": "#000000",
         "columns": 16,
         "rows": 2,
         "gridRows": 8,

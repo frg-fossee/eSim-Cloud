@@ -3,6 +3,7 @@ import { Login } from './Login';
 import { Download, ImageType } from './Download';
 import { ApiService } from '../api.service';
 import { Workspace } from './Workspace';
+import { AlertService } from '../alert/alert-service/alert.service';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -83,7 +84,7 @@ export class SaveOnline {
             }
           }, err => {
             if (err.status === 401) {
-              alert('You Cannot Save the Circuit as you are not the Ownwer');
+              AlertService.showAlert('You Cannot Save the Circuit as you are not the Ownwer');
               return;
             }
             console.log(err);
@@ -104,7 +105,7 @@ export class SaveOnline {
                 }
               }
             }
-            alert(message);
+            AlertService.showAlert(message);
           });
 
         }
