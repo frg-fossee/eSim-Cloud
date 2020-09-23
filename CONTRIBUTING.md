@@ -32,16 +32,16 @@ If you just want to report a bug in our system or want to suggest a new feature 
 * An inactivity of over 3 weeks in your repo or no discussion on Discord, without prior intimation, will be considered that you are no longer interested. In such a case the assignee name will be removed so that the issue can be solved by someone else. You are however free to assign it to yourself again when you are available, if the issue is not assigned to someone else.
 
 ## Step 2: Fork Repository 
-* The first step is to fork the repository so that you have your own repository on which you can work on.
-* You must then identify the branch on which you would like to contribute. You are free to work on the existing branch, however, we recommend that you create a new branch (feature or bugfix) from the desired existing branch and work on the newly created branch. This way if we make some changes to the branch in our repo, you can upstream it at anytime for maintaining the updated codebase.
+* The first step is to fork the repository so that you have your own repository in which you can work on.
+* Create a **new branch** (feature or bugfix) from the **Develop** branch and work on the newly created branch. This way if we make some changes to the Develop branch in our repo, you can upstream it at anytime for maintaining the updated codebase.
 
 ## Step 3: Contribute
-* Once the branch is chosen or created, you can start contributing (coding, documentation, test cases, etc.). Make sure that you follow the [contributing guidelines](https://esim-cloud.readthedocs.io/en/latest/contribute/ContributingGuidelines.html).
+* Once the branch created, you can start contributing (coding, documentation, test cases, etc.). Make sure that you follow the [contributing guidelines](https://esim-cloud.readthedocs.io/en/latest/contribute/ContributingGuidelines.html).
 * We use GitHub Actions for continuous integrations that runs linting and testing operations.
 * There might be some changes to the original repository which will not reflect in your forked repository automatically. If you want to update it, sync it using the steps given in the link: https://help.github.com/articles/syncing-a-fork/
 
 ## Step 4: Make a pull request
-* When you feel that you are ready to merge your contributions into our repository, create a pull request.
+* When you feel that you are ready to merge your contributions into our repository, create a pull request **from your feature/bugfix branch to our Develop** branch.
 * Select an appropriate label from the list E.g. enhancement, bug fix, etc.
 * Please go through the [pull request guidelines](https://esim-cloud.readthedocs.io/en/latest/contribute/PullRequest.html).
 * Our reviewing team will review your pull request made and will interact with you by posting comments. You may be asked to modify incase there is any issue.
