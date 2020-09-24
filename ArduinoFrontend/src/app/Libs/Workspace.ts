@@ -502,7 +502,7 @@ export class Workspace {
       // paste
       Workspace.pasteComponent();
     }
-     if (event.ctrlKey && (event.key === 'a' || event.key === 'A')) {
+    if (event.ctrlKey && (event.key === 'a' || event.key === 'A')) {
       // Rotate
       Workspace.rotateComponent();
     }
