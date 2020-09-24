@@ -411,7 +411,7 @@ export abstract class CircuitElement {
     this.delete();
   }
   /**
-   * Rotates Component 
+   * Rotates Component
    */
   rotate(): void {
     this.elements.rotate(90);
