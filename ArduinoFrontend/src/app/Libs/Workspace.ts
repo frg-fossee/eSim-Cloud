@@ -8,7 +8,8 @@ import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 
 /**
- * Declare window so that custom created function don't throw error
+* Declare window so that custom created function don't throw error
+* Inserting line for just testing a commit
  */
 declare var window;
 
