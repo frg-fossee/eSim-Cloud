@@ -200,6 +200,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     holder.addEventListener('contextmenu', Workspace.contextMenu, true);
     holder.addEventListener('copy', Workspace.copy, true);
     holder.addEventListener('cut', Workspace.cut, true);
+    holder.addEventListener('rotate', Workspace.rotate, true);
     holder.addEventListener('dblclick', Workspace.doubleClick, true);
     holder.addEventListener('dragleave', Workspace.dragLeave, true);
     holder.addEventListener('dragover', Workspace.dragOver, true);
@@ -423,6 +424,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /** Function copy the component */
   copy() {
     Workspace.copyComponent();
+    Workspace.hideContextMenu();
+  }
+  /** Function rotate the component */
+  rotate() {
+    Workspace.rotateComponent();
     Workspace.hideContextMenu();
   }
   /** Function saves or updates the project Online */
