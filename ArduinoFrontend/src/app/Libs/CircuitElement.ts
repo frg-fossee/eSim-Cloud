@@ -72,7 +72,7 @@ export abstract class CircuitElement {
     // Create Raphael Set
     this.elements = window['canvas'].set();
     // setting rotation angle to 0
-    this.rotation=0;
+    this.rotation = 0;
     // if filename is present fetch the file
     if (filename) {
       fetch(`./assets/jsons/${filename}`)
@@ -279,19 +279,17 @@ export abstract class CircuitElement {
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
-    
     this.elements.drag((dx, dy) => {
       const bBox = this.elements.getBBox();
       const cx = this.x + bBox.height / 2;   
-      const cy = this.y+ bBox.width / 2;
-      
-      
+      const cy = this.y+ bBox.width / 2; 
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      if(this.rotation%180==0) this.elements.rotate(this.rotation, cy,cx);
-      else this.elements.rotate(this.rotation, cx,cy);
-      
-      
-      
+      if(this.rotation%180==0) {
+        this.elements.rotate(this.rotation, cy,cx);
+      }
+      else {
+        this.elements.rotate(this.rotation, cx,cy);
+      }
       // tmpx = this.tx + dx;
       // tmpy = this.ty + dy;
       fdx = dx;
@@ -433,34 +431,34 @@ export abstract class CircuitElement {
     let fdy = 0;
     let tmpar = [];
     const bBox = this.elements.getBBox();
-    
     const cx = this.x+ bBox.width/2;
     const cy = this.y+bBox.height/ 2;
     this.rotation = this.rotation+90;
-    if(this.rotation%180==0) this.elements.rotate(90, cy,cx);
-    else this.elements.rotate(90, cx,cy);
-    tmpar = [];
-      for (const node of this.nodes) {
-        // node.remainHidden();
-        tmpar.push(
-          [node.x, node.y]
-        );}
-      if(this.rotation%180==0) {
-	fdx=bBox.height/2;
-	fdy=bBox.width/2;
-	}
-      else {
-	fdy=bBox.height/2;
-	fdx=bBox.width/2;
-	}   
-      for (let i = 0; i < this.nodes.length; ++i) {
+    if(this.rotation%180 === 0) {
+      this.elements.rotate(90, cy,cx);
+    }
+    else {
+      this.elements.rotate(90, cx,cy);
+    }
+    for (const node of this.nodes) {
+    // node.remainHidden();
+      tmpar.push(
+        [node.x, node.y]
+      );}
+    if(this.rotation%180==0) {
+	  fdx=bBox.height/2;
+	  fdy=bBox.width/2;
+	  }
+    else {
+	  fdy=bBox.height/2;
+	  fdx=bBox.width/2;
+	  }   
+    for (let i = 0; i < this.nodes.length; ++i) {
         //if(this.rotation==90) this.nodes[i].move(tmpar[i][1]-tmpar[i][1]/2,tmpar[i][0]+10);
         //else if(this.rotation==90) 
         this.nodes[i].move(-tmpar[i][1]+this.ty+fdy+this.tx+ fdx+193,tmpar[i][0]-this.tx -fdx-81+this.ty+fdy+81);
-      }
     }
-     
-  
+  }
   /**
    * Inherit this function to remove some variable
    */
