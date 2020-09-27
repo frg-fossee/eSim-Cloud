@@ -18,6 +18,8 @@ export abstract class CircuitElement {
    * Stores the rotation angle of the Component
    */
   public rotation: number;
+  public cx: number;
+  public cy: number;
   /**
    * Stores the Nodes of a Component
    */
@@ -73,6 +75,8 @@ export abstract class CircuitElement {
     this.elements = window['canvas'].set();
     // setting rotation angle to 0
     this.rotation = 0;
+    this.cx=0;
+    this.cy=0;
     // if filename is present fetch the file
     if (filename) {
       fetch(`./assets/jsons/${filename}`)
@@ -280,18 +284,11 @@ export abstract class CircuitElement {
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
-      const bBox = this.elements.getBBox();
-      const cx = this.x + bBox.height / 2;   
-      const cy = this.y+ bBox.width / 2; 
+      var bBox = this.elements.getBBox();
+      var cx = this.x + bBox.height / 2;   
+      var  cy = this.y+ bBox.width / 2 ;
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      if(this.rotation%180==0) {
-        this.elements.rotate(this.rotation, cy,cx);
-      }
-      else {
-        this.elements.rotate(this.rotation, cx,cy);
-      }
-      // tmpx = this.tx + dx;
-      // tmpy = this.ty + dy;
+      this.elements.rotate(this.rotation,this.cx,this.cy);
       fdx = dx;
       fdy = dy;
       for (let i = 0; i < this.nodes.length; ++i) {
@@ -426,20 +423,17 @@ export abstract class CircuitElement {
   /**
    * Rotates Component
    */
-  rotate(): void {
+    rotate(): void {
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
     const bBox = this.elements.getBBox();
-    const cx = this.x+ bBox.width/2;
-    const cy = this.y+bBox.height/ 2;
+    if(this.rotation==0){     
+      this.cx = this.x+ bBox.width/2;
+      this.cy = this.y+bBox.height/ 2;
+    }
     this.rotation = this.rotation+90;
-    if(this.rotation%180 === 0) {
-      this.elements.rotate(90, cy,cx);
-    }
-    else {
-      this.elements.rotate(90, cx,cy);
-    }
+    this.elements.rotate(90,this.cx,this.cy);
     for (const node of this.nodes) {
     // node.remainHidden();
       tmpar.push(
@@ -454,9 +448,7 @@ export abstract class CircuitElement {
 	  fdx=bBox.width/2;
 	  }   
     for (let i = 0; i < this.nodes.length; ++i) {
-        //if(this.rotation==90) this.nodes[i].move(tmpar[i][1]-tmpar[i][1]/2,tmpar[i][0]+10);
-        //else if(this.rotation==90) 
-        this.nodes[i].move(-tmpar[i][1]+this.ty+fdy+this.tx+ fdx+193,tmpar[i][0]-this.tx -fdx-81+this.ty+fdy+81);
+        this.nodes[i].move(-tmpar[i][1]+this.ty+fdy+this.tx+ fdx+193+this.x+this.y-200,tmpar[i][0]-this.tx -fdx-81+this.ty+fdy+81-this.x+this.y);
     }
   }
   /**
