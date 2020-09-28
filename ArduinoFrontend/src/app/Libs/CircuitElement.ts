@@ -18,11 +18,11 @@ export abstract class CircuitElement {
    * Stores the rotation angle of the Component
    */
   public rotation: number;
-   /**
+  /**
    * Stores the centre x coordinate of the Component
    */
   public cx: number;
-   /**
+  /**
    * Stores the centre y coordinate of the Component
    */
   public cy: number;
@@ -291,11 +291,11 @@ export abstract class CircuitElement {
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
-      var bBox = this.elements.getBBox();
-      var cx = this.x + bBox.height / 2;   
-      var  cy = this.y + bBox.width / 2 ;
+      const bBox = this.elements.getBBox();
+      const cx = this.x + bBox.height / 2;
+      const cy = this.y + bBox.width / 2 ;
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      this.elements.rotate(this.rotation,this.cx,this.cy);
+      this.elements.rotate( this.rotation , this.cx , this.cy );
       fdx = dx;
       fdy = dy;
       for (let i = 0; i < this.nodes.length; ++i) {
@@ -433,31 +433,31 @@ export abstract class CircuitElement {
     rotate(): void {
     let fdx = 0;
     let fdy = 0;
-    let tmpar = [];
+    const tmpar = [];
     const bBox = this.elements.getBBox();
-    if(this.rotation==0){     
+    if( this.rotation === 0 ) {
       this.cx = this.x + bBox.width / 2;
-      this.cy = this.y +bBox.height / 2;
+      this.cy = this.y + bBox.height / 2;
     }
     this.rotation = this.rotation+90;
-    this.elements.rotate(90,this.cx,this.cy);
+    this.elements.rotate( 90 , this.cx , this.cy );
     for (const node of this.nodes) {
     // node.remainHidden();
       tmpar.push(
         [node.x, node.y]
-      );}
-    if(this.rotation % 180 === 0) {
-	  fdx = bBox.height / 2;
-	  fdy = bBox.width / 2;
+      ); }
+    if( this.rotation % 180 === 0 ) {
+	   fdx = bBox.height / 2;
+	   fdy = bBox.width / 2;
 	  }
     else {
-	  fdy=bBox.height/2;
-	  fdx=bBox.width/2;
-	  }   
+	   fdy = bBox.height / 2;
+	   fdx = bBox.width / 2;
+	  }
     for (let i = 0; i < this.nodes.length; ++i) {
-        var nx = - tmpar[i][1] + this.ty + fdy + this.tx + fdx + this.x + this.y -7;
-        var ny = tmpar[i][0] - this.tx - fdx + this.ty + fdy - this.x + this.y;
-        this.nodes[i].move(nx,ny);
+        const nx = - tmpar[i][1] + this.ty + fdy + this.tx + fdx + this.x + this.y -7;
+        const ny = tmpar[i][0] - this.tx - fdx + this.ty + fdy - this.x + this.y;
+        this.nodes[i].move( nx , ny );
     }
   }
   /**
