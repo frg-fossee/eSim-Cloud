@@ -1,6 +1,6 @@
-import { Point } from './Point';
-import { Wire } from './Wire';
-import { isNull } from 'util';
+import { Point } from "./Point";
+import { Wire } from "./Wire";
+import { isNull } from "util";
 /**
  * Abstract Class Circuit Elements
  * Inherited by Each Circuit Component
@@ -68,20 +68,26 @@ export abstract class CircuitElement {
    * @param filename Json Data filename
    * @param canvas Raphael Canvas
    */
-  constructor(keyName: string, public x: number, public y: number, filename: string = '', canvas: any = null) {
+  constructor(
+    keyName: string,
+    public x: number,
+    public y: number,
+    filename: string = "",
+    canvas: any = null
+  ) {
     this.id = Date.now(); // Generate New id
     this.keyName = keyName; // Set key name
     // Create Raphael Set
-    this.elements = window['canvas'].set();
+    this.elements = window["canvas"].set();
     // setting rotation angle to 0
     this.rotation = 0;
-    this.cx=0;
-    this.cy=0;
+    this.cx = 0;
+    this.cy = 0;
     // if filename is present fetch the file
     if (filename) {
       fetch(`./assets/jsons/${filename}`)
-        .then(v => v.json())
-        .then(obj => {
+        .then((v) => v.json())
+        .then((obj) => {
           // get the title
           this.title = obj.name;
 
@@ -107,13 +113,13 @@ export abstract class CircuitElement {
             node.relativeMove(this.tx, this.ty);
           }
           // Decrease the Queue
-          window['queue'] -= 1;
+          window["queue"] -= 1;
           // Call the init method
           this.init();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
-          window['showToast']('Failed to load');
+          window["showToast"]("Failed to load");
           // TODO: Delete the Component
         });
     }
@@ -148,39 +154,39 @@ export abstract class CircuitElement {
     for (const item of drawData) {
       let element;
       // Draw image
-      if (item.type === 'image') {
+      if (item.type === "image") {
         element = canvas.image(
-            item.url,
-            this.x + item.x,
-            this.y + item.y,
-            item.width,
-            item.height
-          );
-      } else if (item.type === 'path') {
+          item.url,
+          this.x + item.x,
+          this.y + item.y,
+          item.width,
+          item.height
+        );
+      } else if (item.type === "path") {
         element = this.DrawPath(canvas, item);
-      } else if (item.type === 'rectangle') {
+      } else if (item.type === "rectangle") {
         // Draw rectangle
-        element = canvas.rect(
+        element = canvas
+          .rect(
             this.x + item.x,
             this.y + item.y,
             item.width,
             item.height,
             item.radius || 0
-          ).attr({
-            fill: item.fill || 'none',
-            stroke: item.stroke || 'none'
+          )
+          .attr({
+            fill: item.fill || "none",
+            stroke: item.stroke || "none",
           });
-      } else if (item.type === 'circle') {
+      } else if (item.type === "circle") {
         // Draw a circle
-        element = canvas.circle(
-            this.x + item.x,
-            this.y + item.y,
-            item.radius,
-          ).attr({
-            fill: item.fill || 'none',
-            stroke: item.stroke || 'none'
+        element = canvas
+          .circle(this.x + item.x, this.y + item.y, item.radius)
+          .attr({
+            fill: item.fill || "none",
+            stroke: item.stroke || "none",
           });
-      } else if (item.type === 'polygon') {
+      } else if (item.type === "polygon") {
         element = this.DrawPolygon(canvas, item);
       }
       this.elements.push(element);
@@ -198,16 +204,15 @@ export abstract class CircuitElement {
       return;
     }
     const points = item.points;
-    let tmp = 'M';
+    let tmp = "M";
     for (const point of points) {
       tmp += `${this.x + point[0]},${this.y + point[1]}L`;
     }
-    tmp = tmp.substr(0, tmp.length - 1) + 'z';
-    return canvas.path(tmp)
-                  .attr({
-                    fill: item.fill || 'none',
-                    stroke: item.stroke || 'none'
-                  });
+    tmp = tmp.substr(0, tmp.length - 1) + "z";
+    return canvas.path(tmp).attr({
+      fill: item.fill || "none",
+      stroke: item.stroke || "none",
+    });
   }
   /**
    * Draw a Path
@@ -230,11 +235,10 @@ export abstract class CircuitElement {
     str = this.calcRelative(str, horizontal, canvas);
     str = this.calcRelative(str, vertical, canvas);
     str = this.calcRelative(str, sCurve, canvas);
-    return canvas.path(str)
-                    .attr({
-                      fill: item.fill || 'none',
-                      stroke: item.stroke || 'none'
-                    });
+    return canvas.path(str).attr({
+      fill: item.fill || "none",
+      stroke: item.stroke || "none",
+    });
   }
   /**
    * Draw path relative to the component
@@ -246,24 +250,24 @@ export abstract class CircuitElement {
     const founds = input.match(pattern);
     if (founds) {
       for (const found of founds) {
-        let output = '';
+        let output = "";
         const start = found.charAt(0);
-        let tmp: any = found.substring(1).split(',');
-        tmp = tmp.map(v => parseFloat(v));
-        if (start === 'M' || start === 'L') {
+        let tmp: any = found.substring(1).split(",");
+        tmp = tmp.map((v) => parseFloat(v));
+        if (start === "M" || start === "L") {
           output += `${start}${this.x + tmp[0]},${this.y + tmp[1]}`;
-        } else if (start === 'V') {
+        } else if (start === "V") {
           output += `${start}${this.y + tmp[0]}`;
-        } else if (start === 'H') {
+        } else if (start === "H") {
           output += `${start}${this.x + tmp[0]}`;
-        } else if (start === 'C') {
+        } else if (start === "C") {
           output += `${start}${this.x + tmp[0]},`;
           output += `${this.y + tmp[1]},`;
           output += `${this.x + tmp[2]},`;
           output += `${this.y + tmp[3]},`;
           output += `${this.x + tmp[4]},`;
           output += `${this.y + tmp[5]}`;
-        } else if (start === 'S') {
+        } else if (start === "S") {
           output += `${start}${this.x + tmp[0]},`;
           output += `${this.y + tmp[1]},`;
           output += `${this.x + tmp[2]},`;
@@ -283,37 +287,39 @@ export abstract class CircuitElement {
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
-    this.elements.drag((dx, dy) => {
-      var bBox = this.elements.getBBox();
-      var cx = this.x + bBox.height / 2;   
-      var  cy = this.y+ bBox.width / 2 ;
-      this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      this.elements.rotate(this.rotation,this.cx,this.cy);
-      fdx = dx;
-      fdy = dy;
-      for (let i = 0; i < this.nodes.length; ++i) {
-        this.nodes[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
+    this.elements.drag(
+      (dx, dy) => {
+        var bBox = this.elements.getBBox();
+        var cx = this.x + bBox.height / 2;
+        var cy = this.y + bBox.width / 2;
+        this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
+        this.elements.rotate(this.rotation, this.cx, this.cy);
+        fdx = dx;
+        fdy = dy;
+        for (let i = 0; i < this.nodes.length; ++i) {
+          this.nodes[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
+        }
+        window["onDragEvent"](this);
+      },
+      () => {
+        fdx = 0;
+        fdy = 0;
+        tmpar = [];
+        for (const node of this.nodes) {
+          // node.remainHidden();
+          tmpar.push([node.x, node.y]);
+        }
+      },
+      () => {
+        // for (const node of this.nodes) {
+        //   node.relativeMove(fdx, fdy);
+        //   node.remainShow();
+        // }
+        this.tx += fdx;
+        this.ty += fdy;
+        window["onDragStopEvent"](this);
       }
-      window['onDragEvent'](this);
-    }, () => {
-      fdx = 0;
-      fdy = 0;
-      tmpar = [];
-      for (const node of this.nodes) {
-        // node.remainHidden();
-        tmpar.push(
-          [node.x, node.y]
-        );
-      }
-    }, () => {
-      // for (const node of this.nodes) {
-      //   node.relativeMove(fdx, fdy);
-      //   node.remainShow();
-      // }
-      this.tx += fdx;
-      this.ty += fdy;
-      window['onDragStopEvent'](this);
-    });
+    );
   }
   /**
    * Add Hover Listener
@@ -336,15 +342,18 @@ export abstract class CircuitElement {
    */
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
-      if (window['Selected'] && (window['Selected'] instanceof Wire)) {
-        if ((isNull(window['Selected'].start) || isNull(window['Selected'].end))) {
+      if (window["Selected"] && window["Selected"] instanceof Wire) {
+        if (
+          isNull(window["Selected"].start) ||
+          isNull(window["Selected"].end)
+        ) {
           return;
         }
-        window['Selected'].deselect();
+        window["Selected"].deselect();
       }
-      window['isSelected'] = true;
-      window['Selected'] = this;
-      window['showProperty'](() => this.properties());
+      window["isSelected"] = true;
+      window["Selected"] = this;
+      window["showProperty"](() => this.properties());
       if (callback) {
         callback();
       }
@@ -353,7 +362,7 @@ export abstract class CircuitElement {
   /**
    * Initialize Variable after inheriting this function
    */
-  init() { }
+  init() {}
 
   /**
    * Save Circuit Component
@@ -365,10 +374,10 @@ export abstract class CircuitElement {
       y: this.y,
       tx: this.tx,
       ty: this.ty,
-      id: this.id
+      id: this.id,
     };
     if (data) {
-      ret['data'] = data;
+      ret["data"] = data;
     }
     return ret;
   }
@@ -393,7 +402,7 @@ export abstract class CircuitElement {
    * Inherit this function for loading additional data.
    * @param data Data from Database
    */
-  LoadData(data: any) { }
+  LoadData(data: any) {}
   /**
    * Returns the Circuit Node based on the x,y Position
    */
@@ -401,8 +410,7 @@ export abstract class CircuitElement {
     for (const node of this.nodes) {
       if (
         (Math.floor(node.x + this.pointHalf) === Math.floor(x) &&
-          Math.floor(node.y + this.pointHalf) === Math.floor(y))
-        ||
+          Math.floor(node.y + this.pointHalf) === Math.floor(y)) ||
         node.id === id
       ) {
         return node;
@@ -423,47 +431,64 @@ export abstract class CircuitElement {
   /**
    * Rotates Component
    */
-    rotate(): void {
+  rotate(): void {
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
     const bBox = this.elements.getBBox();
-    if(this.rotation==0){     
-      this.cx = this.x+ bBox.width/2;
-      this.cy = this.y+bBox.height/ 2;
+    if (this.rotation == 0) {
+      this.cx = this.x + bBox.width / 2;
+      this.cy = this.y + bBox.height / 2;
     }
-    this.rotation = this.rotation+90;
-    this.elements.rotate(90,this.cx,this.cy);
+    this.rotation = this.rotation + 90;
+    this.elements.rotate(90, this.cx, this.cy);
     for (const node of this.nodes) {
-    // node.remainHidden();
-      tmpar.push(
-        [node.x, node.y]
-      );}
-    if(this.rotation%180==0) {
-	  fdx=bBox.height/2;
-	  fdy=bBox.width/2;
-	  }
-    else {
-	  fdy=bBox.height/2;
-	  fdx=bBox.width/2;
-	  }   
+      // node.remainHidden();
+      tmpar.push([node.x, node.y]);
+    }
+    if (this.rotation % 180 == 0) {
+      fdx = bBox.height / 2;
+      fdy = bBox.width / 2;
+    } else {
+      fdy = bBox.height / 2;
+      fdx = bBox.width / 2;
+    }
     for (let i = 0; i < this.nodes.length; ++i) {
-        this.nodes[i].move(-tmpar[i][1]+this.ty+fdy+this.tx+ fdx+193+this.x+this.y-200,tmpar[i][0]-this.tx -fdx-81+this.ty+fdy+81-this.x+this.y);
+      var nx =
+        -tmpar[i][1] +
+        this.ty +
+        fdy +
+        this.tx +
+        fdx +
+        193 +
+        this.x +
+        this.y -
+        200;
+      var ny =
+        tmpar[i][0] - this.tx - fdx - 81 + this.ty + fdy + 81 - this.x + this.y;
+      this.nodes[i].move(nx, ny);
     }
   }
   /**
    * Inherit this function to remove some variable
    */
-  delete() { }
+  delete() {}
   /**
    * Return the Name of the component.Can be inheriter to return custom name.
    */
-  getName() { return this.title; }
+  getName() {
+    return this.title;
+  }
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box
    */
-  abstract properties(): { keyName: string, id: number, body: HTMLElement, title: string };
+  abstract properties(): {
+    keyName: string;
+    id: number;
+    body: HTMLElement;
+    title: string;
+  };
   /**
    * Initialize variable required for simulation
    * Called before simulation
@@ -474,3 +499,4 @@ export abstract class CircuitElement {
    */
   abstract closeSimulation(): void;
 }
+
