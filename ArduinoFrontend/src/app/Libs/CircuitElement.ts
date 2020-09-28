@@ -435,27 +435,28 @@ export abstract class CircuitElement {
     let fdy = 0;
     const tmpar = [];
     const bBox = this.elements.getBBox();
-    if( this.rotation === 0 ) {
+    if ( this.rotation === 0 ) {
       this.cx = this.x + bBox.width / 2;
       this.cy = this.y + bBox.height / 2;
     }
-    this.rotation = this.rotation+90;
+    this.rotation = this.rotation + 90;
     this.elements.rotate( 90 , this.cx , this.cy );
     for (const node of this.nodes) {
     // node.remainHidden();
       tmpar.push(
         [node.x, node.y]
       ); }
-    if( this.rotation % 180 === 0 ) {
-	   fdx = bBox.height / 2;
-	   fdy = bBox.width / 2;
+    if ( this.rotation % 180 === 0 ) {
+	     fdx = bBox.height / 2;
+	     fdy = bBox.width / 2;
 	  }
-    else {
-	   fdy = bBox.height / 2;
-	   fdx = bBox.width / 2;
+    else 
+    {
+	     fdy = bBox.height / 2;
+	     fdx = bBox.width / 2;
 	  }
     for (let i = 0; i < this.nodes.length; ++i) {
-        const nx = - tmpar[i][1] + this.ty + fdy + this.tx + fdx + this.x + this.y -7;
+        const nx = - tmpar[i][1] + this.ty + fdy + this.tx + fdx + this.x + this.y - 7;
         const ny = tmpar[i][0] - this.tx - fdx + this.ty + fdy - this.x + this.y;
         this.nodes[i].move( nx , ny );
     }
