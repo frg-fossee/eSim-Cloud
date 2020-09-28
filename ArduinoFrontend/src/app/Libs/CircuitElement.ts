@@ -452,8 +452,8 @@ export abstract class CircuitElement {
         } else {
       fdy = bBox.height / 2;
       fdx = bBox.width / 2;
-	  }
-      for (let i = 0; i < this.nodes.length; ++i) {
+	    }
+    for (let i = 0; i < this.nodes.length; ++i) {
         const nx = - tmpar[i][1] + this.ty + fdy + this.tx + fdx + this.x + this.y - 7;
         const ny = tmpar[i][0] - this.tx - fdx + this.ty + fdy - this.x + this.y;
         this.nodes[i].move( nx , ny );
