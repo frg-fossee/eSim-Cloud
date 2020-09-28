@@ -446,14 +446,13 @@ export abstract class CircuitElement {
       tmpar.push(
         [node.x, node.y]
       ); }
-    if ( this.rotation % 180 === 0 ) {
-	     fdx = bBox.height / 2;
-	     fdy = bBox.width / 2;
-	  }
-    else 
-    {
-	     fdy = bBox.height / 2;
-	     fdx = bBox.width / 2;
+    if (this.rotation % 180 === 0) {
+      fdx = bBox.height / 2;
+      fdy = bBox.width / 2;
+        }
+    else {
+      fdy = bBox.height / 2;
+      fdx = bBox.width / 2;
 	  }
     for (let i = 0; i < this.nodes.length; ++i) {
         const nx = - tmpar[i][1] + this.ty + fdy + this.tx + fdx + this.x + this.y - 7;
