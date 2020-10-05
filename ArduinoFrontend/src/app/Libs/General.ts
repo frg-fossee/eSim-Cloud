@@ -460,11 +460,15 @@ export class BreadBoard extends CircuitElement {
     let tmpar2 = [];
     // Create Custom Drag event
     this.elements.drag((dx, dy) => {
+      const bBox = this.elements.getBBox();
+      const cx = this.x + bBox.height / 2;
+      const cy = this.y + bBox.width / 2 ;
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
       tmpx = this.tx + dx;
       tmpy = this.ty + dy;
       fdx = dx;
       fdy = dy;
+      this.elements.rotate( this.rotation , this.cx , this.cy );
       for (let i = 0; i < this.joined.length; ++i) {
         this.joined[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
       }
