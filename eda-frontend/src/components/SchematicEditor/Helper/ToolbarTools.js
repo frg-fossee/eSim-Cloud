@@ -6,6 +6,10 @@ import mxGraphFactory from 'mxgraph'
 import store from '../../../redux/store'
 import * as actions from '../../../redux/actions/actions'
 import ComponentParameters from './ComponentParametersData'
+
+import api from '../../../utils/Api'
+
+
 var graph
 var undoManager
 
@@ -256,6 +260,99 @@ function ErcCheckNets () {
       return true
     }
   }
+}
+
+export function SimulatePython () {
+  var codeStruct = {
+    id: [],
+    code: []
+  }
+  var id
+  var code
+  var list = graph.getModel().cells
+  for (var property in list) {
+    var cell = list[property]
+    for (var child in cell.children) {
+      if (cell.children[child].vertex == true ) {
+        id = cell.children[child].parent.id
+        code = cell.children[child].parent.properties.Code
+        if (code) { // If code exists
+          if ( (Object.values(codeStruct.id).indexOf(id)) < 0 ) { //If code is not inserted
+            codeStruct.id.push(id)
+            codeStruct.code.push(code)
+          }
+        }
+      }
+    }
+  }
+  console.log('code structure')
+  console.log(codeStruct.code)
+  var myblob = convertCodeToBlob(codeStruct.code)
+  var file = blobToFile(myblob)
+  sendCodeFile(file)
+}
+
+export function convertCodeToBlob(code) {
+  console.log('convertCodeToBlob')
+  var blob = ''
+  for (var i=0; i<code.length; i++) {
+    blob = blob + code[i] + '\n'
+  }
+  return blob
+}
+
+export function blobToFile (data) {
+  console.log('blobToFile')
+  var myblob = new Blob([data], {
+    type: 'text/plain'
+  })
+  var file = new File([myblob], 'code.py', { type: 'text/plain', lastModified: Date.now() })
+  return file
+}
+
+function sendCodeFile (file) {
+  console.log('sendCodeFile')
+  codeConfig(file)
+    .then((response) => {
+      const res = response.data
+      const getUrl = 'simulation/status/'.concat(res.details.task_id)
+
+      codeResult(getUrl)
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
+}
+
+function codeConfig (file) {
+  console.log('codeConfig')
+  const formData = new FormData()
+  formData.append('file', file)
+  const config = {
+    headers: {
+      'content-type': 'multipart/form-data'
+    }
+  }
+  return api.post('simulation/upload', formData, config)
+}
+
+function codeResult (url) {
+  api
+    .get(url)
+    .then((res) => {
+      if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
+        setTimeout(codeResult(url), 1000)
+      } else {
+        var result = res.data.details
+        var data = result.data
+        console.log('result')
+        console.log(result)
+        alert(result)
+      }
+    })
+    .catch(function (error) {
+      console.log(error)
+    })
 }
 
 // GENERATE NETLIST

@@ -16,7 +16,7 @@ const default_scale = 5
 
 function extractData (xml) {
   // extracting metadata from the svg file.
-
+  /*
   pinData = []
   metadata = xml.getElementsByTagName('metadata')
   const width = metadata[0].attributes[0].nodeValue
@@ -48,11 +48,12 @@ function extractData (xml) {
     })
     // console.log(pinNumber, pinX, pinY, pinType)
   })
+  */
   return {
-    width: width,
-    height: height,
-    symbolName: symbolName,
-    pinData: pinData
+    width: 500,
+    height: 500,
+    symbolName: 'symbolName',
+    // pinData: pinData
   }
 }
 
@@ -78,7 +79,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       const pins = []
       width = data.width
       height = data.height
-      pinData = data.pinData
+      // pinData = data.pinData
 
       // console.log(pinData)
 
@@ -152,7 +153,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
 
       v1.setConnectable(false)
 
-      for (let i = 0; i < pinData.length; i++) {
+      /* for (let i = 0; i < pinData.length; i++) {
         currentPin = pinData[i]
         if (currentPin.pinName === 'NC') continue
         // move this to another file
@@ -181,6 +182,6 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         // pins[i].pinType = currentPin['type']
         pins[i].ParentComponent = v1
         pins[i].PinNumber = currentPin.pinNumber
-      }
+      } */
     })
 }

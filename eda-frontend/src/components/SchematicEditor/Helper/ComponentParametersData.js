@@ -366,6 +366,14 @@ const ComponentParameters = {
     MODEL: '',
     EXTRA_EXPRESSION: ''
 
+  },
+  U: {
+    PREFIX: 'U',
+    NAME: '',
+    InputPorts: '',
+    OutputPorts: '',
+    CodeLanguage: '',
+    Code: ''
   }
 
 }

@@ -266,7 +266,6 @@ export default function LoadGrid (container, sidebar, outline) {
     KeyboardShorcuts(graph)
     //NetlistInfoFunct(graph)
     ToolbarTools(graph)
-
     store.subscribe(() => {
       var id = store.getState().componentPropertiesReducer.id
       var props = store.getState().componentPropertiesReducer.compProperties
@@ -275,7 +274,41 @@ export default function LoadGrid (container, sidebar, outline) {
       if (c !== undefined) {
         c.properties = props
       }
+      const noInputPorts = props.InputPorts
+      const noOutputPorts = props.OutputPorts
+      if (noInputPorts > 0) {
+        insertInputPorts(noInputPorts, c)
+      }
+      if (noOutputPorts > 0) {
+        insertOutputPorts(noOutputPorts, c)
+      }
     })
+
+    function insertInputPorts(inp, c) {
+      var dist = Math.floor(500 / (inp + 1))
+      console.log(dist)
+      var adist = dist
+      for (var i=0; i<inp; i++) {
+        var v11 = graph.insertVertex(c, 'in_'+i, '', 0, dist, 10, 16,
+        'shape=line;align=left;verticalAlign=middle;fontSize=10;routingCenterX=-0.5;'+
+        'spacingLeft=12;fontColor=red;strokeColor=red');
+        dist = dist + adist
+      }
+    }
+
+    function insertOutputPorts(out, c) {
+      var dist = Math.floor(500 / (out + 1))
+      console.log(dist)
+      var adist = dist
+      for (var i=0; i<out; i++) {
+        var v12
+        v12 = graph.insertVertex(c, 'out_'+i, '', 90, dist, 10, 16,
+        'shape=line;align=right;verticalAlign=middle;fontSize=10;routingCenterX=-0.5;'+
+        'spacingRight=12;fontColor=red;strokeColor=red');
+        dist = dist + adist
+      }
+    }
+
     var editor = new mxEditor()
     /* var xml = '<mxGraphModel><root><mxCell id="0" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName=""><Object as="properties"/></mxCell><mxCell id="1" CellType="This is where you say what the vertex is" pinType=" " Component="0" Pin="0" PinNumber="0" PinName=""><Object as="properties"/></mxCell><mxCell value="PRI_LO" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/power/PWR-PRI_LO-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="PWR" pinType=" " Pin="0" PinNumber="0" PinName=""><mxGeometry x="150" y="70" width="24" height="80" as="geometry"/><Object id="46" name="PRI_LO" svg_path="kicad-symbols/symbol_svgs/power/PWR-PRI_LO-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/power/PWR-PRI_LO-1-A_thumbnail.svg" symbol_prefix="PWR" component_library="http://localhost/api/libraries/2/" description="Power symbol creates a global label with name &quot;PRI_LO&quot;" data_link="" full_name="PWR-PRI_LO-1-A" keyword="power-flag" as="CompObject"><Array as="alternate_component"/></Object><Object NAME="PRI_LO" as="properties"/></mxCell><mxCell value="1" style="align=right;verticalAlign=bottom;rotation=0" id="3" vertex="1" Pin="1" pinType="Output" PinNumber="1" CellType="This is where you say what the vertex is" Component="0" PinName=""><mxGeometry x="12" y="39" width="0.5" height="0.5" as="geometry"/><mxCell value="PRI_LO" style="shape=image;fontColor=blue;image=../kicad-symbols/symbol_svgs/power/PWR-PRI_LO-1-A.svg;imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25" id="2" vertex="1" connectable="0" Component="1" CellType="Component" symbol="PWR" pinType=" " Pin="0" PinNumber="0" PinName="" as="ParentComponent"><mxGeometry x="150" y="70" width="24" height="80" as="geometry"/><Object id="46" name="PRI_LO" svg_path="kicad-symbols/symbol_svgs/power/PWR-PRI_LO-1-A.svg" thumbnail_path="kicad-symbols/symbol_svgs/power/PWR-PRI_LO-1-A_thumbnail.svg" symbol_prefix="PWR" component_library="http://localhost/api/libraries/2/" description="Power symbol creates a global label with name &quot;PRI_LO&quot;" data_link="" full_name="PWR-PRI_LO-1-A" keyword="power-flag" as="CompObject"><Array as="alternate_component"/></Object><Object NAME="PRI_LO" as="properties"/></mxCell><Object as="properties"/></mxCell></root></mxGraphModel>'
      var doc = mxUtils.parseXml(xml);
@@ -290,7 +323,6 @@ export default function LoadGrid (container, sidebar, outline) {
        dec.decode(node, graph.getModel())
        console.log(dec)*/
        
-     
     } finally {
     // Updates the display
       graph.getModel().endUpdate()

@@ -21,15 +21,18 @@ def ExecNetlist(filepath, file_id):
         # Make Unique Directory for simulation to run
         Path(current_dir).mkdir(parents=True, exist_ok=True)
         os.chdir(current_dir)
-        logger.info('will run ngSpice command')
-        proc = subprocess.Popen(['ngspice', '-ab', filepath],
+        logger.info('will run python command')
+        logger.info(filepath)
+        proc = subprocess.Popen(['python', filepath],
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                 cwd=current_dir)
         stdout, stderr = proc.communicate()
-        logger.info('Ran ngSpice command')
+        logger.info('Ran python command')
+        output = proc.communicate()[0].decode('ascii')
+        logger.info(output)
 
         if proc.returncode not in [0, 1]:
-            logger.error('ngspice error encountered')
+            logger.error('python error encountered')
             logger.error(stderr)
             logger.error(proc.returncode)
             logger.error(stdout)
@@ -39,10 +42,10 @@ def ExecNetlist(filepath, file_id):
                     os.remove(os.path.join('.', item))
             raise CannotRunSpice("ngspice exited with error")
         else:
-            logger.info('Ran ngSpice')
+            logger.info('Ran Python')
 
         logger.info("Reading Output")
-        output = extract_data_from_ngspice_output(current_dir+'/data.txt')
+        # output = extract_data_from_ngspice_output(current_dir+'/data.txt')
         return output
     except Exception as e:
         logger.exception('Encountered Exception:')

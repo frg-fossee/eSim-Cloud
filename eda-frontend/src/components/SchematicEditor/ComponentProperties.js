@@ -53,6 +53,12 @@ export default function ComponentProperties () {
             </ListItem>
           }
 
+          else if (keyName === 'Code') {
+            return <ListItem key={i}>
+              <TextareaAutosize id={keyName} label={keyName} value={val[keyName] || ''} rowsMin={4} aria-label={keyName} onChange={getInputValues} placeholder={keyName} style={{ width: '100%' }} />
+            </ListItem>
+          }
+
           //
           else if (keyName.charAt(0) === 'N' && keyName !== 'NAME') {
             return <span key={i} />

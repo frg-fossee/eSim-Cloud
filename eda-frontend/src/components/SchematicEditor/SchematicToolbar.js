@@ -26,7 +26,7 @@ import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutli
 import { Link as RouterLink } from 'react-router-dom'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog } from './ToolbarExtension'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, SimulatePython, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
 
@@ -384,6 +384,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <PlayCircleOutlineIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+
+      <Tooltip title="Simulate Python">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={SimulatePython}>
+          <PlayCircleOutlineIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+
       <Tooltip title="Generate Netlist">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleClickOpen} >
           <BorderClearIcon fontSize="small" />
