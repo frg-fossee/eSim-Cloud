@@ -52,7 +52,7 @@ function extractData (xml) {
   return {
     width: 500,
     height: 500,
-    symbolName: 'symbolName',
+    symbolName: 'symbolName'
     // pinData: pinData
   }
 }
