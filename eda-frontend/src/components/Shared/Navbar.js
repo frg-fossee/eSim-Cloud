@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Common navbar for Dashboard, Home, Simulator, Gallery, etc.
-export function Header () {
+export function Header() {
   const history = useHistory()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -107,6 +107,15 @@ export function Header () {
               >
                 Gallery
               </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/publications"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Publications
+              </Link>
 
               <Link
                 variant="button"
@@ -148,7 +157,15 @@ export function Header () {
               >
                 Gallery
               </Link>
-
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/publications"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Publications
+              </Link>
               <Link
                 variant="button"
                 color="textPrimary"
@@ -233,7 +250,7 @@ export function Header () {
   )
 }
 
-export default function Navbar () {
+export default function Navbar() {
   const classes = useStyles()
 
   return (

@@ -11,9 +11,9 @@ import SchematicEditor from './pages/SchematiEditor'
 
 import Simulator from './pages/Simulator'
 import Gallery from './pages/Gallery'
+import Publications from './pages/Publications'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
-
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
 
@@ -70,6 +70,7 @@ function App () {
         }
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
+        <PublicRoute exact path="/publications" restricted={false} nav={true} component={Publications} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>

@@ -6,6 +6,7 @@ const initialState = {
   isRegistered: null,
   isLoading: false,
   user: null,
+  roles:null,
   errors: '',
   regErrors: ''
 }
@@ -18,7 +19,12 @@ export default function (state = initialState, action) {
         isLoading: true
       }
     }
-
+    case actions.ROLE_LOADED: {
+      return{
+        ...state,
+        roles: action.payload.data
+      }
+    }
     case actions.DEFAULT_STORE: {
       return {
         ...state,

@@ -32,6 +32,7 @@ export const LOADING_FAILED = 'LOADING_FAILED'
 export const SIGNUP_SUCCESSFUL = 'SIGNUP_SUCCESSFUL'
 export const SIGNUP_FAILED = 'SIGNUP_FAILED'
 export const DEFAULT_STORE = 'DEFAULT_STORE'
+export const ROLE_LOADED = 'ROLE_LOADED'
 
 // Actions for saving scheamtics and loading saved, gallery and local schematics.
 export const SAVE_SCHEMATICS = 'SAVE_SCHEMATICS'
@@ -45,3 +46,5 @@ export const LOAD_GALLERY = 'LOAD_GALLERY'
 
 // Action for fetching on-cloud saved schematics for authenticated user to display in dashboard
 export const FETCH_SCHEMATICS = 'FETCH_SCHEMATICS'
+export const FETCH_MY_PUBLICATIONS = 'FETCH_MY_PUBLICATIONS'
+export const FETCH_PUBLIC_PUBLICATIONS = 'FETCH_PUBLIC_PUBLICATIONS'

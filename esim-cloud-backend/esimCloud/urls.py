@@ -9,6 +9,7 @@ from django.urls import path
 from simulationAPI import urls as simulationURLs
 from libAPI import urls as libURLs
 from saveAPI import urls as saveURLs
+from workflowAPI import urls as workURLs
 from publishAPI import urls as publishURLs
 from authAPI import urls as authURLs
 from rest_framework import permissions
@@ -43,6 +44,9 @@ urlpatterns = [
 
     # publishAPI routes
     path('api/', include(publishURLs)),
+    
+    #workflowAPI routes
+    path('api/workflow/', include(workURLs)),
 
     # Arduino Routes
     path('api/arduino/', include(arduinoURLs)),

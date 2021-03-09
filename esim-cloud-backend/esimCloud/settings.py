@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'libAPI',
     'saveAPI',
     'publishAPI',
-    'arduinoAPI'
+    'arduinoAPI',
+    'workflowAPI'
 ]
 
 MIDDLEWARE = [
@@ -187,7 +188,7 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

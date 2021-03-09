@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models.deletion import CASCADE, SET_NULL
 from django.utils.safestring import mark_safe
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import uuid
+from workflowAPI.models import State
+
 
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
@@ -36,6 +39,7 @@ class Circuit(models.Model):
 
     base64_image = models.ImageField(
         upload_to='circuit_images', storage=file_storage)
+    state = models.ForeignKey(State,on_delete=CASCADE,default=1)
 
     author = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.CASCADE)
@@ -43,6 +47,7 @@ class Circuit(models.Model):
     # Meta Data
 
     description = models.TextField()
+    is_arduino = models.BooleanField(default=False, null=False)
 
     last_updated = models.DateTimeField(auto_now=True)
 

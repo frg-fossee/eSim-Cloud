@@ -33,7 +33,7 @@ class CircuitTagSerializer(serializers.ModelSerializer):
 
 class CircuitSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
-
+    status_name = serializers.CharField(read_only=True, source='state.name')
     class Meta:
         model = Circuit
         fields = ('circuit_id',
@@ -44,7 +44,8 @@ class CircuitSerializer(serializers.ModelSerializer):
                   'description',
                   'last_updated',
                   'publish_request_time',
-                  'base64_image'
+                  'base64_image',
+                  'status_name'
                   )
 
 
