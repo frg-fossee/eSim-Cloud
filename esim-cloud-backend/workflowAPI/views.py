@@ -1,8 +1,9 @@
 import uuid
 from django.shortcuts import render
+from django.utils.translation import templatize
 from rest_framework.views import APIView
-from .serializers import StatusSerializer, UserRoleRetreieveSerializer
-from .models import State, Transition, TransitionHistory,CustomGroup
+from .serializers import NotificationSerializer, StatusSerializer, UserRoleRetreieveSerializer
+from .models import Notification, State, Transition, TransitionHistory,CustomGroup
 from publishAPI.models import Circuit
 from publishAPI.serializers import CircuitSerializer
 from rest_framework.response import Response
@@ -32,6 +33,29 @@ class RetriveUserRoleView(APIView):
             return Response(serializer.data)
         except:
             return Response(serializer.errors)
+
+
+class NotificationView(APIView):
+    parser_classes=(FormParser,JSONParser)
+    permission_classes=[IsAuthenticated]
+    serializer_class = NotificationSerializer
+
+    @swagger_auto_schema(responses={200:NotificationSerializer})
+    def get(self,request):
+        notifications = Notification.objects.filter(user=self.request.user,shown=False)
+        if notifications is not None:
+            for notification in notifications:
+                notification.shown = True   
+                notification.save()
+        else:
+            return Response({'message':'No New Notifications!'})
+
+    @swagger_auto_schema(responses={200:NotificationSerializer}, request_body=NotificationSerializer)
+    def post(self,request):
+        notif = Notification(text=request.data['text'],user=self.request.user)
+        notif.save()
+        serialized = NotificationSerializer(notif)
+        return Response(serialized.data)
 
 class RetriveCircuitsViewSet(APIView):
     """
@@ -98,29 +122,45 @@ class CircuitStateView(APIView):
                 return Response({'error': 'You are not authorized to edit the status.'},
                                 status=http_status.HTTP_401_UNAUTHORIZED)
             else:
-                roles_set = set(roles)
-                user_roles_set = set(user_roles)
-                if user_roles_set & roles_set:
-                    intersection = user_roles_set.intersection(roles_set)
-                    for user_role in intersection:
-                        if user_role.customgroup.is_arduino is saved_state.is_arduino:
-                            if circuit_transition.allowed_for_creator is False and saved_state.author == request.user:
-                                return Response({'error': 'You are not authorized to edit the status.'},
-                                                status=http_status.HTTP_401_UNAUTHORIZED)
-                            else:
-                                transition_history = TransitionHistory(circuit_id=circuit_id,
+                if circuit_transition.only_for_creator is True and self.request.user is saved_state.author:
+                    transition_history = TransitionHistory(circuit_id=circuit_id,
                                                                        transition_author=request.user,
                                                                        from_state=saved_state.state,
                                                                        to_state=circuit_transition.to_state)
-                                transition_history.save()
-                                saved_state.state = circuit_transition.to_state
-                                saved_state.save()
-                                state = saved_state.state
-                                serialized = StatusSerializer(state)
-                                return Response(serialized.data)
+                    transition_history.save()
+                    saved_state.state = circuit_transition.to_state
+                    saved_state.save()
+                    state = saved_state.state
+                    serialized = StatusSerializer(state)
+                    return Response(serialized.data)
+                elif circuit_transition.only_for_creator is False:
+                    roles_set = set(roles)
+                    user_roles_set = set(user_roles)
+                    if user_roles_set & roles_set:
+                        intersection = user_roles_set.intersection(roles_set)
+                        for user_role in intersection:
+                            print("Hello")
+                            if user_role.customgroup.is_arduino is saved_state.is_arduino:
+                                if circuit_transition.allowed_for_creator is False and saved_state.author == request.user:
+                                    return Response({'error': 'You are not authorized to edit the status as it is not allowed for creator.'},
+                                                    status=http_status.HTTP_401_UNAUTHORIZED)
+                                else:
+                                    transition_history = TransitionHistory(circuit_id=circuit_id,
+                                                                        transition_author=request.user,
+                                                                        from_state=saved_state.state,
+                                                                        to_state=circuit_transition.to_state)
+                                    transition_history.save()
+                                    saved_state.state = circuit_transition.to_state
+                                    saved_state.save()
+                                    state = saved_state.state
+                                    serialized = StatusSerializer(state)
+                                    return Response(serialized.data)
+                        else:
+                            return Response({'error': 'You are not authorized to edit the status as you dont have the role 1.'},
+                                            status=http_status.HTTP_401_UNAUTHORIZED)
                     else:
-                        return Response({'error': 'You are not authorized to edit the status.'},
+                        return Response({'error': 'You are not authorized to edit the status as you dont have the role 2 .'},
                                         status=http_status.HTTP_401_UNAUTHORIZED)
-                else:
-                    return Response({'error': 'You are not authorized to edit the status.'},
-                                    status=http_status.HTTP_401_UNAUTHORIZED)
+                else: 
+                    return Response({'error': 'You are not authorized to edit the status as it is only allowed for creator.'},
+                                        status=http_status.HTTP_401_UNAUTHORIZED)

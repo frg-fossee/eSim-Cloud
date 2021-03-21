@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
+from django.db.models.base import Model
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.contrib.auth import get_user_model
 
@@ -30,7 +31,7 @@ class Transition(models.Model):
     from_state = models.ForeignKey(State, null=True, related_name='fromtransitions', on_delete=SET_NULL)
     to_state = models.ForeignKey(State, null=True, related_name='totransitions', on_delete=SET_NULL)
     allowed_for_creator = models.BooleanField(default=True, null=False)
-
+    only_for_creator = models.BooleanField(default=False,null=False)
     def __str__(self):
         return self.name
 
@@ -45,3 +46,11 @@ class TransitionHistory(models.Model):
 
     class Meta:
         verbose_name_plural = 'Transition Histories'
+
+class Notification(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    text = models.CharField(max_length=500)
+    date = models.DateTimeField(auto_now_add=True)
+    shown = models.BooleanField(default=False,null=False)
+    def __str__(self):
+        return self.text

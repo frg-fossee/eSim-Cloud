@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
-from workflowAPI.models import State,Transition,CustomGroup,TransitionHistory
+from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
+from workflowAPI.models import State,Transition,CustomGroup,TransitionHistory,Notification
 # Register your models here.
 @admin.register(State)
 class CircuitStates(admin.ModelAdmin):
@@ -24,6 +25,21 @@ class GroupInline(admin.TabularInline):
 
 class GroupAdmin(BaseGroupAdmin):
     inlines = (GroupInline, )
+
+
+
+class NotifInline(admin.TabularInline):
+    model = Notification
+    can_delete=False
+
+
+class UserAdmin(AuthUserAdmin):
+    inlines=(NotifInline,)
+
+
+#Re-reigister UserAdmin
+admin.site.unregister(User)
+admin.site.register(User,UserAdmin)
 
 
 # Re-register GroupAdmin
