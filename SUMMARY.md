@@ -17,15 +17,16 @@
  5. Additions in e-Sim dashboard front-end.
  ## Features:
  
- 11. API-Based Solution
- 12. Implemented for e-sim circuits.
- 13. Dynamic user roles (A user can have multiple roles with separate roles for E-Sim and Arduino circuits)
- 14. Ability of admin to add in multiple states and transitions attached to specific roles to the workflow.
- 15. A single role can have control over the workflow towards multiple transitions.
- 16. Additions of workflow API  into existing Swagger documentation
- 17. Code written to seamlessly work with the existing code
- 18. Rudimentary front-end implementation using ReactJS w/ MaterialUI and Redux (Integrated into existing front-end of E-Sim)
- 19. Integrated transition history to keep track of how,when,by whom and which states are being changed.
+ 1. API-Based Solution
+ 2. Implemented for e-sim circuits.
+ 3. Dynamic user roles (A user can have multiple roles with separate roles for E-Sim and Arduino circuits)
+ 4. Ability of admin to add in multiple states and transitions attached to specific roles to the workflow.
+ 5. A single role can have control over the workflow towards multiple transitions.
+ 6. Additions of workflow API  into existing Swagger documentation
+ 7. Code written to seamlessly work with the existing code
+ 8. Rudimentary front-end implementation using ReactJS w/ MaterialUI and Redux (Integrated into existing front-end of E-Sim)
+ 9. Integrated transition history to keep track of how,when,by whom and which states are being changed.
+ 10.Notifications for state changes to the circuit owners.
 ## API Request:
  - `/workflow/role`: gives logged in user roles.
  - `/workflow/state/{circuit_id}`: get and post state of the given circuit ID
@@ -54,8 +55,8 @@ Updated Dashboard sidebar to show logged-in user roles and my Publications tab.!
 
 ## Future Roadmap:
  - Full Integration of Front-end.
-  - Ability to add multiple workflows.
- - Notifications for state changes to the circuit owners.
+ - Ability to add multiple workflows.
+ 
  - Making use of Publication model from Publish API.
  - Converting circuit from save API to publish API.
 
