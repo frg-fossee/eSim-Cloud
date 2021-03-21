@@ -26,7 +26,7 @@
  7. Code written to seamlessly work with the existing code
  8. Rudimentary front-end implementation using ReactJS w/ MaterialUI and Redux (Integrated into existing front-end of E-Sim)
  9. Integrated transition history to keep track of how,when,by whom and which states are being changed.
- 10.Notifications for state changes to the circuit owners.
+ 10. 10.Notifications for state changes to the circuit owners.
 ## API Request:
  - `/workflow/role`: gives logged in user roles.
  - `/workflow/state/{circuit_id}`: get and post state of the given circuit ID
