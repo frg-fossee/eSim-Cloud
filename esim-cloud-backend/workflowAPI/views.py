@@ -145,6 +145,7 @@ class CircuitStateView(APIView):
                                     return Response({'error': 'You are not authorized to edit the status as it is not allowed for creator.'},
                                                     status=http_status.HTTP_401_UNAUTHORIZED)
                                 else:
+                                    
                                     transition_history = TransitionHistory(circuit_id=circuit_id,
                                                                         transition_author=request.user,
                                                                         from_state=saved_state.state,
@@ -153,6 +154,10 @@ class CircuitStateView(APIView):
                                     saved_state.state = circuit_transition.to_state
                                     saved_state.save()
                                     state = saved_state.state
+                                    if saved_state.author != request.user:
+                                        notiftext = "Your circuit status have been changed from " +str(circuit_transition.from_state) +" to " + str(circuit_transition.to_state)
+                                        notification = Notification(text=notiftext,user=saved_state.author)
+                                        notification.save()
                                     serialized = StatusSerializer(state)
                                     return Response(serialized.data)
                         else:
