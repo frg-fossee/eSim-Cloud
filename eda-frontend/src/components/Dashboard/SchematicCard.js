@@ -137,6 +137,13 @@ export default function SchematicCard({ sch }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
+  // To handle secret key for LTI usage
+  const [secretKey, setSecretKey] = React.useState("")
+
+  // To handle
+  const [consumerKey, setConsumerKey] = React.useState("")
+
+  // To handle consumer key for LTI usage
   const [configURL, setConfigURL] = React.useState()
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
@@ -149,10 +156,11 @@ export default function SchematicCard({ sch }) {
   }
   // Api call for getting LTI config url for specified circuit by passing consumer key and secret key
   const handleLTIGenerate = (consumer_key, secret_key, save_id) => {
+    console.log(consumer_key, secret_key)
     const body = {
-      "consumer_key": "consumer_key",
-      "secret_key": "secret_key",
-      "save_id": "c9c75af8-104c-43cb-89a5-c1e736cbb8f1",
+      "consumer_key": consumer_key,
+      "secret_key": secret_key,
+      "save_id": save_id,
     }
     var response = api.post(`lti/create/`, body)
       .then(res => {
@@ -162,12 +170,30 @@ export default function SchematicCard({ sch }) {
       .catch((err) => { console.error(err) })
   }
   const handleOpenLTI = () => {
+    //To-do write a get request to check if it params are already set
     setLTIModal(true)
+    
+    // if(response.data.secret_key){
+    //   setSecretKey(response.data.secret_key)
+    //   setConsumerKey(response.data.consumer_key)
+    //   setConfigURL(response.data.configURL)
+    // }
   }
 
   const handleCloseLTI = () => {
     setLTIModal(false)
   }
+
+  const handleConsumerKey = (e) => {
+    console.log(e.target.value);
+    setConsumerKey(e.target.value)
+  }
+
+  const handleSecretKey = (e) => {
+    console.log(e.target.value)
+    setSecretKey(e.target.value)
+  }
+
   const handleSnacClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
@@ -221,12 +247,12 @@ export default function SchematicCard({ sch }) {
           <Dialog onClose={handleCloseLTI} aria-labelledby="simple-dialog-title" open={ltiModal}>
             <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
             <DialogContent>
-              <TextField id="standard-basic" label="Consumer Key" />
-              <TextField id="standard-basic" label="Secret Key" />
-              <Button variant="contained" color="primary" onClick={handleLTIGenerate}>
+              <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} />
+              <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} />
+              <h3>{configURL}</h3>
+              <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id)}>
                 Generate LTI config URL
               </Button>
-              {configURL}
             </DialogContent>
           </Dialog>
           {/* Display delete option */}

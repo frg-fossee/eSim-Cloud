@@ -17,6 +17,10 @@ def denied(r):
     return render(r, 'ltiAPI/denied.html')
 
 
+# class LTIExist(APIView):
+#     def get()
+#
+
 class LTIBuildApp(APIView):
 
     @swagger_auto_schema(request_body=consumerSerializer, responses={201: consumerResponseSerializer})
@@ -46,13 +50,11 @@ class LTIConfigView(View):
         try:
             saved_state = StateSave.objects.get(save_id=save_id)
         except StateSave.DoesNotExist:
-            return Response({'error': 'Does not Exist'},
-                            status=status.HTTP_404_NOT_FOUND)
+            return render(request, 'ltiAPI/denied.html')
 
         # Verifies owner
         if self.request.user != saved_state.owner:  # noqa
-            return Response({'error': 'Not the owner'},
-                            status=status.HTTP_401_UNAUTHORIZED)
+            return render(request, 'ltiAPI/denied.html')
         if saved_state.shared:
             pass
         else:
@@ -69,7 +71,7 @@ class LTIConfigView(View):
             'description': settings.LTI_TOOL_CONFIGURATION.get('description'),
             'course_navigation': settings.LTI_TOOL_CONFIGURATION.get('course_navigation'),
         }
-        return render(self.request, 'ltiAPI/config.xml', context=ctx, content_type='text/xml; charset=utf-8')
+        return render(request, 'ltiAPI/config.xml', context=ctx, content_type='text/xml; charset=utf-8')
 
 
 class LTIAuthView(APIView):
