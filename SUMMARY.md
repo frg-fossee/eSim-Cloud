@@ -15,6 +15,8 @@
  3. Additions in user groups to have custom attributes like is the role defined for e-Sim or Arduino.
  4. Changes in Publish views.
  5. Additions in e-Sim dashboard front-end.
+ 6. Changes in reducer and actions of dashboard and auth to integrate roles and notifications.
+ 7. Addition of basic notification UI in frontend.
  ## Features:
  
  1. API-Based Solution
@@ -26,11 +28,12 @@
  7. Code written to seamlessly work with the existing code
  8. Rudimentary front-end implementation using ReactJS w/ MaterialUI and Redux (Integrated into existing front-end of E-Sim)
  9. Integrated transition history to keep track of how,when,by whom and which states are being changed.
- 10. 10.Notifications for state changes to the circuit owners.
+ 10. Notifications for state changes to the circuit owners.
 ## API Request:
  - `/workflow/role`: gives logged in user roles.
  - `/workflow/state/{circuit_id}`: get and post state of the given circuit ID
  - `/workflow/othercircuits/{state_name}`: get all other circuits of a specific state (uses accessible_states of the groups for permissions)
+ - `/workflow/notification`: get and post notifications for the given user
 
  
 ## Screenshots:
@@ -56,7 +59,6 @@ Updated Dashboard sidebar to show logged-in user roles and my Publications tab.!
 ## Future Roadmap:
  - Full Integration of Front-end.
  - Ability to add multiple workflows.
- 
  - Making use of Publication model from Publish API.
  - Converting circuit from save API to publish API.
 
