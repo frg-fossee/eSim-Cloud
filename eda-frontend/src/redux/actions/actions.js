@@ -33,6 +33,7 @@ export const SIGNUP_SUCCESSFUL = 'SIGNUP_SUCCESSFUL'
 export const SIGNUP_FAILED = 'SIGNUP_FAILED'
 export const DEFAULT_STORE = 'DEFAULT_STORE'
 export const ROLE_LOADED = 'ROLE_LOADED'
+export const FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS'
 
 // Actions for saving scheamtics and loading saved, gallery and local schematics.
 export const SAVE_SCHEMATICS = 'SAVE_SCHEMATICS'

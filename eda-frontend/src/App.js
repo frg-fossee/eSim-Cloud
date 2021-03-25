@@ -15,7 +15,7 @@ import Publications from './pages/Publications'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 import { useSelector, useDispatch } from 'react-redux'
-import { loadUser } from './redux/actions/index'
+import { loadUser ,fetchNotifications} from './redux/actions/index'
 
 // Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
 // and restricted routes disabled for authenticated users. [ e.g : login , signup ]
@@ -23,7 +23,11 @@ function PrivateRoute ({ component: Component, ...rest }) {
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
 
-  useEffect(() => dispatch(loadUser()), [dispatch])
+  useEffect(() => {
+    dispatch(loadUser())
+    dispatch(fetchNotifications())
+
+  }, [dispatch])
 
   return <Route {...rest} render={props => {
     if (auth.isLoading) {

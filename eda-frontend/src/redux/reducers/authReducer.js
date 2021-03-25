@@ -7,6 +7,7 @@ const initialState = {
   isLoading: false,
   user: null,
   roles:null,
+  notifications:null,
   errors: '',
   regErrors: ''
 }
@@ -19,12 +20,6 @@ export default function (state = initialState, action) {
         isLoading: true
       }
     }
-    case actions.ROLE_LOADED: {
-      return{
-        ...state,
-        roles: action.payload.data
-      }
-    }
     case actions.DEFAULT_STORE: {
       return {
         ...state,
@@ -32,7 +27,6 @@ export default function (state = initialState, action) {
         regErrors: ''
       }
     }
-
     case actions.SIGNUP_SUCCESSFUL: {
       return {
         ...state,
@@ -90,7 +84,19 @@ export default function (state = initialState, action) {
         isLoading: false
       }
     }
-
+    case actions.ROLE_LOADED: {
+      return{
+        ...state,
+        roles: action.payload.data
+      }
+    }
+    case actions.FETCH_NOTIFICATIONS: 
+    {
+      return{
+        ...state,
+        notifications:action.payload.data
+      }
+    }
     default:
       return state
   }

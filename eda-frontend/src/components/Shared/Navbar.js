@@ -1,9 +1,19 @@
-import React from 'react'
-
+import React, { useEffect } from 'react'
 import {
-  AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar, Menu, ListItemText,
+  AppBar,
+  Button,
+  Toolbar,
+  Typography,
+  Link,
+  IconButton,
+  Avatar,
+  Menu,
+  ListItemText,
   Fade,
-  MenuItem
+  MenuItem,
+  Popper,
+  Paper,
+  ListItem, List
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
@@ -11,10 +21,15 @@ import { Link as RouterLink, useHistory } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import store from '../../redux/store'
 import { logout } from '../../redux/actions/index'
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import { useDispatch, useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`
+  },
+  root: {
+    width: 500,
   },
   toolbar: {
     flexWrap: 'wrap'
@@ -38,16 +53,30 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepPurple[500]),
     backgroundColor: deepPurple[500],
     fontSize: '17px'
-  }
+  },
+  typography: {
+    padding: theme.spacing(2),
+  },
 }))
 
 // Common navbar for Dashboard, Home, Simulator, Gallery, etc.
 export function Header() {
   const history = useHistory()
   const classes = useStyles()
+  const [notifAnchorEl, setNotifAnchorEl] = React.useState(null)
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const notifications = useSelector(state => state.authReducer.notifications)
   const auth = store.getState().authReducer
+  const dispatch = useDispatch()
 
+  // useEffect(() => {
+  //   console.log("Used Effect")
+  //   dispatch(fetchNotifications())
+  // }, [dispatch])
+
+  const handleNotifClick = (event) => {
+    setNotifAnchorEl(notifAnchorEl ? null : event.currentTarget)
+  }
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -193,7 +222,28 @@ export function Header() {
           Login
         </Button>)
           : (<>
+            <IconButton
+              edge="start"
+              style={{ marginLeft: 'auto' }}
+              color="primary"
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleNotifClick}
+            >
+              <NotificationsIcon />
+            </IconButton>
+            <Popper open={Boolean(notifAnchorEl)} anchorEl={notifAnchorEl} placement='bottom-end' transition>
+              <Paper>
+                <List component="nav" aria-label="main mailbox folders">
+                  {notifications ? <>{notifications.map((item) => (
+                    <ListItem>
+                      {item.text}
+                    </ListItem>
+                  ))}</> : <>No new Notifications</>}
 
+                </List>
+              </Paper>
+            </Popper>
             <IconButton
               edge="start"
               style={{ marginLeft: 'auto' }}

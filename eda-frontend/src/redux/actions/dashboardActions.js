@@ -47,7 +47,6 @@ export const fetchMyPublications = () => (dispatch, getState) => {
           type: actions.FETCH_MY_PUBLICATIONS,
           payload: res.data
         })
-        console.log(res.data[0].status)
       }
     )
     .catch((err) => { console.error(err) })

@@ -1,35 +1,7 @@
 import * as actions from './actions'
 import api from '../../utils/Api'
 
-export const fetchRole = () => (dispatch,getState) => {
-  const token = getState().authReducer.token
 
-  // add headers
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-
-  // If token available add to headers
-  if (token) {
-    config.headers.Authorization = `Token ${token}`
-  } else {
-    dispatch({ type: actions.LOADING_FAILED })
-    return
-  }
-  api.get(`workflow/role/`, config)
-    .then((res) => {
-      console.log(res.data)
-      dispatch({
-        type: actions.ROLE_LOADED,
-        payload: {
-          data: res.data
-        }
-      })
-    }).catch(()=>{console.log("Error")})
-  
-}
 // Api call for maintaining user login state throughout the application
 export const loadUser = () => (dispatch, getState) => {
   // User Loading
@@ -261,4 +233,64 @@ export const googleLogin = (host, toUrl) => {
         }
       })
   }
+}
+
+//API call for fetching user role.
+export const fetchRole = () => (dispatch,getState) => {
+  const token = getState().authReducer.token
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
+  }
+  api.get(`workflow/role/`, config)
+    .then((res) => {
+      console.log(res.data)
+      dispatch({
+        type: actions.ROLE_LOADED,
+        payload: {
+          data: res.data
+        }
+      })
+    }).catch(()=>{console.log("Error")})
+  
+}
+//API call for fetching user notifications.
+export const fetchNotifications = () => (dispatch,getState) => {
+  const token = getState().authReducer.token
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
+  }
+  api.get(`workflow/notification/`, config)
+    .then((res) => {
+      console.log(res.data)
+      dispatch({
+        type: actions.FETCH_NOTIFICATIONS,
+        payload: {
+          data: res.data
+        }
+      })
+    }).catch(()=>{console.log("Error")})
 }

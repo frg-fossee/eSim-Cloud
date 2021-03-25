@@ -9,7 +9,7 @@ from publishAPI.serializers import CircuitSerializer
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import status as http_status
+from rest_framework import serializers, status as http_status
 from rest_framework.parsers import FormParser, JSONParser
 
 
@@ -45,8 +45,10 @@ class NotificationView(APIView):
         notifications = Notification.objects.filter(user=self.request.user,shown=False)
         if notifications is not None:
             for notification in notifications:
-                notification.shown = True   
+                #notification.shown = True   
                 notification.save()
+            serialized = NotificationSerializer(notifications,many=True)
+            return Response(serialized.data)
         else:
             return Response({'message':'No New Notifications!'})
 
@@ -155,7 +157,7 @@ class CircuitStateView(APIView):
                                     saved_state.save()
                                     state = saved_state.state
                                     if saved_state.author != request.user:
-                                        notiftext = "Your circuit status have been changed from " +str(circuit_transition.from_state) +" to " + str(circuit_transition.to_state)
+                                        notiftext = "Your circuit status have been changed from " +str(circuit_transition.from_state) +" to " + str(circuit_transition.to_state)    
                                         notification = Notification(text=notiftext,user=saved_state.author)
                                         notification.save()
                                     serialized = StatusSerializer(state)
