@@ -14,7 +14,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -26,7 +25,6 @@ SECRET_KEY = os.environ.get(
 DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=True))
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
-
 
 # Application definition
 
@@ -50,7 +48,8 @@ INSTALLED_APPS = [
     'libAPI',
     'saveAPI',
     'publishAPI',
-    'arduinoAPI'
+    'arduinoAPI',
+    'ltiAPI',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +69,7 @@ ROOT_URLCONF = 'esimCloud.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,7 +83,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'esimCloud.wsgi.application'
-
 
 # Database config Defaults to sqlite3 if not provided in environment files
 
@@ -112,7 +110,6 @@ DATABASES = {
 
 }
 
-
 DATABASE_ROUTERS = (
     'simulationAPI.dbrouters.mongoRouter',
     # 'saveAPI.dbrouters.mongoRouter',<- to Store saveAPI models in mongodb
@@ -122,19 +119,18 @@ DATABASE_ROUTERS = (
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',    # noqa
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',              # noqa
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',             # noqa
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',            # noqa
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',  # noqa
     },
 ]
-
 
 # Mail server config
 
@@ -166,7 +162,9 @@ DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
     # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'api/auth/users/activate/{uid}/{token}',
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback",
+                                          "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],
+    # noqa
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy'
     # 'LOGIN_FIELD': 'email'   For using email only
 }
@@ -195,7 +193,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Allow CORS for Public API
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -203,7 +200,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/django_static/'
-
 
 # noqa For Netlist handling netlist uploads and other temp uploads
 MEDIA_URL = '/_files/'
@@ -224,7 +220,6 @@ CELERY_IMPORTS = (
     'arduinoAPI.tasks'
 )
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -239,7 +234,6 @@ LOGGING = {
     },
 }
 
-
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
         'Bearer': {
@@ -249,3 +243,17 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+LTI_TOOL_CONFIGURATION = {
+    'title': 'Esim-Cloud',
+    'description': 'Esim cloud is a simulation platform',
+    'launch_url': 'api/lti/auth/',
+    'course_aware': True,
+    'course_navigation': True
+}
+
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

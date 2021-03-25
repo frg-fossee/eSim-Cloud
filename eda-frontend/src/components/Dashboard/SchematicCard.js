@@ -10,15 +10,26 @@ import {
   CardMedia,
   CardHeader,
   Tooltip,
-  Snackbar
+  Snackbar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  TextField,
+  DialogContentText,
+  DialogTitle,
 } from '@material-ui/core'
+import Modal from '@material-ui/core/Modal';
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { useDispatch } from 'react-redux'
+import ScreenShareIcon from '@material-ui/icons/ScreenShare';
 import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
+import { useDispatch } from 'react-redux'
+import { fetchConfigURL } from '../../redux/actions/index'
+import api from '../../utils/Api'
+
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -28,14 +39,22 @@ const useStyles = makeStyles((theme) => ({
   rating: {
     marginTop: theme.spacing(1),
     marginLeft: 'auto'
-  }
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -72,7 +91,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -104,7 +123,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -112,17 +131,43 @@ function getDate (jsonDate) {
   return `${day}-${month}-${year}`
 }
 
-// Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
-  const classes = useStyles()
 
-  // To handel delete schematic snackbar
+// Card displaying overview of onCloud saved schematic.
+export default function SchematicCard({ sch }) {
+  const classes = useStyles()
+  const dispatch = useDispatch()
+
+  const [configURL, setConfigURL] = React.useState()
+  // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
+
+  //To handle sharing of circuit as a LTI producer
+  const [ltiModal, setLTIModal] = React.useState(false)
 
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
+  // Api call for getting LTI config url for specified circuit by passing consumer key and secret key
+  const handleLTIGenerate = (consumer_key, secret_key, save_id) => {
+    const body = {
+      "consumer_key": "consumer_key",
+      "secret_key": "secret_key",
+      "save_id": "c9c75af8-104c-43cb-89a5-c1e736cbb8f1",
+    }
+    var response = api.post(`lti/create/`, body)
+      .then(res => {
+        setConfigURL(res.data.config_url)
+        return res.data
+      })
+      .catch((err) => { console.error(err) })
+  }
+  const handleOpenLTI = () => {
+    setLTIModal(true)
+  }
 
+  const handleCloseLTI = () => {
+    setLTIModal(false)
+  }
   const handleSnacClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
@@ -165,13 +210,30 @@ export default function SchematicCard ({ sch }) {
           >
             Launch in Editor
           </Button>
-
+          <Tooltip title='Share to LMS' placement="bottom" arrow>
+            <ScreenShareIcon
+              color='secondary'
+              fontSize="small"
+              style={{ marginLeft: 'auto' }}
+              onClick={() => { handleOpenLTI() }}
+            />
+          </Tooltip>
+          <Dialog onClose={handleCloseLTI} aria-labelledby="simple-dialog-title" open={ltiModal}>
+            <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
+            <DialogContent>
+              <TextField id="standard-basic" label="Consumer Key" />
+              <TextField id="standard-basic" label="Secret Key" />
+              <Button variant="contained" color="primary" onClick={handleLTIGenerate}>
+                Generate LTI config URL
+              </Button>
+              {configURL}
+            </DialogContent>
+          </Dialog>
           {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon
               color='secondary'
               fontSize="small"
-              style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
             />
           </Tooltip>
