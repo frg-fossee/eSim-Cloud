@@ -17,6 +17,7 @@ import {
   TextField,
   DialogContentText,
   DialogTitle,
+  Paper,
 } from '@material-ui/core'
 import Modal from '@material-ui/core/Modal';
 import ShareIcon from '@material-ui/icons/Share'
@@ -47,6 +48,10 @@ const useStyles = makeStyles((theme) => ({
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  },
+  config: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1),
   },
 }))
 function Alert(props) {
@@ -140,44 +145,51 @@ export default function SchematicCard({ sch }) {
   // To handle secret key for LTI usage
   const [secretKey, setSecretKey] = React.useState("")
 
-  // To handle
+  // To handle consumer key for LTI usage
   const [consumerKey, setConsumerKey] = React.useState("")
 
-  // To handle consumer key for LTI usage
+  // To handle configURL for LTI usage
   const [configURL, setConfigURL] = React.useState()
+
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
   //To handle sharing of circuit as a LTI producer
   const [ltiModal, setLTIModal] = React.useState(false)
 
+  // To check if configURL exists already
+  const [configExists, setConfigExists] = React.useState(false)
+
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
   // Api call for getting LTI config url for specified circuit by passing consumer key and secret key
   const handleLTIGenerate = (consumer_key, secret_key, save_id) => {
-    console.log(consumer_key, secret_key)
     const body = {
       "consumer_key": consumer_key,
       "secret_key": secret_key,
       "save_id": save_id,
     }
-    var response = api.post(`lti/create/`, body)
+    api.post(`lti/create/`, body)
       .then(res => {
         setConfigURL(res.data.config_url)
+        setConfigExists(true)
         return res.data
       })
-      .catch((err) => { console.error(err) })
+      .catch((err) => { console.error(err.response) })
   }
   const handleOpenLTI = () => {
     //To-do write a get request to check if it params are already set
     setLTIModal(true)
-    
-    // if(response.data.secret_key){
-    //   setSecretKey(response.data.secret_key)
-    //   setConsumerKey(response.data.consumer_key)
-    //   setConfigURL(response.data.configURL)
-    // }
+    api.get(`lti/exist/${sch.save_id}`)
+      .then(res => {
+        if(res.data.secret_key){
+          setSecretKey(res.data.secret_key)
+          setConsumerKey(res.data.consumer_key)
+          setConfigURL(res.data.config_url)
+          setConfigExists(true)
+        }
+      })
   }
 
   const handleCloseLTI = () => {
@@ -185,12 +197,10 @@ export default function SchematicCard({ sch }) {
   }
 
   const handleConsumerKey = (e) => {
-    console.log(e.target.value);
     setConsumerKey(e.target.value)
   }
 
   const handleSecretKey = (e) => {
-    console.log(e.target.value)
     setSecretKey(e.target.value)
   }
 
@@ -236,7 +246,8 @@ export default function SchematicCard({ sch }) {
           >
             Launch in Editor
           </Button>
-          <Tooltip title='Share to LMS' placement="bottom" arrow>
+          {/* Display create LTI app option */}
+          <Tooltip title='Create LTI app' placement="bottom" arrow>
             <ScreenShareIcon
               color='secondary'
               fontSize="small"
@@ -247,9 +258,9 @@ export default function SchematicCard({ sch }) {
           <Dialog onClose={handleCloseLTI} aria-labelledby="simple-dialog-title" open={ltiModal}>
             <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
             <DialogContent>
-              <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} />
-              <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} />
-              <h3>{configURL}</h3>
+              <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists}/>
+              <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists}/>
+              {configURL && <Paper><div className={classes.config}>{configURL}</div></Paper>}
               <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id)}>
                 Generate LTI config URL
               </Button>

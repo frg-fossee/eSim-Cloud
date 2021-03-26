@@ -17,9 +17,26 @@ def denied(r):
     return render(r, 'ltiAPI/denied.html')
 
 
-# class LTIExist(APIView):
-#     def get()
-#
+class LTIExist(APIView):
+
+    def get(self, request, save_id):
+        try:
+            consumer = lticonsumer.objects.get(save_id=save_id)
+        except lticonsumer.DoesNotExist:
+            return Response(data={"Message": "LTIConsumer Not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        config_url = "http://" + request.get_host() + "/api/lti/" + str(save_id) + '/config.xml/'
+        response_data = {
+            "consumer_key": consumer.consumer_key,
+            "secret_key": consumer.secret_key,
+            "config_url": config_url
+        }
+        response_serializer = consumerResponseSerializer(data=response_data)
+        if response_serializer.is_valid():
+            return Response(response_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(response_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LTIBuildApp(APIView):
 
@@ -30,7 +47,7 @@ class LTIBuildApp(APIView):
         if serialized.is_valid():
             serialized.save()
             save_id = serialized.data.get('save_id')
-            config_url = request.get_host() + "/api/lti/" + save_id + '/config.xml/'
+            config_url = "http://" + request.get_host() + "/api/lti/" + save_id + '/config.xml/'
             response_data = {
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
@@ -108,7 +125,6 @@ class LTIAuthView(APIView):
             # if invalid_login_method_hook:
             #     import_string(invalid_login_method_hook)(params)
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-
 
 # def LTIPostGrade(params, request):
 #     """
