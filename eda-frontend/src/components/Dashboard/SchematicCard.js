@@ -53,6 +53,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     padding: theme.spacing(1),
   },
+  delete: {
+    backgroundColor: "red",
+    color: "white"
+  }
 }))
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
@@ -141,25 +145,21 @@ function getDate(jsonDate) {
 export default function SchematicCard({ sch }) {
   const classes = useStyles()
   const dispatch = useDispatch()
-
-  // To handle secret key for LTI usage
-  const [secretKey, setSecretKey] = React.useState("")
-
-  // To handle consumer key for LTI usage
-  const [consumerKey, setConsumerKey] = React.useState("")
-
-  // To handle configURL for LTI usage
-  const [configURL, setConfigURL] = React.useState()
+  // To handle LTI details
+  const [ltiDetails, setLTIDetails] = React.useState({
+    secretKey: "",
+    consumerKey: "",
+    configURL: "",
+    configExists: false,
+    consumerError: false,
+  })
+  const { secretKey, consumerKey, configURL, configExists, consumerError } = ltiDetails
 
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
   //To handle sharing of circuit as a LTI producer
   const [ltiModal, setLTIModal] = React.useState(false)
-
-  // To check if configURL exists already
-  const [configExists, setConfigExists] = React.useState(false)
-
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
@@ -170,38 +170,57 @@ export default function SchematicCard({ sch }) {
       "secret_key": secret_key,
       "save_id": save_id,
     }
-    api.post(`lti/create/`, body)
+    api.post(`lti/build/`, body)
       .then(res => {
-        setConfigURL(res.data.config_url)
-        setConfigExists(true)
+        setLTIDetails({
+          ...ltiDetails,
+          configURL: res.data.config_url,
+          configExists: true,
+          consumerError: false
+        })
         return res.data
       })
-      .catch((err) => { console.error(err.response) })
+      .catch((err) => { setLTIDetails({ ...ltiDetails, consumerError: true }) })
   }
   const handleOpenLTI = () => {
     //To-do write a get request to check if it params are already set
     setLTIModal(true)
     api.get(`lti/exist/${sch.save_id}`)
       .then(res => {
-        if(res.data.secret_key){
-          setSecretKey(res.data.secret_key)
-          setConsumerKey(res.data.consumer_key)
-          setConfigURL(res.data.config_url)
-          setConfigExists(true)
+        if (res.data.secret_key) {
+          setLTIDetails(
+            {
+              secretKey: res.data.secret_key,
+              consumerKey: res.data.consumer_key,
+              configURL: res.data.config_url,
+              configExists: true
+            })
         }
       })
   }
-
+  const handleDeleteLTIApp = () => {
+    api.delete(`lti/delete/${sch.save_id}`)
+      .then(res => {
+        setLTIDetails({
+          secretKey: "",
+          consumerKey: "",
+          configURL: "",
+          configExists: false,
+          consumerError: false,
+        })
+      })
+      .catch(error => console.log(error))
+  }
   const handleCloseLTI = () => {
     setLTIModal(false)
   }
 
   const handleConsumerKey = (e) => {
-    setConsumerKey(e.target.value)
+    setLTIDetails({ ...ltiDetails, consumerKey: e.target.value })
   }
 
   const handleSecretKey = (e) => {
-    setSecretKey(e.target.value)
+    setLTIDetails({ ...ltiDetails, secretKey: e.target.value })
   }
 
   const handleSnacClose = (event, reason) => {
@@ -258,12 +277,27 @@ export default function SchematicCard({ sch }) {
           <Dialog onClose={handleCloseLTI} aria-labelledby="simple-dialog-title" open={ltiModal}>
             <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
             <DialogContent>
-              <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists}/>
-              <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists}/>
+              {consumerError &&
+                <Typography variant="overline" display="block" gutterBottom>
+                  CANNOT USE ALREADY EXISTING CONSUMER KEY!
+                 </Typography>}
+              <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} />
+              <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists} />
               {configURL && <Paper><div className={classes.config}>{configURL}</div></Paper>}
-              <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id)}>
+              <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" disabled={configExists} onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id)}>
                 Generate LTI config URL
               </Button>
+              {configExists &&
+                <Button
+                  style={{ marginTop: '25px', marginBottom: '10px', marginLeft: '5px' }}
+                  variant="contained"
+                  className={classes.delete}
+                  startIcon={<DeleteIcon />}
+                  onClick={() => handleDeleteLTIApp()}
+                >
+                  Delete
+              </Button>}
+
             </DialogContent>
           </Dialog>
           {/* Display delete option */}

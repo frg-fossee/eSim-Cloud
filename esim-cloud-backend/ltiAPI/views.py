@@ -42,7 +42,6 @@ class LTIBuildApp(APIView):
 
     @swagger_auto_schema(request_body=consumerSerializer, responses={201: consumerResponseSerializer})
     def post(self, request):
-        print(request.data)
         serialized = consumerSerializer(data=request.data)
         if serialized.is_valid():
             serialized.save()
@@ -60,6 +59,18 @@ class LTIBuildApp(APIView):
                 return Response(response_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LTIDeleteApp(APIView):
+
+    def delete(self, request, save_id):
+        consumers = lticonsumer.objects.all()
+        try:
+            consumer = consumers.get(save_id=save_id)
+            consumer.delete()
+            return Response(data={"Message": "Successfully deleted!"}, status=status.HTTP_204_NO_CONTENT)
+        except lticonsumer.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class LTIConfigView(View):
