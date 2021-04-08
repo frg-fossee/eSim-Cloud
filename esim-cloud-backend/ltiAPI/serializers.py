@@ -8,7 +8,8 @@ class consumerSerializer(serializers.ModelSerializer):
         fields = ['consumer_key', 'secret_key', 'save_id']
 
     def create(self, validated_data):
-        consumer = lticonsumer.objects.create(**validated_data)
+        save = validated_data.pop("save_id")
+        consumer = lticonsumer.objects.create(save_id=save, **validated_data)
         return consumer
 
 

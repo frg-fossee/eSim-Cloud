@@ -45,8 +45,8 @@ class LTIBuildApp(APIView):
         serialized = consumerSerializer(data=request.data)
         if serialized.is_valid():
             serialized.save()
-            save_id = serialized.data.get('save_id')
-            config_url = "http://" + request.get_host() + "/api/lti/" + save_id + '/config.xml/'
+            print("object saved")
+            config_url = "http://" + request.get_host() + "/api/lti/" + str(serialized.data["save_id"]) + '/config.xml/'
             response_data = {
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
@@ -80,9 +80,6 @@ class LTIConfigView(View):
         except StateSave.DoesNotExist:
             return render(request, 'ltiAPI/denied.html')
 
-        # Verifies owner
-        if self.request.user != saved_state.owner:  # noqa
-            return render(request, 'ltiAPI/denied.html')
         if saved_state.shared:
             pass
         else:
@@ -95,7 +92,7 @@ class LTIConfigView(View):
         ctx = {
             'domain': domain,
             'launch_url': launch_url,
-            'title': settings.LTI_TOOL_CONFIGURATION.get('title'),
+            'title': saved_state.name,
             'description': settings.LTI_TOOL_CONFIGURATION.get('description'),
             'course_navigation': settings.LTI_TOOL_CONFIGURATION.get('course_navigation'),
         }
@@ -114,27 +111,14 @@ class LTIAuthView(APIView):
         url = request.build_absolute_uri()
         # Extracts the request headers from the request
         headers = request.META
-        # Get the default next URL from the LTI model
+        # Define the redirect url
         i = lticonsumer.objects.get(consumer_key=request.data['oauth_consumer_key'])
-        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + i.save_id
+        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.save_id.save_id)
         try:
             # Validate the incoming LTI
             verify_request_common(consumers_dict, url, request.method, headers, params)
-            # Map and call the login method hook if defined in the settings
-            # login_method_hook = settings.PYLTI_CONFIG.get('method_hooks', {}).get('valid_lti_request', None)
-            # if login_method_hook:
-            #     # If there is a return URL from the configured call the redirect URL
-            #     # is updated with the one that is returned. This is to enable redirecting to
-            #     # constructed URLs
-            #     update_url = import_string(login_method_hook)(params, request)
-            #     if update_url:
-            #         next_url = update_url
             return HttpResponseRedirect(next_url)
         except LTIException:
-            # Map and call the invalid login method hook if defined in the settings
-            # invalid_login_method_hook = settings.PYLTI_CONFIG.get('method_hooks', {}).get('invalid_lti_request', None)
-            # if invalid_login_method_hook:
-            #     import_string(invalid_login_method_hook)(params)
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
 # def LTIPostGrade(params, request):

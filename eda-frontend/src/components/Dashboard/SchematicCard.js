@@ -12,14 +12,11 @@ import {
   Tooltip,
   Snackbar,
   Dialog,
-  DialogActions,
   DialogContent,
   TextField,
-  DialogContentText,
   DialogTitle,
   Paper,
 } from '@material-ui/core'
-import Modal from '@material-ui/core/Modal';
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
@@ -28,7 +25,6 @@ import ScreenShareIcon from '@material-ui/icons/ScreenShare';
 import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
 import { useDispatch } from 'react-redux'
-import { fetchConfigURL } from '../../redux/actions/index'
 import api from '../../utils/Api'
 
 
@@ -144,7 +140,6 @@ function getDate(jsonDate) {
 // Card displaying overview of onCloud saved schematic.
 export default function SchematicCard({ sch }) {
   const classes = useStyles()
-  const dispatch = useDispatch()
   // To handle LTI details
   const [ltiDetails, setLTIDetails] = React.useState({
     secretKey: "",

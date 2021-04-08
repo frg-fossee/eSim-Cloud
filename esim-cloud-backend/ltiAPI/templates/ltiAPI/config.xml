@@ -11,7 +11,7 @@
     <blti:launch_url>{{launch_url}}</blti:launch_url>
     <blti:title>{% if debug %}Dev {% endif %}{{title}}</blti:title>
     <blti:description>{{description}}</blti:description>
-    <blti:extensions platform="canvas.instructure.com">
+    <blti:extensions platform="">
       <lticm:property name="privacy_level">public</lticm:property>
       <lticm:property name="domain">{{domain}}</lticm:property>
       <lticm:property name="text">{% if debug %}Dev{% endif %} {{title}}</lticm:property>
