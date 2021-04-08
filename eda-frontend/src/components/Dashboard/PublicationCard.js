@@ -1,51 +1,185 @@
-import { Button, Card,CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Typography } from '@material-ui/core'
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Typography,
+  Dialog,
+  Select,
+  DialogContent,
+  MenuItem,
+  DialogContentText,
+  DialogTitle,
+  Tooltip,
+  Paper,
+  Menu,
+  DialogActions,
+} from '@material-ui/core'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
+import PublishIcon from '@material-ui/icons/Publish';
+import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
-    media: {
-        height: 0,
-        paddingTop: '56.25%' // 16:9
-    },
-    rating: {
-        marginTop: theme.spacing(1),
-        marginLeft: 'auto'
-    }
+  media: {
+    height: 0,
+    paddingTop: '56.25%' // 16:9
+  },
+  rating: {
+    marginTop: theme.spacing(1),
+    marginLeft: 'auto'
+  },
+  no: {
+    color: 'red',
+    marginLeft: '10px'
+  }
 }))
 
 
 export default function PublicationCard({ pub }) {
-    const classes = useStyles()
-    return (
-        <>
-            <Card>
-                <CardActionArea>
-                    <CardHeader title={pub.title} />
-                    <CardMedia
-                        className={classes.media}
-                        image={pub.base64_image} />
-                    <CardContent>
-                        <Typography variant='body2' component='p'>
-                            {pub.description}
-                        </Typography>
-                        <Typography variant='body2' component='p'>
-                            Status: {pub.status_name}
-                        </Typography>
-                        <Typography variant='body2' component='p' color='textSecondary' style={{ margin: '5px 0px 0px 0px' }}>
-                            Updated at {pub.last_updated}
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-                <CardActions>
-                    <Button>
-                        Launch in Editor
+  const [publishModal, setPublishModal] = React.useState(false)
+  const [stateList, setStateList] = React.useState(null)
+  const [status, setStatus] = React.useState(null)
+  const handlePublishClick = () => {
+    if (!publishModal) {
+      getStatus()
+    }
+    setPublishModal(!publishModal)
+  }
+  //workflow/state/<uuid:circuit_id>
+  const getStatus = () => {
+    const token = localStorage.getItem("esim_token")
+
+    // add headers
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get(`/workflow/state/${pub.circuit_id}`, config)
+      .then((res) => {
+        console.log(res.data)
+        setStateList(res.data)
+      })
+      .catch(error => console.log(error))
+  }
+  const changeStatus = () => {
+    //post the state
+    const token = localStorage.getItem("esim_token")
+
+    // add headers
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.post(`/workflow/state/${pub.circuit_id}`,
+      {
+        'name':status
+      }, config)
+      .then((res) => {
+        console.log(res.data)
+        pub.status_name = res.data.name
+      })
+      .catch(error => console.log(error))
+  }
+  const handleSelectChange = (event) =>
+  {
+    setStatus(event.target.value)
+  };
+  const classes = useStyles()
+  return (
+    <>
+      <Card>
+        <CardActionArea>
+          <CardHeader title={pub.title} />
+          <CardMedia
+            className={classes.media}
+            image={pub.base64_image} />
+          <CardContent>
+            <Typography variant='body2' component='p'>
+              Status: {pub.status_name}
+            </Typography>
+            <Typography variant='body2' component='p' color='textSecondary' style={{ margin: '5px 0px 0px 0px' }}>
+              Updated at {pub.save_time}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Button
+            target="_blank"
+            component={RouterLink}
+            to={'/editor?id=' + pub.save_id}
+            size="small"
+            color="primary">
+            Launch in Editor
                     </Button>
-                </CardActions>
-            </Card>
-        </>
-    )
+          <Tooltip title="Publish" placement="bottom" arrow>
+            <PublishIcon
+              color='secondary'
+              fontSize='small'
+              onClick={() => { handlePublishClick() }}
+            />
+          </Tooltip>
+        </CardActions>
+
+        <Dialog onClose={handlePublishClick} aria-labelledby="simple-dialog-title" open={publishModal}>
+          <DialogTitle id="simple-dialog-title">Publication Status: {pub.status_name}</DialogTitle>
+          <DialogContent>
+            {stateList &&
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                autoWidth
+                style={{ width: '50%' }}
+                onChange={handleSelectChange}
+                value={status}
+              >
+                {stateList.map((item, index) =>
+                (
+                  <MenuItem value={item}>{item}</MenuItem>
+                ))}
+              </Select>}
+            <br />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={changeStatus}
+            >
+              Change
+            </Button>
+            <Button
+              onClick={handlePublishClick}
+              size="small"
+              className={classes.no}
+              variant="contained"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Card>
+    </>
+  )
 }
 PublicationCard.propTypes = {
-    sch: PropTypes.object
+  sch: PropTypes.object
 }

@@ -15,9 +15,11 @@ router.register(r'publish/publishing', publishAPI_views.PublicCircuitViewSet,
                 basename='publish')
 router.register(r'publish/circuit', publishAPI_views.MyCircuitViewSet,
                 basename='circuit')
-router.register(r'circuits', publishAPI_views.PublishViewSet,
-                basename='circuit')
+# router.register(r'circuits', publishAPI_views.PublishViewSet,
+#                 basename='circuit')
 
 urlpatterns = [
     url(r'^', include(router.urls)),
+    path('publish/create/<uuid:save_id>',
+         publishAPI_views.CircuitViewSet.as_view(), name='create'),
 ]

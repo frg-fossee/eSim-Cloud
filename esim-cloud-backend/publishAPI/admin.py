@@ -1,5 +1,5 @@
 from django.contrib import admin
-from publishAPI.models import Circuit, CircuitTag, Publish
+from publishAPI.models import Circuit, CircuitTag
 from workflowAPI.models import TransitionHistory
 
 @admin.register(CircuitTag)
@@ -17,6 +17,6 @@ class CircuitAdmin(admin.ModelAdmin):
     inlines=[HistoryInline,]
 
 
-@admin.register(Publish)
-class PublishAdmin(admin.ModelAdmin):
-    list_display = ('circuit_title', 'image_tag', 'published', 'reviewed_by')
+# @admin.register(Publish)
+# class PublishAdmin(admin.ModelAdmin):
+#     list_display = ('circuit_title', 'image_tag', 'published', 'reviewed_by')

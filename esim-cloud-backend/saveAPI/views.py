@@ -143,6 +143,7 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             try:
+                saved_state.circuit.delete()
                 saved_state.delete()
                 return Response({'done': True})
             except Exception:

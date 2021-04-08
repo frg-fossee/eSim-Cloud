@@ -21,13 +21,10 @@ class TransitionHistories(admin.ModelAdmin):
 class GroupInline(admin.TabularInline):
     model = CustomGroup
     can_delete = False
-    verbose_name_plural = 'custom groups'
+    # verbose_name_plural = 'custom groups'
 
 class GroupAdmin(BaseGroupAdmin):
     inlines = (GroupInline, )
-
-
-
 class NotifInline(admin.TabularInline):
     model = Notification
     can_delete=False

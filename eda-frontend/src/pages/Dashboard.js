@@ -11,6 +11,7 @@ import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
 import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
 import DashboardPublications from '../components/Dashboard/DashboardPublications'
+import DashboardOtherPublications from '../components/Dashboard/DashboardOtherPublications'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +53,11 @@ export default function Dashboard() {
             exact
             path="/dashboard/publications"
             component={DashboardPublications}
+          />
+          <Route
+            exact
+            path="/dashboard/otherpublications"
+            component={DashboardOtherPublications}
           />
         </Switch>
       </LayoutMain>

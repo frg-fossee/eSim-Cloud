@@ -51,6 +51,31 @@ export const fetchMyPublications = () => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
+//Api call for listing other users publications to display on dashboard
+export const fetchOtherPublications = () => (dispatch, getState) => {
+  const token = getState().authReducer.token
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+
+  api.get(`workflow/othercircuits/`, config)
+    .then(
+      (res) => {
+        dispatch({
+          type: actions.FETCH_OTHER_PUBLICATIONS,
+          payload: res.data
+        })
+      }
+    )
+    .catch((err) => { console.error(err) })
+}
 //Api call for listing public publications to display on dashboard
 export const fetchPublicPublications = () => (dispatch, getState) => {
   const token = getState().authReducer.token

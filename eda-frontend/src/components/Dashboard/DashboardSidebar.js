@@ -14,7 +14,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchMyPublications, fetchSchematics,fetchRole } from '../../redux/actions/index'
+import { fetchMyPublications, fetchSchematics,fetchOtherPublications,fetchRole } from '../../redux/actions/index'
 import Axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
@@ -56,6 +56,7 @@ export default function DashSidebar(props) {
   useEffect(() => {
     dispatch(fetchSchematics())
     dispatch(fetchMyPublications())
+    dispatch(fetchOtherPublications())
     dispatch(fetchRole())
   }, [dispatch])
 
@@ -137,6 +138,14 @@ export default function DashSidebar(props) {
           button
         >
           <ListItemText primary='My Publications' />
+        </ListItem>
+        <ListItem
+          component={RouterLink}
+          to="/dashboard/otherpublications"
+          className={classes.sideItem}
+          button
+        >
+          <ListItemText primary='Other Publications' />
         </ListItem>
       </List>
     </>

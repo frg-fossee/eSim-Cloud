@@ -4,4 +4,5 @@ import workflowAPI
 class WorkflowapiConfig(AppConfig):
     name = 'workflowAPI'
     def ready(self):
-        import workflowAPI.signals.handlers
+        pass
+        # import workflowAPI.signals.handlers

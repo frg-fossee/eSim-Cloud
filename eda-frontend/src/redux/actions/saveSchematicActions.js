@@ -153,6 +153,8 @@ export const setSchShared = (share) => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
+//Action for Creating a circuit
+
 
 // Action for Loading Gallery schematics
 export const loadGallery = (Id) => (dispatch, getState) => {

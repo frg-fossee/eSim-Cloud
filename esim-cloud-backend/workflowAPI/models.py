@@ -8,10 +8,10 @@ from django.contrib.auth import get_user_model
 # State model which has been linked to circuits in publishAPI
 class State(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=200, null=False)
+    name = models.CharField(max_length=200, null=False,unique=True)
     description = models.CharField(null=True, max_length=200)
     public = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.name
 
@@ -21,7 +21,7 @@ class CustomGroup(models.Model):
         return "{}".format(self.group.name)
 
     group = models.OneToOneField(Group, unique=True, on_delete=CASCADE)
-    accessible_states = models.ManyToManyField(State, related_name='accessible_states',verbose_name="Other circuits accesible states")
+    accessible_states = models.ManyToManyField(State, related_name='accessible_states',verbose_name="Other circuits accesible states",null=True)
     is_arduino = models.BooleanField(default=False)
 
 # Transition models to handle switching of states.

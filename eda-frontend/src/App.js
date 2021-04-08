@@ -75,6 +75,7 @@ function App () {
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
         <PublicRoute exact path="/publications" restricted={false} nav={true} component={Publications} />
+        <PublicRoute exact path="/publications" restricted={false} nav={true} component={Publications} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>

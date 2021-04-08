@@ -27,12 +27,12 @@ export default function (state = InitialState, action) {
         publicPublications:action.payload
       }
     }
-    // case actions.FETCH_OTHER_PUBLICATIONS:{
-    //   return{
-    //     ...state,
-    //     otherPublications:action.payload
-    //   }
-    // }
+    case actions.FETCH_OTHER_PUBLICATIONS:{
+      return{
+        ...state,
+        otherPublications:action.payload
+      }
+    }
 
     default:
       return state

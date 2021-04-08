@@ -10,15 +10,24 @@ import {
   CardMedia,
   CardHeader,
   Tooltip,
-  Snackbar
+  Snackbar,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  TextField,
+  DialogContentText,
+  DialogTitle,
+  Paper,
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
+import PublishIcon from '@material-ui/icons/Publish';
 import { useDispatch } from 'react-redux'
-import { deleteSchematic } from '../../redux/actions/index'
+import {  deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
+import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -28,14 +37,18 @@ const useStyles = makeStyles((theme) => ({
   rating: {
     marginTop: theme.spacing(1),
     marginLeft: 'auto'
+  },
+  no: {
+    color: 'red',
+    marginLeft: '10px'
   }
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -72,7 +85,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -104,7 +117,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -113,16 +126,49 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
+export default function SchematicCard({ sch,createCircuit }) {
   const classes = useStyles()
 
   // To handel delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
+  const [publishModal, setPublishModal] = React.useState(false)
+  const [hasCircuit,setHasCircuit] = React.useState(sch.circuit)
 
+  const handlePublishClick = () => {
+    setPublishModal(!publishModal)
+    
+  }
+  const createSchCircuit = (save_id) => {
+    // Get token from localstorage
+    const token = localStorage.getItem("esim_token")
+  
+    // add headers
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.post(`/publish/create/${save_id}`, {}, config)
+      .then(
+        () => {
+          setHasCircuit(true)
+        }
+      )
+      .catch((err) => { console.error(err) })
+  }
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
+  const makePublish = () => {
+    handlePublishClick()
+    createSchCircuit(sch.save_id)
 
+  }
   const handleSnacClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
@@ -165,13 +211,47 @@ export default function SchematicCard ({ sch }) {
           >
             Launch in Editor
           </Button>
+          {!hasCircuit &&
+            <Tooltip title="Publish" placement="bottom" arrow>
+              <PublishIcon
+                color='secondary'
+                fontSize='small'
+                style={{ marginLeft: 'auto' }}
+                onClick={() => { handlePublishClick() }}
+              />
+            </Tooltip>
+          }
+          {!sch.circuit &&
+            <Dialog onClose={handlePublishClick} aria-labelledby="simple-dialog-title" open={publishModal}>
+              <DialogTitle id="simple-dialog-title">Do you want to publish this circuit?</DialogTitle>
+              <DialogActions>
+                <Typography>Note: The circuit will be reviewed first and then will be published.</Typography>
+                <br />
+                <Button
+                  size="small"
+                  color="primary"
+                  variant="contained"
+                  onClick={makePublish}
+                >
+                  Yes
+                </Button>
+                <Button
+                  size="small"
+                  className={classes.no}
+                  variant="contained"
+                  onClick={handlePublishClick}
+                >
+                  No
+                </Button>
+              </DialogActions>
+            </Dialog>}
 
           {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon
               color='secondary'
               fontSize="small"
-              style={{ marginLeft: 'auto' }}
+              // style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
             />
           </Tooltip>
@@ -192,5 +272,6 @@ export default function SchematicCard ({ sch }) {
 }
 
 SchematicCard.propTypes = {
-  sch: PropTypes.object
+  sch: PropTypes.object,
+  createCircuit: PropTypes.func,
 }
