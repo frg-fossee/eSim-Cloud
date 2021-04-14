@@ -1,6 +1,7 @@
 import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
+import { BoundingBox } from './Geometry';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -219,6 +220,13 @@ export class Point {
     const wire = new Wire(this.canvas, this);
     this.connectedTo = wire;
     return wire;
+  }
+
+  /**
+   * Returns the bounding box of the point
+   */
+  getBoundingBox(): BoundingBox {
+    return BoundingBox.loadFromRaphaelBbox(this.body.getBBox());
   }
 
   /**

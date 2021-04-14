@@ -97,7 +97,7 @@ export class Wire {
    * @param y y-coordinate of cursor
    * @param isPerpendicular is the point to be drawn perpendicular
    */
-  addPoint(x: number, y: number, isPerpendicular = false) {
+  addPoint(x: number, y: number, isPerpendicular = false, index?) {
     let newX = x;
     let newY = y;
 
@@ -107,7 +107,7 @@ export class Wire {
       [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
     }
 
-    this.add(newX, newY);
+    this.add(newX, newY, index);
 
     // draw the line from the previous point to cursor's current position
     if (isPerpendicular) {
@@ -115,6 +115,16 @@ export class Wire {
     } else {
       this.draw(x, y);
     }
+  }
+
+  /**
+   * Removes all the intermediate points from the wire path
+   */
+  removeAllMiddlePoints() {
+    for (let i = this.points.length; i > 0; i--) {
+      this.removeJoint(i);
+    }
+    this.points = [this.points[0], this.points[this.points.length - 1]];
   }
 
   /**
@@ -217,8 +227,15 @@ export class Wire {
    * @param x x position
    * @param y y position
    */
-  private add(x: number, y: number) {
-    this.points.push([x, y]);
+  private add(x: number, y: number, index?) {
+    if (index) {
+      // insert the point [x, y] at the index and create joint
+      this.points.splice(index, 0, [x, y]);
+      this.createJoint(index, true);
+    } else {
+      // else, insert at the end
+      this.points.push([x, y]);
+    }
   }
   /**
    * Handle click on Wire
@@ -307,36 +324,59 @@ export class Wire {
       // For each point in the wire except first and last
       for (let i = 1; i < this.points.length - 1; ++i) {
         // Create a Joint
-        const joint = this.canvas.circle(this.points[i][0], this.points[i][1], 6);
-        joint.attr({ fill: this.color, stroke: this.color });  // Give the joint a Color
-        // Variables used while dragging joints
-        let tmpx;
-        let tmpy;
-        // set drag listener
-        joint.drag((dx, dy) => {
-          // Update joints position
-          joint.attr({ cx: tmpx + dx, cy: tmpy + dy });
-          // Update repective Point
-          this.points[i] = [tmpx + dx, tmpy + dy];
-          // Update the wire
-          this.update();
-        }, () => {
-          // Get the Joints center
-          const xx = joint.attr();
-          tmpx = xx.cx;
-          tmpy = xx.cy;
-        }, () => {
-        });
-        this.joints.push(joint);
-        // Hide joint if required
-        if (hideJoint) {
-          joint.hide();
-        }
+        this.createJoint(i, hideJoint);
       }
     }
     // Update Wire
     this.update();
   }
+
+  /**
+   * Removes joint present at the point at index `pointIndex`
+   * @param pointIndex: index of the point whose joint needs to be removed
+   */
+  removeJoint(pointIndex: number) {
+    const jointIndex = pointIndex - 1;
+    const joint = this.joints[jointIndex];
+    if (joint) {
+      joint.remove();
+      this.joints.splice(jointIndex, 1);
+    }
+  }
+
+  /**
+   * Creates joint at the index `pointIndex`
+   * @param pointIndex index of the point
+   * @param hideJoint hide the joint?
+   */
+  createJoint(pointIndex: number, hideJoint: boolean = false) {
+    const joint = this.canvas.circle(this.points[pointIndex][0], this.points[pointIndex][1], 6);
+    joint.attr({ fill: this.color, stroke: this.color });  // Give the joint a Color
+    // Variables used while dragging joints
+    let tmpx;
+    let tmpy;
+    // set drag listener
+    joint.drag((dx, dy) => {
+      // Update joints position
+      joint.attr({ cx: tmpx + dx, cy: tmpy + dy });
+      // Update repective Point
+      this.points[pointIndex] = [tmpx + dx, tmpy + dy];
+      // Update the wire
+      this.update();
+    }, () => {
+      // Get the Joints center
+      const jointAttr = joint.attr();
+      tmpx = jointAttr.cx;
+      tmpy = jointAttr.cy;
+    }, () => {
+    });
+    this.joints.push(joint);
+    // Hide joint if required
+    if (hideJoint) {
+      joint.hide();
+    }
+  }
+
   /**
    * Returns true if both end of wire is connected
    */
@@ -422,10 +462,8 @@ export class Wire {
     // Remove Glow
     this.removeGlows();
     // Clear Joints
-    this.joints = [];
     this.joints = null;
     // Clear Points
-    this.points = [];
     this.points = null;
     // Remove element from dom
     this.element.remove();
