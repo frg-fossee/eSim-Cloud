@@ -12,6 +12,8 @@ import { DDRAM, CGROM, CGRAM, RAM } from './LCD/MemorySchema';
 import { MathUtils } from '../MathUtils';
 import { ArduinoUno } from './Arduino';
 import { BoundingBox } from '../Geometry';
+import { Point } from '../Point';
+import { BreadBoard } from '../General';
 
 /**
  * LCD16X2 Class
@@ -332,7 +334,7 @@ export class LCD16X2 extends CircuitElement {
       newDdRamAddress = direction > 0 ? 0x40 : 0x27;
     }
 
-    this.ddRamAddress = newDdRamAddress;
+    this.setDdRamAddress(newDdRamAddress);
   }
 
   /**
@@ -407,12 +409,22 @@ export class LCD16X2 extends CircuitElement {
   }
 
   /**
+   * Checks if power supply is enough
+   */
+  isPowerSupplyEnough() {
+    const vcc = this.getVCC();
+    if (vcc < 3.3 || vcc > 5) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
    * event listener for node `E`
    * @param newValue new value at the node `E`
    */
   eSignalListener(newValue) {
-    const vcc = this.getVCC();
-    if (vcc < 3.3 || vcc > 5) {
+    if (!this.isPowerSupplyEnough()) {
       console.log('Not enough power supply.');
       return;
     }
@@ -557,6 +569,7 @@ export class LCD16X2 extends CircuitElement {
     // Initialising CGROM, DDRAM, and CGRAM
     this.createCgRom();
     this.createDdRam();
+    this.setDdRamAddress(0x00);
     this.cgRam = new CGRAM();
 
     this.clearDisplay();
@@ -596,7 +609,7 @@ export class LCD16X2 extends CircuitElement {
    * Generates character panels inside the lcd
    */
   generateCharacterPanels() {
-    Object.values(this.characterPanels).forEach(panel => panel.destroy());
+    this.destroyCharacterPanels();
 
     const posX = this.data.startX;
     const posY = this.data.startY;
@@ -622,6 +635,13 @@ export class LCD16X2 extends CircuitElement {
     } // Row ends
   }
 
+  /**
+   * destroys all the character panels
+   */
+  destroyCharacterPanels() {
+    Object.values(this.characterPanels).forEach(panel => panel.destroy());
+  }
+
   init() {
     /**
      * Draws lcd grid (16x2) each containing a block of 8 rows x 5 columns
@@ -629,9 +649,6 @@ export class LCD16X2 extends CircuitElement {
 
     // Resets the lcd's properties
     this.reset();
-
-    // Generates the character panels
-    this.generateCharacterPanels();
 
     // Refreshes the LCD
     this.refreshLCD();
@@ -654,31 +671,55 @@ export class LCD16X2 extends CircuitElement {
    * Called on Start Simulation
    */
   initSimulation(): void {
-    // Check connection
+    // Generates the character panels
+    this.generateCharacterPanels();
 
     // Get the V0 pin
-    let connectedPin = null;
+    let connectedPin: Point = null;
     const v0Pin = this.nodes[2];
 
     if (!v0Pin.connectedTo) {
+      window['showToast']('V0 pin of the LCD is not connected to power source.');
       return;
     }
 
-    if (v0Pin.connectedTo.start && v0Pin.connectedTo.start.parent.keyName === 'ArduinoUno') {
-      this.arduino = v0Pin.connectedTo.start.parent;
-      connectedPin = v0Pin.connectedTo.start;
-    }
+    const v0wire = v0Pin.connectedTo;
+    connectedPin = v0wire.start.parent === this ? v0wire.end : v0wire.start;
 
-    if (this.arduino === null && v0Pin.connectedTo.end && v0Pin.connectedTo.end.parent.keyName === 'ArduinoUno') {
-      this.arduino = v0Pin.connectedTo.end.parent;
-      connectedPin = v0Pin.connectedTo.end;
-    } else {
-      window['showToast']('Arduino Not Found!');
-      this.connected = false;
-      return;
-    }
+    // finding the arduino connected to the LCD to start PWM
+    if (connectedPin.parent.keyName === 'ArduinoUno') {
+      this.arduino = connectedPin.parent;
+    } else if (connectedPin.parent.keyName === 'BreadBoard') {
+      const breadboard = connectedPin.parent as BreadBoard;
 
-    this.connected = true;
+      const connectedRow = connectedPin.label.charCodeAt(0);
+      const isConnectedRowInFirstBlock = connectedRow <= 101;
+
+      // checking for all the nodes with the same x-coordinate
+      for (const neighbor of breadboard.sameXNodes[connectedPin.x]) {
+        const neighborRow = neighbor.label.charCodeAt(0);
+        const isSameBlock = neighborRow <= 101 === isConnectedRowInFirstBlock;
+
+        if (neighbor.y !== connectedPin.y && isSameBlock) {
+          if (neighbor.connectedTo) {
+            let arduinoPin = null;
+
+            if (neighbor.connectedTo.start.parent.keyName === 'ArduinoUno') {
+              arduinoPin = neighbor.connectedTo.start;
+            } else if (neighbor.connectedTo.end.parent.keyName === 'ArduinoUno') {
+              arduinoPin = neighbor.connectedTo.end;
+            }
+
+            if (arduinoPin) {
+              this.arduino = arduinoPin.parent;
+              connectedPin = arduinoPin;
+              this.connected = true;
+              break;
+            }
+          }
+        }
+      }
+    }
 
     // Add PWM event on arduino
     (this.arduino as ArduinoUno).addPWM(connectedPin, this.v0Listener.bind(this));
@@ -691,6 +732,7 @@ export class LCD16X2 extends CircuitElement {
     // this.elements.remove();
     this.arduino = null;
     this.reset();
+    this.destroyCharacterPanels();
   }
 }
 /**

@@ -293,6 +293,7 @@ export abstract class CircuitElement {
       for (let i = 0; i < this.nodes.length; ++i) {
         this.nodes[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
       }
+      window['onDragEvent'](this);
     }, () => {
       fdx = 0;
       fdy = 0;
@@ -310,6 +311,7 @@ export abstract class CircuitElement {
       // }
       this.tx += fdx;
       this.ty += fdy;
+      window['onDragStopEvent'](this);
     });
   }
   /**
