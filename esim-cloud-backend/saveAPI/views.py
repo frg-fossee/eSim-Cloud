@@ -39,6 +39,26 @@ class StateSaveView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CopyStateView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = (FormParser, JSONParser)
+
+    def post(self, request, save_id):
+        if isinstance(save_id, uuid.UUID):
+            # Check for permissions and sharing settings here
+            try:
+                saved_state = StateSave.objects.get(save_id=save_id)
+            except StateSave.DoesNotExist:
+                return Response({'error': 'Does not Exist'},
+                                status=status.HTTP_404_NOT_FOUND)
+            saved_state.save_id = None
+            saved_state.circuit = None
+            saved_state.name = "Copy of " + saved_state.name
+            saved_state.owner = self.request.user
+            saved_state.save()
+            return Response({"save_id":saved_state.save_id})
+
+
 class StateFetchUpdateView(APIView):
     """
     Returns Saved data for given save id ,
@@ -143,7 +163,8 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             try:
-                saved_state.circuit.delete()
+                if saved_state.circuit is not None:
+                    saved_state.circuit.delete()
                 saved_state.delete()
                 return Response({'done': True})
             except Exception:
@@ -253,6 +274,7 @@ class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Search Project
     """
+
     def get_queryset(self):
         queryset = StateSave.objects.filter(
             owner=self.request.user).order_by('-save_time')

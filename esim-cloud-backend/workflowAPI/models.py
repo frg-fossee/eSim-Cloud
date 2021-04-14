@@ -11,7 +11,7 @@ class State(models.Model):
     name = models.CharField(max_length=200, null=False,unique=True)
     description = models.CharField(null=True, max_length=200)
     public = models.BooleanField(default=False)
-    
+    report = models.BooleanField(default=False)
     def __str__(self):
         return self.name
 
@@ -23,6 +23,7 @@ class CustomGroup(models.Model):
     group = models.OneToOneField(Group, unique=True, on_delete=CASCADE)
     accessible_states = models.ManyToManyField(State, related_name='accessible_states',verbose_name="Other circuits accesible states",null=True)
     is_arduino = models.BooleanField(default=False)
+    is_type_reviewer = models.BooleanField(default=False)
 
 # Transition models to handle switching of states.
 class Transition(models.Model):
@@ -47,6 +48,7 @@ class TransitionHistory(models.Model):
     class Meta:
         verbose_name_plural = 'Transition Histories'
 
+#Model for Notifications
 class Notification(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
@@ -54,3 +56,12 @@ class Notification(models.Model):
     shown = models.BooleanField(default=False,null=False)
     def __str__(self):
         return self.text
+
+#Model for keeping track of all the reports for a circuit
+class Report(models.Model):
+    id= models.AutoField(primary_key=True)
+    circuit = models.ForeignKey('publishAPI.Circuit',editable=False,on_delete=models.CASCADE)
+    report_open= models.BooleanField(default=True,null=False)
+    resolver = models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
+    report_time = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=500,null=False)

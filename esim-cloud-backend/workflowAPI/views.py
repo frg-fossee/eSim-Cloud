@@ -24,15 +24,18 @@ class RetriveUserRoleView(APIView):
     @swagger_auto_schema(responses={200: UserRoleRetreieveSerializer})
     def get(self, request):
         userRoles = self.request.user.groups.all()
-        print(self.request.user.username)
         data = []
+        reviewer = False
         for userRole in userRoles:
             data.append(userRole.name)
-        serializer = UserRoleRetreieveSerializer(data={"groups": data})
+            if userRole.customgroup.is_type_reviewer:
+                reviewer = True
+        serializer = UserRoleRetreieveSerializer(data={"group": data,"is_type_reviewer":reviewer})
         try:
             serializer.is_valid()
             return Response(serializer.data)
         except:
+            serializer.is_valid()
             return Response(serializer.errors)
 
 
@@ -74,7 +77,7 @@ class RetriveCircuitsViewSet(APIView):
             groups = self.request.user.groups.all()
         except:
             return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
-        transistions = Transition.objects.filter(role__in=groups)
+        transistions = Transition.objects.filter(role__in=groups,only_for_creator=False)
         circuits = Circuit.objects.none()
         for transistion in transistions:
             circuit = Circuit.objects.filter(state=transistion.from_state).exclude(author=self.request.user)

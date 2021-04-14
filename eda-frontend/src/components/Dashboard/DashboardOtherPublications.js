@@ -32,7 +32,6 @@ function DashboardOtherPublications() {
     const classes = useStyles()
     return (
         <>
-
             <Grid
                 container
                 direction="row"
@@ -44,10 +43,10 @@ function DashboardOtherPublications() {
                     <Card className={classes.mainHead}>
                         <CardContent>
                             <Typography className={classes.title} gutterBottom>
-                                All the publications which are pending for a status are Listed Below
+                                All the publications which are pending for a review are Listed Below
                     </Typography>
                             <Typography variant="h5" component="h2">
-                                Other Publications
+                                Review Publications
                     </Typography>
                         </CardContent>
                     </Card>

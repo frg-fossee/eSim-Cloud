@@ -29,24 +29,25 @@ class CircuitViewSet(APIView):
     parser_classes = (FormParser,JSONParser)
     permission_classes = (IsAuthenticated,)
     serializer_class = CircuitSerializer
-    def get(self,request,save_id):
+    def get(self,request,circuit_id):
         try:
-            queryset = Circuit.objects.filter(author=self.request.user, is_arduino=False)
+            queryset = Circuit.objects.get(circuit_id=circuit_id)
         except:
             return Response({'error': 'No circuit there'}, status=status.HTTP_404_NOT_FOUND)
         try:
-            serialized = CircuitSerializer(queryset, many=True)
+            serialized = CircuitSerializer(queryset)
             return Response(serialized.data)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    def post(self,request,save_id):
+    def post(self,request,circuit_id):
         try:
-            save_state = StateSave.objects.get(save_id=save_id)
+            save_state = StateSave.objects.get(save_id=circuit_id)
         except:
             return Response({'Error':'No State found'},status=status.status.HTTP_404_NOT_FOUND)
         circuit = Circuit(title=save_state.name,author=save_state.owner,is_arduino=save_state.is_arduino)
         circuit.save()
         save_state.circuit = circuit
+        save_state.shared = True
         save_state.save()
         serialized = CircuitSerializer(circuit)
         return Response(serialized.data)

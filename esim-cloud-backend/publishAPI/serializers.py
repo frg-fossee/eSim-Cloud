@@ -36,7 +36,7 @@ class CircuitSerializer(serializers.ModelSerializer):
     status_name = serializers.CharField(read_only=True, source='state.name')
     save_id = serializers.CharField(read_only=True, source='statesave.save_id')
     save_time = serializers.CharField(read_only=True, source='statesave.save_time')
-    
+    author_name = serializers.CharField(read_only=True, source='author.username')
     class Meta:
         model = Circuit
         fields = ('circuit_id',
@@ -44,6 +44,7 @@ class CircuitSerializer(serializers.ModelSerializer):
                   'base64_image',
                   'status_name',
                   'save_id',
-                  'save_time'
+                  'save_time',
+                  'author_name'
                   )
 

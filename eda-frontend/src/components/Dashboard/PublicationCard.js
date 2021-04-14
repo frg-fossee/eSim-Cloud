@@ -22,7 +22,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
-import PublishIcon from '@material-ui/icons/Publish';
+import SettingsIcon from '@material-ui/icons/Settings';
 import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -90,16 +90,16 @@ export default function PublicationCard({ pub }) {
     }
     api.post(`/workflow/state/${pub.circuit_id}`,
       {
-        'name':status
+        'name': status
       }, config)
       .then((res) => {
         console.log(res.data)
         pub.status_name = res.data.name
       })
       .catch(error => console.log(error))
+      handlePublishClick()
   }
-  const handleSelectChange = (event) =>
-  {
+  const handleSelectChange = (event) => {
     setStatus(event.target.value)
   };
   const classes = useStyles()
@@ -128,9 +128,17 @@ export default function PublicationCard({ pub }) {
             size="small"
             color="primary">
             Launch in Editor
-                    </Button>
-          <Tooltip title="Publish" placement="bottom" arrow>
-            <PublishIcon
+          </Button>
+          <Button
+            target="_blank"
+            component={RouterLink}
+            to={'/publication?save_id=' + pub.save_id+'&circuit_id='+pub.circuit_id}
+            size="small"
+            color="primary">
+            View Publication
+          </Button>
+          <Tooltip title="Publication Settings" placement="bottom" arrow>
+            <SettingsIcon
               color='secondary'
               fontSize='small'
               onClick={() => { handlePublishClick() }}

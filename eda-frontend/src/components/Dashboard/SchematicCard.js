@@ -153,7 +153,7 @@ export default function SchematicCard({ sch,createCircuit }) {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.post(`/publish/create/${save_id}`, {}, config)
+    api.post(`/publish/circuit/${save_id}`, {}, config)
       .then(
         () => {
           setHasCircuit(true)

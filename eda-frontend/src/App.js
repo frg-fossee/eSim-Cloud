@@ -16,6 +16,7 @@ import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser ,fetchNotifications} from './redux/actions/index'
+import PublicationPage from './pages/PublicationPage'
 
 // Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
 // and restricted routes disabled for authenticated users. [ e.g : login , signup ]
@@ -71,6 +72,10 @@ function App () {
         {localStorage.getItem('esim_token') !== null
           ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
           : <Route path="/editor" component={SchematicEditor} />
+        }
+        {localStorage.getItem('esim_token') !== null
+          ? <PublicRoute exact path="/publication" restricted={false} nav={true} component={PublicationPage} />
+          : <Route path="/publication" component={PublicationPage} />
         }
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />

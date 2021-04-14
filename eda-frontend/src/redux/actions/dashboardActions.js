@@ -40,9 +40,10 @@ export const fetchMyPublications = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`publish/circuit/`, config)
+  api.get(`publish/mycircuit/`, config)
     .then(
       (res) => {
+        console.log(res.data)
         dispatch({
           type: actions.FETCH_MY_PUBLICATIONS,
           payload: res.data
@@ -106,7 +107,6 @@ export const fetchPublicPublications = () => (dispatch, getState) => {
 // Api call for deleting saved schematic
 export const deleteSchematic = (saveId) => (dispatch, getState) => {
   const token = getState().authReducer.token
-  
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -121,6 +121,8 @@ export const deleteSchematic = (saveId) => (dispatch, getState) => {
     .then(
       (res) => {
         if (res.status === 200) {
+          console.log("Called Delete")
+
           dispatch(fetchSchematics())
         }
       }

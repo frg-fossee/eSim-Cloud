@@ -14,7 +14,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchMyPublications, fetchSchematics,fetchOtherPublications,fetchRole } from '../../redux/actions/index'
+import { fetchMyPublications, fetchSchematics, fetchOtherPublications, fetchRole } from '../../redux/actions/index'
 import Axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
@@ -51,6 +51,7 @@ export default function DashSidebar(props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
+  const roles = useSelector(state => state.dashboardReducer.roles)
   const dispatch = useDispatch()
   // For Fetching Saved Schematics
   useEffect(() => {
@@ -60,7 +61,7 @@ export default function DashSidebar(props) {
     dispatch(fetchRole())
   }, [dispatch])
 
-  
+
   return (
     <>
       <Hidden smDown>
@@ -90,7 +91,7 @@ export default function DashSidebar(props) {
                   variant="body2"
                   color="textSecondary"
                 >
-                  {auth.roles !== null && auth.roles.groups.map(x => (<h3>{x}</h3>))}
+                  {auth.roles !== null && auth.roles.group.map(x => (<h3>{x}</h3>))}
                 </Typography>
               </React.Fragment>
             }
@@ -139,14 +140,16 @@ export default function DashSidebar(props) {
         >
           <ListItemText primary='My Publications' />
         </ListItem>
-        <ListItem
-          component={RouterLink}
-          to="/dashboard/otherpublications"
-          className={classes.sideItem}
-          button
-        >
-          <ListItemText primary='Other Publications' />
-        </ListItem>
+        {auth.roles && auth.roles.is_type_reviewer &&
+          <ListItem
+            component={RouterLink}
+            to="/dashboard/reviewpublications"
+            className={classes.sideItem}
+            button
+          >
+            <ListItemText primary='Review Publications' />
+          </ListItem>}
+
       </List>
     </>
   )
