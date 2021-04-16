@@ -13,6 +13,8 @@ import { Login } from '../Libs/Login';
 import { SaveOnline } from '../Libs/SaveOnline';
 import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { AlertService } from '../alert/alert-service/alert.service';
+import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -89,6 +91,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   username: string;
   /**
+   * Is autolayout in progress?
+   */
+  isAutoLayoutInProgress = false;
+  /**
    * Simulator Component constructor
    * @param aroute Activated Route
    * @param dialog Material Dialog
@@ -103,7 +109,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     private injector: Injector,
     private title: Title,
     private router: Router,
-    private api: ApiService
+    private api: ApiService,
+    private alertService: AlertService,
   ) {
     // Initialize Global Variables
     Workspace.initializeGlobalFunctions();
@@ -389,6 +396,13 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       Workspace.zoomOut();
     }
   }
+
+  autoLayout() {
+    // this.isAutoLayoutInProgress = true;
+    LayoutUtils.solveAutoLayout();
+    // this.isAutoLayoutInProgress = false;
+  }
+
   /** Functions opens Info Dailog Box on selecting the component */
   openInfo() {
     const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
@@ -427,17 +441,17 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProject() {
     // if Not logged in show message
     if (!(Login.getToken())) {
-      alert('Please Login! Before Login Save the Project Temporary.');
+      AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
       return;
     }
     // if projet id is uuid (online circuit)
     if (SaveOnline.isUUID(this.projectId)) {
       // Update Project to DB
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => alert('Updated'), this.projectId);
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => AlertService.showAlert('Updated'), this.projectId);
     } else {
       // Save Project and show alert
       SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
-        alert('Saved');
+        AlertService.showAlert('Saved');
         // add new quert parameters
         this.router.navigate(
           [],
@@ -459,7 +473,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProjectOff() {
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
-      alert('Project is already Online!');
+      AlertService.showAlert('Project is already Online!');
       return;
     }
     // Save circuit if id is not presenr
@@ -495,7 +509,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   LoadOnlineProject(id) {
     const token = Login.getToken();
     if (!token) {
-      alert('Please Login');
+      AlertService.showAlert('Please Login');
       return;
     }
 
@@ -506,11 +520,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       Workspace.Load(JSON.parse(data.data_dump));
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
-        alert('You are Not Authorized to view this circuit');
+        AlertService.showAlert('You are Not Authorized to view this circuit');
         window.open('../../../', '_self');
         return;
       }
-      alert('Something Went Wrong');
+      AlertService.showAlert('Something Went Wrong');
       console.log(err);
     });
   }
@@ -574,12 +588,12 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           // Load the project
           Workspace.Load(JSON.parse(out[i].data_dump));
         } else {
-          alert('No Item Found');
+          AlertService.showAlert('No Item Found');
         }
         window['hideLoading']();
       }, err => {
         console.error(err);
-        alert('Failed to load From gallery!');
+        AlertService.showAlert('Failed to load From gallery!');
         window['hideLoading']();
       });
     } else {

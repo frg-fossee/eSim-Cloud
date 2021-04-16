@@ -1,4 +1,5 @@
 import { Point } from './Point';
+import _ from 'lodash';
 
 /**
  * To prevent window from throwing error
@@ -40,6 +41,10 @@ export class Wire {
    * Id of the Wire
    */
   id: number;
+  /**
+   * Temporary point (which was used to draw perpendicular last time) of the wire while in drawing status
+   */
+  lastTempPoint: [number, number];
 
   /**
    * Constructor of wire
@@ -54,30 +59,167 @@ export class Wire {
   }
 
   /**
-   *  Draws wire on the canvas
-   * @param x x position of point
-   * @param y y position of point
+   * Creates path element for the wire
+   * @param element canvas element
    */
-  draw(x: number, y: number) {
-    // remove the wire
+  createElement(element) {
     if (this.element) {
+      this.removeGlows();
       this.element.remove();
     }
 
-    if (this.points.length > 1) {
-      // Move to First point
-      let inp = 'M' + this.points[0][0] + ',' + this.points[0][1] + ' ';
+    this.element = element;
+    this.element.attr({ 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '4', stroke: this.color });
+
+    this.element.mouseover(() => {
+      // only glow if the wire has a start and an end
+      if (this.start && this.end) {
+        this.glows.push(
+          this.element.glow({
+            color: this.color
+          })
+        );
+      }
+    });
+
+    this.element.mouseout(() => {
+      this.removeGlows();
+    });
+
+    // set click listener
+    this.element.click(() => {
+      this.handleClick();
+    });
+  }
+  /**
+   * Adds a new coordinate (x, y) to the wire
+   * @param x x-coordinate of cursor
+   * @param y y-coordinate of cursor
+   * @param isPerpendicular is the point to be drawn perpendicular
+   */
+  addPoint(x: number, y: number, isPerpendicular = false, index?) {
+    let newX = x;
+    let newY = y;
+
+    if (isPerpendicular) {
+      const n = this.points.length;
+      const [previousX, previousY] = this.points[n - 1];
+      [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
+    }
+
+    this.add(newX, newY, index);
+
+    // draw the line from the previous point to cursor's current position
+    if (isPerpendicular) {
+      this.drawPerpendicular(x, y);
+    } else {
+      this.draw(x, y);
+    }
+  }
+
+  /**
+   * Removes all the intermediate points from the wire path
+   */
+  removeAllMiddlePoints() {
+    for (let i = this.points.length; i > 0; i--) {
+      this.removeJoint(i);
+    }
+    this.points = [this.points[0], this.points[this.points.length - 1]];
+  }
+
+  /**
+   * Makes the current temporary line perpendicular depending on current x and y
+   * @param toggle: true to draw perpendicular line upto current cursor's position
+   * false to undo the current perpendicular status
+   */
+  togglePerpendicularLine(toggle: boolean) {
+    const currentPathAttrs = this.element.attrs.path;
+    const n = currentPathAttrs.length;
+    const [x, y] = currentPathAttrs[n - 1].slice(1);
+
+    let newX = null;
+    let newY = null;
+
+    if (toggle) {
+      // if toggle is true, draw perpendicular lines
+      const [previousX, previousY] = currentPathAttrs[n - 2].slice(1);
+      [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
+    } else {
+      [newX, newY] = this.lastTempPoint;
+    }
+
+    this.drawWire(newX, newY);
+  }
+
+  /**
+   * draws perpendicular lines based on current x, y coordinates
+   * @param x x-coordinate of cursor
+   * @param y y-coordinate of cursor
+   */
+  drawPerpendicular(x: number, y: number) {
+    this.lastTempPoint = [x, y];
+    const n = this.points.length;
+    const [previousX, previousY] = this.points[n - 1];
+    const [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
+    this.drawWire(newX, newY);
+  }
+
+  /**
+   * Draws wire to (x, y)
+   * @param x x-coordinate
+   * @param y y-coordiante
+   */
+  draw(x: number, y: number) {
+    this.lastTempPoint = [x, y];
+    this.drawWire(x, y);
+  }
+
+  /**
+   * Returns x, y for perpendicular lines
+   * @param x current x-coordinate
+   * @param y current y-coordinate
+   * @param previousX previous x-coordinate
+   * @param previousY previous y-coordinate
+   */
+  private getPerpendicularXY(x: number, y: number, previousX: number, previousY: number) {
+    const delX = Math.abs(x - previousX);
+    const delY = Math.abs(y - previousY);
+    return (delX > delY) ? [x, previousY] : [previousX, y];
+  }
+
+  /**
+   * updates the path of the wire
+   * @param newPath new path of the wire
+   */
+  private updateWirePath(newPath: string) {
+    if (this.element) {
+      // only update the path if the new path is different
+      if (this.element.attrs.path.toString() !== newPath) {
+        this.element.attr('path', newPath);
+      }
+    } else {
+      this.createElement(this.canvas.path(newPath));
+    }
+  }
+
+  /**
+   *  Draws wire on the canvas
+   * @param x x position of point to be added
+   * @param y y position of point to be added
+   */
+  private drawWire(x?: number, y?: number) {
+      let path = `M${this.points[0][0]},${this.points[0][1]}`;
       // Draw lines to other points
       for (let i = 1; i < this.points.length; ++i) {
-        inp += 'L' + this.points[i][0] + ',' + this.points[i][1] + ' ';
+        path += `L${this.points[i][0]},${this.points[i][1]}`;
       }
-      inp += x + ',' + y;
+
+      if (x && y) {
+        path += `L${x},${y}`;
+      }
+
       // Update path
-      this.element = this.canvas.path(inp);
-    } else {
-      // Draw a line
-      this.element = this.canvas.path('M' + this.points[0][0] + ',' + this.points[0][1] + 'L' + x + ',' + y);
-    }
+      this.updateWirePath(path);
   }
 
   /**
@@ -85,8 +227,15 @@ export class Wire {
    * @param x x position
    * @param y y position
    */
-  add(x: number, y: number) {
-    this.points.push([x, y]);
+  private add(x: number, y: number, index?) {
+    if (index) {
+      // insert the point [x, y] at the index and create joint
+      this.points.splice(index, 0, [x, y]);
+      this.createJoint(index, true);
+    } else {
+      // else, insert at the end
+      this.points.push([x, y]);
+    }
   }
   /**
    * Handle click on Wire
@@ -175,36 +324,59 @@ export class Wire {
       // For each point in the wire except first and last
       for (let i = 1; i < this.points.length - 1; ++i) {
         // Create a Joint
-        const joint = this.canvas.circle(this.points[i][0], this.points[i][1], 6);
-        joint.attr({ fill: this.color, stroke: this.color });  // Give the joint a Color
-        // Variables used while dragging joints
-        let tmpx;
-        let tmpy;
-        // set drag listener
-        joint.drag((dx, dy) => {
-          // Update joints position
-          joint.attr({ cx: tmpx + dx, cy: tmpy + dy });
-          // Update repective Point
-          this.points[i] = [tmpx + dx, tmpy + dy];
-          // Update the wire
-          this.update();
-        }, () => {
-          // Get the Joints center
-          const xx = joint.attr();
-          tmpx = xx.cx;
-          tmpy = xx.cy;
-        }, () => {
-        });
-        this.joints.push(joint);
-        // Hide joint if required
-        if (hideJoint) {
-          joint.hide();
-        }
+        this.createJoint(i, hideJoint);
       }
     }
     // Update Wire
     this.update();
   }
+
+  /**
+   * Removes joint present at the point at index `pointIndex`
+   * @param pointIndex: index of the point whose joint needs to be removed
+   */
+  removeJoint(pointIndex: number) {
+    const jointIndex = pointIndex - 1;
+    const joint = this.joints[jointIndex];
+    if (joint) {
+      joint.remove();
+      this.joints.splice(jointIndex, 1);
+    }
+  }
+
+  /**
+   * Creates joint at the index `pointIndex`
+   * @param pointIndex index of the point
+   * @param hideJoint hide the joint?
+   */
+  createJoint(pointIndex: number, hideJoint: boolean = false) {
+    const joint = this.canvas.circle(this.points[pointIndex][0], this.points[pointIndex][1], 6);
+    joint.attr({ fill: this.color, stroke: this.color });  // Give the joint a Color
+    // Variables used while dragging joints
+    let tmpx;
+    let tmpy;
+    // set drag listener
+    joint.drag((dx, dy) => {
+      // Update joints position
+      joint.attr({ cx: tmpx + dx, cy: tmpy + dy });
+      // Update repective Point
+      this.points[pointIndex] = [tmpx + dx, tmpy + dy];
+      // Update the wire
+      this.update();
+    }, () => {
+      // Get the Joints center
+      const jointAttr = joint.attr();
+      tmpx = jointAttr.cx;
+      tmpy = jointAttr.cy;
+    }, () => {
+    });
+    this.joints.push(joint);
+    // Hide joint if required
+    if (hideJoint) {
+      joint.hide();
+    }
+  }
+
   /**
    * Returns true if both end of wire is connected
    */
@@ -220,43 +392,7 @@ export class Wire {
       // Update the start and ending position
       this.points[0] = this.start.position();
       this.points[this.points.length - 1] = this.end.position();
-      // Remove from canvas
-      if (this.element) {
-        this.element.remove();
-      }
-
-      // Draw a Lines
-      if (this.points.length > 2) {
-        let inp = `M${this.points[0][0]},${this.points[0][1]}`;
-        for (let i = 1; i < this.points.length; ++i) {
-          if (i - 1 < this.joints.length) {
-            this.joints[i - 1].toFront();
-          }
-          inp += ` L${this.points[i][0]},${this.points[i][1]}`;
-        }
-        this.element = this.canvas.path(inp);
-      } else {
-        // Draw a line
-        this.element = this.canvas.path(`M${this.points[0][0]},${this.points[0][1]}L${this.points[1][0]},${this.points[1][1]}`);
-      }
-      // set click listener
-      this.element.click(() => {
-        this.handleClick();
-      });
-      // change attribute
-      this.element.attr({ 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '4', stroke: this.color });
-      if (this.glows.length > 0) {
-        // this.glow.remove();
-        this.removeGlows();
-      }
-      this.element.mouseover(() => {
-        this.glows.push(
-          this.element.glow({
-            color: this.color
-          })
-        );
-
-      });
+      this.drawWire();
       return true;
     }
     return false;
@@ -280,12 +416,14 @@ export class Wire {
       start: {
         id: this.start.parent.id,
         keyName: this.start.parent.keyName,
-        pid: this.start.id
+        pid: this.start.id,
+        isSoldered: this.start.isSoldered()
       },
       end: {
         id: this.end.parent.id,
         keyName: this.end.parent.keyName,
-        pid: this.end.id
+        pid: this.end.id,
+        isSoldered: this.end.isSoldered()
       }
     };
   }
@@ -296,13 +434,21 @@ export class Wire {
   load(data) {
     this.color = data.color;
     this.points = data.points;
+    if (data.start.isSoldered) {
+      this.start.solderWire();
+    }
+    if (data.end.isSoldered) {
+      this.end.solderWire();
+    }
   }
   /**
    * Remove Glow of Wire
    */
   private removeGlows() {
-    while (this.glows.length !== 0) {
-      this.glows.pop().remove();
+    if (this.glows) {
+      while (this.glows.length !== 0) {
+        this.glows.pop().remove();
+      }
     }
   }
   /**
@@ -316,23 +462,29 @@ export class Wire {
     // Remove Glow
     this.removeGlows();
     // Clear Joints
-    this.joints = [];
     this.joints = null;
     // Clear Points
-    this.points = [];
     this.points = null;
     // Remove element from dom
     this.element.remove();
     // Clear connection from start node
     if (this.start) {
-      this.start.connectedTo = null;
+      this.start.disconnect();
     }
     // Clear connection from end node
     if (this.end) {
-      this.end.connectedTo = null;
+      this.end.disconnect();
     }
     this.start = null;
     this.end = null;
     this.element = null;
+  }
+
+  /**
+   * Removes the wire from window.scope and canvas
+   */
+  delete() {
+    _.remove(window.scope.wires, wire => wire === this);
+    this.remove();
   }
 }

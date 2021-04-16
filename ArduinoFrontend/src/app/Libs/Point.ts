@@ -1,6 +1,7 @@
 import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
+import { BoundingBox } from './Geometry';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -34,6 +35,11 @@ export class Point {
    * Stores the reference of wire which is connected to it
    */
   connectedTo: Wire = null;
+
+  /**
+   * Is the point soldered with wire.
+   */
+  private soldered = false;
 
   /**
    * Hover callback called on hover over node
@@ -137,32 +143,90 @@ export class Point {
         return;
       }
       if ((window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
-        // if selected item is wire then connect the wire with the node
-        // console.log([]);
-        if (window.Selected.start === this) { return; }
-        this.connectedTo = window.Selected;
-        window['Selected'].connect(this, true);
-        window.Selected.deselect();
-        if (window['Selected'].start && window['Selected'].end) {
-          window['scope']['wires'].push(window['Selected']);
-        } else {
-          window['showToast']('Wire was not connected properly !');
-        }
+        this.connectWire(window['Selected']);
         window['isSelected'] = false; // deselect object
         window['Selected'] = null;
       } else {
         // if nothing is selected create a new wire object
         window.isSelected = true;
-        const tmp = new Wire(this.canvas, this);
-        this.connectedTo = tmp;
+        const wire = this.startNewWire();
         // select the wire and insert into the scope of circuit
-        window.Selected = tmp;
+        window.Selected = wire;
       }
       if (this.connectCallback) {
         this.connectCallback(this);
       }
     });
 
+  }
+
+  isConnected(): boolean {
+    return !!this.connectedTo;
+  }
+
+  isSoldered(): boolean {
+    return this.soldered;
+  }
+
+  /**
+   * Solders wire to the point
+   * @param wire wire to solder (if existing wire, else pass empty to create a new wire at the node)
+   */
+  solderWire(wire?): Wire {
+    if (!wire) {
+      wire = this.startNewWire();
+    }
+    this.soldered = true;
+    const newClass = `${this.body.node.getAttribute('class')} solder-highlight`;
+    this.body.node.setAttribute('class', newClass);
+    if (this.connectCallback) {
+      this.connectCallback(this);
+    }
+    return wire;
+  }
+
+  /**
+   * Unsolders wire to the point
+   */
+  unsolderWire() {
+    const wire = this.connectedTo;
+    if (wire) {
+      this.setValue(-1, this);
+      wire.delete();
+    }
+    this.soldered = false;
+    const newClass = this.body.node.getAttribute('class').replace(' solder-highlight', '');
+    this.body.node.setAttribute('class', newClass);
+  }
+
+  connectWire(wire) {
+    // if selected item is wire then connect the wire with the node
+    // console.log([]);
+    if (wire.start === this) { return; }
+    this.connectedTo = wire;
+    wire.connect(this, true);
+    wire.deselect();
+    if (wire.start && wire.end) {
+      window['scope']['wires'].push(wire);
+    } else {
+      window['showToast']('Wire was not connected properly !');
+    }
+  }
+
+  /**
+   * Creates and originates new wire at the point
+   */
+  startNewWire() {
+    const wire = new Wire(this.canvas, this);
+    this.connectedTo = wire;
+    return wire;
+  }
+
+  /**
+   * Returns the bounding box of the point
+   */
+  getBoundingBox(): BoundingBox {
+    return BoundingBox.loadFromRaphaelBbox(this.body.getBBox());
   }
 
   /**
@@ -180,6 +244,16 @@ export class Point {
    */
   position() {
     return [this.x + this.half, this.y + this.half];
+  }
+
+  highlight() {
+    const newClass = `${this.body.node.getAttribute('class')} highlight`;
+    this.body.node.setAttribute('class', newClass);
+  }
+
+  undoHighlight() {
+    const newClass = this.body.node.getAttribute('class').replace(' highlight', '');
+    this.body.node.setAttribute('class', newClass);
   }
 
   /**
@@ -237,6 +311,16 @@ export class Point {
       x: this.x,
       y: this.y
     });
+  }
+
+  /**
+   * Disconnects the point to wire
+   */
+  disconnect() {
+    this.connectedTo = null;
+    if (this.isSoldered()) {
+      this.unsolderWire();
+    }
   }
 
   /**

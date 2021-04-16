@@ -1,7 +1,6 @@
 amqp==2.5.2
 asgiref==3.2.7
 billiard==3.6.3.0
-bson==0.5.8
 cairocffi==1.1.0
 CairoSVG==2.4.2
 celery==4.4.2
@@ -13,7 +12,7 @@ configparser==5.0.0
 coreapi==2.3.3
 coreschema==0.0.4
 cryptography==2.9.2
-Django==2.2.12
+django==2.2.12
 django-cors-headers==3.2.1
 django-templated-mail==1.1.1
 djangorestframework==3.11.0
