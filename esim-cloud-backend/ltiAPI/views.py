@@ -1,15 +1,18 @@
 from django.conf import settings
+from django.contrib import messages
 from django.views import View
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from pylti.common import LTIException, verify_request_common
+from pylti.common import LTIException, verify_request_common, generate_request_xml, post_message, \
+    LTIPostMessageException
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
 from .models import lticonsumer
-from .utils import consumers, get_reverse
+from .utils import consumers, get_reverse, message_identifier, lis_result_sourcedid, oauth_consumer_key, \
+    lis_outcome_service_url
 from .serializers import consumerSerializer, consumerResponseSerializer
 
 
@@ -23,13 +26,14 @@ class LTIExist(APIView):
         try:
             consumer = lticonsumer.objects.get(save_id=save_id)
         except lticonsumer.DoesNotExist:
-            return Response(data={"Message": "LTIConsumer Not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(data={"error": "LTIConsumer Not found"}, status=status.HTTP_404_NOT_FOUND)
 
         config_url = "http://" + request.get_host() + "/api/lti/" + str(save_id) + '/config.xml/'
         response_data = {
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
-            "config_url": config_url
+            "config_url": config_url,
+            "score": consumer.score
         }
         response_serializer = consumerResponseSerializer(data=response_data)
         if response_serializer.is_valid():
@@ -45,13 +49,14 @@ class LTIBuildApp(APIView):
         serialized = consumerSerializer(data=request.data)
         if serialized.is_valid():
             serialized.save()
-            print("object saved")
             config_url = "http://" + request.get_host() + "/api/lti/" + str(serialized.data["save_id"]) + '/config.xml/'
             response_data = {
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
-                "config_url": config_url
+                "config_url": config_url,
+                "score": serialized.data.get('score')
             }
+            print(response_data)
             response_serializer = consumerResponseSerializer(data=response_data)
             if response_serializer.is_valid():
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
@@ -64,9 +69,9 @@ class LTIBuildApp(APIView):
 class LTIDeleteApp(APIView):
 
     def delete(self, request, save_id):
-        consumers = lticonsumer.objects.all()
+        queryset = lticonsumer.objects.all()
         try:
-            consumer = consumers.get(save_id=save_id)
+            consumer = queryset.get(save_id=save_id)
             consumer.delete()
             return Response(data={"Message": "Successfully deleted!"}, status=status.HTTP_204_NO_CONTENT)
         except lticonsumer.DoesNotExist:
@@ -92,8 +97,8 @@ class LTIConfigView(View):
         ctx = {
             'domain': domain,
             'launch_url': launch_url,
-            'title': saved_state.name,
-            'description': settings.LTI_TOOL_CONFIGURATION.get('description'),
+            'title': saved_state.name + ' and ' + str(saved_state.save_id),
+            'description': str(saved_state.description),
             'course_navigation': settings.LTI_TOOL_CONFIGURATION.get('course_navigation'),
         }
         return render(request, 'ltiAPI/config.xml', context=ctx, content_type='text/xml; charset=utf-8')
@@ -112,46 +117,57 @@ class LTIAuthView(APIView):
         # Extracts the request headers from the request
         headers = request.META
         # Define the redirect url
-        i = lticonsumer.objects.get(consumer_key=request.data['oauth_consumer_key'])
+        try:
+            i = lticonsumer.objects.get(consumer_key=request.data['oauth_consumer_key'])
+        except lticonsumer.DoesNotExist:
+            return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
+
         next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.save_id.save_id)
         try:
             # Validate the incoming LTI
             verify_request_common(consumers_dict, url, request.method, headers, params)
+            grade = LTIPostGrade(params, request)
+            # if grade:
+            #     # If there is a return URL from the configured call the redirect URL
+            #     # is updated with the one that is returned. This is to enable redirecting to
+            #     # constructed URLs
+            #     return HttpResponseRedirect(next_url)
             return HttpResponseRedirect(next_url)
         except LTIException:
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
-# def LTIPostGrade(params, request):
-#     """
-#     Post grade to LTI consumer using XML
-#     :param: score: 0 <= score <= 1. (Score MUST be between 0 and 1)
-#     :return: True if post successful and score valid
-#     :exception: LTIPostMessageException if call failed
-#     """
-#     try:
-#         score = 0.9
-#     except ValueError:
-#         score = 0
-#
-#     redirect_url = request.data.get('next', '/')
-#
-#     xml = generate_request_xml(
-#         message_identifier(), 'replaceResult',
-#         lis_result_sourcedid(request), score)
-#
-#     post = post_message(
-#         consumers(), oauth_consumer_key(request),
-#         lis_outcome_service_url(request), xml)
-#
-#     if not post:
-#
-#         msg = ('An error occurred while saving your score. '
-#                'Please try again.')
-#         messages.add_message(request, messages.ERROR, msg)
-#
-#         raise LTIPostMessageException('Post grade failed')
-#     else:
-#         msg = 'Your score was submitted. Great job!'
-#         messages.add_message(request, messages.INFO, msg)
-#
-#         return redirect_url
+
+def LTIPostGrade(params, request):
+    """
+    Post grade to LTI consumer using XML
+    :param: score: 0 <= score <= 1. (Score MUST be between 0 and 1)
+    :return: True if post successful and score valid
+    :exception: LTIPostMessageException if call failed
+    """
+    try:
+        print("params:", params)
+        consumer = lticonsumer.objects.get(consumer_key=oauth_consumer_key(request))
+        score = consumer.score
+    except ValueError:
+        score = 0
+
+    xml = generate_request_xml(
+        message_identifier(), 'replaceResult',
+        lis_result_sourcedid(request), score)
+
+    post = post_message(
+        consumers(), oauth_consumer_key(request),
+        lis_outcome_service_url(request), xml)
+
+    if not post:
+        msg = ('An error occurred while saving your score. '
+               'Please try again.')
+        messages.add_message(request, messages.ERROR, msg)
+
+        return False
+        # raise LTIPostMessageException('Post grade failed')
+    else:
+        msg = 'Your score was submitted. Great job!'
+        messages.add_message(request, messages.INFO, msg)
+
+        return True

@@ -146,9 +146,10 @@ export default function SchematicCard({ sch }) {
     consumerKey: "",
     configURL: "",
     configExists: false,
-    consumerError: false,
+    consumerError: "",
+    score: "",
   })
-  const { secretKey, consumerKey, configURL, configExists, consumerError } = ltiDetails
+  const { secretKey, consumerKey, configURL, configExists, consumerError, score } = ltiDetails
 
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
@@ -159,23 +160,27 @@ export default function SchematicCard({ sch }) {
     setSnacOpen(true)
   }
   // Api call for getting LTI config url for specified circuit by passing consumer key and secret key
-  const handleLTIGenerate = (consumer_key, secret_key, save_id) => {
+  const handleLTIGenerate = (consumer_key, secret_key, save_id, score) => {
     const body = {
       "consumer_key": consumer_key,
       "secret_key": secret_key,
       "save_id": save_id,
+      "score": score,
     }
+    console.log(body)
     api.post(`lti/build/`, body)
       .then(res => {
         setLTIDetails({
           ...ltiDetails,
           configURL: res.data.config_url,
           configExists: true,
-          consumerError: false
+          consumerError: false,
+          score: res.data.score,
         })
         return res.data
       })
-      .catch((err) => { setLTIDetails({ ...ltiDetails, consumerError: true }) })
+      .catch((err) => { console.log(err.data)
+        setLTIDetails({ ...ltiDetails, consumerError: "An error was encountered while setting the details!" }) })
   }
   const handleOpenLTI = () => {
     //To-do write a get request to check if it params are already set
@@ -188,6 +193,7 @@ export default function SchematicCard({ sch }) {
               secretKey: res.data.secret_key,
               consumerKey: res.data.consumer_key,
               configURL: res.data.config_url,
+              score: res.data.score,
               configExists: true
             })
         }
@@ -202,6 +208,7 @@ export default function SchematicCard({ sch }) {
           configURL: "",
           configExists: false,
           consumerError: false,
+          score: "",
         })
       })
       .catch(error => console.log(error))
@@ -216,6 +223,15 @@ export default function SchematicCard({ sch }) {
 
   const handleSecretKey = (e) => {
     setLTIDetails({ ...ltiDetails, secretKey: e.target.value })
+  }
+
+  const handleScore = (e) => {
+    if (e.target.value > 1 || e.target.value < 0){
+      //To-DO: Show error message
+    }
+    else{
+      setLTIDetails({...ltiDetails, score: e.target.value})
+    }
   }
 
   const handleSnacClose = (event, reason) => {
@@ -272,14 +288,14 @@ export default function SchematicCard({ sch }) {
           <Dialog onClose={handleCloseLTI} aria-labelledby="simple-dialog-title" open={ltiModal}>
             <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
             <DialogContent>
-              {consumerError &&
-                <Typography variant="overline" display="block" gutterBottom>
-                  CANNOT USE ALREADY EXISTING CONSUMER KEY!
-                 </Typography>}
+              <Typography variant="overline" display="block" gutterBottom>
+                  {consumerError}
+              </Typography>
               <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} />
               <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists} />
+              <TextField style={{ marginTop: '10px' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={configExists} />
               {configURL && <Paper><div className={classes.config}>{configURL}</div></Paper>}
-              <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" disabled={configExists} onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id)}>
+              <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" disabled={configExists} onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id, score)}>
                 Generate LTI config URL
               </Button>
               {configExists &&
