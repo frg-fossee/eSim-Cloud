@@ -47,31 +47,9 @@ export default function PublicationCard({ pub }) {
   const [status, setStatus] = React.useState(null)
   const handlePublishClick = () => {
     if (!publishModal) {
-      getStatus()
+      dispatch(getStatus(pub.publication_id))
     }
     setPublishModal(!publishModal)
-  }
-  //workflow/state/<uuid:circuit_id>
-  const getStatus = () => {
-    const token = localStorage.getItem("esim_token")
-
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-
-    // If token available add to headers
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.get(`/workflow/state/${pub.circuit_id}`, config)
-      .then((res) => {
-        console.log(res.data)
-        setStateList(res.data)
-      })
-      .catch(error => console.log(error))
   }
   const changeStatus = () => {
     //post the state
@@ -88,7 +66,7 @@ export default function PublicationCard({ pub }) {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.post(`/workflow/state/${pub.circuit_id}`,
+    api.post(`/workflow/state/${pub.publication_id}`,
       {
         'name': status
       }, config)
@@ -97,7 +75,7 @@ export default function PublicationCard({ pub }) {
         pub.status_name = res.data.name
       })
       .catch(error => console.log(error))
-      handlePublishClick()
+    handlePublishClick()
   }
   const handleSelectChange = (event) => {
     setStatus(event.target.value)
@@ -132,7 +110,7 @@ export default function PublicationCard({ pub }) {
           <Button
             target="_blank"
             component={RouterLink}
-            to={'/publication?save_id=' + pub.save_id+'&circuit_id='+pub.circuit_id}
+            to={'/publication?save_id=' + pub.save_id + '&publication_id=' + pub.publication_id}
             size="small"
             color="primary">
             View Publication
@@ -149,7 +127,7 @@ export default function PublicationCard({ pub }) {
         <Dialog onClose={handlePublishClick} aria-labelledby="simple-dialog-title" open={publishModal}>
           <DialogTitle id="simple-dialog-title">Publication Status: {pub.status_name}</DialogTitle>
           <DialogContent>
-            {stateList &&
+            {stateList ?
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -162,10 +140,11 @@ export default function PublicationCard({ pub }) {
                 (
                   <MenuItem value={item}>{item}</MenuItem>
                 ))}
-              </Select>}
+              </Select> :
+              <h3>Wait for your publication to be reviewed</h3>}
             <br />
           </DialogContent>
-          <DialogActions>
+          {stateList ? <DialogActions>
             <Button
               size="small"
               variant="contained"
@@ -182,8 +161,20 @@ export default function PublicationCard({ pub }) {
             >
               Cancel
             </Button>
-          </DialogActions>
+          </DialogActions> :
+            <DialogActions>
+              <Button
+                onClick={handlePublishClick}
+                size="small"
+                variant="contained"
+              >
+                OK
+          </Button>
+            </DialogActions>}
         </Dialog>
+
+
+
       </Card>
     </>
   )

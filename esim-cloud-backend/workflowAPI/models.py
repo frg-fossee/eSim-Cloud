@@ -37,16 +37,7 @@ class Transition(models.Model):
         return self.name
 
 # Model to log all the transitions done by all types of users
-class TransitionHistory(models.Model):
-    id = models.AutoField(primary_key=True)
-    circuit = models.ForeignKey('publishAPI.Circuit', editable=False, on_delete=models.CASCADE)
-    transition_author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    from_state = models.ForeignKey(State, related_name='historyfromtransitions', on_delete=CASCADE)
-    to_state = models.ForeignKey(State, related_name='historytotransitions', on_delete=CASCADE)
-    transition_time = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        verbose_name_plural = 'Transition Histories'
 
 #Model for Notifications
 class Notification(models.Model):
@@ -58,10 +49,3 @@ class Notification(models.Model):
         return self.text
 
 #Model for keeping track of all the reports for a circuit
-class Report(models.Model):
-    id= models.AutoField(primary_key=True)
-    circuit = models.ForeignKey('publishAPI.Circuit',editable=False,on_delete=models.CASCADE)
-    report_open= models.BooleanField(default=True,null=False)
-    resolver = models.ForeignKey(get_user_model(),on_delete=models.CASCADE)
-    report_time = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=500,null=False)

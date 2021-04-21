@@ -51,7 +51,6 @@ export default function DashSidebar(props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
-  const roles = useSelector(state => state.dashboardReducer.roles)
   const dispatch = useDispatch()
   // For Fetching Saved Schematics
   useEffect(() => {

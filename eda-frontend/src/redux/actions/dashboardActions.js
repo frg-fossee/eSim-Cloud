@@ -40,7 +40,7 @@ export const fetchMyPublications = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`publish/mycircuit/`, config)
+  api.get(`publish/mypublication/`, config)
     .then(
       (res) => {
         console.log(res.data)
@@ -66,7 +66,7 @@ export const fetchOtherPublications = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`workflow/othercircuits/`, config)
+  api.get(`workflow/otherpublications/`, config)
     .then(
       (res) => {
         dispatch({

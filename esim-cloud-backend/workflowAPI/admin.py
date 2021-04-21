@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.models import Group, User
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
-from workflowAPI.models import State,Transition,CustomGroup,TransitionHistory,Notification
+from workflowAPI.models import State,Transition,CustomGroup,Notification
+from publishAPI.models import TransitionHistory
 # Register your models here.
 @admin.register(State)
 class CircuitStates(admin.ModelAdmin):
@@ -15,8 +16,8 @@ class Transitions(admin.ModelAdmin):
     
 @admin.register(TransitionHistory)
 class TransitionHistories(admin.ModelAdmin):
-    readonly_fields = ('id','transition_author','transition_time','circuit','from_state','to_state')
-    list_display=['id','circuit','transition_author','transition_time','from_state','to_state']
+    readonly_fields = ('id','transition_author','transition_time','from_state','to_state')
+    list_display=['id','transition_author','transition_time','from_state','to_state']
 
 class GroupInline(admin.TabularInline):
     model = CustomGroup

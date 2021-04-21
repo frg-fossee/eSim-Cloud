@@ -52,7 +52,7 @@ class CopyStateView(APIView):
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
             saved_state.save_id = None
-            saved_state.circuit = None
+            saved_state.publication = None
             saved_state.name = "Copy of " + saved_state.name
             saved_state.owner = self.request.user
             saved_state.save()
@@ -163,8 +163,8 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             try:
-                if saved_state.circuit is not None:
-                    saved_state.circuit.delete()
+                if saved_state.publication is not None:
+                    saved_state.publication.delete()
                 saved_state.delete()
                 return Response({'done': True})
             except Exception:

@@ -1,7 +1,7 @@
 // Main Layout for Schemaic Editor page.
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
-import { Button, Typography, Dialog, DialogContent, Grid, Paper, Tooltip, Snackbar } from '@material-ui/core'
+import { Button, Typography, Dialog, DialogContent, MenuItem, Grid, Select, Paper, Tooltip, Snackbar, TextField, DialogActions } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import LayoutMain from '../components/Shared/LayoutMain'
@@ -10,7 +10,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { fetchPublication, fetchSchematic, loadGallery } from '../redux/actions/index'
+import { fetchPublication, fetchRole, fetchSchematic, loadGallery, resolveReports } from '../redux/actions/index'
 import { useDispatch, useSelector } from 'react-redux'
 import SimulationProperties from '../components/SchematicEditor/SimulationProperties'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
@@ -48,14 +48,17 @@ function Alert(props) {
 }
 export default function PublicationPage(props) {
   const classes = useStyles()
-  const compRef = React.createRef()
   const gridRef = React.createRef()
-  const outlineRef = React.createRef()
   const dispatch = useDispatch()
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const [simulateOpen, setSimulateOpen] = React.useState(false)
-  const [fetchedCircuit, setFetchedCircuit] = React.useState(false)
-  const circuit = useSelector(state => state.publicationReducer.details)
+  const [reportOpen, setReportOpen] = React.useState(false)
+  const [stateList, setStateList] = React.useState(null)
+  const [status, setStatus] = React.useState(null)
+  const [reportDetailsOpen, setReportDetailsOpen] = React.useState(false)
+  const [reportDescription, setDescription] = React.useState(null)
+  const publication = useSelector(state => state.publicationReducer)
+  const auth = useSelector(state => state.authReducer)
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props;
     return (
@@ -72,9 +75,21 @@ export default function PublicationPage(props) {
   const handleSimulateOpen = () => {
     setSimulateOpen(!simulateOpen)
   }
+  const handleReportOpen = () => {
+    setReportOpen(!reportOpen)
+  }
+  const handleChangeDescription = (e) => {
+    setDescription(e.target.value)
+  }
+  const handleReportDetailsOpen = (e) => {
+    setReportDetailsOpen(!reportDetailsOpen)
+  }
+  const handleSelectChange = (event) => {
+    setStatus(event.target.value)
+  }
   const makeCopy = () => {
     const query = new URLSearchParams(props.location.search)
-    var saveID = query.get('id')
+    var saveID = query.get('save_id')
     const token = localStorage.getItem("esim_token")
 
     // add headers
@@ -83,7 +98,6 @@ export default function PublicationPage(props) {
         'Content-Type': 'application/json'
       },
     }
-
     // If token available add to headers
     if (token) {
       config.headers.Authorization = `Token ${token}`
@@ -98,31 +112,102 @@ export default function PublicationPage(props) {
       })
       .catch(error => console.log(error))
   }
+  const reportPublication = () => {
+    // Get token from localstorage
+    if (reportDescription) {
+      const token = localStorage.getItem("esim_token")
+      const query = new URLSearchParams(props.location.search)
+      var publication_id = query.get('publication_id')
+      console.log(reportDescription)
+      // add headers
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+      // If token available add to headers
+      if (token) {
+        config.headers.Authorization = `Token ${token}`
+      }
+      api.post(`workflow/report/create/${publication_id}`, { 'description': reportDescription }, config)
+        .then(
+          (res) => {
+            setReportOpen(false)
+            setDescription(null)
+          }
+        )
+        .catch((err) => { console.error(err) })
+    }
+  }
+  const getStatus = (publication_id) => {
+    const token = localStorage.getItem("esim_token")
+
+    // add headers
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get(`/workflow/state/${publication_id}`, config)
+      .then((res) => {
+        console.log(res.data)
+        setStateList(res.data)
+      })
+      .catch(error => console.log(error))
+  }
+  const changeStatus = () => {
+    const query = new URLSearchParams(props.location.search)
+    var publication_id = query.get('publication_id')
+    //post the state
+    const token = localStorage.getItem("esim_token")
+
+    // add headers
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.post(`/workflow/state/${publication_id}`,
+      {
+        'name': status
+      }, config)
+      .then((res) => {
+        console.log(res.data)
+      })
+      .catch(error => console.log(error))
+  }
   useEffect(() => {
     var container = gridRef.current
     LoadGrid(container, null, null)
-
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       var saveID = query.get('save_id')
-      var circuit_id = query.get('circuit_id')
-
+      var publication_id = query.get('publication_id')
       if (saveID.substr(0, 7) === 'gallery') {
         // Loading Gallery schemaic.
         dispatch(loadGallery(saveID.substr(7, saveID.length)))
       } else {
         // Loading User on-cloud saved schemaic.
         dispatch(fetchSchematic(saveID))
-        if (!fetchedCircuit) {
-          dispatch(fetchPublication(circuit_id))
-          setFetchedCircuit(true)
-        }
+        dispatch(fetchPublication(publication_id))
+      }
+      dispatch(fetchRole())
+      if (!reportDetailsOpen) {
+        getStatus(publication_id)
       }
     }
-  }, [compRef, gridRef, outlineRef, props.location, dispatch])
-
+  }, [props.location, dispatch])
   return (
-
     <div className={classes.root}>
       {/* Grid for drawing and designing circuits */}
       <LayoutMain>
@@ -130,8 +215,51 @@ export default function PublicationPage(props) {
           <Grid item xs={1} />
           <Grid item xs={10}>
             <div className={classes.toolbar} />
-            {circuit && <h1 style={{ marginBottom: '0' }}>{circuit.title}</h1>}
-            <h4 style={{ marginTop: '0' }}>By: {circuit.author_name} </h4>
+            {publication.details && publication.details.is_reported &&
+              <Paper style={{ padding: '0.06% 1%' }}>
+                <h3 style={{ color: 'red' }}>This is a reported publication
+                <Button style={{ float: 'right', verticalAlign: 'super' }} onClick={handleReportDetailsOpen}>View Reports</Button></h3>
+                <Dialog
+                  open={reportDetailsOpen}
+                  onClose={handleReportDetailsOpen}>
+                  <DialogTitle>Reports</DialogTitle>
+                  <DialogContent>
+                    <ul>
+                      {publication.reports && publication.reports.map((item, index) => (
+                        <li>{item.description}</li>
+                      ))}
+                    </ul>
+                    {stateList &&
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        autoWidth
+                        style={{ width: '50%' }}
+                        onChange={handleSelectChange}
+                        value={status}
+                      >
+                        {stateList.map((item, index) =>
+                        (
+                          <MenuItem value={item}>{item}</MenuItem>
+                        ))}
+                      </Select>}
+                  </DialogContent>
+                  <DialogActions>
+                    {auth.roles && auth.roles.is_type_reviewer && auth.user.username !== publication.details.author_name && <Button onClick={() => {
+                      dispatch(resolveReports(publication.details.publication_id, status))
+                      handleReportDetailsOpen()
+                    }}>Resolve</Button>}
+                    {auth.roles &&
+                      <Button onClick={() => {
+                        changeStatus()
+                        handleReportDetailsOpen()
+                      }}>Change State</Button>}
+                    <Button onClick={handleReportDetailsOpen}>Cancel</Button>
+                  </DialogActions>
+                </Dialog>
+              </Paper>}
+            {publication.details && <h1 style={{ marginBottom: '0' }}>{publication.details.title}</h1>}
+            {publication.details && <h4 style={{ marginTop: '0' }}>By: {publication.details.author_name} </h4>}
             <h3>Publication description like stating facts about procedure and observations</h3>
             <h3>
               The theory behind the circuit
@@ -141,15 +269,41 @@ export default function PublicationPage(props) {
               The pulsating DC voltage thus obtained contains ripples in the form of AC voltage. To remove these ripples a filter is needed which filters out the ripples from the DC voltage. A capacitor is placed in parallel to the output such that the capacitor (because of its impedance) allows high-frequency AC signals to pass through get bypassed to the ground and low frequency or DC signal is blocked. Thus the capacitor acts as a low pass filter.
               The output produced from a capacitor filter is the unregulated DC voltage. To produce a regulated DC voltage a regulator is used which develops a constant DC voltage.
             </h3>
-
-            <Dialog open={simulateOpen} onClose={handleSimulateOpen}>
+            <Dialog
+              open={simulateOpen}
+              onClose={handleSimulateOpen}
+            >
               <DialogTitle onClose={handleSimulateOpen}>Simulate Circuit</DialogTitle>
               <DialogContent style={{ padding: '3%' }}>
                 <SimulationProperties />
               </DialogContent>
             </Dialog>
+            <Dialog
+              open={reportOpen}
+              onClose={handleReportOpen}
+              fullWidth={true}
+              maxWidth={'md'} >
+              <DialogTitle>Report this publication</DialogTitle>
+              <DialogContent style={{ padding: '3%' }}>
+                <TextField
+                  multiline
+                  variant="outlined"
+                  label="Report Description"
+                  style={{ width: '100%' }}
+                  value={reportDescription}
+                  error={!reportDescription}
+                  helperText={"Please enter description"}
+                  onChange={handleChangeDescription}
+                  rows={8} />
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={reportPublication}>Report</Button>
+                <Button onClick={handleReportOpen}>Cancel</Button>
+              </DialogActions>
+            </Dialog>
+
             <h1>Circuit Diagram:
-            <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }}>Report</Button>
+            <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
               <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => makeCopy()}>Make a Copy</Button>
               <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
                 <PlayCircleOutlineIcon />Simulate

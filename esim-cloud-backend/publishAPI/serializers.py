@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from publishAPI.models import CircuitTag, Circuit
+from publishAPI.models import CircuitTag, Publication,Report
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -31,20 +31,30 @@ class CircuitTagSerializer(serializers.ModelSerializer):
         fields = ('tag', 'description', 'id')
 
 
-class CircuitSerializer(serializers.ModelSerializer):
+class PublicationSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True,source='statesave.base64_image')
     status_name = serializers.CharField(read_only=True, source='state.name')
     save_id = serializers.CharField(read_only=True, source='statesave.save_id')
     save_time = serializers.CharField(read_only=True, source='statesave.save_time')
     author_name = serializers.CharField(read_only=True, source='author.username')
     class Meta:
-        model = Circuit
-        fields = ('circuit_id',
+        model = Publication
+        fields = ('publication_id', 
                   'title',
                   'base64_image',
                   'status_name',
                   'save_id',
                   'save_time',
-                  'author_name'
+                  'author_name',
+                  'is_reported'
                   )
 
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields=('id','report_open','report_time','description')
+
+class ReportDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields=('description',)

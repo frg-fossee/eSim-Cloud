@@ -25,7 +25,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
 import PublishIcon from '@material-ui/icons/Publish';
 import { useDispatch } from 'react-redux'
-import {  deleteSchematic } from '../../redux/actions/index'
+import {  deleteSchematic, fetchMyPublications } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
 import api from '../../utils/Api'
 
@@ -132,7 +132,7 @@ export default function SchematicCard({ sch,createCircuit }) {
   // To handel delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [publishModal, setPublishModal] = React.useState(false)
-  const [hasCircuit,setHasCircuit] = React.useState(sch.circuit)
+  const [hasCircuit,setHasCircuit] = React.useState(sch.publication)
 
   const handlePublishClick = () => {
     setPublishModal(!publishModal)
@@ -153,7 +153,7 @@ export default function SchematicCard({ sch,createCircuit }) {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.post(`/publish/circuit/${save_id}`, {}, config)
+    api.post(`/publish/publication/${save_id}`, {}, config)
       .then(
         () => {
           setHasCircuit(true)
@@ -221,7 +221,7 @@ export default function SchematicCard({ sch,createCircuit }) {
               />
             </Tooltip>
           }
-          {!sch.circuit &&
+          {!sch.publication &&
             <Dialog onClose={handlePublishClick} aria-labelledby="simple-dialog-title" open={publishModal}>
               <DialogTitle id="simple-dialog-title">Do you want to publish this circuit?</DialogTitle>
               <DialogActions>

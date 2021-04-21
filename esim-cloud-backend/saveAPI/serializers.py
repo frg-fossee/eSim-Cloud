@@ -31,13 +31,13 @@ class Base64ImageField(serializers.ImageField):
 
 class StateSaveSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
-    circuit_id = serializers.CharField(read_only=True, source='circuit.circuit_id')
+    publication_id = serializers.CharField(read_only=True, source='publication.publication_id')
 
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time',
-                  'is_arduino','circuit_id','circuit')
+                  'is_arduino','publication_id','publication')
 
 
 class SaveListSerializer(serializers.ModelSerializer):
