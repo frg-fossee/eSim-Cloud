@@ -1,10 +1,10 @@
 import uuid
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import NotificationSerializer, StatusSerializer, UserRoleRetreieveSerializer
+from .serializers import NotificationSerializer, StatusSerializer,ReportApprovalSerializer ,UserRoleRetreieveSerializer
 from .models import Notification, State, Transition, CustomGroup
 from publishAPI.models import Publication, Report
-from publishAPI.serializers import PublicationSerializer, ReportSerializer,ReportDescriptionSerializer
+from publishAPI.serializers import PublicationSerializer,ReportSerializer,ReportDescriptionSerializer
 from rest_framework.response import Response
 from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
@@ -222,6 +222,7 @@ class ReportedPublicationsView(viewsets.ViewSet):
         publication.save()
         report.save()
         return Response(status=http_status.HTTP_200_OK)
+
     @swagger_auto_schema(responses={200: PublicationSerializer})
     def list_publications(self, request):
         '''
@@ -234,6 +235,28 @@ class ReportedPublicationsView(viewsets.ViewSet):
         serialized = PublicationSerializer(publications, many=True)
         return Response(serialized.data, status=http_status.http_status.HTTP_200_OK)
 
+    @swagger_auto_schema(request_body=ReportApprovalSerializer)
+    def approve_reports(self,request,publication_id):
+        try:
+            groups = self.request.user.groups.all()
+        except:
+            return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
+        for group in groups:
+            if group.customgroup.is_type_reviewer is True:
+                flag = False
+                for report in request.data['reports']:
+                    if report['approved']:
+                        flag= True
+                    temp = Report.objects.get(id=report['id'])
+                    temp.approved = report['approved']
+                    temp.save()
+                if flag:
+                    #Change status as well
+                    publication = Publication.objects.get(publication_id=publication_id)
+                    publication.state = State.objects.get(name=request.data['state']['name'])
+                    return Response({"Approval sent"})
+        else:
+            return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
     @swagger_auto_schema(responses={200: ReportSerializer})
     def get_reports(self, request, publication_id):
         '''
@@ -244,14 +267,18 @@ class ReportedPublicationsView(viewsets.ViewSet):
         except:
             return Response({"Error": "No publication found"}, status=http_status.HTTP_404_NOT_FOUND)
         try:
-            reports = Report.objects.filter(
-                publication=publication, report_open=True)
+            if self.request.user == publication.author:
+                reports = Report.objects.filter(
+                    publication=publication, report_open=True,approved=True)
+            else:
+                reports = Report.objects.filter(
+                    publication=publication, report_open=True,approved=None)
         except:
             return Response({"Message": "No reports found"}, status=http_status.HTTP_404_NOT_FOUND)
         serialized = ReportSerializer(reports, many=True)
         return Response(serialized.data, status=http_status.HTTP_200_OK)
 
-    @swagger_auto_schema(request_body=StatusSerializer )
+    @swagger_auto_schema()
     def resolve(self, request, publication_id):
         '''
         Request to resolve the publications.
@@ -274,10 +301,9 @@ class ReportedPublicationsView(viewsets.ViewSet):
                     report.report_open = False
                     report.resolver = self.request.user
                     report.save()
-                publication.state = State.objects.get(name=request.data['name'])
-                publication.is_reported = False
-                publication.save()
+                # publication.state = State.objects.get(name=request.data['name'])
+                # publication.is_reported = False
+                # publication.save()
                 return Response({"Message": "Changed Reported Publication State"}, status=http_status.HTTP_200_OK)
         else:
             return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
-

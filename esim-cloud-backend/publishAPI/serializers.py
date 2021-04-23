@@ -52,8 +52,7 @@ class PublicationSerializer(serializers.ModelSerializer):
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
-        fields=('id','report_open','report_time','description')
-
+        fields=('id','report_open','report_time','description','approved')
 class ReportDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report

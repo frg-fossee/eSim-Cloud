@@ -30,7 +30,7 @@ class Publication(models.Model):
 
     # Circuit Details
     title = models.CharField(
-        max_length=200, blank=False, unique=True)  # Search
+        max_length=200, blank=False)  # Search
 
     state = models.ForeignKey(State,on_delete=CASCADE,default=1)
     
@@ -62,3 +62,4 @@ class Report(models.Model):
     report_time = models.DateTimeField(auto_now_add=True)
     description = models.CharField(max_length=500,null=False)
     reporter = models.ForeignKey(get_user_model(),on_delete=models.CASCADE,related_name='reporter',null=True)
+    approved = models.BooleanField(default=None,null=True)

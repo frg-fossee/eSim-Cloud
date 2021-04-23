@@ -56,7 +56,7 @@ function Publications(props) {
     const publications = useSelector(state => state.dashboardReducer.publicPublications)
     useEffect(() => {
         dispatch(fetchPublicPublications())
-    }, [])
+    }, [dispatch])
     return (
         <div className={classes.root}>
             <CssBaseline />

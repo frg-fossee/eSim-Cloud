@@ -182,3 +182,21 @@ export const openLocalSch = (obj) => (dispatch, getState) => {
   dispatch(setSchXmlData(data.data_dump))
   renderGalleryXML(data.data_dump)
 }
+
+//Action for making a copy of a schematic
+export const makeCopy = (saveID) => (dispatch,getState) => {
+  const token = getState().authReducer.token
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.post(`/save/copy/${saveID}`, {}, config)
+    .catch(error => console.log(error))
+}

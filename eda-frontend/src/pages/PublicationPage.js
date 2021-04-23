@@ -1,7 +1,20 @@
 // Main Layout for Schemaic Editor page.
 /* eslint-disable react/prop-types */
 import React, { useEffect } from 'react'
-import { Button, Typography, Dialog, DialogContent, MenuItem, Grid, Select, Paper, Tooltip, Snackbar, TextField, DialogActions } from '@material-ui/core'
+import {
+  Button,
+  Typography,
+  Dialog,
+  DialogContent,
+  MenuItem,
+  Grid,
+  Select,
+  Paper,
+  Tooltip,
+  Snackbar,
+  TextField,
+  DialogActions,
+} from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
 import LayoutMain from '../components/Shared/LayoutMain'
@@ -10,7 +23,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { fetchPublication, fetchRole, fetchSchematic, loadGallery, resolveReports } from '../redux/actions/index'
+import { approveReports, fetchPublication, fetchReports, fetchRole, fetchSchematic, getStatus, loadGallery, reportPublication, resolveReports } from '../redux/actions/index'
 import { useDispatch, useSelector } from 'react-redux'
 import SimulationProperties from '../components/SchematicEditor/SimulationProperties'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
@@ -53,12 +66,14 @@ export default function PublicationPage(props) {
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const [simulateOpen, setSimulateOpen] = React.useState(false)
   const [reportOpen, setReportOpen] = React.useState(false)
-  const [stateList, setStateList] = React.useState(null)
+  const [reportStatus, setReportStatus] = React.useState(null)
   const [status, setStatus] = React.useState(null)
   const [reportDetailsOpen, setReportDetailsOpen] = React.useState(false)
   const [reportDescription, setDescription] = React.useState(null)
+  const [reportApproved, setReportApproved] = React.useState(false)
   const publication = useSelector(state => state.publicationReducer)
   const auth = useSelector(state => state.authReducer)
+  const stateList = useSelector(state => state.publicationReducer.states)
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props;
     return (
@@ -82,109 +97,52 @@ export default function PublicationPage(props) {
     setDescription(e.target.value)
   }
   const handleReportDetailsOpen = (e) => {
+    if (reportDetailsOpen) {
+      setReportStatus(null)
+    }
     setReportDetailsOpen(!reportDetailsOpen)
   }
   const handleSelectChange = (event) => {
     setStatus(event.target.value)
   }
-  const makeCopy = () => {
+  const onClick =  (type) => {
     const query = new URLSearchParams(props.location.search)
-    var saveID = query.get('save_id')
-    const token = localStorage.getItem("esim_token")
-
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }
-    // If token available add to headers
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.post(`/save/copy/${saveID}`, {}, config)
-      .then(res => {
-        console.log(res.data)
+    var save_id = query.get('save_id')
+    var publication_id = query.get('publication_id')
+    switch (type) {
+      case "Report":
+        dispatch(reportPublication(reportDescription, publication_id))
+        handleReportOpen()
+        break;
+      case "Change State":
+        dispatch(approveReports(publication_id, reportStatus, status))
+        handleReportDetailsOpen()
+        break;
+      case "Make copy":
+        dispatch(makeCopy(save_id))
         setSnackbarOpen(true)
         const win = window.open();
         win.location.href = '/eda/#/editor?id=' + res.data.save_id
         win.focus();
-      })
-      .catch(error => console.log(error))
-  }
-  const reportPublication = () => {
-    // Get token from localstorage
-    if (reportDescription) {
-      const token = localStorage.getItem("esim_token")
-      const query = new URLSearchParams(props.location.search)
-      var publication_id = query.get('publication_id')
-      console.log(reportDescription)
-      // add headers
-      const config = {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }
-      // If token available add to headers
-      if (token) {
-        config.headers.Authorization = `Token ${token}`
-      }
-      api.post(`workflow/report/create/${publication_id}`, { 'description': reportDescription }, config)
-        .then(
-          (res) => {
-            setReportOpen(false)
-            setDescription(null)
-          }
-        )
-        .catch((err) => { console.error(err) })
+        break;
     }
   }
-  const getStatus = (publication_id) => {
-    const token = localStorage.getItem("esim_token")
 
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
 
-    // If token available add to headers
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
+  const onSelectReportStatus = (e, report_id) => {
+    if (reportStatus) {
+      var temp = [...reportStatus]
     }
-    api.get(`/workflow/state/${publication_id}`, config)
-      .then((res) => {
-        console.log(res.data)
-        setStateList(res.data)
-      })
-      .catch(error => console.log(error))
-  }
-  const changeStatus = () => {
-    const query = new URLSearchParams(props.location.search)
-    var publication_id = query.get('publication_id')
-    //post the state
-    const token = localStorage.getItem("esim_token")
-
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      },
+    else {
+      temp = []
     }
-
-    // If token available add to headers
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
+    var report = { 'id': report_id, approved: e.target.value }
+    temp.push(report)
+    //TODO: Make this check better
+    if (e.target.value === true) {
+      setReportApproved(true)
     }
-    api.post(`/workflow/state/${publication_id}`,
-      {
-        'name': status
-      }, config)
-      .then((res) => {
-        console.log(res.data)
-      })
-      .catch(error => console.log(error))
+    setReportStatus(temp)
   }
   useEffect(() => {
     var container = gridRef.current
@@ -203,7 +161,7 @@ export default function PublicationPage(props) {
       }
       dispatch(fetchRole())
       if (!reportDetailsOpen) {
-        getStatus(publication_id)
+        dispatch(getStatus(publication_id))
       }
     }
   }, [props.location, dispatch])
@@ -221,15 +179,38 @@ export default function PublicationPage(props) {
                 <Button style={{ float: 'right', verticalAlign: 'super' }} onClick={handleReportDetailsOpen}>View Reports</Button></h3>
                 <Dialog
                   open={reportDetailsOpen}
-                  onClose={handleReportDetailsOpen}>
-                  <DialogTitle>Reports</DialogTitle>
+                  onClose={(handleReportDetailsOpen)}
+                  fullWidth={true}
+                  maxWidth={'md'}>
+                  <DialogTitle style={{ paddingBottom: '0' }}><h1 style={{ marginBottom: '0', marginTop: '0' }}>Reports</h1></DialogTitle>
                   <DialogContent>
-                    <ul>
-                      {publication.reports && publication.reports.map((item, index) => (
-                        <li>{item.description}</li>
-                      ))}
-                    </ul>
-                    {stateList &&
+                    {auth.user.username !== publication.details.author_name && <h2>Do you want to approve any reports?</h2>}
+                    {publication.reports && publication.reports.map((item, index) => (
+                      <Paper style={{ margin: '1% .2%', padding: '.5% .7%' }}>
+                        <Grid container>
+                          <Grid item xs={6}>
+                            <p>
+                              {item.description}
+                            </p>
+                          </Grid>{auth.user.username !== publication.details.author_name &&
+                            <Grid item xs={6}>
+
+                              <Select
+                                defaultValue={item.approved}
+                                variant='outlined'
+                                style={{ float: 'right' }}
+                                onChange={(e) => onSelectReportStatus(e, item.id)}
+                              >
+                                <MenuItem value={null}>None</MenuItem>
+                                <MenuItem value={true}>Approve</MenuItem>
+                                <MenuItem value={false}>Reject</MenuItem>
+                              </Select>
+                            </Grid>}
+                        </Grid>
+
+                      </Paper>
+                    ))}
+                    {stateList && reportApproved &&
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
@@ -237,6 +218,7 @@ export default function PublicationPage(props) {
                         style={{ width: '50%' }}
                         onChange={handleSelectChange}
                         value={status}
+                        variant='outlined'
                       >
                         {stateList.map((item, index) =>
                         (
@@ -245,16 +227,15 @@ export default function PublicationPage(props) {
                       </Select>}
                   </DialogContent>
                   <DialogActions>
-                    {auth.roles && auth.roles.is_type_reviewer && auth.user.username !== publication.details.author_name && <Button onClick={() => {
+                    {auth.user.username === publication.details.author_name && <Button onClick={() => {
                       dispatch(resolveReports(publication.details.publication_id, status))
                       handleReportDetailsOpen()
                     }}>Resolve</Button>}
-                    {auth.roles &&
+                    {auth.roles && reportStatus &&
                       <Button onClick={() => {
-                        changeStatus()
-                        handleReportDetailsOpen()
-                      }}>Change State</Button>}
-                    <Button onClick={handleReportDetailsOpen}>Cancel</Button>
+                        onClick("Change State")
+                      }}>Approve Reports</Button>}
+                    <Button onClick={handleReportDetailsOpen}>Close</Button>
                   </DialogActions>
                 </Dialog>
               </Paper>}
@@ -297,14 +278,14 @@ export default function PublicationPage(props) {
                   rows={8} />
               </DialogContent>
               <DialogActions>
-                <Button onClick={reportPublication}>Report</Button>
+                <Button onClick={() => onClick("Report")}>Report</Button>
                 <Button onClick={handleReportOpen}>Cancel</Button>
               </DialogActions>
             </Dialog>
 
             <h1>Circuit Diagram:
             <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
-              <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => makeCopy()}>Make a Copy</Button>
+              <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick("Make copy")}>Make a Copy</Button>
               <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
                 <PlayCircleOutlineIcon />Simulate
                 </Button>

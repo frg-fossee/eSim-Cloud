@@ -18,12 +18,14 @@ import {
   Menu,
   DialogActions,
 } from '@material-ui/core'
-import React from 'react'
+import React ,{useEffect}from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import SettingsIcon from '@material-ui/icons/Settings';
 import api from '../../utils/Api'
+import {useDispatch,useSelector } from 'react-redux'
+import { getStatus } from '../../redux/actions'
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -42,11 +44,16 @@ const useStyles = makeStyles((theme) => ({
 
 
 export default function PublicationCard({ pub }) {
+  const dispatch = useDispatch()
   const [publishModal, setPublishModal] = React.useState(false)
-  const [stateList, setStateList] = React.useState(null)
+  const stateList = useSelector(state => state.publicationReducer.states)
+
   const [status, setStatus] = React.useState(null)
+  useEffect(() => {
+    //no code
+  }, [dispatch])
   const handlePublishClick = () => {
-    if (!publishModal) {
+    if (publishModal === false) {
       dispatch(getStatus(pub.publication_id))
     }
     setPublishModal(!publishModal)

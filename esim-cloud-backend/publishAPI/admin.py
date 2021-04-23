@@ -9,7 +9,7 @@ class CircuitTagAdmin(admin.ModelAdmin):
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
     list_display=('id','publication','report_time')
-    readonly_fields=('publication','report_time','reporter',)
+    readonly_fields=('publication','report_time','reporter','resolver')
 
 class HistoryInline(admin.TabularInline):
     model = TransitionHistory

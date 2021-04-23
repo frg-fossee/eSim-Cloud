@@ -1,9 +1,7 @@
-import { Button, Card, Grid, CardActions, CardContent, Typography } from '@material-ui/core'
-import React from 'react'
-import { useSelector } from 'react-redux'
-import SchematicCard from './SchematicCard'
+import {  Card, Grid,  CardContent, Typography } from '@material-ui/core'
+import React,{useEffect} from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link as RouterLink } from 'react-router-dom'
 import PublicationCard from './PublicationCard'
 
 
@@ -28,7 +26,11 @@ const useStyles = makeStyles({
     }
 })
 function DashboardPublications() {
+    const dispatch = useDispatch();
     const publications = useSelector(state => state.dashboardReducer.myPublications)
+    useEffect(() => {
+
+    }, [dispatch])
     const classes = useStyles()
     return (
         <>
