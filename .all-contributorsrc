@@ -26,6 +26,17 @@
         "doc",
         "design"
       ]
+    },
+    {
+      "login": "felixfaisal",
+      "name": "felixfaisal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42486737?v=4",
+      "profile": "https://felixfaisal.github.io/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
