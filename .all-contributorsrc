@@ -48,6 +48,17 @@
         "doc",
         "design"
       ]
+    },
+    {
+      "login": "NavonilDas",
+      "name": "Navonil Das",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29132316?v=4",
+      "profile": "http://navonildas.github.io/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
