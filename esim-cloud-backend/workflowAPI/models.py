@@ -31,8 +31,8 @@ class Transition(models.Model):
     role = models.ManyToManyField(Group, related_name='role')
     from_state = models.ForeignKey(State, null=True, related_name='fromtransitions', on_delete=SET_NULL)
     to_state = models.ForeignKey(State, null=True, related_name='totransitions', on_delete=SET_NULL)
-    allowed_for_creator = models.BooleanField(default=True, null=False)
-    only_for_creator = models.BooleanField(default=False,null=False)
+    allowed_for_creator = models.BooleanField(default=True, null=False,verbose_name="Transition allowed for the creator along with other users of the same role.")
+    only_for_creator = models.BooleanField(default=False,null=False,verbose_name="Transition that ONLY the creator should be able to do it.")
     def __str__(self):
         return self.name
 

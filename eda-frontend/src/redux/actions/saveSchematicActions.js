@@ -198,5 +198,11 @@ export const makeCopy = (saveID) => (dispatch,getState) => {
     config.headers.Authorization = `Token ${token}`
   }
   api.post(`/save/copy/${saveID}`, {}, config)
+  .then(res => 
+    {
+        let win = window.open();
+        win.location.href = '/eda/#/editor?id=' + res.data.save_id
+        win.focus();
+    })
     .catch(error => console.log(error))
 }

@@ -23,7 +23,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { approveReports, fetchPublication, fetchReports, fetchRole, fetchSchematic, getStatus, loadGallery, reportPublication, resolveReports } from '../redux/actions/index'
+import { approveReports, fetchPublication, fetchReports, fetchRole, fetchSchematic, getStatus, loadGallery, reportPublication, resolveReports,makeCopy } from '../redux/actions/index'
 import { useDispatch, useSelector } from 'react-redux'
 import SimulationProperties from '../components/SchematicEditor/SimulationProperties'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
@@ -121,9 +121,6 @@ export default function PublicationPage(props) {
       case "Make copy":
         dispatch(makeCopy(save_id))
         setSnackbarOpen(true)
-        const win = window.open();
-        win.location.href = '/eda/#/editor?id=' + res.data.save_id
-        win.focus();
         break;
     }
   }
