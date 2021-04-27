@@ -6,8 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from pylti.common import LTIException, verify_request_common, generate_request_xml, post_message, \
-    LTIPostMessageException
+from pylti.common import LTIException, verify_request_common, post_message, generate_request_xml
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
 from .models import lticonsumer
@@ -28,7 +27,7 @@ class LTIExist(APIView):
         except lticonsumer.DoesNotExist:
             return Response(data={"error": "LTIConsumer Not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        config_url = "http://" + request.get_host() + "/api/lti/" + str(save_id) + '/config.xml/'
+        config_url = "http://" + request.get_host() + "/api/lti/schematic/" + str(save_id) + "/"
         response_data = {
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
@@ -49,7 +48,7 @@ class LTIBuildApp(APIView):
         serialized = consumerSerializer(data=request.data)
         if serialized.is_valid():
             serialized.save()
-            config_url = "http://" + request.get_host() + "/api/lti/" + str(serialized.data["save_id"]) + '/config.xml/'
+            config_url = "http://" + request.get_host() + "/api/lti/schematic/" + str(serialized.data.get('save_id')) + "/"
             response_data = {
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
@@ -106,8 +105,7 @@ class LTIConfigView(View):
 
 class LTIAuthView(APIView):
     """POST handler for the LTI login POST back call"""
-
-    def post(self, request):
+    def post(self, request, save_id):
         # Extracts the LTI payload information
         params = {key: request.data[key] for key in request.data}
         # Maps the settings defined for the LTI consumer
@@ -118,10 +116,9 @@ class LTIAuthView(APIView):
         headers = request.META
         # Define the redirect url
         try:
-            i = lticonsumer.objects.get(consumer_key=request.data['oauth_consumer_key'])
+            i = lticonsumer.objects.get(consumer_key=request.data.get('oauth_consumer_key', None), save_id=save_id)
         except lticonsumer.DoesNotExist:
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-
         next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.save_id.save_id)
         try:
             # Validate the incoming LTI
@@ -145,7 +142,6 @@ def LTIPostGrade(params, request):
     :exception: LTIPostMessageException if call failed
     """
     try:
-        print("params:", params)
         consumer = lticonsumer.objects.get(consumer_key=oauth_consumer_key(request))
         score = consumer.score
     except ValueError:
@@ -158,7 +154,6 @@ def LTIPostGrade(params, request):
     post = post_message(
         consumers(), oauth_consumer_key(request),
         lis_outcome_service_url(request), xml)
-
     if not post:
         msg = ('An error occurred while saving your score. '
                'Please try again.')
