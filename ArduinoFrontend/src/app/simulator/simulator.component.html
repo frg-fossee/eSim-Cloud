@@ -177,6 +177,10 @@
     style="margin-right: 30px;align-items: center;background: transparent;" (click)="zoom(1)"><i
       style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
 
+  <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
+  style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+    style="font-size: 20px;color: black;" [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
+
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
   <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-share"></i></button>
