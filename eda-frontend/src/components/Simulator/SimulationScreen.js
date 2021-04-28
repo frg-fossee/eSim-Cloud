@@ -26,6 +26,9 @@ import { useSelector } from 'react-redux'
 
 import Graph from '../Shared/Graph'
 
+var FileSaver = require('file-saver')
+
+
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
@@ -77,6 +80,14 @@ export default function SimulationScreen ({ open, close, isResult }) {
   const handlePrecision = (evt) => {
     setPrecision(evt.target.value)
   }
+
+  const handleCsvDownload = () => {
+    console.log(result.graph.x_points, result.graph.y_points)
+    var outputPoints = JSON.stringify(result.graph.x_points)
+    var blob = new Blob([outputPoints], { type: 'text/csv;charset=utf-8' })
+    FileSaver.saveAs(blob, `graph_points_eSim_on_cloud.csv`)
+  }
+
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
@@ -221,6 +232,9 @@ export default function SimulationScreen ({ open, close, isResult }) {
                           }
 
                         </TextField>
+                        <Button variant="contained" style={{ marginLeft: "1%" }} color="primary" size="medium" onClick={handleCsvDownload}>
+                          Download Graph Output
+                        </Button>
                       </div>
                       <Graph
                         labels={result.graph.labels}
