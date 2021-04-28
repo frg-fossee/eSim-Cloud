@@ -29,7 +29,7 @@ import Graph from '../Shared/Graph'
 var FileSaver = require('file-saver')
 
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult }) {
+export default function SimulationScreen({ open, close, isResult }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const [xscale, setXScale] = React.useState('si')
@@ -82,9 +82,25 @@ export default function SimulationScreen ({ open, close, isResult }) {
   }
 
   const handleCsvDownload = () => {
-    console.log(result.graph.x_points, result.graph.y_points)
-    var outputPoints = JSON.stringify(result.graph.x_points)
-    var blob = new Blob([outputPoints], { type: 'text/csv;charset=utf-8' })
+    var headings = ""
+    result.graph.labels.forEach(label => {
+      headings = headings + label + ","
+    })
+
+    headings = headings.slice(0, -1)
+    headings += "\n"
+    var downloadString = ""
+
+    for (var x = 0; x < result.graph.x_points.length; x++) {
+      downloadString += result.graph.x_points[x];
+      for (var y = 0; y < result.graph.y_points.length; y++) {
+        downloadString = downloadString + "," + result.graph.y_points[y][x]
+      }
+      downloadString += "\n"
+    }
+
+    downloadString = headings.concat(downloadString)
+    var blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, `graph_points_eSim_on_cloud.csv`)
   }
 
@@ -232,9 +248,9 @@ export default function SimulationScreen ({ open, close, isResult }) {
                           }
 
                         </TextField>
-                        <Button variant="contained" style={{ marginLeft: "1%" }} color="primary" size="medium" onClick={handleCsvDownload}>
+                        {result.isGraph === 'true' && <Button variant="contained" style={{ marginLeft: "1%" }} color="primary" size="medium" onClick={handleCsvDownload}>
                           Download Graph Output
-                        </Button>
+                        </Button>}
                       </div>
                       <Graph
                         labels={result.graph.labels}
