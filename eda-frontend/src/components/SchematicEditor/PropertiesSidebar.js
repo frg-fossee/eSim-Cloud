@@ -136,28 +136,27 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api
-      .get(
-        "save/versions/" +
+    if (window.location.href.split("?id=")[1]) {
+      api
+        .get(
+          "save/versions/" +
           window.location.href.split("?id=")[1].substring(0, 36),
-        config
-      )
-      .then((resp) => {
-        console.log(resp.data)
-        resp.data.forEach(value => {
-          var d = new Date(value.save_time);
-          value.date =
-            d.getDate() + "/"+
-            d.getMonth() +"/"+
-          d.getFullYear()
-          value.time = d.getHours() + ":" + d.getMinutes();
-          if (d.getMinutes() < 10)
-          {
-            value.time = d.getHours() + ":0" + d.getMinutes();
+          config
+        )
+        .then((resp) => {
+          console.log(resp.data);
+          resp.data.forEach((value) => {
+            var d = new Date(value.save_time);
+            value.date =
+              d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
+            value.time = d.getHours() + ":" + d.getMinutes();
+            if (d.getMinutes() < 10) {
+              value.time = d.getHours() + ":0" + d.getMinutes();
             }
-        })
-        setVersions(resp.data)
-      });
+          });
+          setVersions(resp.data);
+        });
+    }
   }, [])
 
   const dispatch = useDispatch()

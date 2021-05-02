@@ -27,3 +27,6 @@ class StateSave(models.Model):
 
     def save(self, *args, **kwargs):
         super(StateSave, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
