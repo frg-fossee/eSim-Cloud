@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSchDescription } from '../../redux/actions/index'
+import api from "../../utils/Api"
+import VersionComponent from "./VersionComponent"
 
 import './Helper/SchematicEditor.css'
 
@@ -115,13 +117,48 @@ GridProperties.propTypes = {
   gridRef: PropTypes.object.isRequired
 }
 
-export default function PropertiesSidebar ({ gridRef, outlineRef }) {
+export default function PropertiesSidebar({ gridRef, outlineRef }) {
   const classes = useStyles()
 
   const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
   const schSave = useSelector(state => state.saveSchematicReducer)
 
   const [description, setDescription] = React.useState(schSave.description)
+  const [versions, setVersions] = React.useState(null)
+  React.useEffect(() => {
+    const config = {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    };
+    const token = localStorage.getItem("esim_token")
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api
+      .get(
+        "save/versions/" +
+          window.location.href.split("?id=")[1].substring(0, 36),
+        config
+      )
+      .then((resp) => {
+        console.log(resp.data)
+        resp.data.forEach(value => {
+          var d = new Date(value.save_time);
+          value.date =
+            d.getDate() + "/"+
+            d.getMonth() +"/"+
+          d.getFullYear()
+          value.time = d.getHours() + ":" + d.getMinutes();
+          if (d.getMinutes() < 10)
+          {
+            value.time = d.getHours() + ":0" + d.getMinutes();
+            }
+        })
+        setVersions(resp.data)
+      });
+  }, [])
 
   const dispatch = useDispatch()
 
@@ -160,8 +197,13 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           </ListItem>
         </div>
       </List>
-
       <ComponentProperties />
+      <List>
+        <ListItem button divider>
+          <h2 style={{ margin: '5px' }}>Versions</h2>
+        </ListItem>
+        {versions !== null ? <>{versions.map((version) => <VersionComponent name={version.name} date={version.date} time={version.time} save_id={version.save_id} version={version.version} />)}</> : <ListItemText>Loading</ListItemText>}
+      </List>
     </>
   )
 }

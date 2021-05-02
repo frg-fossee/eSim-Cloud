@@ -28,7 +28,7 @@ export const fetchSchematics = () => (dispatch, getState) => {
 }
 
 // Api call for deleting saved schematic
-export const deleteSchematic = (saveId) => (dispatch, getState) => {
+export const deleteSchematic = (saveId,version) => (dispatch, getState) => {
   const token = getState().authReducer.token
 
   const config = {
@@ -41,7 +41,7 @@ export const deleteSchematic = (saveId) => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.delete('save/' + saveId, config)
+  api.delete('save/' + saveId+"/"+version, config)
     .then(
       (res) => {
         if (res.status === 200) {
