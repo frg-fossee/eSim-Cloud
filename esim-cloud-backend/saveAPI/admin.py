@@ -6,3 +6,4 @@ from saveAPI.models import StateSave
 class UserCircuits(admin.ModelAdmin):
     list_display = ('name', 'is_arduino', 'base64_image',
                     'save_time', 'create_time', "version")
+    list_filter = ('version', 'save_id',)
