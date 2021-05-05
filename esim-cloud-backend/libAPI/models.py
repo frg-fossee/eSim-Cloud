@@ -1,6 +1,7 @@
 
 from djongo import models
 from django.utils.safestring import mark_safe
+from django.contrib.auth.models import User
 
 
 class Library(models.Model):
@@ -57,3 +58,9 @@ class ComponentAlternate(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class FavouriteComponent(models.Model):
+    owner = models.OneToOneField(to=User, on_delete=models.CASCADE, null=False)
+    component = models.ManyToManyField(to=LibraryComponent, null=True)
+    last_change = models.DateTimeField(auto_now=True)
