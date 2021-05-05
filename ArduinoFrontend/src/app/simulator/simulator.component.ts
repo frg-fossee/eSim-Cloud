@@ -600,4 +600,34 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       window['hideLoading']();
     }
   }
+
+  exportJson(){
+    console.log("Export")
+
+    // Save circuit if id is not presenr
+    if (this.projectId) {
+      Workspace.SaveJson(this.projectTitle, this.description, null, this.projectId);
+    } else {
+      // save circuit and add query parameters
+      Workspace.SaveJson(this.projectTitle, this.description, (v) => {
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: v.id,
+              offline: true,
+              gallery: null
+            },
+            queryParamsHandling: 'merge'
+          }
+        );
+      });
+    }
+
+  }
+  importJson(){
+    console.log("Import")
+  }
+
 }

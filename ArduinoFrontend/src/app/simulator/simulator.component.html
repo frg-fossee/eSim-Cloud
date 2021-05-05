@@ -135,7 +135,19 @@
   </div>
   <!--/simulation loading svg-->
 
+  <!-- Adding import export -->
   <span class="pipe">|</span>
+  <button mat-icon-button matTooltip="Download JSON file" (click)="exportJson()"
+    style="align-items: center;background: transparent;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-download"></i>
+  </button>
+
+  <button mat-icon-button matTooltip="Import JSON file" (click)="importJson()"
+    style="align-items: center;background: transparent;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-upload"></i>
+  </button>
+  <span class="pipe">|</span>
+  <!-- Adding import export -->
 
   <a href="../#/simulator" target="_blank">
     <button mat-icon-button matTooltip="New Project" style="align-items: center;background: transparent;" class="mt-1">

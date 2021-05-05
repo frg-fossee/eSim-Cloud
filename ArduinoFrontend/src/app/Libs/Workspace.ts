@@ -1050,4 +1050,82 @@ export class Workspace {
     // Hide Loading animation
     window.hideLoading();
   }
+
+
+  /**
+ * Function saves the circuit Offline in form of JSON
+ * @param name string
+ * @param description string
+ * @param callback any
+ * @param id number
+ */
+  static SaveJson(name: string = '', description: string = '', callback: any = null, id: number = null) {
+    let toUpdate = false;
+    // Check if id is already present then enable Update
+    if (isNull(id)) {
+      id = Date.now();
+    } else {
+      toUpdate = true;
+    }
+    // Default Save object
+    const saveObj = {
+      id,
+      canvas: {
+        x: Workspace.translateX,
+        y: Workspace.translateY,
+        scale: Workspace.scale
+      },
+      project: {
+        name,
+        description,
+        created_at: Date.now(),
+        updated_at: Date.now()
+      }
+    };
+
+    // For each item in the scope
+    for (const key in window.scope) {
+      // if atleast one component is present
+      if (window.scope[key] && window.scope[key].length > 0) {
+        saveObj[key] = [];
+        // Add the component to the save object
+        for (const item of window.scope[key]) {
+          if (item.save) {
+            saveObj[key].push(item.save());
+          }
+        }
+      }
+    }
+ 
+
+    // Export JSON File & Download it
+    const filename = `${name}-export.json`;
+    const jsonStr = JSON.stringify(saveObj);
+
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+
+
+    // // Save the Thumbnail for the circuit
+    // Download.ExportImage(ImageType.PNG).then(v => {
+    //   saveObj.project['image'] = v; // Add the base64 image
+    //   // console.log(saveObj);
+    //   // Save or Update Circuit Ofline
+    //   if (toUpdate) {
+    //     SaveOffline.Update(saveObj);
+    //   } else {
+    //     SaveOffline.Save(saveObj, callback);
+    //   }
+    // });
+
+  }
+
 }
