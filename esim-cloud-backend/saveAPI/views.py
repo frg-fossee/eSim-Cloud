@@ -32,12 +32,23 @@ class StateSaveView(APIView):
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
         logger.info('Got POST for state save ')
-        serializer = StateSaveSerializer(
-            data=request.data, context={'request': self.request})
-        if serializer.is_valid():
-            serializer.save(owner=self.request.user)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            queryset = StateSave.objects.get(
+                data_dump=request.data["data_dump"])
+            serializer = StateSaveSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset.name = serializer.data["name"]
+                queryset.description = serializer.data["description"]
+                queryset.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except StateSave.DoesNotExist:
+            serializer = StateSaveSerializer(
+                data=request.data, context={'request': self.request})
+            if serializer.is_valid():
+                serializer.save(owner=self.request.user)
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class StateFetchUpdateView(APIView):
