@@ -142,9 +142,11 @@
     <i style="font-size: 20px;color: black;" class="fa fa-download"></i>
   </button>
 
-  <button mat-icon-button matTooltip="Import JSON file" (click)="importJson()"
+  <button mat-icon-button matTooltip="Import JSON file"
     style="align-items: center;background: transparent;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class="fa fa-upload"></i>
+    <label style="font-size: 20px;color: black;" class="fa fa-upload">
+    <input type="file" style="visibility:hidden;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+    </label>
   </button>
   <span class="pipe">|</span>
   <!-- Adding import export -->

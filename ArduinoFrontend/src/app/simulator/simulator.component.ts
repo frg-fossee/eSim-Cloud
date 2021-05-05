@@ -601,7 +601,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
 
-  exportJson(){
+  // Export to a JSON File
+  exportJson() {
     console.log("Export")
 
     // Save circuit if id is not presenr
@@ -626,8 +627,15 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
 
   }
-  importJson(){
-    console.log("Import")
+  // Import from jSON file
+  importJson(file) {
+    // Read File
+    var fileReader = new FileReader();
+    fileReader.readAsText(file, "UTF-8");
+    fileReader.onload = (event: Event) => {
+      var data = fileReader.result;
+      this.LoadProject(JSON.parse(data as string))
+   };
   }
 
 }
