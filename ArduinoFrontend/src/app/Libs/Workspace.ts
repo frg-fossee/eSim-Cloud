@@ -1053,20 +1053,14 @@ export class Workspace {
 
 
   /**
- * Function saves the circuit Offline in form of JSON
+ * Function generates a JSON object containing all details of the workspace and downloads it
  * @param name string
  * @param description string
- * @param callback any
- * @param id number
  */
-  static SaveJson(name: string = '', description: string = '', callback: any = null, id: number = null) {
-    let toUpdate = false;
-    // Check if id is already present then enable Update
-    if (isNull(id)) {
-      id = Date.now();
-    } else {
-      toUpdate = true;
-    }
+  static SaveJson(name: string = '', description: string = '') {
+    
+    let id = Date.now();
+    
     // Default Save object
     const saveObj = {
       id,
@@ -1079,7 +1073,6 @@ export class Workspace {
         name,
         description,
         created_at: Date.now(),
-        updated_at: Date.now()
       }
     };
 
@@ -1096,7 +1089,6 @@ export class Workspace {
         }
       }
     }
- 
 
     // Export JSON File & Download it
     const filename = `${name}-export.json`;
@@ -1112,19 +1104,6 @@ export class Workspace {
     element.click();
 
     document.body.removeChild(element);
-
-
-    // // Save the Thumbnail for the circuit
-    // Download.ExportImage(ImageType.PNG).then(v => {
-    //   saveObj.project['image'] = v; // Add the base64 image
-    //   // console.log(saveObj);
-    //   // Save or Update Circuit Ofline
-    //   if (toUpdate) {
-    //     SaveOffline.Update(saveObj);
-    //   } else {
-    //     SaveOffline.Save(saveObj, callback);
-    //   }
-    // });
 
   }
 

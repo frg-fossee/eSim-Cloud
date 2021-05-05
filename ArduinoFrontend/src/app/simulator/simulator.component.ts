@@ -603,30 +603,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
   // Export to a JSON File
   exportJson() {
-    console.log("Export")
-
-    // Save circuit if id is not presenr
-    if (this.projectId) {
-      Workspace.SaveJson(this.projectTitle, this.description, null, this.projectId);
-    } else {
-      // save circuit and add query parameters
-      Workspace.SaveJson(this.projectTitle, this.description, (v) => {
-        this.router.navigate(
-          [],
-          {
-            relativeTo: this.aroute,
-            queryParams: {
-              id: v.id,
-              offline: true,
-              gallery: null
-            },
-            queryParamsHandling: 'merge'
-          }
-        );
-      });
-    }
-
+    Workspace.SaveJson(this.projectTitle, this.description);
   }
+
   // Import from jSON file
   importJson(file) {
     // Read File
@@ -634,6 +613,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     fileReader.readAsText(file, "UTF-8");
     fileReader.onload = (event: Event) => {
       var data = fileReader.result;
+      // Load the data object and change into workspace
       this.LoadProject(JSON.parse(data as string))
    };
   }
