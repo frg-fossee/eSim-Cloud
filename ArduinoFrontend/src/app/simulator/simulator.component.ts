@@ -15,6 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
+import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -603,7 +604,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
   // Export to a JSON File
   exportJson() {
-    Workspace.SaveJson(this.projectTitle, this.description);
+    const viewref = this.dialog.open(ExportJSONDialogComponent, {
+      width: '600px',
+      data: {description:this.description,title:this.projectTitle}
+    });
+    viewref.afterClosed();
   }
 
   // Import from jSON file

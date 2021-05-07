@@ -35,6 +35,7 @@ import { HeaderComponent } from './header/header.component';
 import { ViewProjectComponent } from './view-project/view-project.component';
 import { AlertModalComponent } from './alert/alert-modal/alert-modal.component';
 import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.component';
+import { ExportJSONDialogComponent } from './export-jsondialog/export-jsondialog.component';
 
 /**
  * Monaco OnLoad Function
@@ -67,6 +68,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     HeaderComponent,
     AlertModalComponent,
     ConfirmModalComponent,
+    ExportJSONDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -89,7 +91,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent, ConfirmModalComponent],
+  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent, ConfirmModalComponent,ExportJSONDialogComponent],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

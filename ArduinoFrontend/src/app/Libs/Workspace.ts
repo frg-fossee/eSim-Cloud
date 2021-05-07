@@ -1091,7 +1091,7 @@ export class Workspace {
     }
 
     // Export JSON File & Download it
-    const filename = `${name}-export.json`;
+    const filename = `${name}.json`;
     const jsonStr = JSON.stringify(saveObj);
 
     let element = document.createElement('a');
