@@ -22,7 +22,7 @@ const {
   mxPoint
 } = new mxGraphFactory()
 
-export default function ToolbarTools (grid, unredo) {
+export default function ToolbarTools(grid, unredo) {
   graph = grid
 
   undoManager = new mxUndoManager()
@@ -34,7 +34,7 @@ export default function ToolbarTools (grid, unredo) {
 }
 
 // SAVE
-export function Save () {
+export function Save() {
   XMLWireConnections()
   var enc = new mxCodec(mxUtils.createXmlDocument())
   var node = enc.encode(graph.getModel())
@@ -43,42 +43,42 @@ export function Save () {
 }
 
 // UNDO
-export function Undo () {
+export function Undo() {
   undoManager.undo()
 }
 
 // REDO
-export function Redo () {
+export function Redo() {
   undoManager.redo()
 }
 
 // Zoom IN
-export function ZoomIn () {
+export function ZoomIn() {
   graph.zoomIn()
 }
 
 // ZOOM OUT
-export function ZoomOut () {
+export function ZoomOut() {
   graph.zoomOut()
 }
 
 // ZOOM ACTUAL
-export function ZoomAct () {
+export function ZoomAct() {
   graph.zoomActual()
 }
 
 // DELETE COMPONENT
-export function DeleteComp () {
+export function DeleteComp() {
   graph.removeCells()
 }
 
 // CLEAR WHOLE GRID
-export function ClearGrid () {
+export function ClearGrid() {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
 }
 
 // ROTATE COMPONENT
-export function Rotate () {
+export function Rotate() {
   var view = graph.getView()
   var cell = graph.getSelectionCell()
   var state = view.getState(cell, true)
@@ -93,7 +93,7 @@ export function Rotate () {
 }
 
 // PRINT PREVIEW OF SCHEMATIC
-export function PrintPreview () {
+export function PrintPreview() {
   // Matches actual printer paper size and avoids blank pages
   var scale = 0.8
   var headerSize = 50
@@ -157,7 +157,7 @@ export function PrintPreview () {
 }
 
 // ERC CHECK FOR SCHEMATIC
-export function ErcCheck () {
+export function ErcCheck() {
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0
@@ -168,8 +168,6 @@ export function ErcCheck () {
   for (var property in list) {
     var cell = list[property]
     if (cell.Component === true) {
-      console.log(cell)
-      // cell.value = 'Checked'
       for (var child in cell.children) {
         var childVertex = cell.children[child]
         if (childVertex.Pin === true && childVertex.edges === null) { // Checking if connections exist from a given pin
@@ -185,7 +183,6 @@ export function ErcCheck () {
               }
             }
           }
-          // console.log(childVertex)
         }
       }
       ++vertexCount
@@ -210,7 +207,8 @@ export function ErcCheck () {
     }
   }
 }
-function ErcCheckNets () {
+// ERC Check for Netlist, It also returns a boolean value which is called in the Netlist Generator 
+function ErcCheckNets() {
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0
@@ -221,14 +219,11 @@ function ErcCheckNets () {
     var cell = list[property]
     if (cell.Component === true) {
       console.log(cell)
-      // cell.value = 'Checked'
       for (var child in cell.children) {
         console.log(cell.children[child])
         var childVertex = cell.children[child]
         if (childVertex.Pin === true && childVertex.edges === null) {
           graph.getSelectionCell(childVertex)
-          console.log('This pin is not connected')
-          console.log(childVertex)
           ++PinNC
           ++errorCount
         }
@@ -236,8 +231,6 @@ function ErcCheckNets () {
       ++vertexCount
     }
     if (cell.symbol === 'PWR') {
-      console.log('Ground is present')
-      console.log(cell)
       ++ground
     }
   }
@@ -258,29 +251,26 @@ function ErcCheckNets () {
   }
 }
 
-// GENERATE NETLIST
-export function GenerateNetList () {
+// Function to generate Netlist
+export function GenerateNetList() {
 
   var r = 1
   var v = 1
   var c = 1
-  // var list = graph.getModel().cells
   var n = 1
   var spiceModels = ''
   var netlist = {
     componentlist: [],
     nodelist: []
   }
-  var erc = ErcCheckNets()
+  var erc = ErcCheckNets() // Checking for ERC Failures
   var k = ''
   if (erc === false) {
     alert('ERC check failed')
   } else {
-    var list = annotate(graph)
+    var list = annotate(graph) // Fetching all the Cells on the GRID
     for (var property in list) {
       if (list[property].Component === true && list[property].symbol !== 'PWR') {
-        // k = ''
-        // alert('Component is present')
         var compobj = {
           name: '',
           node1: '',
@@ -289,92 +279,63 @@ export function GenerateNetList () {
         }
         mxCell.prototype.ConnectedNode = null
         var component = list[property]
-        // console.log(component)
         if (component.symbol === 'R') {
-          // component.symbol = component.symbol + r.toString()
           k = k + component.symbol + r.toString()
           component.value = component.symbol + r.toString()
-          // console.log(component)
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
 
           ++r
         } else if (component.symbol === 'V') {
-          // component.symbol = component.symbol + v.toString()
           console.log(component)
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
           ++v
         } else {
-          // component.symbol = component.symbol + c.toString()
           k = k + component.symbol + c.toString()
           component.value = component.symbol + c.toString()
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
           ++c
-        } 
-        // compobj.name = component.symbol
+        }
 
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
             if (pin.vertex === true) {
-              // alert(pin.id)
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
+                    // Wire to Pin Connection 
                     if (pin.edges[wire].source.edge === true) {
-                      console.log('wire')
-                      console.log(pin.edges[wire].source)
-                      console.log(pin.edges[wire].source.node)
                       pin.edges[wire].node = pin.edges[wire].source.node
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                      // Pin to Wire Connection 
                     } else if (pin.edges[wire].target.edge === true) {
-                      console.log('wire')
-                      console.log(pin.edges[wire].target)
-                      console.log(pin.edges[wire].target.node)
                       pin.edges[wire].node = pin.edges[wire].target.node
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
                       pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
+                      // Souce or Target is Ground 
                     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                      // console.log('Found ground')
-                      // console.log('ground')
                       pin.edges[wire].node = 0
-                      // pin.edges[wire].node = '0'
                       pin.edges[wire].value = 0
-                      // k = k + ' ' + pin.edges[wire].node
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                      // Pin to Pin Connection, Setting the Source to be the Node Value 
                     } else {
-                      // console.log(pin.edges[wire])
-                      // if (pin.edges[wire].node === null) {
                       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       console.log('comp')
-                      // ++n
-                      // }
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
-
                       pin.edges[wire].value = pin.edges[wire].node
-                      // k = k + '  ' + pin.edges[wire].node
                     }
                     pin.edges[wire].value = pin.edges[wire].node
                   }
-                  console.log('Check the wires here ')
-                  console.log(pin.edges[wire].sourceVertex)
-                  console.log(pin.edges[wire].targetVertex)
                 }
-                // console.log()
-                // console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
                 k = k + ' ' + pin.edges[0].node
-
-                // console.log(k)
               }
             }
           }
@@ -384,11 +345,7 @@ export function GenerateNetList () {
           compobj.magnitude = 10
           netlist.componentlist.push(component.properties.PREFIX)
           netlist.nodelist.push(compobj.node2, compobj.node1)
-
-          // console.log(compobj)
         }
-        console.log('component properties', component.properties)
-
         if (component.properties.PREFIX.charAt(0) === 'V' || component.properties.PREFIX.charAt(0) === 'v' || component.properties.PREFIX.charAt(0) === 'I' || component.properties.PREFIX.charAt(0) === 'i') {
           const comp = component.properties
           if (comp.NAME === 'SINE') {
@@ -442,6 +399,7 @@ export function GenerateNetList () {
       netlist: k
     }
   })
+  // Refresh the GRID to view the Node Values 
   graph.getModel().beginUpdate()
   try {
     graph.view.refresh()
@@ -454,15 +412,13 @@ export function GenerateNetList () {
     morph.startAnimation()
   }
   var a = new Set(netlist.nodelist)
-  console.log(netlist.nodelist)
-  console.log(a)
   var netobj = {
     models: spiceModels,
     main: k
   }
   return netobj
 }
-function annotate (graph) {
+function annotate(graph) {
 
   var r = 1
   var v = 1
@@ -613,7 +569,7 @@ function annotate (graph) {
   return list
 }
 
-export function GenerateNodeList () {
+export function GenerateNodeList() {
   var list = annotate(graph)
   var a = []
   // var netlist = []
@@ -642,7 +598,7 @@ export function GenerateNodeList () {
   }
   return netlist
 }
-export function GenerateCompList () {
+export function GenerateCompList() {
   var list = annotate(graph)
   var a = []
   // var netlist = []
@@ -669,16 +625,16 @@ export function GenerateCompList () {
   }
 
   return netlist
-  
+
 }
 
-export function renderXML () {
+export function renderXML() {
   graph.view.refresh()
   var xml = 'null'
   var xmlDoc = mxUtils.parseXml(xml)
   parseXmlToGraph(xmlDoc, graph)
 }
-function parseXmlToGraph (xmlDoc, graph) {
+function parseXmlToGraph(xmlDoc, graph) {
   console.log(xmlDoc)
   const cells = xmlDoc.documentElement.children[0].children
   const parent = graph.getDefaultParent()
@@ -690,9 +646,9 @@ function parseXmlToGraph (xmlDoc, graph) {
 
   style[mxConstants.STYLE_SHAPE] = 'label'
   style[mxConstants.STYLE_VERTICAL_ALIGN] = 'bottom'
-      // style[mxConstants.STYLE_INDICATOR_SHAPE] = 'ellipse'
-      // style[mxConstants.STYLE_INDICATOR_WIDTH] = 34
-      // style[mxConstants.STYLE_INDICATOR_HEIGHT] = 34
+  // style[mxConstants.STYLE_INDICATOR_SHAPE] = 'ellipse'
+  // style[mxConstants.STYLE_INDICATOR_WIDTH] = 34
+  // style[mxConstants.STYLE_INDICATOR_HEIGHT] = 34
   style[mxConstants.STYLE_IMAGE_VERTICAL_ALIGN] = 'bottom' // indicator v-alignment
   style[mxConstants.STYLE_IMAGE_ALIGN] = 'bottom'
   style[mxConstants.STYLE_INDICATOR_COLOR] = 'green'
@@ -817,13 +773,13 @@ function parseXmlToGraph (xmlDoc, graph) {
   }
 }
 
-export function renderGalleryXML (xml) {
+export function renderGalleryXML(xml) {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
   graph.view.refresh()
   var xmlDoc = mxUtils.parseXml(xml)
   parseXmlToGraph(xmlDoc, graph)
 }
-function XMLWireConnections () {
+function XMLWireConnections() {
 
   var erc = true
   if (erc === false) {
@@ -870,16 +826,16 @@ function XMLWireConnections () {
                     console.log(pin.edges[wire].sourceVertex)
                     console.log(pin.edges[wire].targetVertex)
                   }
-                 
+
                 }
               } catch (e) { console.log('error') }
             }
           }
-         
+
         }
-        
+
       }
     }
   }
-  
+
 }
