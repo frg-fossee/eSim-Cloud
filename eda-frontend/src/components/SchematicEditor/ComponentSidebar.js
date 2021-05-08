@@ -64,6 +64,7 @@ export default function ComponentSidebar ({ compRef }) {
   const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
+  const [favourite,setFavourite]=useState(null)
 
   const [searchedComponentList, setSearchedComponents] = useState([])
   const [searchOption, setSearchOption] = useState('NAME')
@@ -87,6 +88,26 @@ export default function ComponentSidebar ({ compRef }) {
 
     // call api from here. and set the result to searchedComponentList.
   }
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("esim_token")
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api
+      .get("favouritecomponents", config)
+      .then((resp) => {
+        setFavourite(resp.data.component)
+      })
+      .catch((err) => {
+        console.log("Some Error Occured")
+      })
+  }, [])
 
   React.useEffect(() => {
     // if the user keeps typing, stop the API call!
@@ -149,6 +170,33 @@ export default function ComponentSidebar ({ compRef }) {
       </Hidden>
 
       <div style={isSimulate ? { display: 'none' } : {}}>
+        {favourite&&<List component="div" dense>
+          <ListItem button>
+            <h2 style={{ margin: "5px" }}>Favourite Components</h2>
+          </ListItem>
+          <ListItem>
+            <div style={{marginLeft:"-30px"}}>
+              {chunk(favourite, 3).map((componentChunk) => {
+                return (
+                  <div>
+                  <ListItem key={componentChunk[0].svg_path} divider>
+                  {
+                    componentChunk.map((component) => {
+                      return (
+                        <ListItemIcon key={component.full_name}>
+                          <SideComp isFavourite={true} setFavourite={setFavourite} component={component} />
+                        </ListItemIcon>
+                      )
+                      }
+                    )
+                  }
+                  </ListItem>
+                  </div>
+                )
+              })}
+            </div>
+          </ListItem>          
+        </List>}
         {/* Display List of categorized components */}
         <List>
           <ListItem button>
@@ -255,7 +303,7 @@ export default function ComponentSidebar ({ compRef }) {
                                   {
                                     componentChunk.map((component) => {
                                       return (<ListItemIcon key={component.full_name}>
-                                        <SideComp component={component} />
+                                        <SideComp setFavourite={setFavourite} component={component} />
                                       </ListItemIcon>)
                                     }
                                     )

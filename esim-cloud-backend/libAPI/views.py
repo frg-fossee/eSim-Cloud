@@ -52,7 +52,7 @@ class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = LibraryComponentFilterSet
 
 
-class FavouriteComponentViewSet(APIView):
+class FavouriteComponentView(APIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = FavouriteComponentSerializer
 
@@ -61,7 +61,8 @@ class FavouriteComponentViewSet(APIView):
         try:
             queryset = FavouriteComponent.objects.get(
                 owner=self.request.user)
-            response_serializer = self.serializer_class(queryset)
+            response_serializer = self.serializer_class(
+                queryset, context={'request': request})
             return Response(response_serializer.data, status=status.HTTP_200_OK)
         except FavouriteComponent.DoesNotExist:
             return Response(data={}, status=status.HTTP_200_OK)
@@ -80,7 +81,7 @@ class FavouriteComponentViewSet(APIView):
                 existingFavourites.component.add(singleComponent)
             existingFavourites.save()
             serializer = FavouriteComponentSerializer(
-                instance=existingFavourites)
+                instance=existingFavourites, context={'request': request})
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         except FavouriteComponent.DoesNotExist:
             newFavList = FavouriteComponent.objects.create(
@@ -88,5 +89,18 @@ class FavouriteComponentViewSet(APIView):
             for singleComponent in newComponent:
                 newFavList.component.add(singleComponent)
             newFavList.save()
-            serialized = FavouriteComponentSerializer(instance=newFavList)
+            serialized = FavouriteComponentSerializer(
+                instance=newFavList, context={'request': request})
             return Response(data=serialized.data, status=status.HTTP_200_OK)
+
+class DeleteFavouriteComponent(APIView):
+    permission_classes=(IsAuthenticated,)
+    @swagger_auto_schema(responses={200: FavouriteComponentSerializer})
+    def delete(self,request,id):
+        try:
+            queryset=FavouriteComponent.objects.get(owner=self.request.user,component=id)
+            queryset.component.remove(id)
+            serialized=FavouriteComponentSerializer(instance=queryset,context={'request': request})
+            return Response(data=serialized.data,status=status.HTTP_200_OK)
+        except FavouriteComponent.DoesNotExist:
+            return Response(data={"error":"given component id doesn't exist in your favourites"},status=status.HTTP_400_BAD_REQUEST)

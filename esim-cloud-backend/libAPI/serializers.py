@@ -45,6 +45,8 @@ class LibraryComponentSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class FavouriteComponentSerializer(serializers.ModelSerializer):
+    component = LibraryComponentSerializer(many=True)
+
     class Meta:
         model = FavouriteComponent
         fields = ("component",)
