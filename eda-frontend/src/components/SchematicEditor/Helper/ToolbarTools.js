@@ -218,9 +218,7 @@ function ErcCheckNets() {
   for (var property in list) {
     var cell = list[property]
     if (cell.Component === true) {
-      console.log(cell)
       for (var child in cell.children) {
-        console.log(cell.children[child])
         var childVertex = cell.children[child]
         if (childVertex.Pin === true && childVertex.edges === null) {
           graph.getSelectionCell(childVertex)
@@ -286,7 +284,6 @@ export function GenerateNetList() {
 
           ++r
         } else if (component.symbol === 'V') {
-          console.log(component)
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
@@ -327,7 +324,6 @@ export function GenerateNetList() {
                     } else {
                       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      console.log('comp')
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       pin.edges[wire].value = pin.edges[wire].node
@@ -418,6 +414,7 @@ export function GenerateNetList() {
   }
   return netobj
 }
+// Function to Annotate, TODO! It needs some polishing 
 function annotate(graph) {
 
   var r = 1
@@ -433,7 +430,6 @@ function annotate(graph) {
     componentlist: [],
     nodelist: []
   }
-  // var erc = ErcCheckNets()
   var erc = true
   var k = ''
   if (erc === false) {
@@ -449,94 +445,61 @@ function annotate(graph) {
         }
         mxCell.prototype.ConnectedNode = null
         var component = list[property]
-        // console.log(component)
         if (component.symbol === 'R') {
-          // component.symbol = component.symbol + r.toString()
           k = k + component.symbol + r.toString()
           component.value = component.symbol + r.toString()
-          // console.log(component)
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
 
           ++r
         } else if (component.symbol === 'V') {
-          // component.symbol = component.symbol + v.toString()
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
           ++v
         } else if (component.symbol === 'C') {
-          // component.symbol = component.symbol + v.toString()
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
           ++c
         } else if (component.symbol === 'D') {
-          // component.symbol = component.symbol + v.toString()
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
           ++d
         } else if (component.symbol === 'Q') {
-          // component.symbol = component.symbol + v.toString()
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
           ++q
         } else {
-          // component.symbol = component.symbol + c.toString()
           k = k + component.symbol + c.toString()
           component.value = component.symbol + c.toString()
           component.properties.PREFIX = component.value
-          // component.symbol = component.value
           ++w
         }
-        // compobj.name = component.symbol
 
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
             if (pin.vertex === true) {
-              // alert(pin.id)
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
                     if (pin.edges[wire].source.edge === true) {
-
+                      // Not Performing any Action for Pin to Wire Connections 
                     } else if (pin.edges[wire].target.edge === true) {
-
+                      // Not Performing any Action for Pin to Wire Connections 
                     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                      // console.log('Found ground')
-                      // console.log('ground')
                       pin.edges[wire].node = 0
-                      // pin.edges[wire].node = '0'
                       pin.edges[wire].value = 0
-                      // k = k + ' ' + pin.edges[wire].node
                     } else {
-                      // console.log(pin.edges[wire])
-                      // if (pin.edges[wire].node === null) {
                       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      console.log('comp')
-                      // ++n
-                      // }
-
                       pin.edges[wire].value = pin.edges[wire].node
-                      // k = k + '  ' + pin.edges[wire].node
                     }
                   }
-
-                  console.log(pin.edges[wire])
                 }
-                // console.log()
-                // console.log(pin.value + 'is connected to this node' + pin.edges[0].node)
                 k = k + ' ' + pin.edges[0].node
-
-                // console.log(k)
               }
             }
           }
@@ -546,10 +509,7 @@ function annotate(graph) {
           compobj.magnitude = 10
           netlist.componentlist.push(component.properties.PREFIX)
           netlist.nodelist.push(compobj.node2, compobj.node1)
-
-          // console.log(compobj)
         }
-        // console.log(component)
         if (component.properties.VALUE !== undefined) {
           k = k + ' ' + component.properties.VALUE
         }
@@ -560,33 +520,28 @@ function annotate(graph) {
         if (component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
-        // k = k + ' 10'
         k = k + ' \n'
-        // console.log(k)
       }
     }
   }
   return list
 }
-
+// Returns all the Nodes present in the Schematic, Used for Simulation 
 export function GenerateNodeList() {
   var list = annotate(graph)
   var a = []
-  // var netlist = []
+  // Using a Set to avoid duplicate Nodes 
   var netlist = new Set()
-
-  // console.log('Untitled netlist'
   var k = 'Unitled netlist \n'
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
-      // k = ''
-      // alert('Component is present')Component Name: ZMYxx
       var compobj = {
         name: '',
         node1: '',
         node2: '',
         magnitude: ''
       }
+      // Fetching all the nodes 
       var component = list[property]
       if (component.children !== null) {
         compobj.name = component.symbol
@@ -598,18 +553,14 @@ export function GenerateNodeList() {
   }
   return netlist
 }
+// Sends a list of components present in the netlist 
 export function GenerateCompList() {
   var list = annotate(graph)
   var a = []
-  // var netlist = []
-  var netlist = []
-
-  // console.log('Untitled netlist'
+  var netlist = [] // This will contain the list of Component Prefix
   var k = 'Unitled netlist \n'
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
-      // k = ''
-      // alert('Component is present')
       var compobj = {
         name: '',
         node1: '',
@@ -623,19 +574,17 @@ export function GenerateCompList() {
       netlist.push(component.properties.PREFIX)
     }
   }
-
   return netlist
-
 }
-
+// Function to Render Circuit XML
 export function renderXML() {
   graph.view.refresh()
   var xml = 'null'
   var xmlDoc = mxUtils.parseXml(xml)
   parseXmlToGraph(xmlDoc, graph)
 }
+// Function to Parse XML and Redraw on Grid
 function parseXmlToGraph(xmlDoc, graph) {
-  console.log(xmlDoc)
   const cells = xmlDoc.documentElement.children[0].children
   const parent = graph.getDefaultParent()
   var v1
@@ -646,9 +595,6 @@ function parseXmlToGraph(xmlDoc, graph) {
 
   style[mxConstants.STYLE_SHAPE] = 'label'
   style[mxConstants.STYLE_VERTICAL_ALIGN] = 'bottom'
-  // style[mxConstants.STYLE_INDICATOR_SHAPE] = 'ellipse'
-  // style[mxConstants.STYLE_INDICATOR_WIDTH] = 34
-  // style[mxConstants.STYLE_INDICATOR_HEIGHT] = 34
   style[mxConstants.STYLE_IMAGE_VERTICAL_ALIGN] = 'bottom' // indicator v-alignment
   style[mxConstants.STYLE_IMAGE_ALIGN] = 'bottom'
   style[mxConstants.STYLE_INDICATOR_COLOR] = 'green'
@@ -660,11 +606,9 @@ function parseXmlToGraph(xmlDoc, graph) {
     if (cellAttrs.Component.value === '1') { // is component
       const vertexName = cellAttrs.value.value
       const style = cellAttrs.style.value
-      // console.log(cellAttrs.Component.value)
       const vertexId = Number(cellAttrs.id.value)
       const geom = cells[i].children[0].attributes
       const xPos = Number(geom.x.value)
-      // var yPos
       if (geom.y === undefined) {
         yPos = 0
       } else {
@@ -679,35 +623,21 @@ function parseXmlToGraph(xmlDoc, graph) {
       } else {
         props = Object.assign({}, ComponentParameters[v1.symbol])
       }
-
-      /* if (v1.symbol === 'V') {
-        console.log('find name here')
-        console.log(cells[i].children[2].attributes.NAME.value)
-      } */
       try { props.NAME = cells[i].children[2].attributes.NAME.value } catch (e) { props.NAME = cells[i].children[1].attributes.NAME.value }
       v1.properties = props
       v1.Component = true
       v1.CellType = 'Component'
-      console.log(props)
-      // console.log(v1.properties)
       if (v1.properties.name === 'VSOURCE') {
-        console.log('here it is')
-        console.log(v1.properties)
       }
       for (var check in props) {
-        try { v1.properties[check] = cells[i].children[2].attributes[check].value } catch (e) { try { v1.properties[check] = cells[i].children[1].attributes[check].value } catch (e) { console.log('parameter errors') } }
+        try { v1.properties[check] = cells[i].children[2].attributes[check].value } catch (e) { try { v1.properties[check] = cells[i].children[1].attributes[check].value } catch (e) { } }
       }
-      console.log('component added')
     } else if (cellAttrs.Pin.value === '1') {
       const vertexName = cellAttrs.value.value
       const style = cellAttrs.style.value
-      console.log('Pin name')
-      console.log(vertexName)
-      // console.log(cellAttrs.Component.value)
       const vertexId = Number(cellAttrs.id.value)
       const geom = cells[i].children[0].attributes
       try { xPos = Number(geom.x.value) } catch (e) { xPos = 0 }
-      // var yPos
       if (geom.y === undefined) {
         yPos = 0
       } else {
@@ -719,11 +649,9 @@ function parseXmlToGraph(xmlDoc, graph) {
       vp.ParentComponent = v1
       vp.Pin = 1
     } else if (cellAttrs.edge) { // is edge
-      // const edgeName = cellAttrs.value.value
       const edgeId = Number(cellAttrs.id.value)
       const source = Number(cellAttrs.sourceVertex.value)
       const target = Number(cellAttrs.targetVertex.value)
-      console.log(edgeId)
       var plist = cells[i].children[1].children
       try {
         var e = graph.insertEdge(parent, edgeId, null,
@@ -733,16 +661,12 @@ function parseXmlToGraph(xmlDoc, graph) {
         e.geometry.points = []
         for (var a in cells[i].children[1].children) {
           try {
-            console.log(plist[a].attributes.x.value)
-            console.log(plist[a].attributes.y.value)
             e.geometry.points.push(new mxPoint(Number(plist[a].attributes.x.value), Number(plist[a].attributes.y.value)))
-            console.log(e.geometry.points)
-          } catch (e) { console.log('error') }
+          } catch (e) { }
           graph.getModel().beginUpdate()
           try {
             graph.view.refresh()
           } finally {
-            // Arguments are number of steps, ease and delay
             var morph = new mxMorphing(graph, 20, 1.2, 20)
             morph.addListener(mxEvent.DONE, function () {
               graph.getModel().endUpdate()
@@ -765,9 +689,6 @@ function parseXmlToGraph(xmlDoc, graph) {
           }
         }
       } catch (e) {
-        console.log(graph.getModel().getCell(source))
-        console.log(graph.getModel().getCell(target))
-        console.log('error')
       }
     }
   }
@@ -779,8 +700,8 @@ export function renderGalleryXML(xml) {
   var xmlDoc = mxUtils.parseXml(xml)
   parseXmlToGraph(xmlDoc, graph)
 }
+// Certain Variables need to be Defined before Saving the Circuit, XML Wire Connections does that 
 function XMLWireConnections() {
-
   var erc = true
   if (erc === false) {
     alert('ERC check failed')
@@ -795,7 +716,6 @@ function XMLWireConnections() {
           for (var child in component.children) {
             var pin = component.children[child]
             if (pin.vertex === true) {
-              // alert(pin.id)
               try {
                 if (pin.edges !== null || pin.edges.length !== 0) {
                   for (var wire in pin.edges) {
@@ -822,9 +742,6 @@ function XMLWireConnections() {
                         pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
                       }
                     }
-                    console.log('Check the wires here ')
-                    console.log(pin.edges[wire].sourceVertex)
-                    console.log(pin.edges[wire].targetVertex)
                   }
 
                 }
