@@ -1,6 +1,6 @@
 import logging
 from rest_framework import serializers
-from libAPI.models import Library, LibraryComponent, ComponentAlternate
+from libAPI.models import Library, LibraryComponent, ComponentAlternate, LibrarySet
 
 logger = logging.getLogger(__name__)
 
@@ -42,3 +42,14 @@ class LibraryComponentSerializer(serializers.HyperlinkedModelSerializer):
             'keyword',
             'alternate_component'
         )
+
+
+class LibrarySetSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = LibrarySet
+        fields = [
+            'id',
+            'default',
+            'name',
+        ]
