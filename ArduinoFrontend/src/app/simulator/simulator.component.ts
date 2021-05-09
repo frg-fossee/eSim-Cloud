@@ -269,7 +269,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
     this.stoggle = !this.stoggle;
     const sim = document.getElementById('console');
-
+    console.log(sim);
     // Show Loading Animation
     document.getElementById('simload').style.display = 'block';
 
@@ -290,6 +290,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       });
     }
   }
+
   /** Function called to hide simulation loading svg */
   hidesimload() {
     const simload = document.getElementById('simload');

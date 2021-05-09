@@ -1,0 +1,51 @@
+{
+    "name": "'Temperature and humidity sensor DHT11",
+    "className": "DHT11",
+    "pins": [
+        {
+            "x": 25,
+            "y": 100,
+            "name": "VCC"
+        },
+        {
+            "x": 36,
+            "y": 100,
+            "name": "Data"
+        },
+        {
+            "x":61,
+            "y": 100,
+            "name": "GND"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/DHT11Sensor.svg",
+            "width": 100,
+            "height": 100,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {},
+    "info": {
+        "name": "Temperature sensor TMP36",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Temperature_Sensor_%28TMP36%29.jpg/640px-Temperature_Sensor_%28TMP36%29.jpg",
+        "Datasheet": "https://www.analog.com/media/en/technical-documentation/data-sheets/TMP35_36_37.pdf",
+        "description": "TThe TMP35/TMP36/TMP37 are low voltage, precision centi- grade temperature sensors. They provide a voltage output that is linearly proportional to the Celsius (centigrade) temperature.",
+        "properties": {
+            "Supply Voltage": "2.7V to 5.5V",
+            "Ramp-Up Rate": "3°C/sec",
+            "Ramp-Down Rate ": "−6°C/sec",
+            "Operating Temperature Range": " -55°C to 150°C ",
+            "Storage Temperature Range": "−65°C to +160°C",
+            "Offset Voltage": "0.5V",
+            "Output voltage ": "750mV/25°C",
+            "Accuracy": "±2°C ",
+            "Supply Current": "less than 50uA",
+            "Shutdown current": "0.5 µA max"
+        }
+    }
+}

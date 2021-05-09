@@ -72,7 +72,14 @@ export class CodeEditorComponent {
       name: 'SPI',
       Description: 'Communicating with devices using the Serial Peripheral Interface (SPI) Bus',
       url: 'https://www.arduino.cc/en/Reference/SPI'
+    },
+    {
+      include: 'SimpleDHT.h',
+      name: 'DHT',
+      Description: 'Allows you to reading the Temp & Humidity value from DHT11 sensors',
+      url: 'https://www.arduino.cc/reference/en/libraries/dht-sensor-library/'
     }
+
   ];
   /**
    * Code inside the Monaco editor
@@ -147,19 +154,23 @@ export class CodeEditorComponent {
    * @param i Index of the Library that needs to be included
    */
   Include(i) {
+    console.log(i);
+
     this.editor.executeEdits('code-editor', [{
       identifier: { major: 1, minor: 1 },
       range: new monaco.Range(1, 1, 1, 1),
       text: '#include <' + this.records[i].include + '>\n',
       forceMoveMarkers: false
     }]);
+
     this.openFolder();
   }
   /**
    * On Monaco code editor initialization
-   * @param editor Monaco Editor Instance
+   * @param editor Monaco Editor Instance 
    */
   onInit(editor) {
+    console.log(editor);
     this.init = true;
     window['hideLoading']();
     this.editor = editor;
@@ -1204,6 +1215,8 @@ export class CodeEditorComponent {
   openFolder() {
     const folder = document.getElementById('lib');
 
+
+  //   console.log(folder);
     if (folder.style.display === 'none') {
       folder.style.display = 'flex';
     } else {

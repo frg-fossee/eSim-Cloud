@@ -54,6 +54,7 @@ RUN wget -O /tmp/cli.tar.gz \
 RUN arduino-cli core update-index \
 	&& arduino-cli core install arduino:avr \
     && arduino-cli lib install Servo \
+    && arduino-cli lib install SimpleDHT \
     && arduino-cli lib install Stepper \
     && arduino-cli lib install LiquidCrystal \
     && cd /root/.arduino15/ \

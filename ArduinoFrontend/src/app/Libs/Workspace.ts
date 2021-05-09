@@ -543,6 +543,7 @@ export class Workspace {
    * @param offsetY number
    */
   static addComponent(classString: string, x: number, y: number, offsetX: number, offsetY: number) {
+    
     const myClass = Utils.components[classString].className;
     const obj = new myClass(
       window['canvas'],
@@ -891,6 +892,7 @@ export class Workspace {
     }
 
     for (const arduino of window.scope.ArduinoUno) {
+              console.log(arduino)
       toSend[arduino.id] = arduino.code;
       nameMap[arduino.id] = arduino;
     }

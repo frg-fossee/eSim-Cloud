@@ -46,7 +46,6 @@ services:
     command: >
       sh -c "npm install &&
              npm start"
-
     ports:
       - "4200:4200"
 

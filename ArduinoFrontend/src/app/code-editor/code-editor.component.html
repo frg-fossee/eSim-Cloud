@@ -34,6 +34,7 @@
               class="fas fa-external-link-alt"></i></a></button>
       </div>
     </div>
+    
     <ngx-monaco-editor id="editor" style="height: calc(100vh - 135px); display: block;" [options]="editorOptions" [(ngModel)]="code"
       (ngModelChange)="codeChanged()" (onInit)="onInit($event)">
     </ngx-monaco-editor>

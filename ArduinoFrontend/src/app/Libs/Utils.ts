@@ -5,11 +5,11 @@ import { ArduinoUno } from './outputs/Arduino';
 import { LED, RGBLED } from './outputs/Led';
 import { UltrasonicSensor } from './inputs/UltrasonicSensor';
 import { PIRSensor } from './inputs/PIRSensor';
-import { Motor, L298N, ServoMotor } from './outputs/Motors';
+import { Motor, L298N, ServoMotor , L293D} from './outputs/Motors';
 import { LCD16X2, SevenSegment } from './outputs/Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
-import { TMP36 } from './inputs/TemperatureSensors';
+import { DHT11, TMP36 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
@@ -27,7 +27,7 @@ export class Utils {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
       ['SlideSwitch', 'MQ2', 'TMP36'],
-      ['PotentioMeter'/*, 'PhotoResistor'*/]
+      ['PotentioMeter','DHT11']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -41,12 +41,14 @@ export class Utils {
       ['LCD16X2']
     ],
     drivers: [
-      ['L298N']
+      ['L298N','L293D'] 
     ],
     misc: [
       ['Label', 'RelayModule']
     ],
+
     general: [
+
       ['Resistor', 'BreadBoard']
     ]
   };
@@ -58,6 +60,7 @@ export class Utils {
       image: './assets/images/components/Breadboard.svg',
       className: BreadBoard
     },
+    
     Resistor: {
       name: 'Resistor',
       image: './assets/images/components/Resistor.png',
@@ -98,6 +101,11 @@ export class Utils {
       image: './assets/images/components/TMP36.svg',
       className: TMP36
     },
+    DHT11: {
+      name: 'DHT-11 Sensor',
+      image: './assets/images/components/DHT11Sensor.svg',
+      className: DHT11
+    },
     PhotoResistor: {
       name: 'Photo Resistor',
       image: './assets/images/components/PhotoResistor.svg',
@@ -127,6 +135,11 @@ export class Utils {
       name: 'Motor Driver L298N',
       image: './assets/images/components/L298N.png',
       className: L298N
+    },
+    L293D : {
+      name: 'L293D Motor Driver IC',
+      image :'./assets/images/components/L293D_MotorDriverIC.png',
+      className: L293D
     },
     Motor: {
       name: 'Motor',

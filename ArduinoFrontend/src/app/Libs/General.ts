@@ -61,8 +61,11 @@ export class Resistor extends CircuitElement {
    * @param y  position y
    */
   constructor(public canvas: any, x: number, y: number) {
+    
     super('Resistor', x, y, 'Resistor.json', canvas);
   }
+
+  
   /** init is called when the component is completely drawn to the canvas */
   init() {
     if (Resistor.colorTable.length === 0) {

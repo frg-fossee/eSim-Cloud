@@ -113,6 +113,7 @@ export class ApiService {
    * @param data The Code and id of arduino
    */
   compileCode(data: any): Observable<any> {
+    console.log(data);
     return this.http.post(`${this.url}api/arduino/compile`, data);
   }
   /**

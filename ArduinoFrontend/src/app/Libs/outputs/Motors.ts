@@ -189,6 +189,7 @@ export class L298N extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('L298N', x, y, 'L298N.json', canvas);
   }
+
   /**
    * Initialize motor class.
    */
@@ -357,6 +358,7 @@ export class L298N extends CircuitElement {
       IN4: -1
     };
   }
+
 }
 
 
@@ -492,3 +494,48 @@ export class ServoMotor extends CircuitElement {
     this.setDragListeners();
   }
 }
+
+/**
+ * MotorDriver L293D  class
+ */
+
+export class  L293D extends CircuitElement{
+  
+  /**
+   * MotorDriver L293D constructor
+   * @param canvas Raphael Canvas (Paper)
+   * @param x  position x
+   * @param y  position y
+   */
+  constructor(public canvas: any, x: number, y: number) {
+    super('L293D', x, y, 'L293D.json', canvas);
+  }
+
+    /**
+   * Function provides component details
+   * @param keyName Unique Class name
+   * @param id Component id
+   * @param body body of property box
+   * @param title Component title
+   */
+  properties(): { keyName: string; id: number; body: HTMLElement; title: string; } {
+    const body = document.createElement('div');
+    body.innerText = 'If you Don\'t Connect The ENA and ENB Pins it automatically connects to the 5V suppy';
+    return {
+      keyName: this.keyName,
+      id: this.id,
+      body,
+      title: 'L293D Motor Driver IC'
+    };
+  }
+
+  closeSimulation(){
+     return
+  }
+
+  initSimulation(){
+
+  }
+
+
+ }

@@ -40,6 +40,7 @@ export abstract class CircuitElement {
    * Store Values That are required during simulation
    */
   public simulationData: any = {};
+  
   /**
    * Store Values that are additionaly require by class
    */
@@ -58,6 +59,7 @@ export abstract class CircuitElement {
   public nid = 0;
   /**
    * Constructor For Circuit Element Class (Parent of every component)
+   * 
    * @param keyName KeyName For a Component required for mapping class to string
    * @param x X position of component
    * @param y Y Position Of component
@@ -76,14 +78,17 @@ export abstract class CircuitElement {
         .then(v => v.json())
         .then(obj => {
           // get the title
+          console.log(obj);
           this.title = obj.name;
 
           this.pointHalf = obj.pointHalf;
           // Draw Elements of the component
 
           this.DrawElement(canvas, obj.draw);
+
           // Add Circuiy Nodes
           this.DrawNodes(canvas, obj.pins, obj.pointHalf);
+
           // Add info and data
           this.info = obj.info;
           this.data = obj.data;
@@ -126,6 +131,8 @@ export abstract class CircuitElement {
    * @param pointHalf The Half size of circuit node
    */
   DrawNodes(canvas: any, pinData: any, pointHalf: number) {
+
+    console.log(pinData);
     for (const pin of pinData) {
       this.nodes.push(
         new Point(

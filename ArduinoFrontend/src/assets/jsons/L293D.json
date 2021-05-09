@@ -1,0 +1,101 @@
+{
+    "name": "L293D Motor Driver IC",
+    "className": "L293D",
+    "pins": [
+      {
+        "x": 118,
+        "y": 9,
+        "name": "ENB"
+      },
+      {
+        "x": 118,
+        "y": 19,
+        "name": "IN4"
+      },
+      {
+        "x": 118,
+        "y": 29,
+        "name": "IN3"
+      },
+      {
+        "x": 118,
+        "y": 39,
+        "name": "IN2"
+      },
+      {
+        "x": 118,
+        "y": 49,
+        "name": "IN1"
+      },
+      {
+        "x": 118,
+        "y": 59,
+        "name": "ENA"
+      },
+      {
+        "x": 69,
+        "y": 3,
+        "name": "Terminal 1"
+      },
+      {
+        "x": 82,
+        "y": 3,
+        "name": "Terminal 2"
+      },
+      {
+        "x": 72,
+        "y": 117,
+        "name": "Terminal 3"
+      },
+      {
+        "x": 84,
+        "y": 117,
+        "name": "Terminal 4"
+      },
+      {
+        "x": 115,
+        "y": 77,
+        "name": "5V IN"
+      },
+      {
+        "x": 115,
+        "y": 97,
+        "name": "V IN"
+      },
+      {
+        "x": 115,
+        "y": 87,
+        "name": "GND"
+      }
+    ],
+    "pointHalf": 4,
+    "draw": [
+      {
+        "type": "image",
+        "url": "assets/images/components/L293DMotorDriverIC.svg",
+        "width": 128,
+        "height": 128,
+        "x": 0,
+        "y": 0
+      }
+    ],
+    
+    "simulation": {},
+    "info": {
+      "name": "L293D Motor Driver IC",
+      "image": "https://components101.com/asset/sites/default/files/components/L293D.jpg",
+      "Datasheet": "https://www.sparkfun.com/datasheets/Robotics/L298_H_Bridge.pdf",
+      "description": "The L293D is a popular 16-Pin Motor Driver IC. As the name suggests it is mainly used to drive motors. A single L293D IC is capable of running two DC motors at the same time; also the direction of these two motors can be controlled independently.",
+      "properties": {
+        "Double H Bridge Drive Chip": "L298N",
+        "Logical Voltage": "5V",
+        "Drive Voltage": "5V-35V",
+        "Logical Current": "0-36mA",
+        "Drive current": "2A (MAX single bridge)",
+        "Max Power": "25W",
+        "Dimensions": "43 x 43 x 26mm",
+        "Weight": "26g"
+      }
+    }
+  }
+  
