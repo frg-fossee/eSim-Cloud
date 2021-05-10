@@ -16,7 +16,7 @@ export default function VersionComponent({
         style={{ marginLeft: "15%",overflowX:"hidden" }}
         target="_blank"
         component={RouterLink}
-        to={"/editor?id=" + save_id + "&version=" + version}
+        to={"/editor?id=" + save_id + "&version=" + version + "&branch=" + branch}
         size="small"
         color="primary"
         disabled={(version === window.location.href.split("version=")[1].substr(0,20))&&(branch=window.location.href.split("branch=")[1])}
