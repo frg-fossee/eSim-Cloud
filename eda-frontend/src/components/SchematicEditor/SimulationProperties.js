@@ -69,7 +69,7 @@ export default function SimulationProperties () {
     start: '',
     stop: '',
     step: '',
-    skipInitial: 'No'
+    skipInitial: false
   })
 
   const [acAnalysisControlLine, setAcAnalysisControlLine] = useState({
@@ -105,6 +105,14 @@ export default function SimulationProperties () {
 
   const handleTransientAnalysisControlLine = (evt) => {
     const value = evt.target.value
+
+    setTransientAnalysisControlLine({
+      ...transientAnalysisControlLine,
+      [evt.target.id]: value
+    })
+  }
+  const handleTransientAnalysisControlLineUIC = (evt) => {
+    const value = evt.target.checked
 
     setTransientAnalysisControlLine({
       ...transientAnalysisControlLine,
@@ -274,7 +282,9 @@ export default function SimulationProperties () {
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
-        controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`
+        var uic = ""
+        if(transientAnalysisControlLine.skipInitial == true) uic="UIC"
+        controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
 
         dispatch(setResultTitle('Transient Analysis Output'))
         break
@@ -364,7 +374,7 @@ export default function SimulationProperties () {
                           }}
                           transformOrigin={{
                             vertical: 'top',
-                            horizontal: 'left'
+                            horizontal: 'left' 
                           }}
                         >
 
@@ -590,6 +600,13 @@ export default function SimulationProperties () {
                         onChange={handleTransientAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>S</span>
+                    </ListItem>
+                    <ListItem>
+                      <Checkbox id="skipInitial" label="Use Initial Conditions" size='small' variant="outlined" 
+                        value={transientAnalysisControlLine.skipInitial}
+                        onChange={handleTransientAnalysisControlLineUIC}
+                      />
+                      <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
                     </ListItem>
 
                     <ListItem>
