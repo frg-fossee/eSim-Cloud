@@ -60,7 +60,7 @@ function SimpleSnackbar({ open, close, sch }) {
               aria-label="close"
               color="inherit"
               onClick={() => {
-                dispatch(deleteSchematic(sch.save_id, sch.version));
+                dispatch(deleteSchematic(sch.save_id, sch.version, sch.branch));
               }}
             >
               Yes
@@ -193,7 +193,7 @@ export default function SchematicCard({ sch }) {
           <Button
             target="_blank"
             component={RouterLink}
-            to={"/editor?id=" + sch.save_id + "&version=" + sch.version}
+            to={"/editor?id=" + sch.save_id + "&version=" + sch.version + "&branch=" + sch.branch}
             size="small"
             color="primary"
           >

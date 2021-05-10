@@ -8,6 +8,7 @@ export default function VersionComponent({
   time,
   save_id,
   version,
+  branch
 }) {
   return (
     <>
@@ -18,7 +19,7 @@ export default function VersionComponent({
         to={"/editor?id=" + save_id + "&version=" + version}
         size="small"
         color="primary"
-        disabled={version === window.location.href.split("version=")[1]}
+        disabled={(version === window.location.href.split("version=")[1].substr(0,20))&&(branch=window.location.href.split("branch=")[1])}
       >
         <p>
           {name} <br /> {date} {time}

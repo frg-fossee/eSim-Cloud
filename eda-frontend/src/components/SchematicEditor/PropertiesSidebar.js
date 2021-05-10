@@ -1,12 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize } from '@material-ui/core'
+import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize,IconButton } from '@material-ui/core'
+import CreateNewFolderOutlinedIcon from "@material-ui/icons/CreateNewFolderOutlined"
 import { makeStyles } from '@material-ui/core/styles'
 import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSchDescription } from '../../redux/actions/index'
+import { setSchDescription,saveSchematic } from '../../redux/actions/index'
 import api from "../../utils/Api"
 import VersionComponent from "./VersionComponent"
+import randomstring from "randomstring"
 
 import './Helper/SchematicEditor.css'
 
@@ -166,6 +168,11 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
     dispatch(setSchDescription(evt.target.value))
   }
 
+  const handleBranch = (event) => {
+    console.log(schSave)
+    dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,schSave.details.base64_image,true))
+  }
+
   return (
     <>
       <Hidden mdDown>
@@ -199,9 +206,16 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
       <ComponentProperties />
       <List>
         <ListItem button divider>
-          <h2 style={{ margin: '5px' }}>Versions</h2>
+          <h2 style={{ margin: '5px',width:"90%" }}>Versions</h2>
+          <IconButton
+            className="new-branch"
+            size="small"
+            onClick={handleBranch}
+            >
+              <CreateNewFolderOutlinedIcon fontSize="small" />
+          </IconButton>
         </ListItem>
-        {versions !== null ? <>{versions.map((version) => <VersionComponent name={version.name} date={version.date} time={version.time} save_id={version.save_id} version={version.version} />)}</> : <ListItemText>Loading</ListItemText>}
+        {versions !== null ? <>{versions.map((version) => <VersionComponent name={version.name} date={version.date} time={version.time} save_id={version.save_id} version={version.version} branch={version.branch} />)}</> : <ListItemText>Loading</ListItemText>}
       </List>
     </>
   )

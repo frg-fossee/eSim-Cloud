@@ -63,13 +63,13 @@ class StateFetchUpdateView(APIView):
     methods = ['GET']
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
-    def get(self, request, save_id, version):
+    def get(self, request, save_id, version,branch):
 
         if isinstance(save_id, uuid.UUID):
             # Check for permissions and sharing settings here
             try:
                 saved_state = StateSave.objects.get(
-                    save_id=save_id, version=version)
+                    save_id=save_id, version=version,branch=branch)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -142,12 +142,12 @@ class StateFetchUpdateView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
-    def delete(self, request, save_id, version):
+    def delete(self, request, save_id, version,branch):
         if isinstance(save_id, uuid.UUID):
             # Check for permissions and sharing settings here
             try:
                 saved_state = StateSave.objects.get(
-                    save_id=save_id, version=version)
+                    save_id=save_id, version=version,branch=branch)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -176,13 +176,13 @@ class StateShareView(APIView):
     methods = ['GET']
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
-    def post(self, request, save_id, sharing, version):
+    def post(self, request, save_id, sharing, version,branch):
 
         if isinstance(save_id, uuid.UUID):
             # Check for permissions and sharing settings here
             try:
                 saved_state = StateSave.objects.get(
-                    save_id=save_id, version=version)
+                    save_id=save_id, version=version,branch=branch)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -298,9 +298,9 @@ class GetStateSpecificVersion(APIView):
     permission_classes = (IsAuthenticated,)
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
-    def get(self, request, save_id, version):
+    def get(self, request, save_id, version,branch):
         queryset = StateSave.objects.get(
-            save_id=save_id, version=version, owner=self.request.user)
+            save_id=save_id, version=version, owner=self.request.user,branch=branch)
         try:
             serialized = StateSaveSerializer(
                 queryset)

@@ -34,7 +34,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 };
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64) => (
+export const saveSchematic = (title, description, xml, base64,newBranch=false) => (
   dispatch,
   getState
 ) => {
@@ -44,13 +44,9 @@ export const saveSchematic = (title, description, xml, base64) => (
     name: title,
     description: description,
   };
-  body.version = randomstring.generate({
-    length: 20,
-  });
   // Get token from localstorage
   const token = getState().authReducer.token;
   const schSave = getState().saveSchematicReducer;
-  console.log(schSave);
 
   // add headers
   const config = {
@@ -63,10 +59,15 @@ export const saveSchematic = (title, description, xml, base64) => (
   if (token) {
     config.headers.Authorization = `Token ${token}`;
   }
-  if (schSave.isSaved) {
-    //  Updating saved schemaic
-    body.save_id = schSave.details.save_id;
-    api
+  if(!newBranch) {
+    body.version = randomstring.generate({
+      length: 20,
+    });
+    if (schSave.isSaved) {
+      //  Updating saved schemaic
+      body.save_id = schSave.details.save_id;
+      body.branch=schSave.details.branch
+      api
       .post("save", queryString.stringify(body), config)
       .then((res) => {
         dispatch({
@@ -77,24 +78,47 @@ export const saveSchematic = (title, description, xml, base64) => (
       .catch((err) => {
         console.error(err);
       });
-  } else {
+    } else {
+      body.branch = randomstring.generate({
+        length: 20,
+      })
+      // saving new schematic
+      api
+      .post("save", queryString.stringify(body), config)
+      .then((res) => {
+        dispatch({
+          type: actions.SET_SCH_SAVED,
+          payload: res.data,
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    }
+  }
+  else {
+    body.branch = randomstring.generate({
+      length: 20,
+    })
+    body.version = schSave.details.version
+    console.log(body)
     // saving new schematic
     api
-      .post("save", queryString.stringify(body), config)
-      .then((res) => {
-        dispatch({
-          type: actions.SET_SCH_SAVED,
-          payload: res.data,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
+    .post("save", queryString.stringify(body), config)
+    .then((res) => {
+      dispatch({
+        type: actions.SET_SCH_SAVED,
+        payload: res.data,
       });
+    })
+    .catch((err) => {
+      console.error(err);
+    })
   }
 };
 
 // Action for Loading on-cloud saved schematics
-export const fetchSchematic = (saveId, version) => (dispatch, getState) => {
+export const fetchSchematic = (saveId, version,branch) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token;
 
@@ -112,7 +136,7 @@ export const fetchSchematic = (saveId, version) => (dispatch, getState) => {
 
   // console.log('Already Saved')
   api
-    .get("save/" + saveId + "/" + version, config)
+    .get("save/" + saveId + "/" + version + "/" + branch, config)
     .then((res) => {
       dispatch({
         type: actions.SET_SCH_SAVED,

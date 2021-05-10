@@ -50,13 +50,14 @@ export default function SchematiEditor(props) {
       console.log(props.location.search);
       var cktid = query.get("id");
       var version = query.get("version");
+      var branch=query.get("branch")
       console.log(cktid);
       if (cktid.substr(0, 7) === "gallery") {
         // Loading Gallery schemaic.
         dispatch(loadGallery(cktid.substr(7, cktid.length)));
       } else {
         // Loading User on-cloud saved schemaic.
-        dispatch(fetchSchematic(cktid, version));
+        dispatch(fetchSchematic(cktid, version,branch));
       }
     }
   }, [compRef, gridRef, outlineRef, props.location, dispatch]);

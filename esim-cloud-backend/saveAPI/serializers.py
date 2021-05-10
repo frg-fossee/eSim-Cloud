@@ -34,7 +34,7 @@ class StateSaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
-                  'owner', 'shared', 'base64_image', 'create_time', "version",
+                  'owner', 'shared', 'base64_image', 'create_time', "version","branch",
                   'is_arduino')
 
 
