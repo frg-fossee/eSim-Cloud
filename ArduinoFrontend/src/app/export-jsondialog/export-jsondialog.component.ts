@@ -21,8 +21,12 @@ export class ExportJSONDialogComponent implements OnInit {
 
   fileName:string = '';
 
+  /**
+   * Save Project function, Calls Workspace.SaveJson with edited fileName and then closes project
+   */
   saveProject(){
     Workspace.SaveJson(this.fileName, this.description);
+    this.dialogRef.close();
   }
 
 }
