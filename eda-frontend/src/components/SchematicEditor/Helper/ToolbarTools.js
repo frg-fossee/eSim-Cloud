@@ -388,6 +388,9 @@ export function GenerateNetList () {
           // console.log(compobj)
         }
         console.log('component properties', component.properties)
+        if (component.properties.MODEL.length > 0) {
+            k = k + ' ' + component.properties.MODEL.split(' ')[1]
+        }
 
         if (component.properties.PREFIX.charAt(0) === 'V' || component.properties.PREFIX.charAt(0) === 'v' || component.properties.PREFIX.charAt(0) === 'I' || component.properties.PREFIX.charAt(0) === 'i') {
           const comp = component.properties
@@ -408,7 +411,55 @@ export function GenerateNetList () {
               component.value = component.value + '\n' + component.properties.VALUE
             }
           }
-        } else {
+        }else if(component.properties.PREFIX.charAt(0) === 'C' || component.properties.PREFIX.charAt(0) === 'c'){
+            k = k + ' ' + component.properties.VALUE
+            if(component.properties.IC != 0){
+                k = k + ' IC=' + component.properties.IC
+            }
+            component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'L' || component.properties.PREFIX.charAt(0) === 'l'){
+            k = k + ' ' + component.properties.VALUE
+            if(component.properties.IC != 0){
+                k = k + ' IC=' + component.properties.IC
+            }
+            if(component.properties.DTEMP != 27){
+                k = k + ' dtemp=' + component.properties.DTEMP
+            }            
+            component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'M' || component.properties.PREFIX.charAt(0) === 'm'){
+            // k = k + ' ' + component.properties.VALUE   
+            if(component.properties.MULTIPLICITY_PARAMETER != 1){
+                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+            }
+            if(component.properties.DTEMP != 27){
+                k = k + ' dtemp=' + component.properties.DTEMP
+            }            
+            // component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'Q' || component.properties.PREFIX.charAt(0) === 'q'){
+            // k = k + ' ' + component.properties.VALUE
+            if(component.properties.MULTIPLICITY_PARAMETER != 1){
+                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+            }
+            if(component.properties.DTEMP != 27){
+                k = k + ' dtemp=' + component.properties.DTEMP
+            }            
+            // component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'R' || component.properties.PREFIX.charAt(0) === 'r'){
+            k = k + ' ' + component.properties.VALUE
+            if(component.properties.SHEET_RESISTANCE != 0){
+                k = k + ' RSH=' + component.properties.SHEET_RESISTANCE
+            }
+            if(component.properties.FIRST_ORDER_TEMPERATURE_COEFF != 0){
+                k = k + ' tc1=' + component.properties.FIRST_ORDER_TEMPERATURE_COEFF
+            }
+            if(component.properties.SECOND_ORDER_TEMPERATURE_COEFF != 0){
+                k = k + ' tc2=' + component.properties.SECOND_ORDER_TEMPERATURE_COEFF
+            }
+            if(component.properties.PARAMETER_MEASUREMENT_TEMPERATURE != 27){
+                k = k + ' TNOM=' + component.properties.PARAMETER_MEASUREMENT_TEMPERATURE
+            }
+            component.value = component.value + '\n' + component.properties.VALUE
+        }else {
           if (component.properties.VALUE !== undefined) {
             k = k + ' ' + component.properties.VALUE
             component.value = component.value + '\n' + component.properties.VALUE
@@ -419,9 +470,7 @@ export function GenerateNetList () {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
           component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
-        if (component.properties.MODEL.length > 0) {
-          k = k + ' ' + component.properties.MODEL.split(' ')[1]
-        }
+        
         if (component.properties.MODEL.length > 0) {
           spiceModels += component.properties.MODEL + '\n'
         }
