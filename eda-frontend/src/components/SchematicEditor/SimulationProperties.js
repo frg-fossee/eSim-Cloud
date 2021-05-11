@@ -88,12 +88,21 @@ export default function SimulationProperties () {
   const onDcSweepTabExpand = () => {
     try {
       setComponentsList(['', ...GenerateCompList()])
+      setNodeList(['', ...GenerateNodeList()])
     } catch (err) {
       setComponentsList([])
+      setNodeList([])
       alert('Circuit not complete. Please Check Connectons.')
     }
   }
-
+  const onTransientAnalysisTabExpand = () => {
+    try {
+      setNodeList(['', ...GenerateNodeList()])
+    } catch (err) {
+      setNodeList([])
+      alert('Circuit not complete. Please Check Connectons.')
+    }
+  }  
   const handleDcSweepControlLine = (evt) => {
     const value = evt.target.value
 
@@ -522,6 +531,36 @@ export default function SimulationProperties () {
 
                     </ListItem>
                     <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="parameter"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Node"
+                        value={controlBlockParam}
+                        onChange={handleControlBlockParam}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+
+                        {
+                          nodeList.map((value, i) => {
+                             if(value != null){
+                              return (<option key={i} value={value}>
+                                {value}
+                              </option>)
+                            } else {
+                              return null
+                            }
+                          })
+                        }
+
+                      </TextField>
+
+                    </ListItem>
+                    <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
                         Add Expression
@@ -569,7 +608,7 @@ export default function SimulationProperties () {
 
           {/* Transient Analysis */}
           <ListItem className={classes.simulationOptions} divider>
-            <ExpansionPanel>
+            <ExpansionPanel onClick={onTransientAnalysisTabExpand}>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
@@ -608,7 +647,34 @@ export default function SimulationProperties () {
                       />
                       <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
                     </ListItem>
+                    <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="parameter"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Select Node"
+                        value={controlBlockParam}
+                        onChange={handleControlBlockParam}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
 
+                        {
+                          nodeList.map((value, i) => {
+                             if(value != null){
+                              return (<option key={i} value={value}>
+                                {value}
+                              </option>)
+                            } else {
+                              return null
+                            }
+                          })
+                        }
+                      </TextField>
+                    </ListItem>
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
