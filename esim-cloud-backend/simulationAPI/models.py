@@ -1,5 +1,6 @@
 from djongo import models
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.models import User
 from django.conf import settings
 import uuid
 
@@ -31,3 +32,11 @@ class spiceFile(models.Model):
 
     def save(self, *args, **kwargs):
         super(spiceFile, self).save(*args, **kwargs)
+
+
+class outputFile(models.Model):
+
+    file_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    file = models.FileField(storage=FileSystemStorage(location=settings.CSV_ROOT))
+    upload_time = models.DateTimeField(auto_now=True, db_index=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="output_file")

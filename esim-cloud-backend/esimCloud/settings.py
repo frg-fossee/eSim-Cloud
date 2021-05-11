@@ -209,6 +209,7 @@ STATIC_URL = '/django_static/'
 MEDIA_URL = '/_files/'
 MEDIA_ROOT = os.path.join("/tmp", "esimCloud-temp")
 
+CSV_ROOT = os.path.join(BASE_DIR, 'file_storage/output_files')
 # File Storage
 FILE_STORAGE_ROOT = os.path.join(BASE_DIR, 'file_storage')
 FILE_STORAGE_URL = '/files'

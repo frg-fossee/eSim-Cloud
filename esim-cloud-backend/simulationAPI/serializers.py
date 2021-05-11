@@ -1,6 +1,6 @@
 import logging
 from rest_framework import serializers
-from simulationAPI.models import spiceFile, Task
+from simulationAPI.models import spiceFile, Task, outputFile
 
 logger = logging.getLogger(__name__)
 
@@ -8,6 +8,12 @@ logger = logging.getLogger(__name__)
 class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = spiceFile
+        fields = ('file', 'upload_time', 'file_id', 'task')
+
+
+class CsvFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = outputFile
         fields = ('file', 'upload_time', 'file_id', 'task')
 
 

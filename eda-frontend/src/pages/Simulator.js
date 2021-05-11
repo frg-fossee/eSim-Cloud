@@ -31,6 +31,7 @@ export default function Simulator () {
     checkedA: false
 
   })
+  const [taskId, setTaskId] = useState(null)
 
   useEffect(() => {
     document.title = 'Simulator - eSim '
@@ -58,20 +59,19 @@ export default function Simulator () {
 
   const netlistCodeSanitization = (code) => {
     var code_array = code.split('\n')
-    var cleanCode = ""
-    for(var line=0; line<code_array.length; line++) {
-      if (code_array[line].includes("plot")){
-        var code_words = code_array[line].split(" ").filter(function(str) {
+    var cleanCode = ''
+    for (var line = 0; line < code_array.length; line++) {
+      if (code_array[line].includes('plot')) {
+        var code_words = code_array[line].split(' ').filter(function (str) {
           return /\S/.test(str)
         })
-        var all_plots = ""
-        for(var word=1;word<code_words.length; word++){
-          all_plots = all_plots + " " + code_words[word] + " "
+        var all_plots = ''
+        for (var word = 1; word < code_words.length; word++) {
+          all_plots = all_plots + ' ' + code_words[word] + ' '
         }
-        cleanCode += "print " + all_plots + " > data.txt \n "
-      }
-      else{
-        cleanCode += code_array[line] + " \n "
+        cleanCode += 'print ' + all_plots + ' > data.txt \n '
+      } else {
+        cleanCode += code_array[line] + ' \n '
       }
     }
     return cleanCode
@@ -96,10 +96,12 @@ export default function Simulator () {
   }
 
   function sendNetlist (file) {
+    setIsResult(false)
     netlistConfig(file)
       .then((response) => {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
+        setTaskId(res.details.task_id)
         simulationResult(getUrl)
       })
       .catch(function (error) {
@@ -120,7 +122,6 @@ export default function Simulator () {
           if (result === null) {
             setIsResult(false)
           } else {
-            setIsResult(true)
             var temp = res.data.details.data
 
             var data = result.data
@@ -174,6 +175,7 @@ export default function Simulator () {
               // handleSimulationResult(res.data.details)
               dispatch(setResultText(simResultText))
             }
+            setIsResult(true)
           }
         }
       })
@@ -185,7 +187,7 @@ export default function Simulator () {
 
   return (
     <Container maxWidth="lg" className={classes.header}>
-      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} dark={state} />
+      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} dark={state} task_id={taskId} />
       <Grid
         container
         spacing={3}

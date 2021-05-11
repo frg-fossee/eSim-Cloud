@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import PropTypes from 'prop-types'
 import {
   Slide,
@@ -17,7 +17,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow, useEventCallback
 
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -25,6 +25,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
 
 import Graph from '../Shared/Graph'
+import api from "../../utils/Api";
 
 var FileSaver = require('file-saver')
 
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen({ open, close, isResult }) {
+export default function SimulationScreen({ open, close, isResult, task_id }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const [xscale, setXScale] = React.useState('si')
@@ -70,6 +71,123 @@ export default function SimulationScreen({ open, close, isResult }) {
     n: 0.000000001,
     p: 0.000000000001
   }
+  const toFixed = (x) => {
+    if (Math.abs(x) < 1.0) {
+      var e = parseInt(x.toString().split('e-')[1])
+      if (e) {
+        x *= Math.pow(10,e-1)
+        x = '0.' + (new Array(e)).join('0') + x.toString().substring(2)
+      }
+    } else {
+      var e = parseInt(x.toString().split('+')[1])
+      if (e > 20) {
+        e -= 20
+        x /= Math.pow(10,e)
+        x += (new Array(e+1)).join('0')
+      }
+    }
+    return x
+  }
+  const decimalCount = (num1, num2) => {
+    var difference = toFixed(num1) - toFixed(num2)
+    console.log('difference', difference)
+    const numStr = toFixed(difference).toString()
+    if(Math.abs(difference) < 1){
+      if (numStr.includes('.')) {
+        return ['decimal', numStr.split('.')[1].length]
+      }
+    }
+    else{
+      return ['notDecimal', numStr.split('.')[0].length]
+    }
+    return ['notDecimal', 1]
+  }
+
+  const setScales = () => {
+    var countX = decimalCount(Math.min(...result.graph.x_points), Math.max(...result.graph.x_points))
+    var countY = decimalCount(Math.min(...result.graph.y_points[0]), Math.max(...result.graph.y_points[0]))
+    if(countX[0] === 'decimal'){
+      if(countX[1] > 0 && countX[1] <= 4){
+        setXScale('m')
+      }
+      else if(countX[1] > 4 && countX[1] <= 7){
+        setXScale('u')
+      }
+      else if(countX[1] > 7 && countX[1] <= 10){
+        setXScale('n')
+      }
+      else if(countX[1] > 10 && countX[1] <= 12){
+        setXScale('p')
+      }
+    }
+    else{
+      if(countX[1] > 0 && countX[1] <= 4){
+        setXScale('si')
+      }
+      else if(countX[1] > 4 && countX[1] <= 7){
+        setXScale('K')
+      }
+      else if(countX[1] > 7 && countX[1] <= 10){
+        setXScale('M')
+      }
+      else if(countX[1] > 10){
+        setXScale('G')
+      }
+    }
+    if(countY[0] === 'decimal'){
+      if(countY[1] > 0 && countY[1] <= 4){
+        setYScale('m')
+      }
+      else if(countY[1] > 4 && countY[1] <= 7){
+        setYScale('u')
+      }
+      else if(countY[1] > 7 && countY[1] <= 10){
+        setYScale('n')
+      }
+      else if(countY[1] > 10 && countY[1] <= 12){
+        setYScale('p')
+      }
+    }
+    else{
+      if(countY[1] > 0 && countY[1] <= 4){
+        setYScale('si')
+      }
+      else if(countY[1] > 4 && countY[1] <= 7){
+        setYScale('K')
+      }
+      else if(countY[1] > 7 && countY[1] <= 10){
+        setYScale('M')
+      }
+      else if(countY[1] > 10){
+        setYScale('G')
+      }
+    }
+  }
+  useEffect(() => {
+    if(isResult === true){
+      if(result.graph !== {}){
+        setScales()
+      }
+      const formData = new FormData()
+      const token = localStorage.getItem('esim_token')
+      var csvString = generateCSV()
+      var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' })
+      var file = new File([blob], 'graphOutput.csv')
+      formData.append('output', file)
+
+      const config = {
+        headers: {
+          'content-type': 'multipart/form-data'
+        }
+      }
+      if (token) {
+        config.headers.Authorization = `Token ${token}`
+      }
+      api.post(`simulation/output/${task_id}`, formData, config)
+    }
+
+  }, [isResult])
+
   const handleXScale = (evt) => {
     setXScale(evt.target.value)
   }
@@ -80,8 +198,7 @@ export default function SimulationScreen({ open, close, isResult }) {
   const handlePrecision = (evt) => {
     setPrecision(evt.target.value)
   }
-
-  const handleCsvDownload = () => {
+  const generateCSV = () => {
     var headings = ""
     result.graph.labels.forEach(label => {
       headings = headings + label + ","
@@ -100,6 +217,10 @@ export default function SimulationScreen({ open, close, isResult }) {
     }
 
     downloadString = headings.concat(downloadString)
+    return downloadString
+  }
+  const handleCsvDownload = () => {
+    var downloadString = generateCSV()
     var blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, `graph_points_eSim_on_cloud.csv`)
   }
