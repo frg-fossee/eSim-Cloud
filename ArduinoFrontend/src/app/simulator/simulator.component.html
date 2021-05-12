@@ -135,21 +135,21 @@
   </div>
   <!--/simulation loading svg-->
 
-  <!-- Adding import export -->
+  <!-- Import export -->
   <span class="pipe">|</span>
   <button mat-icon-button matTooltip="Download JSON file" (click)="exportJson()"
-    style="align-items: center;background: transparent;" class="mt-1">
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1">
     <i style="font-size: 20px;color: black;" class="fa fa-download"></i>
   </button>
 
   <button mat-icon-button matTooltip="Import JSON file"
-    style="align-items: center;background: transparent;" class="mt-1">
-    <label style="font-size: 20px;color: black;" class="fa fa-upload">
-    <input type="file" style="visibility:hidden;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1">
+    <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
+    <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
     </label>
   </button>
   <span class="pipe">|</span>
-  <!-- Adding import export -->
+  <!-- Import export -->
 
   <a href="../#/simulator" target="_blank">
     <button mat-icon-button matTooltip="New Project" style="align-items: center;background: transparent;" class="mt-1">

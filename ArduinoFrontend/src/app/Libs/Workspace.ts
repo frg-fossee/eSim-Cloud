@@ -1058,9 +1058,9 @@ export class Workspace {
  * @param description string
  */
   static SaveJson(name: string = '', description: string = '') {
-    
+
     let id = Date.now();
-    
+
     // Default Save object
     const saveObj = {
       id,
@@ -1105,6 +1105,18 @@ export class Workspace {
 
     document.body.removeChild(element);
 
+  }
+
+  /**
+   * Function to return if workspace is empty or not
+   * @returns 'False' if workspace is not empty & 'True' if workspace is empty
+   */
+  static checkIfWorkspaceEmpty() {
+    for (const key in window.scope) {
+      if (window.scope[key].length > 0)
+        return false;
+    }
+    return true;
   }
 
 }
