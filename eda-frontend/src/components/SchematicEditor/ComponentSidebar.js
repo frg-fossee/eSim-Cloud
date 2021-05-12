@@ -65,6 +65,7 @@ export default function ComponentSidebar ({ compRef }) {
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
   const [favourite,setFavourite]=useState(null)
+  const [favOpen,setFavOpen]=useState(true)
 
   const [searchedComponentList, setSearchedComponents] = useState([])
   const [searchOption, setSearchOption] = useState('NAME')
@@ -163,6 +164,10 @@ export default function ComponentSidebar ({ compRef }) {
     }, [])
   }
 
+  const handleFavOpen=()=>{
+    setFavOpen(!favOpen)
+  }
+
   return (
     <>
       <Hidden smDown>
@@ -171,31 +176,35 @@ export default function ComponentSidebar ({ compRef }) {
 
       <div style={isSimulate ? { display: 'none' } : {}}>
         {favourite&&<List component="div" dense>
-          <ListItem button>
-            <h2 style={{ margin: "5px" }}>Favourite Components</h2>
+          <ListItem button onClick={handleFavOpen} divider style={{marginTop:"5%"}}>
+            <h2>Favourite Components</h2>
           </ListItem>
-          <ListItem>
-            <div style={{marginLeft:"-30px"}}>
-              {chunk(favourite, 3).map((componentChunk) => {
-                return (
-                  <div>
-                  <ListItem key={componentChunk[0].svg_path} divider>
-                  {
-                    componentChunk.map((component) => {
-                      return (
-                        <ListItemIcon key={component.full_name}>
-                          <SideComp isFavourite={true} setFavourite={setFavourite} component={component} />
-                        </ListItemIcon>
-                      )
+          <Collapse in={favOpen} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              <ListItem>
+                <div style={{marginLeft:"-30px"}}>
+                  {chunk(favourite, 3).map((componentChunk) => {
+                    return (
+                      <div>
+                      <ListItem key={componentChunk[0].svg_path} divider>
+                      {
+                        componentChunk.map((component) => {
+                          return (
+                            <ListItemIcon key={component.full_name}>
+                              <SideComp isFavourite={true} setFavourite={setFavourite} component={component} />
+                            </ListItemIcon>
+                          )
+                          }
+                        )
                       }
+                      </ListItem>
+                      </div>
                     )
-                  }
-                  </ListItem>
-                  </div>
-                )
-              })}
-            </div>
-          </ListItem>          
+                  })}
+                </div>
+              </ListItem>  
+            </List>  
+          </Collapse>      
         </List>}
         {/* Display List of categorized components */}
         <List>

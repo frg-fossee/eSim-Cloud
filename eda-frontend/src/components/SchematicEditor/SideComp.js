@@ -76,7 +76,7 @@ export default function SideComp ({ component,isFavourite=false,setFavourite }) 
   }
   return (
     <div>
-      <Tooltip title={component.full_name} arrow>
+      <Tooltip title={component.full_name+" : "+component.description} arrow>
         {/* Display Image thumbnail in left side pane */}
         <img ref={imageRef} className='compImage' src={'../' + component.svg_path} alt="Logo" aria-describedby={id} onClick={handleClick} />
       </Tooltip>
@@ -122,13 +122,13 @@ export default function SideComp ({ component,isFavourite=false,setFavourite }) 
           </ListItemText>
           }
 
-          {!isFavourite&&
+          {!isFavourite&&localStorage.getItem("esim_token")&&
             <ListItemText>
               <Button onClick={() => handleFavourite(component.id) }>Add to Favourites</Button>
             </ListItemText>
           }
 
-          {isFavourite&&
+          {isFavourite&&localStorage.getItem("esim_token")&&
             <ListItemText>
               <Button onClick={()=>handleRemove(component.id)}>Remove from Favourites</Button>
             </ListItemText>
