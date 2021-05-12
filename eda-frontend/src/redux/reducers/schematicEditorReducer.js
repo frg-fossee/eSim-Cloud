@@ -27,7 +27,6 @@ export default function (state = InitialState, action) {
         return accObj
       }, {})
       newCollapse[action.payload.id] = !existingState
-      // console.log('Updating collapse', action.payload.id)
       Object.assign(state.collapse, newCollapse)
       return { ...state, collapse: { ...state.collapse, newCollapse } }
     }
@@ -42,6 +41,54 @@ export default function (state = InitialState, action) {
 
     case actions.TOGGLE_SIMULATE: {
       return { ...state, isSimulate: !state.isSimulate }
+    }
+
+    case actions.FETCH_ALL_LIBRARIES: {
+      var components = {}
+      var allLibraries = action.payload
+      allLibraries.forEach(e =>{
+        components[e.id] = []
+      })
+      return { ...state, allLibraries: allLibraries, allComponents: components }
+    }
+
+    case actions.FETCH_CUSTOM_LIBRARIES: {
+      var components = {};
+      action.payload.forEach(e =>{
+        components[e.id] = []
+      })
+      return { ...state, customLibraries: action.payload, customComponents: components }
+    }
+
+    case actions.FETCH_LIBRARY: {
+      const components = { ...state.components }
+      components[action.payload.id] = []
+      const collapse = { ...state.collapse }
+      const libraries = [ ...state.libraries ]
+      const f = 0;
+      const newLib = action.payload
+      collapse[newLib.id] = false
+      for ( var i=0; i< libraries.length; i++) {
+        if (libraries[i].id == newLib.id) {
+          f = 1;
+          break;
+        }
+      }
+      if (f == 0)
+        libraries.push(newLib)
+      return { ...state, libraries: libraries, components: components, collapse: collapse }
+    }
+
+    case actions.REMOVE_LIBRARY: {
+      const libraries = [ ...state.libraries ]
+      const newLibraries = []
+      const libToRemove = action.payload
+      for (let i=0; i< libraries.length; i++) {
+        if(libraries[i].id != libToRemove.id) {
+          newLibraries.push(libraries[i])
+        }
+      }
+      return { ...state, libraries: newLibraries }
     }
 
     default:

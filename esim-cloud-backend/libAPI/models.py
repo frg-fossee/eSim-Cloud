@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from libAPI.helper.main import generate_svg_and_save_to_folder
 import os
 import glob
+import filecmp
 
 
 class LibrarySet(models.Model):
@@ -14,12 +15,6 @@ class LibrarySet(models.Model):
 
     class Meta:
         unique_together = ('user', 'name')
-
-    def clean(self):
-        if self.default == True:
-            lib_sets_default = LibrarySet.objects.filter(default=True)
-            if len(lib_sets_default) != 0:
-                raise ValidationError("Another Library Set is set as default change it to save it as the default set.")
 
 
 class Library(models.Model):
@@ -97,12 +92,16 @@ def save_libs(library_set, path, files):
                 lib_location,
                 lib_output_location
             )
-            library = Library(
-                library_name=f._name,
-                library_set=library_set
-            )
-            library.save()
-            
+            os.remove(lib_location)
+            try:
+                library = Library.objects.get(library_name=f._name, library_set=library_set)
+            except Library.DoesNotExist:
+                library = Library(
+                    library_name=f._name,
+                    library_set=library_set
+                )
+                library.save()
+
             library_svg_folder = os.path.join(lib_output_location, f._name[:-4])
             thumbnails = glob.glob(library_svg_folder + '/*_thumbnail.svg')
 
@@ -118,33 +117,58 @@ def save_libs(library_set, path, files):
                 svg_desc = component_details[component_svg[:-4]]
 
                 #Seed DB
-                component = LibraryComponent(
-                    name=svg_desc['name'],
-                    svg_path=os.path.join(
-                        library_svg_folder, component_svg)[6:],
-                    thumbnail_path=thumbnail_path,
-                    symbol_prefix=svg_desc['symbol_prefix'],
-                    full_name=svg_desc['full_name'],
-                    keyword=svg_desc['keyword'],
-                    description=svg_desc['description'],
-                    data_link=svg_desc['data_link'],
-                    component_library=library
-                )
-                component.save()
+                try:
+                    component = LibraryComponent.objects.get(
+                        name=svg_desc['name'],
+                        svg_path=os.path.join(
+                            library_svg_folder, component_svg)[6:],
+                        thumbnail_path=thumbnail_path,
+                        symbol_prefix=svg_desc['symbol_prefix'],
+                        full_name=svg_desc['full_name'],
+                        keyword=svg_desc['keyword'],
+                        description=svg_desc['description'],
+                        data_link=svg_desc['data_link'],
+                        component_library=library
+                    )
+                except LibraryComponent.DoesNotExist:
+                    component = LibraryComponent(
+                        name=svg_desc['name'],
+                        svg_path=os.path.join(
+                            library_svg_folder, component_svg)[6:],
+                        thumbnail_path=thumbnail_path,
+                        symbol_prefix=svg_desc['symbol_prefix'],
+                        full_name=svg_desc['full_name'],
+                        keyword=svg_desc['keyword'],
+                        description=svg_desc['description'],
+                        data_link=svg_desc['data_link'],
+                        component_library=library
+                    )
+                    component.save()
 
             #Seed Alternate Components
             for component_svg in glob.glob(library_svg_folder + '/*[B-Z].svg'):
                 component_svg = os.path.split(component_svg)[-1]
                 svg_desc = component_details[component_svg[:-4]]
-                alternate_component = ComponentAlternate(
-                    part=svg_desc['part'],
-                    dmg=svg_desc['dmg'],
-                    full_name=svg_desc['full_name'],
-                    svg_path=os.path.join(
-                        library_svg_folder, component_svg)[6:],
-                    parent_component=LibraryComponent.objects.get(
-                        name=svg_desc['name'],
-                        component_library=library
+                try:
+                    alternate_component = ComponentAlternate.objects.get(
+                        part=svg_desc['part'], dmg=svg_desc['dmg'],
+                        full_name=svg_desc['full_name'],
+                        svg_path=os.path.join(
+                            library_svg_folder, component_svg)[6:],
+                        parent_component=LibraryComponent.objects.get(
+                            name=svg_desc['name'],
+                            component_library=library
+                        )
                     )
-                )
-                alternate_component.save()
+                except ComponentAlternate.DoesNotExist:
+                    alternate_component = ComponentAlternate(
+                        part=svg_desc['part'], dmg=svg_desc['dmg'],
+                        full_name=svg_desc['full_name'],
+                        svg_path=os.path.join(
+                            library_svg_folder, component_svg)[6:],
+                        parent_component=LibraryComponent.objects.get(
+                            name=svg_desc['name'],
+                            component_library=library
+                        )
+                    )
+                    alternate_component.save()

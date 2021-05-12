@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Slide,
@@ -34,7 +34,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, loadGallery } from '../../redux/actions/index'
+import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchCustomLibraries, fetchLibrary, removeLibrary } from '../../redux/actions/index'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
 
@@ -538,4 +538,139 @@ OpenSchDialog.propTypes = {
   close: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   openLocal: PropTypes.func.isRequired
+}
+
+export function SelectLibrariesModal (props) {
+  const {open, close } = props
+  const schemEditor = useSelector(state => state.schematicEditorReducer)
+  const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
+  const activeLibraries = useSelector(state => state.schematicEditorReducer.libraries)
+  const [newLib, setnewLib] = React.useState(false)
+  const dispatch = useDispatch()
+  const classes = useStyles();
+
+  const generateTable = (allLibraries) => {
+    if (allLibraries != undefined)
+      return allLibraries.map((library, i) => {
+        return (
+          <TableRow key={library.id}>
+            <TableCell component="th" scope="row">
+              {library.library_name}
+            </TableCell>
+            <TableCell align="center"> 
+              {library.active
+                ? <Button variant="contained" size="small" color="secondary"
+                  onClick={ () => { handleUnapply(library) }}>
+                  Remove
+                </Button>
+                : <Button variant="contained" size="small" color="primary"
+                  onClick={ () => { 
+                    handleAppply(library.id)
+                  }}>
+                  Use
+                </Button>
+              }
+            </TableCell>
+            <TableCell align="center">
+              <Button variant="contained" size="small" 
+                style={{ backgroundColor: !library.default ? "#ff1744": "#b71c1c", color: "#ffffff"}}
+                onClick={() => { console.log("ELEMENT: ", library) }} disabled={library.default}>
+                Delete
+              </Button>
+            </TableCell>
+          </TableRow>
+      )})
+  }
+
+  const [table, settable] = React.useState(generateTable(allLibraries))
+
+  useEffect(() => {
+    dispatch(fetchAllLibraries())
+  }, [dispatch])
+
+  const updateActive = () => {
+    allLibraries.map((element) => {
+      element.active = false
+      activeLibraries.forEach(ele => {
+        if(ele.id == element.id) {
+          element.active = true
+          return;
+        }
+      })
+      return element
+    })
+    if ( allLibraries != undefined)
+    settable(generateTable(allLibraries))
+  }
+
+  useEffect(() => {
+    if(allLibraries != undefined){
+      updateActive();
+    }
+  }, [schemEditor, activeLibraries])
+
+  const handleSelectBtn = () => {
+    setnewLib(false)
+  }
+
+  const handleNewBtn = () => {
+    setnewLib(true)
+  }
+
+  const handleAppply = (library) => {
+    dispatch(fetchLibrary(library))
+  }
+
+  const handleUnapply = (library) => {
+    dispatch(removeLibrary(library))
+  }
+
+
+  return (
+    <Dialog
+    open={open}
+    onClose={close}
+    maxWidth='xs'
+    TransitionComponent={Transition}
+    keepMounted
+    aria-labelledby="open-dialog-title"
+    aria-describedby="open-dialog-description"
+    >
+      <DialogTitle>
+        <Typography variant="h6">{'Libraries in your editor'}</Typography>
+      </DialogTitle>
+      <DialogContent dividers>
+        <DialogContentText id="open-dialog-description" >
+          { newLib
+            ? <center>
+              <Button variant="outlined" fullwidth={true} size="large" color="primary" 
+                onClick={() => { console.log("Upload Files") }}>
+                Upload Files 
+              </Button>
+            </center>
+            : allLibraries !== undefined
+              ? <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
+                {table}
+              <Table className={classes.table} aria-label="Libraries to import">
+                <TableBody>
+                  {generateTable()}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            : <p>Nothing To Show</p>
+          }
+        </DialogContentText>
+        <DialogActions>
+          <Button variant={newLib ? 'outlined': 'text'} 
+          onClick={() => handleNewBtn()} color="primary">
+            Upload libraries
+          </Button>
+          <Button variant={newLib ? 'text': 'outlined'} 
+          onClick={() => handleSelectBtn()} color="primary">
+            Select libraries
+          </Button>
+        </DialogActions>
+      </DialogContent>
+    </Dialog>
+  )
 }
