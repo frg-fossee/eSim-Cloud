@@ -23,6 +23,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
+import randomstring from 'randomstring'
 
 import Graph from '../Shared/Graph'
 import api from "../../utils/Api";
@@ -90,7 +91,6 @@ export default function SimulationScreen({ open, close, isResult, task_id }) {
   }
   const decimalCount = (num1, num2) => {
     var difference = toFixed(num1) - toFixed(num2)
-    console.log('difference', difference)
     const numStr = toFixed(difference).toString()
     if(Math.abs(difference) < 1){
       if (numStr.includes('.')) {
@@ -172,7 +172,8 @@ export default function SimulationScreen({ open, close, isResult, task_id }) {
       const token = localStorage.getItem('esim_token')
       var csvString = generateCSV()
       var blob = new Blob([csvString], { type: 'text/csv;charset=utf-8' })
-      var file = new File([blob], 'graphOutput.csv')
+      var fileName = randomstring.generate({length: 15}) + '.csv'
+      var file = new File([blob], fileName)
       formData.append('output', file)
 
       const config = {

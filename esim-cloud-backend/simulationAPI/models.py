@@ -37,6 +37,6 @@ class spiceFile(models.Model):
 class outputFile(models.Model):
 
     file_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    file = models.FileField(storage=FileSystemStorage(location=settings.CSV_ROOT))
+    file = models.FileField(storage=FileSystemStorage(location=settings.MEDIA_ROOT))
     upload_time = models.DateTimeField(auto_now=True, db_index=True)
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="output_file")

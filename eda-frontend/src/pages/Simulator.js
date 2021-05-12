@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Simulator () {
+export default function Simulator() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [netlistCode, setNetlistCode] = useState('')
@@ -60,31 +60,51 @@ export default function Simulator () {
   const netlistCodeSanitization = (code) => {
     var code_array = code.split('\n')
     var cleanCode = ''
+    // for (var line = 0; line < code_array.length; line++) {
+    //   if (code_array[line].includes('plot')) {
+    //     var code_words = code_array[line].split(' ').filter(function (str) {
+    //       return /\S/.test(str)
+    //     })
+    //     var all_plots = ''
+    //     for (var word = 1; word < code_words.length; word++) {
+    //       all_plots = all_plots + ' ' + code_words[word] + ' '
+    //     }
+    //     cleanCode += 'print ' + all_plots + ' > data.txt \n '
+    //   } else {
+    //     cleanCode += code_array[line] + ' \n '
+    //   }
+    // }
+    var frontPlot = ""
     for (var line = 0; line < code_array.length; line++) {
-      if (code_array[line].includes('plot')) {
-        var code_words = code_array[line].split(' ').filter(function (str) {
-          return /\S/.test(str)
-        })
-        var all_plots = ''
-        for (var word = 1; word < code_words.length; word++) {
-          all_plots = all_plots + ' ' + code_words[word] + ' '
-        }
-        cleanCode += 'print ' + all_plots + ' > data.txt \n '
-      } else {
-        cleanCode += code_array[line] + ' \n '
+      if (code_array[line].includes("plot")) {
+        frontPlot += code_array[line].split("plot ")[1] + " "
       }
     }
+    frontPlot = `print ${frontPlot} > data.txt \n`
+    var flag = 0
+    for (var i = 0; i < code_array.length; i++) {
+      if (code_array[i].includes("plot")) {
+        if (!flag) {
+          cleanCode += frontPlot
+          flag = 1
+        }
+      }
+      else {
+        cleanCode += code_array[i] + "\n"
+      }
+    }
+    console.log(cleanCode)
     return cleanCode
   }
 
-  function prepareNetlist () {
+  function prepareNetlist() {
     var sanatizedText = netlistCodeSanitization(netlistCode)
     var file = textToFile(sanatizedText)
     sendNetlist(file)
   }
 
   // Upload the nelist
-  function netlistConfig (file) {
+  function netlistConfig(file) {
     const formData = new FormData()
     formData.append('file', file)
     const config = {
@@ -95,7 +115,7 @@ export default function Simulator () {
     return api.post('simulation/upload', formData, config)
   }
 
-  function sendNetlist (file) {
+  function sendNetlist(file) {
     setIsResult(false)
     netlistConfig(file)
       .then((response) => {
@@ -111,7 +131,7 @@ export default function Simulator () {
 
   const [isResult, setIsResult] = useState(false)
 
-  function simulationResult (url) {
+  function simulationResult(url) {
     api
       .get(url)
       .then((res) => {
