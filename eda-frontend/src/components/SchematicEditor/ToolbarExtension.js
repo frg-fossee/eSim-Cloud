@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
+import api from '../../utils/Api'
 import {
   Slide,
   Button,
@@ -37,6 +38,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchCustomLibraries, fetchLibrary, removeLibrary } from '../../redux/actions/index'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
+import Api from '../../utils/Api'
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -625,6 +627,34 @@ export function SelectLibrariesModal (props) {
     dispatch(removeLibrary(library))
   }
 
+  const fileUpload = React.useRef(null)
+  
+  const handlFileUpload = () => {
+    var files = event.target.files
+    console.log(files)
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('files', files[i])
+    }
+    for (var key of formData.entries()) {
+      console.log(key[0] + ', ' + key[1]);
+    }
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Authorization': `Token ${token}`
+      }
+    }
+    api.post('/library-sets/', formData, config)
+      .then( () => {
+        dispatch(fetchAllLibraries())
+        setnewLib(false)
+      })
+  }
+
+  const handleLibUploadOpen = () => {
+    fileUpload.current.click();
+  }
 
   return (
     <Dialog
@@ -643,9 +673,10 @@ export function SelectLibrariesModal (props) {
         <DialogContentText id="open-dialog-description" >
           { newLib
             ? <center>
-              <Button variant="outlined" fullwidth={true} size="large" color="primary" 
-                onClick={() => { console.log("Upload Files") }}>
-                Upload Files 
+              <Button variant="outlined" fullwidth={true.toString()} size="large" color="primary" 
+                onClick={ () => { handleLibUploadOpen() }}>
+                Upload Files
+                <input type="file" multiple={true} accept=".lib,.dcm" ref={ fileUpload } onChange={ handlFileUpload } style={{display: 'none'}} />
               </Button>
             </center>
             : allLibraries !== undefined

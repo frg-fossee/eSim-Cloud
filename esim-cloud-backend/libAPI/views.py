@@ -1,13 +1,16 @@
 import django_filters
 from django.db.models import Q
 from libAPI.serializers import LibrarySerializer, LibraryComponentSerializer, LibrarySetSerializer
-from libAPI.models import Library, LibraryComponent, LibrarySet
-from rest_framework import viewsets
+from libAPI.models import Library, LibraryComponent, LibrarySet, save_libs
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.parsers import MultiPartParser
 import logging
 from django_filters import rest_framework as filters
+import os
+from esimCloud import settings
 logger = logging.getLogger(__name__)
 
 
@@ -101,6 +104,8 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
     Listing Library Sets available to a user
     """
     serializer_class = LibrarySetSerializer
+    parser_class = (MultiPartParser,)
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
@@ -111,4 +116,29 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
         return queryset
 
     def create(self, request, *args, **kwargs):
-        return
+        try:
+            library_set = LibrarySet.objects.get(user=request.user)
+        except LibrarySet.DoesNotExist:
+            library_set = LibrarySet(
+                name=request.user.username,
+                default=False,
+                user=request.user
+            )
+            library_set.save()
+        except LibrarySet.MultipleObjectsReturned:
+            return Response(status=status.HTTP_409_CONFLICT)
+        
+        files = request.FILES.getlist('files')
+        if len(files) != 0:
+            path = os.path.join(
+                settings.BASE_DIR,
+                'kicad-symbols',
+                request.user.username + '-' + request.POST.get('name', ''))
+            try:
+                save_libs(library_set, path, files) # defined in ./models.py
+                return Response(status=status.HTTP_201_CREATED)
+            except:
+                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
