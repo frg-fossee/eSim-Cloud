@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize, IconButton, Collapse } from '@material-ui/core'
+import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize, IconButton, Collapse, Dialog, DialogTitle, DialogContent, Button } from '@material-ui/core'
 import CreateNewFolderOutlinedIcon from "@material-ui/icons/CreateNewFolderOutlined"
 import { makeStyles } from '@material-ui/core/styles'
 import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSchDescription,saveSchematic,setSchXmlData } from '../../redux/actions/index'
+import { setSchDescription,saveSchematic } from '../../redux/actions/index'
 import api from "../../utils/Api"
 import VersionComponent from "./VersionComponent"
-import { Save } from "./Helper/ToolbarTools"
 import Canvg from "canvg";
 
 import './Helper/SchematicEditor.css'
@@ -129,6 +128,9 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
   const [description, setDescription] = React.useState(schSave.description)
   const [versions, setVersions] = React.useState(null)
   const [branchOpen,setBranchOpen] = React.useState(null)
+  const [branchName,setBranchName] = React.useState("")
+  const [dialogOpen,setDialogOpen] = React.useState(false)
+
   React.useEffect(() => {
     const config = {
       headers: {
@@ -241,9 +243,10 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
     });
   }
 
-  const handleBranch = (event) => {
+  const handleBranch = (branchName) => {
+    setDialogOpen(false)
     exportImage("PNG").then((res) => {
-      dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,res,true))
+      dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,res,true,branchName))
     })
   }
 
@@ -256,6 +259,19 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
     left=left.concat(right)
     console.log(left)
     setBranchOpen(left)
+  }
+
+  const handleBranchName = (e) => {
+    setBranchName(e.target.value)
+  }
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true)
+  }
+
+  const handleDialogClose = () => {
+    setBranchName("")
+    setDialogOpen(false)
   }
 
   return (
@@ -295,10 +311,29 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
           <IconButton
             className="new-branch"
             size="small"
-            onClick={handleBranch}
+            onClick={handleDialogOpen}
             >
               <CreateNewFolderOutlinedIcon fontSize="small" />
           </IconButton>
+          <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={dialogOpen}>
+            <DialogTitle id="simple-dialog-title">Create new branch</DialogTitle>
+            <DialogContent>
+              <TextField 
+              id="branch-name" 
+              label="Branch Name" 
+              onChange={handleBranchName} 
+              value={branchName}
+              style={{width:"100%"}}/>
+              <br/>
+              <Button 
+              style={{ marginTop: '15px', marginBottom: '10px' }} 
+              variant="contained" 
+              color="primary" 
+              onClick={() => handleBranch(branchName) }>
+                Set name and create branch
+              </Button>
+            </DialogContent>
+          </Dialog>
         </ListItem>
         {(versions&&branchOpen) ? 
         <>

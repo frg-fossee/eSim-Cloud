@@ -34,7 +34,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 };
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64,newBranch=false) => (
+export const saveSchematic = (title, description, xml, base64,newBranch=false,branchName=null) => (
   dispatch,
   getState
 ) => {
@@ -100,9 +100,7 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false) =
   else {
     console.log("New Branch not Version")
     body.save_id = schSave.details.save_id;
-    body.branch = randomstring.generate({
-      length: 20,
-    })
+    body.branch = branchName
     body.version = schSave.details.version
     api
     .post("save", queryString.stringify(body), config)
@@ -179,7 +177,7 @@ export const setSchShared = (share) => (dispatch, getState) => {
 
   api
     .post(
-      "save/" + schSave.details.save_id + "/sharing/" + isShared+"/"+schSave.details.version,
+      "save/" + schSave.details.save_id + "/sharing/" + isShared+"/"+schSave.details.version+"/"+schSave.details.branch,
       {},
       config
     )
