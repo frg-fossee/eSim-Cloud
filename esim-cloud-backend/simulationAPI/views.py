@@ -63,15 +63,3 @@ class CeleryResultView(APIView):
             return Response(response_data)
         else:
             raise ValidationError('Invalid uuid format')
-
-
-# class GraphView(APIView):
-#     permission_classes = (IsAuthenticated,)
-#
-#     def post(self, request, task_id):
-#         print("self.request.user:", self.request.user)
-#         serializer = CsvFileSerializer(data={"file": request.FILES["output"], "task": task_id})
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response(data=serializer.data, status=status.HTTP_200_OK)
-#         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

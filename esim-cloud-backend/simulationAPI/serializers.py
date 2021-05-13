@@ -11,12 +11,6 @@ class FileSerializer(serializers.ModelSerializer):
         fields = ('file', 'upload_time', 'file_id', 'task')
 
 
-# class CsvFileSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = outputFile
-#         fields = ('file', 'upload_time', 'file_id', 'task')
-
-
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     # user = serializers.ReadOnlyField(source='user.username')
     file = FileSerializer(many=True, read_only=True)
