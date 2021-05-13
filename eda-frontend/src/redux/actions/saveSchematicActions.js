@@ -60,9 +60,11 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false) =
     config.headers.Authorization = `Token ${token}`;
   }
   if(!newBranch) {
+    console.log("New Version not Branch")
     body.version = randomstring.generate({
       length: 20,
     });
+    console.log(body)
     if (schSave.isSaved) {
       //  Updating saved schemaic
       body.save_id = schSave.details.save_id;
@@ -97,12 +99,13 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false) =
     }
   }
   else {
+    console.log("New Branch not Version")
+    body.save_id = schSave.details.save_id;
     body.branch = randomstring.generate({
       length: 20,
     })
     body.version = schSave.details.version
     console.log(body)
-    // saving new schematic
     api
     .post("save", queryString.stringify(body), config)
     .then((res) => {

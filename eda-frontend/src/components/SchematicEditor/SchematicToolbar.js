@@ -303,7 +303,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
       var title = schSave.title;
       var description = schSave.description;
       exportImage("PNG").then((res) => {
-        dispatch(saveSchematic(title, description, xml, res));
+        dispatch(saveSchematic(title, description, xml, res, false));
       });
       setMessage("Saved Successfully");
       handleSnacClick();

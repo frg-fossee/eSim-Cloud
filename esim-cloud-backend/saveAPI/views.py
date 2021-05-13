@@ -34,7 +34,7 @@ class StateSaveView(APIView):
         logger.info('Got POST for state save ')
         try:
             queryset = StateSave.objects.get(
-                data_dump=request.data["data_dump"])
+                data_dump=request.data["data_dump"],branch=request.data["branch"])
             serializer = StateSaveSerializer(data=request.data)
             if serializer.is_valid():
                 queryset.name = serializer.data["name"]

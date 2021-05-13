@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize,IconButton } from '@material-ui/core'
+import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize, IconButton, Collapse } from '@material-ui/core'
 import CreateNewFolderOutlinedIcon from "@material-ui/icons/CreateNewFolderOutlined"
 import { makeStyles } from '@material-ui/core/styles'
 import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSchDescription,saveSchematic } from '../../redux/actions/index'
+import { setSchDescription,saveSchematic,setSchXmlData } from '../../redux/actions/index'
 import api from "../../utils/Api"
 import VersionComponent from "./VersionComponent"
-import randomstring from "randomstring"
+import { Save } from "./Helper/ToolbarTools"
+import Canvg from "canvg";
 
 import './Helper/SchematicEditor.css'
 
@@ -127,6 +128,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
 
   const [description, setDescription] = React.useState(schSave.description)
   const [versions, setVersions] = React.useState(null)
+  const [branchOpen,setBranchOpen] = React.useState(null)
   React.useEffect(() => {
     const config = {
       headers: {
@@ -147,6 +149,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
         )
         .then((resp) => {
           console.log(resp.data);
+          var versionsAccordingFreq={}
           resp.data.forEach((value) => {
             var d = new Date(value.save_time);
             value.date =
@@ -155,8 +158,21 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
             if (d.getMinutes() < 10) {
               value.time = d.getHours() + ":0" + d.getMinutes();
             }
+            versionsAccordingFreq[value.branch]?versionsAccordingFreq[value.branch].push(value):versionsAccordingFreq[value.branch]=[value]
           });
-          setVersions(resp.data);
+          console.log(versionsAccordingFreq)
+          setVersions(Object.entries(versionsAccordingFreq))
+          var temp=[];
+          for(var i=0;i<Object.entries(versionsAccordingFreq).length;i++)
+          {
+            console.log(Object.entries(versionsAccordingFreq)[0])
+            if(window.location.href.split("branch=")[1]===Object.entries(versionsAccordingFreq)[i][0])
+              temp.push(true)
+            else
+              temp.push(false)
+          }
+          setBranchOpen(temp);
+          console.log(branchOpen)
         });
     }
   }, [])
@@ -168,9 +184,82 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
     dispatch(setSchDescription(evt.target.value))
   }
 
+  async function exportImage(type) {
+    const svg = document.querySelector("#divGrid > svg").cloneNode(true);
+    svg.removeAttribute("style");
+    svg.setAttribute("width", gridRef.current.scrollWidth);
+    svg.setAttribute("height", gridRef.current.scrollHeight);
+    const canvas = document.createElement("canvas");
+    canvas.width = gridRef.current.scrollWidth;
+    canvas.height = gridRef.current.scrollHeight;
+    canvas.style.width = canvas.width + "px";
+    canvas.style.height = canvas.height + "px";
+    var images = svg.getElementsByTagName("image");
+    for (var image of images) {
+      const data = await fetch(image.getAttribute("xlink:href")).then((v) => {
+        return v.text();
+      });
+      image.removeAttribute("xlink:href");
+      image.setAttribute(
+        "href",
+        "data:image/svg+xml;base64," + window.btoa(data)
+      );
+    }
+    var ctx = canvas.getContext("2d");
+    ctx.mozImageSmoothingEnabled = true;
+    ctx.webkitImageSmoothingEnabled = true;
+    ctx.msImageSmoothingEnabled = true;
+    ctx.imageSmoothingEnabled = true;
+    const pixelRatio = window.devicePixelRatio || 1;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    return new Promise((resolve) => {
+      if (type === "SVG") {
+        var svgdata = new XMLSerializer().serializeToString(svg);
+        resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata);
+        return;
+      }
+      var v = Canvg.fromString(ctx, svg.outerHTML);
+      v.render().then(() => {
+        var image = "";
+        if (type === "JPG") {
+          const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < imgdata.data.length; i += 4) {
+            if (imgdata.data[i + 3] === 0) {
+              imgdata.data[i] = 255;
+              imgdata.data[i + 1] = 255;
+              imgdata.data[i + 2] = 255;
+              imgdata.data[i + 3] = 255;
+            }
+          }
+          ctx.putImageData(imgdata, 0, 0);
+          image = canvas.toDataURL("image/jpeg", 1.0);
+        } else {
+          if (type === "PNG") {
+            image = canvas.toDataURL("image/png");
+          }
+        }
+        resolve(image);
+      });
+    });
+  }
+
   const handleBranch = (event) => {
-    console.log(schSave)
-    dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,schSave.details.base64_image,true))
+    var xml=Save()
+    dispatch(setSchXmlData(xml));
+    exportImage("PNG").then((res) => {
+      dispatch(saveSchematic(schSave.title,schSave.description,xml,res,true))
+    })
+  }
+
+  const handleClick = (index) => {
+    console.log(index)
+    var left=branchOpen.slice(0,index)
+    var right=branchOpen.slice(index+1)
+    var temp=!branchOpen[index]
+    left.push(temp)
+    left=left.concat(right)
+    console.log(left)
+    setBranchOpen(left)
   }
 
   return (
@@ -215,7 +304,36 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               <CreateNewFolderOutlinedIcon fontSize="small" />
           </IconButton>
         </ListItem>
-        {versions !== null ? <>{versions.map((version) => <VersionComponent name={version.name} date={version.date} time={version.time} save_id={version.save_id} version={version.version} branch={version.branch} />)}</> : <ListItemText>Loading</ListItemText>}
+        {(versions&&branchOpen) ? 
+        <>
+          {versions.map((branch,index) => {
+              return (
+              <>
+                <ListItem button onClick={()=>handleClick(index)}>
+                  <ListItemText primary={"Branch " + branch[0]}  />
+                </ListItem>
+                <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>
+                {
+                  branch[1].map((version) =>
+                    <VersionComponent 
+                    name={version.name} 
+                    date={version.date} 
+                    time={version.time} 
+                    save_id={version.save_id} 
+                    version={version.version} 
+                    branch={version.branch} />
+                  )
+                }
+                </Collapse>
+                  
+              </>
+              )
+            }
+          )
+        }
+        </> 
+        : <ListItemText>Loading</ListItemText>
+        }
       </List>
     </>
   )
