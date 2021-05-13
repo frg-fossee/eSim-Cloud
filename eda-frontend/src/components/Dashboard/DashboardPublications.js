@@ -15,15 +15,6 @@ const useStyles = makeStyles({
         fontSize: 14,
         color: '#80ff80'
     },
-    mainHead: {
-        width: '100%',
-        backgroundColor: '#404040',
-        color: '#fff'
-    },
-    title: {
-        fontSize: 14,
-        color: '#80ff80'
-    }
 })
 function DashboardPublications() {
     const dispatch = useDispatch();
@@ -46,10 +37,10 @@ function DashboardPublications() {
                     <Card className={classes.mainHead}>
                         <CardContent>
                             <Typography className={classes.title} gutterBottom>
-                                All your publications are Listed Below
+                                All your projects are Listed Below
                     </Typography>
                             <Typography variant="h5" component="h2">
-                                My Publications
+                                My Projects
                     </Typography>
                         </CardContent>
                     </Card>
@@ -69,7 +60,7 @@ function DashboardPublications() {
                     : <Grid item xs={12}>
                         <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
                             <Typography variant="subtitle1" gutterBottom>
-                                Hey , You dont have any saved schematics...
+                                Hey , You dont have any projects...
                             </Typography>
                         </Card>
                     </Grid>

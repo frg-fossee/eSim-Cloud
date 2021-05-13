@@ -1,4 +1,4 @@
-import { Button, Card, Grid, Container,CssBaseline, CardContent, Typography } from '@material-ui/core'
+import { Card, Grid, Container,CssBaseline, CardContent, Typography } from '@material-ui/core'
 import React, { useEffect } from 'react'
 import { useSelector ,useDispatch} from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
@@ -80,7 +80,7 @@ function Publications(props) {
                             console.log(pub)
                             return (
                                 <Grid item xs={12} sm={6} lg={4} key={pub.save_id}>
-                                    <PublicationCard pub={pub} />
+                                    <PublicationCard pub={pub} is_review={true}/>
                                 </Grid>
                             )
                         }

@@ -4,6 +4,7 @@ import api from '../../utils/Api'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
 import { setTitle } from './index'
+import { fetchPublication } from './publicationActions'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -112,6 +113,10 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
         dispatch(setSchTitle(res.data.name))
         dispatch(setSchDescription(res.data.description))
         dispatch(setSchXmlData(res.data.data_dump))
+        if(res.data.publication_id !== undefined)
+        {
+          dispatch(fetchPublication())
+        }
         renderGalleryXML(res.data.data_dump)
       }
     )
@@ -184,7 +189,7 @@ export const openLocalSch = (obj) => (dispatch, getState) => {
 }
 
 //Action for making a copy of a schematic
-export const makeCopy = (saveID) => (dispatch,getState) => {
+export const makeCopy = (saveID) => (dispatch, getState) => {
   const token = getState().authReducer.token
 
   // add headers
@@ -198,11 +203,10 @@ export const makeCopy = (saveID) => (dispatch,getState) => {
     config.headers.Authorization = `Token ${token}`
   }
   api.post(`/save/copy/${saveID}`, {}, config)
-  .then(res => 
-    {
-        let win = window.open();
-        win.location.href = '/eda/#/editor?id=' + res.data.save_id
-        win.focus();
+    .then(res => {
+      let win = window.open();
+      win.location.href = '/eda/#/editor?id=' + res.data.save_id
+      win.focus();
     })
     .catch(error => console.log(error))
 }

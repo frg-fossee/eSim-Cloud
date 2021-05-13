@@ -31,12 +31,11 @@ class Transition(models.Model):
     role = models.ManyToManyField(Group, related_name='role')
     from_state = models.ForeignKey(State, null=True, related_name='fromtransitions', on_delete=SET_NULL)
     to_state = models.ForeignKey(State, null=True, related_name='totransitions', on_delete=SET_NULL)
-    allowed_for_creator = models.BooleanField(default=True, null=False,verbose_name="Transition allowed for the creator along with other users of the same role.")
+    restricted_for_creator = models.BooleanField(default=True, null=False,verbose_name="Transition allowed for all users of specified roles except creator")
     only_for_creator = models.BooleanField(default=False,null=False,verbose_name="Transition that ONLY the creator should be able to do it.")
     def __str__(self):
         return self.name
 
-# Model to log all the transitions done by all types of users
 
 
 #Model for Notifications
@@ -49,3 +48,7 @@ class Notification(models.Model):
         return self.text
 
 #Model for keeping track of all the reports for a circuit
+# class Permission(models.Model):
+#     role 
+#     choices = ('VIEW','EDIT','DELETE')
+#     is_own

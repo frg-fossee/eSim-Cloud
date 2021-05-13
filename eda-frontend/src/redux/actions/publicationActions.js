@@ -1,11 +1,38 @@
 import * as actions from './actions'
 import api from '../../utils/Api'
 
+export const createPublication = (save_id) => (dispatch, getState) => {
+  // Get token from localstorage
+  const token = localStorage.getItem("esim_token")
 
-export const fetchPublication = (publicationID) => (dispatch, getState) => {
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.post(`/publish/publication/${save_id}`, {}, config)
+    .then(
+      (res) => {
+        console.log("Created")
+        dispatch({
+          type: actions.SET_CURRENT_PUBLICATION,
+          payload: res.data
+        })
+      }
+    )
+    .catch((err) => { console.error(err) })
+}
+
+export const fetchPublication = () => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
-
+  const publication_id = getState().saveSchematicReducer.details.publication_id
   // add headers
   const config = {
     headers: {
@@ -17,15 +44,16 @@ export const fetchPublication = (publicationID) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.get('publish/publication/' + publicationID, config)
+  api.get('publish/publication/' + publication_id, config)
     .then(
       (res) => {
+        console.log(res.data)
         dispatch({
           type: actions.SET_CURRENT_PUBLICATION,
           payload: res.data
         })
         if (res.data.is_reported) {
-          dispatch(fetchReports(publicationID))
+          dispatch(fetchReports(publication_id))
         }
       }
     )
@@ -49,10 +77,11 @@ export const fetchReports = (publicationID) => (dispatch, getState) => {
   api.get('workflow/report/' + publicationID, config)
     .then(
       (res) => {
-        dispatch({
-          type: actions.FETCH_REPORTS,
-          payload: res.data
-        })
+        if (res.data.open !== [] && res.data.closed !== [] && res.data.approved !== [])
+          dispatch({
+            type: actions.FETCH_REPORTS,
+            payload: res.data
+          })
       }
     )
     .catch((err) => { console.error(err) })
@@ -86,6 +115,9 @@ export const resolveReports = (publicationID, stateName) => (dispatch, getState)
 
 export const getStatus = (publication_id) => (dispatch, getState) => {
   const token = getState().authReducer.token
+  if (!publication_id) {
+    publication_id = getState().saveSchematicReducer.details.publication_id
+  }
 
   // add headers
   const config = {
@@ -100,10 +132,35 @@ export const getStatus = (publication_id) => (dispatch, getState) => {
   }
   api.get(`/workflow/state/${publication_id}`, config)
     .then((res) => {
+      console.log(res.data)
       dispatch({
         type: actions.GET_STATES,
         payload: res.data
       })
+    })
+    .catch(error => console.log(error))
+}
+export const changeStatus = (publication_id, status) => (dispatch, getState) => {
+  //post the state
+  const token = localStorage.getItem("esim_token")
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.post(`/workflow/state/${publication_id}`,
+    {
+      'name': status
+    }, config)
+    .then(() => {
+      dispatch(fetchPublication())
+      dispatch(getStatus())
     })
     .catch(error => console.log(error))
 }
@@ -132,26 +189,26 @@ export const reportPublication = (reportDescription, publication_id) => (dispatc
 }
 export const approveReports = (publication_id, reports, status) => (dispatch, getState) => {
   // Get token from localstorage
-    const token = getState().authReducer.token
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
+  const token = getState().authReducer.token
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.post(`workflow/report/approve/${publication_id}`,
+    {
+      'reports': reports,
+      'state': { 'name': status }
+    }, config)
+    .then(
+      (res) => {
+        dispatch(fetchReports(publication_id))
       }
-    }
-    // If token available add to headers
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.post(`workflow/report/approve/${publication_id}`,
-      {
-        'reports': reports,
-        'state': { 'name': status }
-      }, config)
-      .then(
-        (res) => {
-          dispatch(fetchReports(publication_id))
-        }
-      )
-      .catch((err) => { console.error(err) })
+    )
+    .catch((err) => { console.error(err) })
 }

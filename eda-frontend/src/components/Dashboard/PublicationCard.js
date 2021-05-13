@@ -7,26 +7,11 @@ import {
   CardHeader,
   CardMedia,
   Typography,
-  Dialog,
-  Select,
-  DialogContent,
-  MenuItem,
-  DialogContentText,
-  DialogTitle,
-  Tooltip,
-  Paper,
-  Menu,
-  DialogActions,
 } from '@material-ui/core'
-import React ,{useEffect}from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
-import SettingsIcon from '@material-ui/icons/Settings';
-import api from '../../utils/Api'
-import {useDispatch,useSelector } from 'react-redux'
-import { getStatus } from '../../redux/actions'
-
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
@@ -42,51 +27,38 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+function timeSince(jsonDate) {
+  var json = jsonDate
 
-export default function PublicationCard({ pub }) {
-  const dispatch = useDispatch()
-  const [publishModal, setPublishModal] = React.useState(false)
-  const stateList = useSelector(state => state.publicationReducer.states)
+  var date = new Date(json)
 
-  const [status, setStatus] = React.useState(null)
-  useEffect(() => {
-    //no code
-  }, [dispatch])
-  const handlePublishClick = () => {
-    if (publishModal === false) {
-      dispatch(getStatus(pub.publication_id))
-    }
-    setPublishModal(!publishModal)
+  var seconds = Math.floor((new Date() - date) / 1000)
+
+  var interval = Math.floor(seconds / 31536000)
+
+  if (interval > 1) {
+    return interval + ' years'
   }
-  const changeStatus = () => {
-    //post the state
-    const token = localStorage.getItem("esim_token")
-
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-    }
-
-    // If token available add to headers
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.post(`/workflow/state/${pub.publication_id}`,
-      {
-        'name': status
-      }, config)
-      .then((res) => {
-        console.log(res.data)
-        pub.status_name = res.data.name
-      })
-      .catch(error => console.log(error))
-    handlePublishClick()
+  interval = Math.floor(seconds / 2592000)
+  if (interval > 1) {
+    return interval + ' months'
   }
-  const handleSelectChange = (event) => {
-    setStatus(event.target.value)
-  };
+  interval = Math.floor(seconds / 86400)
+  if (interval > 1) {
+    return interval + ' days'
+  }
+  interval = Math.floor(seconds / 3600)
+  if (interval > 1) {
+    return interval + ' hours'
+  }
+  interval = Math.floor(seconds / 60)
+  if (interval > 1) {
+    return interval + ' minutes'
+  }
+  return Math.floor(seconds) + ' seconds'
+}
+export default function PublicationCard({ pub, is_review }) {
+
   const classes = useStyles()
   return (
     <>
@@ -97,11 +69,15 @@ export default function PublicationCard({ pub }) {
             className={classes.media}
             image={pub.base64_image} />
           <CardContent>
-            <Typography variant='body2' component='p'>
+          <Typography variant="body2" component="p">
+              {pub.description}
+            </Typography>
+            <br/>
+            <Typography variant='body2' color='textSecondary' component='p'>
               Status: {pub.status_name}
             </Typography>
             <Typography variant='body2' component='p' color='textSecondary' style={{ margin: '5px 0px 0px 0px' }}>
-              Updated at {pub.save_time}
+              Updated at {timeSince(pub.save_time)} ago...
             </Typography>
           </CardContent>
         </CardActionArea>
@@ -109,79 +85,22 @@ export default function PublicationCard({ pub }) {
           <Button
             target="_blank"
             component={RouterLink}
-            to={'/editor?id=' + pub.save_id}
-            size="small"
-            color="primary">
-            Launch in Editor
-          </Button>
-          <Button
-            target="_blank"
-            component={RouterLink}
             to={'/publication?save_id=' + pub.save_id + '&publication_id=' + pub.publication_id}
             size="small"
             color="primary">
-            View Publication
+            View
           </Button>
-          <Tooltip title="Publication Settings" placement="bottom" arrow>
-            <SettingsIcon
-              color='secondary'
-              fontSize='small'
-              onClick={() => { handlePublishClick() }}
-            />
-          </Tooltip>
+          {!is_review &&
+            <Button
+              target="_blank"
+              component={RouterLink}
+              to={'/editor?id=' + pub.save_id}
+              size="small"
+              color="primary">
+              Edit
+        </Button>}
+
         </CardActions>
-
-        <Dialog onClose={handlePublishClick} aria-labelledby="simple-dialog-title" open={publishModal}>
-          <DialogTitle id="simple-dialog-title">Publication Status: {pub.status_name}</DialogTitle>
-          <DialogContent>
-            {stateList ?
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                autoWidth
-                style={{ width: '50%' }}
-                onChange={handleSelectChange}
-                value={status}
-              >
-                {stateList.map((item, index) =>
-                (
-                  <MenuItem value={item}>{item}</MenuItem>
-                ))}
-              </Select> :
-              <h3>Wait for your publication to be reviewed</h3>}
-            <br />
-          </DialogContent>
-          {stateList ? <DialogActions>
-            <Button
-              size="small"
-              variant="contained"
-              color="primary"
-              onClick={changeStatus}
-            >
-              Change
-            </Button>
-            <Button
-              onClick={handlePublishClick}
-              size="small"
-              className={classes.no}
-              variant="contained"
-            >
-              Cancel
-            </Button>
-          </DialogActions> :
-            <DialogActions>
-              <Button
-                onClick={handlePublishClick}
-                size="small"
-                variant="contained"
-              >
-                OK
-          </Button>
-            </DialogActions>}
-        </Dialog>
-
-
-
       </Card>
     </>
   )

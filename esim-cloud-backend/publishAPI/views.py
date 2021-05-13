@@ -44,13 +44,16 @@ class PublicationViewSet(APIView):
             save_state = StateSave.objects.get(save_id=circuit_id)
         except:
             return Response({'Error':'No State found'},status=status.status.HTTP_404_NOT_FOUND)
-        publication = Publication(title=save_state.name,author=save_state.owner,is_arduino=save_state.is_arduino)
-        publication.save()
-        save_state.publication = publication
-        save_state.shared = True
-        save_state.save()
-        serialized = PublicationSerializer(publication)
-        return Response(serialized.data)
+        if save_state.publication != Publication.objects.none():
+            publication = Publication(title=save_state.name,author=save_state.owner,is_arduino=save_state.is_arduino)
+            publication.save()
+            save_state.publication = publication
+            save_state.shared = True
+            save_state.save()
+            serialized = PublicationSerializer(publication)
+            return Response(serialized.data)
+        else:
+            return Response({"Message":"Already Exists"},status=status.HTTP_400_BAD_REQUEST)
 # class PublishViewSet(viewsets.ModelViewSet):
 #     """
 #      Publishing CRUD Operations

@@ -11,23 +11,14 @@ import {
   CardHeader,
   Tooltip,
   Snackbar,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  TextField,
-  DialogContentText,
-  DialogTitle,
-  Paper,
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
-import PublishIcon from '@material-ui/icons/Publish';
 import { useDispatch } from 'react-redux'
-import {  deleteSchematic, fetchMyPublications } from '../../redux/actions/index'
+import {  deleteSchematic} from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
-import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -126,48 +117,14 @@ function getDate(jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard({ sch,createCircuit }) {
+export default function SchematicCard({ sch }) {
   const classes = useStyles()
 
   // To handel delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
-  const [publishModal, setPublishModal] = React.useState(false)
-  const [hasCircuit,setHasCircuit] = React.useState(sch.publication)
 
-  const handlePublishClick = () => {
-    setPublishModal(!publishModal)
-    
-  }
-  const createSchCircuit = (save_id) => {
-    // Get token from localstorage
-    const token = localStorage.getItem("esim_token")
-  
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-  
-    // If token available add to headers
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.post(`/publish/publication/${save_id}`, {}, config)
-      .then(
-        () => {
-          setHasCircuit(true)
-        }
-      )
-      .catch((err) => { console.error(err) })
-  }
   const handleSnacClick = () => {
     setSnacOpen(true)
-  }
-  const makePublish = () => {
-    handlePublishClick()
-    createSchCircuit(sch.save_id)
-
   }
   const handleSnacClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -211,41 +168,6 @@ export default function SchematicCard({ sch,createCircuit }) {
           >
             Launch in Editor
           </Button>
-          {!hasCircuit &&
-            <Tooltip title="Publish" placement="bottom" arrow>
-              <PublishIcon
-                color='secondary'
-                fontSize='small'
-                style={{ marginLeft: 'auto' }}
-                onClick={() => { handlePublishClick() }}
-              />
-            </Tooltip>
-          }
-          {!sch.publication &&
-            <Dialog onClose={handlePublishClick} aria-labelledby="simple-dialog-title" open={publishModal}>
-              <DialogTitle id="simple-dialog-title">Do you want to publish this circuit?</DialogTitle>
-              <DialogActions>
-                <Typography>Note: The circuit will be reviewed first and then will be published.</Typography>
-                <br />
-                <Button
-                  size="small"
-                  color="primary"
-                  variant="contained"
-                  onClick={makePublish}
-                >
-                  Yes
-                </Button>
-                <Button
-                  size="small"
-                  className={classes.no}
-                  variant="contained"
-                  onClick={handlePublishClick}
-                >
-                  No
-                </Button>
-              </DialogActions>
-            </Dialog>}
-
           {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon

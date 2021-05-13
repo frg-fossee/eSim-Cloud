@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   AppBar,
   Button,
@@ -22,7 +22,7 @@ import logo from '../../static/logo.png'
 import store from '../../redux/store'
 import { logout } from '../../redux/actions/index'
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -67,7 +67,6 @@ export function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const notifications = useSelector(state => state.authReducer.notifications)
   const auth = store.getState().authReducer
-  const dispatch = useDispatch()
 
   // useEffect(() => {
   //   console.log("Used Effect")

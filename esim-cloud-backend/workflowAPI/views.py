@@ -1,10 +1,10 @@
 import uuid
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import NotificationSerializer, StatusSerializer,ReportApprovalSerializer ,UserRoleRetreieveSerializer
+from .serializers import NotificationSerializer, StatusSerializer, ReportApprovalSerializer, UserRoleRetreieveSerializer
 from .models import Notification, State, Transition, CustomGroup
 from publishAPI.models import Publication, Report
-from publishAPI.serializers import PublicationSerializer,ReportSerializer,ReportDescriptionSerializer
+from publishAPI.serializers import PublicationSerializer, ReportSerializer, ReportDescriptionSerializer
 from rest_framework.response import Response
 from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
@@ -84,10 +84,11 @@ class RetrivePublicationsViewSet(APIView):
             role__in=groups, only_for_creator=False)
         publications = Publication.objects.none()
         for transistion in transistions:
-            publication = Publication.objects.filter(
-                state=transistion.from_state).exclude(author=self.request.user)
-            # TODO: Make sure this gets distinct values
-            publications = publications | publication
+            if transistion.from_state.public is False or transistion.from_state.report is True:
+                publication = Publication.objects.filter(
+                    state=transistion.from_state).exclude(author=self.request.user)
+                # TODO: Make sure this gets distinct values
+                publications = publications | publication
         if publications is None:
             return Response(status=http_status.HTTP_404_NOT_FOUND)
         else:
@@ -108,24 +109,25 @@ class PublicationStateView(APIView):
             try:
                 saved_state = Publication.objects.get(
                     publication_id=publication_id)
-            except:
+            except Publication.DoesNotExist:
                 return Response({'error': 'Publication does not Exist'}, status=http_status.HTTP_404_NOT_FOUND)
             circuit_transition = Transition.objects.filter(
                 from_state=saved_state.state, role__in=self.request.user.groups.all())
             states = []
             for transition in circuit_transition:
-                if transition.only_for_creator is True and self.request.user is saved_state.author:
-                    states.append(transition.to_state.name)
-                else:
-                    if transition.allowed_for_creator is False and saved_state.author == request.user:
-                        pass
-                    else:
+                if transition.from_state.public is False or transition.from_state.report is True:
+                    if transition.only_for_creator is True and self.request.user is saved_state.author:
                         states.append(transition.to_state.name)
+                    else:
+                        if transition.restricted_for_creator is True and saved_state.author == request.user:
+                            pass
+                        else:
+                            states.append(transition.to_state.name)
             states = list(set(states))
             if states == []:
                 return Response(status=http_status.HTTP_200_OK)
             else:
-                return Response(states,status=http_status.HTTP_200_OK)
+                return Response(states, status=http_status.HTTP_200_OK)
 
     @swagger_auto_schema(responses={200: StatusSerializer}, request_body=StatusSerializer)
     def post(self, request, publication_id):
@@ -160,15 +162,14 @@ class PublicationStateView(APIView):
                 elif circuit_transition.only_for_creator is False:
                     roles_set = set(roles)
                     user_roles_set = set(user_roles)
-                    if user_roles_set & roles_set:
+                    if user_roles_set.intersection(roles_set):
                         intersection = user_roles_set.intersection(roles_set)
                         for user_role in intersection:
                             if user_role.customgroup.is_arduino is saved_state.is_arduino:
-                                if circuit_transition.allowed_for_creator is False and saved_state.author == request.user:
+                                if circuit_transition.restricted_for_creator is True and saved_state.author == request.user:
                                     return Response({'error': 'You are not authorized to edit the status as it is not allowed for creator.'},
                                                     status=http_status.HTTP_401_UNAUTHORIZED)
                                 else:
-
                                     transition_history = TransitionHistory(publication_id=publication_id,
                                                                            transition_author=request.user,
                                                                            from_state=saved_state.state,
@@ -187,11 +188,10 @@ class PublicationStateView(APIView):
                                         notification.save()
                                     serialized = StatusSerializer(state)
                                     return Response(serialized.data)
-                        else:
-                            return Response({'error': 'You are not authorized to edit the status as you dont have the role 1.'},
-                                            status=http_status.HTTP_401_UNAUTHORIZED)
+                        return Response({'error': 'You are not authorized to edit the status as you dont have the role'},
+                                        status=http_status.HTTP_401_UNAUTHORIZED)
                     else:
-                        return Response({'error': 'You are not authorized to edit the status as you dont have the role 2 .'},
+                        return Response({'error': 'You are not authorized to edit the status as you dont have the role.'},
                                         status=http_status.HTTP_401_UNAUTHORIZED)
                 else:
                     return Response({'error': 'You are not authorized to edit the status as it is only allowed for creator.'},
@@ -204,21 +204,23 @@ class ReportedPublicationsView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     @swagger_auto_schema(request_body=ReportDescriptionSerializer)
-    def report_publication(self, request,publication_id):
+    def report_publication(self, request, publication_id):
         '''
         Request to report a publication.
         '''
-        try: 
+        try:
             state = State.objects.get(report=True)
         except:
             return Response({'Message': 'No reported State implemented'}, status=http_status.HTTP_404_NOT_FOUND)
         try:
-            publication = Publication.objects.get(publication_id=publication_id)
+            publication = Publication.objects.get(
+                publication_id=publication_id)
         except:
             return Response({'Message': 'No publications found'}, status=http_status.HTTP_404_NOT_FOUND)
         publication.state = state
         publication.is_reported = True
-        report = Report(description=request.data['description'],publication=publication,reporter=self.request.user)
+        report = Report(description=request.data['description'],
+                        publication=publication, reporter=self.request.user)
         publication.save()
         report.save()
         return Response(status=http_status.HTTP_200_OK)
@@ -236,7 +238,7 @@ class ReportedPublicationsView(viewsets.ViewSet):
         return Response(serialized.data, status=http_status.http_status.HTTP_200_OK)
 
     @swagger_auto_schema(request_body=ReportApprovalSerializer)
-    def approve_reports(self,request,publication_id):
+    def approve_reports(self, request, publication_id):
         try:
             groups = self.request.user.groups.all()
         except:
@@ -246,37 +248,51 @@ class ReportedPublicationsView(viewsets.ViewSet):
                 flag = False
                 for report in request.data['reports']:
                     if report['approved']:
-                        flag= True
+                        flag = True
                     temp = Report.objects.get(id=report['id'])
                     temp.approved = report['approved']
+                    if report['approved'] is False:
+                        temp.report_open = False
                     temp.save()
-                if flag:
-                    #Change status as well
-                    publication = Publication.objects.get(publication_id=publication_id)
-                    publication.state = State.objects.get(name=request.data['state']['name'])
-                    return Response({"Approval sent"})
+                publication = Publication.objects.get(
+                        publication_id=publication_id)
+                publication.state = State.objects.get(
+                        name=request.data['state']['name'])
+                publication.is_reported = flag
+                publication.save()
+                return Response({"Approval sent"})
         else:
             return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
+
     @swagger_auto_schema(responses={200: ReportSerializer})
     def get_reports(self, request, publication_id):
         '''
         Request to get reports of a specific publication.
         '''
         try:
-            publication = Publication.objects.get(publication_id=publication_id,is_reported=True)
+            publication = Publication.objects.get(
+                publication_id=publication_id, is_reported=True)
         except:
             return Response({"Error": "No publication found"}, status=http_status.HTTP_404_NOT_FOUND)
         try:
             if self.request.user == publication.author:
-                reports = Report.objects.filter(
-                    publication=publication, report_open=True,approved=True)
+                open_reports=[]
+                resolved_reports=[]
+                approved_reports = Report.objects.filter(
+                    publication=publication, report_open=True, approved=True)
             else:
-                reports = Report.objects.filter(
-                    publication=publication, report_open=True,approved=None)
+                open_reports = Report.objects.filter(
+                    publication=publication, report_open=True, approved=None)
+                resolved_reports = Report.objects.filter(
+                    publication=publication, report_open=False)
+                approved_reports = Report.objects.filter(
+                    publication=publication, report_open=True,approved=True)
         except:
             return Response({"Message": "No reports found"}, status=http_status.HTTP_404_NOT_FOUND)
-        serialized = ReportSerializer(reports, many=True)
-        return Response(serialized.data, status=http_status.HTTP_200_OK)
+        open_serialized = ReportSerializer(open_reports, many=True)
+        resolved_serialized = ReportSerializer(resolved_reports, many=True)
+        approved_serializer = ReportSerializer(approved_reports, many=True)
+        return Response({"open":open_serialized.data,"closed":resolved_serialized.data,"approved":approved_serializer.data}, status=http_status.HTTP_200_OK)
 
     @swagger_auto_schema()
     def resolve(self, request, publication_id):
@@ -290,20 +306,27 @@ class ReportedPublicationsView(viewsets.ViewSet):
         for group in groups:
             if group.customgroup.is_type_reviewer is True:
                 try:
-                    publication = Publication.objects.get(publication_id=publication_id)
+                    publication = Publication.objects.get(
+                        publication_id=publication_id)
                 except:
                     return Response({"Error": "No publication found"}, status=http_status.HTTP_404_NOT_FOUND)
                 try:
                     reports = Report.objects.filter(publication=publication)
                 except:
                     return Response({"Message": "No reports found"}, status=http_status.HTTP_404_NOT_FOUND)
-                for report in reports:
-                    report.report_open = False
-                    report.resolver = self.request.user
-                    report.save()
-                # publication.state = State.objects.get(name=request.data['name'])
-                # publication.is_reported = False
-                # publication.save()
-                return Response({"Message": "Changed Reported Publication State"}, status=http_status.HTTP_200_OK)
+                if self.request.user != publication.author:
+                    for report in reports:
+                        report.report_open = False
+                        report.resolver = self.request.user
+                        report.save()
+                    try:
+                        publication.state = State.objects.get(name=request.data['name'])
+                    except:
+                        pass
+                    publication.is_reported = False
+                    publication.save()
+                    return Response({"Message": "Changed Reported Publication State"}, status=http_status.HTTP_200_OK)
+                else:
+                    return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
         else:
             return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)

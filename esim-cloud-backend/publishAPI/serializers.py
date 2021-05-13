@@ -1,5 +1,6 @@
+from django.db.models import fields
 from rest_framework import serializers
-from publishAPI.models import CircuitTag, Publication,Report
+from publishAPI.models import CircuitTag, Publication, Report, TransitionHistory
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -31,29 +32,48 @@ class CircuitTagSerializer(serializers.ModelSerializer):
         fields = ('tag', 'description', 'id')
 
 
+class TransitionHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransitionHistory
+        fields = ('transition_author',
+                  'from_state',
+                  'to_state',
+                  'transition_time')
+
+
 class PublicationSerializer(serializers.ModelSerializer):
-    base64_image = Base64ImageField(max_length=None, use_url=True,source='statesave.base64_image')
+    base64_image = Base64ImageField(
+        max_length=None, use_url=True, source='statesave.base64_image')
     status_name = serializers.CharField(read_only=True, source='state.name')
     save_id = serializers.CharField(read_only=True, source='statesave.save_id')
-    save_time = serializers.CharField(read_only=True, source='statesave.save_time')
-    author_name = serializers.CharField(read_only=True, source='author.username')
+    save_time = serializers.CharField(
+        read_only=True, source='statesave.save_time')
+    author_name = serializers.CharField(
+        read_only=True, source='author.username')
+    transition_histories = TransitionHistorySerializer(many=True,read_only=True)
     class Meta:
         model = Publication
-        fields = ('publication_id', 
+        fields = ('publication_id',
                   'title',
+                  'description',
                   'base64_image',
                   'status_name',
                   'save_id',
                   'save_time',
                   'author_name',
-                  'is_reported'
+                  'is_reported',
+                  'transition_histories'
                   )
+
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
-        fields=('id','report_open','report_time','description','approved')
+        fields = ('id', 'report_open', 'report_time',
+                  'description', 'approved')
+
+
 class ReportDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
-        fields=('description',)
+        fields = ('description',)

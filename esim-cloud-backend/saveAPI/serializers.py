@@ -37,7 +37,7 @@ class StateSaveSerializer(serializers.ModelSerializer):
         model = StateSave
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time',
-                  'is_arduino','publication_id','publication')
+                  'is_arduino','publication_id')
 
 
 class SaveListSerializer(serializers.ModelSerializer):

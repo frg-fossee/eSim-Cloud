@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect} from 'react'
 import {
   Hidden,
   Divider,
@@ -15,8 +15,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchMyPublications, fetchSchematics, fetchOtherPublications, fetchRole } from '../../redux/actions/index'
-import Axios from 'axios'
-
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '45px'
@@ -137,7 +135,7 @@ export default function DashSidebar(props) {
           className={classes.sideItem}
           button
         >
-          <ListItemText primary='My Publications' />
+          <ListItemText primary='My Projects' />
         </ListItem>
         {auth.roles && auth.roles.is_type_reviewer &&
           <ListItem
@@ -146,7 +144,7 @@ export default function DashSidebar(props) {
             className={classes.sideItem}
             button
           >
-            <ListItemText primary='Review Publications' />
+            <ListItemText primary='Review Projects' />
           </ListItem>}
 
       </List>

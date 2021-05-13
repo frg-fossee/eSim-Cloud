@@ -31,12 +31,12 @@ class Publication(models.Model):
     # Circuit Details
     title = models.CharField(
         max_length=200, blank=False)  # Search
+    description = models.CharField(max_length=400, null=True)
 
     state = models.ForeignKey(State,on_delete=CASCADE,default=1)
     
     author = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.CASCADE)
-
     is_arduino = models.BooleanField(default=False, null=False) 
     reviewer_notes = models.CharField(max_length=500,blank=True)
     is_reported = models.BooleanField(default=False,null=True)

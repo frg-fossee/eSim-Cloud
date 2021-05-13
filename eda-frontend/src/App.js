@@ -75,7 +75,7 @@ function App () {
         }
         {localStorage.getItem('esim_token') !== null
           ? <PublicRoute exact path="/publication" restricted={false} nav={true} component={PublicationPage} />
-          : <Route path="/publication" component={PublicationPage} />
+          : <Route to="/" restricted={true} nav={false} component={Login} />
         }
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
