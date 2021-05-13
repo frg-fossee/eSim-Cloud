@@ -137,7 +137,7 @@ class Graph extends Component {
                 color: '#67737e'
               },
               ticks: {
-                beginAtZero: true,
+                // beginAtZero: true,
                 fontSize: 15,
                 padding: 25
               }
