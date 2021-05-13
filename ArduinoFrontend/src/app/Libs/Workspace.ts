@@ -1105,6 +1105,8 @@ export class Workspace {
 
     document.body.removeChild(element);
 
+    return true;
+
   }
 
   /**

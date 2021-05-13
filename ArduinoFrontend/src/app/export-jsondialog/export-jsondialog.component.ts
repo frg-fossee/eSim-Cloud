@@ -19,7 +19,7 @@ export class ExportJSONDialogComponent implements OnInit {
   ngOnInit() {
   }
 
-  fileName:string = '';
+  fileName:string = "";
 
   /**
    * Save Project function, Calls Workspace.SaveJson with edited fileName and then closes project
