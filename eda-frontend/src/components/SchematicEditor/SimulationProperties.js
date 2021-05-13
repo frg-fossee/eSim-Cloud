@@ -23,6 +23,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
 import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from './SimulationScreen'
+import { Multiselect } from 'multiselect-react-dropdown'
 
 import api from '../../utils/Api'
 
@@ -157,7 +158,31 @@ export default function SimulationProperties () {
     Decade: 'dec',
     Octave: 'oct'
   }
-
+  const nodeArray = []  
+  let [selectedValue, setSelectedValue] = React.useState([])
+  const setSelectedValue1 = (data) => {
+    var f = 0
+    selectedValue.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValue, data]    
+        setSelectedValue(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const removeSelectedValue = (data) => {
+    const tmp = []
+    selectedValue.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValue = tmp
+    // console.log(selectedValue)
+  }
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
     var titleA = netfile.title.split(' ')[1]
@@ -292,9 +317,9 @@ export default function SimulationProperties () {
       case 'Transient':
         // console.log(transientAnalysisControlLine)
         var uic = ""
-        if(transientAnalysisControlLine.skipInitial == true) uic="UIC"
+        if(transientAnalysisControlLine.skipInitial === true) uic="UIC"
         controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
-
+        
         dispatch(setResultTitle('Transient Analysis Output'))
         break
       case 'Ac':
@@ -306,15 +331,33 @@ export default function SimulationProperties () {
       default:
         break
     }
-    let cblockline
-    if (controlBlockParam.length <= 0) { cblockline = 'all' } else { cblockline = controlBlockParam }
+    // console.log(selectedValue)
+    var atleastOne = 0
+    let cblockline =""
+    
+    if(selectedValue.length > 0 && selectedValue !== null){
+        selectedValue.forEach((value, i) => {
+            if(value[i] !== undefined){
+                atleastOne = 1
+                // console.log("value")
+                cblockline = cblockline + " " + String(value[i].key)
+                // console.log(cblockline)
+            }                
+        })
+    }
+    if(controlBlockParam.length > 0){
+        cblockline = cblockline + " " + controlBlockParam 
+        atleastOne = 1
+    }            
+    
+    if(atleastOne === 0) cblockline = 'all'
     controlBlock = `\n.control \nrun \nprint ${cblockline} > data.txt \n.endc \n.end`
     // console.log(controlLine)
 
     dispatch(setControlLine(controlLine))
     dispatch(setControlBlock(controlBlock))
     // setTimeout(function () { }, 2000)
-
+    
     var netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
@@ -648,32 +691,29 @@ export default function SimulationProperties () {
                       <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
                     </ListItem>
                     <ListItem>
-                      <TextField
-                        style={{ width: '100%' }}
-                        id="parameter"
-                        size='small'
-                        variant="outlined"
-                        select
-                        label="Select Node"
-                        value={controlBlockParam}
-                        onChange={handleControlBlockParam}
-                        SelectProps={{
-                          native: true
-                        }}
-                      >
-
-                        {
-                          nodeList.map((value, i) => {
-                             if(value != null){
-                              return (<option key={i} value={value}>
-                                {value}
-                              </option>)
-                            } else {
-                              return null
-                            }
-                          })
+                        {   nodeList.forEach((value) => {
+                                if(value !== null && value !== "") {
+                                    nodeArray.push({key:value})
+                                }
+                            })
                         }
-                      </TextField>
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Nodes"
+                        closeOnSelect="false"
+                        placeholder="Select Node"
+                        onSelect={setSelectedValue1}
+                        onRemove={removeSelectedValue}
+                        // value={controlBlockParam}
+                        // onChange={handleControlBlockParam}
+                        // SelectProps={{
+                        //   native: true
+                        // }}
+                        options={nodeArray} displayValue="key" 
+                      />
+                          
+                      
+                      
                     </ListItem>
                     <ListItem>
 
