@@ -36,10 +36,11 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchCustomLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess } from '../../redux/actions/index'
+import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchCustomLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary } from '../../redux/actions/index'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
 import Api from '../../utils/Api'
+import { Alert } from '@material-ui/lab'
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -544,7 +545,7 @@ OpenSchDialog.propTypes = {
 }
 
 export function SelectLibrariesModal (props) {
-  const {open, close } = props
+  const {open, close, auth } = props
   const schemEditor = useSelector(state => state.schematicEditorReducer)
   const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
@@ -554,6 +555,7 @@ export function SelectLibrariesModal (props) {
   const classes = useStyles();
   const [activeLibraries, setActiveLibraries] = React.useState(allLibraries)
   const [message, setMessage] = React.useState("")
+  const [uploadDisable, setUploadDisable] = React.useState(false)
 
   useEffect(() => {
     if (open == true)
@@ -562,6 +564,7 @@ export function SelectLibrariesModal (props) {
   }, [dispatch, open, newLib])
 
   useEffect(() => {
+    setUploadDisable(false)
     if(uploadSuccess == true){
       setMessage("Upload Successful")
       setsnacOpen(true)
@@ -613,8 +616,9 @@ export function SelectLibrariesModal (props) {
   }
 
   const fileUpload = React.useRef(null)
-  
+
   const handlFileUpload = () => {
+    setUploadDisable(true)
     var files = event.target.files
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
@@ -636,7 +640,7 @@ export function SelectLibrariesModal (props) {
             horizontal: 'left'
           }}
           open={open}
-          autoHideDuration={2000}
+          autoHideDuration={4000}
           onClose={close}
           message={message}
           action={
@@ -680,8 +684,14 @@ export function SelectLibrariesModal (props) {
         <DialogContentText id="open-dialog-description" >
           { newLib
             ? <center>
+              { uploadDisable &&
+                <div style={{paddingBottom: '10px'}} >
+                  <Alert severity="info" >Files are being uploaded please wait.</Alert>
+                </div>
+              }
+              <p>{"Select .lib and .dcm files to upload"}</p>
               <Button variant="outlined" fullwidth={true.toString()} size="large" color="primary" 
-                onClick={ () => { handleLibUploadOpen() }}>
+                onClick={ () => { handleLibUploadOpen() }} disabled={uploadDisable}>
                 Upload Files
                 <input type="file" multiple={true} accept=".lib,.dcm" ref={ fileUpload } onChange={ handlFileUpload } style={{display: 'none'}} />
               </Button>
@@ -710,8 +720,9 @@ export function SelectLibrariesModal (props) {
                           </TableCell>
                           <TableCell align="center">
                             <Button variant="contained" size="small" 
+                              color={classes.error}
                               style={{ backgroundColor: !library.default ? "#ff1744": "#b71c1c", color: "#ffffff"}}
-                              onClick={() => { console.log("ELEMENT: ", library) }} disabled={library.default} >
+                              onClick={() => { dispatch(deleteLibrary(library)) }} disabled={library.default} >
                               Delete
                             </Button>
                           </TableCell>
@@ -723,16 +734,18 @@ export function SelectLibrariesModal (props) {
               : <p>Nothing To Show</p>
           }
         </DialogContentText>
-        <DialogActions>
-          <Button variant={newLib ? 'outlined': 'text'} 
-          onClick={() => handleNewBtn()} color="primary">
-            Upload libraries
-          </Button>
-          <Button variant={newLib ? 'text': 'outlined'} 
-          onClick={() => handleSelectBtn()} color="primary">
-            Select libraries
-          </Button>
-        </DialogActions>
+        { auth &&
+          <DialogActions>
+            <Button variant={newLib ? 'contained': 'text'} disableElevation={true}
+            onClick={() => handleNewBtn()} color="primary">
+              Upload libraries
+            </Button>
+            <Button variant={newLib ? 'text': 'contained'} disableElevation={true}
+            onClick={() => handleSelectBtn()} color="primary">
+              Select libraries
+            </Button>
+          </DialogActions>
+        }
       </DialogContent>
     </Dialog>
   )

@@ -83,19 +83,17 @@ export const fetchLibrary = (library) => (dispatch) => {
   //   "saved_on": "2021-05-10T20:29:01.794498Z",
   //   "id": 363
   // } -- Single Object
-  const token = store.getState().authReducer.token
-  const config = {headers: {
-    'Content-Type': 'application/json'
-  }}
-  if(token)
-    config.headers.Authorization = `Token ${token}`
-  api.get(`libraries/${parseInt(library.id)}/`, config).then( res => {
-    dispatch({
-      type: actions.FETCH_LIBRARY,
-      payload: res.data
-    })
+  // const token = store.getState().authReducer.token
+  // const config = {headers: {
+  //   'Content-Type': 'application/json'
+  // }}
+  // if(token)
+  //   config.headers.Authorization = `Token ${token}`
+  delete library['active']
+  dispatch({
+    type: actions.FETCH_LIBRARY,
+    payload: library
   })
-    .catch(err => { console.log(err) })
 }
 
 export const removeLibrary = (library) => (dispatch) => {
@@ -105,12 +103,29 @@ export const removeLibrary = (library) => (dispatch) => {
   })
 }
 
+export const deleteLibrary = (library) => (dispatch) => {
+  const token = store.getState().authReducer.token
+  const config = {headers: {
+      'Authorization': `Token ${token}`
+    }
+  }
+  api.delete(`libraries/${library.id}/`, config).then(
+    dispatch({
+      type: actions.DELETE_LIBRARY,
+      payload: library
+    })
+  ).catch(err => {
+    console.log(err)
+  })
+}
+
 // API call to save uploaded libraries
 export const uploadLibrary = (formData) => (dispatch) => {
   const token = store.getState().authReducer.token
   const config = {headers: {
       'Authorization': `Token ${token}`
-    }}
+    }
+  }
   api.post('/library-sets/', formData, config).then(res => {
     dispatch({
       type: actions.UPLOAD_LIBRARIES,

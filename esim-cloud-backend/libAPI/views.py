@@ -21,8 +21,6 @@ class IsLibraryOwner(BasePermission):
         if obj.library_set.default == True:
             return True
         if request.user.is_authenticated:
-            print(obj.library_set.user)
-            print(obj.library_set.user)
             if obj.library_set.user == request.user:
                 return True
         return False
@@ -36,7 +34,7 @@ class LibraryFilterSet(django_filters.FilterSet):
         }
 
 
-class LibraryViewSet(viewsets.ReadOnlyModelViewSet):
+class LibraryViewSet(viewsets.ModelViewSet):
     """
      Listing All Library Details
     """
@@ -51,7 +49,7 @@ class LibraryViewSet(viewsets.ReadOnlyModelViewSet):
             return Library.objects.filter(
                 Q(library_set__user=self.request.user)
                 | Q(library_set__default=True)
-            )
+            ).order_by('-library_set__default')
         else:
             return Library.objects.filter(library_set__default=True)
 
@@ -61,10 +59,7 @@ class LibraryViewSet(viewsets.ReadOnlyModelViewSet):
         if request.user.is_authenticated:
             lib_sets = LibrarySet.objects.filter(
                 Q(user=request.user) & Q(default=False))
-            lib_sets_id = []
-            for set in lib_sets:
-                lib_sets_id.append(set.id)
-            queryset = Library.objects.filter(library_set__in=lib_sets_id)
+            queryset = Library.objects.filter(library_set__in=lib_sets)
             return Response(LibrarySerializer(queryset, many=True).data)
         return Response()
 
@@ -169,4 +164,3 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
-

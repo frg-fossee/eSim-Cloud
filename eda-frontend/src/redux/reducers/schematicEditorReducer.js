@@ -67,30 +67,34 @@ export default function (state = InitialState, action) {
       components[action.payload.id] = []
       const collapse = { ...state.collapse }
       const libraries = [ ...state.libraries ]
-      const f = 0;
       const newLib = action.payload
       collapse[newLib.id] = false
-      for ( var i=0; i< libraries.length; i++) {
-        if (libraries[i].id == newLib.id) {
-          f = 1;
-          break;
-        }
-      }
-      if (f == 0)
-        libraries.push(newLib)
+      libraries.push(newLib)
       return { ...state, libraries: libraries, components: components, collapse: collapse }
     }
 
     case actions.REMOVE_LIBRARY: {
-      const libraries = [ ...state.libraries ]
-      const newLibraries = []
-      const libToRemove = action.payload
-      for (let i=0; i< libraries.length; i++) {
-        if(libraries[i].id != libToRemove.id) {
-          newLibraries.push(libraries[i])
-        }
+      var libraries = [ ...state.libraries ]
+      const filterFunc = (element) => {
+        return element.id !== action.payload.id
       }
-      return { ...state, libraries: newLibraries }
+      libraries = libraries.filter(filterFunc)
+      const components = { ...state.components }
+      delete components[action.payload.id]
+      return { ...state, libraries: libraries, components: components}
+    }
+
+    case actions.DELETE_LIBRARY: {
+      const filterFunc = (element) => {
+        return element.id !== action.payload.id
+      }
+      var newLibraries = [ ...state.libraries ]
+      newLibraries = newLibraries.filter(filterFunc)
+      var components = { ...state.components }
+      var allLibraries = [ ...state.allLibraries ]
+      allLibraries = allLibraries.filter(filterFunc)
+      delete components[action.payload.id]
+      return { ...state, libraries: newLibraries, allLibraries: allLibraries, components: components }
     }
 
     case actions.UPLOAD_LIBRARIES: {
