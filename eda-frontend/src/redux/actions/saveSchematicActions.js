@@ -64,7 +64,6 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false) =
     body.version = randomstring.generate({
       length: 20,
     });
-    console.log(body)
     if (schSave.isSaved) {
       //  Updating saved schemaic
       body.save_id = schSave.details.save_id;
@@ -105,7 +104,6 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false) =
       length: 20,
     })
     body.version = schSave.details.version
-    console.log(body)
     api
     .post("save", queryString.stringify(body), config)
     .then((res) => {

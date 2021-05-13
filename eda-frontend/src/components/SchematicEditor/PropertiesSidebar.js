@@ -160,7 +160,6 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
             }
             versionsAccordingFreq[value.branch]?versionsAccordingFreq[value.branch].push(value):versionsAccordingFreq[value.branch]=[value]
           });
-          console.log(versionsAccordingFreq)
           setVersions(Object.entries(versionsAccordingFreq))
           var temp=[];
           for(var i=0;i<Object.entries(versionsAccordingFreq).length;i++)
@@ -172,7 +171,6 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               temp.push(false)
           }
           setBranchOpen(temp);
-          console.log(branchOpen)
         });
     }
   }, [])
@@ -244,10 +242,8 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
   }
 
   const handleBranch = (event) => {
-    var xml=Save()
-    dispatch(setSchXmlData(xml));
     exportImage("PNG").then((res) => {
-      dispatch(saveSchematic(schSave.title,schSave.description,xml,res,true))
+      dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,res,true))
     })
   }
 
