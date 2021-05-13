@@ -98,8 +98,15 @@ export default function ComponentSidebar ({ compRef }) {
     timeoutId.current = setTimeout(() => {
       // call api here
       setLoading(true)
-
-      api.get(`components/?${searchOptions[searchOption]}=${searchText}`)
+      var config = {}
+      const token = localStorage.getItem('esim_token')
+      if (token !== null || token !== undefined)
+      config = {
+        headers: {
+          'Authorization': `Token ${token}`
+        }
+      }
+      api.get(`components/?${searchOptions[searchOption]}=${searchText}`, config)
         .then(
           (res) => {
             if (res.data.length === 0) {

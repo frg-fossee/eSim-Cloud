@@ -1,3 +1,5 @@
+import { useDispatch } from 'react-redux'
+import { fetchAllLibraries } from '../actions'
 import * as actions from '../actions/actions'
 
 const InitialState = {
@@ -89,6 +91,18 @@ export default function (state = InitialState, action) {
         }
       }
       return { ...state, libraries: newLibraries }
+    }
+
+    case actions.UPLOAD_LIBRARIES: {
+      if(action.payload == 201) {
+        return { ...state, uploadSuccess: true }
+      }
+      else
+        return { ...state, uploadSuccess: false }
+    }
+
+    case actions.RESET_UPLOAD_SUCCESS: {
+      return { ...state, uploadSuccess: null }
     }
 
     default:

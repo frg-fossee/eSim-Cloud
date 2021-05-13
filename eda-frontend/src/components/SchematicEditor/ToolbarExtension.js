@@ -29,13 +29,14 @@ import {
   ListItemText,
   Avatar,
   ListItemAvatar,
-  Tooltip
+  Tooltip,
+  Snackbar
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchCustomLibraries, fetchLibrary, removeLibrary } from '../../redux/actions/index'
+import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchCustomLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess } from '../../redux/actions/index'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
 import Api from '../../utils/Api'
@@ -546,70 +547,54 @@ export function SelectLibrariesModal (props) {
   const {open, close } = props
   const schemEditor = useSelector(state => state.schematicEditorReducer)
   const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
-  const activeLibraries = useSelector(state => state.schematicEditorReducer.libraries)
+  const libraries = useSelector(state => state.schematicEditorReducer.libraries)
+  var uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
   const [newLib, setnewLib] = React.useState(false)
   const dispatch = useDispatch()
   const classes = useStyles();
-
-  const generateTable = (allLibraries) => {
-    if (allLibraries != undefined)
-      return allLibraries.map((library, i) => {
-        return (
-          <TableRow key={library.id}>
-            <TableCell component="th" scope="row">
-              {library.library_name}
-            </TableCell>
-            <TableCell align="center"> 
-              {library.active
-                ? <Button variant="contained" size="small" color="secondary"
-                  onClick={ () => { handleUnapply(library) }}>
-                  Remove
-                </Button>
-                : <Button variant="contained" size="small" color="primary"
-                  onClick={ () => { 
-                    handleAppply(library.id)
-                  }}>
-                  Use
-                </Button>
-              }
-            </TableCell>
-            <TableCell align="center">
-              <Button variant="contained" size="small" 
-                style={{ backgroundColor: !library.default ? "#ff1744": "#b71c1c", color: "#ffffff"}}
-                onClick={() => { console.log("ELEMENT: ", library) }} disabled={library.default}>
-                Delete
-              </Button>
-            </TableCell>
-          </TableRow>
-      )})
-  }
-
-  const [table, settable] = React.useState(generateTable(allLibraries))
+  const [activeLibraries, setActiveLibraries] = React.useState(allLibraries)
+  const [message, setMessage] = React.useState("")
 
   useEffect(() => {
-    dispatch(fetchAllLibraries())
-  }, [dispatch])
+    if (open == true)
+      if (newLib == false)
+        dispatch(fetchAllLibraries())
+  }, [dispatch, open, newLib])
+
+  useEffect(() => {
+    if(uploadSuccess == true){
+      setMessage("Upload Successful")
+      setsnacOpen(true)
+      setnewLib(false)
+      dispatch(resetUploadSuccess())
+    }
+    if(uploadSuccess == false){
+      setMessage("An Error Occured")
+      setsnacOpen(true)
+      dispatch(resetUploadSuccess())
+    }
+  }, [uploadSuccess])
 
   const updateActive = () => {
-    allLibraries.map((element) => {
+    var active = []
+    if( allLibraries != undefined)
+    allLibraries.forEach( (element) => {
       element.active = false
-      activeLibraries.forEach(ele => {
+      libraries.forEach( ele => {
         if(ele.id == element.id) {
           element.active = true
-          return;
         }
       })
-      return element
+      active.push(element)
     })
-    if ( allLibraries != undefined)
-    settable(generateTable(allLibraries))
+    setActiveLibraries(active)
   }
 
   useEffect(() => {
     if(allLibraries != undefined){
       updateActive();
     }
-  }, [schemEditor, activeLibraries])
+  }, [schemEditor, libraries])
 
   const handleSelectBtn = () => {
     setnewLib(false)
@@ -631,29 +616,50 @@ export function SelectLibrariesModal (props) {
   
   const handlFileUpload = () => {
     var files = event.target.files
-    console.log(files)
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i])
     }
-    for (var key of formData.entries()) {
-      console.log(key[0] + ', ' + key[1]);
-    }
-    const token = localStorage.getItem('esim_token')
-    const config = {
-      headers: {
-        'Authorization': `Token ${token}`
-      }
-    }
-    api.post('/library-sets/', formData, config)
-      .then( () => {
-        dispatch(fetchAllLibraries())
-        setnewLib(false)
-      })
+    dispatch(uploadLibrary(formData))
   }
 
   const handleLibUploadOpen = () => {
     fileUpload.current.click();
+  }
+
+  function SimpleSnackbar ({ open, close, message }) {
+    return (
+      <div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          open={open}
+          autoHideDuration={2000}
+          onClose={close}
+          message={message}
+          action={
+            <React.Fragment>
+              <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
+      </div>
+    )
+  }
+  
+  SimpleSnackbar.propTypes = {
+    open: PropTypes.bool,
+    close: PropTypes.func,
+    message: PropTypes.string
+  }
+
+  const [snacOpen, setsnacOpen] = React.useState(false)
+  const handleSnacClose = () => {
+    setsnacOpen(false)
   }
 
   return (
@@ -666,6 +672,7 @@ export function SelectLibrariesModal (props) {
     aria-labelledby="open-dialog-title"
     aria-describedby="open-dialog-description"
     >
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <DialogTitle>
         <Typography variant="h6">{'Libraries in your editor'}</Typography>
       </DialogTitle>
@@ -679,16 +686,41 @@ export function SelectLibrariesModal (props) {
                 <input type="file" multiple={true} accept=".lib,.dcm" ref={ fileUpload } onChange={ handlFileUpload } style={{display: 'none'}} />
               </Button>
             </center>
-            : allLibraries !== undefined
+            : activeLibraries !== undefined
               ? <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
-                {table}
-              <Table className={classes.table} aria-label="Libraries to import">
-                <TableBody>
-                  {generateTable()}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            : <p>Nothing To Show</p>
+                <Table className={classes.table} aria-label="Libraries to import">
+                  <TableBody>
+                    {activeLibraries.map((library, i) => {
+                      return (
+                        <TableRow key={library.id}>
+                          <TableCell component="th" scope="row">
+                            {library.library_name}
+                          </TableCell>
+                          <TableCell align="center"> 
+                            {library.active
+                              ? <Button variant="contained" size="small" color="secondary"
+                                onClick={ () => { handleUnapply(library) }}>
+                                Remove
+                              </Button>
+                              : <Button variant="contained" size="small" color="primary"
+                                onClick={ () => { handleAppply(library) }}>
+                                Use
+                              </Button>
+                            }
+                          </TableCell>
+                          <TableCell align="center">
+                            <Button variant="contained" size="small" 
+                              style={{ backgroundColor: !library.default ? "#ff1744": "#b71c1c", color: "#ffffff"}}
+                              onClick={() => { console.log("ELEMENT: ", library) }} disabled={library.default} >
+                              Delete
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                    )})}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              : <p>Nothing To Show</p>
           }
         </DialogContentText>
         <DialogActions>

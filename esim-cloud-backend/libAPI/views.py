@@ -1,3 +1,4 @@
+from django.http import request
 import django_filters
 from django.db.models import Q
 from libAPI.serializers import LibrarySerializer, LibraryComponentSerializer, LibrarySetSerializer
@@ -89,14 +90,41 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
         }
 
 
+class IsComponentOwner(BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        print("HOLA")
+        if obj.component_library.library_set.default == True:
+            return True
+        if request.user.is_authenticated:
+            if obj.component_library.library_set.user == request.user:
+                return True
+        return False
+
+
 class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
     """
      Listing All Library Details
     """
+    permission_classes = (IsComponentOwner,)
     queryset = LibraryComponent.objects.all()
     serializer_class = LibraryComponentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LibraryComponentFilterSet
+    
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            library_set = LibrarySet.objects.filter(
+                Q(user=self.request.user) | Q(default=True)
+            )
+            libraries = Library.objects.filter(library_set__in=library_set)
+            components = LibraryComponent.objects.filter(component_library__in=libraries)
+            return components
+        else:
+            library_set = LibrarySet.objects.filter(default=True)
+            libraries = Library.objects.filter(library_set__in=library_set)
+            components = LibraryComponent.objects.filter(component_library__in=libraries)
+            return components
 
 
 class LibrarySetViewSet(viewsets.ModelViewSet):
@@ -133,7 +161,7 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
             path = os.path.join(
                 settings.BASE_DIR,
                 'kicad-symbols',
-                request.user.username + '-' + request.POST.get('name', ''))
+                library_set.user.username + '-' + library_set.name)
             try:
                 save_libs(library_set, path, files) # defined in ./models.py
                 return Response(status=status.HTTP_201_CREATED)
