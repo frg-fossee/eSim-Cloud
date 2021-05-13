@@ -9,22 +9,23 @@ import { Workspace } from '../Libs/Workspace';
 })
 export class ExportJSONDialogComponent implements OnInit {
 
-  description:string;
-  constructor(public dialogRef: MatDialogRef<ExportJSONDialogComponent>,
+  description: string;
+  fileName = '';
+
+  constructor(
+    public dialogRef: MatDialogRef<ExportJSONDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data) {
-      this.description = data.description
-      this.fileName = data.title;
-    }
+    this.description = data.description;
+    this.fileName = data.title;
+  }
 
   ngOnInit() {
   }
 
-  fileName:string = "";
-
   /**
    * Save Project function, Calls Workspace.SaveJson with edited fileName and then closes project
    */
-  saveProject(){
+  saveProject() {
     Workspace.SaveJson(this.fileName, this.description);
     this.dialogRef.close();
   }

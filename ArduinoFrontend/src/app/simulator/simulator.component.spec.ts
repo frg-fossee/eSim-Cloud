@@ -37,15 +37,15 @@ describe('SimulatorComponent', () => {
                 CodeEditorComponent,
             ]
         }).compileComponents();
-    })
+    });
 
     beforeEach(() => {
         fixture = TestBed.createComponent(SimulatorComponent);
         component = fixture.componentInstance;
-    })
+    });
 
     it('should create the app', () => {
         expect(component).toBeTruthy();
     });
 
-})
+});

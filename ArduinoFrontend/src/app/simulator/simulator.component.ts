@@ -606,9 +606,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   exportJson() {
 
     // Check if workspace is empty or not
-    if (Workspace.checkIfWorkspaceEmpty())
+    if (Workspace.checkIfWorkspaceEmpty()) {
       AlertService.showAlert('You have nothing to save!'); // Throw Alert if Workspace is empty
-    else {
+    } else {
       // Open File rename dialog
       const viewref = this.dialog.open(ExportJSONDialogComponent, {
         width: '600px',
@@ -621,12 +621,12 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   // Import from jSON file
   importJson(file) {
     // Read File
-    var fileReader = new FileReader();
-    fileReader.readAsText(file, "UTF-8");
+    const fileReader = new FileReader();
+    fileReader.readAsText(file, 'UTF-8');
     fileReader.onload = (event: Event) => {
-      var data = fileReader.result;
+      const data = fileReader.result;
       // Load the data object and change into workspace
-      this.LoadProject(JSON.parse(data as string))
+      this.LoadProject(JSON.parse(data as string));
     };
   }
 

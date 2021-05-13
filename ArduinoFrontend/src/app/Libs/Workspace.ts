@@ -1053,13 +1053,13 @@ export class Workspace {
 
 
   /**
- * Function generates a JSON object containing all details of the workspace and downloads it
- * @param name string
- * @param description string
- */
+   * Function generates a JSON object containing all details of the workspace and downloads it
+   * @param name string
+   * @param description string
+   */
   static SaveJson(name: string = '', description: string = '') {
 
-    let id = Date.now();
+    const id = Date.now();
 
     // Default Save object
     const saveObj = {
@@ -1094,7 +1094,7 @@ export class Workspace {
     const filename = `${name}.json`;
     const jsonStr = JSON.stringify(saveObj);
 
-    let element = document.createElement('a');
+    const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
     element.setAttribute('download', filename);
 
@@ -1115,8 +1115,9 @@ export class Workspace {
    */
   static checkIfWorkspaceEmpty() {
     for (const key in window.scope) {
-      if (window.scope[key].length > 0)
+      if (window.scope[key].length > 0) {
         return false;
+      }
     }
     return true;
   }

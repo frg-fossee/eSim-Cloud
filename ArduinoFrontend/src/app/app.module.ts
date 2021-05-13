@@ -91,7 +91,14 @@ const monacoConfig: NgxMonacoEditorConfig = {
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, AlertModalComponent, ConfirmModalComponent,ExportJSONDialogComponent],
+  entryComponents: [
+    ViewComponentInfoComponent,
+    ExportfileComponent,
+    ComponentlistComponent,
+    AlertModalComponent,
+    ConfirmModalComponent,
+    ExportJSONDialogComponent
+  ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
