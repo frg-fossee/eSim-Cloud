@@ -137,7 +137,7 @@ export const signUp = (email, username, password, history) => (dispatch) => {
         if (res.data.username !== undefined) {
           if (res.data.username[0].search('already') !== -1 && res.data.username[0].search('exists') !== -1) { dispatch(signUpError('Username Already Taken.')) }
         } else {
-          dispatch(signUpError('Enter Valid Credentials.'))
+          dispatch(signUpError(res.data.password))
         }
       } else {
         dispatch(signUpError('Something went wrong! Registeration Failed'))
