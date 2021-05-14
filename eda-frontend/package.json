@@ -19,6 +19,7 @@
     "multiselect-react-dropdown": "^1.6.11",
     "mxgraph": "^4.1.1",
     "query-string": "^6.12.1",
+    "randomstring": "^1.2.1",
     "react": "^16.13.1",
     "react-ace": "^9.0.0",
     "react-brace": "^3.6.6",

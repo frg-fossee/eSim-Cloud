@@ -31,6 +31,7 @@ export default function Simulator () {
     checkedA: false
 
   })
+  const [taskId, setTaskId] = useState(null)
 
   useEffect(() => {
     document.title = 'Simulator - eSim '
@@ -57,8 +58,26 @@ export default function Simulator () {
   }
 
   const netlistCodeSanitization = (code) => {
-    var cleanCode = code.replace('plot', 'print')
-
+    var codeArray = code.split('\n')
+    var cleanCode = ''
+    var frontPlot = ''
+    for (var line = 0; line < codeArray.length; line++) {
+      if (codeArray[line].includes('plot')) {
+        frontPlot += codeArray[line].split('plot ')[1] + ' '
+      }
+    }
+    frontPlot = `print ${frontPlot} > data.txt \n`
+    var flag = 0
+    for (var i = 0; i < codeArray.length; i++) {
+      if (codeArray[i].includes('plot')) {
+        if (!flag) {
+          cleanCode += frontPlot
+          flag = 1
+        }
+      } else {
+        cleanCode += codeArray[i] + '\n'
+      }
+    }
     return cleanCode
   }
 
@@ -81,10 +100,12 @@ export default function Simulator () {
   }
 
   function sendNetlist (file) {
+    setIsResult(false)
     netlistConfig(file)
       .then((response) => {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
+        setTaskId(res.details.task_id)
         simulationResult(getUrl)
       })
       .catch(function (error) {
@@ -105,7 +126,6 @@ export default function Simulator () {
           if (result === null) {
             setIsResult(false)
           } else {
-            setIsResult(true)
             var temp = res.data.details.data
 
             var data = result.data
@@ -159,6 +179,7 @@ export default function Simulator () {
               // handleSimulationResult(res.data.details)
               dispatch(setResultText(simResultText))
             }
+            setIsResult(true)
           }
         }
       })
@@ -170,7 +191,7 @@ export default function Simulator () {
 
   return (
     <Container maxWidth="lg" className={classes.header}>
-      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} dark={state} />
+      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} dark={state} taskId={taskId} />
       <Grid
         container
         spacing={3}
