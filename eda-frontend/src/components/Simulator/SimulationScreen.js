@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult, task_id }) {
+export default function SimulationScreen ({ open, close, isResult, taskId }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const [xscale, setXScale] = React.useState('si')
@@ -99,8 +99,8 @@ export default function SimulationScreen ({ open, close, isResult, task_id }) {
     return ['notDecimal', 1]
   }
   useEffect(() => {
-    if(isResult === true){
-      if(result.graph !== {}){
+    if (isResult === true) {
+      if (result.graph !== {}) {
         setScales()
       }
     }
@@ -470,6 +470,7 @@ export default function SimulationScreen ({ open, close, isResult, task_id }) {
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
-  isResult: PropTypes.bool
+  isResult: PropTypes.bool,
+  taskId: PropTypes.string
   // simResults: PropTypes.object
 }
