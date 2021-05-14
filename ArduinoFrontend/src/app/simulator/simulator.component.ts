@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
+import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -628,6 +629,19 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       // Load the data object and change into workspace
       this.LoadProject(JSON.parse(data as string));
     };
+  }
+
+  // Function to Exit Project & go back to mainScreen 
+  exitProject() {
+    if (Workspace.checkIfWorkspaceEmpty()) {
+      this.router.navigate(['/']);
+    } else {
+      this.dialog.open(ExitConfirmDialogComponent).afterClosed().subscribe(res => {
+        if (res) {
+          this.router.navigate(['/']);
+        }
+      })
+    }
   }
 
 }
