@@ -58,27 +58,26 @@ export default function Simulator () {
   }
 
   const netlistCodeSanitization = (code) => {
-    var code_array = code.split('\n')
+    var codeArray = code.split('\n')
     var cleanCode = ''
     var frontPlot = ''
-    for (var line = 0; line < code_array.length; line++) {
-      if (code_array[line].includes('plot')) {
-        frontPlot += code_array[line].split('plot ')[1] + ' '
+    for (var line = 0; line < codeArray.length; line++) {
+      if (codeArray[line].includes('plot')) {
+        frontPlot += codeArray[line].split('plot ')[1] + ' '
       }
     }
     frontPlot = `print ${frontPlot} > data.txt \n`
     var flag = 0
-    for (var i = 0; i < code_array.length; i++) {
-      if (code_array[i].includes('plot')) {
+    for (var i = 0; i < codeArray.length; i++) {
+      if (codeArray[i].includes('plot')) {
         if (!flag) {
           cleanCode += frontPlot
           flag = 1
         }
       } else {
-        cleanCode += code_array[i] + '\n'
+        cleanCode += codeArray[i] + '\n'
       }
     }
-    console.log(cleanCode)
     return cleanCode
   }
 
@@ -192,7 +191,7 @@ export default function Simulator () {
 
   return (
     <Container maxWidth="lg" className={classes.header}>
-      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} dark={state} task_id={taskId} />
+      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} dark={state} taskId={taskId} />
       <Grid
         container
         spacing={3}
