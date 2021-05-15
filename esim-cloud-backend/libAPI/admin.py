@@ -52,7 +52,6 @@ class LibraryInline(InlineActionsMixin, admin.TabularInline):
             f"Library {obj.library_name} {msg} <a href='/api/admin/libAPI/libraryset/{library_set.id}'>{library_set.name}</a>."))
         obj.library_set = library_set
         obj.save()
-        # return redirect('/api/admin/libAPI/libraryset/' + str(library_set.id))
 
     def get_toggle_default_label(self, obj):
         if obj.library_set.default == True:
@@ -91,6 +90,5 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
 
             save_libs(obj, path, files)  # defined in ./models.py
         return redirect('/api/admin/libAPI/libraryset/' + str(obj.id))
-
 
 admin.site.register(LibrarySet, LibrarySetAdmin)
