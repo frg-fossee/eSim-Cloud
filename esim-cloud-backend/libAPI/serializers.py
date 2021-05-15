@@ -1,6 +1,9 @@
 import logging
 from rest_framework import serializers
-from libAPI.models import Library, LibraryComponent, ComponentAlternate, FavouriteComponent
+from libAPI.models import Library, \
+    LibraryComponent, \
+    ComponentAlternate, \
+    FavouriteComponent
 
 logger = logging.getLogger(__name__)
 

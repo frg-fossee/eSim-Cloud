@@ -64,8 +64,8 @@ export default function ComponentSidebar ({ compRef }) {
   const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
-  const [favourite,setFavourite]=useState(null)
-  const [favOpen,setFavOpen]=useState(true)
+  const [favourite, setFavourite] = useState(null)
+  const [favOpen, setFavOpen] = useState(true)
 
   const [searchedComponentList, setSearchedComponents] = useState([])
   const [searchOption, setSearchOption] = useState('NAME')
@@ -91,22 +91,22 @@ export default function ComponentSidebar ({ compRef }) {
   }
 
   React.useEffect(() => {
-    const token = localStorage.getItem("esim_token")
+    const token = localStorage.getItem('esim_token')
     const config = {
       headers: {
-        "Content-Type": "application/json",
-      },
+        'Content-Type': 'application/json'
+      }
     }
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
     api
-      .get("favouritecomponents", config)
+      .get('favouritecomponents', config)
       .then((resp) => {
         setFavourite(resp.data.component)
       })
       .catch((err) => {
-        console.log("Some Error Occured")
+        console.log(err)
       })
   }, [])
 
@@ -164,7 +164,7 @@ export default function ComponentSidebar ({ compRef }) {
     }, [])
   }
 
-  const handleFavOpen=()=>{
+  const handleFavOpen = () => {
     setFavOpen(!favOpen)
   }
 
@@ -175,37 +175,6 @@ export default function ComponentSidebar ({ compRef }) {
       </Hidden>
 
       <div style={isSimulate ? { display: 'none' } : {}}>
-        {favourite&&<List component="div" dense>
-          <ListItem button onClick={handleFavOpen} divider style={{marginTop:"5%"}}>
-            <h2>Favourite Components</h2>
-          </ListItem>
-          <Collapse in={favOpen} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              <ListItem>
-                <div style={{marginLeft:"-30px"}}>
-                  {chunk(favourite, 3).map((componentChunk) => {
-                    return (
-                      <div>
-                      <ListItem key={componentChunk[0].svg_path} divider>
-                      {
-                        componentChunk.map((component) => {
-                          return (
-                            <ListItemIcon key={component.full_name}>
-                              <SideComp isFavourite={true} setFavourite={setFavourite} component={component} />
-                            </ListItemIcon>
-                          )
-                          }
-                        )
-                      }
-                      </ListItem>
-                      </div>
-                    )
-                  })}
-                </div>
-              </ListItem>  
-            </List>  
-          </Collapse>      
-        </List>}
         {/* Display List of categorized components */}
         <List>
           <ListItem button>
@@ -288,6 +257,42 @@ export default function ComponentSidebar ({ compRef }) {
             }
 
             {/* Collapsing List Mapped by Libraries fetched by the API */}
+            {favourite && favourite.length > 0 &&
+              <>
+                <ListItem button onClick={handleFavOpen} divider>
+                  <span className={classes.head}>Favourite Components</span>
+                  <div>
+                    {favOpen ? <ExpandLess /> : <ExpandMore />}
+                  </div>
+                </ListItem>
+                <Collapse in={favOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem>
+                      <div style={{ marginLeft: '-30px' }}>
+                        {chunk(favourite, 3).map((componentChunk) => {
+                          return (
+                            <div key={componentChunk[0].svg_path}>
+                              <ListItem key={componentChunk[0].svg_path} divider>
+                                {
+                                  componentChunk.map((component) => {
+                                    return (
+                                      <ListItemIcon key={component.full_name}>
+                                        <SideComp isFavourite={true} setFavourite={setFavourite} component={component} />
+                                      </ListItemIcon>
+                                    )
+                                  }
+                                  )
+                                }
+                              </ListItem>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </>
+            }
             {searchText.length === 0 &&
               libraries.sort(function (a, b) {
                 var textA = a.library_name.toUpperCase()

@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { List, ListItemText, Tooltip, Popover,Snackbar, ListItem } from '@material-ui/core'
+import { List, ListItemText, Tooltip, Popover } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import api from "../../utils/Api"
-import Button from "@material-ui/core/Button"
+import api from '../../utils/Api'
+import Button from '@material-ui/core/Button'
 
 import './Helper/SchematicEditor.css'
 import { AddComponent } from './Helper/SideBar.js'
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SideComp ({ component,isFavourite=false,setFavourite }) {
+export default function SideComp ({ component, isFavourite = false, setFavourite }) {
   const classes = useStyles()
   const imageRef = React.createRef()
 
@@ -39,31 +39,31 @@ export default function SideComp ({ component,isFavourite=false,setFavourite }) 
   }, [imageRef, component])
 
   const handleFavourite = (id) => {
-    const token = localStorage.getItem("esim_token")
+    const token = localStorage.getItem('esim_token')
     const body = {
-      "component":[id]
+      component: [id]
     }
     const config = {
       headers: {
-        "Content-Type": "application/json",
-      },
+        'Content-Type': 'application/json'
+      }
     }
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.post("favouritecomponents", body, config).then(resp => {
+    api.post('favouritecomponents', body, config).then(resp => {
       setFavourite(resp.data.component)
     }).catch(err => {
       console.log(err)
     })
-  };
+  }
 
-  const handleRemove=(id)=>{
-    const token = localStorage.getItem("esim_token")
+  const handleRemove = (id) => {
+    const token = localStorage.getItem('esim_token')
     const config = {
       headers: {
-        "Content-Type": "application/json",
-      },
+        'Content-Type': 'application/json'
+      }
     }
     if (token) {
       config.headers.Authorization = `Token ${token}`
@@ -76,7 +76,7 @@ export default function SideComp ({ component,isFavourite=false,setFavourite }) 
   }
   return (
     <div>
-      <Tooltip title={component.full_name+" : "+component.description} arrow>
+      <Tooltip title={component.full_name + ' : ' + component.description} arrow>
         {/* Display Image thumbnail in left side pane */}
         <img ref={imageRef} className='compImage' src={'../' + component.svg_path} alt="Logo" aria-describedby={id} onClick={handleClick} />
       </Tooltip>
@@ -122,15 +122,15 @@ export default function SideComp ({ component,isFavourite=false,setFavourite }) 
           </ListItemText>
           }
 
-          {!isFavourite&&localStorage.getItem("esim_token")&&
+          {!isFavourite && localStorage.getItem('esim_token') &&
             <ListItemText>
               <Button onClick={() => handleFavourite(component.id) }>Add to Favourites</Button>
             </ListItemText>
           }
 
-          {isFavourite&&localStorage.getItem("esim_token")&&
+          {isFavourite && localStorage.getItem('esim_token') &&
             <ListItemText>
-              <Button onClick={()=>handleRemove(component.id)}>Remove from Favourites</Button>
+              <Button onClick={() => handleRemove(component.id)}>Remove from Favourites</Button>
             </ListItemText>
           }
         </List>
@@ -141,5 +141,7 @@ export default function SideComp ({ component,isFavourite=false,setFavourite }) 
 }
 
 SideComp.propTypes = {
-  component: PropTypes.object.isRequired
+  component: PropTypes.object.isRequired,
+  isFavourite: PropTypes.bool,
+  setFavourite: PropTypes.func
 }
