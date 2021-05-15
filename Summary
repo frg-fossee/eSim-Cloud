@@ -1,0 +1,19 @@
+Task 1: Incorporating new components in the Platform
+I haven’t completed the whole task but have reached up to creating the .json and .ts file for L293D and DHT11. 
+These are the steps that I followed and I would love to know my mistake or the things that I were missing while performing the task.
+
+Step 1: First various installations are done as per the guidelines given on https://github.com/frg-fossee/eSim-Cloud.
+  
+Step 2: I explored the features and try to simulate simple programs to get friendly with the IDE.
+https://drive.google.com/file/d/17bHmMx0Vyp0xmjEbfH0_FAgx6vuBzeQ3/view?usp=sharing
+
+Step 3: I choose task 1 and read the docs, explored various json files component images and .ts files.
+Step 4: I saved the image of DHT11 from internet and cropped and made a png file in paint.
+  
+
+Step 5: Converted the .png file to .svg format. Did the same steps for L293D
+Step 6: Keeping in reference TMP36 & L298N made a json file for DHT11 and L293D motor driver.
+Step 7: Created a .ts file for DHT11 taking reference from TMP36.
+Step 8: Rebuilded the containers in docker after creating a branch repo and committing the changes.
+Step 9: Refreshed the http://localhost/arduino/#/simulator to see the changes but the changes were not seen.
+
