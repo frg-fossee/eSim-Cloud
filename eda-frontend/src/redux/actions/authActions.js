@@ -140,7 +140,7 @@ export const signUp = (email, username, password, history) => (dispatch) => {
           dispatch(signUpError('Enter Valid Credentials.'))
         }
       } else {
-        dispatch(signUpError('Something went wrong! Registeration Failed'))
+        dispatch(signUpError('Something went wrong! Registration Failed'))
       }
     })
 }
@@ -204,6 +204,16 @@ const signUpError = (message) => (dispatch) => {
   })
 }
 
+// Redux action for display reset password error
+const resetPasswordError = (message) => (dispatch) => {
+  dispatch({
+    type: actions.RESET_PASSWORD_FAILED,
+    payload: {
+      data: message
+    }
+  })
+}
+
 // Api call for Google oAuth login or sign up
 export const googleLogin = (host, toUrl) => {
   return function (dispatch) {
@@ -231,4 +241,38 @@ export const googleLogin = (host, toUrl) => {
         }
       })
   }
+}
+
+
+// Handles api call for user's password recovery
+export const resetPassword = (email) => (dispatch) => {
+  const body = {
+    email: email,
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  api.post('auth/users/reset_password/', body, config)
+    .then((res) => {
+      if (res.status === 200 || res.status === 201) {
+        dispatch({
+          type: actions.RESET_PASSWORD_SUCCESSFUL,
+          payload: {
+            data: 'Successfully Signed Up! A verification link has been sent to your email account.'
+          }
+        })
+        // history.push('/login')
+      }
+    })
+    .catch((err) => {
+      var res = err.response
+      if ([400, 401, 403, 204, 304].includes(res.status)) {
+          dispatch(resetPasswordError('Enter valid credentials.'))
+      }
+    })
 }

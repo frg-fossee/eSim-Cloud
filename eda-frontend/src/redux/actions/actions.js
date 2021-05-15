@@ -32,6 +32,8 @@ export const LOADING_FAILED = 'LOADING_FAILED'
 export const SIGNUP_SUCCESSFUL = 'SIGNUP_SUCCESSFUL'
 export const SIGNUP_FAILED = 'SIGNUP_FAILED'
 export const DEFAULT_STORE = 'DEFAULT_STORE'
+export const RESET_PASSWORD_SUCCESSFUL = 'RESET_PASSWORD_SUCCESSFUL'
+export const RESET_PASSWORD_FAILED = 'RESET_PASSWORD_FAILED'
 
 // Actions for saving scheamtics and loading saved, gallery and local schematics.
 export const SAVE_SCHEMATICS = 'SAVE_SCHEMATICS'
