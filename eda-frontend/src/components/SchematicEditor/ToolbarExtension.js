@@ -670,7 +670,7 @@ export function SelectLibrariesModal (props) {
     <Dialog
     open={open}
     onClose={close}
-    maxWidth='xs'
+    maxWidth='md'
     TransitionComponent={Transition}
     keepMounted
     aria-labelledby="open-dialog-title"

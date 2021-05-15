@@ -143,7 +143,7 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
             library_set = LibrarySet.objects.get(user=request.user)
         except LibrarySet.DoesNotExist:
             library_set = LibrarySet(
-                name=request.user.username,
+                name=request.user.username[0:24],
                 default=False,
                 user=request.user
             )

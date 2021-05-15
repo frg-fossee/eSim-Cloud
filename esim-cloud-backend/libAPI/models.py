@@ -1,17 +1,15 @@
 from djongo import models
 from django.utils.safestring import mark_safe
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from libAPI.helper.main import generate_svg_and_save_to_folder
 import os
 import glob
-import filecmp
 
 
 class LibrarySet(models.Model):
     user = models.ForeignKey(User, verbose_name="user", on_delete=models.CASCADE)
     default = models.BooleanField(default=False)
-    name = models.CharField(max_length=16, default="default")
+    name = models.CharField(max_length=24, default="default")
 
     class Meta:
         unique_together = ('user', 'name')
