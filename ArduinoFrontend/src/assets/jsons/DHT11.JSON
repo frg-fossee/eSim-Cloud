@@ -2,9 +2,9 @@
     "name": "Temperature and Humidity Sensor DHT11",
     "className": "DHT11",
     "pins": [	{"name":"VCC","x":10,"y":114.9,"signals":[{"type":"power","signal":"VCC"}],"number":1},
-		{"name":"SDA","x":22.4,"y":114.9,"signals":[],"number":2},
-	        {"name":"NC","x":35.3,"y":114.9,"signals":[],"number":3},
-		{"name":"GND","x":48,"y":114.9,"signals":[{"type":"power","signal":"GND"}],"number":4}],
+		          {"name":"SDA","x":22.4,"y":114.9,"signals":[],"number":2},
+	            {"name":"NC","x":35.3,"y":114.9,"signals":[],"number":3},
+		          {"name":"GND","x":48,"y":114.9,"signals":[{"type":"power","signal":"GND"}],"number":4}],
     "pointHalf": 4,
     "draw": [
         {
@@ -24,12 +24,12 @@
         "description": "The DHT11 is a commonly used Temperature and humidity sensor which comes with a dedicated NTC to measure temperature and an 8-bit microcontroller to output the values of temperature and humidity as serial data",
         "properties": {
            Operating Voltage: 3.5V to 5.5V
-	   Operating current: 0.3mA (measuring) 60uA (standby)
-	   Output: Serial data
-	   Temperature Range: 0°C to 50°C
-	   Humidity Range: 20% to 90%
-	   Resolution: Temperature and Humidity both are 16-bit
-	   Accuracy: ±1°C and ±1%
+           Operating current: 0.3mA (measuring) 60uA (standby)
+           Output: Serial data
+           Temperature Range: 0°C to 50°C
+           Humidity Range: 20% to 90%
+           Resolution: Temperature and Humidity both are 16-bit
+           Accuracy: ±1°C and ±1%
 
         }
     }
