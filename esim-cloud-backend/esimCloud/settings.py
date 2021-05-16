@@ -85,7 +85,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'esimCloud.wsgi.application'
 
-
+AUTH_USER_MODEL = 'authAPI.User'
 # Database config Defaults to sqlite3 if not provided in environment files
 
 DATABASES = {
