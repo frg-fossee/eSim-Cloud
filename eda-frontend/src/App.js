@@ -18,6 +18,7 @@ import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
+import ChangePassword from './pages/Account/ChangePassword'
 
 // Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
 // and restricted routes disabled for authenticated users. [ e.g : login , signup ]
@@ -75,6 +76,7 @@ function App () {
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/account/change_password" component={ChangePassword} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
     </HashRouter>

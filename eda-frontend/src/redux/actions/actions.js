@@ -49,3 +49,7 @@ export const LOAD_GALLERY = 'LOAD_GALLERY'
 
 // Action for fetching on-cloud saved schematics for authenticated user to display in dashboard
 export const FETCH_SCHEMATICS = 'FETCH_SCHEMATICS'
+
+// Actions for accounts page
+export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS'
+export const CHANGE_PASSWORD_FAILED = 'CHANGE_PASSWORD_FAILED'
