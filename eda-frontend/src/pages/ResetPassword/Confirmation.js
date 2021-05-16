@@ -45,7 +45,6 @@ export default function ResetPasswordConfirm ({ match }) {
 
   const dispatch = useDispatch()
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
-  console.log("hey")
   const { id, token } = match.params
 
   useEffect(() => {
