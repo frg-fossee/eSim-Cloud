@@ -214,6 +214,16 @@ const resetPasswordError = (message) => (dispatch) => {
   })
 }
 
+// Redux action for display reset password confirmation error
+const resetPasswordConfirmError = (message) => (dispatch) => {
+  dispatch({
+    type: actions.RESET_PASSWORD_CONFIRM_FAILED,
+    payload: {
+      data: message
+    }
+  })
+}
+
 // Api call for Google oAuth login or sign up
 export const googleLogin = (host, toUrl) => {
   return function (dispatch) {
@@ -259,11 +269,11 @@ export const resetPassword = (email) => (dispatch) => {
 
   api.post('auth/users/reset_password/', body, config)
     .then((res) => {
-      if (res.status === 200 || res.status === 201) {
+      if (res.status >= 200 || res.status < 304) {
         dispatch({
           type: actions.RESET_PASSWORD_SUCCESSFUL,
           payload: {
-            data: 'Successfully Signed Up! A verification link has been sent to your email account.'
+            data: 'The password reset link has been sent to your email account.'
           }
         })
         // history.push('/login')
@@ -271,8 +281,44 @@ export const resetPassword = (email) => (dispatch) => {
     })
     .catch((err) => {
       var res = err.response
-      if ([400, 401, 403, 204, 304].includes(res.status)) {
+      if ([400, 401, 403, 304].includes(res.status)) {
           dispatch(resetPasswordError('Enter valid credentials.'))
+      }
+    })
+}
+
+
+// Handles api call for user's password reset confirmation
+export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => (dispatch) => {
+  const body = {
+    uid: uid,
+    token: token,
+    new_password: newPassword,
+    re_new_password: reNewPassword,
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  api.post('auth/users/reset_password_confirm/', body, config)
+    .then((res) => {
+      if (res.status >= 200 || res.status < 304) {
+        dispatch({
+          type: actions.RESET_PASSWORD_CONFIRM_SUCCESSFUL,
+          payload: {
+            data: 'The password has been reset successfully.'
+          }
+        })
+      }
+    })
+    .catch((err) => {
+      var res = err.response
+      if ([400, 401, 403, 304].includes(res.status)) {
+          dispatch(resetPasswordConfirmError('Password reset failed.'))
       }
     })
 }

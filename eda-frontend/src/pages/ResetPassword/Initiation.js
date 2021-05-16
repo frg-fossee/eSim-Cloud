@@ -11,7 +11,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useSelector, useDispatch } from 'react-redux'
-import { resetPassword, authDefault } from '../redux/actions/index'
+import { resetPassword, authDefault } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
