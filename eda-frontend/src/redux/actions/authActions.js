@@ -276,6 +276,9 @@ export const resetPassword = (email) => (dispatch) => {
             data: 'The password reset link has been sent to your email account.'
           }
         })
+        setTimeout(() => {
+          window.location.href = '/eda/#/login';
+        }, 2000);
         // history.push('/login')
       }
     })
@@ -312,7 +315,10 @@ export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => 
           payload: {
             data: 'The password has been reset successfully.'
           }
-        })
+        });
+        setTimeout(() => {
+          window.location.href = '/eda/#/login';
+        }, 2000);
       }
     })
     .catch((err) => {
