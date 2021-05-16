@@ -7,8 +7,12 @@ import {
   TextField,
   Card,
   Avatar,
+  InputAdornment,
+  IconButton,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import Visibility from '@material-ui/icons/Visibility'
+import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useSelector, useDispatch } from 'react-redux'
 import { resetPasswordConfirm, authDefault } from '../../redux/actions/index'
@@ -34,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default ResetPasswordConfirm = ({ match }) => {
+export default function ResetPasswordConfirm ({ match }) {
   const classes = useStyles()
 
   const auth = useSelector(state => state.authReducer)
@@ -73,7 +77,7 @@ export default ResetPasswordConfirm = ({ match }) => {
         </Typography>
 
         {/* Display's error messages while signing in */}
-        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.resetPasswordError ? 'secondary' : 'error'}>
+        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.resetPasswordConfirmSuccess ? 'secondary' : 'error'}>
           {auth.resetPasswordError}
         </Typography>
 
@@ -84,7 +88,7 @@ export default ResetPasswordConfirm = ({ match }) => {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="New password"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -99,7 +103,7 @@ export default ResetPasswordConfirm = ({ match }) => {
                 </InputAdornment>
               )
             }}
-            type={showPassword ? 'text' : 'password'}
+            type={showNewPassword ? 'text' : 'password'}
             id="newPassword"
             value={newPassword}
             onChange={e => setNewPassword(e.target.value)}
@@ -111,7 +115,7 @@ export default ResetPasswordConfirm = ({ match }) => {
             required
             fullWidth
             name="reNewPassword"
-            label="reNewPassword"
+            label="Re-enter password"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

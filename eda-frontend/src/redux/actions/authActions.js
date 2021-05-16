@@ -318,7 +318,16 @@ export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => 
     .catch((err) => {
       var res = err.response
       if ([400, 401, 403, 304].includes(res.status)) {
-          dispatch(resetPasswordConfirmError('Password reset failed.'))
+          const { new_password, re_new_password, non_field_errors, token } = res.data;
+          const defaultErrors = ["Password reset failed."]
+          var message = (new_password || re_new_password || non_field_errors || defaultErrors)[0];
+
+          if (token) {
+            // Override message if it's a token error
+            message = "Either the password has already been changed or you have the incorrect URL";
+          }
+
+          dispatch(resetPasswordConfirmError(message))
       }
     })
 }

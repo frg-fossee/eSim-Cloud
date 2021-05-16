@@ -10,6 +10,7 @@ const initialState = {
   regErrors: '',
   resetPasswordSuccess: false,
   resetPasswordError: '',
+  resetPasswordConfirmSuccess: false,
 }
 
 export default function (state = initialState, action) {
@@ -99,6 +100,22 @@ export default function (state = initialState, action) {
       return {
         ...state,
         resetPasswordSuccess: false,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_CONFIRM_SUCCESSFUL: {
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: true,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_CONFIRM_FAILED: {
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: false,
         resetPasswordError: action.payload.data
       }
     }
