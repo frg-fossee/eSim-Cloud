@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ChangePassword () {
   const classes = useStyles()
 
-  const auth = useSelector(state => state.accountReducer)
+  const account = useSelector(state => state.accountReducer)
 
   const dispatch = useDispatch()
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
@@ -79,8 +79,8 @@ export default function ChangePassword () {
         </Typography>
 
         {/* Display's error messages while signing in */}
-        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.changePasswordSuccess ? 'secondary' : 'error'}>
-          {auth.changePasswordError}
+        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={account.changePasswordSuccess ? 'secondary' : 'error'}>
+          {account.changePasswordError}
         </Typography>
 
         <form className={classes.form} noValidate>
