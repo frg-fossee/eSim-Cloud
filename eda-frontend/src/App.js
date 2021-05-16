@@ -13,6 +13,8 @@ import Simulator from './pages/Simulator'
 import Gallery from './pages/Gallery'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
+import ResetPassword from './pages/ResetPassword/Initiation'
+import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
@@ -63,6 +65,8 @@ function App () {
       <Switch>
         <PublicRoute exact path="/login" restricted={true} nav={false} component={Login} />
         <PublicRoute exact path="/signup" restricted={true} nav={false} component={SignUp} />
+        <PublicRoute exact path="/reset-password" restricted={true} nav={false} component={ResetPassword} />
+        <PublicRoute exact path="/password/reset/confirm/:id/:token" restricted={true} nav={false} component={ResetPasswordConfirm} />
         <PublicRoute exact path="/" restricted={false} nav={true} component={Home} />
         {localStorage.getItem('esim_token') !== null
           ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
