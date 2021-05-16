@@ -98,7 +98,7 @@ export default function ResetPasswordConfirm ({ match }) {
                     onClick={handleClickShowNewPassword}
                     onMouseDown={handleMouseDownNewPassword}
                   >
-                    {showNewPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
+                    {showNewPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handle password visibility */}
                   </IconButton>
                 </InputAdornment>
               )
@@ -125,7 +125,7 @@ export default function ResetPasswordConfirm ({ match }) {
                     onClick={handleClickShowReNewPassword}
                     onMouseDown={handleMouseDownReNewPassword}
                   >
-                    {showReNewPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
+                    {showReNewPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handle password visibility */}
                   </IconButton>
                 </InputAdornment>
               )

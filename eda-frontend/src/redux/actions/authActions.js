@@ -55,7 +55,7 @@ export const loadUser = () => (dispatch, getState) => {
     })
 }
 
-// Handel api call for user login
+// Handle api call for user login
 export const login = (username, password, toUrl) => {
   const body = {
     password: password,
@@ -104,7 +104,7 @@ export const login = (username, password, toUrl) => {
   }
 }
 
-// Handel api call for user sign up
+// Handle api call for user sign up
 export const signUp = (email, username, password, history) => (dispatch) => {
   const body = {
     email: email,
@@ -145,7 +145,7 @@ export const signUp = (email, username, password, history) => (dispatch) => {
     })
 }
 
-// Handel api call for user logout
+// Handle api call for user logout
 export const logout = (history) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
