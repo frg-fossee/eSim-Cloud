@@ -7,7 +7,7 @@ import Navbar from './components/Shared/Navbar'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
-import SchematicEditor from './pages/SchematiEditor'
+import SchematicEditor from './pages/SchematicEditor'
 
 import Simulator from './pages/Simulator'
 import Gallery from './pages/Gallery'

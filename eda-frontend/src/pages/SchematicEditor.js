@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SchematiEditor (props) {
+export default function SchematicEditor (props) {
   const classes = useStyles()
   const compRef = React.createRef()
   const gridRef = React.createRef()
