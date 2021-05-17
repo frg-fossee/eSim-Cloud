@@ -76,7 +76,7 @@ export const fetchCustomLibraries = () => (dispatch) => {
     .catch((err) => { console.error(err) })
 }
 
-export const fetchLibrary = (library) => (dispatch) => {
+export const fetchLibrary = (libraryId) => (dispatch) => {
   // SAMPLE Response from API
   // {
   //   "library_name": "Motor.lib",
@@ -89,30 +89,35 @@ export const fetchLibrary = (library) => (dispatch) => {
   // }}
   // if(token)
   //   config.headers.Authorization = `Token ${token}`
-  delete library['active']
-  dispatch({
-    type: actions.FETCH_LIBRARY,
-    payload: library
+  const config = {headers: {
+    'Authorization': `Token ${store.getState().authReducer.token}`
+  }}
+  api.get(`libraries/${libraryId}`, config).then(res => {
+    dispatch({
+      type: actions.FETCH_LIBRARY,
+      payload: res.data
+    })
   })
+  
 }
 
-export const removeLibrary = (library) => (dispatch) => {
+export const removeLibrary = (libraryId) => (dispatch) => {
   dispatch({
     type: actions.REMOVE_LIBRARY,
-    payload: library
+    payload: libraryId
   })
 }
 
-export const deleteLibrary = (library) => (dispatch) => {
+export const deleteLibrary = (libraryId) => (dispatch) => {
   const token = store.getState().authReducer.token
   const config = {headers: {
       'Authorization': `Token ${token}`
     }
   }
-  api.delete(`libraries/${library.id}/`, config).then(
+  api.delete(`libraries/${libraryId}/`, config).then(
     dispatch({
       type: actions.DELETE_LIBRARY,
-      payload: library
+      payload: libraryId
     })
   ).catch(err => {
     console.log(err)

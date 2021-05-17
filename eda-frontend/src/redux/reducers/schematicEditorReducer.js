@@ -76,24 +76,24 @@ export default function (state = InitialState, action) {
     case actions.REMOVE_LIBRARY: {
       var libraries = [ ...state.libraries ]
       const filterFunc = (element) => {
-        return element.id !== action.payload.id
+        return element.id !== action.payload
       }
       libraries = libraries.filter(filterFunc)
       const components = { ...state.components }
-      delete components[action.payload.id]
+      delete components[action.payload]
       return { ...state, libraries: libraries, components: components}
     }
 
     case actions.DELETE_LIBRARY: {
       const filterFunc = (element) => {
-        return element.id !== action.payload.id
+        return element.id !== action.payload
       }
       var newLibraries = [ ...state.libraries ]
       newLibraries = newLibraries.filter(filterFunc)
       var components = { ...state.components }
       var allLibraries = [ ...state.allLibraries ]
       allLibraries = allLibraries.filter(filterFunc)
-      delete components[action.payload.id]
+      delete components[action.payload]
       return { ...state, libraries: newLibraries, allLibraries: allLibraries, components: components }
     }
 

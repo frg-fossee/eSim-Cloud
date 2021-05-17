@@ -608,11 +608,11 @@ function LibraryCard({library}) {
   const dispatch = useDispatch()
 
   const handleAppply = (lib) => {
-    dispatch(fetchLibrary(lib))
+    dispatch(fetchLibrary(lib.id))
   }
 
   const handleUnapply = (lib) => {
-    dispatch(removeLibrary(lib))
+    dispatch(removeLibrary(lib.id))
   }
 
   return (
@@ -627,7 +627,7 @@ function LibraryCard({library}) {
           { !library.default && 
             <Button variant="contained" size="small" 
               style={{marginRight: "10px", backgroundColor: "#ff1744", color: "#ffffff"}}
-              onClick={() => { dispatch(deleteLibrary(library)) }}>
+              onClick={() => { dispatch(deleteLibrary(library.id)) }}>
               Delete
             </Button>
           }

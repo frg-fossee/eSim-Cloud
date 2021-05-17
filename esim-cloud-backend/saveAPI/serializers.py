@@ -30,18 +30,32 @@ class Base64ImageField(serializers.ImageField):
 
 class StateSaveSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
+    esim_libraries = serializers.SerializerMethodField('get_libraries')
+
+    def get_libraries(self, obj):
+        if obj.esim_libraries:
+            return obj.esim_libraries.split(',')
+        else:
+            return []
 
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time',
-                  'is_arduino')
+                  'is_arduino', 'esim_libraries')
 
 
 class SaveListSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
+    esim_libraries = serializers.SerializerMethodField('get_libraries')
+
+    def get_libraries(self, obj):
+        if obj.esim_libraries:
+            return obj.esim_libraries.split(',')
+        else:
+            return []
 
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'name', 'description',
-                  'shared', 'base64_image', 'create_time')
+                  'shared', 'base64_image', 'create_time', 'esim_libraries')

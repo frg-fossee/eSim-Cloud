@@ -31,8 +31,12 @@ class StateSaveView(APIView):
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
         logger.info('Got POST for state save ')
+        data = request.data
+        if request.data.get('esim_libraries', None):
+            data['esim_libraries'] = ",".join(request.data['esim_libraries'])
+        print(data)
         serializer = StateSaveSerializer(
-            data=request.data, context={'request': self.request})
+            data=data, context={'request': self.request})
         if serializer.is_valid():
             serializer.save(owner=self.request.user)
             return Response(serializer.data)
@@ -112,13 +116,15 @@ class StateFetchUpdateView(APIView):
                     saved_state.name = request.data['name']
                 if 'description' in request.data:
                     saved_state.description = request.data['description']
-
                 # if thumbnail needs to be updated
                 if 'base64_image' in request.data:
                     img = Base64ImageField(max_length=None, use_url=True)
                     filename, content = img.update(
                         request.data['base64_image'])
                     saved_state.base64_image.save(filename, content)
+                if 'esim_libraries' in request.data:
+                    print(request.data['esim_libraries'])
+                    saved_state.esim_libraries = request.data['esim_libraries']
                 saved_state.save()
                 serialized = SaveListSerializer(saved_state)
                 return Response(serialized.data)

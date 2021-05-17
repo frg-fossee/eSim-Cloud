@@ -40,7 +40,6 @@ class LibraryInline(InlineActionsMixin, admin.TabularInline):
                 default=True if parent_obj.default == False else False
             )[0]
         except IndexError:
-            print("Creating new one")
             library_set = LibrarySet(
                 name=parent_obj.user.username[0:15] + "-eSim-def",
                 default=(True if parent_obj.default == False else False),
