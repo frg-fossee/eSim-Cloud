@@ -10,7 +10,8 @@ import logo from '../static/logo.png'
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    padding: theme.spacing(23, 0, 6)
+    padding: theme.spacing(23, 0, 6),
+    textAlign: 'center'
   }
 }))
 
@@ -23,9 +24,7 @@ export default function Home () {
 
   return (
     <Container maxWidth="sm" component="main" className={classes.header}>
-      <center>
-        <img src={logo} width='120' height='120' alt='Logo' />
-      </center>
+      <img src={logo} width='120' height='120' alt='Logo' />
       <Typography
         component="h1"
         variant="h2"

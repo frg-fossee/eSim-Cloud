@@ -71,9 +71,7 @@ export default function SchematicEditor (props) {
       {/* Grid for drawing and designing circuits */}
       <LayoutMain>
         <div className={classes.toolbar} />
-        <center>
-          <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
-        </center>
+        <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
       </LayoutMain>
 
       {/* Schematic editor Right side pane */}

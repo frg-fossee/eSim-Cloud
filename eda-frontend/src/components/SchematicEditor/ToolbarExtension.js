@@ -409,9 +409,9 @@ export function OpenSchDialog (props) {
       <DialogContent dividers>
         <DialogContentText id="open-dialog-description" >
           {isLocal
-            ? <center> <Button variant="outlined" fullWidth={true} size="large" onClick={() => { openLocal(); close() }} color="primary">
+            ? <Button variant="outlined" fullWidth={true} size="large" onClick={() => { openLocal(); close() }} color="primary">
               Upload File
-            </Button></center>
+            </Button>
             : isGallery
               ? <Grid item xs={12} sm={12}>
                 {/* Listing Gallery Schematics */}
