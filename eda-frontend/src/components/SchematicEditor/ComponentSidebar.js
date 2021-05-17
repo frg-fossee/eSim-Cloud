@@ -157,7 +157,6 @@ export default function ComponentSidebar ({ compRef }) {
           <ListItem>
 
             <TextField
-              id="standard-number"
               placeholder="Search Component"
               variant="outlined"
               size="small"

@@ -368,7 +368,7 @@ export default function SimulationProperties () {
                           }}
                         >
 
-                          <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          <TextField placeHolder="enter expression" size='large' variant="outlined"
                             value={controlBlockParam}
                             onChange={handleControlBlockParam}
                           />
@@ -404,7 +404,6 @@ export default function SimulationProperties () {
                     <ListItem>
                       <TextField
                         style={{ width: '100%' }}
-                        id="parameter"
                         size='small'
                         variant="outlined"
                         select
@@ -433,21 +432,21 @@ export default function SimulationProperties () {
                     </ListItem>
 
                     <ListItem>
-                      <TextField id="start" label="Start Voltage" size='small' variant="outlined"
+                      <TextField label="Start Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start}
                         onChange={handleDcSweepControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop" label="Stop Voltage" size='small' variant="outlined"
+                      <TextField label="Stop Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.stop}
                         onChange={handleDcSweepControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>V</span>
                     </ListItem>
                     <ListItem>
-                      <TextField id="step" label="Step" size='small' variant="outlined"
+                      <TextField label="Step" size='small' variant="outlined"
                         value={dcSweepcontrolLine.step}
                         onChange={handleDcSweepControlLine}
                       />
@@ -465,7 +464,6 @@ export default function SimulationProperties () {
 
                       <TextField
                         style={{ width: '100%' }}
-                        id="parameter2"
                         size='small'
                         variant="outlined"
                         select
@@ -491,21 +489,21 @@ export default function SimulationProperties () {
                     </ListItem>
 
                     <ListItem>
-                      <TextField id="start2" label="Start Value" size='small' variant="outlined"
+                      <TextField label="Start Value" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start2}
                         onChange={handleDcSweepControlLine}
                       />
 
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop2" label="Stop Value" size='small' variant="outlined"
+                      <TextField label="Stop Value" size='small' variant="outlined"
                         value={dcSweepcontrolLine.stop2}
                         onChange={handleDcSweepControlLine}
                       />
 
                     </ListItem>
                     <ListItem>
-                      <TextField id="step2" label="Step Value" size='small' variant="outlined"
+                      <TextField label="Step Value" size='small' variant="outlined"
                         value={dcSweepcontrolLine.step2}
                         onChange={handleDcSweepControlLine}
                       />
@@ -537,7 +535,7 @@ export default function SimulationProperties () {
                         }}
                       >
 
-                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                        <TextField placeHolder="enter expression" size='large' variant="outlined"
                           value={controlBlockParam}
                           onChange={handleControlBlockParam}
                         />
@@ -547,7 +545,7 @@ export default function SimulationProperties () {
                     </ListItem>
 
                     <ListItem>
-                      <Button id="dcSweepSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('DcSweep') }}>
+                      <Button size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('DcSweep') }}>
                         Simulate
                       </Button>
                     </ListItem>
@@ -571,21 +569,21 @@ export default function SimulationProperties () {
                 <form className={classes.propertiesBox} noValidate autoComplete="off">
                   <List>
                     <ListItem>
-                      <TextField id="start" label="Start Time" size='small' variant="outlined"
+                      <TextField label="Start Time" size='small' variant="outlined"
                         value={transientAnalysisControlLine.start}
                         onChange={handleTransientAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop" label="Stop Time" size='small' variant="outlined"
+                      <TextField label="Stop Time" size='small' variant="outlined"
                         value={transientAnalysisControlLine.stop}
                         onChange={handleTransientAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
                     <ListItem>
-                      <TextField id="step" label="Time Step" size='small' variant="outlined"
+                      <TextField label="Time Step" size='small' variant="outlined"
                         value={transientAnalysisControlLine.step}
                         onChange={handleTransientAnalysisControlLine}
                       />
@@ -618,7 +616,7 @@ export default function SimulationProperties () {
                         }}
                       >
 
-                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                        <TextField placeHolder="enter expression" size='large' variant="outlined"
                           value={controlBlockParam}
                           onChange={handleControlBlockParam}
                         />
@@ -627,7 +625,7 @@ export default function SimulationProperties () {
 
                     </ListItem>
                     <ListItem>
-                      <Button id="transientAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Transient') }}>
+                      <Button size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('Transient') }}>
                         Simulate
                       </Button>
                     </ListItem>
@@ -654,7 +652,6 @@ export default function SimulationProperties () {
                     <ListItem>
                       <TextField
                         style={{ width: '100%' }}
-                        id="input"
                         size='small'
                         variant="outlined"
                         select
@@ -679,20 +676,20 @@ export default function SimulationProperties () {
                     </ListItem>
 
                     <ListItem>
-                      <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"
+                      <TextField label="Points/ Decade" size='small' variant="outlined"
                         value={acAnalysisControlLine.pointsBydecade}
                         onChange={handleAcAnalysisControlLine}
                       />
                     </ListItem>
                     <ListItem>
-                      <TextField id="start" label="Start Frequency" size='small' variant="outlined"
+                      <TextField label="Start Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.start}
                         onChange={handleAcAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>Hz</span>
                     </ListItem>
                     <ListItem>
-                      <TextField id="stop" label="Stop Frequency" size='small' variant="outlined"
+                      <TextField label="Stop Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.stop}
                         onChange={handleAcAnalysisControlLine}
                       />
@@ -725,7 +722,7 @@ export default function SimulationProperties () {
                         }}
                       >
 
-                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                        <TextField placeHolder="enter expression" size='large' variant="outlined"
                           value={controlBlockParam}
                           onChange={handleControlBlockParam}
                         />
