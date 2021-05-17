@@ -403,7 +403,7 @@ export function OpenSchDialog (props) {
       aria-labelledby="open-dialog-title"
       aria-describedby="open-dialog-description"
     >
-      <DialogTitle id="open-dialog-title" onClose={close}>
+      <DialogTitle id="open-dialog-title" onClose={close} disableTypography>
         <Typography variant="h6">{'Open Schematic'}</Typography>
       </DialogTitle>
       <DialogContent dividers>
