@@ -10,7 +10,7 @@ const initialState = {
   regErrors: '',
   resetPasswordSuccess: false,
   resetPasswordError: '',
-  resetPasswordConfirmSuccess: false,
+  resetPasswordConfirmSuccess: false
 }
 
 export default function (state = initialState, action) {

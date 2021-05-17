@@ -255,11 +255,10 @@ export const googleLogin = (host, toUrl) => {
   }
 }
 
-
 // Handles api call for user's password recovery
 export const resetPassword = (email) => (dispatch) => {
   const body = {
-    email: email,
+    email: email
   }
 
   // add headers
@@ -279,19 +278,18 @@ export const resetPassword = (email) => (dispatch) => {
           }
         })
         setTimeout(() => {
-          window.location.href = '/eda/#/login';
-        }, 2000);
+          window.location.href = '/eda/#/login'
+        }, 2000)
         // history.push('/login')
       }
     })
     .catch((err) => {
       var res = err.response
       if ([400, 401, 403, 304].includes(res.status)) {
-          dispatch(resetPasswordError('Enter valid credentials.'))
+        dispatch(resetPasswordError('Enter valid credentials.'))
       }
     })
 }
-
 
 // Handles api call for user's password reset confirmation
 export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => (dispatch) => {
@@ -299,7 +297,7 @@ export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => 
     uid: uid,
     token: token,
     new_password: newPassword,
-    re_new_password: reNewPassword,
+    re_new_password: reNewPassword
   }
 
   // add headers
@@ -317,25 +315,27 @@ export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => 
           payload: {
             data: 'The password has been reset successfully.'
           }
-        });
+        })
         setTimeout(() => {
-          window.location.href = '/eda/#/login';
-        }, 2000);
+          window.location.href = '/eda/#/login'
+        }, 2000)
       }
     })
     .catch((err) => {
       var res = err.response
       if ([400, 401, 403, 304].includes(res.status)) {
-          const { new_password, re_new_password, non_field_errors, token } = res.data;
-          const defaultErrors = ["Password reset failed."]
-          var message = (new_password || re_new_password || non_field_errors || defaultErrors)[0];
+        // eslint-disable-next-line camelcase
+        const { new_password, re_new_password, non_field_errors, token } = res.data
+        const defaultErrors = ['Password reset failed.']
+        // eslint-disable-next-line camelcase
+        var message = (new_password || re_new_password || non_field_errors || defaultErrors)[0]
 
-          if (token) {
-            // Override message if it's a token error
-            message = "Either the password has already been changed or you have the incorrect URL";
-          }
+        if (token) {
+          // Override message if it's a token error
+          message = 'Either the password has already been changed or you have the incorrect URL'
+        }
 
-          dispatch(resetPasswordConfirmError(message))
+        dispatch(resetPasswordConfirmError(message))
       }
     })
 }
