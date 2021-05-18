@@ -477,8 +477,8 @@ export class Workspace {
     if (window.isCodeEditorOpened) {
       return;
     }
-    // console.log([event.ctrlKey, event.key]);
-    if (event.key === 'Delete' || event.key === 'Backspace') {
+    if (event.key === 'Delete' || event.key === 'Backspace'
+      && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'input')) {
       // Backspace or Delete
       Workspace.DeleteComponent();
     }
