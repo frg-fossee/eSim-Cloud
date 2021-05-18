@@ -286,7 +286,7 @@ export const resetPassword = (email) => (dispatch) => {
     .catch((err) => {
       var res = err.response
       if ([400, 401, 403, 304].includes(res.status)) {
-        dispatch(resetPasswordError('Enter valid credentials.'))
+        dispatch(resetPasswordError(res.data))
       }
     })
 }
