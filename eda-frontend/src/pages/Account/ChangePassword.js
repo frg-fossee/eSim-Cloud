@@ -7,7 +7,7 @@ import {
   Card,
   Avatar,
   InputAdornment,
-  IconButton,
+  IconButton
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Visibility from '@material-ui/icons/Visibility'
@@ -66,7 +66,6 @@ export default function ChangePassword () {
   const handleClickShowCurrentPassword = () => setShowCurrentPassword(!showCurrentPassword)
   const handleMouseDownCurrentPassword = () => setShowCurrentPassword(!showCurrentPassword)
 
-
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>
@@ -84,7 +83,7 @@ export default function ChangePassword () {
         </Typography>
 
         <form className={classes.form} noValidate>
-        <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -111,7 +110,7 @@ export default function ChangePassword () {
             onChange={e => setCurrentPassword(e.target.value)}
             autoComplete="current-password"
           />
-        <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -138,7 +137,7 @@ export default function ChangePassword () {
             onChange={e => setNewPassword(e.target.value)}
             autoComplete="new-password"
           />
-            <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required

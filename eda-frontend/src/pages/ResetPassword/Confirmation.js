@@ -8,8 +8,9 @@ import {
   Card,
   Avatar,
   InputAdornment,
-  IconButton,
+  IconButton
 } from '@material-ui/core'
+import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
@@ -63,7 +64,6 @@ export default function ResetPasswordConfirm ({ match }) {
   const handleClickShowReNewPassword = () => setShowReNewPassword(!showReNewPassword)
   const handleMouseDownReNewPassword = () => setShowReNewPassword(!showReNewPassword)
 
-
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>
@@ -81,7 +81,7 @@ export default function ResetPasswordConfirm ({ match }) {
         </Typography>
 
         <form className={classes.form} noValidate>
-        <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -108,7 +108,7 @@ export default function ResetPasswordConfirm ({ match }) {
             onChange={e => setNewPassword(e.target.value)}
             autoComplete="current-password"
           />
-            <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             required
@@ -158,4 +158,8 @@ export default function ResetPasswordConfirm ({ match }) {
       </Button>
     </Container>
   )
+}
+
+ResetPasswordConfirm.propTypes = {
+  match: PropTypes.object.isRequired
 }
