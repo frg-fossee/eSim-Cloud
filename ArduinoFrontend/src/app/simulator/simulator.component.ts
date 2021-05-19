@@ -15,6 +15,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
+import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
+import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -600,4 +602,46 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       window['hideLoading']();
     }
   }
+
+  // Export to a JSON File
+  exportJson() {
+
+    // Check if workspace is empty or not
+    if (Workspace.checkIfWorkspaceEmpty()) {
+      AlertService.showAlert('You have nothing to save!'); // Throw Alert if Workspace is empty
+    } else {
+      // Open File rename dialog
+      const viewref = this.dialog.open(ExportJSONDialogComponent, {
+        width: '600px',
+        data: { description: this.description, title: this.projectTitle }
+      });
+      viewref.afterClosed();
+    }
+  }
+
+  // Import from jSON file
+  importJson(file) {
+    // Read File
+    const fileReader = new FileReader();
+    fileReader.readAsText(file, 'UTF-8');
+    fileReader.onload = (event: Event) => {
+      const data = fileReader.result;
+      // Load the data object and change into workspace
+      this.LoadProject(JSON.parse(data as string));
+    };
+  }
+
+  // Function to Exit Project & go back to mainScreen
+  exitProject() {
+    if (Workspace.checkIfWorkspaceEmpty()) {
+      this.router.navigate(['/']);
+    } else {
+      this.dialog.open(ExitConfirmDialogComponent).afterClosed().subscribe(res => {
+        if (res) {
+          this.router.navigate(['/']);
+        }
+      });
+    }
+  }
+
 }

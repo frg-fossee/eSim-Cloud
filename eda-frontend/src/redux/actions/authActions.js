@@ -55,7 +55,7 @@ export const loadUser = () => (dispatch, getState) => {
     })
 }
 
-// Handel api call for user login
+// Handle api call for user login
 export const login = (username, password, toUrl) => {
   const body = {
     password: password,
@@ -104,7 +104,7 @@ export const login = (username, password, toUrl) => {
   }
 }
 
-// Handel api call for user sign up
+// Handle api call for user sign up
 export const signUp = (email, username, password, history) => (dispatch) => {
   const body = {
     email: email,
@@ -136,16 +136,18 @@ export const signUp = (email, username, password, history) => (dispatch) => {
       if (res.status === 400 || res.status === 403 || res.status === 401) {
         if (res.data.username !== undefined) {
           if (res.data.username[0].search('already') !== -1 && res.data.username[0].search('exists') !== -1) { dispatch(signUpError('Username Already Taken.')) }
+        } else if (res.data.password !== undefined) {
+          dispatch(signUpError(res.data.password))
         } else {
-          dispatch(signUpError('Enter Valid Credentials.'))
+          dispatch(signUpError(res.data.email))
         }
       } else {
-        dispatch(signUpError('Something went wrong! Registeration Failed'))
+        dispatch(signUpError('Something went wrong! Registration Failed'))
       }
     })
 }
 
-// Handel api call for user logout
+// Handle api call for user logout
 export const logout = (history) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
@@ -204,6 +206,26 @@ const signUpError = (message) => (dispatch) => {
   })
 }
 
+// Redux action for display reset password error
+const resetPasswordError = (message) => (dispatch) => {
+  dispatch({
+    type: actions.RESET_PASSWORD_FAILED,
+    payload: {
+      data: message
+    }
+  })
+}
+
+// Redux action for display reset password confirmation error
+const resetPasswordConfirmError = (message) => (dispatch) => {
+  dispatch({
+    type: actions.RESET_PASSWORD_CONFIRM_FAILED,
+    payload: {
+      data: message
+    }
+  })
+}
+
 // Api call for Google oAuth login or sign up
 export const googleLogin = (host, toUrl) => {
   return function (dispatch) {
@@ -231,4 +253,89 @@ export const googleLogin = (host, toUrl) => {
         }
       })
   }
+}
+
+// Handles api call for user's password recovery
+export const resetPassword = (email) => (dispatch) => {
+  const body = {
+    email: email
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  api.post('auth/users/reset_password/', body, config)
+    .then((res) => {
+      if (res.status >= 200 || res.status < 304) {
+        dispatch({
+          type: actions.RESET_PASSWORD_SUCCESSFUL,
+          payload: {
+            data: 'The password reset link has been sent to your email account.'
+          }
+        })
+        setTimeout(() => {
+          window.location.href = '/eda/#/login'
+        }, 2000)
+        // history.push('/login')
+      }
+    })
+    .catch((err) => {
+      var res = err.response
+      if ([400, 401, 403, 304].includes(res.status)) {
+        dispatch(resetPasswordError(res.data))
+      }
+    })
+}
+
+// Handles api call for user's password reset confirmation
+export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => (dispatch) => {
+  const body = {
+    uid: uid,
+    token: token,
+    new_password: newPassword,
+    re_new_password: reNewPassword
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  api.post('auth/users/reset_password_confirm/', body, config)
+    .then((res) => {
+      if (res.status >= 200 || res.status < 304) {
+        dispatch({
+          type: actions.RESET_PASSWORD_CONFIRM_SUCCESSFUL,
+          payload: {
+            data: 'The password has been reset successfully.'
+          }
+        })
+        setTimeout(() => {
+          window.location.href = '/eda/#/login'
+        }, 2000)
+      }
+    })
+    .catch((err) => {
+      var res = err.response
+      if ([400, 401, 403, 304].includes(res.status)) {
+        // eslint-disable-next-line camelcase
+        const { new_password, re_new_password, non_field_errors, token } = res.data
+        const defaultErrors = ['Password reset failed.']
+        // eslint-disable-next-line camelcase
+        var message = (new_password || re_new_password || non_field_errors || defaultErrors)[0]
+
+        if (token) {
+          // Override message if it's a token error
+          message = 'Either the password has already been changed or you have the incorrect URL'
+        }
+
+        dispatch(resetPasswordConfirmError(message))
+      }
+    })
 }

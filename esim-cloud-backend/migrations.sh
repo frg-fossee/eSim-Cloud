@@ -1,5 +1,7 @@
 python manage.py makemigrations saveAPI
 python manage.py migrate saveAPI
+python manage.py makemigrations authAPI
+python manage.py migrate authAPI
 python manage.py makemigrations simulationAPI
 python manage.py migrate simulationAPI --database="mongodb"
 python manage.py makemigrations libAPI
