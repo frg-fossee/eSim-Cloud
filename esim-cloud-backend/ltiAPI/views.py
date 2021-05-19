@@ -27,7 +27,7 @@ class LTIExist(APIView):
         except lticonsumer.DoesNotExist:
             return Response(data={"error": "LTIConsumer Not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        config_url = "http://" + request.get_host() + "/api/lti/schematic/" + str(save_id) + "/"
+        config_url = "http://" + request.get_host() + "/api/lti/" + str(save_id) + '/config.xml/'
         response_data = {
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
@@ -48,14 +48,14 @@ class LTIBuildApp(APIView):
         serialized = consumerSerializer(data=request.data)
         if serialized.is_valid():
             serialized.save()
-            config_url = "http://" + request.get_host() + "/api/lti/schematic/" + str(serialized.data.get('save_id')) + "/"
+            config_url = "http://" + request.get_host() + "/api/lti/" + str(serialized.data["save_id"]) + '/config.xml/'
             response_data = {
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
                 "config_url": config_url,
                 "score": serialized.data.get('score')
             }
-            print(response_data)
+            print("Recieved POST for LTI APP:", response_data)
             response_serializer = consumerResponseSerializer(data=response_data)
             if response_serializer.is_valid():
                 return Response(response_serializer.data, status=status.HTTP_201_CREATED)
@@ -105,7 +105,7 @@ class LTIConfigView(View):
 
 class LTIAuthView(APIView):
     """POST handler for the LTI login POST back call"""
-    def post(self, request, save_id):
+    def post(self, request):
         # Extracts the LTI payload information
         params = {key: request.data[key] for key in request.data}
         # Maps the settings defined for the LTI consumer
@@ -115,14 +115,17 @@ class LTIAuthView(APIView):
         # Extracts the request headers from the request
         headers = request.META
         # Define the redirect url
+        print("Got POST for validating LTI consumer")
         try:
-            i = lticonsumer.objects.get(consumer_key=request.data.get('oauth_consumer_key', None), save_id=save_id)
+            i = lticonsumer.objects.get(consumer_key=request.data.get('oauth_consumer_key', None))
         except lticonsumer.DoesNotExist:
+            print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
         next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.save_id.save_id)
         try:
             # Validate the incoming LTI
             verify_request_common(consumers_dict, url, request.method, headers, params)
+            print("Verified consumer")
             grade = LTIPostGrade(params, request)
             # if grade:
             #     # If there is a return URL from the configured call the redirect URL
@@ -144,6 +147,7 @@ def LTIPostGrade(params, request):
     try:
         consumer = lticonsumer.objects.get(consumer_key=oauth_consumer_key(request))
         score = consumer.score
+        print("Set score for grading")
     except ValueError:
         score = 0
 
