@@ -36,6 +36,7 @@ import { ViewProjectComponent } from './view-project/view-project.component';
 import { AlertModalComponent } from './alert/alert-modal/alert-modal.component';
 import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.component';
 import { ExportJSONDialogComponent } from './export-jsondialog/export-jsondialog.component';
+import { ExitConfirmDialogComponent } from './exit-confirm-dialog/exit-confirm-dialog.component';
 
 /**
  * Monaco OnLoad Function
@@ -69,6 +70,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     AlertModalComponent,
     ConfirmModalComponent,
     ExportJSONDialogComponent,
+    ExitConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -97,7 +99,8 @@ const monacoConfig: NgxMonacoEditorConfig = {
     ComponentlistComponent,
     AlertModalComponent,
     ConfirmModalComponent,
-    ExportJSONDialogComponent
+    ExportJSONDialogComponent,
+    ExitConfirmDialogComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
