@@ -61,6 +61,7 @@ class ComponentAlternate(models.Model):
 
 
 class FavouriteComponent(models.Model):
-    owner = models.OneToOneField(to=get_user_model(), on_delete=models.CASCADE, null=False)
+    owner = models.OneToOneField(to=get_user_model(),
+                                 on_delete=models.CASCADE, null=False)
     component = models.ManyToManyField(to=LibraryComponent)
     last_change = models.DateTimeField(auto_now=True)
