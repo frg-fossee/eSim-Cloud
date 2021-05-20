@@ -85,11 +85,21 @@ export default function SimulationProperties () {
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
+  var nodeArray = []
+  const populateNodeArray = (nodeArray) =>{
+    nodeList.forEach((value) => {
+        if(value !== null && value !== "") {
+            nodeArray.push({key:value})
+        }
+    })
+  }
 
   const onDcSweepTabExpand = () => {
     try {
-      setComponentsList(['', ...GenerateCompList()])
-      setNodeList(['', ...GenerateNodeList()])
+        setComponentsList(['', ...GenerateCompList()])
+        setNodeList(['', ...GenerateNodeList()])
+        nodeArray = []
+        populateNodeArray(nodeArray)        
     } catch (err) {
       setComponentsList([])
       setNodeList([])
@@ -98,7 +108,9 @@ export default function SimulationProperties () {
   }
   const onTransientAnalysisTabExpand = () => {
     try {
-      setNodeList(['', ...GenerateNodeList()])
+        setNodeList(['', ...GenerateNodeList()])
+        nodeArray = []
+        populateNodeArray(nodeArray)  
     } catch (err) {
       setNodeList([])
       alert('Circuit not complete. Please Check Connectons.')
@@ -158,9 +170,8 @@ export default function SimulationProperties () {
     Decade: 'dec',
     Octave: 'oct'
   }
-  const nodeArray = []  
   let [selectedValue, setSelectedValue] = React.useState([])
-  const setSelectedValue1 = (data) => {
+  const handleAddSelectedValue = (data) => {
     var f = 0
     selectedValue.forEach((value, i) =>{
         if(value[i] !== undefined){
@@ -173,7 +184,7 @@ export default function SimulationProperties () {
     }   
     // console.log(selectedValue) 
   }
-  const removeSelectedValue = (data) => {
+  const handleRemSelectedValue = (data) => {
     const tmp = []
     selectedValue.forEach((value,i) =>{
         if(value[i] !== undefined){
@@ -334,7 +345,9 @@ export default function SimulationProperties () {
     // console.log(selectedValue)
     var atleastOne = 0
     let cblockline =""
-    
+    // if either the extra expression field or the nodes multi select
+    // drop down list in enabled then atleast one value is made non zero
+    // to add add all instead to the print statement
     if(selectedValue.length > 0 && selectedValue !== null){
         selectedValue.forEach((value, i) => {
             if(value[i] !== undefined){
@@ -589,19 +602,35 @@ export default function SimulationProperties () {
                       >
 
                         {
-                          nodeList.map((value, i) => {
-                             if(value != null){
-                              return (<option key={i} value={value}>
-                                {value}
-                              </option>)
-                            } else {
-                              return null
-                            }
-                          })
+                            nodeList.map((value, i) => {
+                                if(value != null){
+                                return (<option key={i} value={value}>
+                                    {value}
+                                </option>)
+                                } else {
+                                return null
+                                }
+                            })
                         }
 
                       </TextField>
 
+                    </ListItem>
+                    <ListItem>
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Nodes"
+                        closeOnSelect="false"
+                        placeholder="Select Node"
+                        onSelect={handleAddSelectedValue}
+                        onRemove={handleRemSelectedValue}
+                        // value={controlBlockParam}
+                        // onChange={handleControlBlockParam}
+                        // SelectProps={{
+                        //   native: true
+                        // }}
+                        options={nodeArray} displayValue="key" 
+                      />                      
                     </ListItem>
                     <ListItem>
 
@@ -702,8 +731,8 @@ export default function SimulationProperties () {
                         id="Nodes"
                         closeOnSelect="false"
                         placeholder="Select Node"
-                        onSelect={setSelectedValue1}
-                        onRemove={removeSelectedValue}
+                        onSelect={handleAddSelectedValue}
+                        onRemove={handleRemSelectedValue}
                         // value={controlBlockParam}
                         // onChange={handleControlBlockParam}
                         // SelectProps={{
