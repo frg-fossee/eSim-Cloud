@@ -477,7 +477,7 @@ export class Workspace {
     if (window.isCodeEditorOpened) {
       return;
     }
-    if (event.key === 'Delete' || event.key === 'Backspace'
+    if ((event.key === 'Delete' || event.key === 'Backspace')
       && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) {
       // Backspace or Delete
       Workspace.DeleteComponent();
