@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class TokenCreateSerializer(serializers.Serializer):
-    password = serializers.CharField(required=False, 
+    password = serializers.CharField(required=False,
                                      style={"input_type": "password"})
 
     default_error_messages = {
