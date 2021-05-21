@@ -26,7 +26,7 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
 
   const [openSnackbar, setOpenSnackbar] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const [snackbarMessage,setSnackbarMessage] = React.useState(null)
+  const [snackbarMessage, setSnackbarMessage] = React.useState(null)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -52,14 +52,12 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
   }, [imageRef, component])
 
   useEffect(() => {
-    if (snackbarMessage !== null)
-      setOpenSnackbar(true)
+    if (snackbarMessage !== null) { setOpenSnackbar(true) }
   }, [snackbarMessage])
 
   useEffect(() => {
-    if (openSnackbar === false)
-      setSnackbarMessage(null)
-  },[openSnackbar])
+    if (openSnackbar === false) { setSnackbarMessage(null) }
+  }, [openSnackbar])
 
   const addFavourite = (id) => {
     const token = localStorage.getItem('esim_token')
