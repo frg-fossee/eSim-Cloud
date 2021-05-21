@@ -4,6 +4,10 @@ import { List, ListItemText, Tooltip, Popover } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import api from '../../utils/Api'
 import Button from '@material-ui/core/Button'
+import Snackbar from '@material-ui/core/Snackbar'
+import CloseIcon from '@material-ui/icons/Close'
+import IconButton from '@material-ui/core/IconButton'
+
 
 import './Helper/SchematicEditor.css'
 import { AddComponent } from './Helper/SideBar.js'
@@ -17,10 +21,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SideComp ({ component, isFavourite = false, setFavourite }) {
+export default function SideComp({ isFavourite = false, favourite, setFavourite, component }) {
   const classes = useStyles()
   const imageRef = React.createRef()
 
+  const [openSnackbar, setOpenSnackbar] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null)
 
   const handleClick = (event) => {
@@ -28,6 +33,14 @@ export default function SideComp ({ component, isFavourite = false, setFavourite
   }
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpenSnackbar(false)
   }
 
   const open = Boolean(anchorEl)
@@ -38,7 +51,7 @@ export default function SideComp ({ component, isFavourite = false, setFavourite
     AddComponent(component, imageRef.current)
   }, [imageRef, component])
 
-  const handleFavourite = (id) => {
+  const addFavourite = (id) => {
     const token = localStorage.getItem('esim_token')
     const body = {
       component: [id]
@@ -56,6 +69,26 @@ export default function SideComp ({ component, isFavourite = false, setFavourite
     }).catch(err => {
       console.log(err)
     })
+    setAnchorEl(null)
+  }
+
+  const handleFavourite = (id) => {
+    if (favourite) {
+      var flag = 0
+      for (var i = 0; i < favourite.length; i++) {
+        if (favourite[i].id === id) {
+          flag = 1
+          break
+        }
+      }
+      if (!flag) {
+        addFavourite(id)
+      } else {
+        setOpenSnackbar(true)
+      }
+    } else {
+      addFavourite(id)
+    }
   }
 
   const handleRemove = (id) => {
@@ -73,6 +106,7 @@ export default function SideComp ({ component, isFavourite = false, setFavourite
     }).catch(err => {
       console.log(err)
     })
+    setAnchorEl(null)
   }
   return (
     <div>
@@ -102,29 +136,29 @@ export default function SideComp ({ component, isFavourite = false, setFavourite
             <b>Component Name:</b> {component.name}
           </ListItemText>
 
-          { component.description !== '' &&
+          {component.description !== '' &&
             <ListItemText>
               <b>Description:</b> {component.description}
             </ListItemText>
           }
           {
             component.keyword !== '' &&
-          <ListItemText>
-            <b>Keywords:</b> {component.keyword}
-          </ListItemText>
+            <ListItemText>
+              <b>Keywords:</b> {component.keyword}
+            </ListItemText>
 
           }
 
           {
             component.data_link !== '' &&
-          <ListItemText>
-            <b>Datasheet:</b> <a href={component.data_link} rel="noopener noreferrer" target='_blank' >{component.data_link}</a>
-          </ListItemText>
+            <ListItemText>
+              <b>Datasheet:</b> <a href={component.data_link} rel="noopener noreferrer" target='_blank' >{component.data_link}</a>
+            </ListItemText>
           }
 
           {!isFavourite && localStorage.getItem('esim_token') &&
             <ListItemText>
-              <Button onClick={() => handleFavourite(component.id) }>Add to Favourites</Button>
+              <Button onClick={() => handleFavourite(component.id)}>Add to Favourites</Button>
             </ListItemText>
           }
 
@@ -135,7 +169,24 @@ export default function SideComp ({ component, isFavourite = false, setFavourite
           }
         </List>
       </Popover>
-
+      <Snackbar
+        style={{zIndex:100}}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        message="This component is already added to favourites"
+        action={
+          <>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </>
+        }
+      />
     </div>
   )
 }
@@ -143,5 +194,6 @@ export default function SideComp ({ component, isFavourite = false, setFavourite
 SideComp.propTypes = {
   component: PropTypes.object.isRequired,
   isFavourite: PropTypes.bool,
-  setFavourite: PropTypes.func
+  setFavourite: PropTypes.func,
+  favourite: PropTypes.array
 }

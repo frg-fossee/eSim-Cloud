@@ -277,7 +277,7 @@ export default function ComponentSidebar ({ compRef }) {
                                   componentChunk.map((component) => {
                                     return (
                                       <ListItemIcon key={component.full_name}>
-                                        <SideComp isFavourite={true} setFavourite={setFavourite} component={component} />
+                                        <SideComp isFavourite={true} favourite={favourite} setFavourite={setFavourite} component={component} />
                                       </ListItemIcon>
                                     )
                                   }
@@ -317,7 +317,7 @@ export default function ComponentSidebar ({ compRef }) {
                                   {
                                     componentChunk.map((component) => {
                                       return (<ListItemIcon key={component.full_name}>
-                                        <SideComp setFavourite={setFavourite} component={component} />
+                                        <SideComp setFavourite={setFavourite} favourite={favourite} component={component} />
                                       </ListItemIcon>)
                                     }
                                     )
