@@ -629,43 +629,47 @@ function LibraryRow({library}) {
   }
 
   return (
-    <>
-      <ListItem button onClick={handleOpen}>
-        {open ? <ExpandLess /> : <ExpandMore />}
-        <ListItemText primary={library.library_name.slice(0, -4)} />
-        <ListItemSecondaryAction>
-          { (!library.default && !library.additional) 
-            &&<Button variant="contained" size="small" 
-                style={{ backgroundColor: "#ff1744", color: "#ffffff"}}
-                onClick={() => { dispatch(deleteLibrary(library)) }} hidden={library.default || library.additional} >
-                Delete
-              </Button>
-          }
-          {library.active
-            ? <Button variant="contained" size="small" color="secondary"
-              onClick={ () => { handleUnapply(library) }}>
-              Remove
-            </Button>
-            : <Button variant="contained" size="small" color="primary"
-              onClick={ () => { handleAppply(library) }}>
-              Use
-            </Button>
-          }
-        </ListItemSecondaryAction>
-      </ListItem>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-      <List component="div" style={{paddingLeft: '1rem', paddingRight: '1rem', overflow: "scroll"}}>
-          { components[library.id].map(component => {
-            return (
-              <ListItem alignItems='center' dense className={classes.nested}>
-                <ListItemText primary={component.name} secondary={component.description}/>
-              </ListItem>
-            )
-          })}
-        </List>
-      </Collapse>
-      <Divider />
-    </>
+    <Paper style={{marginBottom: ".5rem"}}>
+      <ListSubheader>
+          <ListItem onClick={handleOpen} >
+            {open ? <ExpandLess /> : <ExpandMore />}
+            <ListItemText primary={library.library_name.slice(0, -4)} />
+            <ListItemSecondaryAction>
+              { (!library.default && !library.additional)
+                &&<Button variant="contained" size="small"
+                    style={{ backgroundColor: "#ff1744", color: "#ffffff", margin: ".5rem"}}
+                    onClick={() => { dispatch(deleteLibrary(library)) }} hidden={library.default || library.additional} >
+                    Delete
+                  </Button>
+              }
+              {library.active
+                ? <Button variant="contained" size="small" color="secondary"
+                  onClick={ () => { handleUnapply(library) }} style={{margin: ".5rem"}}>
+                  Remove
+                </Button>
+                : <Button variant="contained" size="small" color="primary"
+                  onClick={ () => { handleAppply(library) }} style={{margin: ".5rem"}}>
+                  Use
+                </Button>
+              }
+            </ListItemSecondaryAction>
+          </ListItem>
+      </ListSubheader>
+
+      { (components[library.id]) && 
+        <Collapse in={open} timeout="auto" unmountOnExit>
+        <List component="div" style={{paddingLeft: '1rem', paddingRight: '1rem'}}>
+            { components[library.id].map(component => {
+              return (
+                <ListItem alignItems='center' dense className={classes.nested}>
+                  <ListItemText primary={component.name} secondary={component.description}/>
+                </ListItem>
+              )
+            })}
+          </List>
+        </Collapse>
+      }
+    </Paper>
   )
 }
 
@@ -755,26 +759,29 @@ export function SelectLibrariesModal (props) {
     fullWidth
     maxWidth="md"
     TransitionComponent={Transition}
-    aria-labelledby="open-dialog-title"
-    aria-describedby="open-dialog-description"
+    aria-labelledby="library-select-dialog"
+    aria-describedby="library-select"
     >
       <DialogTitle>
         <Typography variant="h6">{'Manage libraries in the workspace'}</Typography>
+        <Divider fullWidth/>
+      {/* </DialogTitle>
+      <DialogTitle> */}
+          <Tabs value={tabValue} onChange={handleTabChange} centered >
+            <Tab label="DEFAULT" />
+            <Tab label="ADDITIONAL" />
+            <Tab label="UPLOADED" />
+          </Tabs>
       </DialogTitle>
       <DialogContent dividers>
         <DialogContentText id="open-dialog-description" >
-          <Paper className={classes.root}>
-            <Tabs value={tabValue} onChange={handleTabChange} centered color="primary">
-              <Tab label="DEFAULT" />
-              <Tab label="ADDITIONAL" />
-              <Tab label="UPLOADED" />
-              {/* <Tab label="ACTIVE" /> */}
-            </Tabs>
-          </Paper>
+          
+            
+            
           { activeLibraries !== undefined
               ? <>
                 <TabPanel value={tabValue} index={0}>
-                  <List fullwidth component="nav" className={classes.root} >
+                  <List fullwidth className={classes.root}>
                   { allLibraries.map(library => {
                     if (library.default)
                       return <LibraryRow library={library} />
@@ -783,7 +790,7 @@ export function SelectLibrariesModal (props) {
                   </List>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
-                  <List fullwidth component="nav" className={classes.root}>
+                  <List fullwidth className={classes.root}>
                   { allLibraries.map(library => {
                     if (library.additional)
                       return <LibraryRow library={library} />
@@ -792,7 +799,7 @@ export function SelectLibrariesModal (props) {
                   </List>
                 </TabPanel>
                 <TabPanel value={tabValue} index={2}>
-                  <List fullwidth component="nav" className={classes.root}>
+                  <List fullwidth className={classes.root}>
                     { allLibraries.map(library => {
                       if (!library.default && !library.additional)
                         return <LibraryRow library={library} />
@@ -800,27 +807,14 @@ export function SelectLibrariesModal (props) {
                     }
                   </List>
                 </TabPanel>
-                {/* <TabPanel value={tabValue} index={3}>
-                  <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
-                    <Table className={classes.table}>
-                      <TableBody>
-                        { allLibraries.map(library => {
-                          if (!library.active)
-                            return <LibraryRow library={library} />
-                        })
-                        }
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </TabPanel> */}
                 </>
               : <p>Nothing To Show</p>
           }
         </DialogContentText>
       </DialogContent>
-      <DialogActions>
+      <DialogActions style={{justifyContent: 'center'}}>
           { auth &&
-            <center>
+            <div>
               { uploadDisable &&
                 <div style={{paddingBottom: '10px'}}>
                   <Alert severity="info" >Files are being uploaded please wait.</Alert>
@@ -832,7 +826,7 @@ export function SelectLibrariesModal (props) {
                 <input type="file" multiple={true} accept=".lib,.dcm" ref={ fileUpload } onChange={ handlFileUpload } style={{display: 'none'}} />
               </Button>
               <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
-            </center>
+            </div>
           }
         </DialogActions>
     </Dialog>

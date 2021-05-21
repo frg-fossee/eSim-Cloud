@@ -80,9 +80,7 @@ export default function (state = InitialState, action) {
         return element.id !== action.payload
       }
       libraries = libraries.filter(filterFunc)
-      const components = { ...state.components }
-      delete components[action.payload]
-      return { ...state, libraries: libraries, components: components}
+      return { ...state, libraries: libraries}
     }
 
     case actions.DELETE_LIBRARY: {
