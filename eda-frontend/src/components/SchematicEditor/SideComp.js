@@ -26,6 +26,7 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
 
   const [openSnackbar, setOpenSnackbar] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null)
+  const [snackbarMessage,setSnackbarMessage] = React.useState(null)
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -50,6 +51,16 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
     AddComponent(component, imageRef.current)
   }, [imageRef, component])
 
+  useEffect(() => {
+    if (snackbarMessage !== null)
+      setOpenSnackbar(true)
+  }, [snackbarMessage])
+
+  useEffect(() => {
+    if (openSnackbar === false)
+      setSnackbarMessage(null)
+  },[openSnackbar])
+
   const addFavourite = (id) => {
     const token = localStorage.getItem('esim_token')
     const body = {
@@ -65,6 +76,7 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
     }
     api.post('favouritecomponents', body, config).then(resp => {
       setFavourite(resp.data.component)
+      setSnackbarMessage('Component is added to favourites successfully')
     }).catch(err => {
       console.log(err)
     })
@@ -83,7 +95,8 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
       if (!flag) {
         addFavourite(id)
       } else {
-        setOpenSnackbar(true)
+        setSnackbarMessage('This component is already added to favourites')
+        setAnchorEl(null)
       }
     } else {
       addFavourite(id)
@@ -177,7 +190,7 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
         open={openSnackbar}
         autoHideDuration={2000}
         onClose={handleSnackbarClose}
-        message="This component is already added to favourites"
+        message={snackbarMessage}
         action={
           <>
             <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
