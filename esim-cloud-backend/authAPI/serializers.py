@@ -7,7 +7,8 @@ User = get_user_model()
 
 
 class TokenCreateSerializer(serializers.Serializer):
-    password = serializers.CharField(required=False, style={"input_type": "password"})
+    password = serializers.CharField(required=False, 
+                                     style={"input_type": "password"})
 
     default_error_messages = {
         "invalid_credentials": "Incorrect username or password",
@@ -17,7 +18,7 @@ class TokenCreateSerializer(serializers.Serializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user = None
-        self.fields[settings.LOGIN_FIELD] = serializers.CharField(required=False)
+        self.fields[settings.LOGIN_FIELD] = serializers.CharField()
 
     def validate(self, attrs):
         password = attrs.get("password")
