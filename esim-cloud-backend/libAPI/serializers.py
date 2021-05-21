@@ -7,15 +7,21 @@ logger = logging.getLogger(__name__)
 
 class LibrarySerializer(serializers.ModelSerializer):
     default = serializers.SerializerMethodField('is_default')
+    additional = serializers.SerializerMethodField('is_additional')
 
     def is_default(self, obj):
         if obj.library_set.default == True:
             return True
         return False
 
+    def is_additional(self, obj):
+        if obj.library_set.default == False and obj.library_set.user.is_superuser:
+            return True
+        return False
+
     class Meta:
         model = Library
-        fields = ('library_name', 'saved_on', 'id', 'default')
+        fields = ('library_name', 'saved_on', 'id', 'default', 'additional')
 
 
 class ComponentAlternateSerializer(serializers.ModelSerializer):

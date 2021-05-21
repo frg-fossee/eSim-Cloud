@@ -1,12 +1,12 @@
-from django.http import request
 import django_filters
 from django.db.models import Q
+from django.contrib.auth.models import User
 from libAPI.serializers import LibrarySerializer, LibraryComponentSerializer, LibrarySetSerializer
 from libAPI.models import Library, LibraryComponent, LibrarySet, save_libs
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
 from rest_framework.parsers import MultiPartParser
 import logging
 from django_filters import rest_framework as filters
@@ -22,6 +22,8 @@ class IsLibraryOwner(BasePermission):
             return True
         if request.user.is_authenticated:
             if obj.library_set.user == request.user:
+                return True
+            elif obj.library_set.user.is_superuser and request.method in SAFE_METHODS:
                 return True
         return False
 
@@ -45,13 +47,15 @@ class LibraryViewSet(viewsets.ModelViewSet):
 
     # All Libraries available for user (custom+default)
     def get_queryset(self):
+        superusers = User.objects.filter(is_superuser=True)
         if self.request.user.is_authenticated:
             return Library.objects.filter(
-                Q(library_set__user=self.request.user)
+                Q(library_set__user=self.request.user) 
+                | Q(library_set__user__in=superusers)
                 | Q(library_set__default=True)
             ).order_by('-library_set__default')
         else:
-            return Library.objects.filter(library_set__default=True)
+            return Library.objects.filter(Q(library_set__default=True) | Q(library_set__user__in=superusers))
 
     # Custom libraries uploaded by the user
     @action(detail=False, methods=['GET', ], name='All custom libraries for user')
@@ -66,8 +70,9 @@ class LibraryViewSet(viewsets.ModelViewSet):
     # Default Libraries
     @action(detail=False, methods=['GET', ], name="All Default Libraries")
     def default(self, request):
+        superusers = User.objects.filter(is_superuser=True)
         return Response(LibrarySerializer(
-            Library.objects.filter(library_set__default=True),
+            Library.objects.filter(Q(library_set__default=True)),
             many=True).data
         )
 
@@ -88,10 +93,11 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
 class IsComponentOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        print("HOLA")
         if obj.component_library.library_set.default == True:
             return True
-        if request.user.is_authenticated:
+        elif obj.component_library.library_set.user and request.method in SAFE_METHODS:
+            return True
+        elif request.user.is_authenticated:
             if obj.component_library.library_set.user == request.user:
                 return True
         return False
@@ -106,19 +112,22 @@ class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = LibraryComponentSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = LibraryComponentFilterSet
-    
+
     def get_queryset(self):
+        superusers = User.objects.filter(is_superuser=True)
         if self.request.user.is_authenticated:
             library_set = LibrarySet.objects.filter(
-                Q(user=self.request.user) | Q(default=True)
+                Q(user=self.request.user) | Q(default=True) | Q(user__in=superusers)
             )
             libraries = Library.objects.filter(library_set__in=library_set)
-            components = LibraryComponent.objects.filter(component_library__in=libraries)
+            components = LibraryComponent.objects.filter(
+                component_library__in=libraries)
             return components
         else:
-            library_set = LibrarySet.objects.filter(default=True)
+            library_set = LibrarySet.objects.filter(Q(default=True) | Q(user__in=superusers))
             libraries = Library.objects.filter(library_set__in=library_set)
-            components = LibraryComponent.objects.filter(component_library__in=libraries)
+            components = LibraryComponent.objects.filter(
+                component_library__in=libraries)
             return components
 
 
@@ -150,7 +159,7 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
             library_set.save()
         except LibrarySet.MultipleObjectsReturned:
             return Response(status=status.HTTP_409_CONFLICT)
-        
+
         files = request.FILES.getlist('files')
         if len(files) != 0:
             path = os.path.join(
@@ -158,7 +167,7 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
                 'kicad-symbols',
                 library_set.user.username + '-' + library_set.name)
             try:
-                save_libs(library_set, path, files) # defined in ./models.py
+                save_libs(library_set, path, files)  # defined in ./models.py
                 return Response(status=status.HTTP_201_CREATED)
             except:
                 return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

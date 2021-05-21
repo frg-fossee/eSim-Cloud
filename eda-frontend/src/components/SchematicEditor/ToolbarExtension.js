@@ -27,25 +27,28 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemSecondaryAction,
+  ListSubheader,
   Avatar,
   ListItemAvatar,
   Tooltip,
-  Snackbar
+  Snackbar,
+  Collapse
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchCustomLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary } from '../../redux/actions/index'
+import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents } from '../../redux/actions/index'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
@@ -590,8 +593,8 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
+        <Box>
+          {children}
         </Box>
       )}
     </div>
@@ -604,8 +607,11 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function LibraryCard({library}) {
+function LibraryRow({library}) {
   const dispatch = useDispatch()
+  const [open, setopen] = React.useState(false)
+  const classes = useStyles()
+  const components = useSelector(state => state.schematicEditorReducer.components)
 
   const handleAppply = (lib) => {
     dispatch(fetchLibrary(lib.id))
@@ -615,35 +621,51 @@ function LibraryCard({library}) {
     dispatch(removeLibrary(lib.id))
   }
 
+  const handleOpen = () => {
+    console.log("YO")
+    if(components[library.id].length == 0)
+      dispatch(fetchComponents(library.id))
+    setopen(!open)
+  }
+
   return (
-    <Grid item xs={3} sm={3}>
-      <Card variant="outlined">
-        <CardContent>
-          <Typography component="p">
-            {library.library_name}
-          </Typography>
-        </CardContent>
-        <div style={{margin: "10px"}}>
-          { !library.default && 
-            <Button variant="contained" size="small" 
-              style={{marginRight: "10px", backgroundColor: "#ff1744", color: "#ffffff"}}
-              onClick={() => { dispatch(deleteLibrary(library.id)) }}>
-              Delete
-            </Button>
+    <>
+      <ListItem button onClick={handleOpen}>
+        {open ? <ExpandLess /> : <ExpandMore />}
+        <ListItemText primary={library.library_name.slice(0, -4)} />
+        <ListItemSecondaryAction>
+          { (!library.default && !library.additional) 
+            &&<Button variant="contained" size="small" 
+                style={{ backgroundColor: "#ff1744", color: "#ffffff"}}
+                onClick={() => { dispatch(deleteLibrary(library)) }} hidden={library.default || library.additional} >
+                Delete
+              </Button>
           }
-          { library.active
+          {library.active
             ? <Button variant="contained" size="small" color="secondary"
-              onClick={ () => { handleUnapply(library) }} >
+              onClick={ () => { handleUnapply(library) }}>
               Remove
             </Button>
             : <Button variant="contained" size="small" color="primary"
-              onClick={ () => { handleAppply(library) }} >
+              onClick={ () => { handleAppply(library) }}>
               Use
             </Button>
           }
-        </div>
-      </Card>
-    </Grid>
+        </ListItemSecondaryAction>
+      </ListItem>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+      <List component="div" style={{paddingLeft: '1rem', paddingRight: '1rem', overflow: "scroll"}}>
+          { components[library.id].map(component => {
+            return (
+              <ListItem alignItems='center' dense className={classes.nested}>
+                <ListItemText primary={component.name} secondary={component.description}/>
+              </ListItem>
+            )
+          })}
+        </List>
+      </Collapse>
+      <Divider />
+    </>
   )
 }
 
@@ -729,6 +751,7 @@ export function SelectLibrariesModal (props) {
     <Dialog
     open={open}
     onClose={close}
+    scroll="paper"
     fullWidth
     maxWidth="md"
     TransitionComponent={Transition}
@@ -743,54 +766,60 @@ export function SelectLibrariesModal (props) {
           <Paper className={classes.root}>
             <Tabs value={tabValue} onChange={handleTabChange} centered color="primary">
               <Tab label="DEFAULT" />
+              <Tab label="ADDITIONAL" />
               <Tab label="UPLOADED" />
-              <Tab label="ACTIVE" />
+              {/* <Tab label="ACTIVE" /> */}
             </Tabs>
           </Paper>
           { activeLibraries !== undefined
-              ? 
-              <center>
+              ? <>
                 <TabPanel value={tabValue} index={0}>
-                  <Grid container
-                  spacing={3}
-                  align="center"
-                  justify="center"
-                  direction="row">
-                    {activeLibraries.map((library, i) => {
-                      if(library.default)
-                        return <LibraryCard library={library} />
-                    })}
-                  </Grid>
+                  <List fullwidth component="nav" className={classes.root} >
+                  { allLibraries.map(library => {
+                    if (library.default)
+                      return <LibraryRow library={library} />
+                    })
+                  }
+                  </List>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
-                  <Grid container
-                  spacing={3}
-                  align="center"
-                  justify="center"
-                  direction="row">
-                    {activeLibraries.map((library, i) => {
-                      if(!library.default)
-                        return <LibraryCard library={library} />
-                    })}
-                  </Grid>
+                  <List fullwidth component="nav" className={classes.root}>
+                  { allLibraries.map(library => {
+                    if (library.additional)
+                      return <LibraryRow library={library} />
+                    })
+                  }
+                  </List>
                 </TabPanel>
                 <TabPanel value={tabValue} index={2}>
-                  <Grid container
-                  spacing={3}
-                  align="center"
-                  justify="center"
-                  direction="row">
-                    {activeLibraries.map((library, i) => {
-                      if(library.active)
-                        return <LibraryCard library={library} />
-                    })}
-                  </Grid>
+                  <List fullwidth component="nav" className={classes.root}>
+                    { allLibraries.map(library => {
+                      if (!library.default && !library.additional)
+                        return <LibraryRow library={library} />
+                      })
+                    }
+                  </List>
                 </TabPanel>
-              </center>
+                {/* <TabPanel value={tabValue} index={3}>
+                  <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
+                    <Table className={classes.table}>
+                      <TableBody>
+                        { allLibraries.map(library => {
+                          if (!library.active)
+                            return <LibraryRow library={library} />
+                        })
+                        }
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </TabPanel> */}
+                </>
               : <p>Nothing To Show</p>
           }
         </DialogContentText>
-        { auth &&
+      </DialogContent>
+      <DialogActions>
+          { auth &&
             <center>
               { uploadDisable &&
                 <div style={{paddingBottom: '10px'}}>
@@ -804,8 +833,8 @@ export function SelectLibrariesModal (props) {
               </Button>
               <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
             </center>
-        }
-      </DialogContent>
+          }
+        </DialogActions>
     </Dialog>
   )
 }

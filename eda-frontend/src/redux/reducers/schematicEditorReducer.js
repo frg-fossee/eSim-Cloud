@@ -46,20 +46,21 @@ export default function (state = InitialState, action) {
     }
 
     case actions.FETCH_ALL_LIBRARIES: {
-      var components = {}
+      const components = { ...state.components }
       var allLibraries = action.payload
-      allLibraries.forEach(e =>{
-        components[e.id] = []
+      allLibraries.forEach(e => {
+        if(!components[e.id])
+          components[e.id] = []
       })
-      return { ...state, allLibraries: allLibraries, allComponents: components }
+      return { ...state, allLibraries: allLibraries, components: components }
     }
 
     case actions.FETCH_CUSTOM_LIBRARIES: {
-      var components = {};
+      var allComponents = {};
       action.payload.forEach(e =>{
-        components[e.id] = []
+        allComponents[e.id] = []
       })
-      return { ...state, customLibraries: action.payload, customComponents: components }
+      return { ...state, customLibraries: action.payload}
     }
 
     case actions.FETCH_LIBRARY: {
@@ -90,11 +91,11 @@ export default function (state = InitialState, action) {
       }
       var newLibraries = [ ...state.libraries ]
       newLibraries = newLibraries.filter(filterFunc)
-      var components = { ...state.components }
+      var allComponents = { ...state.components }
       var allLibraries = [ ...state.allLibraries ]
       allLibraries = allLibraries.filter(filterFunc)
-      delete components[action.payload]
-      return { ...state, libraries: newLibraries, allLibraries: allLibraries, components: components }
+      delete allComponents[action.payload]
+      return { ...state, libraries: newLibraries, allLibraries: allLibraries, components: allComponents }
     }
 
     case actions.UPLOAD_LIBRARIES: {
