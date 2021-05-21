@@ -8,7 +8,6 @@ import Snackbar from '@material-ui/core/Snackbar'
 import CloseIcon from '@material-ui/icons/Close'
 import IconButton from '@material-ui/core/IconButton'
 
-
 import './Helper/SchematicEditor.css'
 import { AddComponent } from './Helper/SideBar.js'
 
@@ -21,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SideComp({ isFavourite = false, favourite, setFavourite, component }) {
+export default function SideComp ({ isFavourite = false, favourite, setFavourite, component }) {
   const classes = useStyles()
   const imageRef = React.createRef()
 
@@ -170,10 +169,10 @@ export default function SideComp({ isFavourite = false, favourite, setFavourite,
         </List>
       </Popover>
       <Snackbar
-        style={{zIndex:100}}
+        style={{ zIndex: 100 }}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'left',
+          horizontal: 'left'
         }}
         open={openSnackbar}
         autoHideDuration={2000}
