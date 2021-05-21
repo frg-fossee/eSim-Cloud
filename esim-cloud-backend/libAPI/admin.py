@@ -1,5 +1,5 @@
 from django.contrib import admin
-from libAPI.models import LibraryComponent, Library
+from libAPI.models import LibraryComponent, Library, FavouriteComponent
 
 
 @admin.register(LibraryComponent)
@@ -18,3 +18,9 @@ class ComponentInline(admin.TabularInline):
 @admin.register(Library)
 class LibraryAdmin(admin.ModelAdmin):
     inlines = (ComponentInline, )
+
+
+@admin.register(FavouriteComponent)
+class FavouriteComponentAdmin(admin.ModelAdmin):
+    list_display = ('owner', 'last_change')
+    search_fields = ('owner', 'component')
