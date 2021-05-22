@@ -83,6 +83,7 @@ def save_libs(library_set, path, files):
         os.mkdir(path, mode = 0o777)
     for f in files:
         handle_uploaded_file(f, path + '/' + f._name)
+    for f in files:
         if '.lib' in f._name:
             lib_output_location = os.path.join(path, 'symbol-svgs')
             lib_location = os.path.join(path, f._name)
