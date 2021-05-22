@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.contrib.auth.models import User
 from libAPI.models import LibraryComponent, Library, LibrarySet, save_libs
 from .forms import LibrarySetForm
 from inline_actions.admin import InlineActionsMixin
@@ -68,9 +69,10 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         # For new library set instance
+        user = User.objects.get(id=request.POST.get('user'))
         if obj.pk is None:
             obj = LibrarySet(
-                user=request.user,
+                user=user,
                 default=True if request.POST.get('default') else False,
                 name=request.POST.get('name', '')[0:24]
             )
@@ -85,7 +87,7 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
             path = os.path.join(
                 settings.BASE_DIR,
                 'kicad-symbols',
-                request.user.username + '-' + request.POST.get('name', ''))
+                obj.user.username + '-' + obj.name)
 
             save_libs(obj, path, files)  # defined in ./models.py
         return redirect('/api/admin/libAPI/libraryset/' + str(obj.id))

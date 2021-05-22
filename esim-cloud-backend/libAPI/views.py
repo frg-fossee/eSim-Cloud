@@ -158,7 +158,7 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
             )
             library_set.save()
         except LibrarySet.MultipleObjectsReturned:
-            return Response(status=status.HTTP_409_CONFLICT)
+            library_set = LibrarySet.objects.filter(user=request.user).first()
 
         files = request.FILES.getlist('files')
         if len(files) != 0:

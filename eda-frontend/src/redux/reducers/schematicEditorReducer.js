@@ -1,5 +1,3 @@
-import { useDispatch } from 'react-redux'
-import { fetchAllLibraries } from '../actions'
 import * as actions from '../actions/actions'
 
 const InitialState = {
@@ -56,7 +54,7 @@ export default function (state = InitialState, action) {
     }
 
     case actions.FETCH_CUSTOM_LIBRARIES: {
-      var allComponents = {};
+      const allComponents = {};
       action.payload.forEach(e =>{
         allComponents[e.id] = []
       })
@@ -89,15 +87,14 @@ export default function (state = InitialState, action) {
       }
       var newLibraries = [ ...state.libraries ]
       newLibraries = newLibraries.filter(filterFunc)
-      var allComponents = { ...state.components }
-      var allLibraries = [ ...state.allLibraries ]
-      allLibraries = allLibraries.filter(filterFunc)
+      const allComponents = { ...state.components }
+      const allLibraries = [ ...state.allLibraries ].filter(filterFunc)
       delete allComponents[action.payload]
       return { ...state, libraries: newLibraries, allLibraries: allLibraries, components: allComponents }
     }
 
     case actions.UPLOAD_LIBRARIES: {
-      if(action.payload == 201) {
+      if(action.payload === 201) {
         return { ...state, uploadSuccess: true }
       }
       else

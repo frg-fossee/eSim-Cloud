@@ -143,15 +143,15 @@ export default function ComponentSidebar ({ compRef }) {
   }, [dispatch])
 
   useEffect(() => {
-    if(libraries.filter((ob) => {return ob.default == true}).length != 0)
+    if(libraries.filter((ob) => {return ob.default === true}).length !== 0)
       setdef(true)
     else 
       setdef(false)
-    if(libraries.filter((ob) => {return ob.additional == true}).length != 0)
+    if(libraries.filter((ob) => {return ob.additional === true}).length !== 0)
       setadditional(true)
     else
       setadditional(false)
-    if(libraries.filter((ob) => {return (!ob.additional && !ob.default)}).length != 0)
+    if(libraries.filter((ob) => {return (!ob.additional && !ob.default)}).length !== 0)
       setuploaded(true)
     else
       setuploaded(false)
@@ -302,6 +302,7 @@ export default function ComponentSidebar ({ compRef }) {
                 }).filter( (library) => {
                   if (library.default)
                     return 1 
+                  return 0
                 }).map(
                   (library) => {
                     return (libraryDropDown(library))

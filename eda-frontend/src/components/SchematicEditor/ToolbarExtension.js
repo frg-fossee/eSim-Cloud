@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import api from '../../utils/Api'
 import {
   Slide,
   Button,
@@ -622,14 +621,13 @@ function LibraryRow({library}) {
   }
 
   const handleOpen = () => {
-    console.log("YO")
-    if(components[library.id].length == 0)
+    if(components[library.id].length === 0)
       dispatch(fetchComponents(library.id))
     setopen(!open)
   }
 
   return (
-    <Paper style={{marginBottom: ".5rem"}}>
+    <Paper className="modal-library-detail" style={{marginBottom: ".5rem"}}>
       <ListSubheader>
           <ListItem onClick={handleOpen} >
             {open ? <ExpandLess /> : <ExpandMore />}
@@ -686,32 +684,32 @@ export function SelectLibrariesModal (props) {
   const [tabValue, setTabValue] = React.useState(0)
 
   useEffect(() => {
-    if (open == true)
+    if (open === true)
       dispatch(fetchAllLibraries())
   }, [dispatch, open])
 
   useEffect(() => {
     setUploadDisable(false)
-    if(uploadSuccess == true){
+    if(uploadSuccess === true){
       setMessage("Upload Successful")
       setsnacOpen(true)
       dispatch(resetUploadSuccess())
       dispatch(fetchAllLibraries())
     }
-    if(uploadSuccess == false){
+    if(uploadSuccess === false){
       setMessage("An Error Occured")
       setsnacOpen(true)
       dispatch(resetUploadSuccess())
     }
-  }, [uploadSuccess])
+  }, [dispatch, uploadSuccess])
 
   const updateActive = () => {
     var active = []
-    if( allLibraries != undefined)
+    if( allLibraries !== undefined)
     allLibraries.forEach( (element) => {
       element.active = false
       libraries.forEach( ele => {
-        if(ele.id == element.id) {
+        if(ele.id === element.id) {
           element.active = true
         }
       })
@@ -721,14 +719,14 @@ export function SelectLibrariesModal (props) {
   }
 
   useEffect(() => {
-    if(allLibraries != undefined){
+    if(allLibraries !== undefined){
       updateActive();
     }
   }, [libraries, allLibraries])
 
   const fileUpload = React.useRef(null)
 
-  const handlFileUpload = () => {
+  const handlFileUpload = (event) => {
     setUploadDisable(true)
     var files = event.target.files
     const formData = new FormData();
@@ -753,6 +751,7 @@ export function SelectLibrariesModal (props) {
 
   return (
     <Dialog
+    className="modal-library-detail"
     open={open}
     onClose={close}
     scroll="paper"
@@ -782,28 +781,40 @@ export function SelectLibrariesModal (props) {
               ? <>
                 <TabPanel value={tabValue} index={0}>
                   <List fullwidth className={classes.root}>
-                  { allLibraries.map(library => {
-                    if (library.default)
-                      return <LibraryRow library={library} />
+                  { allLibraries.find(lib => {
+                      return lib.default === true
                     })
+                    ? allLibraries.map(library => {
+                      if (library.default)
+                        return <LibraryRow library={library} />
+                    })
+                    : <p>Nothing to show</p>
                   }
                   </List>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
                   <List fullwidth className={classes.root}>
-                  { allLibraries.map(library => {
-                    if (library.additional)
-                      return <LibraryRow library={library} />
+                  { allLibraries.find(lib => {
+                      return lib.additional === true
                     })
+                    ? allLibraries.map(library => {
+                      if (library.additional)
+                        return <LibraryRow library={library} />
+                    })
+                    : <p>Nothing to show</p>
                   }
                   </List>
                 </TabPanel>
                 <TabPanel value={tabValue} index={2}>
                   <List fullwidth className={classes.root}>
-                    { allLibraries.map(library => {
-                      if (!library.default && !library.additional)
-                        return <LibraryRow library={library} />
+                    { allLibraries.find(lib => {
+                        return (lib.additional === false && lib.default === false)
                       })
+                      ? allLibraries.map(library => {
+                        if (!library.default && !library.additional)
+                          return <LibraryRow library={library} />
+                      })
+                      : <p>Nothing to show</p>
                     }
                   </List>
                 </TabPanel>
@@ -812,12 +823,12 @@ export function SelectLibrariesModal (props) {
           }
         </DialogContentText>
       </DialogContent>
-      <DialogActions style={{justifyContent: 'center'}}>
+      <DialogActions style={{display: "flex", justifyContent: 'center'}}>
           { auth &&
             <div>
               { uploadDisable &&
                 <div style={{paddingBottom: '10px'}}>
-                  <Alert severity="info" >Files are being uploaded please wait.</Alert>
+                  <Alert severity="info">Files are being uploaded please wait.</Alert>
                 </div>
               }
               <Button display="block" variant="contained" size="large" color="primary" 
