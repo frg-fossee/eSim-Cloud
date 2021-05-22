@@ -627,7 +627,7 @@ function LibraryRow({library}) {
   }
 
   return (
-    <Paper className="modal-library-detail" style={{marginBottom: ".5rem"}}>
+    <Paper style={{marginBottom: ".5rem"}}>
       <ListSubheader>
           <ListItem onClick={handleOpen} >
             {open ? <ExpandLess /> : <ExpandMore />}
