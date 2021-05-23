@@ -80,12 +80,18 @@ export default function SimulationProperties () {
     pointsBydecade: ''
   })
 
+  const [tfAnalysisControlLine, setTfAnalysisControlLine] = useState({
+    outputNodes: false,
+    outputVoltageSource: '',
+    inputVoltageSource: '',
+  })
+
   const [controlBlockParam, setControlBlockParam] = useState('')
 
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
-  var nodeArray = []
+  var nodeArray = [{key:0}]   // since ground is always present
   const populateNodeArray = (nodeArray) =>{
     nodeList.forEach((value) => {
         if(value !== null && value !== "") {
@@ -116,6 +122,20 @@ export default function SimulationProperties () {
       alert('Circuit not complete. Please Check Connectons.')
     }
   }  
+
+  const onTFTabExpand = () => {
+    try {
+        setComponentsList(['', ...GenerateCompList()])
+        setNodeList(['', ...GenerateNodeList()])
+        nodeArray = []
+        populateNodeArray(nodeArray)        
+    } catch (err) {
+      setComponentsList([])
+      setNodeList([])
+      alert('Circuit not complete. Please Check Connectons.')
+    }
+  }
+
   const handleDcSweepControlLine = (evt) => {
     const value = evt.target.value
 
@@ -147,6 +167,21 @@ export default function SimulationProperties () {
 
     setAcAnalysisControlLine({
       ...acAnalysisControlLine,
+      [evt.target.id]: value
+    })
+  }
+
+  const handleTfAnalysisControlLine = (evt) => {
+    const value = evt.target.value
+    setTfAnalysisControlLine({
+      ...tfAnalysisControlLine,
+      [evt.target.id]: value
+    })
+  }
+  const handleTfAnalysisControlLineNodes = (evt) => {
+    const value = evt.target.checked 
+    setTfAnalysisControlLine({
+      ...tfAnalysisControlLine,
       [evt.target.id]: value
     })
   }
@@ -313,6 +348,7 @@ export default function SimulationProperties () {
     var compNetlist = GenerateNetList()
     var controlLine = ''
     var controlBlock = ''
+    var skipMultiNodeChk = 0
     switch (type) {
       case 'DcSolver':
         // console.log('To be implemented')
@@ -339,6 +375,28 @@ export default function SimulationProperties () {
 
         dispatch(setResultTitle('AC Analysis Output'))
         break
+    
+      case 'tfAnalysis':
+        let nodes = ""
+        
+        if(tfAnalysisControlLine.outputNodes === true){
+            selectedValue.forEach((value, i) => {
+            if(value[i] !== undefined){
+                    nodes = nodes + " " + String(value[i].key)
+                }                
+            })
+            nodes = "V(" + nodes + ")"
+        }
+        else{
+            nodes = `I(${tfAnalysisControlLine.outputVoltageSource})`
+        }
+        console.log(tfAnalysisControlLine.outputNodes)
+        console.log('kkcnodes')
+        controlLine = `.tf ${nodes} ${tfAnalysisControlLine.inputVoltageSource}`
+
+        dispatch(setResultTitle('Transfer Function Analysis Output'))
+        skipMultiNodeChk = 1
+        break
       default:
         break
     }
@@ -348,9 +406,9 @@ export default function SimulationProperties () {
     // if either the extra expression field or the nodes multi select
     // drop down list in enabled then atleast one value is made non zero
     // to add add all instead to the print statement
-    if(selectedValue.length > 0 && selectedValue !== null){
+    if(selectedValue.length > 0 && selectedValue !== null && skipMultiNodeChk === 0){
         selectedValue.forEach((value, i) => {
-            if(value[i] !== undefined){
+            if(value[i] !== undefined || value[i].key === 0){
                 atleastOne = 1
                 // console.log("value")
                 cblockline = cblockline + " " + String(value[i].key)
@@ -624,11 +682,6 @@ export default function SimulationProperties () {
                         placeholder="Select Node"
                         onSelect={handleAddSelectedValue}
                         onRemove={handleRemSelectedValue}
-                        // value={controlBlockParam}
-                        // onChange={handleControlBlockParam}
-                        // SelectProps={{
-                        //   native: true
-                        // }}
                         options={nodeArray} displayValue="key" 
                       />                      
                     </ListItem>
@@ -733,11 +786,6 @@ export default function SimulationProperties () {
                         placeholder="Select Node"
                         onSelect={handleAddSelectedValue}
                         onRemove={handleRemSelectedValue}
-                        // value={controlBlockParam}
-                        // onChange={handleControlBlockParam}
-                        // SelectProps={{
-                        //   native: true
-                        // }}
                         options={nodeArray} displayValue="key" 
                       />
                           
@@ -896,6 +944,150 @@ export default function SimulationProperties () {
               </ExpansionPanelDetails>
             </ExpansionPanel>
           </ListItem>
+
+          {/* Transfer Function Analysis */}
+          <ListItem className={classes.simulationOptions} divider>
+            <ExpansionPanel onClick={onTFTabExpand}>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+              >
+                <Typography className={classes.heading}>Transfer Function Analysis</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <form className={classes.propertiesBox} noValidate autoComplete="off">
+                  <List>
+                    <ListItem>
+                        <input  
+                            type="checkbox"         
+                            name="Between Nodes" 
+                            value={tfAnalysisControlLine.outputNodes} 
+                            onChange={handleTfAnalysisControlLineNodes}
+                            id="outputNodes"  
+                            // checked={tfAnalysisControlLine.outputNodes} 
+                        /> 
+                        <span style={{ marginLeft: '10px' }}>Output By Nodes</span>
+                        
+                    </ListItem>
+                    <ListItem>
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Nodes"
+                        closeOnSelect="false"
+                        placeholder="Voltage between Nodes"
+                        onSelect={handleAddSelectedValue}
+                        onRemove={handleRemSelectedValue}
+                        selectionLimit="2"
+                        options={nodeArray} displayValue="key" 
+                      />                      
+                    </ListItem>
+                    <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="outputVoltageSource"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="O/P Voltage SRC"
+                        value={tfAnalysisControlLine.outputVoltageSource}
+                        onChange={handleTfAnalysisControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+
+                        {
+                          componentsList.map((value, i) => {
+                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
+                              return (<option key={i} value={value}>
+                                {value}
+                              </option>)
+                            } else {
+                              return null
+                            }
+                          })
+                        }
+
+                      </TextField>
+
+                    </ListItem>
+                    <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="inputVoltageSource"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="I/O Voltage SRC"
+                        value={tfAnalysisControlLine.inputVoltageSource}
+                        onChange={handleTfAnalysisControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+
+                        {
+                          componentsList.map((value, i) => {
+                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
+                              return (<option key={i} value={value}>
+                                {value}
+                              </option>)
+                            } else {
+                              return null
+                            }
+                          })
+                        }
+
+                      </TextField>
+
+                    </ListItem>
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+                        Add Expression
+                      </Button>
+                      <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
+
+                    <ListItem>
+                      <Button id="tfAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('tfAnalysis') }}>
+                        Simulate
+                      </Button>
+                    </ListItem>
+                  </List>
+                </form>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </ListItem>
+
 
           <ListItem style={isSimRes ? {} : { display: 'none' }} onClick={handlesimulateOpen} >
             <Button size='small' variant="contained" color="primary" style={{ margin: '10px auto' }} onClick={handlesimulateOpen}>
