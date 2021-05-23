@@ -12,6 +12,7 @@
   <!--<div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
   </div>-->
   <div style="display: flex; padding: 10px;" *ngIf="!username">
+    <a mat-stroked-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
     <a mat-stroked-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
     <a mat-stroked-button (click)="Login()">Login</a>
   </div>
