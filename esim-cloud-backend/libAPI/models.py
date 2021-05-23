@@ -92,7 +92,6 @@ def save_libs(library_set, path, files):
                     lib_location,
                     lib_output_location
                 )
-                os.remove(lib_location)
                 try:
                     library = Library.objects.get(library_name=f._name, library_set=library_set)
                 except Library.DoesNotExist:
@@ -174,6 +173,4 @@ def save_libs(library_set, path, files):
                         alternate_component.save()
         except:
             pass
-
-    for f in files:
         os.remove(path + '/' + f._name)
