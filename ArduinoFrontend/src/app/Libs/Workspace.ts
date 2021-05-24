@@ -477,8 +477,8 @@ export class Workspace {
     if (window.isCodeEditorOpened) {
       return;
     }
-    // console.log([event.ctrlKey, event.key]);
-    if (event.key === 'Delete' || event.key === 'Backspace') {
+    if ((event.key === 'Delete' || event.key === 'Backspace')
+      && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) {
       // Backspace or Delete
       Workspace.DeleteComponent();
     }
@@ -1050,4 +1050,76 @@ export class Workspace {
     // Hide Loading animation
     window.hideLoading();
   }
+
+
+  /**
+   * Function generates a JSON object containing all details of the workspace and downloads it
+   * @param name string
+   * @param description string
+   */
+  static SaveJson(name: string = '', description: string = '') {
+
+    const id = Date.now();
+
+    // Default Save object
+    const saveObj = {
+      id,
+      canvas: {
+        x: Workspace.translateX,
+        y: Workspace.translateY,
+        scale: Workspace.scale
+      },
+      project: {
+        name,
+        description,
+        created_at: Date.now(),
+      }
+    };
+
+    // For each item in the scope
+    for (const key in window.scope) {
+      // if atleast one component is present
+      if (window.scope[key] && window.scope[key].length > 0) {
+        saveObj[key] = [];
+        // Add the component to the save object
+        for (const item of window.scope[key]) {
+          if (item.save) {
+            saveObj[key].push(item.save());
+          }
+        }
+      }
+    }
+
+    // Export JSON File & Download it
+    const filename = `${name}.json`;
+    const jsonStr = JSON.stringify(saveObj);
+
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+
+    return true;
+
+  }
+
+  /**
+   * Function to return if workspace is empty or not
+   * @returns 'False' if workspace is not empty & 'True' if workspace is empty
+   */
+  static checkIfWorkspaceEmpty() {
+    for (const key in window.scope) {
+      if (window.scope[key].length > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }

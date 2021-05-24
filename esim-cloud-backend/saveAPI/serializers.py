@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from rest_framework.fields import ListField
 from saveAPI.models import StateSave
+from libAPI.models import Library
+from libAPI.serializers import LibrarySerializer
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -30,30 +33,32 @@ class Base64ImageField(serializers.ImageField):
 
 class StateSaveSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
-    esim_libraries = serializers.SerializerMethodField('get_libraries')
-
-    def get_libraries(self, obj):
-        if obj.esim_libraries:
-            return obj.esim_libraries.split(',')
-        else:
-            return []
+    esim_libraries = LibrarySerializer(many=True, required=False)
 
     class Meta:
         model = StateSave
+
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time',
                   'is_arduino', 'esim_libraries')
 
+    def create(self, validated_data):
+        print("HENLO")
+        # libs = validated_data.pop('esim_libraries')[0]
+        state = StateSave.objects.create(**validated_data)
+        # for lib in libs:
+        #     print(lib)
+        state.esim_libraries.set(libs)
+        # state.save()
+        print(state.esim_libraries)
+        return state
+
+    
+
 
 class SaveListSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
-    esim_libraries = serializers.SerializerMethodField('get_libraries')
-
-    def get_libraries(self, obj):
-        if obj.esim_libraries:
-            return obj.esim_libraries.split(',')
-        else:
-            return []
+    esim_libraries = LibrarySerializer(many=True, required=False)
 
     class Meta:
         model = StateSave

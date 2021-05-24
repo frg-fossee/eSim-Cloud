@@ -1,13 +1,13 @@
 from djongo import models
 from django.utils.safestring import mark_safe
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from libAPI.helper.main import generate_svg_and_save_to_folder
 import os
 import glob
 
 
 class LibrarySet(models.Model):
-    user = models.ForeignKey(User, verbose_name="user",
+    user = models.ForeignKey(to=get_user_model(), verbose_name="user",
                              on_delete=models.CASCADE)
     default = models.BooleanField(default=False)
     name = models.CharField(max_length=24, default="default")
@@ -72,6 +72,13 @@ class ComponentAlternate(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class FavouriteComponent(models.Model):
+    owner = models.OneToOneField(to=get_user_model(),
+                                 on_delete=models.CASCADE, null=False)
+    component = models.ManyToManyField(to=LibraryComponent)
+    last_change = models.DateTimeField(auto_now=True)
 
 
 def handle_uploaded_file(f, filepath):

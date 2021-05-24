@@ -65,6 +65,8 @@ export default function ComponentSidebar ({ compRef }) {
   const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
+  const [favourite, setFavourite] = useState(null)
+  const [favOpen, setFavOpen] = useState(true)
 
   const [searchedComponentList, setSearchedComponents] = useState([])
   const [searchOption, setSearchOption] = useState('NAME')
@@ -92,6 +94,26 @@ export default function ComponentSidebar ({ compRef }) {
 
     // call api from here. and set the result to searchedComponentList.
   }
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api
+      .get('favouritecomponents', config)
+      .then((resp) => {
+        setFavourite(resp.data.component)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
 
   React.useEffect(() => {
     // if the user keeps typing, stop the API call!
@@ -185,7 +207,7 @@ export default function ComponentSidebar ({ compRef }) {
                     { componentChunk.map((component) => {
                         return (
                           <ListItemIcon key={component.full_name}>
-                            <SideComp component={component} />
+                            <SideComp component={component} setFavourite={setFavourite} favourite={favourite}/>
                           </ListItemIcon>
                         )
                     })}
@@ -196,6 +218,10 @@ export default function ComponentSidebar ({ compRef }) {
         </Collapse>
       </div>
     )
+  }
+
+  const handleFavOpen = () => {
+    setFavOpen(!favOpen)
   }
 
   return (
@@ -224,9 +250,7 @@ export default function ComponentSidebar ({ compRef }) {
                   <InputAdornment position="start">
                     <SearchIcon />
                   </InputAdornment>
-
                 )
-
               }}
             />
 
@@ -287,6 +311,42 @@ export default function ComponentSidebar ({ compRef }) {
             }
 
             {/* Collapsing List Mapped by Libraries fetched by the API */}
+            {favourite && favourite.length > 0 &&
+              <>
+                <ListItem button onClick={handleFavOpen} divider>
+                  <span className={classes.head}>Favourite Components</span>
+                  <div>
+                    {favOpen ? <ExpandLess /> : <ExpandMore />}
+                  </div>
+                </ListItem>
+                <Collapse in={favOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem>
+                      <div style={{ marginLeft: '-30px' }}>
+                        {chunk(favourite, 3).map((componentChunk) => {
+                          return (
+                            <div key={componentChunk[0].svg_path}>
+                              <ListItem key={componentChunk[0].svg_path} divider>
+                                {
+                                  componentChunk.map((component) => {
+                                    return (
+                                      <ListItemIcon key={component.full_name}>
+                                        <SideComp isFavourite={true} favourite={favourite} setFavourite={setFavourite} component={component} />
+                                      </ListItemIcon>
+                                    )
+                                  }
+                                  )
+                                }
+                              </ListItem>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </>
+            }
             {searchText.length === 0 &&
             <>
               <div style={!def ? {display: 'none'} : {}}>

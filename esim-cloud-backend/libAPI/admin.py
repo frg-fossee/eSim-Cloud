@@ -1,6 +1,11 @@
 from django.contrib import admin, messages
-from django.contrib.auth.models import User
-from libAPI.models import LibraryComponent, Library, LibrarySet, delete_uploaded_files, save_libs
+from django.contrib.auth import get_user_model
+from libAPI.models import LibraryComponent, \
+    Library, \
+    LibrarySet, \
+    FavouriteComponent, \
+    delete_uploaded_files, \
+    save_libs
 from .forms import LibrarySetForm
 from inline_actions.admin import InlineActionsMixin
 from inline_actions.admin import InlineActionsModelAdminMixin
@@ -68,6 +73,7 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         # For new library set instance
+        User = get_user_model()
         user = User.objects.get(id=request.POST.get('user'))
         if obj.pk is None:
             obj = LibrarySet(
@@ -94,3 +100,9 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
 
 
 admin.site.register(LibrarySet, LibrarySetAdmin)
+
+
+@admin.register(FavouriteComponent)
+class FavouriteComponentAdmin(admin.ModelAdmin):
+    list_display = ('owner', 'last_change')
+    search_fields = ('owner', 'component')

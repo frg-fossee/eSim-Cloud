@@ -39,6 +39,10 @@ export const LOADING_FAILED = 'LOADING_FAILED'
 export const SIGNUP_SUCCESSFUL = 'SIGNUP_SUCCESSFUL'
 export const SIGNUP_FAILED = 'SIGNUP_FAILED'
 export const DEFAULT_STORE = 'DEFAULT_STORE'
+export const RESET_PASSWORD_SUCCESSFUL = 'RESET_PASSWORD_SUCCESSFUL'
+export const RESET_PASSWORD_FAILED = 'RESET_PASSWORD_FAILED'
+export const RESET_PASSWORD_CONFIRM_SUCCESSFUL = 'RESET_PASSWORD_CONFIRM_SUCCESSFUL'
+export const RESET_PASSWORD_CONFIRM_FAILED = 'RESET_PASSWORD_CONFIRM_FAILED'
 
 // Actions for saving scheamtics and loading saved, gallery and local schematics.
 export const SAVE_SCHEMATICS = 'SAVE_SCHEMATICS'
@@ -52,3 +56,7 @@ export const LOAD_GALLERY = 'LOAD_GALLERY'
 
 // Action for fetching on-cloud saved schematics for authenticated user to display in dashboard
 export const FETCH_SCHEMATICS = 'FETCH_SCHEMATICS'
+
+// Actions for accounts page
+export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS'
+export const CHANGE_PASSWORD_FAILED = 'CHANGE_PASSWORD_FAILED'

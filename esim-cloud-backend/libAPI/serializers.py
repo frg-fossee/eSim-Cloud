@@ -1,6 +1,10 @@
 import logging
 from rest_framework import serializers
-from libAPI.models import Library, LibraryComponent, ComponentAlternate, LibrarySet
+from libAPI.models import Library, \
+    LibraryComponent, \
+    ComponentAlternate, \
+    LibrarySet, \
+    FavouriteComponent
 
 logger = logging.getLogger(__name__)
 
@@ -66,3 +70,11 @@ class LibrarySetSerializer(serializers.HyperlinkedModelSerializer):
             'default',
             'name',
         ]
+
+
+class FavouriteComponentSerializer(serializers.ModelSerializer):
+    component = LibraryComponentSerializer(many=True)
+
+    class Meta:
+        model = FavouriteComponent
+        fields = ("component",)
