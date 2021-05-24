@@ -1,6 +1,6 @@
 from django.contrib import admin, messages
 from django.contrib.auth.models import User
-from libAPI.models import LibraryComponent, Library, LibrarySet, save_libs
+from libAPI.models import LibraryComponent, Library, LibrarySet, delete_uploaded_files, save_libs
 from .forms import LibrarySetForm
 from inline_actions.admin import InlineActionsMixin
 from inline_actions.admin import InlineActionsModelAdminMixin
@@ -38,18 +38,17 @@ class LibraryInline(InlineActionsMixin, admin.TabularInline):
         try:
             library_set = LibrarySet.objects.filter(
                 user=parent_obj.user,
-                default=True if parent_obj.default == False else False
+                default=not parent_obj.default
             )[0]
         except IndexError:
             library_set = LibrarySet(
-                name=parent_obj.user.username[0:15] + "-eSim-def",
-                default=(True if parent_obj.default == False else False),
+                name=parent_obj.user.username[0:24],
+                default=not parent_obj.default,
                 user=parent_obj.user
             )
             library_set.save()
-        msg = "removed from" if parent_obj.default == True else "added to"
         messages.info(request, mark_safe(
-            f"Library {obj.library_name} {msg} <a href='/api/admin/libAPI/libraryset/{library_set.id}'>{library_set.name}</a>."))
+            f"Library {obj.library_name} moved to <a href='/api/admin/libAPI/libraryset/{library_set.id}'>{library_set.name}</a>."))
         obj.library_set = library_set
         obj.save()
 
@@ -90,6 +89,8 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
                 obj.user.username + '-' + obj.name)
 
             save_libs(obj, path, files)  # defined in ./models.py
+            delete_uploaded_files(files, path)
         return redirect('/api/admin/libAPI/libraryset/' + str(obj.id))
+
 
 admin.site.register(LibrarySet, LibrarySetAdmin)

@@ -2,7 +2,7 @@ import django_filters
 from django.db.models import Q
 from django.contrib.auth.models import User
 from libAPI.serializers import LibrarySerializer, LibraryComponentSerializer, LibrarySetSerializer
-from libAPI.models import Library, LibraryComponent, LibrarySet, save_libs
+from libAPI.models import Library, LibraryComponent, LibrarySet, save_libs, delete_uploaded_files
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -168,8 +168,10 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
                 library_set.user.username + '-' + library_set.name)
             try:
                 save_libs(library_set, path, files)  # defined in ./models.py
+                delete_uploaded_files(files, path)
                 return Response(status=status.HTTP_201_CREATED)
             except:
-                return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                delete_uploaded_files(files, path)
+                return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)

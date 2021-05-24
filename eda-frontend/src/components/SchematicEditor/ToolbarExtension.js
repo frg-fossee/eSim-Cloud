@@ -636,7 +636,7 @@ function LibraryRow({library}) {
               { (!library.default && !library.additional)
                 &&<Button variant="contained" size="small"
                     style={{ backgroundColor: "#ff1744", color: "#ffffff", margin: ".5rem"}}
-                    onClick={() => { dispatch(deleteLibrary(library)) }} hidden={library.default || library.additional} >
+                    onClick={() => { dispatch(deleteLibrary(library.id)) }} hidden={library.default || library.additional} >
                     Delete
                   </Button>
               }
@@ -823,23 +823,23 @@ export function SelectLibrariesModal (props) {
           }
         </DialogContentText>
       </DialogContent>
-      <DialogActions style={{display: "flex", justifyContent: 'center'}}>
-          { auth &&
-            <div>
-              { uploadDisable &&
-                <div style={{paddingBottom: '10px'}}>
-                  <Alert severity="info">Files are being uploaded please wait.</Alert>
-                </div>
-              }
-              <Button display="block" variant="contained" size="large" color="primary" 
-                onClick={ () => { handleLibUploadOpen() }} disabled={uploadDisable} disableElevation={true}>
-                Upload .lib and .dcm Files
-                <input type="file" multiple={true} accept=".lib,.dcm" ref={ fileUpload } onChange={ handlFileUpload } style={{display: 'none'}} />
-              </Button>
-              <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
-            </div>
-          }
+      { auth && tabValue === 2 && 
+        <DialogActions style={{display: "flex", justifyContent: 'center'}}>
+          <div>
+            { uploadDisable &&
+              <div style={{paddingBottom: '10px'}}>
+                <Alert severity="info">Files are being uploaded please wait.</Alert>
+              </div>
+            }
+            <Button display="block" variant="contained" size="large" color="primary" 
+              onClick={ () => { handleLibUploadOpen() }} disabled={uploadDisable} disableElevation={true}>
+              Upload .lib and .dcm Files
+              <input type="file" multiple={true} accept=".lib,.dcm" ref={ fileUpload } onChange={ handlFileUpload } style={{display: 'none'}} />
+            </Button>
+            <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+          </div>
         </DialogActions>
+      }
     </Dialog>
   )
 }
