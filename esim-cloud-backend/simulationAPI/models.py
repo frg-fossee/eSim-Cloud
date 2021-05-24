@@ -1,6 +1,5 @@
 from djongo import models
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.models import User
 from django.conf import settings
 import uuid
 

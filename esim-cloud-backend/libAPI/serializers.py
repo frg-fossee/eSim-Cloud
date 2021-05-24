@@ -14,12 +14,12 @@ class LibrarySerializer(serializers.ModelSerializer):
     additional = serializers.SerializerMethodField('is_additional')
 
     def is_default(self, obj):
-        if obj.library_set.default == True:
+        if obj.library_set.default:
             return True
         return False
 
     def is_additional(self, obj):
-        if obj.library_set.default == False and obj.library_set.user.is_superuser:
+        if not obj.library_set.default and obj.library_set.user.is_superuser:
             return True
         return False
 

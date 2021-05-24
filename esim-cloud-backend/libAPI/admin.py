@@ -53,12 +53,14 @@ class LibraryInline(InlineActionsMixin, admin.TabularInline):
             )
             library_set.save()
         messages.info(request, mark_safe(
-            f"Library {obj.library_name} moved to <a href='/api/admin/libAPI/libraryset/{library_set.id}'>{library_set.name}</a>."))
+            f"Library {obj.library_name} moved to '\
+            '<a href='/api/admin/libAPI/libraryset/{library_set.id}'>'\
+            '{library_set.name}</a>."))
         obj.library_set = library_set
         obj.save()
 
     def get_toggle_default_label(self, obj):
-        if obj.library_set.default == True:
+        if obj.library_set.default:
             return 'Remove from Defaults'
         return 'Add to Defaults'
 

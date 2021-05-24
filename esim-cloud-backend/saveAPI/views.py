@@ -131,7 +131,8 @@ class StateFetchUpdateView(APIView):
                         request.data['base64_image'])
                     saved_state.base64_image.save(filename, content)
                 if 'esim_libraries' in request.data:
-                    esim_libraries = json.loads(request.data.get('esim_libraries'))
+                    esim_libraries = json.loads(
+                        request.data.get('esim_libraries'))
                     saved_state.esim_libraries.set(esim_libraries)
                 saved_state.save()
                 serialized = SaveListSerializer(saved_state)

@@ -14,7 +14,9 @@ from libAPI.models import Library, \
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
+from rest_framework.permissions import BasePermission,\
+    IsAuthenticated,\
+    SAFE_METHODS
 from rest_framework.parsers import MultiPartParser
 import logging
 from django_filters import rest_framework as filters
@@ -28,12 +30,13 @@ logger = logging.getLogger(__name__)
 class IsLibraryOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if obj.library_set.default == True:
+        if obj.library_set.default:
             return True
         if request.user.is_authenticated:
             if obj.library_set.user == request.user:
                 return True
-            elif obj.library_set.user.is_superuser and request.method in SAFE_METHODS:
+            elif obj.library_set.user.is_superuser \
+                and request.method in SAFE_METHODS:
                 return True
         return False
 
@@ -66,10 +69,17 @@ class LibraryViewSet(viewsets.ModelViewSet):
                 | Q(library_set__default=True)
             ).order_by('-library_set__default')
         else:
-            return Library.objects.filter(Q(library_set__default=True) | Q(library_set__user__in=superusers))
+            return Library.objects.filter(
+                Q(library_set__default=True) 
+                | Q(library_set__user__in=superusers)
+            )
 
     # Custom libraries uploaded by the user
-    @action(detail=False, methods=['GET'], name='All custom libraries for user')
+    @action(
+        detail=False,
+        methods=['GET'],
+        name='All custom libraries for user'
+    )
     def get_custom_libraries(self, request):
         if request.user.is_authenticated:
             lib_sets = LibrarySet.objects.filter(
@@ -105,9 +115,10 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
 class IsComponentOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if obj.component_library.library_set.default == True:
+        if obj.component_library.library_set.default:
             return True
-        elif obj.component_library.library_set.user and request.method in SAFE_METHODS:
+        elif obj.component_library.library_set.user \
+                and request.method in SAFE_METHODS:
             return True
         elif request.user.is_authenticated:
             if obj.component_library.library_set.user == request.user:
@@ -185,7 +196,7 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
                 save_libs(library_set, path, files)  # defined in ./models.py
                 delete_uploaded_files(files, path)
                 return Response(status=status.HTTP_201_CREATED)
-            except:
+            except Exception:
                 delete_uploaded_files(files, path)
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         else:

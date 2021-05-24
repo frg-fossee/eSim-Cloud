@@ -1,4 +1,8 @@
-from libAPI.views import LibraryViewSet, LibraryComponentViewSet, LibrarySetViewSet, FavouriteComponentView, DeleteFavouriteComponent
+from libAPI.views import LibraryViewSet, \
+    LibraryComponentViewSet, \
+    LibrarySetViewSet, \
+    FavouriteComponentView, \
+    DeleteFavouriteComponent
 from rest_framework.routers import DefaultRouter
 from django.urls import path
 
