@@ -18,8 +18,8 @@ class LibrarySet(models.Model):
 
 class Library(models.Model):
     library_set = models.ForeignKey(
-        LibrarySet, null=True, 
-        verbose_name="library_set", 
+        LibrarySet, null=True,
+        verbose_name="library_set",
         on_delete=models.CASCADE
     )
     library_name = models.CharField(max_length=200)

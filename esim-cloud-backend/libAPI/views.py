@@ -36,7 +36,7 @@ class IsLibraryOwner(BasePermission):
             if obj.library_set.user == request.user:
                 return True
             elif obj.library_set.user.is_superuser \
-                and request.method in SAFE_METHODS:
+                    and request.method in SAFE_METHODS:
                 return True
         return False
 
@@ -70,7 +70,7 @@ class LibraryViewSet(viewsets.ModelViewSet):
             ).order_by('-library_set__default')
         else:
             return Library.objects.filter(
-                Q(library_set__default=True) 
+                Q(library_set__default=True)
                 | Q(library_set__user__in=superusers)
             )
 
