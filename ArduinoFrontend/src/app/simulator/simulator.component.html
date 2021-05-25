@@ -1,6 +1,6 @@
 <!-- As a heading -->
 <nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: whitesmoke;height: 50px;">
-  <a [routerLink]="['/']">
+  <a (click)="exitProject()">
     <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;"
       class="d-md-block" alt="AOC">
   </a>
@@ -47,6 +47,7 @@
 
     <div class="navbar-nav ml-auto" *ngIf="!token">
       <a mat-raised-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
+      <a mat-raised-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
       <a mat-raised-button (click)="Login()">Login</a>
     </div>
 
