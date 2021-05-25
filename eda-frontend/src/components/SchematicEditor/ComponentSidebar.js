@@ -380,6 +380,7 @@ export default function ComponentSidebar ({ compRef }) {
                 }).filter( (library) => {
                   if (library.additional)
                     return 1 
+                  return 0
                 }).map(
                   (library) => {
                     return (libraryDropDown(library))
@@ -397,6 +398,7 @@ export default function ComponentSidebar ({ compRef }) {
                 }).filter( (library) => {
                   if (!library.default && !library.additional)
                     return 1 
+                  return 0
                 }).map(
                   (library) => {
                     return (libraryDropDown(library))

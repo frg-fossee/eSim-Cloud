@@ -703,25 +703,29 @@ export function SelectLibrariesModal (props) {
     }
   }, [dispatch, uploadSuccess])
 
-  const updateActive = () => {
-    var active = []
-    if( allLibraries !== undefined)
-    allLibraries.forEach( (element) => {
-      element.active = false
-      libraries.forEach( ele => {
-        if(ele.id === element.id) {
-          element.active = true
-        }
-      })
-      active.push(element)
-    })
-    setActiveLibraries(active)
-  }
+  
 
   useEffect(() => {
+
+    const updateActive = () => {
+      var active = []
+      if( allLibraries !== undefined)
+      allLibraries.forEach( (element) => {
+        element.active = false
+        libraries.forEach( ele => {
+          if(ele.id === element.id) {
+            element.active = true
+          }
+        })
+        active.push(element)
+      })
+      setActiveLibraries(active)
+    }
+
     if(allLibraries !== undefined){
       updateActive();
     }
+  
   }, [libraries, allLibraries])
 
   const fileUpload = React.useRef(null)
@@ -787,6 +791,7 @@ export function SelectLibrariesModal (props) {
                     ? allLibraries.map(library => {
                       if (library.default)
                         return <LibraryRow library={library} />
+                      return <></>
                     })
                     : <p>Nothing to show</p>
                   }
@@ -800,6 +805,7 @@ export function SelectLibrariesModal (props) {
                     ? allLibraries.map(library => {
                       if (library.additional)
                         return <LibraryRow library={library} />
+                      return <></>
                     })
                     : <p>Nothing to show</p>
                   }
@@ -813,6 +819,7 @@ export function SelectLibrariesModal (props) {
                       ? allLibraries.map(library => {
                         if (!library.default && !library.additional)
                           return <LibraryRow library={library} />
+                        return <></>
                       })
                       : <p>Nothing to show</p>
                     }
