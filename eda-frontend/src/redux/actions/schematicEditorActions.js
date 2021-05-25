@@ -13,66 +13,73 @@ export const fetchLibraries = () => (dispatch, getState) => {
   // },
 // ] -- Multiple objects in array
   const token = store.getState().authReducer.token
-  const config = {headers: {
-    'Content-Type': 'application/json'
-  }}
-  if(token)
-    config.headers.Authorization = `Token ${token}`
-  
-    api.get('libraries/default', config).then( (res) => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  if (token) { config.headers.Authorization = `Token ${token}` }
+
+  api.get('libraries/default', config).then((res) => {
     dispatch({
       type: actions.FETCH_LIBRARIES,
       payload: res.data
-    })})
+    })
+  })
     .catch((err) => { console.error(err) })
 }
 
 export const fetchAllLibraries = () => (dispatch) => {
   // SAMPLE Response from API
   // [
-    //  {
-    //   "id": 1
-    //   "library_name": "Analog.lib",
-    //   "saved_on": "2020-05-19T14:06:02.351977Z"
-    // },
+  //  {
+  //   "id": 1
+  //   "library_name": "Analog.lib",
+  //   "saved_on": "2020-05-19T14:06:02.351977Z"
+  // },
   // ] -- Multiple objects in array
   const token = store.getState().authReducer.token
-  const config = {headers: {
-    'Content-Type': 'application/json'
-  }}
-  if(token)
-    config.headers.Authorization = `Token ${token}`
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  if (token) { config.headers.Authorization = `Token ${token}` }
 
-  api.get('libraries/', config).then( (res) => {
+  api.get('libraries/', config).then((res) => {
     dispatch({
       type: actions.FETCH_ALL_LIBRARIES,
       payload: res.data
-    })})
+    })
+  })
     .catch((err) => { console.error(err) })
 }
 
 export const fetchCustomLibraries = () => (dispatch) => {
   // SAMPLE Response from API
   // [
-    //  {
-    //   "id": 1
-    //   "library_name": "Analog.lib",
-    //   "saved_on": "2020-05-19T14:06:02.351977Z"
-    // },
+  //  {
+  //   "id": 1
+  //   "library_name": "Analog.lib",
+  //   "saved_on": "2020-05-19T14:06:02.351977Z"
+  // },
   // ] -- Multiple objects in array
   const token = store.getState().authReducer.token
-  const config = {headers: {
-    'Content-Type': 'application/json'
-  }}
-  if(token)
-    config.headers.Authorization = `Token ${token}`
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  if (token) { config.headers.Authorization = `Token ${token}` }
 
-  api.get('libraries/get_custom_libraries', config).then( (res) => {
-    if(res.data.length > 0)
+  api.get('libraries/get_custom_libraries', config).then((res) => {
+    if (res.data.length > 0) {
       dispatch({
         type: actions.FETCH_CUSTOM_LIBRARIES,
         payload: res.data
-      })})
+      })
+    }
+  })
     .catch((err) => { console.error(err) })
 }
 
@@ -89,9 +96,11 @@ export const fetchLibrary = (libraryId) => (dispatch) => {
   // }}
   // if(token)
   //   config.headers.Authorization = `Token ${token}`
-  const config = {headers: {
-    'Authorization': `Token ${store.getState().authReducer.token}`
-  }}
+  const config = {
+    headers: {
+      Authorization: `Token ${store.getState().authReducer.token}`
+    }
+  }
   api.get(`libraries/${libraryId}`, config).then(res => {
     dispatch({
       type: actions.FETCH_LIBRARY,
@@ -109,8 +118,9 @@ export const removeLibrary = (libraryId) => (dispatch) => {
 
 export const deleteLibrary = (libraryId) => (dispatch) => {
   const token = store.getState().authReducer.token
-  const config = {headers: {
-      'Authorization': `Token ${token}`
+  const config = {
+    headers: {
+      Authorization: `Token ${token}`
     }
   }
   api.delete(`libraries/${libraryId}/`, config).then(
@@ -126,8 +136,9 @@ export const deleteLibrary = (libraryId) => (dispatch) => {
 // API call to save uploaded libraries
 export const uploadLibrary = (formData) => (dispatch) => {
   const token = store.getState().authReducer.token
-  const config = {headers: {
-      'Authorization': `Token ${token}`
+  const config = {
+    headers: {
+      Authorization: `Token ${token}`
     }
   }
   api.post('/library-sets/', formData, config).then(res => {
@@ -136,14 +147,14 @@ export const uploadLibrary = (formData) => (dispatch) => {
       payload: res.status
     })
   })
-  .catch(err => {
-    console.log(err)
-    console.log(err.response.status)
-    dispatch({
-      type: actions.UPLOAD_LIBRARIES,
-      payload: err.response.status
+    .catch(err => {
+      console.log(err)
+      console.log(err.response.status)
+      dispatch({
+        type: actions.UPLOAD_LIBRARIES,
+        payload: err.response.status
+      })
     })
-  })
 }
 
 export const resetUploadSuccess = () => (dispatch) => {
@@ -186,11 +197,12 @@ export const fetchComponents = (libraryId) => (dispatch) => {
   // },
 // ] -- Multiple objects in array
   const token = store.getState().authReducer.token
-  const config = {headers: {
-    'Content-Type': 'application/json'
-  }}
-  if(token)
-    config.headers.Authorization = `Token ${token}`
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  if (token) { config.headers.Authorization = `Token ${token}` }
   const url = 'components/?component_library=' + parseInt(libraryId)
   api.get(url, config)
     .then(

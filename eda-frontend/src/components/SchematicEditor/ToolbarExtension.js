@@ -42,9 +42,9 @@ import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchL
 import GallerySchSample from '../../utils/GallerySchSample'
 import { blue } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
+import Box from '@material-ui/core/Box'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 
@@ -471,7 +471,7 @@ export function OpenSchDialog (props) {
                 {/* Listing Saved Schematics */}
                 {schematics.length === 0
                   ? <Typography variant="subtitle1" gutterBottom>
-                  Hey {auth.user.username} , You dont have any saved schematics...
+                    Hey {auth.user.username} , You dont have any saved schematics...
                   </Typography>
                   : <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
                     <Table stickyHeader size="small" aria-label="simple table">
@@ -507,7 +507,7 @@ export function OpenSchDialog (props) {
                                       onClick={() => { dispatch(fetchSchematic(sch.save_id)) }}
                                       variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
                                     >
-                                    Launch
+                                      Launch
                                     </Button>
                                   </TableCell>
                                 </TableRow>
@@ -524,15 +524,15 @@ export function OpenSchDialog (props) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant={isLocal ? 'outlined' : 'text' } onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
+        <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
           Local
         </Button>
-        <Button variant={isGallery ? 'outlined' : 'text' } onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
+        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
         </Button>
         {auth.isAuthenticated !== true
           ? <></>
-          : <Button variant={!isGallery & !isLocal ? 'outlined' : 'text' } onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false) }} color="secondary" >
+          : <Button variant={!isGallery & !isLocal ? 'outlined' : 'text'} onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false) }} color="secondary" >
             on Cloud
           </Button>
         }
@@ -580,8 +580,8 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+function TabPanel (props) {
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -597,16 +597,16 @@ function TabPanel(props) {
         </Box>
       )}
     </div>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
+  value: PropTypes.any.isRequired
+}
 
-function LibraryRow({library}) {
+function LibraryRow ({ library }) {
   const dispatch = useDispatch()
   const [open, setopen] = React.useState(false)
   const classes = useStyles()
@@ -621,46 +621,45 @@ function LibraryRow({library}) {
   }
 
   const handleOpen = () => {
-    if(components[library.id].length === 0)
-      dispatch(fetchComponents(library.id))
+    if (components[library.id].length === 0) { dispatch(fetchComponents(library.id)) }
     setopen(!open)
   }
 
   return (
-    <Paper style={{marginBottom: ".5rem"}}>
+    <Paper style={{ marginBottom: '.5rem' }}>
       <ListSubheader>
-          <ListItem onClick={handleOpen} >
-            {open ? <ExpandLess /> : <ExpandMore />}
-            <ListItemText primary={library.library_name.slice(0, -4)} />
-            <ListItemSecondaryAction>
-              { (!library.default && !library.additional)
-                &&<Button variant="contained" size="small"
-                    style={{ backgroundColor: "#ff1744", color: "#ffffff", margin: ".5rem"}}
-                    onClick={() => { dispatch(deleteLibrary(library.id)) }} hidden={library.default || library.additional} >
-                    Delete
-                  </Button>
-              }
-              {library.active
-                ? <Button variant="contained" size="small" color="secondary"
-                  onClick={ () => { handleUnapply(library) }} style={{margin: ".5rem"}}>
-                  Remove
-                </Button>
-                : <Button variant="contained" size="small" color="primary"
-                  onClick={ () => { handleAppply(library) }} style={{margin: ".5rem"}}>
-                  Use
-                </Button>
-              }
-            </ListItemSecondaryAction>
-          </ListItem>
+        <ListItem onClick={handleOpen} >
+          {open ? <ExpandLess /> : <ExpandMore />}
+          <ListItemText primary={library.library_name.slice(0, -4)} />
+          <ListItemSecondaryAction>
+            {(!library.default && !library.additional) &&
+              <Button variant="contained" size="small"
+                style={{ backgroundColor: '#ff1744', color: '#ffffff', margin: '.5rem' }}
+                onClick={() => { dispatch(deleteLibrary(library.id)) }} hidden={library.default || library.additional} >
+                Delete
+              </Button>
+            }
+            {library.active
+              ? <Button variant="contained" size="small" color="secondary"
+                onClick={() => { handleUnapply(library) }} style={{ margin: '.5rem' }}>
+                Remove
+              </Button>
+              : <Button variant="contained" size="small" color="primary"
+                onClick={() => { handleAppply(library) }} style={{ margin: '.5rem' }}>
+                Use
+              </Button>
+            }
+          </ListItemSecondaryAction>
+        </ListItem>
       </ListSubheader>
 
-      { (components[library.id]) && 
+      {(components[library.id]) &&
         <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" style={{paddingLeft: '1rem', paddingRight: '1rem'}}>
-            { components[library.id].map(component => {
+          <List component="div" style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
+            {components[library.id].map(component => {
               return (
-                <ListItem alignItems='center' dense className={classes.nested}>
-                  <ListItemText primary={component.name} secondary={component.description}/>
+                <ListItem alignItems='center' key={component.id} dense className={classes.nested}>
+                  <ListItemText primary={component.name} secondary={component.description} />
                 </ListItem>
               )
             })}
@@ -671,61 +670,60 @@ function LibraryRow({library}) {
   )
 }
 
-export function SelectLibrariesModal (props) {
-  const {open, close, auth } = props
+LibraryRow.propTypes = {
+  library: PropTypes.any.isRequired
+}
+
+export function SelectLibrariesModal ({ open, close, auth }) {
   const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   var uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
   const dispatch = useDispatch()
   const classes = useStyles()
   const [activeLibraries, setActiveLibraries] = React.useState(allLibraries)
-  const [message, setMessage] = React.useState("")
+  const [message, setMessage] = React.useState('')
   const [uploadDisable, setUploadDisable] = React.useState(false)
   const [tabValue, setTabValue] = React.useState(0)
 
   useEffect(() => {
-    if (open === true)
-      dispatch(fetchAllLibraries())
+    if (open === true) { dispatch(fetchAllLibraries()) }
   }, [dispatch, open])
 
   useEffect(() => {
     setUploadDisable(false)
-    if(uploadSuccess === true){
-      setMessage("Upload Successful")
+    if (uploadSuccess === true) {
+      setMessage('Upload Successful')
       setsnacOpen(true)
       dispatch(resetUploadSuccess())
       dispatch(fetchAllLibraries())
     }
-    if(uploadSuccess === false){
-      setMessage("An Error Occured")
+    if (uploadSuccess === false) {
+      setMessage('An Error Occured')
       setsnacOpen(true)
       dispatch(resetUploadSuccess())
     }
   }, [dispatch, uploadSuccess])
 
-  
-
   useEffect(() => {
-
     const updateActive = () => {
       var active = []
-      if( allLibraries !== undefined)
-      allLibraries.forEach( (element) => {
-        element.active = false
-        libraries.forEach( ele => {
-          if(ele.id === element.id) {
-            element.active = true
-          }
+      if (allLibraries !== undefined) {
+        allLibraries.forEach((element) => {
+          element.active = false
+          libraries.forEach(ele => {
+            if (ele.id === element.id) {
+              element.active = true
+            }
+          })
+          active.push(element)
         })
-        active.push(element)
-      })
+      }
       setActiveLibraries(active)
     }
 
-    if(allLibraries !== undefined){
-      updateActive();
+    if (allLibraries !== undefined) {
+      updateActive()
     }
-  
   }, [libraries, allLibraries])
 
   const fileUpload = React.useRef(null)
@@ -733,7 +731,7 @@ export function SelectLibrariesModal (props) {
   const handlFileUpload = (event) => {
     setUploadDisable(true)
     var files = event.target.files
-    const formData = new FormData();
+    const formData = new FormData()
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i])
     }
@@ -741,7 +739,7 @@ export function SelectLibrariesModal (props) {
   }
 
   const handleLibUploadOpen = () => {
-    fileUpload.current.click();
+    fileUpload.current.click()
   }
 
   const [snacOpen, setsnacOpen] = React.useState(false)
@@ -755,93 +753,88 @@ export function SelectLibrariesModal (props) {
 
   return (
     <Dialog
-    className="modal-library-detail"
-    open={open}
-    onClose={close}
-    scroll="paper"
-    fullWidth
-    maxWidth="md"
-    TransitionComponent={Transition}
-    aria-labelledby="library-select-dialog"
-    aria-describedby="library-select"
+      className="modal-library-detail"
+      open={open}
+      onClose={close}
+      scroll="paper"
+      fullWidth
+      maxWidth="md"
+      TransitionComponent={Transition}
+      aria-labelledby="library-select-dialog"
+      aria-describedby="library-select"
     >
       <DialogTitle>
         <Typography variant="h6">{'Manage libraries in the workspace'}</Typography>
-        <Divider fullWidth/>
-      {/* </DialogTitle>
+        <Divider fullWidth />
+        {/* </DialogTitle>
       <DialogTitle> */}
-          <Tabs value={tabValue} onChange={handleTabChange} centered >
-            <Tab label="DEFAULT" />
-            <Tab label="ADDITIONAL" />
-            <Tab label="UPLOADED" />
-          </Tabs>
+        <Tabs value={tabValue} onChange={handleTabChange} centered >
+          <Tab label="DEFAULT" />
+          <Tab label="ADDITIONAL" />
+          <Tab label="UPLOADED" />
+        </Tabs>
       </DialogTitle>
       <DialogContent dividers>
         <DialogContentText id="open-dialog-description" >
-          
-            
-            
-          { activeLibraries !== undefined
-              ? <>
-                <TabPanel value={tabValue} index={0}>
-                  <List fullwidth className={classes.root}>
-                  { allLibraries.find(lib => {
-                      return lib.default === true
-                    })
+
+          {activeLibraries !== undefined
+            ? <>
+              <TabPanel value={tabValue} index={0}>
+                <List fullwidth className={classes.root}>
+                  {allLibraries.find(lib => {
+                    return lib.default === true
+                  })
                     ? allLibraries.map(library => {
-                      if (library.default)
-                        return <LibraryRow library={library} />
+                      if (library.default) { return <LibraryRow library={library} /> }
                       return <></>
                     })
                     : <p>Nothing to show</p>
                   }
-                  </List>
-                </TabPanel>
-                <TabPanel value={tabValue} index={1}>
-                  <List fullwidth className={classes.root}>
-                  { allLibraries.find(lib => {
-                      return lib.additional === true
-                    })
+                </List>
+              </TabPanel>
+              <TabPanel value={tabValue} index={1}>
+                <List fullwidth className={classes.root}>
+                  {allLibraries.find(lib => {
+                    return lib.additional === true
+                  })
                     ? allLibraries.map(library => {
-                      if (library.additional)
-                        return <LibraryRow library={library} />
+                      if (library.additional) { return <LibraryRow library={library} /> }
                       return <></>
                     })
                     : <p>Nothing to show</p>
                   }
-                  </List>
-                </TabPanel>
-                <TabPanel value={tabValue} index={2}>
-                  <List fullwidth className={classes.root}>
-                    { allLibraries.find(lib => {
-                        return (lib.additional === false && lib.default === false)
-                      })
-                      ? allLibraries.map(library => {
-                        if (!library.default && !library.additional)
-                          return <LibraryRow library={library} />
-                        return <></>
-                      })
-                      : <p>Nothing to show</p>
-                    }
-                  </List>
-                </TabPanel>
-                </>
-              : <p>Nothing To Show</p>
+                </List>
+              </TabPanel>
+              <TabPanel value={tabValue} index={2}>
+                <List fullwidth className={classes.root}>
+                  {allLibraries.find(lib => {
+                    return (lib.additional === false && lib.default === false)
+                  })
+                    ? allLibraries.map(library => {
+                      if (!library.default && !library.additional) { return <LibraryRow library={library} /> }
+                      return <></>
+                    })
+                    : <p>Nothing to show</p>
+                  }
+                </List>
+              </TabPanel>
+            </>
+            : <p>Nothing To Show</p>
           }
         </DialogContentText>
       </DialogContent>
-      { auth && tabValue === 2 && 
-        <DialogActions style={{display: "flex", justifyContent: 'center'}}>
+      {auth && tabValue === 2 &&
+        <DialogActions style={{ display: 'flex', justifyContent: 'center' }}>
           <div>
-            { uploadDisable &&
-              <div style={{paddingBottom: '10px'}}>
+            {uploadDisable &&
+              <div style={{ paddingBottom: '10px' }}>
                 <Alert severity="info">Files are being uploaded please wait.</Alert>
               </div>
             }
-            <Button display="block" variant="contained" size="large" color="primary" 
-              onClick={ () => { handleLibUploadOpen() }} disabled={uploadDisable} disableElevation={true}>
+            <Button display="block" variant="contained" size="large" color="primary"
+              onClick={() => { handleLibUploadOpen() }} disabled={uploadDisable} disableElevation={true}>
               Upload .lib and .dcm Files
-              <input type="file" multiple={true} accept=".lib,.dcm" ref={ fileUpload } onChange={ handlFileUpload } style={{display: 'none'}} />
+              <input type="file" multiple={true} accept=".lib,.dcm" ref={fileUpload} onChange={handlFileUpload} style={{ display: 'none' }} />
             </Button>
             <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
           </div>
@@ -849,4 +842,10 @@ export function SelectLibrariesModal (props) {
       }
     </Dialog>
   )
+}
+
+SelectLibrariesModal.propTypes = {
+  open: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
+  auth: PropTypes.bool.isRequired
 }

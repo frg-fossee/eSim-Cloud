@@ -127,10 +127,11 @@ export default function ComponentSidebar ({ compRef }) {
       setLoading(true)
       var config = {}
       const token = localStorage.getItem('esim_token')
-      if (token !== null || token !== undefined)
-      config = {
-        headers: {
-          'Authorization': `Token ${token}`
+      if (token !== null || token !== undefined) {
+        config = {
+          headers: {
+            Authorization: `Token ${token}`
+          }
         }
       }
       api.get(`components/?${searchOptions[searchOption]}=${searchText}`, config)
@@ -165,18 +166,9 @@ export default function ComponentSidebar ({ compRef }) {
   }, [dispatch])
 
   useEffect(() => {
-    if(libraries.filter((ob) => {return ob.default === true}).length !== 0)
-      setdef(true)
-    else 
-      setdef(false)
-    if(libraries.filter((ob) => {return ob.additional === true}).length !== 0)
-      setadditional(true)
-    else
-      setadditional(false)
-    if(libraries.filter((ob) => {return (!ob.additional && !ob.default)}).length !== 0)
-      setuploaded(true)
-    else
-      setuploaded(false)
+    if (libraries.filter((ob) => { return ob.default === true }).length !== 0) { setdef(true) } else { setdef(false) }
+    if (libraries.filter((ob) => { return ob.additional === true }).length !== 0) { setadditional(true) } else { setadditional(false) }
+    if (libraries.filter((ob) => { return (!ob.additional && !ob.default) }).length !== 0) { setuploaded(true) } else { setuploaded(false) }
   }, [libraries])
 
   // Used to chunk array
@@ -202,17 +194,17 @@ export default function ComponentSidebar ({ compRef }) {
           <List component="div" disablePadding dense >
             {/* Chunked Components of Library */}
             { chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
-                return (
-                  <ListItem key={componentChunk[0].svg_path} divider>
-                    { componentChunk.map((component) => {
-                        return (
-                          <ListItemIcon key={component.full_name}>
-                            <SideComp component={component} setFavourite={setFavourite} favourite={favourite}/>
-                          </ListItemIcon>
-                        )
-                    })}
-                  </ListItem>
-                )
+              return (
+                <ListItem key={componentChunk[0].svg_path} divider>
+                  { componentChunk.map((component) => {
+                    return (
+                      <ListItemIcon key={component.full_name}>
+                        <SideComp component={component} setFavourite={setFavourite} favourite={favourite}/>
+                      </ListItemIcon>
+                    )
+                  })}
+                </ListItem>
+              )
             })}
           </List>
         </Collapse>
@@ -349,9 +341,9 @@ export default function ComponentSidebar ({ compRef }) {
             }
             {searchText.length === 0 &&
             <>
-              <div style={!def ? {display: 'none'} : {}}>
+              <div style={!def ? { display: 'none' } : {}}>
                 <Divider />
-                <ListItem dense divider style={{backgroundColor: "#e8e8e8"}}>
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
                   <span>DEFAULT</span>
                 </ListItem>
                 <Divider />
@@ -359,9 +351,8 @@ export default function ComponentSidebar ({ compRef }) {
                   var textA = a.library_name.toUpperCase()
                   var textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-                }).filter( (library) => {
-                  if (library.default)
-                    return 1 
+                }).filter((library) => {
+                  if (library.default) { return 1 }
                   return 0
                 }).map(
                   (library) => {
@@ -369,17 +360,16 @@ export default function ComponentSidebar ({ compRef }) {
                   }
                 )}
               </div>
-              <div style={!additional ? {display: 'none'} : {}}>
-                <ListItem dense divider style={{backgroundColor: "#e8e8e8"}}>
+              <div style={!additional ? { display: 'none' } : {}}>
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
                   <span className={classes.head}>ADDITIONAL</span>
                 </ListItem>
                 { libraries.sort(function (a, b) {
                   var textA = a.library_name.toUpperCase()
                   var textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-                }).filter( (library) => {
-                  if (library.additional)
-                    return 1 
+                }).filter((library) => {
+                  if (library.additional) { return 1 }
                   return 0
                 }).map(
                   (library) => {
@@ -387,17 +377,16 @@ export default function ComponentSidebar ({ compRef }) {
                   }
                 )}
               </div>
-              <div style={!uploaded ? {display: 'none'} : {}}>
-                <ListItem dense divider style={{backgroundColor: "#e8e8e8"}}>
+              <div style={!uploaded ? { display: 'none' } : {}}>
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
                   <span className={classes.head}>UPLOADED</span>
                 </ListItem>
                 { libraries.sort(function (a, b) {
                   var textA = a.library_name.toUpperCase()
                   var textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-                }).filter( (library) => {
-                  if (!library.default && !library.additional)
-                    return 1 
+                }).filter((library) => {
+                  if (!library.default && !library.additional) { return 1 }
                   return 0
                 }).map(
                   (library) => {

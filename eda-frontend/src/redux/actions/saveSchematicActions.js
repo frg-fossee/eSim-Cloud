@@ -36,14 +36,14 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 // Api call to save new schematic or updating saved schematic.
 export const saveSchematic = (title, description, xml, base64) => (dispatch, getState) => {
   var libraries = []
-  getState().schematicEditorReducer.libraries.forEach(e => {libraries.push(e.id)})
+  getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
   console.log(libraries)
   const body = {
     data_dump: xml,
     base64_image: base64,
     name: title,
     description: description,
-    esim_libraries: JSON.stringify([ ...libraries ]),
+    esim_libraries: JSON.stringify([...libraries])
   }
 
   // Get token from localstorage
@@ -118,9 +118,9 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
         dispatch(setSchDescription(res.data.description))
         dispatch(setSchXmlData(res.data.data_dump))
         renderGalleryXML(res.data.data_dump)
-        if(res.data.esim_libraries.length > 0) {
-          getState().schematicEditorReducer.libraries.forEach( e => dispatch(removeLibrary(e.id) ))
-          res.data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id) ))
+        if (res.data.esim_libraries.length > 0) {
+          getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
+          res.data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id)))
         }
       }
     )
