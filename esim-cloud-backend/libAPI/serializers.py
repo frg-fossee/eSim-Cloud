@@ -3,15 +3,29 @@ from rest_framework import serializers
 from libAPI.models import Library, \
     LibraryComponent, \
     ComponentAlternate, \
+    LibrarySet, \
     FavouriteComponent
 
 logger = logging.getLogger(__name__)
 
 
 class LibrarySerializer(serializers.ModelSerializer):
+    default = serializers.SerializerMethodField('is_default')
+    additional = serializers.SerializerMethodField('is_additional')
+
+    def is_default(self, obj):
+        if obj.library_set.default:
+            return True
+        return False
+
+    def is_additional(self, obj):
+        if not obj.library_set.default and obj.library_set.user.is_superuser:
+            return True
+        return False
+
     class Meta:
         model = Library
-        fields = ('library_name', 'saved_on', 'id')
+        fields = ('library_name', 'saved_on', 'id', 'default', 'additional')
 
 
 class ComponentAlternateSerializer(serializers.ModelSerializer):
@@ -45,6 +59,17 @@ class LibraryComponentSerializer(serializers.HyperlinkedModelSerializer):
             'keyword',
             'alternate_component'
         )
+
+
+class LibrarySetSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = LibrarySet
+        fields = [
+            'id',
+            'default',
+            'name',
+        ]
 
 
 class FavouriteComponentSerializer(serializers.ModelSerializer):
