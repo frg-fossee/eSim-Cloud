@@ -12,7 +12,9 @@ class TokenCreateSerializer(serializers.Serializer):
 
     default_error_messages = {
         "invalid_credentials": "Incorrect username or password",
-        "inactive_account": "Account is not verified",
+        "inactive_account": """Your account is not activated.
+                               Please click on the activation link
+                               sent by email.""",
     }
 
     def __init__(self, *args, **kwargs):
@@ -28,7 +30,7 @@ class TokenCreateSerializer(serializers.Serializer):
         )
         if not self.user:
             self.user = User.objects.filter(**params).first()
-            if not self.user.is_active:
+            if self.user and not self.user.is_active:
                 self.fail("inactive_account")
 
             if self.user and not self.user.check_password(password):
