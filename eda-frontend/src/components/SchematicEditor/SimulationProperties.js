@@ -391,7 +391,6 @@ export default function SimulationProperties () {
             nodes = `I(${tfAnalysisControlLine.outputVoltageSource})`
         }
         console.log(tfAnalysisControlLine.outputNodes)
-        console.log('kkcnodes')
         controlLine = `.tf ${nodes} ${tfAnalysisControlLine.inputVoltageSource}`
 
         dispatch(setResultTitle('Transfer Function Analysis Output'))
@@ -405,10 +404,11 @@ export default function SimulationProperties () {
     let cblockline =""
     // if either the extra expression field or the nodes multi select
     // drop down list in enabled then atleast one value is made non zero
-    // to add add all instead to the print statement
+    // to add add all instead to the print statement. The key is checked 
+    // for not equal to zero because the plot isn't well defined corresponding to 0
     if(selectedValue.length > 0 && selectedValue !== null && skipMultiNodeChk === 0){
         selectedValue.forEach((value, i) => {
-            if(value[i] !== undefined || value[i].key === 0){
+            if(value[i] !== undefined && value[i].key !== 0){   
                 atleastOne = 1
                 // console.log("value")
                 cblockline = cblockline + " " + String(value[i].key)
