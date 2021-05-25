@@ -98,7 +98,6 @@ export const fetchLibrary = (libraryId) => (dispatch) => {
       payload: res.data
     })
   })
-  
 }
 
 export const removeLibrary = (libraryId) => (dispatch) => {

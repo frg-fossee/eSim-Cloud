@@ -68,7 +68,8 @@ export default function (state = InitialState, action) {
       const libraries = [ ...state.libraries ]
       const newLib = action.payload
       collapse[newLib.id] = false
-      libraries.push(newLib)
+      if(!libraries.some(e => e.id === newLib.id))
+        libraries.push(newLib)
       return { ...state, libraries: libraries, components: components, collapse: collapse }
     }
 
