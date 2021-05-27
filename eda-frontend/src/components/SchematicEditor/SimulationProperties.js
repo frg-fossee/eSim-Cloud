@@ -87,7 +87,7 @@ export default function SimulationProperties () {
   })
 
   const [controlBlockParam, setControlBlockParam] = useState('')
-
+  const [disabled, setDisabled] = React.useState(false)
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
@@ -184,6 +184,7 @@ export default function SimulationProperties () {
       ...tfAnalysisControlLine,
       [evt.target.id]: value
     })
+    setDisabled(tfAnalysisControlLine.outputNodes)
   }
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
@@ -980,6 +981,7 @@ export default function SimulationProperties () {
                         onRemove={handleRemSelectedValue}
                         selectionLimit="2"
                         options={nodeArray} displayValue="key" 
+                        disable={disabled}
                       />                      
                     </ListItem>
                     <ListItem>
@@ -995,6 +997,7 @@ export default function SimulationProperties () {
                         SelectProps={{
                           native: true
                         }}
+                        disabled={!disabled}
                       >
 
                         {
