@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from rest_framework.fields import ListField
 from saveAPI.models import StateSave
+from libAPI.models import Library
+from libAPI.serializers import LibrarySerializer
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -30,18 +33,21 @@ class Base64ImageField(serializers.ImageField):
 
 class StateSaveSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
+    esim_libraries = LibrarySerializer(many=True, required=False)
 
     class Meta:
         model = StateSave
+
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time',
-                  'is_arduino')
+                  'is_arduino', 'esim_libraries')
 
 
 class SaveListSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
+    esim_libraries = LibrarySerializer(many=True, required=False)
 
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'name', 'description',
-                  'shared', 'base64_image', 'create_time')
+                  'shared', 'base64_image', 'create_time', 'esim_libraries')
