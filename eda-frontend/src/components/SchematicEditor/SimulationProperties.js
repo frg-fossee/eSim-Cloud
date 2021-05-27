@@ -648,36 +648,6 @@ export default function SimulationProperties () {
 
                     </ListItem>
                     <ListItem>
-                      <TextField
-                        style={{ width: '100%' }}
-                        id="parameter"
-                        size='small'
-                        variant="outlined"
-                        select
-                        label="Select Node"
-                        value={controlBlockParam}
-                        onChange={handleControlBlockParam}
-                        SelectProps={{
-                          native: true
-                        }}
-                      >
-
-                        {
-                            nodeList.map((value, i) => {
-                                if(value != null){
-                                return (<option key={i} value={value}>
-                                    {value}
-                                </option>)
-                                } else {
-                                return null
-                                }
-                            })
-                        }
-
-                      </TextField>
-
-                    </ListItem>
-                    <ListItem>
                       <Multiselect
                         style={{ width: '100%' }}
                         id="Nodes"
@@ -686,6 +656,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValue}
                         onRemove={handleRemSelectedValue}
                         options={nodeArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
                       />                      
                     </ListItem>
                     <ListItem>
@@ -790,6 +761,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValue}
                         onRemove={handleRemSelectedValue}
                         options={nodeArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
                       />
                           
                       
@@ -984,6 +956,7 @@ export default function SimulationProperties () {
                         selectionLimit="2"
                         options={nodeArray} displayValue="key" 
                         disable={disabled}
+                        avoidHighlightFirstOption = "true"
                       />                      
                     </ListItem>
                     <ListItem>
