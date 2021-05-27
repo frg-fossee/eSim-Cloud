@@ -1,6 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
-from publishAPI.models import CircuitTag, Publication, Report, TransitionHistory
+from publishAPI.models import CircuitTag, Publication, Report, TransitionHistory,Field
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -33,13 +33,21 @@ class CircuitTagSerializer(serializers.ModelSerializer):
 
 
 class TransitionHistorySerializer(serializers.ModelSerializer):
+    transition_author_name = serializers.CharField(
+        read_only=True, source='transition_author.username')
+    from_state_name = serializers.CharField(read_only=True, source='from_state.name')
+    to_state_name = serializers.CharField(read_only=True, source='to_state.name')
     class Meta:
         model = TransitionHistory
-        fields = ('transition_author',
-                  'from_state',
-                  'to_state',
+        fields = ('transition_author_name',
+                  'from_state_name',
+                  'to_state_name',
                   'transition_time')
 
+class FieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Field
+        fields=('name','text')
 
 class PublicationSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(
@@ -50,7 +58,7 @@ class PublicationSerializer(serializers.ModelSerializer):
         read_only=True, source='statesave.save_time')
     author_name = serializers.CharField(
         read_only=True, source='author.username')
-    transition_histories = TransitionHistorySerializer(many=True,read_only=True)
+    fields = FieldSerializer(many=True)
     class Meta:
         model = Publication
         fields = ('publication_id',
@@ -62,10 +70,9 @@ class PublicationSerializer(serializers.ModelSerializer):
                   'save_time',
                   'author_name',
                   'is_reported',
-                  'transition_histories'
+                  'fields',
+                  'reviewer_notes'
                   )
-
-
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report

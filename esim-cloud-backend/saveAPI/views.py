@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
+from workflowAPI.models import Permission
 from rest_framework import viewsets
 import uuid
 from django.contrib.auth import get_user_model
@@ -56,7 +57,7 @@ class CopyStateView(APIView):
             saved_state.name = "Copy of " + saved_state.name
             saved_state.owner = self.request.user
             saved_state.save()
-            return Response({"save_id":saved_state.save_id})
+            return Response({"save_id": saved_state.save_id})
 
 
 class StateFetchUpdateView(APIView):
@@ -80,7 +81,6 @@ class StateFetchUpdateView(APIView):
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
-
             # Verifies owner
             if self.request.user != saved_state.owner and not saved_state.shared:  # noqa
                 return Response({'error': 'not the owner and not shared'},

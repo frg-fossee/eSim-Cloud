@@ -1,8 +1,7 @@
 import uuid
-from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import NotificationSerializer, StatusSerializer, ReportApprovalSerializer, UserRoleRetreieveSerializer
-from .models import Notification, State, Transition, CustomGroup
+from .serializers import NotificationSerializer, StatusSerializer, ReportApprovalSerializer, StatusWithNotesSerializer, UserRoleRetreieveSerializer
+from .models import Notification, Permission, State, Transition, Permission
 from publishAPI.models import Publication, Report
 from publishAPI.serializers import PublicationSerializer, ReportSerializer, ReportDescriptionSerializer
 from rest_framework.response import Response
@@ -98,7 +97,7 @@ class RetrivePublicationsViewSet(APIView):
 
 class PublicationStateView(APIView):
     """
-    Requests to set and get Publication states
+    Requests to set and get possible to_states states
     """
     parser_classes = (FormParser, JSONParser)
     serializer_class = StatusSerializer
@@ -129,18 +128,24 @@ class PublicationStateView(APIView):
             else:
                 return Response(states, status=http_status.HTTP_200_OK)
 
-    @swagger_auto_schema(responses={200: StatusSerializer}, request_body=StatusSerializer)
+    @swagger_auto_schema(responses={200: StatusSerializer}, request_body=StatusWithNotesSerializer)
     def post(self, request, publication_id):
         if isinstance(publication_id, uuid.UUID):
             try:
                 saved_state = Publication.objects.get(
                     publication_id=publication_id)
-            except:
+            except Publication.DoesNotExist:
                 return Response({'error': 'Does not Exist'}, status=http_status.HTTP_404_NOT_FOUND)
             try:
                 user_roles = self.request.user.groups.all()
             except:
                 return Response(data={'message': 'No User Role'}, status=http_status.HTTP_404_NOT_FOUND)
+            if saved_state.author == self.request.user and Permission.objects.filter(role__in=user_roles, view_own_states=saved_state.state).exists():
+                pass
+            elif saved_state.author != self.request.user and Permission.objects.filter(role__in=user_roles, view_other_states=saved_state.state).exists():
+                pass
+            else:
+                return Response(status=http_status.HTTP_401_UNAUTHORIZED)
             circuit_transition = Transition.objects.get(from_state=saved_state.state,
                                                         to_state=State.objects.get(name=request.data['name']))
             roles = circuit_transition.role.all()
@@ -155,6 +160,7 @@ class PublicationStateView(APIView):
                                                            to_state=circuit_transition.to_state)
                     transition_history.save()
                     saved_state.state = circuit_transition.to_state
+                    saved_state.reviewer_notes = request.data['note']
                     saved_state.save()
                     state = saved_state.state
                     serialized = StatusSerializer(state)
@@ -176,6 +182,7 @@ class PublicationStateView(APIView):
                                                                            to_state=circuit_transition.to_state)
                                     transition_history.save()
                                     saved_state.state = circuit_transition.to_state
+                                    saved_state.reviewer_notes = request.data['note']
                                     saved_state.save()
                                     state = saved_state.state
                                     if saved_state.author != request.user:
@@ -217,8 +224,14 @@ class ReportedPublicationsView(viewsets.ViewSet):
                 publication_id=publication_id)
         except:
             return Response({'Message': 'No publications found'}, status=http_status.HTTP_404_NOT_FOUND)
-        publication.state = state
-        publication.is_reported = True
+        if publication.state != State.objects.get(report=True):
+            transition_history = TransitionHistory(publication_id=publication_id,
+                                                               transition_author=request.user,
+                                                               from_state=publication.state,
+                                                               to_state=state)
+            transition_history.save()
+            publication.state = state
+            publication.is_reported = True
         report = Report(description=request.data['description'],
                         publication=publication, reporter=self.request.user)
         publication.save()
@@ -255,9 +268,9 @@ class ReportedPublicationsView(viewsets.ViewSet):
                         temp.report_open = False
                     temp.save()
                 publication = Publication.objects.get(
-                        publication_id=publication_id)
+                    publication_id=publication_id)
                 publication.state = State.objects.get(
-                        name=request.data['state']['name'])
+                    name=request.data['state']['name'])
                 publication.is_reported = flag
                 publication.save()
                 return Response({"Approval sent"})
@@ -276,8 +289,8 @@ class ReportedPublicationsView(viewsets.ViewSet):
             return Response({"Error": "No publication found"}, status=http_status.HTTP_404_NOT_FOUND)
         try:
             if self.request.user == publication.author:
-                open_reports=[]
-                resolved_reports=[]
+                open_reports = []
+                resolved_reports = []
                 approved_reports = Report.objects.filter(
                     publication=publication, report_open=True, approved=True)
             else:
@@ -286,13 +299,13 @@ class ReportedPublicationsView(viewsets.ViewSet):
                 resolved_reports = Report.objects.filter(
                     publication=publication, report_open=False)
                 approved_reports = Report.objects.filter(
-                    publication=publication, report_open=True,approved=True)
+                    publication=publication, report_open=True, approved=True)
         except:
             return Response({"Message": "No reports found"}, status=http_status.HTTP_404_NOT_FOUND)
         open_serialized = ReportSerializer(open_reports, many=True)
         resolved_serialized = ReportSerializer(resolved_reports, many=True)
         approved_serializer = ReportSerializer(approved_reports, many=True)
-        return Response({"open":open_serialized.data,"closed":resolved_serialized.data,"approved":approved_serializer.data}, status=http_status.HTTP_200_OK)
+        return Response({"open": open_serialized.data, "closed": resolved_serialized.data, "approved": approved_serializer.data}, status=http_status.HTTP_200_OK)
 
     @swagger_auto_schema()
     def resolve(self, request, publication_id):
@@ -320,7 +333,15 @@ class ReportedPublicationsView(viewsets.ViewSet):
                         report.resolver = self.request.user
                         report.save()
                     try:
-                        publication.state = State.objects.get(name=request.data['name'])
+                        transition_history = TransitionHistory(publication_id=publication_id,
+                                                               transition_author=request.user,
+                                                               from_state=publication.state,
+                                                               to_state=State.objects.get(
+                                                                   name=request.data['name']))
+
+                        publication.state = State.objects.get(
+                            name=request.data['name'])
+                        transition_history.save()
                     except:
                         pass
                     publication.is_reported = False

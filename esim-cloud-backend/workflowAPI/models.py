@@ -1,6 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import Group, User
-from django.db.models.base import Model
+from django.contrib.auth.models import Group
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.contrib.auth import get_user_model
 
@@ -21,9 +20,19 @@ class CustomGroup(models.Model):
         return "{}".format(self.group.name)
 
     group = models.OneToOneField(Group, unique=True, on_delete=CASCADE)
-    accessible_states = models.ManyToManyField(State, related_name='accessible_states',verbose_name="Other circuits accesible states",null=True)
     is_arduino = models.BooleanField(default=False)
     is_type_reviewer = models.BooleanField(default=False)
+
+class Permission(models.Model):
+    role=models.ForeignKey(to=Group,related_name='permission_role',on_delete=CASCADE)
+    view_own_states = models.ManyToManyField(State,related_name="view_own_states",verbose_name='Can View own Project',blank=True)
+    view_other_states = models.ManyToManyField(State,related_name="view_other_states",verbose_name='Can View other Project',blank=True)
+    edit_own_states = models.ManyToManyField(State,related_name="edit_own_states",verbose_name='Can Edit Details and Status own Project',blank=True)
+    edit_other_states = models.ManyToManyField(State,related_name="edit_other_states",verbose_name='Can Edit Status other Project',blank=True)
+    del_own_states = models.ManyToManyField(State,related_name="del_own_states",verbose_name='Can Delete own Project',blank=True)
+    del_other_states = models.ManyToManyField(State,related_name="del_other_states",verbose_name='Can Delete other Project',blank=True)
+    def __str__(self):
+        return self.role.name + " Permissions"
 
 # Transition models to handle switching of states.
 class Transition(models.Model):

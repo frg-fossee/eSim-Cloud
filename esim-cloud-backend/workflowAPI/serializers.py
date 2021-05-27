@@ -1,4 +1,5 @@
 from django.db.models import fields
+from django.db.models.base import Model
 from rest_framework import serializers
 from django.db import models
 from django.contrib.auth.models import  Group
@@ -8,6 +9,10 @@ class UserRoleRetreieveSerializer(serializers.ModelSerializer):
     class Meta: 
         model = CustomGroup
         fields = ['group','is_type_reviewer']
+
+class StatusWithNotesSerializer(serializers.ModelSerializer):
+    note = serializers.CharField(max_length=500)
+    name= serializers.CharField(max_length=200)
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:

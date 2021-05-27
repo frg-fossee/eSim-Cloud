@@ -178,7 +178,6 @@ function ReportComponent(props) {
                       </Select>
                     </Grid>}
                 </Grid>
-
               </Paper>
             ))}
           </TabPanel>}

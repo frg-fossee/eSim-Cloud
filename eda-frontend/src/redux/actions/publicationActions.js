@@ -1,7 +1,7 @@
 import * as actions from './actions'
 import api from '../../utils/Api'
 
-export const createPublication = (save_id) => (dispatch, getState) => {
+export const createPublication = (save_id, details) => (dispatch, getState) => {
   // Get token from localstorage
   const token = localStorage.getItem("esim_token")
 
@@ -16,10 +16,10 @@ export const createPublication = (save_id) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.post(`/publish/publication/${save_id}`, {}, config)
+  console.log(details)
+  api.post(`/publish/publication/${save_id}`, details, config)
     .then(
       (res) => {
-        console.log("Created")
         dispatch({
           type: actions.SET_CURRENT_PUBLICATION,
           payload: res.data
@@ -47,6 +47,7 @@ export const fetchPublication = () => (dispatch, getState) => {
   api.get('publish/publication/' + publication_id, config)
     .then(
       (res) => {
+        console.log("Hello1")
         console.log(res.data)
         dispatch({
           type: actions.SET_CURRENT_PUBLICATION,
@@ -57,7 +58,16 @@ export const fetchPublication = () => (dispatch, getState) => {
         }
       }
     )
-    .catch((err) => { console.error(err) })
+    .catch((err) => {
+      if(err.response.status == 401)
+      {
+        console.log("Hello")
+        dispatch({
+          type:actions.SET_CURRENT_PUBLICATION,
+          payload:"400"
+        })
+      }
+    })
 }
 export const fetchReports = (publicationID) => (dispatch, getState) => {
   // Get token from localstorage
@@ -140,7 +150,7 @@ export const getStatus = (publication_id) => (dispatch, getState) => {
     })
     .catch(error => console.log(error))
 }
-export const changeStatus = (publication_id, status) => (dispatch, getState) => {
+export const changeStatus = (publication_id, status,notes) => (dispatch, getState) => {
   //post the state
   const token = localStorage.getItem("esim_token")
   // add headers
@@ -156,7 +166,8 @@ export const changeStatus = (publication_id, status) => (dispatch, getState) => 
   }
   api.post(`/workflow/state/${publication_id}`,
     {
-      'name': status
+      'name': status,
+      'note':notes
     }, config)
     .then(() => {
       dispatch(fetchPublication())

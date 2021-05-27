@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.db.models.deletion import CASCADE, SET_NULL
+from django.contrib.postgres.fields import ArrayField
 from django.utils.safestring import mark_safe
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
@@ -23,6 +24,10 @@ class CircuitTag(models.Model):
     def __str__(self):
         return self.tag
 
+class Field(models.Model):
+    name = models.CharField(
+        max_length=40, blank=False) 
+    text = models.CharField(max_length=400, null=True)
 
 class Publication(models.Model):
     publication_id = models.UUIDField(
@@ -31,8 +36,8 @@ class Publication(models.Model):
     # Circuit Details
     title = models.CharField(
         max_length=200, blank=False)  # Search
-    description = models.CharField(max_length=400, null=True)
-
+    description = models.CharField(max_length=1000, null=True)
+    fields = models.ManyToManyField(to=Field)
     state = models.ForeignKey(State,on_delete=CASCADE,default=1)
     
     author = models.ForeignKey(
