@@ -51,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SimulationProperties () {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
+  const [taskId, setTaskId] = useState(null)
   const dispatch = useDispatch()
   const classes = useStyles()
   const [nodeList, setNodeList] = useState([])
@@ -242,11 +243,12 @@ export default function SimulationProperties () {
   }
 
   function sendNetlist (file) {
+    setIsResult(false)
     netlistConfig(file)
       .then((response) => {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
-
+        setTaskId(res.details.task_id)
         simulationResult(getUrl)
       })
       .catch(function (error) {
@@ -280,7 +282,6 @@ export default function SimulationProperties () {
           if (result === null) {
             setIsResult(false)
           } else {
-            setIsResult(true)
             var temp = res.data.details.data
             var data = result.data
             // console.log('DATA SIm', data)
@@ -336,6 +337,7 @@ export default function SimulationProperties () {
               handleSimulationResult(res.data.details)
               dispatch(setResultText(simResultText))
             }
+            setIsResult(true)
           }
         }
       })
@@ -457,7 +459,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} />
+      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} task_id={taskId} />
 
         {/* Simulation modes list */}
         <List>
