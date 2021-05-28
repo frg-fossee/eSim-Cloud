@@ -25,7 +25,7 @@ class StateSaveView(APIView):
     '''
 
     # Permissions should be validated here
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     # parser_classes = (FormParser,)
 
     @swagger_auto_schema(request_body=StateSaveSerializer)
@@ -34,7 +34,7 @@ class StateSaveView(APIView):
         serializer = StateSaveSerializer(
             data=request.data, context={'request': self.request})
         if serializer.is_valid():
-            serializer.save(owner=self.request.user)
+            serializer.save(owner=self.request.user if self.request.user.is_authenticated else None)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

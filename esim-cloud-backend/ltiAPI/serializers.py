@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import lticonsumer, ltiSession, Submission
+from saveAPI.serializers import SaveListSerializer
 
 
 class consumerSerializer(serializers.ModelSerializer):
@@ -26,6 +27,12 @@ class SessionSerializer(serializers.ModelSerializer):
         fields = ["id", "user_id", "oauth_nonce"]
 
 
+class GetSessionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ltiSession
+        fields = "__all__"
+
+
 class SubmissionSerializer(serializers.ModelSerializer):
     ltisession = SessionSerializer(many=False)
 
@@ -35,6 +42,8 @@ class SubmissionSerializer(serializers.ModelSerializer):
 
 
 class GetSubmissionsSerializer(serializers.ModelSerializer):
+    ltisession = GetSessionSerializer(many=False)
+    schematic = SaveListSerializer(many=False)
     class Meta:
         model = Submission
         fields = ["schematic", "student", "project", "score", "lms_success", "ltisession"]

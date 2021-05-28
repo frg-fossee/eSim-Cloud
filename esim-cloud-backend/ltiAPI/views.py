@@ -14,7 +14,7 @@ from saveAPI.models import StateSave
 from .models import ltiSession, lticonsumer, Submission
 from .utils import consumers, get_reverse, message_identifier
 from .serializers import consumerSerializer, consumerResponseSerializer, \
-    SubmissionSerializer
+    SubmissionSerializer, GetSubmissionsSerializer
 
 
 def denied(r):
@@ -179,15 +179,18 @@ class LTIPostGrade(APIView):
                 submission.lms_success = True
                 submission.save()
                 msg = 'Your score was submitted. Great job!'
-                return Response(data={"data": msg}, status=status.HTTP_200_OK)
+                return Response(data={"message": msg}, status=status.HTTP_200_OK)
 
         except LTIException:
             submission.lms_success = False
             submission.save()
-            return Response(data={"data": msg}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"message": msg}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class GetLTISubmission(APIView):
-#
-#     def get(self, request, consumer_key):
+class GetLTISubmission(APIView):
 
+    def get(self, request, consumer_key):
+        consumer = lticonsumer.objects.get(consumer_key=consumer_key)
+        submissions = consumer.submission_set.all()
+        serialized = GetSubmissionsSerializer(submissions, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)
