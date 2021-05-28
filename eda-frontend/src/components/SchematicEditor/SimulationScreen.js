@@ -113,9 +113,11 @@ export default function SimulationScreen({ open, close, isResult, task_id }) {
   }
   useEffect(() => {
     if (isResult === true) {
-      if (result.graph !== {}) {
-        setScales()
-      }
+        if (result.graph !== {} && result.isGraph !== "false") {
+            console.log(result)
+            console.log(result.isGraph)
+            setScales()
+        }
     }
     // eslint-disable-next-line
   }, [isResult])
