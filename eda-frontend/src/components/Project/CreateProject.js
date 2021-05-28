@@ -185,7 +185,7 @@ function CreateProject() {
             <Grid item xs={12} sm={12}>
               {publication.details && <Paper style={{ padding: '.2% 0%', marginBottom: "1%" }}>
                 <h3 style={{ textAlign: 'center' }}>Status of the project: {publication.details.status_name}  </h3>
-                <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {publication.details.reviewer_notes}</h4>
+                <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {publication.details.history.reverse()[0]?.reviewer_notes}</h4>
               </Paper>}
               <Paper className={classes.paper}>
 

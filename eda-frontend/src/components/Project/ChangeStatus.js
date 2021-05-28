@@ -19,7 +19,7 @@ function ChangeStatus({ publication }) {
     useEffect(() => {
         if(publication.details)
         {
-            setNote(publication.details.reviewer_notes)
+            setNote(publication.details.history.reverse()[1].reviewer_notes)
         }
         dispatch(getStatus(publication.details?.publication_id))
     }, [dispatch, publication.details])
@@ -35,7 +35,7 @@ function ChangeStatus({ publication }) {
                         placeholder='Reviewer Notes'
                         multiline
                         value={note}
-                        defaultValue={publication.details?.reviewer_notes}
+                        defaultValue={publication.details.history.reverse()[1].reviewer_notes}
                         onChange={onChangeNote}
                         rows={2} />
                     <InputLabel style={{ marginTop: '0' }}>Select and Change the status of this project</InputLabel>

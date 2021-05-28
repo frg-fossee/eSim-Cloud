@@ -42,7 +42,8 @@ class TransitionHistorySerializer(serializers.ModelSerializer):
         fields = ('transition_author_name',
                   'from_state_name',
                   'to_state_name',
-                  'transition_time')
+                  'transition_time',
+                  'reviewer_notes')
 
 class FieldSerializer(serializers.ModelSerializer):
     class Meta:
@@ -71,7 +72,6 @@ class PublicationSerializer(serializers.ModelSerializer):
                   'author_name',
                   'is_reported',
                   'fields',
-                  'reviewer_notes'
                   )
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:

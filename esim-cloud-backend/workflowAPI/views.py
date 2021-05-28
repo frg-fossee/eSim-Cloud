@@ -157,10 +157,10 @@ class PublicationStateView(APIView):
                     transition_history = TransitionHistory(publication_id=publication_id,
                                                            transition_author=request.user,
                                                            from_state=saved_state.state,
+                                                           reviewer_notes = request.data['note'],
                                                            to_state=circuit_transition.to_state)
                     transition_history.save()
                     saved_state.state = circuit_transition.to_state
-                    saved_state.reviewer_notes = request.data['note']
                     saved_state.save()
                     state = saved_state.state
                     serialized = StatusSerializer(state)
@@ -179,10 +179,10 @@ class PublicationStateView(APIView):
                                     transition_history = TransitionHistory(publication_id=publication_id,
                                                                            transition_author=request.user,
                                                                            from_state=saved_state.state,
+                                                                           reviewer_notes = request.data['note'],
                                                                            to_state=circuit_transition.to_state)
                                     transition_history.save()
                                     saved_state.state = circuit_transition.to_state
-                                    saved_state.reviewer_notes = request.data['note']
                                     saved_state.save()
                                     state = saved_state.state
                                     if saved_state.author != request.user:

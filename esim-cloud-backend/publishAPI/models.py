@@ -43,7 +43,6 @@ class Publication(models.Model):
     author = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.CASCADE)
     is_arduino = models.BooleanField(default=False, null=False) 
-    reviewer_notes = models.CharField(max_length=500,blank=True)
     is_reported = models.BooleanField(default=False,null=True)
     def __str__(self):
         return self.title
@@ -55,7 +54,7 @@ class TransitionHistory(models.Model):
     from_state = models.ForeignKey(State, related_name='historyfromtransitions', on_delete=CASCADE)
     to_state = models.ForeignKey(State, related_name='historytotransitions', on_delete=CASCADE)
     transition_time = models.DateTimeField(auto_now_add=True)
-
+    reviewer_notes = models.CharField(max_length=500,blank=True)
     class Meta:
         verbose_name_plural = 'Transition Histories'
 
