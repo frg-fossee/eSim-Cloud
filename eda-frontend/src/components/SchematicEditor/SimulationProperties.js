@@ -1157,7 +1157,7 @@ export default function SimulationProperties () {
                         size='small'
                         variant="outlined"
                         select
-                        label="O/P Voltage SRC"
+                        label="Output Voltage SRC"
                         value={tfAnalysisControlLine.outputVoltageSource}
                         onChange={handleTfAnalysisControlLine}
                         SelectProps={{
@@ -1188,7 +1188,7 @@ export default function SimulationProperties () {
                         size='small'
                         variant="outlined"
                         select
-                        label="I/O Voltage SRC"
+                        label="Input Voltage SRC"
                         value={tfAnalysisControlLine.inputVoltageSource}
                         onChange={handleTfAnalysisControlLine}
                         SelectProps={{
