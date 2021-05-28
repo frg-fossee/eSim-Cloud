@@ -92,21 +92,37 @@ export default function SimulationProperties () {
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
-  var nodeArray = [{key:0}]   // since ground is always present
-  const populateNodeArray = (nodeArray) =>{
-    nodeList.forEach((value) => {
-        if(value !== null && value !== "") {
-            nodeArray.push({key:value})
-        }
-    })
+  var analysisNodeArray = [], analysisCompArray = [], nodeArray=[]
+//   const populateNodeArray = (nodeArray) =>{
+//     nodeList.forEach((value) => {
+//         if(value !== null && value !== "") {
+//             nodeArray.push({key:value})
+//         }
+//     })
+//   }
+//   const populateCompArray = (compArray) =>{
+//     componentsList.forEach((value) => {
+//         if(value !== null && value !== "") {
+//             var val
+//             if(value.charAt(0) === 'V' || value.charAt(0) === 'v'){
+//                 val = "I(" + String(value)+")"
+//                 analysisCompArray.push({key:val})
+//             }                
+//             if(value.charAt(0) === 'I' || value.charAt(0) === 'i'){
+//                 val = "V(" + String(value)+")"
+//                 analysisCompArray.push({key:val})
+//             }
+                
+//         }
+//     })
+//   }
+  const pushZero = (nodeArray) => {
+    nodeArray.push({key:0})
   }
-
   const onDcSweepTabExpand = () => {
     try {
         setComponentsList(['', ...GenerateCompList()])
-        setNodeList(['', ...GenerateNodeList()])
-        nodeArray = []
-        populateNodeArray(nodeArray)        
+        setNodeList(['', ...GenerateNodeList()])      
     } catch (err) {
       setComponentsList([])
       setNodeList([])
@@ -115,10 +131,10 @@ export default function SimulationProperties () {
   }
   const onTransientAnalysisTabExpand = () => {
     try {
-        setNodeList(['', ...GenerateNodeList()])
-        nodeArray = []
-        populateNodeArray(nodeArray)  
+        setComponentsList(['', ...GenerateCompList()])
+        setNodeList(['', ...GenerateNodeList()])      
     } catch (err) {
+      setComponentsList([])
       setNodeList([])
       alert('Circuit not complete. Please Check Connectons.')
     }
@@ -127,9 +143,7 @@ export default function SimulationProperties () {
   const onTFTabExpand = () => {
     try {
         setComponentsList(['', ...GenerateCompList()])
-        setNodeList(['', ...GenerateNodeList()])
-        nodeArray = []
-        populateNodeArray(nodeArray)        
+        setNodeList(['', ...GenerateNodeList()])       
     } catch (err) {
       setComponentsList([])
       setNodeList([])
@@ -208,6 +222,12 @@ export default function SimulationProperties () {
     Octave: 'oct'
   }
   let [selectedValue, setSelectedValue] = React.useState([])
+  let [selectedValueDCSweep, setSelectedValueDCSweep] = React.useState([])
+  let [selectedValueTransientAnal, setSelectedValueTransientAnal] = React.useState([])
+  let [selectedValueTFAnal, setSelectedValueTFAnal] = React.useState([])
+  let [selectedValueComp, setSelectedValueComp] = React.useState([])
+  let [selectedValueDCSweepComp, setSelectedValueDCSweepComp] = React.useState([])
+  let [selectedValueTransientAnalComp, setSelectedValueTransientAnalComp] = React.useState([])
   const handleAddSelectedValue = (data) => {
     var f = 0
     selectedValue.forEach((value, i) =>{
@@ -231,6 +251,122 @@ export default function SimulationProperties () {
     selectedValue = tmp
     // console.log(selectedValue)
   }
+  const handleAddSelectedValueDCSweep = (data) => {
+    var f = 0
+    selectedValueDCSweep.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueDCSweep, data]    
+        setSelectedValueDCSweep(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueDCSweep = (data) => {
+    const tmp = []
+    selectedValueDCSweep.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueDCSweep = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueTransientAnal = (data) => {
+    var f = 0
+    selectedValueTransientAnal.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueTransientAnal, data]    
+        setSelectedValueTransientAnal(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueTransientAnal = (data) => {
+    const tmp = []
+    selectedValueTransientAnal.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueTransientAnal = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueTFAnal = (data) => {
+    var f = 0
+    selectedValueTFAnal.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueTFAnal, data]    
+        setSelectedValueTFAnal(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueTFAnal = (data) => {
+    const tmp = []
+    selectedValueTFAnal.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueTFAnal = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueDCSweepComp = (data) => {
+    var f = 0
+    selectedValueDCSweepComp.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueDCSweepComp, data]    
+        setSelectedValueDCSweepComp(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueDCSweepComp = (data) => {
+    const tmp = []
+    selectedValueDCSweepComp.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueDCSweepComp = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueTransientAnalComp = (data) => {
+    var f = 0
+    selectedValueTransientAnalComp.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueTransientAnalComp, data]    
+        setSelectedValueTransientAnalComp(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueTransientAnalComp = (data) => {
+    const tmp = []
+    selectedValueTransientAnalComp.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueTransientAnalComp = tmp
+    // console.log(selectedValue)
+  }
+
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
     var titleA = netfile.title.split(' ')[1]
@@ -363,6 +499,8 @@ export default function SimulationProperties () {
         // console.log(dcSweepcontrolLine)
         controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
         dispatch(setResultTitle('DC Sweep Output'))
+        selectedValue = selectedValueDCSweep
+        selectedValueComp = selectedValueDCSweepComp
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
@@ -371,6 +509,8 @@ export default function SimulationProperties () {
         controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
         
         dispatch(setResultTitle('Transient Analysis Output'))
+        selectedValue = selectedValueTransientAnal
+        selectedValueComp = selectedValueTransientAnalComp
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
@@ -381,7 +521,7 @@ export default function SimulationProperties () {
     
       case 'tfAnalysis':
         let nodes = ""
-        
+        selectedValue = selectedValueTFAnal
         if(tfAnalysisControlLine.outputNodes === true){
             selectedValue.forEach((value, i) => {
             if(value[i] !== undefined){
@@ -415,6 +555,19 @@ export default function SimulationProperties () {
                 atleastOne = 1
                 // console.log("value")
                 cblockline = cblockline + " " + String(value[i].key)
+                // console.log(cblockline)
+            }                
+        })
+    }
+    if(selectedValueComp.length > 0 && selectedValueComp !== null){
+        selectedValueComp.forEach((value, i) => {
+            if(value[i] !== undefined && value[i].key !== 0){   
+                atleastOne = 1
+                // console.log("value")
+                if(value[i].key.charAt(0) === 'V' || value[i].key.charAt(0) === 'v'){
+                    cblockline = cblockline + " I(" + String(value[i].key)+") "
+                }   
+                
                 // console.log(cblockline)
             }                
         })
@@ -653,9 +806,21 @@ export default function SimulationProperties () {
                         id="Nodes"
                         closeOnSelect="false"
                         placeholder="Select Node"
-                        onSelect={handleAddSelectedValue}
-                        onRemove={handleRemSelectedValue}
-                        options={nodeArray} displayValue="key" 
+                        onSelect={handleAddSelectedValueDCSweep}
+                        onRemove={handleRemSelectedValueDCSweep}
+                        options={analysisNodeArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
+                      />                      
+                    </ListItem>
+                    <ListItem>
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Branch"
+                        closeOnSelect="false"
+                        placeholder="Select VSRC"
+                        onSelect={handleAddSelectedValueDCSweepComp}
+                        onRemove={handleRemSelectedValueDCSweepComp}
+                        options={analysisCompArray} displayValue="key" 
                         avoidHighlightFirstOption = "true"
                       />                      
                     </ListItem>
@@ -749,23 +914,42 @@ export default function SimulationProperties () {
                     <ListItem>
                         {   nodeList.forEach((value) => {
                                 if(value !== null && value !== "") {
-                                    nodeArray.push({key:value})
+                                    analysisNodeArray.push({key:value})
                                 }
                             })
                         }
+                        
                       <Multiselect
                         style={{ width: '100%' }}
                         id="Nodes"
                         closeOnSelect="false"
                         placeholder="Select Node"
-                        onSelect={handleAddSelectedValue}
-                        onRemove={handleRemSelectedValue}
-                        options={nodeArray} displayValue="key" 
+                        onSelect={handleAddSelectedValueTransientAnal}
+                        onRemove={handleRemSelectedValueTransientAnal}
+                        options={analysisNodeArray} displayValue="key" 
                         avoidHighlightFirstOption = "true"
-                      />
-                          
-                      
-                      
+                      />  
+                    </ListItem>
+                    <ListItem>
+                        {
+                            componentsList.forEach((value) => {
+                                if(value !== null && value !== "") {
+                                    if(value.charAt(0) === 'V' || value.charAt(0) === 'v'){
+                                        analysisCompArray.push({key:value})
+                                    }    
+                                }
+                            })
+                        }
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Branch"
+                        closeOnSelect="false"
+                        placeholder="Select VSRC"
+                        onSelect={handleAddSelectedValueTransientAnalComp}
+                        onRemove={handleRemSelectedValueTransientAnalComp}
+                        options={analysisCompArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
+                      />                      
                     </ListItem>
                     <ListItem>
 
@@ -945,14 +1129,21 @@ export default function SimulationProperties () {
                         <span style={{ marginLeft: '10px' }}>Output By Nodes</span>
                         
                     </ListItem>
+                    { nodeList.forEach((value) => {
+                            if(value !== null && value !== "") {
+                                nodeArray.push({key:value})
+                            }
+                        })
+                    }
+                    { pushZero(nodeArray)}
                     <ListItem>
                       <Multiselect
                         style={{ width: '100%' }}
                         id="Nodes"
                         closeOnSelect="false"
                         placeholder="Voltage between Nodes"
-                        onSelect={handleAddSelectedValue}
-                        onRemove={handleRemSelectedValue}
+                        onSelect={handleAddSelectedValueTFAnal}
+                        onRemove={handleRemSelectedValueTFAnal}
                         selectionLimit="2"
                         options={nodeArray} displayValue="key" 
                         disable={disabled}

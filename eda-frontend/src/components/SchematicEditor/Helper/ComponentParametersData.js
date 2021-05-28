@@ -358,7 +358,7 @@ const ComponentParameters = {
     MODEL: ''
   },
 
-  S: {
+  SW: {
     PREFIX: 'S',
     NAME: '',
     N1: '',
