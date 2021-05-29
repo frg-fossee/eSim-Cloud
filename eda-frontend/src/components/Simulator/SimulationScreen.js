@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Slide,
@@ -18,13 +18,14 @@ import {
   TableContainer,
   TableHead,
   TableRow
-
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
 
 import Graph from '../Shared/Graph'
+
+var FileSaver = require('file-saver')
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult }) {
+export default function SimulationScreen ({ open, close, isResult, taskId }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const [xscale, setXScale] = React.useState('si')
@@ -67,6 +68,90 @@ export default function SimulationScreen ({ open, close, isResult }) {
     n: 0.000000001,
     p: 0.000000000001
   }
+  const toFixed = (x) => {
+    var e = 0
+    if (Math.abs(x) < 1.0) {
+      e = parseInt(x.toString().split('e-')[1])
+      if (e) {
+        x *= Math.pow(10, e - 1)
+        x = '0.' + (new Array(e)).join('0') + x.toString().substring(2)
+      }
+    } else {
+      e = parseInt(x.toString().split('+')[1])
+      if (e > 20) {
+        e -= 20
+        x /= Math.pow(10, e)
+        x += (new Array(e + 1)).join('0')
+      }
+    }
+    return x
+  }
+  const decimalCount = (num1, num2) => {
+    var difference = toFixed(num1) - toFixed(num2)
+    const numStr = toFixed(difference).toString()
+    if (Math.abs(difference) < 1) {
+      if (numStr.includes('.')) {
+        return ['decimal', numStr.split('.')[1].length]
+      }
+    } else {
+      return ['notDecimal', numStr.split('.')[0].length]
+    }
+    return ['notDecimal', 1]
+  }
+  useEffect(() => {
+    if (isResult === true) {
+      if (result.graph !== {}) {
+        setScales()
+      }
+    }
+    // eslint-disable-next-line
+  }, [isResult])
+  const setScales = () => {
+    var countX = decimalCount(Math.min(...result.graph.x_points), Math.max(...result.graph.x_points))
+    var countY = decimalCount(Math.min(...result.graph.y_points[0]), Math.max(...result.graph.y_points[0]))
+    if (countX[0] === 'decimal') {
+      if (countX[1] > 0 && countX[1] <= 4) {
+        setXScale('m')
+      } else if (countX[1] > 4 && countX[1] <= 7) {
+        setXScale('u')
+      } else if (countX[1] > 7 && countX[1] <= 10) {
+        setXScale('n')
+      } else if (countX[1] > 10 && countX[1] <= 12) {
+        setXScale('p')
+      }
+    } else {
+      if (countX[1] > 0 && countX[1] <= 4) {
+        setXScale('si')
+      } else if (countX[1] > 4 && countX[1] <= 7) {
+        setXScale('K')
+      } else if (countX[1] > 7 && countX[1] <= 10) {
+        setXScale('M')
+      } else if (countX[1] > 10) {
+        setXScale('G')
+      }
+    }
+    if (countY[0] === 'decimal') {
+      if (countY[1] > 0 && countY[1] <= 4) {
+        setYScale('m')
+      } else if (countY[1] > 4 && countY[1] <= 7) {
+        setYScale('u')
+      } else if (countY[1] > 7 && countY[1] <= 10) {
+        setYScale('n')
+      } else if (countY[1] > 10 && countY[1] <= 12) {
+        setYScale('p')
+      }
+    } else {
+      if (countY[1] > 0 && countY[1] <= 4) {
+        setYScale('si')
+      } else if (countY[1] > 4 && countY[1] <= 7) {
+        setYScale('K')
+      } else if (countY[1] > 7 && countY[1] <= 10) {
+        setYScale('M')
+      } else if (countY[1] > 10) {
+        setYScale('G')
+      }
+    }
+  }
   const handleXScale = (evt) => {
     setXScale(evt.target.value)
   }
@@ -77,6 +162,33 @@ export default function SimulationScreen ({ open, close, isResult }) {
   const handlePrecision = (evt) => {
     setPrecision(evt.target.value)
   }
+  const generateCSV = () => {
+    var headings = ''
+    result.graph.labels.forEach(label => {
+      headings = headings + label + ','
+    })
+
+    headings = headings.slice(0, -1)
+    headings += '\n'
+    var downloadString = ''
+
+    for (var x = 0; x < result.graph.x_points.length; x++) {
+      downloadString += result.graph.x_points[x]
+      for (var y = 0; y < result.graph.y_points.length; y++) {
+        downloadString = downloadString + ',' + result.graph.y_points[y][x]
+      }
+      downloadString += '\n'
+    }
+
+    downloadString = headings.concat(downloadString)
+    return downloadString
+  }
+  const handleCsvDownload = () => {
+    var downloadString = generateCSV()
+    var blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
+    FileSaver.saveAs(blob, 'graph_points_eSim_on_cloud.csv')
+  }
+
   return (
     <div>
       <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
@@ -221,6 +333,9 @@ export default function SimulationScreen ({ open, close, isResult }) {
                           }
 
                         </TextField>
+                        {result.isGraph === 'true' && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
+                          Download Graph Output
+                        </Button>}
                       </div>
                       <Graph
                         labels={result.graph.labels}
@@ -355,6 +470,7 @@ export default function SimulationScreen ({ open, close, isResult }) {
 SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
-  isResult: PropTypes.bool
+  isResult: PropTypes.bool,
+  taskId: PropTypes.string
   // simResults: PropTypes.object
 }

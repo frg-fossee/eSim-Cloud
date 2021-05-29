@@ -1,6 +1,7 @@
 import { Point } from './Point';
 import { Wire } from './Wire';
 import { isNull } from 'util';
+import { BoundingBox } from './Geometry';
 
 /**
  * Abstract Class Circuit Elements
@@ -110,6 +111,14 @@ export abstract class CircuitElement {
         });
     }
   }
+
+  /**
+   * Returns bounding box of the circuit element
+   */
+  getBoundingBox(): BoundingBox {
+    return BoundingBox.loadFromRaphaelBbox(this.elements.getBBox());
+  }
+
   /**
    * Draws circuit nodes
    * @param canvas Raphael Canvas

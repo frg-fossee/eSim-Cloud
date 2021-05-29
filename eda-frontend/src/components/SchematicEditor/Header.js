@@ -344,6 +344,13 @@ function Header () {
               >
                 My Schematics
               </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/account/change_password"
+                onClick={handleClose}
+              >
+                Change password
+              </MenuItem>
               <MenuItem onClick={() => {
                 store.dispatch(logout(history))
               }}>
