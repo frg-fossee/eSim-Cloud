@@ -10,7 +10,8 @@ import {
   IconButton,
   Tooltip,
   TextField,
-  InputAdornment
+  InputAdornment,
+  Divider
 
 } from '@material-ui/core'
 import Loader from 'react-loader-spinner'
@@ -64,9 +65,15 @@ export default function ComponentSidebar ({ compRef }) {
   const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
+  const [favourite, setFavourite] = useState(null)
+  const [favOpen, setFavOpen] = useState(true)
 
   const [searchedComponentList, setSearchedComponents] = useState([])
   const [searchOption, setSearchOption] = useState('NAME')
+  const [uploaded, setuploaded] = useState(false)
+  const [def, setdef] = useState(false)
+  const [additional, setadditional] = useState(false)
+
   // const searchedComponentList = React.useRef([])
 
   const timeoutId = React.useRef()
@@ -89,6 +96,26 @@ export default function ComponentSidebar ({ compRef }) {
   }
 
   React.useEffect(() => {
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api
+      .get('favouritecomponents', config)
+      .then((resp) => {
+        setFavourite(resp.data.component)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
+  React.useEffect(() => {
     // if the user keeps typing, stop the API call!
     clearTimeout(timeoutId.current)
     // don't make an API call with no data
@@ -98,8 +125,16 @@ export default function ComponentSidebar ({ compRef }) {
     timeoutId.current = setTimeout(() => {
       // call api here
       setLoading(true)
-
-      api.get(`components/?${searchOptions[searchOption]}=${searchText}`)
+      var config = {}
+      const token = localStorage.getItem('esim_token')
+      if (token !== null || token !== undefined) {
+        config = {
+          headers: {
+            Authorization: `Token ${token}`
+          }
+        }
+      }
+      api.get(`components/?${searchOptions[searchOption]}=${searchText}`, config)
         .then(
           (res) => {
             if (res.data.length === 0) {
@@ -130,6 +165,12 @@ export default function ComponentSidebar ({ compRef }) {
     dispatch(fetchLibraries())
   }, [dispatch])
 
+  useEffect(() => {
+    if (libraries.filter((ob) => { return ob.default === true }).length !== 0) { setdef(true) } else { setdef(false) }
+    if (libraries.filter((ob) => { return ob.additional === true }).length !== 0) { setadditional(true) } else { setadditional(false) }
+    if (libraries.filter((ob) => { return (!ob.additional && !ob.default) }).length !== 0) { setuploaded(true) } else { setuploaded(false) }
+  }, [libraries])
+
   // Used to chunk array
   const chunk = (array, size) => {
     return array.reduce((chunks, item, i) => {
@@ -140,6 +181,39 @@ export default function ComponentSidebar ({ compRef }) {
       }
       return chunks
     }, [])
+  }
+
+  const libraryDropDown = (library) => {
+    return (
+      <div key={library.id}>
+        <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
+          <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
+          {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
+        </ListItem>
+        <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
+          <List component="div" disablePadding dense >
+            {/* Chunked Components of Library */}
+            { chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
+              return (
+                <ListItem key={componentChunk[0].svg_path} divider>
+                  { componentChunk.map((component) => {
+                    return (
+                      <ListItemIcon key={component.full_name}>
+                        <SideComp component={component} setFavourite={setFavourite} favourite={favourite}/>
+                      </ListItemIcon>
+                    )
+                  })}
+                </ListItem>
+              )
+            })}
+          </List>
+        </Collapse>
+      </div>
+    )
+  }
+
+  const handleFavOpen = () => {
+    setFavOpen(!favOpen)
   }
 
   return (
@@ -168,9 +242,7 @@ export default function ComponentSidebar ({ compRef }) {
                   <InputAdornment position="start">
                     <SearchIcon />
                   </InputAdornment>
-
                 )
-
               }}
             />
 
@@ -231,46 +303,98 @@ export default function ComponentSidebar ({ compRef }) {
             }
 
             {/* Collapsing List Mapped by Libraries fetched by the API */}
-            {searchText.length === 0 &&
-              libraries.sort(function (a, b) {
-                var textA = a.library_name.toUpperCase()
-                var textB = b.library_name.toUpperCase()
-                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-              }).map(
-                (library) => {
-                  return (
-                    <div key={library.id}>
-                      <ListItem onClick={(e, id = library.id) => handleCollapse(id)} button divider>
-                        <span className={classes.head}>{library.library_name.slice(0, -4)}</span>
-                        {collapse[library.id] ? <ExpandLess /> : <ExpandMore />}
-                      </ListItem>
-                      <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
-                        <List component="div" disablePadding dense >
-
-                          {/* Chunked Components of Library */}
-                          {
-                            chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
-                              return (
-                                <ListItem key={componentChunk[0].svg_path} divider>
-                                  {
-                                    componentChunk.map((component) => {
-                                      return (<ListItemIcon key={component.full_name}>
-                                        <SideComp component={component} />
-                                      </ListItemIcon>)
-                                    }
+            {favourite && favourite.length > 0 &&
+              <>
+                <ListItem button onClick={handleFavOpen} divider>
+                  <span className={classes.head}>Favourite Components</span>
+                  <div>
+                    {favOpen ? <ExpandLess /> : <ExpandMore />}
+                  </div>
+                </ListItem>
+                <Collapse in={favOpen} timeout="auto" unmountOnExit>
+                  <List component="div" disablePadding>
+                    <ListItem>
+                      <div style={{ marginLeft: '-30px' }}>
+                        {chunk(favourite, 3).map((componentChunk) => {
+                          return (
+                            <div key={componentChunk[0].svg_path}>
+                              <ListItem key={componentChunk[0].svg_path} divider>
+                                {
+                                  componentChunk.map((component) => {
+                                    return (
+                                      <ListItemIcon key={component.full_name}>
+                                        <SideComp isFavourite={true} favourite={favourite} setFavourite={setFavourite} component={component} />
+                                      </ListItemIcon>
                                     )
                                   }
-                                </ListItem>
-                              )
-                            })
-                          }
-
-                        </List>
-                      </Collapse>
-                    </div>
-                  )
-                }
-              )
+                                  )
+                                }
+                              </ListItem>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </>
+            }
+            {searchText.length === 0 &&
+            <>
+              <div style={!def ? { display: 'none' } : {}}>
+                <Divider />
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
+                  <span>DEFAULT</span>
+                </ListItem>
+                <Divider />
+                { libraries.sort(function (a, b) {
+                  var textA = a.library_name.toUpperCase()
+                  var textB = b.library_name.toUpperCase()
+                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+                }).filter((library) => {
+                  if (library.default) { return 1 }
+                  return 0
+                }).map(
+                  (library) => {
+                    return (libraryDropDown(library))
+                  }
+                )}
+              </div>
+              <div style={!additional ? { display: 'none' } : {}}>
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
+                  <span className={classes.head}>ADDITIONAL</span>
+                </ListItem>
+                { libraries.sort(function (a, b) {
+                  var textA = a.library_name.toUpperCase()
+                  var textB = b.library_name.toUpperCase()
+                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+                }).filter((library) => {
+                  if (library.additional) { return 1 }
+                  return 0
+                }).map(
+                  (library) => {
+                    return (libraryDropDown(library))
+                  }
+                )}
+              </div>
+              <div style={!uploaded ? { display: 'none' } : {}}>
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
+                  <span className={classes.head}>UPLOADED</span>
+                </ListItem>
+                { libraries.sort(function (a, b) {
+                  var textA = a.library_name.toUpperCase()
+                  var textB = b.library_name.toUpperCase()
+                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+                }).filter((library) => {
+                  if (!library.default && !library.additional) { return 1 }
+                  return 0
+                }).map(
+                  (library) => {
+                    return (libraryDropDown(library))
+                  }
+                )}
+              </div>
+            </>
             }
           </div>
         </List>

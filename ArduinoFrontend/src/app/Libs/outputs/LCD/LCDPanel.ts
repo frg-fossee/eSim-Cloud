@@ -1,6 +1,7 @@
 import { LCDUtils } from './LCDUtils';
 import chroma from 'chroma-js';
 import LRU from 'lru-cache';
+import { BoundingBox } from '../../Geometry';
 
 const COLOR_SCALING_MAP = new LRU({
   max: 5000,
@@ -433,6 +434,12 @@ export class LCDCharacterPanel {
   shift(distance: number) {
       this.posX += distance;
       this.shiftPixels(distance);
+  }
+
+  getBoundingBox(): BoundingBox {
+    const width = (this.pixelWidth + this.intraSpacing) * this.N_ROW - this.intraSpacing;
+    const height = (this.pixelHeight + this.intraSpacing) * this.N_COLUMN - this.intraSpacing;
+    return new BoundingBox(this.posX, this.posY, width, height);
   }
 
   /**
