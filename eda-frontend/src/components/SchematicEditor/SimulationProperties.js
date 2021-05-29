@@ -93,29 +93,6 @@ export default function SimulationProperties () {
     setControlBlockParam(evt.target.value)
   }
   var analysisNodeArray = [], analysisCompArray = [], nodeArray=[]
-//   const populateNodeArray = (nodeArray) =>{
-//     nodeList.forEach((value) => {
-//         if(value !== null && value !== "") {
-//             nodeArray.push({key:value})
-//         }
-//     })
-//   }
-//   const populateCompArray = (compArray) =>{
-//     componentsList.forEach((value) => {
-//         if(value !== null && value !== "") {
-//             var val
-//             if(value.charAt(0) === 'V' || value.charAt(0) === 'v'){
-//                 val = "I(" + String(value)+")"
-//                 analysisCompArray.push({key:val})
-//             }                
-//             if(value.charAt(0) === 'I' || value.charAt(0) === 'i'){
-//                 val = "V(" + String(value)+")"
-//                 analysisCompArray.push({key:val})
-//             }
-                
-//         }
-//     })
-//   }
   const pushZero = (nodeArray) => {
     nodeArray.push({key:0})
   }
@@ -228,29 +205,7 @@ export default function SimulationProperties () {
   let [selectedValueComp, setSelectedValueComp] = React.useState([])
   let [selectedValueDCSweepComp, setSelectedValueDCSweepComp] = React.useState([])
   let [selectedValueTransientAnalComp, setSelectedValueTransientAnalComp] = React.useState([])
-  const handleAddSelectedValue = (data) => {
-    var f = 0
-    selectedValue.forEach((value, i) =>{
-        if(value[i] !== undefined){
-            if(value[i].key === data) f = 1
-        }        
-    })    
-    if(f === 0){
-        let tmp = [...selectedValue, data]    
-        setSelectedValue(tmp)
-    }   
-    // console.log(selectedValue) 
-  }
-  const handleRemSelectedValue = (data) => {
-    const tmp = []
-    selectedValue.forEach((value,i) =>{
-        if(value[i] !== undefined){
-            if( value[i].key !== data) tmp.push(data)
-        }
-    })
-    selectedValue = tmp
-    // console.log(selectedValue)
-  }
+
   const handleAddSelectedValueDCSweep = (data) => {
     var f = 0
     selectedValueDCSweep.forEach((value, i) =>{
@@ -547,15 +502,12 @@ export default function SimulationProperties () {
     let cblockline =""
     // if either the extra expression field or the nodes multi select
     // drop down list in enabled then atleast one value is made non zero
-    // to add add all instead to the print statement. The key is checked 
-    // for not equal to zero because the plot isn't well defined corresponding to 0
+    // to add add all instead to the print statement.
     if(selectedValue.length > 0 && selectedValue !== null && skipMultiNodeChk === 0){
         selectedValue.forEach((value, i) => {
             if(value[i] !== undefined && value[i].key !== 0){   
                 atleastOne = 1
-                // console.log("value")
                 cblockline = cblockline + " " + String(value[i].key)
-                // console.log(cblockline)
             }                
         })
     }
@@ -563,12 +515,9 @@ export default function SimulationProperties () {
         selectedValueComp.forEach((value, i) => {
             if(value[i] !== undefined && value[i].key !== 0){   
                 atleastOne = 1
-                // console.log("value")
                 if(value[i].key.charAt(0) === 'V' || value[i].key.charAt(0) === 'v'){
                     cblockline = cblockline + " I(" + String(value[i].key)+") "
                 }   
-                
-                // console.log(cblockline)
             }                
         })
     }
