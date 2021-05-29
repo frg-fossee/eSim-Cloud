@@ -35,11 +35,8 @@ def oauth_consumer_key(request):
 
 
 def get_reverse(objs):
-    try:
-        return reverse(objs)
-    except:
-        pass
-    raise Exception('We got a URL reverse issue: %s.' % str(objs))
+    return reverse(objs)
+
 
 
 # def generate_request_xml(message_identifier_id, operation,

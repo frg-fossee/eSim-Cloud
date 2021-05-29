@@ -1,7 +1,8 @@
 from django.conf.urls import url
 from django.urls import path
 
-from .views import LTIConfigView, LTIAuthView, denied, LTIBuildApp, LTIExist, LTIDeleteApp
+from .views import LTIConfigView, LTIAuthView, denied, \
+    LTIBuildApp, LTIExist, LTIDeleteApp
 
 app_name = 'ltiAPI'
 
