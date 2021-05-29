@@ -16,7 +16,7 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useSelector, useDispatch } from 'react-redux'
-import { resetPasswordConfirm, authDefault } from '../../redux/actions/index'
+import { resetPasswordConfirm, authDefault, resetPasswordConfirmError } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -51,6 +51,7 @@ export default function ResetPasswordConfirm ({ match }) {
   useEffect(() => {
     dispatch(authDefault())
     document.title = 'Reset password - eSim '
+    dispatch(resetPasswordConfirmError(''))
   }, [dispatch])
 
   const [newPassword, setNewPassword] = useState('')

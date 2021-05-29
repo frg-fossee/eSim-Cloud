@@ -217,7 +217,7 @@ const resetPasswordError = (message) => (dispatch) => {
 }
 
 // Redux action for display reset password confirmation error
-const resetPasswordConfirmError = (message) => (dispatch) => {
+export const resetPasswordConfirmError = (message) => (dispatch) => {
   dispatch({
     type: actions.RESET_PASSWORD_CONFIRM_FAILED,
     payload: {
