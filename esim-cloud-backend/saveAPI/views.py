@@ -151,24 +151,20 @@ class StateFetchUpdateView(APIView):
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def delete(self, request, save_id):
         if isinstance(save_id, uuid.UUID):
-            # Check for permissions and sharing settings here
             try:
                 saved_state = StateSave.objects.get(save_id=save_id)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
-
             # Verifies owner
-            if self.request.user != saved_state.owner and not saved_state.shared:  # noqa
-                return Response({'error': 'not the owner and not shared'},
-                                status=status.HTTP_401_UNAUTHORIZED)
-            try:
-                if saved_state.publication is not None:
-                    saved_state.publication.delete()
-                saved_state.delete()
-                return Response({'done': True})
-            except Exception:
-                return Response({'done': False})
+            if saved_state.author == self.request.user and Permission.objects.filter(role__in=self.request.user.group.all(), del_own_states=saved_state.publication.state).exists():
+                pass
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            if saved_state.publication is not None:
+                saved_state.publication.delete()
+            saved_state.delete()
+            return Response({'done': True})
         else:
             return Response({'error': 'Invalid sharing state'},
                             status=status.HTTP_400_BAD_REQUEST)

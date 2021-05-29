@@ -28,9 +28,7 @@ class Permission(models.Model):
     view_own_states = models.ManyToManyField(State,related_name="view_own_states",verbose_name='Can View own Project',blank=True)
     view_other_states = models.ManyToManyField(State,related_name="view_other_states",verbose_name='Can View other Project',blank=True)
     edit_own_states = models.ManyToManyField(State,related_name="edit_own_states",verbose_name='Can Edit Details and Status own Project',blank=True)
-    edit_other_states = models.ManyToManyField(State,related_name="edit_other_states",verbose_name='Can Edit Status other Project',blank=True)
     del_own_states = models.ManyToManyField(State,related_name="del_own_states",verbose_name='Can Delete own Project',blank=True)
-    del_other_states = models.ManyToManyField(State,related_name="del_other_states",verbose_name='Can Delete other Project',blank=True)
     def __str__(self):
         return self.role.name + " Permissions"
 

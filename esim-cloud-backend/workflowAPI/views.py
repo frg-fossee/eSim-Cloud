@@ -106,19 +106,19 @@ class PublicationStateView(APIView):
     def get(self, request, publication_id):
         if isinstance(publication_id, uuid.UUID):
             try:
-                saved_state = Publication.objects.get(
+                publication = Publication.objects.get(
                     publication_id=publication_id)
             except Publication.DoesNotExist:
                 return Response({'error': 'Publication does not Exist'}, status=http_status.HTTP_404_NOT_FOUND)
             circuit_transition = Transition.objects.filter(
-                from_state=saved_state.state, role__in=self.request.user.groups.all())
+                from_state=publication.state, role__in=self.request.user.groups.all())
             states = []
             for transition in circuit_transition:
                 if transition.from_state.public is False or transition.from_state.report is True:
-                    if transition.only_for_creator is True and self.request.user is saved_state.author:
+                    if transition.only_for_creator is True and self.request.user is publication.author:
                         states.append(transition.to_state.name)
                     else:
-                        if transition.restricted_for_creator is True and saved_state.author == request.user:
+                        if transition.restricted_for_creator is True and publication.author == request.user:
                             pass
                         else:
                             states.append(transition.to_state.name)
@@ -132,7 +132,7 @@ class PublicationStateView(APIView):
     def post(self, request, publication_id):
         if isinstance(publication_id, uuid.UUID):
             try:
-                saved_state = Publication.objects.get(
+                publication = Publication.objects.get(
                     publication_id=publication_id)
             except Publication.DoesNotExist:
                 return Response({'error': 'Does not Exist'}, status=http_status.HTTP_404_NOT_FOUND)
@@ -140,29 +140,29 @@ class PublicationStateView(APIView):
                 user_roles = self.request.user.groups.all()
             except:
                 return Response(data={'message': 'No User Role'}, status=http_status.HTTP_404_NOT_FOUND)
-            if saved_state.author == self.request.user and Permission.objects.filter(role__in=user_roles, view_own_states=saved_state.state).exists():
+            if publication.author == self.request.user and Permission.objects.filter(role__in=user_roles, view_own_states=publication.state).exists():
                 pass
-            elif saved_state.author != self.request.user and Permission.objects.filter(role__in=user_roles, view_other_states=saved_state.state).exists():
+            elif publication.author != self.request.user and Permission.objects.filter(role__in=user_roles, view_other_states=publication.state).exists():
                 pass
             else:
                 return Response(status=http_status.HTTP_401_UNAUTHORIZED)
-            circuit_transition = Transition.objects.get(from_state=saved_state.state,
+            circuit_transition = Transition.objects.get(from_state=publication.state,
                                                         to_state=State.objects.get(name=request.data['name']))
             roles = circuit_transition.role.all()
-            if circuit_transition.from_state != saved_state.state:
+            if circuit_transition.from_state != publication.state:
                 return Response({'error': 'You are not authorized to edit the status.'},
                                 status=http_status.HTTP_401_UNAUTHORIZED)
             else:
-                if circuit_transition.only_for_creator is True and self.request.user == saved_state.author:
+                if circuit_transition.only_for_creator is True and self.request.user == publication.author:
                     transition_history = TransitionHistory(publication_id=publication_id,
                                                            transition_author=request.user,
-                                                           from_state=saved_state.state,
+                                                           from_state=publication.state,
                                                            reviewer_notes = request.data['note'],
                                                            to_state=circuit_transition.to_state)
                     transition_history.save()
-                    saved_state.state = circuit_transition.to_state
-                    saved_state.save()
-                    state = saved_state.state
+                    publication.state = circuit_transition.to_state
+                    publication.save()
+                    state = publication.state
                     serialized = StatusSerializer(state)
                     return Response(serialized.data)
                 elif circuit_transition.only_for_creator is False:
@@ -171,27 +171,27 @@ class PublicationStateView(APIView):
                     if user_roles_set.intersection(roles_set):
                         intersection = user_roles_set.intersection(roles_set)
                         for user_role in intersection:
-                            if user_role.customgroup.is_arduino is saved_state.is_arduino:
-                                if circuit_transition.restricted_for_creator is True and saved_state.author == request.user:
+                            if user_role.customgroup.is_arduino is publication.is_arduino:
+                                if circuit_transition.restricted_for_creator is True and publication.author == request.user:
                                     return Response({'error': 'You are not authorized to edit the status as it is not allowed for creator.'},
                                                     status=http_status.HTTP_401_UNAUTHORIZED)
                                 else:
                                     transition_history = TransitionHistory(publication_id=publication_id,
                                                                            transition_author=request.user,
-                                                                           from_state=saved_state.state,
+                                                                           from_state=publication.state,
                                                                            reviewer_notes = request.data['note'],
                                                                            to_state=circuit_transition.to_state)
                                     transition_history.save()
-                                    saved_state.state = circuit_transition.to_state
-                                    saved_state.save()
-                                    state = saved_state.state
-                                    if saved_state.author != request.user:
+                                    publication.state = circuit_transition.to_state
+                                    publication.save()
+                                    state = publication.state
+                                    if publication.author != request.user:
                                         notiftext = "Your circuit status have been changed from " + \
                                             str(circuit_transition.from_state) + \
                                             " to " + \
                                             str(circuit_transition.to_state)
                                         notification = Notification(
-                                            text=notiftext, user=saved_state.author)
+                                            text=notiftext, user=publication.author)
                                         notification.save()
                                     serialized = StatusSerializer(state)
                                     return Response(serialized.data)
