@@ -38,7 +38,6 @@ def get_reverse(objs):
     return reverse(objs)
 
 
-
 # def generate_request_xml(message_identifier_id, operation,
 #                          lis_result_sourcedid, score, launch_url):
 #     # pylint: disable=too-many-locals

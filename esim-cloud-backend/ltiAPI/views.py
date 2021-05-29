@@ -29,7 +29,8 @@ class LTIExist(APIView):
             return Response(data={"error": "LTIConsumer Not found"},
                             status=status.HTTP_404_NOT_FOUND)
         host = request.get_host()
-        config_url = "http://" + host + "/api/lti/" + str(save_id) + '/config.xml/'
+        save_id = str(save_id)
+        config_url = "http://" + host + "/api/lti/" + save_id + '/config.xml/'
         response_data = {
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
@@ -47,7 +48,7 @@ class LTIExist(APIView):
 
 class LTIBuildApp(APIView):
 
-    @swagger_auto_schema(request_body=consumerSerializer, 
+    @swagger_auto_schema(request_body=consumerSerializer,
                          responses={201: consumerResponseSerializer})
     def post(self, request):
         serialized = consumerSerializer(data=request.data)
@@ -55,15 +56,17 @@ class LTIBuildApp(APIView):
             serialized.save()
             save_id = str(serialized.data["save_id"])
             host = request.get_host()
-            config_url = "http://" + host + "/api/lti/" + save_id + '/config.xml/'
+            url = "http://" + host + "/api/lti/" + save_id + '/config.xml/'
             response_data = {
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
-                "config_url": config_url,
+                "config_url": url,
                 "score": serialized.data.get('score')
             }
             print("Recieved POST for LTI APP:", response_data)
-            response_serializer = consumerResponseSerializer(data=response_data)
+            response_serializer = consumerResponseSerializer(
+                data=response_data
+            )
             if response_serializer.is_valid():
                 return Response(response_serializer.data,
                                 status=status.HTTP_201_CREATED)
@@ -109,7 +112,9 @@ class LTIConfigView(View):
             'launch_url': launch_url,
             'title': saved_state.name + ' and ' + str(saved_state.save_id),
             'description': str(saved_state.description),
-            'course_navigation': settings.LTI_TOOL_CONFIGURATION.get('course_navigation'),
+            'course_navigation': settings.LTI_TOOL_CONFIGURATION.get(
+                'course_navigation'
+            ),
         }
         return render(request, 'ltiAPI/config.xml', context=ctx,
                       content_type='text/xml; charset=utf-8')
@@ -130,22 +135,20 @@ class LTIAuthView(APIView):
         host = request.get_host()
         print("Got POST for validating LTI consumer")
         try:
-            i = lticonsumer.objects.get(consumer_key=request.data.get('oauth_consumer_key'))
+            i = lticonsumer.objects.get(consumer_key=request.data.get(
+                'oauth_consumer_key')
+            )
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-        next_url = "http://" + host + "/eda/#editor?id=" + str(i.save_id.save_id)
+        url = "http://" + host + "/eda/#editor?id=" + str(i.save_id.save_id)
         try:
             # Validate the incoming LTI
-            verify_request_common(consumers_dict, url, request.method, headers, params)
+            verify_request_common(consumers_dict, url,
+                                  request.method, headers, params)
             print("Verified consumer")
-            grade = LTIPostGrade(params, request)
-            # if grade:
-            #     # If there is a return URL from the configured call the redirect URL
-            #     # is updated with the one that is returned. This is to enable redirecting to
-            #     # constructed URLs
-            #     return HttpResponseRedirect(next_url)
-            return HttpResponseRedirect(next_url)
+            # grade = LTIPostGrade(params, request)
+            return HttpResponseRedirect(url)
         except LTIException:
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
@@ -158,7 +161,9 @@ def LTIPostGrade(params, request):
     :exception: LTIPostMessageException if call failed
     """
     try:
-        consumer = lticonsumer.objects.get(consumer_key=oauth_consumer_key(request))
+        consumer = lticonsumer.objects.get(consumer_key=oauth_consumer_key(
+            request)
+        )
         score = consumer.score
         print("Set score for grading")
     except ValueError:
