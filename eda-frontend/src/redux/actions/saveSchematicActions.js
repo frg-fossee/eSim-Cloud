@@ -33,7 +33,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 }
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64, ltiExists=false) => (dispatch, getState) => {
+export const saveSchematic = (title, description, xml, base64, ltiExists=false, setSaveId=null) => (dispatch, getState) => {
   const body = {
     data_dump: xml,
     base64_image: base64,
@@ -74,6 +74,8 @@ export const saveSchematic = (title, description, xml, base64, ltiExists=false) 
     api.post('save', queryString.stringify(body), config)
       .then(
         (res) => {
+          console.log(res.data)
+          setSaveId(res.data.save_id)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data

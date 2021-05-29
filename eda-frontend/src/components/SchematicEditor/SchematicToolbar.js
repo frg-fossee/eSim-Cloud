@@ -102,15 +102,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const [ltiNonce, setLtiNonce] = React.useState('')
   const [submit, setSubmit] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
-
-
-  // useEffect(() => {
-  //   if (submitMessage !== null) { setSubmit(true) }
-  // }, [submitMessage])
-
-  // useEffect(() => {
-  //   if (submit === false) { setSubmitMessage('') }
-  // }, [submit])
+  const [saveId, setSaveId] = React.useState(null)
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
@@ -130,30 +122,35 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setLtiUserId(url.lti_user_id)
   }, [])
 
+  useEffect(() => {
+    if(saveId !== null){
+      const body = {
+        "schematic": saveId,
+        "ltisession": {
+          "id": ltiId,
+          "user_id": ltiUserId,
+          "oauth_nonce": ltiNonce
+        }
+      }
+      console.log(body)
+      api.post(`lti/submit/`, body)
+        .then(res => {
+          console.log(res.data)
+          setSubmit(true)
+          setSubmitMessage(res.data.message)
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+  }, [saveId])
+
   const onSubmission = () => {
     var xml = Save()
     dispatch(setSchXmlData(xml))
     var title = schSave.title
     var description = schSave.description
     exportImage('PNG').then(res => {
-      dispatch(saveSchematic(title, description, xml, res, true))
-    })
-    const body = {
-      "schematic": schSave.details.save_id,
-      "ltisession": {
-        "id": ltiId,
-        "user_id": ltiUserId,
-        "oauth_nonce": ltiNonce
-      }
-    }
-    console.log(body)
-    api.post(`lti/submit/`, body)
-      .then(res => {
-        console.log(res.data)
-        setSubmit(true)
-        setSubmitMessage(res.data.message)
-    }).catch((err) => {
-      console.log(err)
+      dispatch(saveSchematic(title, description, xml, res, true, setSaveId))
     })
   }
   

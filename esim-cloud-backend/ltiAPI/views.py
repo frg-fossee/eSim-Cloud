@@ -156,12 +156,15 @@ class LTIPostGrade(APIView):
                 "error": "No LTI session exists for this ID"
             }, status=status.HTTP_400_BAD_REQUEST)
         consumer = lticonsumer.objects.get(consumer_key=lti_session.oauth_consumer_key)
+        schematic = StateSave.objects.get(save_id=request.data["schematic"])
+        schematic.shared = True
+        schematic.save()
         submission_data = {
             "project": consumer,
             "student": self.request.user if self.request.user.is_authenticated else None,
             "score": consumer.score,
             "ltisession": lti_session,
-            "schematic": StateSave.objects.get(save_id=request.data["schematic"])
+            "schematic": schematic
         }
         submission = Submission.objects.create(**submission_data)
         xml = generate_request_xml(
