@@ -1,0 +1,111 @@
+{
+  "name": "Motor Driver L293D",
+  "className": "L293D",
+  "pins": [
+    {
+      "x": 11,
+      "y": 3,
+      "name": "EN1"
+    },
+    {
+      "x": 33,
+      "y": 3,
+      "name": "IN1"
+    },
+    {
+      "x": 55,
+      "y": 3,
+      "name": "OUT1"
+    },
+    {
+      "x": 77,
+      "y": 3,
+      "name": "GND"
+    },
+    {
+      "x": 99,
+      "y": 3,
+      "name": "GND"
+    },
+    {
+      "x": 121,
+      "y": 3,
+      "name": "OUT2"
+    },
+    {
+      "x": 143,
+      "y": 3,
+      "name": "IN2"
+    },
+    {
+      "x": 165,
+      "y": 3,
+      "name": "VS"
+    },
+    {
+      "x": 11,
+      "y": 90,
+      "name": "NSS"
+    },
+    {
+      "x": 33,
+      "y": 90,
+      "name": "IN4"
+    },
+    {
+      "x": 55,
+      "y": 90,
+      "name": "OUT4"
+    },
+    {
+      "x": 77,
+      "y": 90,
+      "name": "GND"
+    },
+    {
+      "x": 99,
+      "y": 90,
+      "name": "GND"
+    },
+    {
+      "x": 121,
+      "y": 90,
+      "name": "OUT3"
+    },
+    {
+      "x": 143,
+      "y": 90,
+      "name": "IN3"
+    },
+    {
+      "x": 165,
+      "y": 90,
+      "name": "EN2"
+    }
+  ],
+  "pointHalf": 4,
+  "draw": [
+    {
+      "type": "image",
+      "url": "assets/images/components/L293D.svg",
+      "width": 187,
+      "height": 100, 
+      "x": 0,
+      "y": 0
+    }
+  ],
+  "simulation": {},
+  "info": {
+    "name": "L293D Motor Driver",
+    "image": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.techtonics.in%2Fl293d-motor-driver-ic&psig=AOvVaw3uw5I1QPX6PjteBDKVUuQJ&ust=1621187299841000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCKiq8bqfzPACFQAAAAAdAAAAABAD",
+    "Datasheet": "https://www.arduino.cc/documents/datasheets/H-bridge_motor_driver.PDF",
+    "description": "The L293D is a popular 16-Pin Motor Driver IC. As the name suggests it is mainly used to drive motors. A single L293D IC is capable of running two DC motors at the same time; also the direction of these two motors can be controlled independently.",
+    "properties": {     
+      "Motor voltage Vcc2 (Vs)" : "4.5V to 36V",
+      "Maximum Peak motor current": "1.2A",
+      "Maximum Continuous Motor Current": "600mA",
+      "Supply Voltage to Vcc1(vss)": "4.5V to 7V",
+      "Transition time": "300ns (at 5Vand 24V)"
+    }
+  }
+}
