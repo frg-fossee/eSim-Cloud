@@ -370,7 +370,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (el.value === '') {
       el.value = 'Untitled';
     }
-    console.log("saving project title: ", this.projectTitle)
     this.projectTitle = el.value;
     return this.projectTitle;
   }
@@ -585,18 +584,17 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             projectTitle: this.projectTitle,
           },
           (value) => {
-            console.log("sub value: ", value);
             if (value) {
               this.SaveProjectOff();
             }
           }
-        )
+        );
       },
-      () => {this.router.navigateByUrl(routeLink);},
+      () => { this.router.navigateByUrl(routeLink); },
       () => {},
-      "Save",
-      "Don't save",
-      "Cancel"
+      'Save',
+      'Don\'t save',
+      'Cancel'
     );
   }
   /**

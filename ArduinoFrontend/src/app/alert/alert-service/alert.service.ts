@@ -41,7 +41,7 @@ export class AlertService {
   }
 
   static showThreeWayConfirm(message, yesFunction: () => any, noFunction?: () => any, cancelFunction?: () => any,
-      yesButtonText: string = 'Yes', noButtonText: string = 'No', cancelButtonText: string = 'Cancel') {
+                             yesButtonText: string = 'Yes', noButtonText: string = 'No', cancelButtonText: string = 'Cancel') {
     const dialogRef = AlertService.dialog.open(ConfirmModalComponent, {
       data: {
         message,

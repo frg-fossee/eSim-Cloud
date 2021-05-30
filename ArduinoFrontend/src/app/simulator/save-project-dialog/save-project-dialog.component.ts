@@ -15,7 +15,7 @@ interface DialogData {
   templateUrl: './save-project-dialog.component.html',
   styleUrls: ['./save-project-dialog.component.css']
 })
-export class SaveProjectDialogComponent{
+export class SaveProjectDialogComponent {
   projectTitle: string;
   onChangeProjectTitle: any;
 
