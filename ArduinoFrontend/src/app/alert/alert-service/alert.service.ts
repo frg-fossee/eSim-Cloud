@@ -58,7 +58,7 @@ export class AlertService {
         yesFunction();
       } else if (value === false) {
         noFunction();
-      } else if (value == null) {
+      } else if (value === null) {
         cancelFunction();
       }
     });
