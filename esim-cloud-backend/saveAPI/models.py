@@ -4,7 +4,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import uuid
 from libAPI.models import Library
-
+from publishAPI.models import Publication
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
     location=settings.FILE_STORAGE_ROOT, base_url=settings.FILE_STORAGE_URL)
@@ -26,5 +26,8 @@ class StateSave(models.Model):
     is_arduino = models.BooleanField(default=False, null=False)
     esim_libraries = models.ManyToManyField(Library)
 
+    publication = models.OneToOneField(to=Publication,on_delete=models.CASCADE,null=True)
     def save(self, *args, **kwargs):
         super(StateSave, self).save(*args, **kwargs)
+    def __str__(self):
+        return self.name

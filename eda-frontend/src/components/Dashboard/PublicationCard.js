@@ -1,0 +1,110 @@
+import {
+  Button,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Typography,
+} from '@material-ui/core'
+import React from 'react'
+import PropTypes from 'prop-types'
+import { makeStyles } from '@material-ui/core/styles'
+import { Link as RouterLink } from 'react-router-dom'
+const useStyles = makeStyles((theme) => ({
+  media: {
+    height: 0,
+    paddingTop: '56.25%' // 16:9
+  },
+  rating: {
+    marginTop: theme.spacing(1),
+    marginLeft: 'auto'
+  },
+  no: {
+    color: 'red',
+    marginLeft: '10px'
+  }
+}))
+
+function timeSince(jsonDate) {
+  var json = jsonDate
+
+  var date = new Date(json)
+
+  var seconds = Math.floor((new Date() - date) / 1000)
+
+  var interval = Math.floor(seconds / 31536000)
+
+  if (interval > 1) {
+    return interval + ' years'
+  }
+  interval = Math.floor(seconds / 2592000)
+  if (interval > 1) {
+    return interval + ' months'
+  }
+  interval = Math.floor(seconds / 86400)
+  if (interval > 1) {
+    return interval + ' days'
+  }
+  interval = Math.floor(seconds / 3600)
+  if (interval > 1) {
+    return interval + ' hours'
+  }
+  interval = Math.floor(seconds / 60)
+  if (interval > 1) {
+    return interval + ' minutes'
+  }
+  return Math.floor(seconds) + ' seconds'
+}
+export default function PublicationCard({ pub, is_review }) {
+
+  const classes = useStyles()
+  return (
+    <>
+      <Card>
+        <CardActionArea>
+          <CardHeader title={pub.title} />
+          <CardMedia
+            className={classes.media}
+            image={pub.base64_image} />
+          <CardContent>
+          <Typography variant="body2" component="p">
+              {pub.description}
+            </Typography>
+            <br/>
+            <Typography variant='body2' color='textSecondary' component='p'>
+              Status: {pub.status_name}
+            </Typography>
+            <Typography variant='body2' component='p' color='textSecondary' style={{ margin: '5px 0px 0px 0px' }}>
+              Updated at {timeSince(pub.save_time)} ago...
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+        <CardActions>
+          <Button
+            target="_blank"
+            component={RouterLink}
+            to={'/publication?save_id=' + pub.save_id + '&publication_id=' + pub.publication_id}
+            size="small"
+            color="primary">
+            View
+          </Button>
+          {!is_review &&
+            <Button
+              target="_blank"
+              component={RouterLink}
+              to={'/editor?id=' + pub.save_id}
+              size="small"
+              color="primary">
+              Edit
+        </Button>}
+
+        </CardActions>
+      </Card>
+    </>
+  )
+}
+PublicationCard.propTypes = {
+  sch: PropTypes.object
+}

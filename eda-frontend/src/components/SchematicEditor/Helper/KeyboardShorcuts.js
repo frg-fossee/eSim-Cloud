@@ -8,7 +8,7 @@ const {
   mxClient
 } = new MxGraphFactory()
 
-export default function KeyboardShortcuts (graph) {
+export default function KeyboardShortcuts(graph) {
   var keyHandler = new mxKeyHandler(graph)
 
   keyHandler.getFunction = function (evt) {
@@ -26,19 +26,21 @@ export default function KeyboardShortcuts (graph) {
   //   }
   // })
 
-  // Undo - Ctrl + Z
-  keyHandler.bindControlKey(90, function (evt) {
-    if (graph.isEnabled()) {
-      Undo()
-    }
-  })
+  if (window.location.href.split("/")[5].substring(0, 11) !== 'publication') {
+    // Undo - Ctrl + Z
+    keyHandler.bindControlKey(90, function (evt) {
+      if (graph.isEnabled()) {
+        Undo()
+      }
+    })
+    // Redo - Ctrl + A
+    keyHandler.bindControlKey(65, function (evt) {
+      if (graph.isEnabled()) {
+        Redo()
+      }
+    })
+  }
 
-  // Redo - Ctrl + A
-  keyHandler.bindControlKey(65, function (evt) {
-    if (graph.isEnabled()) {
-      Redo()
-    }
-  })
 
   // Zoom In - Ctrl + I
   keyHandler.bindControlKey(73, function (evt) {

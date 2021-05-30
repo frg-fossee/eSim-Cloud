@@ -11,14 +11,15 @@ import SchematicEditor from './pages/SchematiEditor'
 
 import Simulator from './pages/Simulator'
 import Gallery from './pages/Gallery'
+import Publications from './pages/Publications'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 import ResetPassword from './pages/ResetPassword/Initiation'
 import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
-
-import { useSelector, useDispatch } from 'react-redux'
-import { loadUser } from './redux/actions/index'
 import ChangePassword from './pages/Account/ChangePassword'
+import { useSelector, useDispatch } from 'react-redux'
+import { loadUser ,fetchNotifications} from './redux/actions/index'
+import PublicationPage from './pages/PublicationPage'
 
 // Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
 // and restricted routes disabled for authenticated users. [ e.g : login , signup ]
@@ -26,7 +27,11 @@ function PrivateRoute ({ component: Component, ...rest }) {
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
 
-  useEffect(() => dispatch(loadUser()), [dispatch])
+  useEffect(() => {
+    dispatch(loadUser())
+    dispatch(fetchNotifications())
+
+  }, [dispatch])
 
   return <Route {...rest} render={props => {
     if (auth.isLoading) {
@@ -73,8 +78,14 @@ function App () {
           ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
           : <Route path="/editor" component={SchematicEditor} />
         }
+        {localStorage.getItem('esim_token') !== null
+          ? <PublicRoute exact path="/publication" restricted={false} nav={true} component={PublicationPage} />
+          : <Route to="/" restricted={true} nav={false} component={Login} />
+        }
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
+        <PublicRoute exact path="/publications" restricted={false} nav={true} component={Publications} />
+        <PublicRoute exact path="/publications" restricted={false} nav={true} component={Publications} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/account/change_password" component={ChangePassword} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />

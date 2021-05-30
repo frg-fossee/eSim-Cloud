@@ -10,6 +10,8 @@ import LayoutMain from '../components/Shared/LayoutMain'
 import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
 import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
+import DashboardPublications from '../components/Dashboard/DashboardPublications'
+import DashboardOtherPublications from '../components/Dashboard/DashboardOtherPublications'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Dashboard () {
+export default function Dashboard() {
   const classes = useStyles()
 
   useEffect(() => {
@@ -46,6 +48,16 @@ export default function Dashboard () {
             exact
             path="/dashboard/schematics"
             component={SchematicsList}
+          />
+          <Route
+            exact
+            path="/dashboard/publications"
+            component={DashboardPublications}
+          />
+          <Route
+            exact
+            path="/dashboard/reviewpublications"
+            component={DashboardOtherPublications}
           />
         </Switch>
       </LayoutMain>

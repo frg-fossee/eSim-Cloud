@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
+from workflowAPI.models import Permission
 from rest_framework import viewsets
 import uuid
 from django.contrib.auth import get_user_model
@@ -51,6 +52,26 @@ class StateSaveView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+class CopyStateView(APIView):
+    permission_classes = (IsAuthenticated,)
+    parser_classes = (FormParser, JSONParser)
+
+    def post(self, request, save_id):
+        if isinstance(save_id, uuid.UUID):
+            # Check for permissions and sharing settings here
+            try:
+                saved_state = StateSave.objects.get(save_id=save_id)
+            except StateSave.DoesNotExist:
+                return Response({'error': 'Does not Exist'},
+                                status=status.HTTP_404_NOT_FOUND)
+            saved_state.save_id = None
+            saved_state.publication = None
+            saved_state.name = "Copy of " + saved_state.name
+            saved_state.owner = self.request.user
+            saved_state.save()
+            return Response({"save_id": saved_state.save_id})
+
+
 class StateFetchUpdateView(APIView):
     """
     Returns Saved data for given save id ,
@@ -72,7 +93,6 @@ class StateFetchUpdateView(APIView):
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
-
             # Verifies owner
             if self.request.user != saved_state.owner and not saved_state.shared:  # noqa
                 return Response({'error': 'not the owner and not shared'},
@@ -146,22 +166,20 @@ class StateFetchUpdateView(APIView):
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def delete(self, request, save_id):
         if isinstance(save_id, uuid.UUID):
-            # Check for permissions and sharing settings here
             try:
                 saved_state = StateSave.objects.get(save_id=save_id)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
-
             # Verifies owner
-            if self.request.user != saved_state.owner and not saved_state.shared:  # noqa
-                return Response({'error': 'not the owner and not shared'},
-                                status=status.HTTP_401_UNAUTHORIZED)
-            try:
-                saved_state.delete()
-                return Response({'done': True})
-            except Exception:
-                return Response({'done': False})
+            if saved_state.author == self.request.user and Permission.objects.filter(role__in=self.request.user.group.all(), del_own_states=saved_state.publication.state).exists():
+                pass
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            if saved_state.publication is not None:
+                saved_state.publication.delete()
+            saved_state.delete()
+            return Response({'done': True})
         else:
             return Response({'error': 'Invalid sharing state'},
                             status=status.HTTP_400_BAD_REQUEST)
@@ -267,6 +285,7 @@ class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Search Project
     """
+
     def get_queryset(self):
         queryset = StateSave.objects.filter(
             owner=self.request.user).order_by('-save_time')

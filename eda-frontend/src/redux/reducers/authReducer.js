@@ -6,6 +6,8 @@ const initialState = {
   isRegistered: null,
   isLoading: false,
   user: null,
+  roles:null,
+  notifications:null,
   errors: '',
   regErrors: '',
   resetPasswordSuccess: false,
@@ -21,7 +23,6 @@ export default function (state = initialState, action) {
         isLoading: true
       }
     }
-
     case actions.DEFAULT_STORE: {
       return {
         ...state,
@@ -29,7 +30,6 @@ export default function (state = initialState, action) {
         regErrors: ''
       }
     }
-
     case actions.SIGNUP_SUCCESSFUL: {
       return {
         ...state,
@@ -120,6 +120,19 @@ export default function (state = initialState, action) {
       }
     }
 
+    case actions.ROLE_LOADED: {
+      return{
+        ...state,
+        roles: action.payload.data
+      }
+    }
+    case actions.FETCH_NOTIFICATIONS: 
+    {
+      return{
+        ...state,
+        notifications:action.payload.data
+      }
+    }
     default:
       return state
   }

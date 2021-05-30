@@ -5,6 +5,7 @@ import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
 import { setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'
+import { fetchPublication } from './publicationActions'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -117,6 +118,10 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
         dispatch(setSchTitle(res.data.name))
         dispatch(setSchDescription(res.data.description))
         dispatch(setSchXmlData(res.data.data_dump))
+        if(res.data.publication_id !== undefined)
+        {
+          dispatch(fetchPublication())
+        }
         renderGalleryXML(res.data.data_dump)
         if (res.data.esim_libraries.length > 0) {
           getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
@@ -162,6 +167,8 @@ export const setSchShared = (share) => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
+//Action for Creating a circuit
+
 
 // Action for Loading Gallery schematics
 export const loadGallery = (Id) => (dispatch, getState) => {
@@ -188,4 +195,27 @@ export const openLocalSch = (obj) => (dispatch, getState) => {
   dispatch(setSchDescription(data.description))
   dispatch(setSchXmlData(data.data_dump))
   renderGalleryXML(data.data_dump)
+}
+
+//Action for making a copy of a schematic
+export const makeCopy = (saveID) => (dispatch, getState) => {
+  const token = getState().authReducer.token
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.post(`/save/copy/${saveID}`, {}, config)
+    .then(res => {
+      let win = window.open();
+      win.location.href = '/eda/#/editor?id=' + res.data.save_id
+      win.focus();
+    })
+    .catch(error => console.log(error))
 }

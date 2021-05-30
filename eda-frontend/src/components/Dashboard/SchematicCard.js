@@ -10,14 +10,14 @@ import {
   CardMedia,
   CardHeader,
   Tooltip,
-  Snackbar
+  Snackbar,
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
-import { deleteSchematic } from '../../redux/actions/index'
+import {  deleteSchematic} from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => ({
@@ -28,14 +28,18 @@ const useStyles = makeStyles((theme) => ({
   rating: {
     marginTop: theme.spacing(1),
     marginLeft: 'auto'
+  },
+  no: {
+    color: 'red',
+    marginLeft: '10px'
   }
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -72,7 +76,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -104,7 +108,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -113,7 +117,7 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
+export default function SchematicCard({ sch }) {
   const classes = useStyles()
 
   // To handel delete schematic snackbar
@@ -122,7 +126,6 @@ export default function SchematicCard ({ sch }) {
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
-
   const handleSnacClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
@@ -165,13 +168,12 @@ export default function SchematicCard ({ sch }) {
           >
             Launch in Editor
           </Button>
-
           {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon
               color='secondary'
               fontSize="small"
-              style={{ marginLeft: 'auto' }}
+              // style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
             />
           </Tooltip>
@@ -192,5 +194,6 @@ export default function SchematicCard ({ sch }) {
 }
 
 SchematicCard.propTypes = {
-  sch: PropTypes.object
+  sch: PropTypes.object,
+  createCircuit: PropTypes.func,
 }

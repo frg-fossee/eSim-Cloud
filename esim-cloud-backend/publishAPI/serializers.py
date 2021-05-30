@@ -1,5 +1,6 @@
+from django.db.models import fields
 from rest_framework import serializers
-from publishAPI.models import CircuitTag, Publish, Circuit
+from publishAPI.models import CircuitTag, Publication, Report, TransitionHistory,Field
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -31,31 +32,55 @@ class CircuitTagSerializer(serializers.ModelSerializer):
         fields = ('tag', 'description', 'id')
 
 
-class CircuitSerializer(serializers.ModelSerializer):
-    base64_image = Base64ImageField(max_length=None, use_url=True)
-
+class TransitionHistorySerializer(serializers.ModelSerializer):
+    transition_author_name = serializers.CharField(
+        read_only=True, source='transition_author.username')
+    from_state_name = serializers.CharField(read_only=True, source='from_state.name')
+    to_state_name = serializers.CharField(read_only=True, source='to_state.name')
     class Meta:
-        model = Circuit
-        fields = ('circuit_id',
+        model = TransitionHistory
+        fields = ('transition_author_name',
+                  'from_state_name',
+                  'to_state_name',
+                  'transition_time',
+                  'reviewer_notes')
+
+class FieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Field
+        fields=('name','text')
+
+class PublicationSerializer(serializers.ModelSerializer):
+    base64_image = Base64ImageField(
+        max_length=None, use_url=True, source='statesave.base64_image')
+    status_name = serializers.CharField(read_only=True, source='state.name')
+    save_id = serializers.CharField(read_only=True, source='statesave.save_id')
+    save_time = serializers.CharField(
+        read_only=True, source='statesave.save_time')
+    author_name = serializers.CharField(
+        read_only=True, source='author.username')
+    fields = FieldSerializer(many=True)
+    class Meta:
+        model = Publication
+        fields = ('publication_id',
                   'title',
-                  'sub_title',
-                  'data_dump',
-                  'author',
                   'description',
-                  'last_updated',
-                  'publish_request_time',
-                  'base64_image'
+                  'base64_image',
+                  'status_name',
+                  'save_id',
+                  'save_time',
+                  'author_name',
+                  'is_reported',
+                  'fields',
                   )
-
-
-class PublishSerializer(serializers.HyperlinkedModelSerializer):
-    tags = CircuitTagSerializer(many=True, read_only=True)
-    circuit = CircuitSerializer(many=False, read_only=True)
-
+class ReportSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Publish
-        fields = ('published',
-                  'reviewed_by',
-                  'circuit',
-                  'tags',
-                  )
+        model = Report
+        fields = ('id', 'report_open', 'report_time',
+                  'description', 'approved')
+
+
+class ReportDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ('description',)

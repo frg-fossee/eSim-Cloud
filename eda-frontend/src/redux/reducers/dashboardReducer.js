@@ -1,7 +1,10 @@
 import * as actions from '../actions/actions'
 
 const InitialState = {
-  schematics: []
+  schematics: [],
+  myPublications:[],
+  publicPublications:[],
+  otherPublications:[],
 }
 
 export default function (state = InitialState, action) {
@@ -10,6 +13,24 @@ export default function (state = InitialState, action) {
       return {
         ...state,
         schematics: action.payload
+      }
+    }
+    case actions.FETCH_MY_PUBLICATIONS:{
+      return{
+        ...state,
+        myPublications:action.payload
+      }
+    }
+    case actions.FETCH_PUBLIC_PUBLICATIONS:{
+      return{
+        ...state,
+        publicPublications:action.payload
+      }
+    }
+    case actions.FETCH_OTHER_PUBLICATIONS:{
+      return{
+        ...state,
+        otherPublications:action.payload
       }
     }
 
