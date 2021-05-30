@@ -588,7 +588,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           SaveProjectDialogComponent,
           {
             onChangeProjectTitle: (e) => {
-              this.projectTitle = e.target.value || "";
+              this.projectTitle = e.target.value || '';
               return this.projectTitle;
             },
             projectTitle: this.projectTitle,
