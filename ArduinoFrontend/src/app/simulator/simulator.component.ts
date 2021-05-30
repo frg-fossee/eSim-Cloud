@@ -587,7 +587,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         AlertService.showCustom(
           SaveProjectDialogComponent,
           {
-            onChangeProjectTitle: this.onFocusOut.bind(this),
+            onChangeProjectTitle: (e) => {
+              this.projectTitle = e.target.value || "";
+              return this.projectTitle;
+            },
             projectTitle: this.projectTitle,
           },
           (value) => {
