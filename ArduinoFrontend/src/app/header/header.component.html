@@ -14,6 +14,7 @@
   <div style="display: flex; padding: 10px;" *ngIf="!username">
     <a mat-stroked-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
     <a mat-stroked-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
+    <a mat-stroked-button [routerLink]="['/simulator']" style="margin-right: 10px">Editor</a>
     <a mat-stroked-button (click)="Login()">Login</a>
   </div>
   <div class="dropdown my-dropdown" *ngIf="username">
