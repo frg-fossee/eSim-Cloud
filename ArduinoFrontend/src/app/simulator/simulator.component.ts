@@ -94,6 +94,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   username: string;
   /**
+   * window
+   */
+  window: any;
+  /**
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
@@ -229,6 +233,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     Workspace.initProperty(v => {
       this.showProperty = v;
     });
+
+    // Initializing window
+    this.window = window;
   }
   /**
    * Enable Move on Property Box
