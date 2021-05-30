@@ -17,6 +17,7 @@ import { AlertService } from '../alert/alert-service/alert.service';
 import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
+import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -369,7 +370,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (el.value === '') {
       el.value = 'Untitled';
     }
+    console.log("saving project title: ", this.projectTitle)
     this.projectTitle = el.value;
+    return this.projectTitle;
   }
   /**
    * Function invoked when dbclick is performed on a component inside ComponentList
@@ -567,6 +570,34 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   Logout() {
     Login.logout();
+  }
+  /**
+   * Handles routeLinks
+   */
+  HandleRouter(routeLink) {
+    AlertService.showThreeWayConfirm(
+      'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
+      () => {
+        AlertService.showCustom(
+          SaveProjectDialogComponent,
+          {
+            onChangeProjectTitle: this.onFocusOut.bind(this),
+            projectTitle: this.projectTitle,
+          },
+          (value) => {
+            console.log("sub value: ", value);
+            if (value) {
+              this.SaveProjectOff();
+            }
+          }
+        )
+      },
+      () => {this.router.navigateByUrl(routeLink);},
+      () => {},
+      "Save",
+      "Don't save",
+      "Cancel"
+    );
   }
   /**
    * Open Gallery Project

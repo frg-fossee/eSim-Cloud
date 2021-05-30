@@ -40,4 +40,33 @@ export class AlertService {
     });
   }
 
+  static showThreeWayConfirm(message, yesFunction: () => any, noFunction?: () => any, cancelFunction?: () => any,
+      yesButtonText: string = 'Yes', noButtonText: string = 'No', cancelButtonText: string = 'Cancel') {
+    const dialogRef = AlertService.dialog.open(ConfirmModalComponent, {
+      data: {
+        message,
+        yesButtonText,
+        noButtonText,
+        cancelButtonText,
+        yesFunction,
+        noFunction,
+        cancelFunction,
+      },
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      if (value) {
+        yesFunction();
+      } else if (value === false) {
+        noFunction();
+      } else if (value == null) {
+        cancelFunction();
+      }
+    });
+  }
+
+  static showCustom(component, data, subscriber) {
+    const dialogRef = AlertService.dialog.open(component, { data });
+    dialogRef.afterClosed().subscribe(subscriber);
+  }
+
 }
