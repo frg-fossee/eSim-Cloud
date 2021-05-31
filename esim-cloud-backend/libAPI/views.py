@@ -1,3 +1,4 @@
+from libAPI.lib_utils import handle_uploaded_libs
 import django_filters
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -8,9 +9,7 @@ from libAPI.serializers import LibrarySerializer, \
 from libAPI.models import Library, \
     LibraryComponent, \
     LibrarySet, \
-    FavouriteComponent, \
-    save_libs, \
-    delete_uploaded_files
+    FavouriteComponent
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -91,11 +90,9 @@ class LibraryViewSet(viewsets.ModelViewSet):
     # Default Libraries
     @action(detail=False, methods=['GET'], name="All Default Libraries")
     def default(self, request):
-        User = get_user_model()
-        superusers = User.objects.filter(is_superuser=True)
         return Response(LibrarySerializer(
-            Library.objects.filter(Q(library_set__default=True)),
-            many=True).data
+            Library.objects.filter(
+                Q(library_set__default=True)), many=True).data
         )
 
 
@@ -189,15 +186,14 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
         files = request.FILES.getlist('files')
         if len(files) != 0:
             path = os.path.join(
-                settings.BASE_DIR,
+                settings.BASE_DIR[6:],
                 'kicad-symbols',
                 library_set.user.username + '-' + library_set.name)
             try:
-                save_libs(library_set, path, files)  # defined in ./models.py
-                delete_uploaded_files(files, path)
+                # defined in ./lib_utils.py
+                handle_uploaded_libs(library_set, path, files)
                 return Response(status=status.HTTP_201_CREATED)
             except Exception:
-                delete_uploaded_files(files, path)
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)
