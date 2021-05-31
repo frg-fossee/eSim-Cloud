@@ -30,7 +30,7 @@ class LTIExist(APIView):
                             status=status.HTTP_404_NOT_FOUND)
         host = request.get_host()
         save_id = str(save_id)
-        config_url = "http://" + host + "/api/lti/" + save_id + '/config.xml/'
+        config_url = "http://" + host + "/api/lti/auth/" + save_id + "/"
         response_data = {
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
@@ -56,7 +56,7 @@ class LTIBuildApp(APIView):
             serialized.save()
             save_id = str(serialized.data["save_id"])
             host = request.get_host()
-            url = "http://" + host + "/api/lti/" + save_id + '/config.xml/'
+            url = "http://" + host + "/api/lti/auth/" + save_id + "/"
             response_data = {
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
@@ -122,7 +122,7 @@ class LTIConfigView(View):
 
 class LTIAuthView(APIView):
     """POST handler for the LTI login POST back call"""
-    def post(self, request):
+    def post(self, request, save_id):
         # Extracts the LTI payload information
         params = {key: request.data[key] for key in request.data}
         # Maps the settings defined for the LTI consumer
@@ -141,14 +141,15 @@ class LTIAuthView(APIView):
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-        url = "http://" + host + "/eda/#editor?id=" + str(i.save_id.save_id)
+        re_url = "http://" + host + "/eda/#editor?id=" + str(i.save_id.save_id)
         try:
+            print("Before verifying")
             # Validate the incoming LTI
             verify_request_common(consumers_dict, url,
                                   request.method, headers, params)
             print("Verified consumer")
             # grade = LTIPostGrade(params, request)
-            return HttpResponseRedirect(url)
+            return HttpResponseRedirect(re_url)
         except LTIException:
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
