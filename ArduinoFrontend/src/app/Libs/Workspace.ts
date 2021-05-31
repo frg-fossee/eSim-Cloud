@@ -517,6 +517,10 @@ export class Workspace {
         window.Selected.togglePerpendicularLine(false);
       }
     }
+    if (event.ctrlKey && (event.key === 'z' || event.key === 'Z') && UndoUtils.enableButtonsBool) {
+      // CTRL + z
+      UndoUtils.workspaceUndo();
+    }
   }
   /**
    * Event Listener for zoom in/zoom out on workspace
