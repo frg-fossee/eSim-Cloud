@@ -124,25 +124,26 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }, [])
 
   useEffect(() => {
-    if(saveId !== null){
+    if (saveId !== null) {
       const body = {
-        "schematic": saveId,
-        "ltisession": {
-          "id": ltiId,
-          "user_id": ltiUserId,
-          "oauth_nonce": ltiNonce
+        schematic: saveId,
+        ltisession: {
+          id: ltiId,
+          user_id: ltiUserId,
+          oauth_nonce: ltiNonce
         }
       }
       console.log(body)
-      api.post(`lti/submit/`, body)
+      api.post('lti/submit/', body)
         .then(res => {
           console.log(res.data)
           setSubmit(true)
           setSubmitMessage(res.data.message)
-      }).catch((err) => {
-        console.log(err)
-      })
+        }).catch((err) => {
+          console.log(err)
+        })
     }
+  // eslint-disable-next-line
   }, [saveId])
 
   const onSubmission = () => {
@@ -154,7 +155,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       dispatch(saveSchematic(title, description, xml, res, true, setSaveId))
     })
   }
-  
+
   const handleSubmitClose = () => {
     setSubmit(false)
   }
@@ -464,7 +465,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <LibraryAddRoundedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SelectLibrariesModal open={libsOpen} close={handleLibClose} auth={auth.isAuthenticated}/>
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose} auth={auth.isAuthenticated} />
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">
@@ -519,8 +520,8 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <HelpScreen open={helpOpen} close={handleHelpClose} />
       {ltiId && ltiUserId && ltiNonce && <Tooltip title="Submit">
         <Button size="small" variant="outlined" color="primary" className={classes.button} endIcon={<Icon>send</Icon>}
-                onClick = {onSubmission} >
-            Submit
+          onClick={onSubmission} >
+          Submit
         </Button>
       </Tooltip>}
 
