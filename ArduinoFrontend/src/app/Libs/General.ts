@@ -3,6 +3,7 @@ import { Point } from './Point';
 import { areBoundingBoxesIntersecting } from './RaphaelUtils';
 import _ from 'lodash';
 import { Wire } from './Wire';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -487,6 +488,7 @@ export class BreadBoard extends CircuitElement {
       }
 
     }, () => {
+      UndoUtils.pushWorkSpaceChange();
       for (let i = 0; i < this.nodes.length; ++i) {
         this.nodes[i].move(tmpar2[i][0] + fdx, tmpar2[i][1] + fdy);
         this.nodes[i].remainShow();

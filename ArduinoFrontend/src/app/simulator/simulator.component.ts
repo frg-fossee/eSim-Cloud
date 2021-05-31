@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
+import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 /**
  * Declare Raphael so that build don't throws error
@@ -136,6 +137,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (environment.production) {
       window.removeEventListener('beforeunload', Workspace.BeforeUnload);
     }
+    // Make Redo & Undo Stack empty
+    UndoUtils.redoStack = []
+    UndoUtils.undoStack = []
   }
   /**
    * On Init Callback
@@ -391,6 +395,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param key string
    */
   dragStart(event: DragEvent, key: string) {
+    // Save Dump of current Workspace
+    UndoUtils.pushWorkSpaceChange();
     event.dataTransfer.dropEffect = 'copyMove';
     event.dataTransfer.setData('text', key);
   }
@@ -407,6 +413,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
 
   autoLayout() {
+    // Save Dump of current Workspace
+    UndoUtils.pushWorkSpaceChange();
     // this.isAutoLayoutInProgress = true;
     LayoutUtils.solveAutoLayout();
     // this.isAutoLayoutInProgress = false;
@@ -508,6 +516,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
   /** Function clear variables in the Workspace */
   ClearProject() {
+    UndoUtils.pushWorkSpaceChange();
     Workspace.ClearWorkspace();
     this.closeProject();
   }
@@ -651,4 +660,20 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
 
+  enableButton(type) {
+    if (!UndoUtils.enableButtonsBool)
+      return true;
+    if (type == 'undo')
+      return UndoUtils.undoStack.length <= 0
+    else if (type == 'redo')
+      return UndoUtils.redoStack.length <= 0
+  }
+
+  undoChange() {
+    UndoUtils.workspaceUndo();
+  }
+
+  redoChange() {
+    UndoUtils.workspaceRedo();
+  }
 }

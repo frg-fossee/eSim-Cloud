@@ -2,6 +2,7 @@ import { Point } from './Point';
 import { Wire } from './Wire';
 import { isNull } from 'util';
 import { BoundingBox } from './Geometry';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * Abstract Class Circuit Elements
@@ -309,6 +310,7 @@ export abstract class CircuitElement {
       //   node.relativeMove(fdx, fdy);
       //   node.remainShow();
       // }
+      UndoUtils.pushWorkSpaceChange()
       this.tx += fdx;
       this.ty += fdy;
       window['onDragStopEvent'](this);
