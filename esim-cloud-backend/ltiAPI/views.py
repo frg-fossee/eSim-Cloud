@@ -123,7 +123,7 @@ class LTIConfigView(View):
 
 class LTIAuthView(APIView):
     """POST handler for the LTI login POST back call"""
-    def post(self, request):
+    def post(self, request, save_id):
         params = {key: request.data[key] for key in request.data}
         consumers_dict = consumers()
         url = request.build_absolute_uri()

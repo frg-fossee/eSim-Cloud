@@ -16,15 +16,15 @@ class lticonsumer(models.Model):
 
 
 class ltiSession(models.Model):
-    user_id = models.CharField(max_length=100)
-    lis_result_sourcedid = models.CharField(max_length=100, null=True)
-    lis_outcome_service_url = models.CharField(max_length=100)
-    oauth_nonce = models.CharField(max_length=100)
-    oauth_timestamp = models.CharField(max_length=100)
-    oauth_consumer_key = models.CharField(max_length=100)
-    oauth_signature_method = models.CharField(max_length=100)
-    oauth_version = models.CharField(max_length=100)
-    oauth_signature = models.CharField(max_length=100)
+    user_id = models.CharField(max_length=150)
+    lis_result_sourcedid = models.CharField(max_length=150, null=True)
+    lis_outcome_service_url = models.CharField(max_length=150)
+    oauth_nonce = models.CharField(max_length=150)
+    oauth_timestamp = models.CharField(max_length=150)
+    oauth_consumer_key = models.CharField(max_length=150)
+    oauth_signature_method = models.CharField(max_length=150)
+    oauth_version = models.CharField(max_length=150)
+    oauth_signature = models.CharField(max_length=150)
 
 
 class Submission(models.Model):

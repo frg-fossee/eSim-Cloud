@@ -8,7 +8,7 @@ app_name = 'ltiAPI'
 urlpatterns = [
     url(r'^build/$', views.LTIBuildApp.as_view(), name="create-lti"),
     path('<uuid:save_id>/config.xml/', views.LTIConfigView.as_view(), name="config"),
-    url(r'^auth/$', views.LTIAuthView.as_view(), name="auth"),
+    path('auth/<uuid:save_id>/', views.LTIAuthView.as_view(), name="auth"),
     path('submit/', views.LTIPostGrade.as_view(), name="submit"),
     url(r'^denied/$', views.denied, name="denied"),
     path('exist/<uuid:save_id>/', views.LTIExist.as_view()),
