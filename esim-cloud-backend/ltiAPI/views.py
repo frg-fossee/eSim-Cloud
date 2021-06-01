@@ -55,6 +55,12 @@ class LTIBuildApp(APIView):
         if serialized.is_valid():
             serialized.save()
             save_id = str(serialized.data["save_id"])
+            saved_state = StateSave.objects.get(save_id=save_id)
+            if saved_state.shared:
+                pass
+            else:
+                saved_state.shared = True
+                saved_state.save()
             host = request.get_host()
             url = "http://" + host + "/api/lti/auth/" + save_id + "/"
             response_data = {
@@ -98,11 +104,6 @@ class LTIConfigView(View):
         except StateSave.DoesNotExist:
             return render(request, 'ltiAPI/denied.html')
 
-        if saved_state.shared:
-            pass
-        else:
-            saved_state.shared = True
-            saved_state.save()
         domain = self.request.get_host()
         launch_url = '%s://%s/%s' % (
             self.request.scheme, domain,
