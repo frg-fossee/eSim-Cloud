@@ -140,9 +140,9 @@ export default function Simulator () {
 
                 // labels
                 for (var x = 1; x < lab.length; x++) {
-                  if (lab[x].includes('#branch')) {
-                    lab[x] = `I (${lab[x].replace('#branch', '')})`
-                  }
+                //   if (lab[x].includes('#branch')) {
+                //     lab[x] = `I (${lab[x].replace('#branch', '')})`
+                //   }
                   //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
                   //  else {
                   // lab[x] = `V (${lab[x]})`
@@ -167,8 +167,13 @@ export default function Simulator () {
               for (let i = 0; i < temp.length; i++) {
                 let postfixUnit = ''
                 if (temp[i][0].includes('#branch')) {
-                  temp[i][0] = `I(${temp[i][0].replace('#branch', '')})`
                   postfixUnit = 'A'
+                }
+                else if(temp[i][0].includes('transfer_function')){            
+                    postfixUnit = ''     
+                } 
+                else if(temp[i][0].includes('impedance')){            
+                    postfixUnit = 'Ohm'                           
                 } else {
                   temp[i][0] = `V(${temp[i][0]})`
                   postfixUnit = 'V'
