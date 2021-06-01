@@ -41,10 +41,9 @@ def save_libs(files, path, out_path, library_set):
                 lib_location,
                 lib_output_location
             )
-            try:
-                library = Library.objects.get(
-                    library_name=f, library_set=library_set)
-            except Library.DoesNotExist:
+            library = Library.objects.filter(
+                library_name=f, library_set=library_set).first()
+            if not library:
                 library = Library(
                     library_name=f,
                     library_set=library_set
@@ -68,20 +67,19 @@ def save_libs(files, path, out_path, library_set):
                 svg_desc = component_details[component_svg[:-4]]
 
                 # Seed DB
-                try:
-                    component = LibraryComponent.objects.get(
-                        name=svg_desc['name'],
-                        svg_path=os.path.join(
-                            library_svg_folder, component_svg),
-                        thumbnail_path=thumbnail_path,
-                        symbol_prefix=svg_desc['symbol_prefix'],
-                        full_name=svg_desc['full_name'],
-                        keyword=svg_desc['keyword'],
-                        description=svg_desc['description'],
-                        data_link=svg_desc['data_link'],
-                        component_library=library
-                    )
-                except LibraryComponent.DoesNotExist:
+                component = LibraryComponent.objects.filter(
+                    name=svg_desc['name'],
+                    svg_path=os.path.join(
+                        library_svg_folder, component_svg),
+                    thumbnail_path=thumbnail_path,
+                    symbol_prefix=svg_desc['symbol_prefix'],
+                    full_name=svg_desc['full_name'],
+                    keyword=svg_desc['keyword'],
+                    description=svg_desc['description'],
+                    data_link=svg_desc['data_link'],
+                    component_library=library
+                ).first()
+                if not component:
                     component = LibraryComponent(
                         name=svg_desc['name'],
                         svg_path=os.path.join(
@@ -100,18 +98,17 @@ def save_libs(files, path, out_path, library_set):
             for component_svg in glob.glob(library_svg_folder + '/*[B-Z].svg'):
                 component_svg = os.path.split(component_svg)[-1]
                 svg_desc = component_details[component_svg[:-4]]
-                try:
-                    alternate_component = ComponentAlternate.objects.get(
-                        part=svg_desc['part'], dmg=svg_desc['dmg'],
-                        full_name=svg_desc['full_name'],
-                        svg_path=os.path.join(
-                            library_svg_folder, component_svg),
-                        parent_component=LibraryComponent.objects.get(
-                            name=svg_desc['name'],
-                            component_library=library
-                        )
+                alternate_component = ComponentAlternate.objects.filter(
+                    part=svg_desc['part'], dmg=svg_desc['dmg'],
+                    full_name=svg_desc['full_name'],
+                    svg_path=os.path.join(
+                        library_svg_folder, component_svg),
+                    parent_component=LibraryComponent.objects.get(
+                        name=svg_desc['name'],
+                        component_library=library
                     )
-                except ComponentAlternate.DoesNotExist:
+                ).first()
+                if not alternate_component:
                     alternate_component = ComponentAlternate(
                         part=svg_desc['part'], dmg=svg_desc['dmg'],
                         full_name=svg_desc['full_name'],
