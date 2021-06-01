@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponseRedirect
@@ -56,6 +56,9 @@ class LTIBuildApp(APIView):
         if serialized.is_valid():
             serialized.save()
             save_id = str(serialized.data["save_id"])
+            saved_state = StateSave.objects.get(save_id=save_id)
+            saved_state.shared = True
+            saved_state.save()
             host = request.get_host()
             url = "http://" + host + "/api/lti/auth/" + save_id + "/"
             response_data = {
@@ -181,7 +184,7 @@ class LTIPostGrade(APIView):
         schematic.save()
         submission_data = {
             "project": consumer,
-            "student": self.request.user if self.request.user.is_authenticated else None,
+            "student": schematic.owner,
             "score": consumer.score,
             "ltisession": lti_session,
             "schematic": schematic
@@ -211,6 +214,7 @@ class LTIPostGrade(APIView):
 
 
 class GetLTISubmission(APIView):
+    permission_classes = [IsAuthenticated, ]
 
     def get(self, request, consumer_key):
         consumer = lticonsumer.objects.get(consumer_key=consumer_key)

@@ -308,6 +308,16 @@ export default function SchematicCard ({ sch }) {
                 >
                   Delete
                 </Button>}
+              {configExists &&
+                <Button
+                  style={{ marginTop: '25px', marginBottom: '10px', marginLeft: '5px' }}
+                  disableElevation 
+                  color="primary"
+                  variant="contained"
+                  href={`#/submission?consumer_key=${ltiDetails.consumerKey}`}
+                >
+                  Submissions
+                </Button>}
 
             </DialogContent>
           </Dialog>

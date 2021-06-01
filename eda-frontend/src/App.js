@@ -15,6 +15,7 @@ import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 import ResetPassword from './pages/ResetPassword/Initiation'
 import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
+import Submissions from './pages/SubmissionPage'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
@@ -76,6 +77,7 @@ function App () {
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PublicRoute path="/submission" restricted={false} component={Submissions} />
         <PrivateRoute path="/account/change_password" component={ChangePassword} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
