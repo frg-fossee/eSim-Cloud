@@ -51,11 +51,6 @@ export default function Dashboard() {
           />
           <Route
             exact
-            path="/dashboard/publications"
-            component={DashboardPublications}
-          />
-          <Route
-            exact
             path="/dashboard/reviewpublications"
             component={DashboardOtherPublications}
           />

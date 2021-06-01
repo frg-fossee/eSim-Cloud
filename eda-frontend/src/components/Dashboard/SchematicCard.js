@@ -11,13 +11,15 @@ import {
   CardHeader,
   Tooltip,
   Snackbar,
+  ButtonBase,
+  Chip,
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link as RouterLink } from 'react-router-dom'
+import { Link, Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
-import {  deleteSchematic} from '../../redux/actions/index'
+import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => ({
@@ -132,42 +134,47 @@ export default function SchematicCard({ sch }) {
     }
     setSnacOpen(false)
   }
+  const clickViewProject = () => {
+    let win = window.open();
+    win.location.href = '/eda/#/publication?save_id=' + sch.save_id + '&publication_id=' + sch.publication_id
+    win.focus();
+  }
 
   return (
     <>
       {/* User saved Schematic Overview Card */}
-      <Card>
-        <CardActionArea>
-          <CardHeader
-            title={sch.name}
-            subheader={'Created On ' + getDate(sch.create_time)} /* Display created date */
-          />
-          <CardMedia
-            className={classes.media}
-            image={sch.base64_image}
-            title={sch.name}
-          />
-          <CardContent>
-            <Typography variant="body2" component="p">
-              {sch.description}
-            </Typography>
-            {/* Display updated status */}
-            <Typography variant="body2" color="textSecondary" component="p" style={{ margin: '5px 0px 0px 0px' }}>
-              Updated {timeSince(sch.save_time)} ago...
-            </Typography>
-          </CardContent>
-        </CardActionArea>
 
+      <Card>
+        <ButtonBase
+          target="_blank"
+          component={RouterLink}
+          to={'/editor?id=' + sch.save_id}
+          style={{ width: '100%' }}
+        >
+          <CardActionArea>
+            <CardHeader
+              title={sch.name}
+              subheader={'Created On ' + getDate(sch.create_time)} /* Display created date */
+            />
+            <CardMedia
+              className={classes.media}
+              image={sch.base64_image}
+              title={sch.name}
+            />
+            <CardContent>
+              <Typography variant="body2" component="p">
+                {sch.description}
+              </Typography>
+              {/* Display updated status */}
+              <Typography variant="body2" color="textSecondary" component="p" style={{ margin: '5px 0px 0px 0px' }}>
+
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </ButtonBase>
         <CardActions>
-          <Button
-            target="_blank"
-            component={RouterLink}
-            to={'/editor?id=' + sch.save_id}
-            size="small"
-            color="primary"
-          >
-            Launch in Editor
-          </Button>
+          <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`}/>
+          {sch.publication_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon
@@ -189,6 +196,7 @@ export default function SchematicCard({ sch }) {
           </Tooltip>
         </CardActions>
       </Card>
+
     </>
   )
 }

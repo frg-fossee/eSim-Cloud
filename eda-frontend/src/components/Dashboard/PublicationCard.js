@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonBase,
   Card,
   CardActionArea,
   CardActions,
@@ -63,13 +64,18 @@ export default function PublicationCard({ pub, is_review }) {
   return (
     <>
       <Card>
+      <ButtonBase
+            target="_blank"
+            component={RouterLink}
+            to={'/publication?save_id=' + pub.save_id + '&publication_id=' + pub.publication_id}
+            style={{width:'100%'}}>
         <CardActionArea>
           <CardHeader title={pub.title} />
           <CardMedia
             className={classes.media}
             image={pub.base64_image} />
           <CardContent>
-          <Typography variant="body2" component="p">
+          <Typography variant="body2" component="p" noWrap={true}>
               {pub.description}
             </Typography>
             <br/>
@@ -81,16 +87,9 @@ export default function PublicationCard({ pub, is_review }) {
             </Typography>
           </CardContent>
         </CardActionArea>
-        <CardActions>
-          <Button
-            target="_blank"
-            component={RouterLink}
-            to={'/publication?save_id=' + pub.save_id + '&publication_id=' + pub.publication_id}
-            size="small"
-            color="primary">
-            View
-          </Button>
-          {!is_review &&
+        </ButtonBase>
+        {!is_review &&<CardActions>
+          
             <Button
               target="_blank"
               component={RouterLink}
@@ -98,9 +97,8 @@ export default function PublicationCard({ pub, is_review }) {
               size="small"
               color="primary">
               Edit
-        </Button>}
-
-        </CardActions>
+        </Button>
+        </CardActions>}
       </Card>
     </>
   )

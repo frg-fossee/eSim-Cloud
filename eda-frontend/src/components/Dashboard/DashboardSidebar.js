@@ -53,7 +53,6 @@ export default function DashSidebar(props) {
   // For Fetching Saved Schematics
   useEffect(() => {
     dispatch(fetchSchematics())
-    dispatch(fetchMyPublications())
     dispatch(fetchOtherPublications())
     dispatch(fetchRole())
   }, [dispatch])
@@ -129,14 +128,6 @@ export default function DashSidebar(props) {
           ))}
         </div>
         <Divider />
-        <ListItem
-          component={RouterLink}
-          to="/dashboard/publications"
-          className={classes.sideItem}
-          button
-        >
-          <ListItemText primary='My Projects' />
-        </ListItem>
         {auth.roles && auth.roles.is_type_reviewer &&
           <ListItem
             component={RouterLink}

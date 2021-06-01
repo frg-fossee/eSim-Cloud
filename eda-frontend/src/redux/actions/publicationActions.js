@@ -47,8 +47,6 @@ export const fetchPublication = () => (dispatch, getState) => {
   api.get('publish/publication/' + publication_id, config)
     .then(
       (res) => {
-        console.log("Hello1")
-        console.log(res.data)
         dispatch({
           type: actions.SET_CURRENT_PUBLICATION,
           payload: res.data
