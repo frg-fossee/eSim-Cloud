@@ -2,19 +2,18 @@ from django.conf import settings
 from django.contrib import messages
 from django.views import View
 from rest_framework import status
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from pylti.common import LTIException, verify_request_common, post_message, generate_request_xml, \
-    LTIPostMessageException
+from pylti.common import LTIException, verify_request_common, \
+    post_message, generate_request_xml
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
-from .models import ltiSession, lticonsumer, Submission
-from .utils import consumers, get_reverse, message_identifier
-from .serializers import consumerSerializer, consumerResponseSerializer, \
-    SubmissionSerializer, GetSubmissionsSerializer
+from .models import lticonsumer
+from .utils import consumers, get_reverse, message_identifier, \
+    lis_result_sourcedid, oauth_consumer_key, lis_outcome_service_url
+from .serializers import consumerSerializer, consumerResponseSerializer
 
 
 def denied(r):
@@ -124,18 +123,16 @@ class LTIConfigView(View):
 class LTIAuthView(APIView):
     """POST handler for the LTI login POST back call"""
     def post(self, request, save_id):
+        # Extracts the LTI payload information
         params = {key: request.data[key] for key in request.data}
+        # Maps the settings defined for the LTI consumer
         consumers_dict = consumers()
+        # Builds the tool URL from the request
         url = request.build_absolute_uri()
+        # Extracts the request headers from the request
         headers = request.META
         # Define the redirect url
         host = request.get_host()
-        ltikeys = ['user_id', 'lis_result_sourcedid', 'lis_outcome_service_url', 'oauth_nonce',
-                   'oauth_timestamp', 'oauth_consumer_key', 'oauth_signature_method',
-                   'oauth_version', 'oauth_signature']
-        ltidata = {key: params.get(key) for key in ltikeys}
-        lti_session = ltiSession.objects.create(**ltidata)
-        print("Before save")
         print("Got POST for validating LTI consumer")
         try:
             i = lticonsumer.objects.get(consumer_key=request.data.get(
@@ -144,76 +141,51 @@ class LTIAuthView(APIView):
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.save_id.save_id) \
-                   + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + lti_session.user_id \
-                   + "&lti_nonce=" + lti_session.oauth_nonce
+        re_url = "http://" + host + "/eda/#editor?id=" + str(i.save_id.save_id)
         try:
-            print("Got verification request")
-            verify_request_common(consumers_dict, url, request.method, headers, params)
+            print("Before verifying")
+            # Validate the incoming LTI
+            verify_request_common(consumers_dict, url,
+                                  request.method, headers, params)
             print("Verified consumer")
             # grade = LTIPostGrade(params, request)
-            return HttpResponseRedirect(next_url)
+            return HttpResponseRedirect(re_url)
         except LTIException:
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
 
+def LTIPostGrade(params, request):
+    """
+    Post grade to LTI consumer using XML
+    :param: score: 0 <= score <= 1. (Score MUST be between 0 and 1)
+    :return: True if post successful and score valid
+    :exception: LTIPostMessageException if call failed
+    """
+    try:
+        consumer = lticonsumer.objects.get(consumer_key=oauth_consumer_key(
+            request)
+        )
+        score = consumer.score
+        print("Set score for grading")
+    except ValueError:
+        score = 0
 
-class LTIPostGrade(APIView):
-    permission_classes = [AllowAny, ]
+    xml = generate_request_xml(
+        message_identifier(), 'replaceResult',
+        lis_result_sourcedid(request), score)
 
-    @swagger_auto_schema(request_body=SubmissionSerializer)
-    def post(self, request):
-        """
-        Post grade to LTI consumer using XML
-        :param: score: 0 <= score <= 1. (Score MUST be between 0 and 1)
-        :return: True if post successful and score valid
-        :exception: LTIPostMessageException if call failed
-        """
-        try:
-            lti_session = ltiSession.objects.get(id=request.data["ltisession"]["id"])
-        except ltiSession.DoesNotExist:
-            return Response(data={
-                "error": "No LTI session exists for this ID"
-            }, status=status.HTTP_400_BAD_REQUEST)
-        consumer = lticonsumer.objects.get(consumer_key=lti_session.oauth_consumer_key)
-        schematic = StateSave.objects.get(save_id=request.data["schematic"])
-        schematic.shared = True
-        schematic.save()
-        submission_data = {
-            "project": consumer,
-            "student": self.request.user if self.request.user.is_authenticated else None,
-            "score": consumer.score,
-            "ltisession": lti_session,
-            "schematic": schematic
-        }
-        submission = Submission.objects.create(**submission_data)
-        xml = generate_request_xml(
-            message_identifier(), 'replaceResult',
-            lti_session.lis_result_sourcedid, submission.score)
-        msg = ""
-        try:
-            post = post_message(
-                consumers(), lti_session.oauth_consumer_key,
-                lti_session.lis_outcome_service_url, xml)
-            if not post:
-                msg = 'An error occurred while saving your score. Please try again.'
-                raise LTIPostMessageException('Post grade failed')
-            else:
-                submission.lms_success = True
-                submission.save()
-                msg = 'Your score was submitted. Great job!'
-                return Response(data={"message": msg}, status=status.HTTP_200_OK)
+    post = post_message(
+        consumers(), oauth_consumer_key(request),
+        lis_outcome_service_url(request), xml)
+    if not post:
+        msg = ('An error occurred while saving your score. '
+               'Please try again.')
+        messages.add_message(request, messages.ERROR, msg)
 
-        except LTIException:
-            submission.lms_success = False
-            submission.save()
-            return Response(data={"message": msg}, status=status.HTTP_400_BAD_REQUEST)
+        return False
+        # raise LTIPostMessageException('Post grade failed')
+    else:
+        msg = 'Your score was submitted. Great job!'
+        messages.add_message(request, messages.INFO, msg)
 
-
-class GetLTISubmission(APIView):
-
-    def get(self, request, consumer_key):
-        consumer = lticonsumer.objects.get(consumer_key=consumer_key)
-        submissions = consumer.submission_set.all()
-        serialized = GetSubmissionsSerializer(submissions, many=True)
-        return Response(serialized.data, status=status.HTTP_200_OK)
+        return True

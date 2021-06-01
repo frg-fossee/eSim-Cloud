@@ -15,17 +15,18 @@ import {
   DialogContent,
   TextField,
   DialogTitle,
-  Paper
+  Paper,
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
-import ScreenShareIcon from '@material-ui/icons/ScreenShare'
+import ScreenShareIcon from '@material-ui/icons/ScreenShare';
 import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
 import { useDispatch } from 'react-redux'
 import api from '../../utils/Api'
+
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -42,23 +43,23 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     border: '2px solid #000',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3)
+    padding: theme.spacing(2, 4, 3),
   },
   config: {
     backgroundColor: theme.palette.background.paper,
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
   },
   delete: {
-    backgroundColor: 'red',
-    color: 'white'
+    backgroundColor: "red",
+    color: "white"
   }
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -95,7 +96,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -127,7 +128,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -135,56 +136,54 @@ function getDate (jsonDate) {
   return `${day}-${month}-${year}`
 }
 
+
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
+export default function SchematicCard({ sch }) {
   const classes = useStyles()
   // To handle LTI details
   const [ltiDetails, setLTIDetails] = React.useState({
-    secretKey: '',
-    consumerKey: '',
-    configURL: '',
+    secretKey: "",
+    consumerKey: "",
+    configURL: "",
     configExists: false,
-    consumerError: '',
-    score: ''
+    consumerError: "",
+    score: "",
   })
   const { secretKey, consumerKey, configURL, configExists, consumerError, score } = ltiDetails
 
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
-  // To handle sharing of circuit as a LTI producer
+  //To handle sharing of circuit as a LTI producer
   const [ltiModal, setLTIModal] = React.useState(false)
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
   // Api call for getting LTI config url for specified circuit by passing consumer key and secret key
-  // eslint-disable-next-line
   const handleLTIGenerate = (consumer_key, secret_key, save_id, score) => {
     const body = {
-      consumer_key: consumer_key,
-      secret_key: secret_key,
-      save_id: save_id,
-      score: score
+      "consumer_key": consumer_key,
+      "secret_key": secret_key,
+      "save_id": save_id,
+      "score": score,
     }
     console.log(body)
-    api.post('lti/build/', body)
+    api.post(`lti/build/`, body)
       .then(res => {
         setLTIDetails({
           ...ltiDetails,
           configURL: res.data.config_url,
           configExists: true,
           consumerError: false,
-          score: res.data.score
+          score: res.data.score,
         })
         return res.data
       })
-      .catch((err) => {
-        console.log(err.data)
-        setLTIDetails({ ...ltiDetails, consumerError: 'An error was encountered while setting the details!' })
-      })
+      .catch((err) => { console.log(err.data)
+        setLTIDetails({ ...ltiDetails, consumerError: "An error was encountered while setting the details!" }) })
   }
   const handleOpenLTI = () => {
-    // To-do write a get request to check if it params are already set
+    //To-do write a get request to check if it params are already set
     setLTIModal(true)
     api.get(`lti/exist/${sch.save_id}`)
       .then(res => {
@@ -204,12 +203,12 @@ export default function SchematicCard ({ sch }) {
     api.delete(`lti/delete/${sch.save_id}`)
       .then(res => {
         setLTIDetails({
-          secretKey: '',
-          consumerKey: '',
-          configURL: '',
+          secretKey: "",
+          consumerKey: "",
+          configURL: "",
           configExists: false,
           consumerError: false,
-          score: ''
+          score: "",
         })
       })
       .catch(error => console.log(error))
@@ -227,10 +226,11 @@ export default function SchematicCard ({ sch }) {
   }
 
   const handleScore = (e) => {
-    if (e.target.value > 1 || e.target.value < 0) {
-      // To-DO: Show error message
-    } else {
-      setLTIDetails({ ...ltiDetails, score: e.target.value })
+    if (e.target.value > 1 || e.target.value < 0){
+      //To-DO: Show error message
+    }
+    else{
+      setLTIDetails({...ltiDetails, score: e.target.value})
     }
   }
 
@@ -289,7 +289,7 @@ export default function SchematicCard ({ sch }) {
             <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
             <DialogContent>
               <Typography variant="overline" display="block" gutterBottom>
-                {consumerError}
+                  {consumerError}
               </Typography>
               <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} />
               <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists} />
@@ -307,7 +307,7 @@ export default function SchematicCard ({ sch }) {
                   onClick={() => handleDeleteLTIApp()}
                 >
                   Delete
-                </Button>}
+              </Button>}
 
             </DialogContent>
           </Dialog>

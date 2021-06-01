@@ -34,8 +34,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 }
 
 // Api call to save new schematic or updating saved schematic.
-
-export const saveSchematic = (title, description, xml, base64, ltiExists = false, setSaveId = null) => (dispatch, getState) => {
+export const saveSchematic = (title, description, xml, base64) => (dispatch, getState) => {
   var libraries = []
   getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
   console.log(libraries)
@@ -63,7 +62,7 @@ export const saveSchematic = (title, description, xml, base64, ltiExists = false
     config.headers.Authorization = `Token ${token}`
   }
 
-  if (schSave.isSaved && !ltiExists) {
+  if (schSave.isSaved) {
     //  Updating saved schemaic
     api.post('save/' + schSave.details.save_id, queryString.stringify(body), config)
       .then(
@@ -80,8 +79,6 @@ export const saveSchematic = (title, description, xml, base64, ltiExists = false
     api.post('save', queryString.stringify(body), config)
       .then(
         (res) => {
-          console.log(res.data)
-          setSaveId(res.data.save_id)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
