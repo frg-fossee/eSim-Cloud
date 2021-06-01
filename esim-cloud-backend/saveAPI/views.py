@@ -172,7 +172,7 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
-            if saved_state.author == self.request.user and Permission.objects.filter(role__in=self.request.user.group.all(), del_own_states=saved_state.publication.state).exists():
+            if saved_state.owner == self.request.user and Permission.objects.filter(role__in=self.request.user.groups.all(), del_own_states=saved_state.publication.state).exists():
                 pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)

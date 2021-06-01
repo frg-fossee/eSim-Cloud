@@ -44,18 +44,3 @@ class Transition(models.Model):
         return self.name
 
 
-
-#Model for Notifications
-class Notification(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    text = models.CharField(max_length=500)
-    date = models.DateTimeField(auto_now_add=True)
-    shown = models.BooleanField(default=False,null=False)
-    def __str__(self):
-        return self.text
-
-#Model for keeping track of all the reports for a circuit
-# class Permission(models.Model):
-#     role 
-#     choices = ('VIEW','EDIT','DELETE')
-#     is_own

@@ -1,10 +1,9 @@
 from django.urls import path
-from .views import RetriveUserRoleView,PublicationStateView,RetrivePublicationsViewSet, NotificationView,ReportedPublicationsView
+from .views import RetriveUserRoleView,PublicationStateView,RetrivePublicationsViewSet,ReportedPublicationsView
 
 
 urlpatterns = [
     path('role/',RetriveUserRoleView.as_view(),name='getRole'),
-    path('notification/',NotificationView.as_view(),name='sendNotif'),
     path('report/',ReportedPublicationsView.as_view({'get':'list_publications'}),name='listReportedPublications'),
     path('report/approve/<uuid:publication_id>',ReportedPublicationsView.as_view({'post':'approve_reports'}),name='approvePublications'),
     path('report/create/<uuid:publication_id>',ReportedPublicationsView.as_view({'post':'report_publication'}),name='reportPublication'),

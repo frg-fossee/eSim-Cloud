@@ -1,14 +1,13 @@
 import uuid
 from rest_framework.views import APIView
-from .serializers import NotificationSerializer, StatusSerializer, ReportApprovalSerializer, StatusWithNotesSerializer, UserRoleRetreieveSerializer
-from .models import Notification, Permission, State, Transition, Permission
+from .serializers import StatusSerializer, ReportApprovalSerializer, StatusWithNotesSerializer, UserRoleRetreieveSerializer
+from .models import  Permission, State, Transition, Permission
 from publishAPI.models import Publication, Report
 from publishAPI.serializers import PublicationSerializer, ReportSerializer, ReportDescriptionSerializer
 from rest_framework.response import Response
-from rest_framework import viewsets
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import serializers, status as http_status
+from rest_framework import viewsets,status as http_status
 from rest_framework.parsers import FormParser, JSONParser
 from publishAPI.models import TransitionHistory
 
@@ -27,7 +26,7 @@ class RetriveUserRoleView(APIView):
         reviewer = False
         for userRole in userRoles:
             data.append(userRole.name)
-            if userRole.customgroup.is_type_reviewer:
+            if userRole.customgroup is not None and userRole.customgroup.is_type_reviewer:
                 reviewer = True
         serializer = UserRoleRetreieveSerializer(
             data={"group": data, "is_type_reviewer": reviewer})
@@ -38,31 +37,6 @@ class RetriveUserRoleView(APIView):
             serializer.is_valid()
             return Response(serializer.errors)
 
-
-class NotificationView(APIView):
-    parser_classes = (FormParser, JSONParser)
-    permission_classes = [IsAuthenticated]
-    serializer_class = NotificationSerializer
-
-    @swagger_auto_schema(responses={200: NotificationSerializer})
-    def get(self, request):
-        notifications = Notification.objects.filter(
-            user=self.request.user, shown=False)
-        if notifications is not None:
-            for notification in notifications:
-                notification.shown = True
-                notification.save()
-            serialized = NotificationSerializer(notifications, many=True)
-            return Response(serialized.data)
-        else:
-            return Response({'message': 'No New Notifications!'})
-
-    @swagger_auto_schema(responses={200: NotificationSerializer}, request_body=NotificationSerializer)
-    def post(self, request):
-        notif = Notification(text=request.data['text'], user=self.request.user)
-        notif.save()
-        serialized = NotificationSerializer(notif)
-        return Response(serialized.data)
 
 
 class RetrivePublicationsViewSet(APIView):
@@ -79,16 +53,21 @@ class RetrivePublicationsViewSet(APIView):
             groups = self.request.user.groups.all()
         except:
             return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
+        print(groups)
+        
         transistions = Transition.objects.filter(
             role__in=groups, only_for_creator=False)
+        print(transistions)
         publications = Publication.objects.none()
         for transistion in transistions:
             if transistion.from_state.public is False or transistion.from_state.report is True:
                 publication = Publication.objects.filter(
                     state=transistion.from_state).exclude(author=self.request.user)
+                print(publication)
                 # TODO: Make sure this gets distinct values
                 publications = publications | publication
-        if publications is None:
+        print(publications)
+        if publications == Publication.objects.none():
             return Response(status=http_status.HTTP_404_NOT_FOUND)
         else:
             serialized = PublicationSerializer(publications, many=True)
@@ -185,14 +164,6 @@ class PublicationStateView(APIView):
                                     publication.state = circuit_transition.to_state
                                     publication.save()
                                     state = publication.state
-                                    if publication.author != request.user:
-                                        notiftext = "Your circuit status have been changed from " + \
-                                            str(circuit_transition.from_state) + \
-                                            " to " + \
-                                            str(circuit_transition.to_state)
-                                        notification = Notification(
-                                            text=notiftext, user=publication.author)
-                                        notification.save()
                                     serialized = StatusSerializer(state)
                                     return Response(serialized.data)
                         return Response({'error': 'You are not authorized to edit the status as you dont have the role'},

@@ -63,19 +63,9 @@ const useStyles = makeStyles((theme) => ({
 export function Header() {
   const history = useHistory()
   const classes = useStyles()
-  const [notifAnchorEl, setNotifAnchorEl] = React.useState(null)
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const notifications = useSelector(state => state.authReducer.notifications)
   const auth = store.getState().authReducer
 
-  // useEffect(() => {
-  //   console.log("Used Effect")
-  //   dispatch(fetchNotifications())
-  // }, [dispatch])
-
-  const handleNotifClick = (event) => {
-    setNotifAnchorEl(notifAnchorEl ? null : event.currentTarget)
-  }
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -138,11 +128,11 @@ export function Header() {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/publications"
+                to="/projects"
                 component={RouterLink}
                 className={classes.link}
               >
-                Publications
+                Projects
               </Link>
 
               <Link
@@ -188,11 +178,11 @@ export function Header() {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/publications"
+                to="/projects"
                 component={RouterLink}
                 className={classes.link}
               >
-                Publications
+                Projects
               </Link>
               <Link
                 variant="button"
@@ -221,28 +211,6 @@ export function Header() {
           Login
         </Button>)
           : (<>
-            <IconButton
-              edge="start"
-              style={{ marginLeft: 'auto' }}
-              color="primary"
-              aria-controls="simple-menu"
-              aria-haspopup="true"
-              onClick={handleNotifClick}
-            >
-              <NotificationsIcon />
-            </IconButton>
-            <Popper open={Boolean(notifAnchorEl)} anchorEl={notifAnchorEl} placement='bottom-end' transition>
-              <Paper>
-                <List component="nav" aria-label="main mailbox folders">
-                  {notifications ? <>{notifications.map((item) => (
-                    <ListItem>
-                      {item.text}
-                    </ListItem>
-                  ))}</> : <>No new Notifications</>}
-
-                </List>
-              </Paper>
-            </Popper>
             <IconButton
               edge="start"
               style={{ marginLeft: 'auto' }}

@@ -252,6 +252,7 @@ export default function PublicationPage(props) {
                               <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
                                 <br />
                                 <h5>-On {item.transition_time} by {item.transition_author}</h5>
+                                {item.reviewer_notes && <h5>-Notes: {item.reviewer_notes}</h5>}
                               </p>
                             </ListItem>
                           ))}</>

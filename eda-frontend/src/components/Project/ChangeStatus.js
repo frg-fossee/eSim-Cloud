@@ -17,7 +17,7 @@ function ChangeStatus({ publication }) {
         setNote(e.target.value)
     }
     useEffect(() => {
-        if(publication.details)
+        if(publication.details.history.reverse()[1].reviewer_notes)
         {
             setNote(publication.details.history.reverse()[1].reviewer_notes)
         }

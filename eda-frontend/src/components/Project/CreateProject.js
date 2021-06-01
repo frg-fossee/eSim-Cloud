@@ -21,6 +21,8 @@ import {
   from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close';
 import PostAddIcon from '@material-ui/icons/PostAdd';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus, createPublication, getStatus } from '../../redux/actions'
@@ -62,7 +64,7 @@ function CreateProject() {
       title: '',
       description: ''
     })
-  const [fields, setFields] = useState([{ name: 'Procedure', text: '' },{ name: 'Observation', text: '' },{ name: 'Conclusion', text: '' }])
+  const [fields, setFields] = useState([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
   const [changed, setChanged] = useState(0)
   useEffect(() => {
     if (open && publication.details?.publication_id) {
@@ -73,15 +75,6 @@ function CreateProject() {
       setFields(publication.details.fields)
     }
   }, [open, dispatch, publication.details])
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const createPub = () => {
-    dispatch(createPublication(save_id, [details, fields]))
-  }
   const handleSelectChange = (event) => {
     if (changed === 0) {
       setChanged(2)
@@ -91,20 +84,6 @@ function CreateProject() {
     }
     setStatus(event.target.value)
   };
-  const clickChange = () => {
-    if (changed === 1 || changed === 3) {
-      dispatch(createPublication(save_id, [details, fields]))
-    }
-    if (changed === 2 || changed === 3) {
-      dispatch(changeStatus(publication.details.publication_id, status,''))
-    }
-
-  }
-  const clickPreview = () => {
-    let win = window.open();
-    win.location.href = '/eda/#/publication?save_id=' + publication.details.save_id + '&publication_id=' + publication.details.publication_id
-    win.focus();
-  }
   const changeFieldText = (e) => {
     if (changed === 0) {
       setChanged(1)
@@ -125,14 +104,49 @@ function CreateProject() {
       setDetails({ ...details, [e.target.name]: e.target.value })
     }
   }
+  const handleClick = () => {
+    setOpen(!open);
+  };
+  const createPub = () => {
+    dispatch(createPublication(save_id, [details, fields]))
+  }
+  const clickChange = () => {
+    console.log(changed)
+    if (changed === 1 || changed === 3) {
+      dispatch(createPublication(save_id, [details, fields]))
+    }
+    if (changed === 2 || changed === 3) {
+      dispatch(changeStatus(publication.details.publication_id, status, ''))
+    }
+  }
+  const clickPreview = () => {
+    let win = window.open();
+    win.location.href = '/eda/#/publication?save_id=' + publication.details.save_id + '&publication_id=' + publication.details.publication_id
+    win.focus();
+  }
   const addField = () => {
     setFields([...fields, { name: '', text: '' }])
   }
-  const onRemove = (e) =>
-  {
+  const onClickShift = (type, index) => {
+    if (type === 'above') {
+      let temporary = [...fields]
+      let current = temporary[index]
+      temporary[index] = temporary[index - 1]
+      temporary[index - 1] = current
+      setFields(temporary)
+    }
+    else {
+      let temporary = [...fields]
+      let current = temporary[index]
+      temporary[index] = temporary[index + 1]
+      temporary[index + 1] = current
+      setFields(temporary)
+    }
+  }
+  const onRemove = (e) => {
     var list = [...fields]
     console.log(e)
-    list.splice(e,1)
+    list.splice(e, 1)
     setFields(list)
   }
   return (
@@ -143,12 +157,12 @@ function CreateProject() {
           aria-label='open drawer'
           edge='end'
           size="small"
-          onClick={handleClickOpen}>
+          onClick={handleClick}>
           <Tooltip title="Create Project">
             <PostAddIcon />
           </Tooltip>
         </IconButton>}
-      <Dialog fullScreen open={open} TransitionComponent={Transition} onClose={handleClickOpen} PaperProps={{
+      <Dialog fullScreen open={open} TransitionComponent={Transition} onClose={handleClick} PaperProps={{
         style: {
           backgroundColor: '#4d4d4d',
           boxShadow: 'none'
@@ -156,7 +170,7 @@ function CreateProject() {
       }}>
         <AppBar className={classes.appBar}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+            <IconButton edge="start" color="inherit" onClick={handleClick} aria-label="close">
               <CloseIcon />
             </IconButton>
             <Typography variant="h6" className={classes.title}>
@@ -169,7 +183,7 @@ function CreateProject() {
             {publication.details && <Button color="inherit" onClick={clickPreview}>
               Preview
             </Button>}
-            {changed !== 0 && <Button color="inherit" onClick={clickChange}>
+            {publication.details && changed !== 0 && <Button color="inherit" onClick={clickChange}>
               Update Project
             </Button>}
           </Toolbar>
@@ -185,7 +199,7 @@ function CreateProject() {
             <Grid item xs={12} sm={12}>
               {publication.details && <Paper style={{ padding: '.2% 0%', marginBottom: "1%" }}>
                 <h3 style={{ textAlign: 'center' }}>Status of the project: {publication.details.status_name}  </h3>
-                <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {publication.details.history.reverse()[0]?.reviewer_notes}</h4>
+                {publication.details.history && publication.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {publication.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
               <Paper className={classes.paper}>
 
@@ -221,9 +235,23 @@ function CreateProject() {
                 (
                   <>
                     <hr />
-                    <IconButton style={{ float: 'right' }} onClick={()=>onRemove(index)}>
-                      <CloseIcon />
-                    </IconButton>
+                    {publication.states && publication.details &&
+                      <>
+                        <Tooltip title="Delete Field">
+                          <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
+                            <CloseIcon />
+                          </IconButton></Tooltip>
+                        {index !== fields.length - 1 && <IconButton style={{ float: 'right' }} onClick={() => onClickShift('below', index)}>
+                          <Tooltip title="Move Field Down">
+                            <KeyboardArrowDownIcon />
+                          </Tooltip>
+                        </IconButton>}
+                        {index !== 0 && <IconButton style={{ float: 'right' }} onClick={() => onClickShift('above', index)}>
+                          <Tooltip title="Move Field Up">
+                            <KeyboardArrowUpIcon />
+                          </Tooltip>
+                        </IconButton>}
+                      </>}
                     <TextField
                       color='primary'
                       margin="dense"
@@ -295,13 +323,15 @@ function CreateProject() {
               <Paper style={{ padding: '2%' }}>
                 <List>
                   <h3>History of this Project</h3>
-                  {publication.details?.history[0] ?
+                  {(publication.details?.history && publication.details?.history[0]) ?
                     <>
                       {publication.details.history.slice(0).reverse().map((item, index) => (
                         <ListItem>
                           <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
                             <br />
-                            <h5>-On {item.transition_time} by {item.transition_author}</h5>
+                            <h5>-On {item.transition_time} by {item.transition_author_name}</h5>
+                            {item.reviewer_notes}
+
                           </p>
                         </ListItem>
                       ))}</>

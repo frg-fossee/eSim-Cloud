@@ -7,7 +7,6 @@ const initialState = {
   isLoading: false,
   user: null,
   roles:null,
-  notifications:null,
   errors: '',
   regErrors: '',
   resetPasswordSuccess: false,
@@ -124,13 +123,6 @@ export default function (state = initialState, action) {
       return{
         ...state,
         roles: action.payload.data
-      }
-    }
-    case actions.FETCH_NOTIFICATIONS: 
-    {
-      return{
-        ...state,
-        notifications:action.payload.data
       }
     }
     default:

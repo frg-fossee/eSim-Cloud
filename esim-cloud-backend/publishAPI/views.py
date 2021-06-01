@@ -42,12 +42,8 @@ class PublicationViewSet(APIView):
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         try:
-            print("10")
-            histories = TransitionHistorySerializer(TransitionHistory.objects.filter(publication=queryset),many=True)
-            print("1")
+            histories = TransitionHistorySerializer(TransitionHistory.objects.filter(publication=queryset).order_by("transition_time"),many=True)
             serialized = PublicationSerializer(queryset)
-            print("1")
-
             data = serialized.data.copy()
             data['history'] = histories.data
             return Response(data)

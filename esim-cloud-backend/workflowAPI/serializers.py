@@ -1,9 +1,5 @@
-from django.db.models import fields
-from django.db.models.base import Model
 from rest_framework import serializers
-from django.db import models
-from django.contrib.auth.models import  Group
-from .models import CustomGroup, Notification, Transition,State
+from .models import CustomGroup, Transition,State
 from publishAPI.models import Report
 class UserRoleRetreieveSerializer(serializers.ModelSerializer):
     class Meta: 
@@ -23,11 +19,6 @@ class TransitionSerializer(serializers.ModelSerializer):
     class Meta:
         model= Transition
         fields=('to_state',)
-class NotificationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model= Notification
-        fields=('text',)
-
 class ReportStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report

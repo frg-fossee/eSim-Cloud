@@ -1,8 +1,8 @@
 from django.contrib import admin
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import GroupAdmin as BaseGroupAdmin
-from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
-from workflowAPI.models import State,Transition,CustomGroup,Notification,Permission
+from workflowAPI.models import State,Transition,CustomGroup,Permission
 from publishAPI.models import TransitionHistory
 # Register your models here.
 @admin.register(State)
@@ -31,11 +31,11 @@ class PermissionsAdmin(admin.ModelAdmin):
         }),
         ('Edit Permissions',{
             'classes': ('collapse',),
-            'fields':('edit_own_states','edit_other_states',),
+            'fields':('edit_own_states',),
         }),
         ('Delete Permissions',{
             'classes': ('collapse',),
-            'fields':('del_own_states','del_other_states',),
+            'fields':('del_own_states',),
         }),
     )
 
@@ -46,19 +46,6 @@ class GroupInline(admin.TabularInline):
 
 class GroupAdmin(BaseGroupAdmin):
     inlines = (GroupInline, )
-class NotifInline(admin.TabularInline):
-    model = Notification
-    can_delete=False
-
-
-class UserAdmin(AuthUserAdmin):
-    inlines=(NotifInline,)
-
-
-#Re-reigister UserAdmin
-admin.site.unregister(User)
-admin.site.register(User,UserAdmin)
-
 
 
 # Re-register GroupAdmin

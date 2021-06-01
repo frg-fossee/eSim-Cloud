@@ -256,7 +256,54 @@ export const googleLogin = (host, toUrl) => {
       })
   }
 }
+ // Handles api call for user's password confirmation
+export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => (dispatch) => {
+  const body = {
+    uid: uid,
+    token: token,
+    new_password: newPassword,
+    re_new_password: reNewPassword
+  }
 
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  api.post('auth/users/reset_password_confirm/', body, config)
+    .then((res) => {
+      if (res.status >= 200 || res.status < 304) {
+        dispatch({
+          type: actions.RESET_PASSWORD_CONFIRM_SUCCESSFUL,
+          payload: {
+            data: 'The password has been reset successfully.'
+          }
+        })
+        setTimeout(() => {
+          window.location.href = '/eda/#/login'
+        }, 2000)
+      }
+    })
+    .catch((err) => {
+      var res = err.response
+      if ([400, 401, 403, 304].includes(res.status)) {
+        // eslint-disable-next-line camelcase
+        const { new_password, re_new_password, non_field_errors, token } = res.data
+        const defaultErrors = ['Password reset failed.']
+        // eslint-disable-next-line camelcase
+        var message = (new_password || re_new_password || non_field_errors || defaultErrors)[0]
+
+        if (token) {
+          // Override message if it's a token error
+          message = 'Either the password has already been changed or you have the incorrect URL'
+        }
+
+        dispatch(resetPasswordConfirmError(message))
+      }
+    })
+}
 // Handles api call for user's password recovery
 export const resetPassword = (email) => (dispatch) => {
   const body = {
@@ -319,34 +366,6 @@ export const resetPassword = (email) => (dispatch) => {
         console.log(res.data)
         dispatch({
           type: actions.ROLE_LOADED,
-          payload: {
-            data: res.data
-          }
-        })
-      }).catch(() => { console.log("Error") })
-  }
-
-  //API call for fetching user notifications.
-  export const fetchNotifications = () => (dispatch, getState) => {
-    const token = getState().authReducer.token
-
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    } else {
-      dispatch({ type: actions.LOADING_FAILED })
-      return
-    }
-    api.get(`workflow/notification/`, config)
-      .then((res) => {
-        dispatch({
-          type: actions.FETCH_NOTIFICATIONS,
           payload: {
             data: res.data
           }

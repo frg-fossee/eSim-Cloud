@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react' 
 import { HashRouter, Switch, Route, Redirect } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
@@ -18,7 +18,7 @@ import ResetPassword from './pages/ResetPassword/Initiation'
 import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
 import ChangePassword from './pages/Account/ChangePassword'
 import { useSelector, useDispatch } from 'react-redux'
-import { loadUser ,fetchNotifications} from './redux/actions/index'
+import { loadUser } from './redux/actions/index'
 import PublicationPage from './pages/PublicationPage'
 
 // Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
@@ -29,7 +29,6 @@ function PrivateRoute ({ component: Component, ...rest }) {
 
   useEffect(() => {
     dispatch(loadUser())
-    dispatch(fetchNotifications())
 
   }, [dispatch])
 
@@ -84,8 +83,7 @@ function App () {
         }
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
-        <PublicRoute exact path="/publications" restricted={false} nav={true} component={Publications} />
-        <PublicRoute exact path="/publications" restricted={false} nav={true} component={Publications} />
+        <PublicRoute exact path="/projects" restricted={false} nav={true} component={Publications} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/account/change_password" component={ChangePassword} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
