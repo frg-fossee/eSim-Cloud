@@ -26,7 +26,7 @@ class StateSaveView(APIView):
     '''
 
     # Permissions should be validated here
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     # parser_classes = (FormParser,)
 
     @swagger_auto_schema(request_body=StateSaveSerializer)
@@ -37,9 +37,9 @@ class StateSaveView(APIView):
         filename, content = img.update(request.data['base64_image'])
         state_save = StateSave(
             data_dump=request.data.get('data_dump'),
-            description=request.data.get('description'),
+            description=request.data.get('descirption'),
             name=request.data.get('name'),
-            owner=request.user if request.user.is_authenticated else None
+            owner=request.user
         )
         state_save.base64_image.save(filename, content)
         print(state_save)

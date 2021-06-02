@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
@@ -24,16 +24,12 @@ import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutli
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
-import Button from '@material-ui/core/Button'
-import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
-import queryString from 'query-string'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
-import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -98,12 +94,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
-  const [ltiId, setLtiId] = React.useState('')
-  const [ltiUserId, setLtiUserId] = React.useState('')
-  const [ltiNonce, setLtiNonce] = React.useState('')
-  const [submit, setSubmit] = React.useState(false)
-  const [submitMessage, setSubmitMessage] = React.useState('')
-  const [saveId, setSaveId] = React.useState(null)
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
@@ -114,50 +104,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       netfile.controlBlock + '\n'
     genNetlist(netlist)
     setOpen(true)
-  }
-
-  useEffect(() => {
-    var url = queryString.parse(window.location.href.split('editor')[1])
-    setLtiId(url.lti_id)
-    setLtiNonce(url.lti_nonce)
-    setLtiUserId(url.lti_user_id)
-  }, [])
-
-  useEffect(() => {
-    if (saveId !== null) {
-      const body = {
-        schematic: saveId,
-        ltisession: {
-          id: ltiId,
-          user_id: ltiUserId,
-          oauth_nonce: ltiNonce
-        }
-      }
-      console.log(body)
-      api.post('lti/submit/', body)
-        .then(res => {
-          console.log(res.data)
-          setSubmit(true)
-          setSubmitMessage(res.data.message)
-        }).catch((err) => {
-          console.log(err)
-        })
-    }
-  // eslint-disable-next-line
-  }, [saveId])
-
-  const onSubmission = () => {
-    var xml = Save()
-    dispatch(setSchXmlData(xml))
-    var title = schSave.title
-    var description = schSave.description
-    exportImage('PNG').then(res => {
-      dispatch(saveSchematic(title, description, xml, res, true, setSaveId))
-    })
-  }
-
-  const handleSubmitClose = () => {
-    setSubmit(false)
   }
 
   const handleClose = () => {
@@ -465,7 +411,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <LibraryAddRoundedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SelectLibrariesModal open={libsOpen} close={handleLibClose} auth={auth.isAuthenticated} />
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose} auth={auth.isAuthenticated}/>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">
@@ -518,12 +464,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         </IconButton>
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
-      {ltiId && ltiUserId && ltiNonce && <Tooltip title="Submit">
-        <Button size="small" variant="outlined" color="primary" className={classes.button} endIcon={<Icon>send</Icon>}
-          onClick={onSubmission} >
-          Submit
-        </Button>
-      </Tooltip>}
 
       <IconButton
         color='inherit'
@@ -535,24 +475,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       >
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
-
-      <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
-        }}
-        open={submit}
-        autoHideDuration={2000}
-        onClose={handleSubmitClose}
-        message={submitMessage}
-        action={
-          <>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={handleSubmitClose}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </>
-        }
-      />
     </>
   )
 }
