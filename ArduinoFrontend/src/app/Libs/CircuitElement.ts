@@ -152,36 +152,36 @@ export abstract class CircuitElement {
       // Draw image
       if (item.type === 'image') {
         element = canvas.image(
-            item.url,
-            this.x + item.x,
-            this.y + item.y,
-            item.width,
-            item.height
-          );
+          item.url,
+          this.x + item.x,
+          this.y + item.y,
+          item.width,
+          item.height
+        );
       } else if (item.type === 'path') {
         element = this.DrawPath(canvas, item);
       } else if (item.type === 'rectangle') {
         // Draw rectangle
         element = canvas.rect(
-            this.x + item.x,
-            this.y + item.y,
-            item.width,
-            item.height,
-            item.radius || 0
-          ).attr({
-            fill: item.fill || 'none',
-            stroke: item.stroke || 'none'
-          });
+          this.x + item.x,
+          this.y + item.y,
+          item.width,
+          item.height,
+          item.radius || 0
+        ).attr({
+          fill: item.fill || 'none',
+          stroke: item.stroke || 'none'
+        });
       } else if (item.type === 'circle') {
         // Draw a circle
         element = canvas.circle(
-            this.x + item.x,
-            this.y + item.y,
-            item.radius,
-          ).attr({
-            fill: item.fill || 'none',
-            stroke: item.stroke || 'none'
-          });
+          this.x + item.x,
+          this.y + item.y,
+          item.radius,
+        ).attr({
+          fill: item.fill || 'none',
+          stroke: item.stroke || 'none'
+        });
       } else if (item.type === 'polygon') {
         element = this.DrawPolygon(canvas, item);
       }
@@ -206,10 +206,10 @@ export abstract class CircuitElement {
     }
     tmp = tmp.substr(0, tmp.length - 1) + 'z';
     return canvas.path(tmp)
-                  .attr({
-                    fill: item.fill || 'none',
-                    stroke: item.stroke || 'none'
-                  });
+      .attr({
+        fill: item.fill || 'none',
+        stroke: item.stroke || 'none'
+      });
   }
   /**
    * Draw a Path
@@ -233,10 +233,10 @@ export abstract class CircuitElement {
     str = this.calcRelative(str, vertical, canvas);
     str = this.calcRelative(str, sCurve, canvas);
     return canvas.path(str)
-                    .attr({
-                      fill: item.fill || 'none',
-                      stroke: item.stroke || 'none'
-                    });
+      .attr({
+        fill: item.fill || 'none',
+        stroke: item.stroke || 'none'
+      });
   }
   /**
    * Draw path relative to the component
@@ -310,7 +310,8 @@ export abstract class CircuitElement {
       //   node.relativeMove(fdx, fdy);
       //   node.remainShow();
       // }
-      UndoUtils.pushWorkSpaceChange()
+
+      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save() })
       this.tx += fdx;
       this.ty += fdy;
       window['onDragStopEvent'](this);

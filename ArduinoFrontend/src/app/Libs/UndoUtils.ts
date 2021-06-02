@@ -54,13 +54,16 @@ export abstract class UndoUtils {
      * Function for Undo Feature
      */
     static workspaceUndo() {
-        // If dump is already present in undoStack
-        if (this.undoStack.length > 0) {
-            // Push the current dump of workspace in RedoStack
-            this.redoStack.push(this.getWorkspaceSaveChange())
-            // Pop from undoStack & Load Dump
-            this.LoadDump(this.undoStack.pop())
-        }
+        // // If dump is already present in undoStack
+        // if (this.undoStack.length > 0) {
+        //     // Push the current dump of workspace in RedoStack
+        //     this.redoStack.push(this.getWorkspaceSaveChange())
+        //     // Pop from undoStack & Load Dump
+        //     this.LoadDump(this.undoStack.pop())
+        // }
+        var cng = this.undo.pop()
+        this.redoStack.push(cng)
+        this.loadChange(cng)
     }
 
     /**
@@ -146,7 +149,7 @@ export abstract class UndoUtils {
                 Workspace.LoadWires(data.wires);
                 // Hide loading animation
                 window.hideLoading();
-                
+
                 // Renable undo & redo Buttons
                 this.enableButtonsBool = true;
 
@@ -154,4 +157,44 @@ export abstract class UndoUtils {
         }, 100);
     }
 
+    static undo = []
+
+    static pushChangeToUndo(ele) {
+        console.log('ele was = ', ele)
+        var x = ele
+        this.undo.push(x);
+        console.log('=> ', this.undo)
+    }
+
+    static redo = []
+
+    static loadChange(ele) {
+        var grup = window.scope[ele.keyName]
+        for (const e in grup) {
+            if (grup[e].id == ele.element.id) {
+                if (window.scope[ele.keyName][e].load) {
+
+                    window.scope[ele.keyName][e].remove()
+
+                    var comp = ele.element;
+                    var key = ele.keyName
+                    // Get class from keyname using the map
+                    const myClass = Utils.components[key].className;
+                    // Create Component Object from class
+                    const obj = new myClass(
+                        window['canvas'],
+                        comp.x,
+                        comp.y
+                    );
+                    window.queue += 1;
+                    // Add to scope
+                    window['scope'][key].push(obj);
+                    // Load data for each object
+                    if (obj.load) {
+                        obj.load(comp);
+                    }
+                }
+            }
+        }
+    }
 }

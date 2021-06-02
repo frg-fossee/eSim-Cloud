@@ -32,7 +32,8 @@
               "src/styles.css"
             ],
             "scripts": [],
-            "es5BrowserSupport": true
+            "es5BrowserSupport": true,
+            "showCircularDependencies": false
           },
           "configurations": {
             "production": {
