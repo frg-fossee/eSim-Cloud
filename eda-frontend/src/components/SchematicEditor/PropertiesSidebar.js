@@ -246,8 +246,9 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
   const handleBranch = (branchName) => {
     setDialogOpen(false)
     exportImage("PNG").then((res) => {
-      dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,res,true,branchName))
+      dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,res,true,branchName,setVersions,versions))
     })
+    setBranchName("")
   }
 
   const handleClick = (index) => {
@@ -307,7 +308,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
       <ComponentProperties />
       <List>
         <ListItem button divider>
-          <h2 style={{ margin: '5px',width:"90%" }}>Versions</h2>
+          <h2 style={{ margin: '5px',width:"90%" }}>History</h2>
           <IconButton
             className="new-branch"
             size="small"
@@ -316,7 +317,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               <CreateNewFolderOutlinedIcon fontSize="small" />
           </IconButton>
           <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={dialogOpen}>
-            <DialogTitle id="simple-dialog-title">Create new branch</DialogTitle>
+            <DialogTitle id="simple-dialog-title">Create new Sub-Feature</DialogTitle>
             <DialogContent>
               <TextField 
               id="branch-name" 
@@ -326,11 +327,20 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               style={{width:"100%"}}/>
               <br/>
               <Button 
-              style={{ marginTop: '15px', marginBottom: '10px' }} 
+              style={{ marginTop: '20px', marginBottom: '10px' }} 
               variant="contained" 
               color="primary" 
               onClick={() => handleBranch(branchName) }>
-                Set name and create branch
+                Set name and create sub-feature
+              </Button>
+              <Button
+              target="_blank"
+              style={{ marginTop: '5px', marginBottom: '10px', width: '50%' }}
+              variant="contained"
+              color="primary"
+              href="/eda/#/editor"
+              >
+                Create a new Schematic
               </Button>
             </DialogContent>
           </Dialog>
@@ -341,7 +351,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               return (
               <>
                 <ListItem button onClick={()=>handleClick(index)}>
-                  <ListItemText primary={"Branch " + branch[0]}  />
+                  <ListItemText primary={"Sub-Feature " + branch[0]}  />
                 </ListItem>
                 <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>
                 {
@@ -363,7 +373,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
           )
         }
         </> 
-        : <ListItemText>Loading</ListItemText>
+        : <ListItemText>No History Available</ListItemText>
         }
       </List>
     </>

@@ -34,7 +34,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 };
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64,newBranch=false,branchName=null) => (
+export const saveSchematic = (title, description, xml, base64,newBranch=false,branchName=null,setVersions,versions) => (
   dispatch,
   getState
 ) => {
@@ -80,9 +80,7 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false,br
         console.error(err);
       });
     } else {
-      body.branch = randomstring.generate({
-        length: 20,
-      })
+      body.branch = "master"
       // saving new schematic
       api
       .post("save", queryString.stringify(body), config)
@@ -99,20 +97,30 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false,br
   }
   else {
     console.log("New Branch not Version")
-    body.save_id = schSave.details.save_id;
-    body.branch = branchName
-    body.version = schSave.details.version
-    api
-    .post("save", queryString.stringify(body), config)
-    .then((res) => {
-      dispatch({
-        type: actions.SET_SCH_SAVED,
-        payload: res.data,
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-    })
+    var flag = 0
+    for (var i = 0; i < versions.length; i++){
+      if (branchName === versions[i][0])
+        flag=1
+    }
+    if (!flag) {
+      body.save_id = schSave.details.save_id;
+      body.branch = branchName
+      body.version = schSave.details.version
+      api
+        .post("save", queryString.stringify(body), config)
+        .then((res) => {
+          var temp = versions
+          temp.push([res.data.branch, [res.data]])
+          setVersions(temp)
+          dispatch({
+            type: actions.SET_SCH_SAVED,
+            payload: res.data,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        })
+    }
   }
 };
 
