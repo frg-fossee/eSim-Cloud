@@ -103,10 +103,7 @@ def save_libs(files, path, out_path, library_set):
                     full_name=svg_desc['full_name'],
                     svg_path=os.path.join(
                         library_svg_folder, component_svg),
-                    parent_component=LibraryComponent.objects.get(
-                        name=svg_desc['name'],
-                        component_library=library
-                    )
+                    parent_component=component
                 ).first()
                 if not alternate_component:
                     alternate_component = ComponentAlternate(
@@ -114,9 +111,6 @@ def save_libs(files, path, out_path, library_set):
                         full_name=svg_desc['full_name'],
                         svg_path=os.path.join(
                             library_svg_folder, component_svg),
-                        parent_component=LibraryComponent.objects.get(
-                            name=svg_desc['name'],
-                            component_library=library
-                        )
+                        parent_component=component
                     )
                     alternate_component.save()
