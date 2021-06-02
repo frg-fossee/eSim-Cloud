@@ -10,7 +10,7 @@ Attributes:
 
  - Name [Has to be unique]
  - Description 
- - *boolean* Public: Used for making all the publications public for that particular state (eg. Published state should have this true)
+ - *boolean* Public: Used for making all the projects public for that particular state (eg. Published state should have this true)
  - *boolean* Report: Used for making a state which represents "Reported" (Make sure only one state has this value set to true)
  
  Suggested States:
@@ -25,7 +25,7 @@ Attributes:
 Every group has a custom group model attached to it which lets you define the following parameters:
 
 Attributes:
- - Other Circuit Accessible States: This is a many select field which specifies the states which can be accessed by that specific group (For example, for Contributor, it can only access other user's publications which are published and for reviewer, it can access Review, Reported and Published as well)
+ - Other Circuit Accessible States: This is a many select field which specifies the states which can be accessed by that specific group (For example, for Contributor, it can only access other user's projects which are published and for reviewer, it can access Review, Reported and Published as well)
  -  *boolean*  Is Arduino: Specifies whether the role is for arduino or e-sim (True for arduino and false for esim)
  - *boolean*  Is Type Reviewer: This gives that group the ability to review the reported circuits.
 

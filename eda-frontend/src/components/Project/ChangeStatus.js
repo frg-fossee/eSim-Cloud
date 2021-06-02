@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { getStatus, changeStatus } from '../../redux/actions'
 
-function ChangeStatus({ publication }) {
+function ChangeStatus({ project }) {
     const dispatch = useDispatch()
     const [status, setStatus] = React.useState(null)
     const [note, setNote] = React.useState("")
@@ -11,31 +11,31 @@ function ChangeStatus({ publication }) {
         setStatus(event.target.value)
     };
     const clickChangeStatus = () => {
-        dispatch(changeStatus(publication.details.publication_id, status, note))
+        dispatch(changeStatus(project.details.project_id, status, note))
     }
     const onChangeNote = (e) => {
         setNote(e.target.value)
     }
     useEffect(() => {
-        if(publication.details.history.reverse()[1].reviewer_notes)
+        if(project.details.history.reverse()[1].reviewer_notes)
         {
-            setNote(publication.details.history.reverse()[1].reviewer_notes)
+            setNote(project.details.history.reverse()[1].reviewer_notes)
         }
-        dispatch(getStatus(publication.details?.publication_id))
-    }, [dispatch, publication.details])
+        dispatch(getStatus(project.details?.project_id))
+    }, [dispatch, project.details])
     return (
         <Paper>
-            {publication.states &&
+            {project.states &&
                 <div style={{ padding: ' 0 1% 1% 1%', textAlign: 'left' }}>
                     <br />
                     <h3 style={{ marginTop: '0' }}>Review the project and change it's state</h3>
-                    <h3 style={{ marginTop: '0' }}>Current State : {publication.details?.status_name}</h3>
+                    <h3 style={{ marginTop: '0' }}>Current State : {project.details?.status_name}</h3>
                     <TextField
                         style={{ width: '50%', marginBottom: '2%' }}
                         placeholder='Reviewer Notes'
                         multiline
                         value={note}
-                        defaultValue={publication.details.history.reverse()[1].reviewer_notes}
+                        defaultValue={project.details.history.reverse()[1].reviewer_notes}
                         onChange={onChangeNote}
                         rows={2} />
                     <InputLabel style={{ marginTop: '0' }}>Select and Change the status of this project</InputLabel>
@@ -46,7 +46,7 @@ function ChangeStatus({ publication }) {
                         onChange={handleSelectChange}
                         value={status}
                     >
-                        {publication.states.map((item, index) =>
+                        {project.states.map((item, index) =>
                         (
                             <MenuItem value={item}>{item}</MenuItem>
                         ))}

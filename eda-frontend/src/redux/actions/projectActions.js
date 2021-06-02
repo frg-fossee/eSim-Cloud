@@ -1,7 +1,7 @@
 import * as actions from './actions'
 import api from '../../utils/Api'
 
-export const createPublication = (save_id, details) => (dispatch, getState) => {
+export const createProject = (save_id, details) => (dispatch, getState) => {
   // Get token from localstorage
   const token = localStorage.getItem("esim_token")
 
@@ -16,12 +16,12 @@ export const createPublication = (save_id, details) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  console.log(details)
-  api.post(`/publish/publication/${save_id}`, details, config)
+
+  api.post(`/publish/project/${save_id}`, details, config)
     .then(
       (res) => {
         dispatch({
-          type: actions.SET_CURRENT_PUBLICATION,
+          type: actions.SET_CURRENT_PROJECT,
           payload: res.data
         })
       }
@@ -29,10 +29,10 @@ export const createPublication = (save_id, details) => (dispatch, getState) => {
     .catch((err) => { console.error(err) })
 }
 
-export const fetchPublication = () => (dispatch, getState) => {
+export const fetchProject = () => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
-  const publication_id = getState().saveSchematicReducer.details.publication_id
+  const project_id = getState().saveSchematicReducer.details.project_id
   // add headers
   const config = {
     headers: {
@@ -44,30 +44,29 @@ export const fetchPublication = () => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.get('publish/publication/' + publication_id, config)
+  api.get('/publish/project/' + project_id, config)
     .then(
       (res) => {
         dispatch({
-          type: actions.SET_CURRENT_PUBLICATION,
+          type: actions.SET_CURRENT_PROJECT,
           payload: res.data
         })
         if (res.data.is_reported) {
-          dispatch(fetchReports(publication_id))
+          dispatch(fetchReports(project_id))
         }
       }
     )
     .catch((err) => {
-      if(err.response.status == 401)
+      if(err.response.status === 401)
       {
-        console.log("Hello")
         dispatch({
-          type:actions.SET_CURRENT_PUBLICATION,
-          payload:"400"
+          type:actions.SET_CURRENT_PROJECT,
+          payload:"401"
         })
       }
     })
 }
-export const fetchReports = (publicationID) => (dispatch, getState) => {
+export const fetchReports = (projectID) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
 
@@ -82,7 +81,7 @@ export const fetchReports = (publicationID) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.get('workflow/report/' + publicationID, config)
+  api.get('workflow/report/' + projectID, config)
     .then(
       (res) => {
         if (res.data.open !== [] && res.data.closed !== [] && res.data.approved !== [])
@@ -94,7 +93,7 @@ export const fetchReports = (publicationID) => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
-export const resolveReports = (publicationID, stateName) => (dispatch, getState) => {
+export const resolveReports = (projectID, stateName) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
 
@@ -109,7 +108,7 @@ export const resolveReports = (publicationID, stateName) => (dispatch, getState)
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.post('workflow/report/resolve/' + publicationID, { name: stateName }, config)
+  api.post('workflow/report/resolve/' + projectID, { name: stateName }, config)
     .then(
       (res) => {
         dispatch({
@@ -121,10 +120,10 @@ export const resolveReports = (publicationID, stateName) => (dispatch, getState)
     .catch((err) => { console.error(err) })
 }
 
-export const getStatus = (publication_id) => (dispatch, getState) => {
+export const getStatus = (project_id) => (dispatch, getState) => {
   const token = getState().authReducer.token
-  if (!publication_id) {
-    publication_id = getState().saveSchematicReducer.details.publication_id
+  if (!project_id) {
+    project_id = getState().saveSchematicReducer.details.project_id
   }
 
   // add headers
@@ -138,7 +137,7 @@ export const getStatus = (publication_id) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.get(`/workflow/state/${publication_id}`, config)
+  api.get(`/workflow/state/${project_id}`, config)
     .then((res) => {
       console.log(res.data)
       dispatch({
@@ -148,7 +147,7 @@ export const getStatus = (publication_id) => (dispatch, getState) => {
     })
     .catch(error => console.log(error))
 }
-export const changeStatus = (publication_id, status,notes) => (dispatch, getState) => {
+export const changeStatus = (project_id, status,notes) => (dispatch, getState) => {
   //post the state
   const token = localStorage.getItem("esim_token")
   // add headers
@@ -162,18 +161,18 @@ export const changeStatus = (publication_id, status,notes) => (dispatch, getStat
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.post(`/workflow/state/${publication_id}`,
+  api.post(`/workflow/state/${project_id}`,
     {
       'name': status,
       'note':notes
     }, config)
-    .then(() => {
-      dispatch(fetchPublication())
+    .then((res) => {
+      dispatch(fetchProject())
       dispatch(getStatus())
     })
     .catch(error => console.log(error))
 }
-export const reportPublication = (reportDescription, publication_id) => (dispatch, getState) => {
+export const reportProject = (reportDescription, project_id) => (dispatch, getState) => {
   // Get token from localstorage
   if (reportDescription) {
     const token = getState().authReducer.token
@@ -187,16 +186,16 @@ export const reportPublication = (reportDescription, publication_id) => (dispatc
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.post(`workflow/report/create/${publication_id}`, { 'description': reportDescription }, config)
+    api.post(`workflow/report/create/${project_id}`, { 'description': reportDescription }, config)
       .then(
         (res) => {
-          dispatch(fetchReports(publication_id))
+          dispatch(fetchReports(project_id))
         }
       )
       .catch((err) => { console.error(err) })
   }
 }
-export const approveReports = (publication_id, reports, status) => (dispatch, getState) => {
+export const approveReports = (project_id, reports, status) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
   // add headers
@@ -209,14 +208,14 @@ export const approveReports = (publication_id, reports, status) => (dispatch, ge
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.post(`workflow/report/approve/${publication_id}`,
+  api.post(`workflow/report/approve/${project_id}`,
     {
       'reports': reports,
       'state': { 'name': status }
     }, config)
     .then(
       (res) => {
-        dispatch(fetchReports(publication_id))
+        dispatch(fetchReports(project_id))
       }
     )
     .catch((err) => { console.error(err) })

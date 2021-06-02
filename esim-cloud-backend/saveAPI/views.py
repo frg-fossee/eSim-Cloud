@@ -65,7 +65,7 @@ class CopyStateView(APIView):
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
             saved_state.save_id = None
-            saved_state.publication = None
+            saved_state.project = None
             saved_state.name = "Copy of " + saved_state.name
             saved_state.owner = self.request.user
             saved_state.save()
@@ -172,12 +172,12 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
-            if saved_state.owner == self.request.user and Permission.objects.filter(role__in=self.request.user.groups.all(), del_own_states=saved_state.publication.state).exists():
+            if saved_state.owner == self.request.user and Permission.objects.filter(role__in=self.request.user.groups.all(), del_own_states=saved_state.project.state).exists():
                 pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
-            if saved_state.publication is not None:
-                saved_state.publication.delete()
+            if saved_state.project is not None:
+                saved_state.project.delete()
             saved_state.delete()
             return Response({'done': True})
         else:

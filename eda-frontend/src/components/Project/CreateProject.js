@@ -25,7 +25,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux'
-import { changeStatus, createPublication, getStatus } from '../../redux/actions'
+import { changeStatus, createProject, getStatus } from '../../redux/actions'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -54,7 +54,7 @@ function CreateProject() {
   const [open, setOpen] = useState(false)
   const classes = useStyles();
   const dispatch = useDispatch()
-  const publication = useSelector(state => state.publicationReducer)
+  const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
   const save_id = useSelector(state => state.saveSchematicReducer.details.save_id)
   const owner = useSelector(state => state.saveSchematicReducer.details.owner)
@@ -67,14 +67,15 @@ function CreateProject() {
   const [fields, setFields] = useState([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
   const [changed, setChanged] = useState(0)
   useEffect(() => {
-    if (open && publication.details?.publication_id) {
-      dispatch(getStatus(publication.details?.publication_id))
+    if (open && project.details?.project_id) {
+      dispatch(getStatus(project.details?.project_id))
+      console.log(project.details)
     }
-    if (publication.details) {
-      setDetails({ title: publication.details.title, description: publication.details.description })
-      setFields(publication.details.fields)
+    if (project.details) {
+      setDetails({ title: project.details.title, description: project.details.description })
+      setFields(project.details.fields)
     }
-  }, [open, dispatch, publication.details])
+  }, [open, dispatch, project.details])
   const handleSelectChange = (event) => {
     if (changed === 0) {
       setChanged(2)
@@ -108,24 +109,34 @@ function CreateProject() {
     setOpen(!open);
   };
   const createPub = () => {
-    dispatch(createPublication(save_id, [details, fields]))
+    dispatch(createProject(save_id, [details, fields]))
   }
   const clickChange = () => {
     console.log(changed)
-    if (changed === 1 || changed === 3) {
-      dispatch(createPublication(save_id, [details, fields]))
+    if (changed === 1) {
+      dispatch(createProject(save_id, [details, fields]))
     }
-    if (changed === 2 || changed === 3) {
-      dispatch(changeStatus(publication.details.publication_id, status, ''))
+    else if (changed === 2) {
+      dispatch(changeStatus(project.details.project_id, status, ''))
     }
+    else if (changed === 3) {
+      dispatch(createProject(save_id, [details, fields,status]))
+    }
+    setChanged(0)
   }
   const clickPreview = () => {
     let win = window.open();
-    win.location.href = '/eda/#/publication?save_id=' + publication.details.save_id + '&publication_id=' + publication.details.publication_id
+    win.location.href = '/eda/#/project?save_id=' + project.details.save_id + '&project_id=' + project.details.project_id
     win.focus();
   }
   const addField = () => {
     setFields([...fields, { name: '', text: '' }])
+    if (changed === 0) {
+      setChanged(1)
+    }
+    else if (changed === 2) {
+      setChanged(3)
+    }
   }
   const onClickShift = (type, index) => {
     if (type === 'above') {
@@ -148,6 +159,12 @@ function CreateProject() {
     console.log(e)
     list.splice(e, 1)
     setFields(list)
+    if (changed === 0) {
+      setChanged(1)
+    }
+    else if (changed === 2) {
+      setChanged(3)
+    }
   }
   return (
     <div>
@@ -177,13 +194,13 @@ function CreateProject() {
               Project Details
             </Typography>
 
-            {!publication.details && <Button color="inherit" onClick={createPub}>
+            {!project.details && <Button color="inherit" onClick={createPub}>
               Create Project
             </Button>}
-            {publication.details && <Button color="inherit" onClick={clickPreview}>
+            {project.details && <Button color="inherit" onClick={clickPreview}>
               Preview
             </Button>}
-            {publication.details && changed !== 0 && <Button color="inherit" onClick={clickChange}>
+            {project.details && changed !== 0 && <Button color="inherit" onClick={clickChange}>
               Update Project
             </Button>}
           </Toolbar>
@@ -197,9 +214,9 @@ function CreateProject() {
             alignItems="flex-start"
           >
             <Grid item xs={12} sm={12}>
-              {publication.details && <Paper style={{ padding: '.2% 0%', marginBottom: "1%" }}>
-                <h3 style={{ textAlign: 'center' }}>Status of the project: {publication.details.status_name}  </h3>
-                {publication.details.history && publication.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {publication.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
+              {project.details && <Paper style={{ padding: '.2% 0%', marginBottom: "1%" }}>
+                <h3 style={{ textAlign: 'center' }}>Status of the project: {project.details.status_name}  </h3>
+                {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
               <Paper className={classes.paper}>
 
@@ -212,7 +229,7 @@ function CreateProject() {
                   name='title'
                   type="text"
                   fullWidth
-                  disabled={!publication.states && publication.details}
+                  disabled={project.details && !project.details.can_edit}
                   value={details.title}
                   onChange={changeFieldText}
 
@@ -226,16 +243,16 @@ function CreateProject() {
                   name='description'
                   rows={4}
                   type="text"
-                  disabled={!publication.states && publication.details}
+                  disabled={project.details && !project.details.can_edit}
                   value={details.description}
                   onChange={changeFieldText}
                   fullWidth
                 />
-                {fields.map((item, index) =>
+                {fields && fields.map((item, index) =>
                 (
                   <>
                     <hr />
-                    {publication.states && publication.details &&
+                    {project.details && project.details.can_edit &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -259,7 +276,7 @@ function CreateProject() {
                       label={"Title " + index}
                       type="text"
                       name='name'
-                      disabled={!publication.states && publication.details}
+                      disabled={project.details && !project.details.can_edit}
                       value={item.name}
                       onChange={changeFieldText}
                       fullWidth
@@ -273,7 +290,7 @@ function CreateProject() {
                       rows={4}
                       type="text"
                       name='text'
-                      disabled={!publication.states && publication.details}
+                      disabled={project.details && !project.details.can_editt}
                       value={item.text}
                       onChange={changeFieldText}
                       fullWidth
@@ -281,9 +298,9 @@ function CreateProject() {
                   </>
                 ))}
                 <br />
-                {((publication.states && publication.details) || !publication.details) && <Button onClick={addField}>+ Add Field</Button>}
-                {publication.details && <>{
-                  publication.states ?
+                {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
+                {project.details && <>{
+                  project.states ?
                     <div style={{ textAlign: 'left' }}>
                       <br />
                       <InputLabel id="demo-simple-select-label">Change Status</InputLabel>
@@ -294,7 +311,7 @@ function CreateProject() {
                         onChange={handleSelectChange}
                         value={status}
                       >
-                        {publication.states.map((item, index) =>
+                        {project.states.map((item, index) =>
                         (
                           <MenuItem value={item}>{item}</MenuItem>
                         ))}
@@ -308,9 +325,9 @@ function CreateProject() {
               <Paper style={{ paddingTop: '0%', padding: '2%' }}>
                 <List>
                   <h3>List of Approved Reports</h3>
-                  {publication.reports?.approved[0] ?
+                  {project.reports?.approved[0] ?
                     <>
-                      {publication.reports.approved.map((item, index) => (
+                      {project.reports.approved.map((item, index) => (
                         <ListItem>
                           {index + 1}. {item.description}
                         </ListItem>
@@ -323,9 +340,9 @@ function CreateProject() {
               <Paper style={{ padding: '2%' }}>
                 <List>
                   <h3>History of this Project</h3>
-                  {(publication.details?.history && publication.details?.history[0]) ?
+                  {(project.details?.history && project.details?.history[0]) ?
                     <>
-                      {publication.details.history.slice(0).reverse().map((item, index) => (
+                      {project.details.history.slice(0).reverse().map((item, index) => (
                         <ListItem>
                           <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
                             <br />

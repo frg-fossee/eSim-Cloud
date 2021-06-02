@@ -1,5 +1,5 @@
 from django.contrib import admin
-from publishAPI.models import Publication, CircuitTag,TransitionHistory,Report
+from publishAPI.models import Project, CircuitTag,TransitionHistory,Report
 
 @admin.register(CircuitTag)
 class CircuitTagAdmin(admin.ModelAdmin):
@@ -8,15 +8,15 @@ class CircuitTagAdmin(admin.ModelAdmin):
 
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
-    list_display=('id','publication','report_time')
-    readonly_fields=('publication','report_time','reporter','resolver')
+    list_display=('id','project','report_time')
+    readonly_fields=('project','report_time','reporter','resolver')
 
 class HistoryInline(admin.TabularInline):
     model = TransitionHistory
     readonly_fields = ('id','transition_author','transition_time','from_state','to_state')
 
 
-@admin.register(Publication)
+@admin.register(Project)
 class CircuitAdmin(admin.ModelAdmin):
     inlines=[HistoryInline,]
     list_display = ('title',)

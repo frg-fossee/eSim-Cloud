@@ -23,7 +23,7 @@ import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { fetchSchematic, loadGallery, reportPublication, makeCopy } from '../redux/actions/index'
+import { fetchSchematic, loadGallery, reportProject, makeCopy } from '../redux/actions/index'
 import { useDispatch, useSelector } from 'react-redux'
 import SimulationProperties from '../components/SchematicEditor/SimulationProperties'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
@@ -61,7 +61,7 @@ const styles = (theme) => ({
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
-export default function PublicationPage(props) {
+export default function ProjectPage(props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()
@@ -69,7 +69,7 @@ export default function PublicationPage(props) {
   const [simulateOpen, setSimulateOpen] = React.useState(false)
   const [reportOpen, setReportOpen] = React.useState(false)
   const [reportDescription, setDescription] = React.useState(null)
-  const publication = useSelector(state => state.publicationReducer)
+  const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
 
   const DialogTitle = withStyles(styles)((props) => {
@@ -97,10 +97,10 @@ export default function PublicationPage(props) {
   const onClick = (type) => {
     const query = new URLSearchParams(props.location.search)
     var save_id = query.get('save_id')
-    var publication_id = query.get('publication_id')
+    var project_id = query.get('project_id')
     switch (type) {
       case "Report":
-        dispatch(reportPublication(reportDescription, publication_id))
+        dispatch(reportProject(reportDescription, project_id))
         handleReportOpen()
         break;
       case "Make copy":
@@ -135,24 +135,24 @@ export default function PublicationPage(props) {
   return (
     <div className={classes.root}>
       <LayoutMain>
-        {publication.details !== "400" ?
+        {project.details !== "400" ?
           <Grid container>
             <Grid item xs={1} />
             <Grid item xs={10}>
               <div className={classes.toolbar} />
               <Typography>
-                {publication.details && <h1 style={{ marginBottom: '0' }}>{publication.details.title}</h1>}
-                {publication.details && <h4 style={{ marginTop: '0' }}>By: {publication.details.author_name} </h4>}
+                {project.details && <h1 style={{ marginBottom: '0' }}>{project.details.title}</h1>}
+                {project.details && <h4 style={{ marginTop: '0' }}>By: {project.details.author_name} </h4>}
               </Typography>
-              {publication.reports && publication.details.is_reported &&
-                <ReportComponent publication={publication} location={props.location} />
+              {project.reports && project.details.is_reported &&
+                <ReportComponent project={project} location={props.location} />
               }
-              {publication.details && !publication.details?.is_reported && publication.details?.author_name !== auth.user?.username &&
-                <ChangeStatus publication={publication} />
+              {project.details && !project.details?.is_reported && project.details?.author_name !== auth.user?.username &&
+                <ChangeStatus project={project} />
               }
               <Typography>
-                <h3>{publication.details?.description}</h3>
-                {publication.details && publication.details?.fields && publication.details.fields.map(item => (
+                <h3>{project.details?.description}</h3>
+                {project.details && project.details?.fields && project.details.fields.map(item => (
                   <p>
                     <h2 style={{ marginTop: '0' }}>{item.name}</h2>
                     <h3 style={{ marginTop: '0' }}>{item.text}</h3>
@@ -175,7 +175,7 @@ export default function PublicationPage(props) {
                 onClose={handleReportOpen}
                 fullWidth={true}
                 maxWidth={'md'} >
-                <DialogTitle>Report this publication</DialogTitle>
+                <DialogTitle>Report this project</DialogTitle>
                 <DialogContent style={{ padding: '3%' }}>
                   <TextField
                     multiline
@@ -245,9 +245,9 @@ export default function PublicationPage(props) {
                   <Paper style={{ padding: '2%', marginTop: '3%' }}>
                     <List>
                       <h3>History of this Project</h3>
-                      {publication.details?.history[0] ?
+                      {project.details?.history[0] ?
                         <>
-                          {publication.details.history.slice(0).reverse().map((item, index) => (
+                          {project.details.history.slice(0).reverse().map((item, index) => (
                             <ListItem>
                               <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
                                 <br />

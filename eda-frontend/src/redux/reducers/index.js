@@ -7,7 +7,7 @@ import authReducer from './authReducer'
 import saveSchematicReducer from './saveSchematicReducer'
 import dashboardReducer from './dashboardReducer'
 import accountReducer from './accountReducer'
-import publicationReducer from './publicationReducer'
+import projectReducer from './projectReducer'
 export default combineReducers({
   schematicEditorReducer,
   componentPropertiesReducer,
@@ -17,5 +17,5 @@ export default combineReducers({
   saveSchematicReducer,
   dashboardReducer,
   accountReducer,
-  publicationReducer
+  projectReducer
 })

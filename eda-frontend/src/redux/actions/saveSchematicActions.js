@@ -5,7 +5,7 @@ import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
 import { setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'
-import { fetchPublication } from './publicationActions'
+import { fetchProject } from './projectActions'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -118,9 +118,9 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
         dispatch(setSchTitle(res.data.name))
         dispatch(setSchDescription(res.data.description))
         dispatch(setSchXmlData(res.data.data_dump))
-        if(res.data.publication_id !== undefined)
+        if(res.data.project_id !== undefined)
         {
-          dispatch(fetchPublication())
+          dispatch(fetchProject())
         }
         renderGalleryXML(res.data.data_dump)
         if (res.data.esim_libraries.length > 0) {

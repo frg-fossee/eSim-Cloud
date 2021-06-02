@@ -26,7 +26,7 @@ export default function KeyboardShortcuts(graph) {
   //   }
   // })
 
-  if (window.location.href.split("/")[5].substring(0, 11) !== 'publication') {
+  if (window.location.href.split("/")[5].substring(0, 11) !== 'project') {
     // Undo - Ctrl + Z
     keyHandler.bindControlKey(90, function (evt) {
       if (graph.isEnabled()) {

@@ -11,9 +11,6 @@ import {
   ListItemText,
   Fade,
   MenuItem,
-  Popper,
-  Paper,
-  ListItem, List
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
@@ -21,8 +18,6 @@ import { Link as RouterLink, useHistory } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import store from '../../redux/store'
 import { logout } from '../../redux/actions/index'
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {

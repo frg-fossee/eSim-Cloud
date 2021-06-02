@@ -29,7 +29,6 @@ export const loadUser = () => (dispatch, getState) => {
     .then(
       (res) => {
         if (res.status === 200) {
-          console.log(res.data)
           dispatch({
             type: actions.USER_LOADED,
             payload: {
@@ -309,43 +308,36 @@ export const resetPassword = (email) => (dispatch) => {
   const body = {
     email: email
   }
+
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   }
-  api.post('auth/users/reset_password_confirm/', body, config)
+
+  api.post('auth/users/reset_password/', body, config)
     .then((res) => {
       if (res.status >= 200 || res.status < 304) {
         dispatch({
-          type: actions.RESET_PASSWORD_CONFIRM_SUCCESSFUL,
+          type: actions.RESET_PASSWORD_SUCCESSFUL,
           payload: {
-            data: 'The password has been reset successfully.'
+            data: 'The password reset link has been sent to your email account.'
           }
         })
         setTimeout(() => {
           window.location.href = '/eda/#/login'
         }, 2000)
+        // history.push('/login')
       }
     })
     .catch((err) => {
       var res = err.response
       if ([400, 401, 403, 304].includes(res.status)) {
-        // eslint-disable-next-line camelcase
-        const { new_password, re_new_password, non_field_errors, token } = res.data
-        const defaultErrors = ['Password reset failed.']
-        // eslint-disable-next-line camelcase
-        var message = (new_password || re_new_password || non_field_errors || defaultErrors)[0]
-
-        if (token) {
-          // Override message if it's a token error
-          message = 'Either the password has already been changed or you have the incorrect URL'
-        }
-
-        dispatch(resetPasswordConfirmError(message))
+        dispatch(resetPasswordError(res.data))
       }
     })
-  }
+}
   //API call for fetching user role.
   export const fetchRole = () => (dispatch, getState) => {
     const token = getState().authReducer.token

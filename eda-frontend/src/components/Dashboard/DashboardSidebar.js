@@ -14,7 +14,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchMyPublications, fetchSchematics, fetchOtherPublications, fetchRole } from '../../redux/actions/index'
+import { fetchSchematics, fetchOtherProjects, fetchRole } from '../../redux/actions/index'
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '45px'
@@ -53,7 +53,7 @@ export default function DashSidebar(props) {
   // For Fetching Saved Schematics
   useEffect(() => {
     dispatch(fetchSchematics())
-    dispatch(fetchOtherPublications())
+    dispatch(fetchOtherProjects())
     dispatch(fetchRole())
   }, [dispatch])
 
@@ -131,7 +131,7 @@ export default function DashSidebar(props) {
         {auth.roles && auth.roles.is_type_reviewer &&
           <ListItem
             component={RouterLink}
-            to="/dashboard/reviewpublications"
+            to="/dashboard/review_projects"
             className={classes.sideItem}
             button
           >

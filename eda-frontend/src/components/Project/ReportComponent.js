@@ -73,15 +73,15 @@ function ReportComponent(props) {
   const [tab, setTab] = React.useState(0)
   const [reportApproved, setReportApproved] = React.useState(false)
   const auth = useSelector(state => state.authReducer)
-  const stateList = useSelector(state => state.publicationReducer.states)
+  const stateList = useSelector(state => state.projectReducer.states)
   const dispatch = useDispatch()
 
   useEffect(() => {
     const query = new URLSearchParams(props.location.search)
-    var publication_id = query.get('publication_id')
+    var project_id = query.get('project_id')
     dispatch(fetchRole())
     if (!reportDetailsOpen) {
-      dispatch(getStatus(publication_id))
+      dispatch(getStatus(project_id))
     }
   }, [props.location.search, dispatch, reportDetailsOpen])
 
@@ -115,10 +115,10 @@ function ReportComponent(props) {
   }
   const onClick = (type) => {
     const query = new URLSearchParams(props.location.search)
-    var publication_id = query.get('publication_id')
+    var project_id = query.get('project_id')
     switch (type) {
       case "Change State":
-        dispatch(approveReports(publication_id, reportStatus, status))
+        dispatch(approveReports(project_id, reportStatus, status))
         handleReportDetailsOpen()
         break;
       default:
@@ -141,7 +141,7 @@ function ReportComponent(props) {
   return (
     <>{auth.user && <Paper style={{ padding: '0.06% 1%' }}>
 
-      <h3 style={{ color: 'red' }}>This is a reported publication
+      <h3 style={{ color: 'red' }}>This is a reported project
     <Button style={{ float: 'right', verticalAlign: 'super' }} onClick={handleReportDetailsOpen}>View Reports</Button></h3>
       <Dialog
         open={reportDetailsOpen}
@@ -151,20 +151,20 @@ function ReportComponent(props) {
         <DialogTitle style={{ paddingBottom: '0' }}><h1 style={{ marginBottom: '0', marginTop: '0' }}>Reports</h1></DialogTitle>
         <DialogContent>
           <Tabs value={tab} onChange={handleChangeTab}>
-            {auth.user.username !== props.publication.details.author_name && <Tab label="Open Reports"  {...a11yProps(0)} />}
+            {auth.user.username !== props.project.details.author_name && <Tab label="Open Reports"  {...a11yProps(0)} />}
             <Tab label="Approved Reports"  {...a11yProps(1)} />
-            {auth.user.username !== props.publication.details.author_name && <Tab label="Closed Reports"  {...a11yProps(2)} />}
+            {auth.user.username !== props.project.details.author_name && <Tab label="Closed Reports"  {...a11yProps(2)} />}
           </Tabs>
-          {auth.user.username !== props.publication.details.author_name && <TabPanel value={tab} index={0}>
-            {props.publication.reports.open[0] ? <h3 style={{ marginTop: '0' }}>Do you want to approve any reports?</h3> : <h3 style={{ marginTop: '0' }}>No open reports</h3>}
-            {props.publication.reports && props.publication.reports.open.map((item, index) => (
+          {auth.user.username !== props.project.details.author_name && <TabPanel value={tab} index={0}>
+            {props.project.reports.open[0] ? <h3 style={{ marginTop: '0' }}>Do you want to approve any reports?</h3> : <h3 style={{ marginTop: '0' }}>No open reports</h3>}
+            {props.project.reports && props.project.reports.open.map((item, index) => (
               <Paper style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
                     <p>
                       {item.description}
                     </p>
-                  </Grid>{auth.user.username !== props.publication.details.author_name &&
+                  </Grid>{auth.user.username !== props.project.details.author_name &&
                     <Grid item xs={6}>
                       <Select
                         defaultValue={item.approved}
@@ -181,8 +181,8 @@ function ReportComponent(props) {
               </Paper>
             ))}
           </TabPanel>}
-          <TabPanel value={tab} index={auth.user.username !== props.publication.details.author_name ? 1 : 0}>
-            {props.publication.reports && props.publication.reports.approved.map((item, index) => (
+          <TabPanel value={tab} index={auth.user.username !== props.project.details.author_name ? 1 : 0}>
+            {props.project.reports && props.project.reports.approved.map((item, index) => (
               <Paper style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
@@ -190,22 +190,22 @@ function ReportComponent(props) {
                       {item.description}
                     </p>
                   </Grid>
-                  {auth.user.username !== props.publication.details.author_name &&
+                  {auth.user.username !== props.project.details.author_name &&
                     <Grid item xs={6}>
                     </Grid>}
                 </Grid>
               </Paper>
             ))}
           </TabPanel>
-          {auth.user.username !== props.publication.details.author_name && <TabPanel value={tab} index={2}>
-            {props.publication.reports && props.publication.reports.closed.map((item, index) => (
+          {auth.user.username !== props.project.details.author_name && <TabPanel value={tab} index={2}>
+            {props.project.reports && props.project.reports.closed.map((item, index) => (
               <Paper style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
                     <p>
                       {item.description}
                     </p>
-                  </Grid>{auth.user.username !== props.publication.details.author_name &&
+                  </Grid>{auth.user.username !== props.project.details.author_name &&
                     <Grid item xs={6}>
                     </Grid>}
                 </Grid>
@@ -213,7 +213,7 @@ function ReportComponent(props) {
               </Paper>
             ))}
           </TabPanel>}
-          {stateList && ((tab === 1 && props.publication.reports.approved[0]) || (tab === 0 && reportApproved)) && auth.user.username !== props.publication.details.author_name &&
+          {stateList && ((tab === 1 && props.project.reports.approved[0]) || (tab === 0 && reportApproved)) && auth.user.username !== props.project.details.author_name &&
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -230,8 +230,8 @@ function ReportComponent(props) {
             </Select>}
         </DialogContent>
         {auth.roles && <DialogActions>
-          {auth.user.username !== props.publication.details.author_name && props.publication.reports.approved[0] && auth.roles.is_type_reviewer && tab === 1 && <Button onClick={() => {
-            dispatch(resolveReports(props.publication.details.publication_id, status))
+          {auth.user.username !== props.project.details.author_name && props.project.reports.approved[0] && auth.roles.is_type_reviewer && tab === 1 && <Button onClick={() => {
+            dispatch(resolveReports(props.project.details.project_id, status))
             handleReportDetailsOpen()
           }}>Resolve All Reports</Button>}
           {auth.roles.is_type_reviewer && (reportStatus) &&

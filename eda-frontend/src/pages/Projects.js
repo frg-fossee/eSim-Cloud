@@ -2,8 +2,8 @@ import { Card, Grid, Container,CssBaseline, CardContent, Typography } from '@mat
 import React, { useEffect } from 'react'
 import { useSelector ,useDispatch} from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import PublicationCard from '../components/Dashboard/PublicationCard'
-import { fetchPublicPublications} from '../redux/actions/index'
+import ProjectCard from '../components/Dashboard/ProjectCard'
+import { fetchPublicProjects} from '../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
     mainHead: {
@@ -49,13 +49,13 @@ function MainCard () {
   }
   
 
-function Publications(props) {
+function PublicProjects(props) {
     const classes = useStyles()
     const dispatch = useDispatch()
 
-    const publications = useSelector(state => state.dashboardReducer.publicPublications)
+    const projects = useSelector(state => state.dashboardReducer.publicProjects)
     useEffect(() => {
-        dispatch(fetchPublicPublications())
+        dispatch(fetchPublicProjects())
     }, [dispatch])
     return (
         <div className={classes.root}>
@@ -75,12 +75,12 @@ function Publications(props) {
                     </Grid>
 
                     {/* Listing Gallery Schematics */}
-                    {publications.map(
+                    {projects.map(
                         (pub) => {
                             console.log(pub)
                             return (
                                 <Grid item xs={12} sm={6} lg={4} key={pub.save_id}>
-                                    <PublicationCard pub={pub} is_review={true}/>
+                                    <ProjectCard pub={pub} is_review={true}/>
                                 </Grid>
                             )
                         }
@@ -92,4 +92,4 @@ function Publications(props) {
     )
 }
 
-export default Publications;
+export default PublicProjects;

@@ -2,7 +2,7 @@ import {  Card, Grid, CardContent, Typography } from '@material-ui/core'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
-import PublicationCard from './PublicationCard'
+import ProjectCard from './ProjectCard'
 
 
 const useStyles = makeStyles({
@@ -16,8 +16,8 @@ const useStyles = makeStyles({
         color: '#80ff80'
     },
 })
-function DashboardOtherPublications() {
-    const publications = useSelector(state => state.dashboardReducer.otherPublications)
+function DashboardOtherProjects() {
+    const projects = useSelector(state => state.dashboardReducer.otherProjects)
     const classes = useStyles()
     return (
         <>
@@ -40,13 +40,13 @@ function DashboardOtherPublications() {
                         </CardContent>
                     </Card>
                 </Grid>
-                {publications.length !== 0
+                {projects.length !== 0
                     ? <>
-                        {publications.map(
-                            (publication) => {
+                        {projects.map(
+                            (project) => {
                                 return (
-                                    <Grid item xs={12} sm={6} lg={3} key={publication.save_id}>
-                                    <PublicationCard pub={publication} is_review={true}/>
+                                    <Grid item xs={12} sm={6} lg={3} key={project.save_id}>
+                                    <ProjectCard pub={project} is_review={true}/>
                                     </Grid>
                                 )
                             }
@@ -65,4 +65,4 @@ function DashboardOtherPublications() {
     )
 }
 
-export default DashboardOtherPublications
+export default DashboardOtherProjects

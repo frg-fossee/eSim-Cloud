@@ -1,6 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
-from publishAPI.models import CircuitTag, Publication, Report, TransitionHistory,Field
+from .models import CircuitTag, Project, Report, TransitionHistory,Field
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -43,14 +43,15 @@ class TransitionHistorySerializer(serializers.ModelSerializer):
                   'from_state_name',
                   'to_state_name',
                   'transition_time',
-                  'reviewer_notes')
+                  'reviewer_notes',
+                  'is_done_by_reviewer')
 
 class FieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = Field
         fields=('name','text')
 
-class PublicationSerializer(serializers.ModelSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(
         max_length=None, use_url=True, source='statesave.base64_image')
     status_name = serializers.CharField(read_only=True, source='state.name')
@@ -61,8 +62,8 @@ class PublicationSerializer(serializers.ModelSerializer):
         read_only=True, source='author.username')
     fields = FieldSerializer(many=True)
     class Meta:
-        model = Publication
-        fields = ('publication_id',
+        model = Project
+        fields = ('project_id',
                   'title',
                   'description',
                   'base64_image',

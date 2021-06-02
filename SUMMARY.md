@@ -3,7 +3,7 @@
  The problem statement revolved around creating a dynamic workflow, giving users roles,add 'states' to circuits and history generation.
  ## Implementation Steps:
 
- 1. Usage and extension of publish API, adding model State (implemented in workflow API) to the Circuit model as publications for the circuits will be handled from that API itself.
+ 1. Usage and extension of publish API, adding model State (implemented in workflow API) to the Circuit model as projects for the circuits will be handled from that API itself.
  2. Used Built-in Django Groups are used as they already are quite flexible and can be used as *roles* for a user.
  3. For defining transition and permissions for the state switching, wrote a model named Transition which has allowed *roles, from_state and to_state* as the attributes
  4. The admin can define transitions from one state to another with giving access to which roles can make those transitions and if the transition is allowed for the creator of the circuit. (When the reviewer creates a circuit, he is considered as a Contributor and thus, the reviewer for that circuit must be some other reviewer other than the one who created it.)
@@ -50,7 +50,7 @@ Admin has an access to see when and what states where changed of which circuits 
 
 The admin can view the state and transition history for that circuit in the django-admin panel.![Individual Transition History](https://i.ibb.co/njywKN7/gnome-shell-screenshot-XXPZZ0.png)
 
-Updated Dashboard sidebar to show logged-in user roles and my Publications tab.![Dashboard](https://i.ibb.co/Mf9WpNf/gnome-shell-screenshot-R4-D7-Z0.png)
+Updated Dashboard sidebar to show logged-in user roles and my projects tab.![Dashboard](https://i.ibb.co/Mf9WpNf/gnome-shell-screenshot-R4-D7-Z0.png)
 
 
 ## Demo Video:
@@ -59,7 +59,7 @@ Updated Dashboard sidebar to show logged-in user roles and my Publications tab.!
 ## Future Roadmap:
  - Full Integration of Front-end.
  - Ability to add multiple workflows.
- - Making use of Publication model from Publish API.
+ - Making use of project model from Publish API.
  - Converting circuit from save API to publish API.
 
  

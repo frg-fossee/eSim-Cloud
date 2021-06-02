@@ -9,7 +9,7 @@ const initialState =
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case actions.SET_CURRENT_PUBLICATION: {
+    case actions.SET_CURRENT_PROJECT: {
       return {
         ...state,
         details: action.payload

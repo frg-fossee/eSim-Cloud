@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
-import { Link, Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
 import { deleteSchematic } from '../../redux/actions/index'
@@ -136,7 +136,7 @@ export default function SchematicCard({ sch }) {
   }
   const clickViewProject = () => {
     let win = window.open();
-    win.location.href = '/eda/#/publication?save_id=' + sch.save_id + '&publication_id=' + sch.publication_id
+    win.location.href = '/eda/#/project?save_id=' + sch.save_id + '&project_id=' + sch.project_id
     win.focus();
   }
 
@@ -174,7 +174,7 @@ export default function SchematicCard({ sch }) {
         </ButtonBase>
         <CardActions>
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`}/>
-          {sch.publication_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
+          {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon

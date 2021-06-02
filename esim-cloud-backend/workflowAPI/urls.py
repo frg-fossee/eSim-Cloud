@@ -1,14 +1,14 @@
 from django.urls import path
-from .views import RetriveUserRoleView,PublicationStateView,RetrivePublicationsViewSet,ReportedPublicationsView
+from .views import RetriveUserRoleView,ProjectStateView,RetriveProjectsViewSet,ReportedProjectsView
 
 
 urlpatterns = [
     path('role/',RetriveUserRoleView.as_view(),name='getRole'),
-    path('report/',ReportedPublicationsView.as_view({'get':'list_publications'}),name='listReportedPublications'),
-    path('report/approve/<uuid:publication_id>',ReportedPublicationsView.as_view({'post':'approve_reports'}),name='approvePublications'),
-    path('report/create/<uuid:publication_id>',ReportedPublicationsView.as_view({'post':'report_publication'}),name='reportPublication'),
-    path('report/<uuid:publication_id>',ReportedPublicationsView.as_view({'get':'get_reports'}),name='getReports'),
-    path('report/resolve/<uuid:publication_id>',ReportedPublicationsView.as_view({'post':'resolve'}),name='resolvePublication'),
-    path('state/<uuid:publication_id>',PublicationStateView.as_view(),name='state'),
-    path('otherpublications/',RetrivePublicationsViewSet.as_view(),name='otherCircuits')
+    path('report/',ReportedProjectsView.as_view({'get':'list_projects'}),name='listReportedProjects'),
+    path('report/approve/<uuid:project_id>',ReportedProjectsView.as_view({'post':'approve_reports'}),name='approveProjects'),
+    path('report/create/<uuid:project_id>',ReportedProjectsView.as_view({'post':'report_project'}),name='reportProject'),
+    path('report/<uuid:project_id>',ReportedProjectsView.as_view({'get':'get_reports'}),name='getReports'),
+    path('report/resolve/<uuid:project_id>',ReportedProjectsView.as_view({'post':'resolve'}),name='resolveProject'),
+    path('state/<uuid:project_id>',ProjectStateView.as_view(),name='state'),
+    path('otherprojects/',RetriveProjectsViewSet.as_view(),name='otherCircuits')
 ]

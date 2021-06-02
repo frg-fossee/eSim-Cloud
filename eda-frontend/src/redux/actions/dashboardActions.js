@@ -26,8 +26,8 @@ export const fetchSchematics = () => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
-//Api call for listing users publications to display on dashboard
-export const fetchMyPublications = () => (dispatch, getState) => {
+//Api call for listing users projects to display on dashboard
+export const fetchMyProjects = () => (dispatch, getState) => {
   const token = getState().authReducer.token
 
   const config = {
@@ -40,20 +40,20 @@ export const fetchMyPublications = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`publish/mypublication/`, config)
+  api.get(`publish/myproject/`, config)
     .then(
       (res) => {
         console.log(res.data)
         dispatch({
-          type: actions.FETCH_MY_PUBLICATIONS,
+          type: actions.FETCH_MY_PROJECTS,
           payload: res.data
         })
       }
     )
     .catch((err) => { console.error(err) })
 }
-//Api call for listing other users publications to display on dashboard
-export const fetchOtherPublications = () => (dispatch, getState) => {
+//Api call for listing other users projects to display on dashboard
+export const fetchOtherProjects = () => (dispatch, getState) => {
   const token = getState().authReducer.token
 
   const config = {
@@ -66,19 +66,19 @@ export const fetchOtherPublications = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`workflow/otherpublications/`, config)
+  api.get(`workflow/otherprojects/`, config)
     .then(
       (res) => {
         dispatch({
-          type: actions.FETCH_OTHER_PUBLICATIONS,
+          type: actions.FETCH_OTHER_PROJECTS,
           payload: res.data
         })
       }
     )
     .catch((err) => { console.error(err) })
 }
-//Api call for listing public publications to display on dashboard
-export const fetchPublicPublications = () => (dispatch, getState) => {
+//Api call for listing public projects to display on dashboard
+export const fetchPublicProjects = () => (dispatch, getState) => {
   const token = getState().authReducer.token
 
   const config = {
@@ -95,7 +95,7 @@ export const fetchPublicPublications = () => (dispatch, getState) => {
     .then(
       (res) => {
         dispatch({
-          type: actions.FETCH_PUBLIC_PUBLICATIONS,
+          type: actions.FETCH_PUBLIC_PROJECTS,
           payload: res.data
         })
         console.log(res.data[0].status)

@@ -58,7 +58,7 @@ function timeSince(jsonDate) {
   }
   return Math.floor(seconds) + ' seconds'
 }
-export default function PublicationCard({ pub, is_review }) {
+export default function ProjectCard({ pub, is_review }) {
 
   const classes = useStyles()
   return (
@@ -67,7 +67,7 @@ export default function PublicationCard({ pub, is_review }) {
       <ButtonBase
             target="_blank"
             component={RouterLink}
-            to={'/publication?save_id=' + pub.save_id + '&publication_id=' + pub.publication_id}
+            to={'/project?save_id=' + pub.save_id + '&project_id=' + pub.project_id}
             style={{width:'100%'}}>
         <CardActionArea>
           <CardHeader title={pub.title} />
@@ -103,6 +103,6 @@ export default function PublicationCard({ pub, is_review }) {
     </>
   )
 }
-PublicationCard.propTypes = {
+ProjectCard.propTypes = {
   sch: PropTypes.object
 }
