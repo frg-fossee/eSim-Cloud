@@ -29,13 +29,12 @@ logger = logging.getLogger(__name__)
 class IsLibraryOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if obj.library_set.default:
+        if  request.method in SAFE_METHODS:
             return True
         if request.user.is_authenticated:
             if obj.library_set.user == request.user:
                 return True
-            elif obj.library_set.user.is_superuser \
-                    and request.method in SAFE_METHODS:
+            elif request.user.is_superuser:
                 return True
         return False
 
@@ -112,10 +111,7 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
 class IsComponentOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if obj.component_library.library_set.default:
-            return True
-        elif obj.component_library.library_set.user \
-                and request.method in SAFE_METHODS:
+        if request.method in SAFE_METHODS:
             return True
         elif request.user.is_authenticated:
             if obj.component_library.library_set.user == request.user:
@@ -138,8 +134,8 @@ class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
         superusers = User.objects.filter(is_superuser=True)
         if self.request.user.is_authenticated:
             library_set = LibrarySet.objects.filter(
-                Q(user=self.request.user) | Q(
-                    default=True) | Q(user__in=superusers)
+                Q(user=self.request.user) |
+                Q(default=True) | Q(user__in=superusers)
             )
             libraries = Library.objects.filter(library_set__in=library_set)
             components = LibraryComponent.objects.filter(

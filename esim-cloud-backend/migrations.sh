@@ -10,4 +10,5 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --noinput
 python manage.py createsuperuser_noinput --username=admin --password=admin
-python manage.py load_default_libs --username=admin --location=kicad-symbols/
+python manage.py load_default_libs --username=admin --location=kicad-symbols/default/ --default
+python manage.py load_default_libs --username=admin --location=kicad-symbols/additional/
