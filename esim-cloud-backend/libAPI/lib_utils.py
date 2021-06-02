@@ -48,7 +48,7 @@ def save_libs(files, path, out_path, library_set):
                     library_name=f,
                     library_set=library_set
                 )
-                library.save()
+            library.save()
 
             library_svg_folder = os.path.join(
                 lib_output_location, f[:-4])
@@ -92,7 +92,7 @@ def save_libs(files, path, out_path, library_set):
                         data_link=svg_desc['data_link'],
                         component_library=library
                     )
-                    component.save()
+                component.save()
 
             # Seed Alternate Components
             for component_svg in glob.glob(library_svg_folder + '/*[B-Z].svg'):
@@ -113,4 +113,4 @@ def save_libs(files, path, out_path, library_set):
                             library_svg_folder, component_svg),
                         parent_component=component
                     )
-                    alternate_component.save()
+                alternate_component.save()

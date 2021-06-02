@@ -38,38 +38,38 @@ class Command(BaseCommand):
             user = User.objects.get(username=options['username'])
         else:
             raise Exception("Enter a superuser to associate libs")
+        name = 'esim-default' if options['default'] else 'esim-additional'
         library_set = LibrarySet.objects.filter(
             user=user,
             default=options['default'],
-            name='esim-default' if options['default']\
-                else 'esim-additional'
+            name=name
         ).first()
         if not library_set:
             library_set = LibrarySet(
                 user=user,
                 default=True if options['default'] else False,
-                name='esim-default' if options['default']\
-                    else 'esim-additional'
+                name=name
             )
             library_set.save()
 
         out_location = os.path.join(
             "kicad-symbols/",
-            library_set.user.username + (
-                '-esim-default' if options['default'] else '-esim-additional')
+            library_set.user.username + "-" + name
         )
 
         logger.info(f"Reading libraries from {options['location']}")
-        logger.info(f"Saving as " + (
-            "default" if options['default'] else "additional"))
+        logger.info(f"Saving as " + name[6:])
         logger.info(f"Saving Libraries to {out_location}")
 
         if not os.path.isdir(out_location):
             os.mkdir(out_location)
-        save_libs(
-            os.listdir(options['location']),
-            options['location'],
-            out_location,
-            library_set
-        )
-        logger.info("Done")
+        try:
+            save_libs(
+                os.listdir(options['location']),
+                options['location'],
+                out_location,
+                library_set
+            )
+            logger.info("Finished without errors")
+        except Exception:
+            logger.error("Couldn't save all the libs")
