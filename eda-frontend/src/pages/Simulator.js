@@ -3,7 +3,7 @@ import { Container, Grid, Button, Paper, Typography, Switch, FormControlLabel } 
 import { makeStyles } from '@material-ui/core/styles'
 import Editor from '../components/Simulator/Editor'
 import textToFile from '../components/Simulator/textToFile'
-import SimulationScreen from '../components/Simulator/SimulationScreen'
+import SimulationScreen from '../components/Shared/SimulationScreen'
 import { useDispatch } from 'react-redux'
 import { setResultGraph, setResultText } from '../redux/actions/index'
 

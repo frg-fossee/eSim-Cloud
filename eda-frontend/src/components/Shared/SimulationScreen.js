@@ -23,7 +23,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
 
-import Graph from '../Shared/Graph'
+import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SimulationScreen ({ open, close, isResult, taskId }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
+  const stitle = useSelector((state) => state.netlistReducer.title)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
   const [precision, setPrecision] = React.useState(5)
@@ -218,6 +219,19 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
             justify="center"
             alignItems="center"
           >
+            {/* Card to display simualtion result screen header */}
+            <Grid item xs={12} sm={12}>
+              <Paper className={classes.paper}>
+                <Typography variant="h2" align="center" gutterBottom>
+                  {result.title}
+                </Typography>
+                <Typography variant="h5" align="center" component="p" gutterBottom>
+                  Simulation Result for {stitle} *
+                </Typography>
+              </Paper>
+            </Grid>
+
+            {/* Display graph result */}
             {isResult === true ? <>
               {
 
