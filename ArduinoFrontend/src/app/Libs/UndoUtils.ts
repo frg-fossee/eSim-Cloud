@@ -1,6 +1,6 @@
 import { Utils } from "./Utils";
 import { Workspace } from "./Workspace";
-import { isNull, isUndefined } from 'util';
+import { isNull } from 'util';
 
 declare var window;
 
@@ -156,7 +156,7 @@ export abstract class UndoUtils {
         if (this.undo.length > 0) {
             var cng = this.undo.pop()
             // this.redo.push(cng)
-            this.loadChange(cng,'undo')
+            this.loadChange(cng, 'undo')
         }
     }
 
@@ -174,7 +174,7 @@ export abstract class UndoUtils {
         if (this.redo.length > 0) {
             var cng = this.redo.pop()
             // this.undo.push(cng)
-            this.loadChange(cng,'redo')
+            this.loadChange(cng, 'redo')
         }
     }
 
@@ -191,43 +191,62 @@ export abstract class UndoUtils {
     /**
      * Load The Changes, Called after Undo and redo operation to add,delete new component
      */
-    static loadChange(ele,operation) {
+    static loadChange(ele, operation) {
+
         var grup = window.scope[ele.keyName]
 
+        // Only trigger if there is nothing in scope
+        if (grup.length <= 0) {
+            window['scope'][ele.keyName] = [];
+            if (ele.event == 'add' && operation == 'redo') {
+                UndoUtils.createElement(ele);
+                UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][0].save(), event: ele.event })
+            }
+        }
+        // Trigger if window.scope is empty
         for (const e in grup) {
             if (grup[e].id == ele.element.id) {
                 if (window.scope[ele.keyName][e].load) {
 
-                    if(operation=='undo')
-                    UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save() })
-                    else if(operation=='redo')
-                    UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save() })
+                    if (operation == 'undo')
+                        UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
+                    else if (operation == 'redo')
+                        UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
 
                     UndoUtils.removeElement(ele)
 
-                    if (ele.event == 'add') {
+                    if (ele.event == 'add' && operation == 'undo') {
                         return
                     }
-
-                    var comp = ele.element;
-                    var key = ele.keyName
-                    // Get class from keyname using the map
-                    const myClass = Utils.components[key].className;
-                    // Create Component Object from class
-                    const obj = new myClass(
-                        window['canvas'],
-                        comp.x,
-                        comp.y
-                    );
-                    window.queue += 1;
-                    // Add to scope
-                    window['scope'][key].push(obj);
-                    // Load data for each object
-                    if (obj.load) {
-                        obj.load(comp);
+                    else if (ele.event == 'add' && operation == 'redo') {
+                        UndoUtils.createElement(ele);
                     }
+                    else {
+                        UndoUtils.createElement(ele);
+                    }
+
                 }
             }
+        }
+    }
+
+    static createElement(ele) {
+        var comp = ele.element;
+        var key = ele.keyName
+        // Get class from keyname using the map
+        const myClass = Utils.components[key].className;
+        // Create Component Object from class
+        const obj = new myClass(
+            window['canvas'],
+            comp.x,
+            comp.y
+        );
+        window.queue += 1;
+        // Add to scope
+        window['scope'][key].push(obj);
+        // Load data for each object
+        if (obj.load) {
+            obj.load(comp);
         }
     }
 

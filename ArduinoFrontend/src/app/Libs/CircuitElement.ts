@@ -313,7 +313,7 @@ export abstract class CircuitElement {
       // }
 
 
-      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save() })
+      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'drag' })
       this.tx += fdx;
       this.ty += fdy;
       window['onDragStopEvent'](this);
