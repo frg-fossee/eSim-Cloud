@@ -664,9 +664,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (!UndoUtils.enableButtonsBool)
       return true;
     if (type == 'undo')
-      return UndoUtils.undoStack.length <= 0
+      return UndoUtils.undo.length <= 0
     else if (type == 'redo')
-      return UndoUtils.redoStack.length <= 0
+      return UndoUtils.redo.length <= 0
   }
 
   undoChange() {

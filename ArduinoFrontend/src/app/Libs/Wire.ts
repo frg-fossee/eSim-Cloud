@@ -1,5 +1,6 @@
 import { Point } from './Point';
 import _ from 'lodash';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * To prevent window from throwing error
@@ -208,18 +209,18 @@ export class Wire {
    * @param y y position of point to be added
    */
   private drawWire(x?: number, y?: number) {
-      let path = `M${this.points[0][0]},${this.points[0][1]}`;
-      // Draw lines to other points
-      for (let i = 1; i < this.points.length; ++i) {
-        path += `L${this.points[i][0]},${this.points[i][1]}`;
-      }
+    let path = `M${this.points[0][0]},${this.points[0][1]}`;
+    // Draw lines to other points
+    for (let i = 1; i < this.points.length; ++i) {
+      path += `L${this.points[i][0]},${this.points[i][1]}`;
+    }
 
-      if (x && y) {
-        path += `L${x},${y}`;
-      }
+    if (x && y) {
+      path += `L${x},${y}`;
+    }
 
-      // Update path
-      this.updateWirePath(path);
+    // Update path
+    this.updateWirePath(path);
   }
 
   /**
@@ -329,6 +330,8 @@ export class Wire {
     }
     // Update Wire
     this.update();
+
+    UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'add' })
   }
 
   /**
@@ -411,6 +414,7 @@ export class Wire {
   save() {
     return {
       // object contains points,color,start point(id,keyname),end point(id,keybame)
+      id: this.id,
       points: this.points,
       color: this.color,
       start: {

@@ -73,6 +73,7 @@ export abstract class CircuitElement {
 
     // if filename is present fetch the file
     if (filename) {
+
       fetch(`./assets/jsons/${filename}`)
         .then(v => v.json())
         .then(obj => {
@@ -310,6 +311,7 @@ export abstract class CircuitElement {
       //   node.relativeMove(fdx, fdy);
       //   node.remainShow();
       // }
+
 
       UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save() })
       this.tx += fdx;
