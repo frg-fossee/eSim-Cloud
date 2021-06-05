@@ -255,7 +255,7 @@ export class Wire {
     // Select current instance
     window['isSelected'] = true;
     window['Selected'] = this;
-
+    
     // Show properties
     window.showProperty(() => {
       return this.properties();
@@ -294,6 +294,7 @@ export class Wire {
     // set on change listener
     select.onchange = () => {
       // on change update the color
+      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'wire_color' })
       this.setColor(colors[select.selectedIndex]);
     };
 

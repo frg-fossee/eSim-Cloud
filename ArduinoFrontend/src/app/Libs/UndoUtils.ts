@@ -195,6 +195,22 @@ export abstract class UndoUtils {
 
         var grup = window.scope[ele.keyName]
 
+        // Only trigger if wire
+        if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
+            UndoUtils.createElement(ele);
+            return
+        } else if (ele.event == 'wire_color' && operation == 'undo' && ele.keyName == 'wires') {
+            const temp = this.getExistingWindowElement(grup, ele)
+            UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: temp.save(), event: ele.event })
+            temp.setColor(ele.element.color);
+            return
+        } else if (ele.event == 'wire_color' && operation == 'redo' && ele.keyName == 'wires') {
+            const temp = this.getExistingWindowElement(grup, ele)
+            UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: temp.save(), event: ele.event })
+            temp.setColor(ele.element.color);
+            return
+        }
+
         // Only trigger if there is nothing in scope
         if (grup.length <= 0) {
             window['scope'][ele.keyName] = [];
@@ -230,9 +246,26 @@ export abstract class UndoUtils {
         }
     }
 
+    static getExistingWindowElement(grup, ele) {
+        for (const e in grup) {
+            if (grup[e].id == ele.element.id) {
+                if (window.scope[ele.keyName][e].load) {
+                    return window.scope[ele.keyName][e]
+                }
+            }
+        }
+    }
+
     static createElement(ele) {
+
         var comp = ele.element;
         var key = ele.keyName
+
+        if (key == 'wires') {
+            Workspace.LoadWires([ele.element])
+            return
+        }
+
         // Get class from keyname using the map
         const myClass = Utils.components[key].className;
         // Create Component Object from class
@@ -259,13 +292,16 @@ export abstract class UndoUtils {
 
         var key = ele.keyName
         var uid = ele.element.id
+        var toRem = this.getExistingWindowElement(window.scope['key'], ele);
 
         // If Current Selected item is a Wire which is not Connected from both end
         if (key === 'wires') {
             if (isNull(ele.element.end)) {
                 // Remove and deselect
-                ele.element.remove();
+                toRem.remove();
             }
+            window.Selected = null;
+            window.isSelected = false;
         }
 
         // get the component keyname
@@ -296,6 +332,7 @@ export abstract class UndoUtils {
                 break;
             }
         }
+        window.hideProperties();
     }
 
 }
