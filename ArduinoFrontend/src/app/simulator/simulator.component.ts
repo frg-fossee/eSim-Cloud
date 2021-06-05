@@ -481,7 +481,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
   /** Function saves or updates the project offline */
-  SaveProjectOff(callback=null) {
+  SaveProjectOff(callback = null) {
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
       AlertService.showAlert('Project is already Online!');
@@ -583,7 +583,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Handles routeLinks
    */
-  HandleRouter(routeLink, isAbsolute=false) {
+  HandleRouter(routeLink, isAbsolute = false) {
     AlertService.showThreeWayConfirm(
       'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
       () => {
