@@ -481,7 +481,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
   /** Function saves or updates the project offline */
-  SaveProjectOff() {
+  SaveProjectOff(callback=null) {
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
       AlertService.showAlert('Project is already Online!');
@@ -489,7 +489,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
     // Save circuit if id is not presenr
     if (this.projectId) {
-      Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
+      Workspace.SaveCircuit(this.projectTitle, this.description, callback, this.projectId);
     } else {
       // save circuit and add query parameters
       Workspace.SaveCircuit(this.projectTitle, this.description, (v) => {
@@ -505,6 +505,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             queryParamsHandling: 'merge'
           }
         );
+        if (callback) {
+          callback();
+        }
       });
     }
   }
@@ -580,7 +583,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Handles routeLinks
    */
-  HandleRouter(routeLink) {
+  HandleRouter(routeLink, isAbsolute=false) {
     AlertService.showThreeWayConfirm(
       'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
       () => {
@@ -595,12 +598,24 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           },
           (value) => {
             if (value) {
-              this.SaveProjectOff();
+              this.SaveProjectOff(() => {
+                if (isAbsolute) {
+                  this.window.location = routeLink;
+                } else {
+                  this.router.navigateByUrl(routeLink);
+                }
+              });
             }
           }
         );
       },
-      () => { this.router.navigateByUrl(routeLink); },
+      () => {
+        if (isAbsolute) {
+          this.window.location = routeLink;
+        } else {
+          this.router.navigateByUrl(routeLink);
+        }
+      },
       () => {},
       'Save',
       'Don\'t save',
