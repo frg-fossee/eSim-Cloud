@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import {
   Slide,
@@ -57,6 +57,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
   const stitle = useSelector((state) => state.netlistReducer.title)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
+  const [scalesNonGraphArray, setScalesNonGraph] = useState([])
+  const [notation, setNotation] = React.useState('Engineering')
   const [precision, setPrecision] = React.useState(5)
   const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   const scales = {
@@ -68,6 +70,16 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
     u: 0.000001,
     n: 0.000000001,
     p: 0.000000000001
+  }
+  const eNotations = {
+    G: "E+9",
+    M: "E+6",
+    K: "E+3",
+    si: "",
+    m: "E-3",
+    u: "E-6",
+    n: "E-9",
+    p: "E-12"
   }
   const toFixed = (x) => {
     var e = 0
@@ -99,36 +111,174 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
     }
     return ['notDecimal', 1]
   }
+  const decimalCountNonGraph = (num) => {
+    const numStr = num.toString()
+    if (Math.abs(num) < 1) {
+        if (numStr.includes('.')) {
+            var afterDeci = numStr.split('.')[1]
+            var count = 0
+            while(afterDeci[count] === '0'){
+                count++
+            }
+            return ['decimal', count+2]             // count + 2 to adjust with the scaling feature. 0.000xyz will become xyz.abc mUnit
+        }   
+    } 
+    else {
+        return ['notDecimal', numStr.split('.')[0].length]
+    }
+    return ['notDecimal', 1]
+  }
   useEffect(() => {
     if (isResult === true) {
+        var g, val, idx;
         if (result.graph !== {} && result.isGraph !== "false") {
-            setScales()
+            g = 1
+            setScales(g,val, idx)
         }
+        else{
+            g = 0
+            addScalesNonGraph(g)
+        }          
     }
     // eslint-disable-next-line
   }, [isResult])
-  const setScales = () => {
-    var countX = decimalCount(Math.min(...result.graph.x_points), Math.max(...result.graph.x_points))
-    var countY = decimalCount(Math.min(...result.graph.y_points[0]), Math.max(...result.graph.y_points[0]))
+
+  const addScalesNonGraph = (g) =>{
+    result.text.forEach((line, index) => {
+        setScales(g,parseFloat(line.split(' ')[2]), index)
+    });
+  }
+  const scalesNonGraph = [] 
+  const setScales = (g, val, idx) => {
+    var countX, countY
+    if(g === 1){
+        countX = decimalCount(Math.min(...result.graph.x_points), Math.max(...result.graph.x_points))
+        countY = decimalCount(Math.min(...result.graph.y_points[0]), Math.max(...result.graph.y_points[0]))
+    }
+    else{
+        countX = decimalCountNonGraph(val)
+        countY = countX // not required. used only countX for nongraphical output 
+    }
     if (countX[0] === 'decimal') {
       if (countX[1] > 0 && countX[1] <= 4) {
-        setXScale('m')
+        if(g === 1){
+            setXScale('m')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('m')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'm'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        }
       } else if (countX[1] > 4 && countX[1] <= 7) {
-        setXScale('u')
+        if(g === 1){
+            setXScale('u')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('u')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'u'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        }
+        
       } else if (countX[1] > 7 && countX[1] <= 10) {
-        setXScale('n')
+        if(g === 1){
+            setXScale('n')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('n')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'n'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        }
+        
       } else if (countX[1] > 10 && countX[1] <= 12) {
-        setXScale('p')
+        if(g === 1){
+            setXScale('p')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('p')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'p'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        }        
       }
     } else {
       if (countX[1] > 0 && countX[1] <= 4) {
-        setXScale('si')
+        if(g === 1){
+            setXScale('si')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('si')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'si'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        } 
       } else if (countX[1] > 4 && countX[1] <= 7) {
-        setXScale('K')
+        if(g === 1){
+            setXScale('K')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('K')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'K'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        } 
+        
       } else if (countX[1] > 7 && countX[1] <= 10) {
-        setXScale('M')
+        if(g === 1){
+            setXScale('M')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('M')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'M'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        } 
+        
       } else if (countX[1] > 10) {
-        setXScale('G')
+        if(g === 1){
+            setXScale('G')
+        }
+        else{
+            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                scalesNonGraph.push('G')
+                setScalesNonGraph(scalesNonGraph)
+            }
+            else{
+                scalesNonGraph[idx] = 'G'
+                setScalesNonGraph(scalesNonGraph)
+            }
+        } 
+        
       }
     }
     if (countY[0] === 'decimal') {
@@ -162,6 +312,9 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
   }
   const handlePrecision = (evt) => {
     setPrecision(evt.target.value)
+  }
+  const handleNotation = (evt) => {
+    setNotation(evt.target.value)
   }
   const generateCSV = () => {
     var headings = ''
@@ -372,7 +525,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                         OUTPUT
                       </Typography>
                       <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
-                        <TextField
+                        {/* <TextField
                           style={{ width: '20%' }}
                           id="xscale"
                           size='small'
@@ -411,12 +564,32 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                             Pico (p)
                           </option>
 
+                        </TextField> */}
+                        <TextField
+                          style={{ width: '20%' }}
+                          id="notation"
+                          size='small'
+                          variant="outlined"
+                          select
+                          label="Select Notation"
+                          value={notation}
+                          onChange={handleNotation}
+                          SelectProps={{
+                            native: true
+                          }}
+                        >
+                            <option value='Engineering'>
+                                Engineering Notation 
+                            </option>
+                            <option value='Scientific'>
+                                Scientific Notation 
+                            </option>
                         </TextField>
 
                         <TextField
                           style={{ width: '20%', marginLeft: '10px' }}
                           id="precision"
-                          size='small'
+                          size='medium'
                           variant="outlined"
                           select
                           label="Select Precision"
@@ -452,8 +625,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                             {result.text.map((line, index) => (
                               <TableRow key={index}>
                                 <TableCell align="center">{line.split('=')[0]}</TableCell>
-                                <TableCell align="center">{(parseFloat(line.split(' ')[2]) / scales[xscale]).toFixed(precision)}</TableCell>
-                                <TableCell align="center">{xscale === 'si' ? '' : xscale}{line.split(' ')[3]}</TableCell>
+                                <TableCell align="center">{notation === 'Scientific'? ((parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision).toString() +  eNotations[scalesNonGraphArray[index]]):(parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision)}</TableCell>
+                                <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
                               </TableRow>
                             ))
                             }
