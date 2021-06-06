@@ -60,13 +60,14 @@ export default function ComponentSidebar ({ compRef }) {
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
   const components = useSelector(state => state.schematicEditorReducer.components)
   const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
+  const isAuthenticated = useSelector(state => state.authReducer.isAuthenticated)
 
   const dispatch = useDispatch()
   const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
   const [searchText, setSearchText] = useState('')
   const [loading, setLoading] = useState(false)
   const [favourite, setFavourite] = useState(null)
-  const [favOpen, setFavOpen] = useState(true)
+  const [favOpen, setFavOpen] = useState(false)
 
   const [searchedComponentList, setSearchedComponents] = useState([])
   const [searchOption, setSearchOption] = useState('NAME')
@@ -96,24 +97,26 @@ export default function ComponentSidebar ({ compRef }) {
   }
 
   React.useEffect(() => {
-    const token = localStorage.getItem('esim_token')
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
+    if (isAuthenticated) {
+      const token = localStorage.getItem('esim_token')
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }
+      if (token) {
+        config.headers.Authorization = `Token ${token}`
+      }
+      api
+        .get('favouritecomponents', config)
+        .then((resp) => {
+          setFavourite(resp.data.component)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api
-      .get('favouritecomponents', config)
-      .then((resp) => {
-        setFavourite(resp.data.component)
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }, [])
+  }, [isAuthenticated])
 
   React.useEffect(() => {
     // if the user keeps typing, stop the API call!
