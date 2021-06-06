@@ -6,8 +6,16 @@ export const loadUser = () => (dispatch, getState) => {
   // User Loading
   dispatch({ type: actions.USER_LOADING })
 
-  // Get token from localstorage
-  const token = getState().authReducer.token
+  // Get token from localstorage and dispatch LOGIN_SUCCESSFUL
+  const token = localStorage.getItem('esim_token')
+  if (token) {
+    dispatch({
+      type: actions.LOGIN_SUCCESSFUL,
+      payload: {
+        data: { auth_token: token }
+      }
+    })
+  }
 
   // add headers
   const config = {
@@ -74,6 +82,10 @@ export const login = (username, password, toUrl) => {
           })
           if (toUrl === '') {
             dispatch(loadUser())
+          } else if (toUrl === 'close') {
+            window.opener = null
+            window.open('', '_self')
+            window.close()
           } else {
             window.open(toUrl, '_self')
             localStorage.setItem('ard_redurl', '')

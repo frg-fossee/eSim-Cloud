@@ -30,7 +30,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle, setSchShared } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared, loadUser } from '../../redux/actions/index'
 import store from '../../redux/store'
 
 const useStyles = makeStyles((theme) => ({
@@ -101,7 +101,7 @@ SimpleSnackbar.propTypes = {
 function Header () {
   const history = useHistory()
   const classes = useStyles()
-  const auth = store.getState().authReducer
+  const auth = useSelector(state => state.authReducer)
   const schSave = useSelector(state => state.saveSchematicReducer)
   const [anchorEl, setAnchorEl] = React.useState(null)
 
@@ -110,6 +110,22 @@ function Header () {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
+
+  useEffect(() => {
+    function checkUserData () {
+      const userToken = localStorage.getItem('esim_token')
+      console.log(userToken)
+      if (userToken && userToken !== '') {
+        dispatch(loadUser())
+      }
+    }
+
+    window.addEventListener('storage', checkUserData)
+
+    return () => {
+      window.removeEventListener('storage', checkUserData)
+    }
+  }, [dispatch, history])
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -288,16 +304,18 @@ function Header () {
 
       {/* Display login option or user menu as per authenticated status */}
       {
-        (!auth.isAuthenticated ? (<Button
-          size="small"
-          component={RouterLink}
-          to="/login"
-          style={{ marginLeft: 'auto' }}
-          color="primary"
-          variant="outlined"
-        >
+        (!auth.isAuthenticated
+          ? <Button
+            size="small"
+            component={RouterLink}
+            to="/login?close=close"
+            style={{ marginLeft: 'auto' }}
+            color="primary"
+            variant="outlined"
+            target="_blank"
+          >
           Login
-        </Button>)
+          </Button>
           : (<>
 
             <IconButton
