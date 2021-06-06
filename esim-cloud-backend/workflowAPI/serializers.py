@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import fields, serializers
 from .models import CustomGroup, Transition,State
 from publishAPI.models import Report
 class UserRoleRetreieveSerializer(serializers.ModelSerializer):
@@ -9,6 +9,9 @@ class UserRoleRetreieveSerializer(serializers.ModelSerializer):
 class StatusWithNotesSerializer(serializers.ModelSerializer):
     note = serializers.CharField(max_length=500)
     name= serializers.CharField(max_length=200)
+    class Meta:
+        model=State
+        fields=('name','note',)
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:

@@ -86,6 +86,7 @@ function CreateProject() {
     setStatus(event.target.value)
   };
   const changeFieldText = (e) => {
+    console.log(e.target.value)
     if (changed === 0) {
       setChanged(1)
     }
@@ -290,7 +291,7 @@ function CreateProject() {
                       rows={4}
                       type="text"
                       name='text'
-                      disabled={project.details && !project.details.can_editt}
+                      disabled={project.details && !project.details.can_edit}
                       value={item.text}
                       onChange={changeFieldText}
                       fullWidth

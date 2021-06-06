@@ -10,19 +10,18 @@ def ChangeStatus(self, status, project):
         try:
             user_roles = self.request.user.groups.all()
         except:
-            return Response(data={'message': 'No User Role'}, status=http_status.HTTP_404_NOT_FOUND)
+            return Exception({'message': 'No User Role'})
         if project.author == self.request.user and Permission.objects.filter(role__in=user_roles, view_own_states=project.state).exists():
             pass
         elif project.author != self.request.user and Permission.objects.filter(role__in=user_roles, view_other_states=project.state).exists():
             pass
         else:
-            return Response(status=http_status.HTTP_401_UNAUTHORIZED)
+            return Exception({'error': 'You are not authorized to edit the status.'})
         circuit_transition = Transition.objects.get(from_state=project.state,
                                                     to_state=State.objects.get(name=status))
         roles = circuit_transition.role.all()
         if circuit_transition.from_state != project.state:
-            return Response({'error': 'You are not authorized to edit the status.'},
-                            status=http_status.HTTP_401_UNAUTHORIZED)
+            return Exception({'error': 'You are not authorized to edit the status.'})
         else:
             if circuit_transition.only_for_creator is True and self.request.user == project.author:
                 transition_history = TransitionHistory(project_id=project.project_id,
@@ -33,11 +32,9 @@ def ChangeStatus(self, status, project):
                 transition_history.save()
                 project.state = circuit_transition.to_state
                 project.save()
-                print(project.state)
-                print("Saved in changed status")
                 state = project.state
                 serialized = StatusSerializer(state)
-                return Response(serialized.data)
+                return serialized.data
             elif circuit_transition.only_for_creator is False:
                 roles_set = set(roles)
                 user_roles_set = set(user_roles)
@@ -59,12 +56,9 @@ def ChangeStatus(self, status, project):
                                 project.save()
                                 state = project.state
                                 serialized = StatusSerializer(state)
-                                return Response(serialized.data)
-                    return Response({'error': 'You are not authorized to edit the status as you dont have the role'},
-                                    status=http_status.HTTP_401_UNAUTHORIZED)
+                                return serialized.data
+                    return Exception({'error': 'You are not authorized to edit the status as you dont have the role'})
                 else:
-                    return Response({'error': 'You are not authorized to edit the status as you dont have the role.'},
-                                    status=http_status.HTTP_401_UNAUTHORIZED)
+                    return Exception({'error': 'You are not authorized to edit the status as you dont have the role'})
             else:
-                return Response({'error': 'You are not authorized to edit the status as it is only allowed for creator.'},
-                                status=http_status.HTTP_401_UNAUTHORIZED)
+                return Exception({'error': 'You are not authorized to edit the status as it is only allowed for creator.'})

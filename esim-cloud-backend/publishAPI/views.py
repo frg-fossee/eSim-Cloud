@@ -56,7 +56,6 @@ class ProjectViewSet(APIView):
             data = serialized.data.copy()
             data['history'] = histories.data
             data['can_edit'] = can_edit
-            print(data)
             return Response(data)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -77,13 +76,15 @@ class ProjectViewSet(APIView):
                 project.fields.add(field)
             project.save()
             can_edit = False
+            
+            save_state.project = project
+            save_state.shared = True
+            save_state.save()
+            ChangeStatus(self, request.data[2], save_state.project)
             if Permission.objects.filter(role__in=user_roles, edit_own_states=project.state).exists():
                 can_edit = True
             else:
                 can_edit = False
-            save_state.project = project
-            save_state.shared = True
-            save_state.save()
             histories = TransitionHistorySerializer(
                 TransitionHistory.objects.filter(project=project), many=True)
             serialized = ProjectSerializer(project)
@@ -94,22 +95,18 @@ class ProjectViewSet(APIView):
         else:
             can_edit = False
             flag = False
-            try:
-                ChangeStatus(self, request.data[2], save_state.project)
-                flag = True
-            except:
-                flag=False
             if Permission.objects.filter(role__in=user_roles, edit_own_states=save_state.project.state).exists():
-                pass
+                try:
+                    flag = True
+                except:
+                    flag = False
             else:
-                if flag:
-                    return Response(status=status.HTTP_200_OK)
-                else:
+                if flag is False:
                     return Response(status=status.HTTP_401_UNAUTHORIZED)
             save_state.project.title = request.data[0]['title']
             save_state.project.description = request.data[0]['description']
-            
             save_state.project.save()
+            ChangeStatus(self, request.data[2], save_state.project)
             if Permission.objects.filter(role__in=user_roles, edit_own_states=save_state.project.state).exists():
                 can_edit = True
             else:
