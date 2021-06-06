@@ -581,9 +581,22 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     Login.logout();
   }
   /**
+   * @param routeLink route link
+   * @param isAbsolute is the link absolute? [pass false if relatives]
+   */
+  RouteToFunction(routeLink, isAbsolute) {
+    return () => {
+      if (isAbsolute) {
+        this.window.location = routeLink;
+      } else {
+        this.router.navigateByUrl(routeLink);
+      }
+    };
+  }
+  /**
    * Handles routeLinks
    */
-  HandleRouter(routeLink, isAbsolute = false) {
+  HandleRouter(callback) {
     AlertService.showThreeWayConfirm(
       'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
       () => {
@@ -599,22 +612,14 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           (value) => {
             if (value) {
               this.SaveProjectOff(() => {
-                if (isAbsolute) {
-                  this.window.location = routeLink;
-                } else {
-                  this.router.navigateByUrl(routeLink);
-                }
+                callback();
               });
             }
           }
         );
       },
       () => {
-        if (isAbsolute) {
-          this.window.location = routeLink;
-        } else {
-          this.router.navigateByUrl(routeLink);
-        }
+        callback();
       },
       () => {},
       'Save',

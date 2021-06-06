@@ -13,7 +13,6 @@ interface DialogData {
 @Component({
   selector: 'app-save-project-dialog',
   templateUrl: './save-project-dialog.component.html',
-  styleUrls: ['./save-project-dialog.component.css']
 })
 export class SaveProjectDialogComponent {
   projectTitle: string;
