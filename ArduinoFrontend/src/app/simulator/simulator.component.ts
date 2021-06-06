@@ -580,6 +580,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   Logout() {
     Login.logout();
   }
+  RouteToSimulator() {
+    this.window.location = '../#/simulator';
+    this.window.location.reload();
+  }
   /**
    * @param routeLink route link
    * @param isAbsolute is the link absolute? [pass false if relatives]

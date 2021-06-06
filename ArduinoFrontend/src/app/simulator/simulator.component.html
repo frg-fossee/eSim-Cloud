@@ -49,7 +49,7 @@
       <a mat-raised-button (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))" style="margin-right: 10px;">Home</a>
       <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard'))" style="margin-right: 10px;">Dashboard</a>
       <a mat-raised-button (click)="HandleRouter(RouteToFunction('/gallery'))" style="margin-right: 10px;">Gallery</a>
-      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/simulator'))" style="margin-right: 10px;">Editor</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToSimulator.bind(this))" style="margin-right: 10px;">Editor</a>
       <a mat-raised-button (click)="HandleRouter(Login)">Login</a>
     </div>
 
