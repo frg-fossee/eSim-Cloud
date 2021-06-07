@@ -60,7 +60,6 @@ export function Header () {
   useEffect(() => {
     function checkUserData () {
       const userToken = localStorage.getItem('esim_token')
-      console.log(userToken)
       if (userToken && userToken !== '') {
         dispatch(loadUser())
       } else {
