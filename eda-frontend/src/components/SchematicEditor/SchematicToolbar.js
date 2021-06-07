@@ -1,58 +1,35 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Canvg from "canvg";
-import { IconButton, Tooltip, Snackbar } from "@material-ui/core";
-import AddBoxOutlinedIcon from "@material-ui/icons/AddBoxOutlined";
-import PlayCircleOutlineIcon from "@material-ui/icons/PlayCircleOutline";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import UndoIcon from "@material-ui/icons/Undo";
-import RedoIcon from "@material-ui/icons/Redo";
-import ZoomInIcon from "@material-ui/icons/ZoomIn";
-import ZoomOutIcon from "@material-ui/icons/ZoomOut";
-import DeleteIcon from "@material-ui/icons/Delete";
-import SettingsOverscanIcon from "@material-ui/icons/SettingsOverscan";
-import PrintOutlinedIcon from "@material-ui/icons/PrintOutlined";
-import BugReportOutlinedIcon from "@material-ui/icons/BugReportOutlined";
-import RotateRightIcon from "@material-ui/icons/RotateRight";
-import BorderClearIcon from "@material-ui/icons/BorderClear";
-import { makeStyles } from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
-import SaveOutlinedIcon from "@material-ui/icons/SaveOutlined";
-import OpenInBrowserIcon from "@material-ui/icons/OpenInBrowser";
-import ClearAllIcon from "@material-ui/icons/ClearAll";
-import CreateNewFolderOutlinedIcon from "@material-ui/icons/CreateNewFolderOutlined";
-import ImageOutlinedIcon from "@material-ui/icons/ImageOutlined";
-import SystemUpdateAltOutlinedIcon from "@material-ui/icons/SystemUpdateAltOutlined";
-import { Link as RouterLink } from "react-router-dom";
+import React from 'react'
+import PropTypes from 'prop-types'
+import Canvg from 'canvg'
+import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
+import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
+import UndoIcon from '@material-ui/icons/Undo'
+import RedoIcon from '@material-ui/icons/Redo'
+import ZoomInIcon from '@material-ui/icons/ZoomIn'
+import ZoomOutIcon from '@material-ui/icons/ZoomOut'
+import DeleteIcon from '@material-ui/icons/Delete'
+import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
+import PrintOutlinedIcon from '@material-ui/icons/PrintOutlined'
+import BugReportOutlinedIcon from '@material-ui/icons/BugReportOutlined'
+import RotateRightIcon from '@material-ui/icons/RotateRight'
+import BorderClearIcon from '@material-ui/icons/BorderClear'
+import { makeStyles } from '@material-ui/core/styles'
+import CloseIcon from '@material-ui/icons/Close'
+import SaveOutlinedIcon from '@material-ui/icons/SaveOutlined'
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser'
+import ClearAllIcon from '@material-ui/icons/ClearAll'
+import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
+import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
+import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
+import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
+import { Link as RouterLink } from 'react-router-dom'
 
-import {
-  NetlistModal,
-  HelpScreen,
-  ImageExportDialog,
-  OpenSchDialog,
-} from "./ToolbarExtension";
-import {
-  ZoomIn,
-  ZoomOut,
-  ZoomAct,
-  DeleteComp,
-  PrintPreview,
-  ErcCheck,
-  Rotate,
-  GenerateNetList,
-  Undo,
-  Redo,
-  Save,
-  ClearGrid,
-} from "./Helper/ToolbarTools";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  toggleSimulate,
-  closeCompProperties,
-  setSchXmlData,
-  saveSchematic,
-  openLocalSch,
-} from "../../redux/actions/index";
+import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -386,6 +363,16 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
     setSchOpen(false);
   };
 
+  const [libsOpen, setlibsOpen] = React.useState(false)
+
+  const handleLibOpen = () => {
+    setlibsOpen(true)
+  }
+
+  const handleLibClose = () => {
+    setlibsOpen(false)
+  }
+
   return (
     <>
       <Tooltip title="New">
@@ -498,6 +485,12 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
           <BugReportOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      <Tooltip title="Select Libraries">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleLibOpen}>
+          <LibraryAddRoundedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose} auth={auth.isAuthenticated}/>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">

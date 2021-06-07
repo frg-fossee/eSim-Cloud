@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import uuid
+from libAPI.models import Library
 
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
@@ -25,6 +26,7 @@ class StateSave(models.Model):
     version = models.CharField(max_length=20, null=False)
     branch = models.CharField(max_length=20,null=False)
     is_arduino = models.BooleanField(default=False, null=False)
+    esim_libraries = models.ManyToManyField(Library)
 
     def save(self, *args, **kwargs):
         super(StateSave, self).save(*args, **kwargs)

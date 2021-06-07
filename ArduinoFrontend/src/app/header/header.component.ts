@@ -20,6 +20,10 @@ export class HeaderComponent implements OnInit {
    */
   username: string;
   /**
+   * window
+   */
+  window: any;
+  /**
    * Header Title
    */
   @Input() title: string;
@@ -55,7 +59,8 @@ export class HeaderComponent implements OnInit {
         // }
       });
     }
-
+    // Initializing window
+    this.window = window;
   }
   /**
    * Redirect to login

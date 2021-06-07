@@ -1,10 +1,11 @@
-import * as actions from "./actions";
-import queryString from "query-string";
-import api from "../../utils/Api";
-import GallerySchSample from "../../utils/GallerySchSample";
-import { renderGalleryXML } from "../../components/SchematicEditor/Helper/ToolbarTools";
-import { setTitle } from "./index";
-import randomstring from "randomstring";
+import * as actions from './actions'
+import queryString from 'query-string'
+import api from '../../utils/Api'
+import GallerySchSample from '../../utils/GallerySchSample'
+import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
+import { setTitle } from './index'
+import { fetchLibrary, removeLibrary } from './schematicEditorActions'
+import randomstring from "randomstring"
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -34,16 +35,17 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 };
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64, newBranch = false, branchName = null, setVersions, versions) => (
-  dispatch,
-  getState
-) => {
+export const saveSchematic = (title, description, xml, base64,newBranch = false, branchName = null, setVersions, versions) => (dispatch, getState) => {
+  var libraries = []
+  getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
+  console.log(libraries)
   var body = {
     data_dump: xml,
     base64_image: base64,
     name: title,
     description: description,
-  };
+    esim_libraries: JSON.stringify([...libraries])
+  }
   // Get token from localstorage
   const token = getState().authReducer.token;
   const schSave = getState().saveSchematicReducer;
@@ -151,22 +153,25 @@ export const fetchSchematic = (saveId, version,branch) => (dispatch, getState) =
   }
 
   // console.log('Already Saved')
-  api
-    .get("save/" + saveId + "/" + version + "/" + branch, config)
-    .then((res) => {
-      dispatch({
-        type: actions.SET_SCH_SAVED,
-        payload: res.data,
-      });
-      dispatch(setSchTitle(res.data.name));
-      dispatch(setSchDescription(res.data.description));
-      dispatch(setSchXmlData(res.data.data_dump));
-      renderGalleryXML(res.data.data_dump);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};
+  api.get('save/' + saveId + "/" + version + "/" + branch, config)
+    .then(
+      (res) => {
+        dispatch({
+          type: actions.SET_SCH_SAVED,
+          payload: res.data
+        })
+        dispatch(setSchTitle(res.data.name))
+        dispatch(setSchDescription(res.data.description))
+        dispatch(setSchXmlData(res.data.data_dump))
+        renderGalleryXML(res.data.data_dump)
+        if (res.data.esim_libraries.length > 0) {
+          getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
+          res.data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id)))
+        }
+      }
+    )
+    .catch((err) => { console.error(err) })
+}
 
 export const setSchShared = (share) => (dispatch, getState) => {
   // Get token from localstorage

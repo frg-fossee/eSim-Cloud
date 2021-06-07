@@ -15,6 +15,7 @@ import uuid
 from django.contrib.auth import get_user_model
 import logging
 import traceback
+import json
 logger = logging.getLogger(__name__)
 
 
@@ -32,6 +33,7 @@ class StateSaveView(APIView):
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
         logger.info('Got POST for state save ')
+        esim_libraries = json.loads(request.data.get('esim_libraries'))
         try:
             queryset = StateSave.objects.get(
                 data_dump=request.data["data_dump"], branch=request.data["branch"])
@@ -40,17 +42,27 @@ class StateSaveView(APIView):
                 queryset.name = serializer.data["name"]
                 queryset.description = serializer.data["description"]
                 queryset.save()
-                response=serializer.data
-                response['duplicate']=True
+                response = serializer.data
+                response['duplicate'] = True
                 return Response(response)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except StateSave.DoesNotExist:
-            serializer = StateSaveSerializer(
-                data=request.data, context={'request': self.request})
-            if serializer.is_valid():
-                serializer.save(owner=self.request.user)
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            img = Base64ImageField(max_length=None, use_url=True)
+            filename, content = img.update(request.data['base64_image'])
+            state_save = StateSave(
+                data_dump=request.data.get('data_dump'),
+                description=request.data.get('descirption'),
+                name=request.data.get('name'),
+                owner=request.user
+            )
+            state_save.base64_image.save(filename, content)
+            print(state_save)
+            state_save.esim_libraries.set(esim_libraries)
+            try:
+                state_save.save()
+                return Response(StateSaveSerializer(state_save).data)
+            except Exception:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class StateFetchUpdateView(APIView):
@@ -127,13 +139,16 @@ class StateFetchUpdateView(APIView):
                     saved_state.name = request.data['name']
                 if 'description' in request.data:
                     saved_state.description = request.data['description']
-
                 # if thumbnail needs to be updated
                 if 'base64_image' in request.data:
                     img = Base64ImageField(max_length=None, use_url=True)
                     filename, content = img.update(
                         request.data['base64_image'])
                     saved_state.base64_image.save(filename, content)
+                if 'esim_libraries' in request.data:
+                    esim_libraries = json.loads(
+                        request.data.get('esim_libraries'))
+                    saved_state.esim_libraries.set(esim_libraries)
                 saved_state.save()
                 serialized = SaveListSerializer(saved_state)
                 return Response(serialized.data)
