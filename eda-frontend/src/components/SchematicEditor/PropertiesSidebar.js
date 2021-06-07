@@ -162,7 +162,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
             }
             versionsAccordingFreq[value.branch]?versionsAccordingFreq[value.branch].push(value):versionsAccordingFreq[value.branch]=[value]
           });
-          setVersions(Object.entries(versionsAccordingFreq))
+          setVersions(Object.entries(versionsAccordingFreq).reverse())
           var temp=[];
           for(var i=0;i<Object.entries(versionsAccordingFreq).length;i++)
           {
@@ -172,7 +172,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
             else
               temp.push(false)
           }
-          setBranchOpen(temp);
+          setBranchOpen(temp.reverse());
         });
     }
   }, [])
@@ -317,11 +317,11 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               <CreateNewFolderOutlinedIcon fontSize="small" />
           </IconButton>
           <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={dialogOpen}>
-            <DialogTitle id="simple-dialog-title">Create new Sub-Feature</DialogTitle>
+            <DialogTitle id="simple-dialog-title">Create new Variation</DialogTitle>
             <DialogContent>
               <TextField 
               id="branch-name" 
-              label="Branch Name" 
+              label="Variation Name" 
               onChange={handleBranchName} 
               value={branchName}
               style={{width:"100%"}}/>
@@ -331,16 +331,15 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               variant="contained" 
               color="primary" 
               onClick={() => handleBranch(branchName) }>
-                Set name and create sub-feature
+                Create Variation
               </Button>
               <Button
-              target="_blank"
-              style={{ marginTop: '5px', marginBottom: '10px', width: '50%' }}
+              style={{ marginTop: '20px', marginBottom: '10px',marginLeft:'10px' }}
               variant="contained"
               color="primary"
-              href="/eda/#/editor"
+              //onClick={handleSave}
               >
-                Create a new Schematic
+                Save This Schematic
               </Button>
             </DialogContent>
           </Dialog>
@@ -351,7 +350,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
               return (
               <>
                 <ListItem button onClick={()=>handleClick(index)}>
-                  <ListItemText primary={"Sub-Feature " + branch[0]}  />
+                  <ListItemText primary={"Variation " + (index+1) + " : " + branch[0]}  />
                 </ListItem>
                 <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>
                 {

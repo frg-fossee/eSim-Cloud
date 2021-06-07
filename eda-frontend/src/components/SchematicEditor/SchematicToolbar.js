@@ -121,7 +121,18 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
 
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false);
-  const [netlist, genNetlist] = React.useState("");
+  const [netlist, genNetlist] = React.useState("")
+  
+  const handleSave = (version, newSave,save_id) => {
+    if (!newSave) {
+      window.location = "#/editor?id=" + window.location.href.split("id=")[1].substr(0, 36) + "&version=" + version + "&branch=" + window.location.href.split("branch=")[1].substr(0)
+      window.location.reload()
+    }
+    else {
+      window.location = "#/editor?id=" + save_id + "&version=" + version + "&branch=master"
+      window.location.reload()
+    }
+  }
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList();
@@ -303,7 +314,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
       var title = schSave.title;
       var description = schSave.description;
       exportImage("PNG").then((res) => {
-        dispatch(saveSchematic(title, description, xml, res, false));
+        dispatch(saveSchematic(title, description, xml, res, false, null, handleSave));
       });
       setMessage("Saved Successfully");
       handleSnacClick();

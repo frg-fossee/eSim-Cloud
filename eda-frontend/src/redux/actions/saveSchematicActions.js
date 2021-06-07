@@ -34,7 +34,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 };
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64,newBranch=false,branchName=null,setVersions,versions) => (
+export const saveSchematic = (title, description, xml, base64, newBranch = false, branchName = null, setVersions, versions) => (
   dispatch,
   getState
 ) => {
@@ -71,6 +71,8 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false,br
       api
       .post("save", queryString.stringify(body), config)
       .then((res) => {
+        if(!res.data.duplicate)
+        setVersions(res.data.version,false,null)
         dispatch({
           type: actions.SET_SCH_SAVED,
           payload: res.data,
@@ -85,6 +87,7 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false,br
       api
       .post("save", queryString.stringify(body), config)
       .then((res) => {
+        setVersions(res.data.version,true,res.data.save_id)
         dispatch({
           type: actions.SET_SCH_SAVED,
           payload: res.data,
@@ -110,6 +113,12 @@ export const saveSchematic = (title, description, xml, base64,newBranch=false,br
         .post("save", queryString.stringify(body), config)
         .then((res) => {
           var temp = versions
+          var d = new Date(res.data.save_time)
+          res.data.date = d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear()
+          res.data.time = d.getHours() + ":" + d.getMinutes()
+          if (d.getMinutes() < 10) {
+            res.data.time = d.getHours() + ":0" + d.getMinutes()
+          }
           temp.push([res.data.branch, [res.data]])
           setVersions(temp)
           dispatch({
