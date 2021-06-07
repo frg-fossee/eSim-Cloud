@@ -76,6 +76,7 @@ export const login = (username, password, toUrl) => {
             dispatch(loadUser())
           } else {
             window.open(toUrl, '_self')
+            localStorage.setItem('ard_redurl', '')
           }
         } else if (res.status === 400 || res.status === 403 || res.status === 401) {
           dispatch({
