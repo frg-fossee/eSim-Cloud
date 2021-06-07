@@ -142,7 +142,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    if (window.location.href.split("?id=")[1]) {
+    if (window.location.href.split("?id=")[1]&&!window.location.href.split("?id=")[1].includes('gallery')) {
       api
         .get(
           "save/versions/" +
@@ -153,7 +153,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
           console.log(resp.data);
           var versionsAccordingFreq={}
           resp.data.forEach((value) => {
-            var d = new Date(value.save_time);
+            var d = new Date(value.save_time)
             value.date =
               d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
             value.time = d.getHours() + ":" + d.getMinutes();
@@ -172,7 +172,10 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
             else
               temp.push(false)
           }
-          setBranchOpen(temp.reverse());
+          setBranchOpen(temp.reverse())
+        })
+        .catch((err) => {
+          console.log(err)
         });
     }
   }, [])

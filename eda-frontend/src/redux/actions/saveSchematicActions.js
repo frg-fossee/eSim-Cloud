@@ -49,6 +49,7 @@ export const saveSchematic = (title, description, xml, base64,newBranch = false,
   // Get token from localstorage
   const token = getState().authReducer.token;
   const schSave = getState().saveSchematicReducer;
+  console.log(schSave)
 
   // add headers
   const config = {
