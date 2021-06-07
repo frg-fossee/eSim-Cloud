@@ -38,10 +38,10 @@ function MainCard () {
       <Card className={classes.mainHead}>
         <CardContent>
           <Typography variant="h2" align="center" gutterBottom>
-          eSim Published Circuits
+          eSim Published Projects
           </Typography>
           <Typography className={classes.title} align="center" gutterBottom>
-          Published circuits are listed below...
+          Published Projects are listed below...
           </Typography>
         </CardContent>
       </Card>
