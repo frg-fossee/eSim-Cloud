@@ -361,6 +361,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
     var blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, 'graph_points_eSim_on_cloud.csv')
   }
+  
 
   return (
     <div>
@@ -604,7 +605,14 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                             {result.text.map((line, index) => (
                               <TableRow key={index}>
                                 <TableCell align="center">{line.split('=')[0]}</TableCell>
-                                <TableCell align="center">{(line.split(' ')[3] === '\n')? (parseFloat(line.split(' ')[2])):(notation === 'Scientific'? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + "e" + ((exactDecimal[index]) >= 0 ? "+" + (exactDecimal[index]).toString():exactDecimal[index] ).toString()) : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}</TableCell>
+                                <TableCell align="center">
+                                    {(line.split(' ')[3] === '\n')? 
+                                    (parseFloat(line.split(' ')[2])):
+                                    (notation === 'Scientific'? 
+                                        ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + "e" + ((exactDecimal[index]) >= 0 ?
+                                        "+" + (exactDecimal[index]).toString():exactDecimal[index] ).toString()) : 
+                                        (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}
+                                </TableCell>
                                 <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
                               </TableRow>
                             ))
