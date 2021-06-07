@@ -70,7 +70,6 @@ export default function SignIn (props) {
     const query = new URLSearchParams(props.location.search)
     if (query.get('close')) {
       setClose(true)
-      console.log(close)
     }
 
     const ardUrl = localStorage.getItem('ard_redurl')
@@ -103,9 +102,9 @@ export default function SignIn (props) {
       dispatch(login(username, password, url))
     }
     if (close) {
-      console.log('I want to close but i cant')
       dispatch(login(username, password, 'close'))
     }
+    localStorage.setItem('ard_url', '')
   }
 
   // Function call for google oAuth login.
