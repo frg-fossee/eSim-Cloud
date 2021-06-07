@@ -18,7 +18,7 @@
 .grid-container {
   position: relative;
   overflow: hidden;
-  margin: 100px;
+  margin: 10px auto 0px auto;
   -webkit-box-shadow: -8px -2px 24px 9px rgba(208, 218, 225, 1);
   -moz-box-shadow: -8px -2px 24px 9px rgba(208, 218, 225, 1);
   box-shadow: -8px -2px 24px 9px rgba(208, 218, 225, 1);

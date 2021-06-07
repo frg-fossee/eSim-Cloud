@@ -30,6 +30,7 @@ import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibra
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
+import CreateProject from '../Project/CreateProject'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -588,7 +589,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
         </IconButton>
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
-
+      <span className={classes.pipe}>|</span>
       <IconButton
         color="inherit"
         aria-label="open drawer"
@@ -596,9 +597,11 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
         size="small"
         onClick={mobileClose}
         className={classes.menuButton}
-      >
+      > 
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
+      <CreateProject/>
+      
     </>
   );
 }

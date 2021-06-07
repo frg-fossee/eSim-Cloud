@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'libAPI',
     'saveAPI',
     'publishAPI',
-    'arduinoAPI'
+    'arduinoAPI',
+    'workflowAPI'
 ]
 
 MIDDLEWARE = [

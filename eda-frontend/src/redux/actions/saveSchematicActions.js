@@ -6,6 +6,7 @@ import { renderGalleryXML } from '../../components/SchematicEditor/Helper/Toolba
 import { setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'
 import randomstring from "randomstring"
+import { fetchProject } from './projectActions'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -164,6 +165,10 @@ export const fetchSchematic = (saveId, version,branch) => (dispatch, getState) =
         dispatch(setSchTitle(res.data.name))
         dispatch(setSchDescription(res.data.description))
         dispatch(setSchXmlData(res.data.data_dump))
+        if(res.data.project_id !== undefined)
+        {
+          dispatch(fetchProject())
+        }
         renderGalleryXML(res.data.data_dump)
         if (res.data.esim_libraries.length > 0) {
           getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
@@ -232,12 +237,35 @@ export const loadGallery = (Id) => (dispatch, getState) => {
 
 // Action for Loading local exported schematics
 export const openLocalSch = (obj) => (dispatch, getState) => {
-  var data = obj;
+  var data = obj
 
-  dispatch({ type: actions.CLEAR_DETAILS });
-  dispatch(setTitle("* " + data.title));
-  dispatch(setSchTitle(data.title));
-  dispatch(setSchDescription(data.description));
-  dispatch(setSchXmlData(data.data_dump));
-  renderGalleryXML(data.data_dump);
-};
+  dispatch({ type: actions.CLEAR_DETAILS })
+  dispatch(setTitle('* ' + data.title))
+  dispatch(setSchTitle(data.title))
+  dispatch(setSchDescription(data.description))
+  dispatch(setSchXmlData(data.data_dump))
+  renderGalleryXML(data.data_dump)
+}
+
+//Action for making a copy of a schematic
+export const makeCopy = (saveID) => (dispatch, getState) => {
+  const token = getState().authReducer.token
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.post(`/save/copy/${saveID}`, {}, config)
+    .then(res => {
+      let win = window.open();
+      win.location.href = '/eda/#/editor?id=' + res.data.save_id
+      win.focus();
+    })
+    .catch(error => console.log(error))
+}

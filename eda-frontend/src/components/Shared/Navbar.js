@@ -1,9 +1,16 @@
 import React from 'react'
-
 import {
-  AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar, Menu, ListItemText,
+  AppBar,
+  Button,
+  Toolbar,
+  Typography,
+  Link,
+  IconButton,
+  Avatar,
+  Menu,
+  ListItemText,
   Fade,
-  MenuItem
+  MenuItem,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
@@ -15,6 +22,9 @@ import { logout } from '../../redux/actions/index'
 const useStyles = makeStyles((theme) => ({
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`
+  },
+  root: {
+    width: 500,
   },
   toolbar: {
     flexWrap: 'wrap'
@@ -38,11 +48,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepPurple[500]),
     backgroundColor: deepPurple[500],
     fontSize: '17px'
-  }
+  },
+  typography: {
+    padding: theme.spacing(2),
+  },
 }))
 
 // Common navbar for Dashboard, Home, Simulator, Gallery, etc.
-export function Header () {
+export function Header() {
   const history = useHistory()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -107,6 +120,15 @@ export function Header () {
               >
                 Gallery
               </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/projects"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Projects
+              </Link>
 
               <Link
                 variant="button"
@@ -148,7 +170,15 @@ export function Header () {
               >
                 Gallery
               </Link>
-
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/projects"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Projects
+              </Link>
               <Link
                 variant="button"
                 color="textPrimary"
@@ -176,7 +206,6 @@ export function Header () {
           Login
         </Button>)
           : (<>
-
             <IconButton
               edge="start"
               style={{ marginLeft: 'auto' }}
@@ -240,7 +269,7 @@ export function Header () {
   )
 }
 
-export default function Navbar () {
+export default function Navbar() {
   const classes = useStyles()
 
   return (
