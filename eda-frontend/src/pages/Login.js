@@ -16,6 +16,7 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core'
+import Tooltip from '@material-ui/core/Tooltip'
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Visibility from '@material-ui/icons/Visibility'
@@ -153,14 +154,16 @@ export default function SignIn (props) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    size="small"
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
-                  </IconButton>
+                  <Tooltip title={'Show Password'} aria-label={'Show Password'} arrow>
+                    <IconButton
+                      size="small"
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
+                    </IconButton>
+                  </Tooltip>
                 </InputAdornment>
               )
             }}
