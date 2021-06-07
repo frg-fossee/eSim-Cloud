@@ -73,6 +73,11 @@ export default function SignUp () {
     dispatch(googleLogin(host))
   }
 
+  const handleSignup = (event) => {
+    event.preventDefault()
+    dispatch(signUp(email, username, password, history))
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>
@@ -87,9 +92,17 @@ export default function SignUp () {
         {/* Display's error messages while signing in */}
         <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.isRegistered ? 'secondary' : 'error'}>
           {auth.regErrors}
+          { auth.isRegistered &&
+            <>
+              <br />
+              <Link component={RouterLink} to="/login">
+                {'Back to Login'}
+              </Link>
+            </>
+          }
         </Typography>
 
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSignup} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -152,7 +165,7 @@ export default function SignUp () {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(signUp(email, username, password, history))}
+            type="submit"
             className={classes.submit}
             disabled={!accept}
           >

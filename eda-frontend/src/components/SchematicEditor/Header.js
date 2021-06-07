@@ -30,7 +30,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle, setSchShared, loadUser } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared, loadUser, authDefault } from '../../redux/actions/index'
 import store from '../../redux/store'
 
 const useStyles = makeStyles((theme) => ({
@@ -117,6 +117,8 @@ function Header () {
       console.log(userToken)
       if (userToken && userToken !== '') {
         dispatch(loadUser())
+      } else {
+        dispatch(authDefault())
       }
     }
 

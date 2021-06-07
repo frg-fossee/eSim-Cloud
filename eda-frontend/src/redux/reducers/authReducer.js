@@ -24,7 +24,7 @@ export default function (state = initialState, action) {
 
     case actions.DEFAULT_STORE: {
       return {
-        ...state,
+        ...initialState,
         errors: '',
         regErrors: ''
       }
