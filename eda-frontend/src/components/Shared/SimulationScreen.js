@@ -58,9 +58,12 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
   const [scalesNonGraphArray, setScalesNonGraph] = useState([])
+  const [exactDecimal, setExactDecimal] = useState([])
   const [notation, setNotation] = React.useState('Engineering')
   const [precision, setPrecision] = React.useState(5)
   const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+  const scalesNonGraph = []
+  const exactDecimalArray = []
   const scales = {
     G: 1000000000,
     M: 1000000,
@@ -70,16 +73,6 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
     u: 0.000001,
     n: 0.000000001,
     p: 0.000000000001
-  }
-  const eNotations = {
-    G: "E+9",
-    M: "E+6",
-    K: "E+3",
-    si: "",
-    m: "E-3",
-    u: "E-6",
-    n: "E-9",
-    p: "E-12"
   }
   const toFixed = (x) => {
     var e = 0
@@ -128,6 +121,24 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
     }
     return ['notDecimal', 1]
   }
+  const exactDecimalCount = (num) => {
+    const numStr = num.toString()
+    if (Math.abs(num) < 1) {
+        if (numStr.includes('.')) {
+            var afterDeci = numStr.split('.')[1]
+            var count = 0
+            while(afterDeci[count] === '0'){
+                count++
+            }
+            return ['decimal',-1 * (count+1)]             // count + 2 to adjust with the scaling feature. 0.000xyz will become xyz.abc mUnit
+        }   
+    } 
+    else {
+        var beforeDeci = numStr.split('.')[0]        
+        return ['notDecimal', (beforeDeci.length - 1)]
+    }
+    return ['notDecimal', 0]
+  }
   useEffect(() => {
     if (isResult === true) {
         var g, val, idx;
@@ -138,7 +149,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
         else{
             g = 0
             addScalesNonGraph(g)
-        }          
+        }         
     }
     // eslint-disable-next-line
   }, [isResult])
@@ -146,9 +157,17 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
   const addScalesNonGraph = (g) =>{
     result.text.forEach((line, index) => {
         setScales(g,parseFloat(line.split(' ')[2]), index)
+        var count = exactDecimalCount(parseFloat(line.split(' ')[2]))
+        if(exactDecimalArray.length <= index){
+            exactDecimalArray.push(count[1])
+        }
+        else{
+            exactDecimalArray[index] = count
+        }
     });
+    setExactDecimal(exactDecimalArray)
   }
-  const scalesNonGraph = [] 
+  
   const setScales = (g, val, idx) => {
     var countX, countY
     if(g === 1){
@@ -160,126 +179,126 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
         countY = countX // not required. used only countX for nongraphical output 
     }
     if (countX[0] === 'decimal') {
-      if (countX[1] > 0 && countX[1] <= 4) {
-        if(g === 1){
-            setXScale('m')
-        }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('m')
-                setScalesNonGraph(scalesNonGraph)
+        if (countX[1] > 0 && countX[1] <= 4) {
+            if(g === 1){
+                setXScale('m')
             }
             else{
-                scalesNonGraph[idx] = 'm'
-                setScalesNonGraph(scalesNonGraph)
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('m')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'm'
+                    setScalesNonGraph(scalesNonGraph)
+                }
             }
-        }
-      } else if (countX[1] > 4 && countX[1] <= 7) {
-        if(g === 1){
-            setXScale('u')
-        }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('u')
-                setScalesNonGraph(scalesNonGraph)
-            }
-            else{
-                scalesNonGraph[idx] = 'u'
-                setScalesNonGraph(scalesNonGraph)
-            }
-        }
-        
-      } else if (countX[1] > 7 && countX[1] <= 10) {
-        if(g === 1){
-            setXScale('n')
-        }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('n')
-                setScalesNonGraph(scalesNonGraph)
+        } else if (countX[1] > 4 && countX[1] <= 7) {
+            if(g === 1){
+                setXScale('u')
             }
             else{
-                scalesNonGraph[idx] = 'n'
-                setScalesNonGraph(scalesNonGraph)
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('u')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'u'
+                    setScalesNonGraph(scalesNonGraph)
+                }
             }
-        }
-        
-      } else if (countX[1] > 10 && countX[1] <= 12) {
-        if(g === 1){
-            setXScale('p')
-        }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('p')
-                setScalesNonGraph(scalesNonGraph)
-            }
-            else{
-                scalesNonGraph[idx] = 'p'
-                setScalesNonGraph(scalesNonGraph)
-            }
-        }        
-      }
-    } else {
-      if (countX[1] > 0 && countX[1] <= 4) {
-        if(g === 1){
-            setXScale('si')
-        }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('si')
-                setScalesNonGraph(scalesNonGraph)
+            
+        } else if (countX[1] > 7 && countX[1] <= 10) {
+            if(g === 1){
+                setXScale('n')
             }
             else{
-                scalesNonGraph[idx] = 'si'
-                setScalesNonGraph(scalesNonGraph)
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('n')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'n'
+                    setScalesNonGraph(scalesNonGraph)
+                }
             }
-        } 
-      } else if (countX[1] > 4 && countX[1] <= 7) {
-        if(g === 1){
-            setXScale('K')
-        }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('K')
-                setScalesNonGraph(scalesNonGraph)
-            }
-            else{
-                scalesNonGraph[idx] = 'K'
-                setScalesNonGraph(scalesNonGraph)
-            }
-        } 
-        
-      } else if (countX[1] > 7 && countX[1] <= 10) {
-        if(g === 1){
-            setXScale('M')
-        }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('M')
-                setScalesNonGraph(scalesNonGraph)
+            
+        } else if (countX[1] > 10 && countX[1] <= 12) {
+            if(g === 1){
+                setXScale('p')
             }
             else{
-                scalesNonGraph[idx] = 'M'
-                setScalesNonGraph(scalesNonGraph)
-            }
-        } 
-        
-      } else if (countX[1] > 10) {
-        if(g === 1){
-            setXScale('G')
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('p')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'p'
+                    setScalesNonGraph(scalesNonGraph)
+                }
+            }        
         }
-        else{
-            if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
-                scalesNonGraph.push('G')
-                setScalesNonGraph(scalesNonGraph)
+        } else {
+        if (countX[1] > 0 && countX[1] <= 4) {
+            if(g === 1){
+                setXScale('si')
             }
             else{
-                scalesNonGraph[idx] = 'G'
-                setScalesNonGraph(scalesNonGraph)
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('si')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'si'
+                    setScalesNonGraph(scalesNonGraph)
+                }
+            } 
+        } else if (countX[1] > 4 && countX[1] <= 7) {
+            if(g === 1){
+                setXScale('K')
             }
-        } 
-        
-      }
+            else{
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('K')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'K'
+                    setScalesNonGraph(scalesNonGraph)
+                }
+            } 
+            
+        } else if (countX[1] > 7 && countX[1] <= 10) {
+            if(g === 1){
+                setXScale('M')
+            }
+            else{
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('M')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'M'
+                    setScalesNonGraph(scalesNonGraph)
+                }
+            } 
+            
+        } else if (countX[1] > 10) {
+            if(g === 1){
+                setXScale('G')
+            }
+            else{
+                if(scalesNonGraph.length <= idx || scalesNonGraph.length === 0){
+                    scalesNonGraph.push('G')
+                    setScalesNonGraph(scalesNonGraph)
+                }
+                else{
+                    scalesNonGraph[idx] = 'G'
+                    setScalesNonGraph(scalesNonGraph)
+                }
+            } 
+            
+        }
     }
     if (countY[0] === 'decimal') {
       if (countY[1] > 0 && countY[1] <= 4) {
@@ -525,46 +544,6 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                         OUTPUT
                       </Typography>
                       <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
-                        {/* <TextField
-                          style={{ width: '20%' }}
-                          id="xscale"
-                          size='small'
-                          variant="outlined"
-                          select
-                          label="Select Scale"
-                          value={xscale}
-                          onChange={handleXScale}
-                          SelectProps={{
-                            native: true
-                          }}
-                        >
-                          <option value='G'>
-                            Giga (G)
-                          </option>
-                          <option value='M'>
-                            Mega (MEG)
-                          </option>
-                          <option value='K'>
-                            Kilo (K)
-                          </option>
-                          <option value='si'>
-                            SI UNIT
-                          </option>
-
-                          <option value='m'>
-                            Milli (m)
-                          </option>
-                          <option value='u'>
-                            Micro (u)
-                          </option>
-                          <option value='n'>
-                            Nano (n)
-                          </option>
-                          <option value='p'>
-                            Pico (p)
-                          </option>
-
-                        </TextField> */}
                         <TextField
                           style={{ width: '20%' }}
                           id="notation"
@@ -625,7 +604,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                             {result.text.map((line, index) => (
                               <TableRow key={index}>
                                 <TableCell align="center">{line.split('=')[0]}</TableCell>
-                                <TableCell align="center">{notation === 'Scientific'? ((parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision).toString() +  eNotations[scalesNonGraphArray[index]]):(parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision)}</TableCell>
+                                <TableCell align="center">{notation === 'Scientific'? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + "e" + ((exactDecimal[index]) >= 0 ? "+" + (exactDecimal[index]).toString():exactDecimal[index] ).toString()) : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision)}</TableCell>
                                 <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
                               </TableRow>
                             ))
