@@ -568,7 +568,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                         <TextField
                           style={{ width: '20%', marginLeft: '10px' }}
                           id="precision"
-                          size='medium'
+                          size='small'
                           variant="outlined"
                           select
                           label="Select Precision"
@@ -604,7 +604,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                             {result.text.map((line, index) => (
                               <TableRow key={index}>
                                 <TableCell align="center">{line.split('=')[0]}</TableCell>
-                                <TableCell align="center">{notation === 'Scientific'? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + "e" + ((exactDecimal[index]) >= 0 ? "+" + (exactDecimal[index]).toString():exactDecimal[index] ).toString()) : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision)}</TableCell>
+                                <TableCell align="center">{(line.split(' ')[3] === '\n')? (parseFloat(line.split(' ')[2])):(notation === 'Scientific'? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + "e" + ((exactDecimal[index]) >= 0 ? "+" + (exactDecimal[index]).toString():exactDecimal[index] ).toString()) : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}</TableCell>
                                 <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
                               </TableRow>
                             ))
