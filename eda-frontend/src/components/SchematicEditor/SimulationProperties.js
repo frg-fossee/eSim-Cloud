@@ -22,7 +22,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
 import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
-import SimulationScreen from './SimulationScreen'
+import SimulationScreen from '../Shared/SimulationScreen'
+import { Multiselect } from 'multiselect-react-dropdown'
 
 import api from '../../utils/Api'
 
@@ -50,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SimulationProperties () {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
+  const [taskId, setTaskId] = useState(null)
   const dispatch = useDispatch()
   const classes = useStyles()
   const [nodeList, setNodeList] = useState([])
@@ -69,7 +71,7 @@ export default function SimulationProperties () {
     start: '',
     stop: '',
     step: '',
-    skipInitial: 'No'
+    skipInitial: false
   })
 
   const [acAnalysisControlLine, setAcAnalysisControlLine] = useState({
@@ -79,17 +81,49 @@ export default function SimulationProperties () {
     pointsBydecade: ''
   })
 
-  const [controlBlockParam, setControlBlockParam] = useState('')
+  const [tfAnalysisControlLine, setTfAnalysisControlLine] = useState({
+    outputNodes: false,
+    outputVoltageSource: '',
+    inputVoltageSource: '',
+  })
 
+  const [controlBlockParam, setControlBlockParam] = useState('')
+  const [disabled, setDisabled] = React.useState(false)
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
-
+  var analysisNodeArray = [], analysisCompArray = [], nodeArray=[]
+  const pushZero = (nodeArray) => {
+    nodeArray.push({key:0})
+  }
   const onDcSweepTabExpand = () => {
     try {
-      setComponentsList(['', ...GenerateCompList()])
+        setComponentsList(['', ...GenerateCompList()])
+        setNodeList(['', ...GenerateNodeList()])      
     } catch (err) {
       setComponentsList([])
+      setNodeList([])
+      alert('Circuit not complete. Please Check Connectons.')
+    }
+  }
+  const onTransientAnalysisTabExpand = () => {
+    try {
+        setComponentsList(['', ...GenerateCompList()])
+        setNodeList(['', ...GenerateNodeList()])      
+    } catch (err) {
+      setComponentsList([])
+      setNodeList([])
+      alert('Circuit not complete. Please Check Connectons.')
+    }
+  }  
+
+  const onTFTabExpand = () => {
+    try {
+        setComponentsList(['', ...GenerateCompList()])
+        setNodeList(['', ...GenerateNodeList()])       
+    } catch (err) {
+      setComponentsList([])
+      setNodeList([])
       alert('Circuit not complete. Please Check Connectons.')
     }
   }
@@ -111,6 +145,14 @@ export default function SimulationProperties () {
       [evt.target.id]: value
     })
   }
+  const handleTransientAnalysisControlLineUIC = (evt) => {
+    const value = evt.target.checked
+
+    setTransientAnalysisControlLine({
+      ...transientAnalysisControlLine,
+      [evt.target.id]: value
+    })
+  }
 
   const handleAcAnalysisControlLine = (evt) => {
     const value = evt.target.value
@@ -119,6 +161,22 @@ export default function SimulationProperties () {
       ...acAnalysisControlLine,
       [evt.target.id]: value
     })
+  }
+
+  const handleTfAnalysisControlLine = (evt) => {
+    const value = evt.target.value
+    setTfAnalysisControlLine({
+      ...tfAnalysisControlLine,
+      [evt.target.id]: value
+    })
+  }
+  const handleTfAnalysisControlLineNodes = (evt) => {
+    const value = evt.target.checked 
+    setTfAnalysisControlLine({
+      ...tfAnalysisControlLine,
+      [evt.target.id]: value
+    })
+    setDisabled(tfAnalysisControlLine.outputNodes)
   }
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
@@ -140,6 +198,129 @@ export default function SimulationProperties () {
     Decade: 'dec',
     Octave: 'oct'
   }
+  let [selectedValue, setSelectedValue] = React.useState([])
+  let [selectedValueDCSweep, setSelectedValueDCSweep] = React.useState([])
+  let [selectedValueTransientAnal, setSelectedValueTransientAnal] = React.useState([])
+  let [selectedValueTFAnal, setSelectedValueTFAnal] = React.useState([])
+  let [selectedValueComp, setSelectedValueComp] = React.useState([])
+  let [selectedValueDCSweepComp, setSelectedValueDCSweepComp] = React.useState([])
+  let [selectedValueTransientAnalComp, setSelectedValueTransientAnalComp] = React.useState([])
+
+  const handleAddSelectedValueDCSweep = (data) => {
+    var f = 0
+    selectedValueDCSweep.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueDCSweep, data]    
+        setSelectedValueDCSweep(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueDCSweep = (data) => {
+    const tmp = []
+    selectedValueDCSweep.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueDCSweep = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueTransientAnal = (data) => {
+    var f = 0
+    selectedValueTransientAnal.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueTransientAnal, data]    
+        setSelectedValueTransientAnal(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueTransientAnal = (data) => {
+    const tmp = []
+    selectedValueTransientAnal.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueTransientAnal = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueTFAnal = (data) => {
+    var f = 0
+    selectedValueTFAnal.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueTFAnal, data]    
+        setSelectedValueTFAnal(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueTFAnal = (data) => {
+    const tmp = []
+    selectedValueTFAnal.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueTFAnal = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueDCSweepComp = (data) => {
+    var f = 0
+    selectedValueDCSweepComp.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueDCSweepComp, data]    
+        setSelectedValueDCSweepComp(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueDCSweepComp = (data) => {
+    const tmp = []
+    selectedValueDCSweepComp.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueDCSweepComp = tmp
+    // console.log(selectedValue)
+  }
+  const handleAddSelectedValueTransientAnalComp = (data) => {
+    var f = 0
+    selectedValueTransientAnalComp.forEach((value, i) =>{
+        if(value[i] !== undefined){
+            if(value[i].key === data) f = 1
+        }        
+    })    
+    if(f === 0){
+        let tmp = [...selectedValueTransientAnalComp, data]    
+        setSelectedValueTransientAnalComp(tmp)
+    }   
+    // console.log(selectedValue) 
+  }
+  const handleRemSelectedValueTransientAnalComp = (data) => {
+    const tmp = []
+    selectedValueTransientAnalComp.forEach((value,i) =>{
+        if(value[i] !== undefined){
+            if( value[i].key !== data) tmp.push(data)
+        }
+    })
+    selectedValueTransientAnalComp = tmp
+    // console.log(selectedValue)
+  }
 
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
@@ -153,11 +334,12 @@ export default function SimulationProperties () {
   }
 
   function sendNetlist (file) {
+    setIsResult(false)
     netlistConfig(file)
       .then((response) => {
         const res = response.data
         const getUrl = 'simulation/status/'.concat(res.details.task_id)
-
+        setTaskId(res.details.task_id)
         simulationResult(getUrl)
       })
       .catch(function (error) {
@@ -191,7 +373,6 @@ export default function SimulationProperties () {
           if (result === null) {
             setIsResult(false)
           } else {
-            setIsResult(true)
             var temp = res.data.details.data
             var data = result.data
             // console.log('DATA SIm', data)
@@ -206,14 +387,14 @@ export default function SimulationProperties () {
 
                 // labels
                 for (var x = 1; x < lab.length; x++) {
-                  if (lab[x].includes('#branch')) {
-                    lab[x] = `I (${lab[x].replace('#branch', '')})`
-                  }
-                  //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
-                  //  else {
-                  // lab[x] = `V (${lab[x]})`
+                //   if (lab[x].includes('#branch')) {
+                //     lab[x] = `I (${lab[x].replace('#branch', '')})`
+                //   }
+                //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
+                //  else {
+                // lab[x] = `V (${lab[x]})`
 
-                  // }
+                // }
                   simResultGraph.labels.push(lab[x])
                 }
                 // populate y_points
@@ -234,8 +415,13 @@ export default function SimulationProperties () {
               for (let i = 0; i < temp.length; i++) {
                 let postfixUnit = ''
                 if (temp[i][0].includes('#branch')) {
-                  temp[i][0] = `I(${temp[i][0].replace('#branch', '')})`
                   postfixUnit = 'A'
+                }
+                else if(temp[i][0].includes('transfer_function')){            
+                    postfixUnit = ''     
+                } 
+                else if(temp[i][0].includes('impedance')){            
+                    postfixUnit = 'Ohm'                           
                 } else {
                   temp[i][0] = `V(${temp[i][0]})`
                   postfixUnit = 'V'
@@ -247,6 +433,7 @@ export default function SimulationProperties () {
               handleSimulationResult(res.data.details)
               dispatch(setResultText(simResultText))
             }
+            setIsResult(true)
           }
         }
       })
@@ -260,6 +447,7 @@ export default function SimulationProperties () {
     var compNetlist = GenerateNetList()
     var controlLine = ''
     var controlBlock = ''
+    var skipMultiNodeChk = 0
     switch (type) {
       case 'DcSolver':
         // console.log('To be implemented')
@@ -271,12 +459,18 @@ export default function SimulationProperties () {
         // console.log(dcSweepcontrolLine)
         controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
         dispatch(setResultTitle('DC Sweep Output'))
+        selectedValue = selectedValueDCSweep
+        selectedValueComp = selectedValueDCSweepComp
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
-        controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start}`
-
+        var uic = ""
+        if(transientAnalysisControlLine.skipInitial === true) uic="UIC"
+        controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
+        
         dispatch(setResultTitle('Transient Analysis Output'))
+        selectedValue = selectedValueTransientAnal
+        selectedValueComp = selectedValueTransientAnalComp
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
@@ -284,18 +478,67 @@ export default function SimulationProperties () {
 
         dispatch(setResultTitle('AC Analysis Output'))
         break
+    
+      case 'tfAnalysis':
+        let nodes = ""
+        selectedValue = selectedValueTFAnal
+        if(tfAnalysisControlLine.outputNodes === true){
+            selectedValue.forEach((value, i) => {
+            if(value[i] !== undefined){
+                    nodes = nodes + " " + String(value[i].key)
+                }                
+            })
+            nodes = "V(" + nodes + ")"
+        }
+        else{
+            nodes = `I(${tfAnalysisControlLine.outputVoltageSource})`
+        }
+        console.log(tfAnalysisControlLine.outputNodes)
+        controlLine = `.tf ${nodes} ${tfAnalysisControlLine.inputVoltageSource}`
+
+        dispatch(setResultTitle('Transfer Function Analysis Output'))
+        skipMultiNodeChk = 1
+        break
       default:
         break
     }
-    let cblockline
-    if (controlBlockParam.length <= 0) { cblockline = 'all' } else { cblockline = controlBlockParam }
+    // console.log(selectedValue)
+    var atleastOne = 0
+    let cblockline =""
+    // if either the extra expression field or the nodes multi select
+    // drop down list in enabled then atleast one value is made non zero
+    // to add add all instead to the print statement.
+    if(selectedValue.length > 0 && selectedValue !== null && skipMultiNodeChk === 0){
+        selectedValue.forEach((value, i) => {
+            if(value[i] !== undefined && value[i].key !== 0){   
+                atleastOne = 1
+                cblockline = cblockline + " " + String(value[i].key)
+            }                
+        })
+    }
+    if(selectedValueComp.length > 0 && selectedValueComp !== null){
+        selectedValueComp.forEach((value, i) => {
+            if(value[i] !== undefined && value[i].key !== 0){   
+                atleastOne = 1
+                if(value[i].key.charAt(0) === 'V' || value[i].key.charAt(0) === 'v'){
+                    cblockline = cblockline + " I(" + String(value[i].key)+") "
+                }   
+            }                
+        })
+    }
+    if(controlBlockParam.length > 0){
+        cblockline = cblockline + " " + controlBlockParam 
+        atleastOne = 1
+    }            
+    
+    if(atleastOne === 0) cblockline = 'all'
     controlBlock = `\n.control \nrun \nprint ${cblockline} > data.txt \n.endc \n.end`
     // console.log(controlLine)
 
     dispatch(setControlLine(controlLine))
     dispatch(setControlBlock(controlBlock))
     // setTimeout(function () { }, 2000)
-
+    
     var netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
@@ -323,7 +566,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} />
+      <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} task_id={taskId} />
 
         {/* Simulation modes list */}
         <List>
@@ -336,6 +579,7 @@ export default function SimulationProperties () {
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
+                  style={{ width: '100%  '}}
                 >
                   <Typography className={classes.heading}>DC Solver</Typography>
                 </ExpansionPanelSummary>
@@ -364,7 +608,7 @@ export default function SimulationProperties () {
                           }}
                           transformOrigin={{
                             vertical: 'top',
-                            horizontal: 'left'
+                            horizontal: 'left' 
                           }}
                         >
 
@@ -395,6 +639,7 @@ export default function SimulationProperties () {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                style={{ width: '97%'}}
               >
                 <Typography className={classes.heading}>DC Sweep</Typography>
               </ExpansionPanelSummary>
@@ -512,6 +757,30 @@ export default function SimulationProperties () {
 
                     </ListItem>
                     <ListItem>
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Nodes"
+                        closeOnSelect="false"
+                        placeholder="Select Node"
+                        onSelect={handleAddSelectedValueDCSweep}
+                        onRemove={handleRemSelectedValueDCSweep}
+                        options={analysisNodeArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
+                      />                      
+                    </ListItem>
+                    <ListItem>
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Branch"
+                        closeOnSelect="false"
+                        placeholder="Select VSRC"
+                        onSelect={handleAddSelectedValueDCSweepComp}
+                        onRemove={handleRemSelectedValueDCSweepComp}
+                        options={analysisCompArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
+                      />                      
+                    </ListItem>
+                    <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
                         Add Expression
@@ -559,11 +828,12 @@ export default function SimulationProperties () {
 
           {/* Transient Analysis */}
           <ListItem className={classes.simulationOptions} divider>
-            <ExpansionPanel>
+            <ExpansionPanel onClick={onTransientAnalysisTabExpand}>
               <ExpansionPanelSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                style={{ width: '97%'}}
               >
                 <Typography className={classes.heading}>Transient Analysis</Typography>
               </ExpansionPanelSummary>
@@ -591,7 +861,53 @@ export default function SimulationProperties () {
                       />
                       <span style={{ marginLeft: '10px' }}>S</span>
                     </ListItem>
-
+                    <ListItem>
+                      <Checkbox id="skipInitial" label="Use Initial Conditions" size='small' variant="outlined" 
+                        value={transientAnalysisControlLine.skipInitial}
+                        onChange={handleTransientAnalysisControlLineUIC}
+                      />
+                      <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
+                    </ListItem>
+                    <ListItem>
+                        {   nodeList.forEach((value) => {
+                                if(value !== null && value !== "") {
+                                    analysisNodeArray.push({key:value})
+                                }
+                            })
+                        }
+                        
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Nodes"
+                        closeOnSelect="false"
+                        placeholder="Select Node"
+                        onSelect={handleAddSelectedValueTransientAnal}
+                        onRemove={handleRemSelectedValueTransientAnal}
+                        options={analysisNodeArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
+                      />  
+                    </ListItem>
+                    <ListItem>
+                        {
+                            componentsList.forEach((value) => {
+                                if(value !== null && value !== "") {
+                                    if(value.charAt(0) === 'V' || value.charAt(0) === 'v'){
+                                        analysisCompArray.push({key:value})
+                                    }    
+                                }
+                            })
+                        }
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Branch"
+                        closeOnSelect="false"
+                        placeholder="Select VSRC"
+                        onSelect={handleAddSelectedValueTransientAnalComp}
+                        onRemove={handleRemSelectedValueTransientAnalComp}
+                        options={analysisCompArray} displayValue="key" 
+                        avoidHighlightFirstOption = "true"
+                      />                      
+                    </ListItem>
                     <ListItem>
 
                       <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
@@ -644,6 +960,7 @@ export default function SimulationProperties () {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                style={{ width: '100%'}}
               >
                 <Typography className={classes.heading}>AC Analysis</Typography>
               </ExpansionPanelSummary>
@@ -744,6 +1061,161 @@ export default function SimulationProperties () {
               </ExpansionPanelDetails>
             </ExpansionPanel>
           </ListItem>
+
+          {/* Transfer Function Analysis */}
+          <ListItem className={classes.simulationOptions} divider>
+            <ExpansionPanel onClick={onTFTabExpand}>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1a-content"
+                id="panel1a-header"
+                style={{ width: '97%'}}
+              >
+                <Typography className={classes.heading}>Transfer Function Analysis</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <form className={classes.propertiesBox} noValidate autoComplete="off">
+                  <List>
+                    <ListItem>
+                        <input  
+                            type="checkbox"         
+                            name="Between Nodes" 
+                            value={tfAnalysisControlLine.outputNodes} 
+                            onChange={handleTfAnalysisControlLineNodes}
+                            id="outputNodes"  
+                            // checked={tfAnalysisControlLine.outputNodes} 
+                        /> 
+                        <span style={{ marginLeft: '10px' }}>Output By Nodes</span>
+                        
+                    </ListItem>
+                    { nodeList.forEach((value) => {
+                            if(value !== null && value !== "") {
+                                nodeArray.push({key:value})
+                            }
+                        })
+                    }
+                    { pushZero(nodeArray)}
+                    <ListItem>
+                      <Multiselect
+                        style={{ width: '100%' }}
+                        id="Nodes"
+                        closeOnSelect="false"
+                        placeholder="Voltage between Nodes"
+                        onSelect={handleAddSelectedValueTFAnal}
+                        onRemove={handleRemSelectedValueTFAnal}
+                        selectionLimit="2"
+                        options={nodeArray} displayValue="key" 
+                        disable={disabled}
+                        avoidHighlightFirstOption = "true"
+                      />                      
+                    </ListItem>
+                    <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="outputVoltageSource"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Output Voltage SRC"
+                        value={tfAnalysisControlLine.outputVoltageSource}
+                        onChange={handleTfAnalysisControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+                        disabled={!disabled}
+                      >
+
+                        {
+                          componentsList.map((value, i) => {
+                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
+                              return (<option key={i} value={value}>
+                                {value}
+                              </option>)
+                            } else {
+                              return null
+                            }
+                          })
+                        }
+
+                      </TextField>
+
+                    </ListItem>
+                    <ListItem>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="inputVoltageSource"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Input Voltage SRC"
+                        value={tfAnalysisControlLine.inputVoltageSource}
+                        onChange={handleTfAnalysisControlLine}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+
+                        {
+                          componentsList.map((value, i) => {
+                            if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
+                              return (<option key={i} value={value}>
+                                {value}
+                              </option>)
+                            } else {
+                              return null
+                            }
+                          })
+                        }
+
+                      </TextField>
+
+                    </ListItem>
+                    <ListItem>
+
+                      <Button aria-describedby={id} variant="outlined" color="primary" size="small" onClick={handleAddExpressionClick}>
+                        Add Expression
+                      </Button>
+                      <Tooltip title={'Add expression seperated by spaces.\n Include #branch at end of expression to indicate current  e.g v1#branch. To add multiple expression seperate them by spaces eg. v1 v2 v3#branch'}>
+                        <IconButton aria-label="info">
+                          <InfoOutlinedIcon style={{ fontSize: 'large' }} />
+                        </IconButton>
+                      </Tooltip>
+                      <Popover
+                        id={id}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleAddExpressionClose}
+
+                        anchorOrigin={{
+                          vertical: 'center',
+                          horizontal: 'left'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left'
+                        }}
+                      >
+
+                        <TextField id="controlBlockParam" placeHolder="enter expression" size='large' variant="outlined"
+                          value={controlBlockParam}
+                          onChange={handleControlBlockParam}
+                        />
+
+                      </Popover>
+
+                    </ListItem>
+
+                    <ListItem>
+                      <Button id="tfAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('tfAnalysis') }}>
+                        Simulate
+                      </Button>
+                    </ListItem>
+                  </List>
+                </form>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </ListItem>
+
 
           <ListItem style={isSimRes ? {} : { display: 'none' }} onClick={handlesimulateOpen} >
             <Button size='small' variant="contained" color="primary" style={{ margin: '10px auto' }} onClick={handlesimulateOpen}>
