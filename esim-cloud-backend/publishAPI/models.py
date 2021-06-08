@@ -41,12 +41,12 @@ class Project(models.Model):
     description = models.CharField(max_length=1000, null=True)
     fields = models.ManyToManyField(to=Field)
     state = models.ForeignKey(State, on_delete=CASCADE, default=1)
-
     author = models.ForeignKey(
         get_user_model(), null=True, on_delete=models.CASCADE)
     is_arduino = models.BooleanField(default=False, null=False)
     is_reported = models.BooleanField(default=False, null=True)
-
+    active_branch = models.CharField(max_length=20,null=True)
+    active_version = models.CharField(max_length=20,null=True)
     def __str__(self):
         return self.title
 
@@ -64,7 +64,6 @@ class TransitionHistory(models.Model):
     transition_time = models.DateTimeField(auto_now_add=True)
     reviewer_notes = models.CharField(max_length=500, blank=True)
     is_done_by_reviewer = models.BooleanField(default=False, null=True)
-
     class Meta:
         verbose_name_plural = 'Transition Histories'
 

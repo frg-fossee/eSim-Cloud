@@ -59,13 +59,14 @@ class ProjectViewSet(APIView):
             return Response(data)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
     def post(self, request, circuit_id):
         try:
-            save_state = StateSave.objects.get(save_id=circuit_id)
-        except:
+            save_state = StateSave.objects.filter(save_id=circuit_id)
+        except StateSave.DoesNotExist:
             return Response({'Error': 'No State found'}, status=status.HTTP_404_NOT_FOUND)
+        #Active State save bana and get it from the filtered objects 
         user_roles = self.request.user.groups.all()
+        #Change these all to active state save
         if save_state.project is None:
             project = Project(title=request.data[0]['title'], description=request.data[0]
                               ['description'], author=save_state.owner, is_arduino=save_state.is_arduino)
@@ -76,7 +77,7 @@ class ProjectViewSet(APIView):
                 project.fields.add(field)
             project.save()
             can_edit = False
-            
+            #iterate through the saves to get a new project
             save_state.project = project
             save_state.shared = True
             save_state.save()
@@ -93,6 +94,7 @@ class ProjectViewSet(APIView):
             data['can_edit'] = can_edit
             return Response(data)
         else:
+            #Active state save implement
             can_edit = False
             flag = False
             if Permission.objects.filter(role__in=user_roles, edit_own_states=save_state.project.state).exists():

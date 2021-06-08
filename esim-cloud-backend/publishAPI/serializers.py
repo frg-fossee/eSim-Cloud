@@ -73,6 +73,8 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'author_name',
                   'is_reported',
                   'fields',
+                  'active_branch',
+                  'active_version',
                   )
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:

@@ -24,7 +24,7 @@ class CustomGroup(models.Model):
     is_type_reviewer = models.BooleanField(default=False)
 
 class Permission(models.Model):
-    role=models.ForeignKey(to=Group,related_name='permission_role',on_delete=CASCADE)
+    role=models.OneToOneField(Group,related_name='permission_role',on_delete=CASCADE, unique=True,)
     view_own_states = models.ManyToManyField(State,related_name="view_own_states",verbose_name='Can View own Project',blank=True)
     view_other_states = models.ManyToManyField(State,related_name="view_other_states",verbose_name='Can View other Project',blank=True)
     edit_own_states = models.ManyToManyField(State,related_name="edit_own_states",verbose_name='Can Edit Details and Status own Project',blank=True)

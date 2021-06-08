@@ -139,8 +139,6 @@ class ProjectStateView(APIView):
                     transition_history.save()
                     project.state = circuit_transition.to_state
                     project.save()
-                    print(project.state)
-                    print("Saved in changed status")
                     state = project.state
                     serialized = StatusSerializer(state)
                     return Response(serialized.data)
