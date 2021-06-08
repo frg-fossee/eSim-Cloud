@@ -34,33 +34,33 @@ import CreateProject from '../Project/CreateProject'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
-    marginLeft: 'auto',
+    marginLeft: "auto",
     marginRight: theme.spacing(0),
     padding: theme.spacing(1),
-    [theme.breakpoints.up('lg')]: {
-      display: 'none'
-    }
+    [theme.breakpoints.up("lg")]: {
+      display: "none",
+    },
   },
   tools: {
     padding: theme.spacing(1),
     margin: theme.spacing(0, 0.5),
-    color: '#262626'
+    color: "#262626",
   },
   pipe: {
-    fontSize: '1.45rem',
-    color: '#d6c4c2',
-    margin: theme.spacing(0, 1.5)
-  }
-}))
+    fontSize: "1.45rem",
+    color: "#d6c4c2",
+    margin: theme.spacing(0, 1.5),
+  },
+}));
 
 // Notification snackbar to give alert messages
-function SimpleSnackbar ({ open, close, message }) {
+function SimpleSnackbar({ open, close, message }) {
   return (
     <div>
       <Snackbar
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left'
+          vertical: "bottom",
+          horizontal: "left",
         }}
         open={open}
         autoHideDuration={5000}
@@ -68,279 +68,301 @@ function SimpleSnackbar ({ open, close, message }) {
         message={message}
         action={
           <React.Fragment>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={close}>
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={close}
+            >
               <CloseIcon fontSize="small" />
             </IconButton>
           </React.Fragment>
         }
       />
     </div>
-  )
+  );
 }
 
 SimpleSnackbar.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
-  message: PropTypes.string
-}
+  message: PropTypes.string,
+};
 
-export default function SchematicToolbar ({ mobileClose, gridRef }) {
-  const classes = useStyles()
-  const netfile = useSelector(state => state.netlistReducer)
-  const auth = useSelector(state => state.authReducer)
-  const schSave = useSelector(state => state.saveSchematicReducer)
+export default function SchematicToolbar({ mobileClose, gridRef }) {
+  const classes = useStyles();
+  const netfile = useSelector((state) => state.netlistReducer);
+  const auth = useSelector((state) => state.authReducer);
+  const schSave = useSelector((state) => state.saveSchematicReducer);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   // Netlist Modal Control
-  const [open, setOpen] = React.useState(false)
-  const [netlist, genNetlist] = React.useState('')
+  const [open, setOpen] = React.useState(false);
+  const [netlist, genNetlist] = React.useState("")
+  
+  const handleSave = (version, newSave,save_id) => {
+    if (!newSave) {
+      window.location = "#/editor?id=" + window.location.href.split("id=")[1].substr(0, 36) + "&version=" + version + "&branch=" + window.location.href.split("branch=")[1].substr(0)
+      window.location.reload()
+    }
+    else {
+      window.location = "#/editor?id=" + save_id + "&version=" + version + "&branch=master"
+      window.location.reload()
+    }
+  }
 
   const handleClickOpen = () => {
-    var compNetlist = GenerateNetList()
-    var netlist = netfile.title + '\n\n' +
-      compNetlist.models + '\n' +
-      compNetlist.main + '\n' +
-      netfile.controlLine + '\n' +
-      netfile.controlBlock + '\n'
-    genNetlist(netlist)
-    setOpen(true)
-  }
+    var compNetlist = GenerateNetList();
+    var netlist =
+      netfile.title +
+      "\n\n" +
+      compNetlist.models +
+      "\n" +
+      compNetlist.main +
+      "\n" +
+      netfile.controlLine +
+      "\n" +
+      netfile.controlBlock +
+      "\n";
+    genNetlist(netlist);
+    setOpen(true);
+  };
 
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   // Control Help dialog window
-  const [helpOpen, setHelpOpen] = React.useState(false)
+  const [helpOpen, setHelpOpen] = React.useState(false);
 
   const handleHelpOpen = () => {
-    setHelpOpen(true)
-  }
+    setHelpOpen(true);
+  };
 
   const handleHelpClose = () => {
-    setHelpOpen(false)
-  }
+    setHelpOpen(false);
+  };
 
   // Handel Delete component
   const handleDeleteComp = () => {
-    DeleteComp()
-    dispatch(closeCompProperties())
-  }
+    DeleteComp();
+    dispatch(closeCompProperties());
+  };
 
   // Handel Notification Snackbar
-  const [snacOpen, setSnacOpen] = React.useState(false)
-  const [message, setMessage] = React.useState('')
+  const [snacOpen, setSnacOpen] = React.useState(false);
+  const [message, setMessage] = React.useState("");
 
   const handleSnacClick = () => {
-    setSnacOpen(true)
-  }
+    setSnacOpen(true);
+  };
 
   const handleSnacClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
+    if (reason === "clickaway") {
+      return;
     }
-    setSnacOpen(false)
-  }
+    setSnacOpen(false);
+  };
 
   // Image Export of Schematic Diagram
-  async function exportImage (type) {
-    const svg = document.querySelector('#divGrid > svg').cloneNode(true)
-    svg.removeAttribute('style')
-    svg.setAttribute('width', gridRef.current.scrollWidth)
-    svg.setAttribute('height', gridRef.current.scrollHeight)
-    const canvas = document.createElement('canvas')
-    canvas.width = gridRef.current.scrollWidth
-    canvas.height = gridRef.current.scrollHeight
-    canvas.style.width = canvas.width + 'px'
-    canvas.style.height = canvas.height + 'px'
-    var images = svg.getElementsByTagName('image')
+  async function exportImage(type) {
+    const svg = document.querySelector("#divGrid > svg").cloneNode(true);
+    svg.removeAttribute("style");
+    svg.setAttribute("width", gridRef.current.scrollWidth);
+    svg.setAttribute("height", gridRef.current.scrollHeight);
+    const canvas = document.createElement("canvas");
+    canvas.width = gridRef.current.scrollWidth;
+    canvas.height = gridRef.current.scrollHeight;
+    canvas.style.width = canvas.width + "px";
+    canvas.style.height = canvas.height + "px";
+    var images = svg.getElementsByTagName("image");
     for (var image of images) {
-      const data = await fetch(image.getAttribute('xlink:href')).then((v) => {
-        return v.text()
-      })
-      image.removeAttribute('xlink:href')
+      const data = await fetch(image.getAttribute("xlink:href")).then((v) => {
+        return v.text();
+      });
+      image.removeAttribute("xlink:href");
       image.setAttribute(
-        'href',
-        'data:image/svg+xml;base64,' + window.btoa(data)
-      )
+        "href",
+        "data:image/svg+xml;base64," + window.btoa(data)
+      );
     }
-    var ctx = canvas.getContext('2d')
-    ctx.mozImageSmoothingEnabled = true
-    ctx.webkitImageSmoothingEnabled = true
-    ctx.msImageSmoothingEnabled = true
-    ctx.imageSmoothingEnabled = true
-    const pixelRatio = window.devicePixelRatio || 1
-    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
-    return new Promise(resolve => {
-      if (type === 'SVG') {
-        var svgdata = new XMLSerializer().serializeToString(svg)
-        resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata)
-        return
+    var ctx = canvas.getContext("2d");
+    ctx.mozImageSmoothingEnabled = true;
+    ctx.webkitImageSmoothingEnabled = true;
+    ctx.msImageSmoothingEnabled = true;
+    ctx.imageSmoothingEnabled = true;
+    const pixelRatio = window.devicePixelRatio || 1;
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    return new Promise((resolve) => {
+      if (type === "SVG") {
+        var svgdata = new XMLSerializer().serializeToString(svg);
+        resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata);
+        return;
       }
-      var v = Canvg.fromString(ctx, svg.outerHTML)
+      var v = Canvg.fromString(ctx, svg.outerHTML);
       v.render().then(() => {
-        var image = ''
-        if (type === 'JPG') {
-          const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height)
+        var image = "";
+        if (type === "JPG") {
+          const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
           for (let i = 0; i < imgdata.data.length; i += 4) {
             if (imgdata.data[i + 3] === 0) {
-              imgdata.data[i] = 255
-              imgdata.data[i + 1] = 255
-              imgdata.data[i + 2] = 255
-              imgdata.data[i + 3] = 255
+              imgdata.data[i] = 255;
+              imgdata.data[i + 1] = 255;
+              imgdata.data[i + 2] = 255;
+              imgdata.data[i + 3] = 255;
             }
           }
-          ctx.putImageData(imgdata, 0, 0)
-          image = canvas.toDataURL('image/jpeg', 1.0)
+          ctx.putImageData(imgdata, 0, 0);
+          image = canvas.toDataURL("image/jpeg", 1.0);
         } else {
-          if (type === 'PNG') {
-            image = canvas.toDataURL('image/png')
+          if (type === "PNG") {
+            image = canvas.toDataURL("image/png");
           }
         }
-        resolve(image)
-      })
-    })
+        resolve(image);
+      });
+    });
   }
 
   // Download JPEG, PNG exported Image
-  function downloadImage (data, type) {
-    var evt = new MouseEvent('click', {
+  function downloadImage(data, type) {
+    var evt = new MouseEvent("click", {
       view: window,
       bubbles: false,
-      cancelable: true
-    })
-    var a = document.createElement('a')
-    const ext = (type === 'PNG') ? '.png' : '.jpg'
-    a.setAttribute('download', schSave.title + '_eSim_on_cloud' + ext)
-    a.setAttribute('href', data)
-    a.setAttribute('target', '_blank')
-    a.dispatchEvent(evt)
+      cancelable: true,
+    });
+    var a = document.createElement("a");
+    const ext = type === "PNG" ? ".png" : ".jpg";
+    a.setAttribute("download", schSave.title + "_eSim_on_cloud" + ext);
+    a.setAttribute("href", data);
+    a.setAttribute("target", "_blank");
+    a.dispatchEvent(evt);
   }
 
   // Download SVG image
-  function downloadText (data, options) {
-    const blob = new Blob(data, options)
-    const evt = new MouseEvent('click', {
+  function downloadText(data, options) {
+    const blob = new Blob(data, options);
+    const evt = new MouseEvent("click", {
       view: window,
       bubbles: false,
-      cancelable: true
-    })
-    const a = document.createElement('a')
-    a.setAttribute('download', schSave.title + '_eSim_on_cloud.svg')
-    a.href = URL.createObjectURL(blob)
-    a.target = '_blank'
-    a.setAttribute('target', '_blank')
-    a.dispatchEvent(evt)
+      cancelable: true,
+    });
+    const a = document.createElement("a");
+    a.setAttribute("download", schSave.title + "_eSim_on_cloud.svg");
+    a.href = URL.createObjectURL(blob);
+    a.target = "_blank";
+    a.setAttribute("target", "_blank");
+    a.dispatchEvent(evt);
   }
 
-  const [imgopen, setImgOpen] = React.useState(false)
+  const [imgopen, setImgOpen] = React.useState(false);
 
   const handleImgClickOpen = () => {
-    setImgOpen(true)
-  }
+    setImgOpen(true);
+  };
 
   const handleImgClose = (value) => {
-    setImgOpen(false)
-    if (value === 'SVG') {
-      exportImage('SVG')
-        .then(v => {
-          downloadText([v], {
-            type: 'data:image/svg+xml;charset=utf-8;'
-          })
-        })
-    } else if (value === 'PNG') {
-      exportImage('PNG')
-        .then(v => {
-          downloadImage(v, 'PNG')
-        })
-    } else if (value === 'JPG') {
-      exportImage('JPG')
-        .then(v => {
-          downloadImage(v, 'JPG')
-        })
+    setImgOpen(false);
+    if (value === "SVG") {
+      exportImage("SVG").then((v) => {
+        downloadText([v], {
+          type: "data:image/svg+xml;charset=utf-8;",
+        });
+      });
+    } else if (value === "PNG") {
+      exportImage("PNG").then((v) => {
+        downloadImage(v, "PNG");
+      });
+    } else if (value === "JPG") {
+      exportImage("JPG").then((v) => {
+        downloadImage(v, "JPG");
+      });
     }
-  }
+  };
 
   // Handel Save Schematic onCloud
   const handelSchSave = () => {
     if (auth.isAuthenticated !== true) {
-      setMessage('You are not Logged In')
-      handleSnacClick()
+      setMessage("You are not Logged In");
+      handleSnacClick();
     } else {
-      var xml = Save()
-      dispatch(setSchXmlData(xml))
-      var title = schSave.title
-      var description = schSave.description
-      exportImage('PNG')
-        .then(res => {
-          dispatch(saveSchematic(title, description, xml, res))
-        })
-      setMessage('Saved Successfully')
-      handleSnacClick()
+      var xml = Save();
+      dispatch(setSchXmlData(xml));
+      var title = schSave.title;
+      var description = schSave.description;
+      exportImage("PNG").then((res) => {
+        dispatch(saveSchematic(title, description, xml, res, false, null, handleSave));
+      });
+      setMessage("Saved Successfully");
+      handleSnacClick();
     }
-  }
+  };
 
   // Save Schematics Locally
   const handelLocalSchSave = () => {
-    var saveLocalData = {}
-    saveLocalData.data_dump = Save()
-    saveLocalData.title = schSave.title
-    saveLocalData.description = schSave.description
-    var json = JSON.stringify(saveLocalData)
-    const blob = new Blob([json], { type: 'octet/stream' })
-    const evt = new MouseEvent('click', {
+    var saveLocalData = {};
+    saveLocalData.data_dump = Save();
+    saveLocalData.title = schSave.title;
+    saveLocalData.description = schSave.description;
+    var json = JSON.stringify(saveLocalData);
+    const blob = new Blob([json], { type: "octet/stream" });
+    const evt = new MouseEvent("click", {
       view: window,
       bubbles: false,
-      cancelable: true
-    })
-    const a = document.createElement('a')
-    a.setAttribute('download', schSave.title + '_eSim_on_cloud.json')
-    a.href = URL.createObjectURL(blob)
-    a.target = '_blank'
-    a.setAttribute('target', '_blank')
-    a.dispatchEvent(evt)
-  }
+      cancelable: true,
+    });
+    const a = document.createElement("a");
+    a.setAttribute("download", schSave.title + "_eSim_on_cloud.json");
+    a.href = URL.createObjectURL(blob);
+    a.target = "_blank";
+    a.setAttribute("target", "_blank");
+    a.dispatchEvent(evt);
+  };
 
   // Open Locally Saved Schematic
   const handelLocalSchOpen = () => {
-    var obj = {}
-    const fileSelector = document.createElement('input')
-    fileSelector.setAttribute('type', 'file')
-    fileSelector.setAttribute('accept', 'application/JSON')
-    fileSelector.click()
-    fileSelector.addEventListener('change', function (event) {
-      var reader = new FileReader()
-      var filename = event.target.files[0].name
-      if (filename.slice(filename.length - 4) === 'json') {
-        reader.onload = onReaderLoad
-        reader.readAsText(event.target.files[0])
+    var obj = {};
+    const fileSelector = document.createElement("input");
+    fileSelector.setAttribute("type", "file");
+    fileSelector.setAttribute("accept", "application/JSON");
+    fileSelector.click();
+    fileSelector.addEventListener("change", function (event) {
+      var reader = new FileReader();
+      var filename = event.target.files[0].name;
+      if (filename.slice(filename.length - 4) === "json") {
+        reader.onload = onReaderLoad;
+        reader.readAsText(event.target.files[0]);
       } else {
-        setMessage('Unsupported file type error ! Select valid file.')
-        handleSnacClick()
+        setMessage("Unsupported file type error ! Select valid file.");
+        handleSnacClick();
       }
-    })
+    });
     const onReaderLoad = function (event) {
-      obj = JSON.parse(event.target.result)
-      if (obj.data_dump === undefined || obj.title === undefined || obj.description === undefined) {
-        setMessage('Unsupported file error !')
-        handleSnacClick()
+      obj = JSON.parse(event.target.result);
+      if (
+        obj.data_dump === undefined ||
+        obj.title === undefined ||
+        obj.description === undefined
+      ) {
+        setMessage("Unsupported file error !");
+        handleSnacClick();
       } else {
-        dispatch(openLocalSch(obj))
+        dispatch(openLocalSch(obj));
       }
-    }
-  }
+    };
+  };
 
   // Control Help dialog window open and close
-  const [schOpen, setSchOpen] = React.useState(false)
+  const [schOpen, setSchOpen] = React.useState(false);
 
   const handleSchDialOpen = () => {
-    setSchOpen(true)
-  }
+    setSchOpen(true);
+  };
 
   const handleSchDialClose = () => {
-    setSchOpen(false)
-  }
+    setSchOpen(false);
+  };
 
   const [libsOpen, setlibsOpen] = React.useState(false)
 
@@ -355,55 +377,112 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   return (
     <>
       <Tooltip title="New">
-        <IconButton color="inherit" className={classes.tools} size="small" target="_blank" component={RouterLink} to="/editor" >
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          target="_blank"
+          component={RouterLink}
+          to="/editor"
+        >
           <CreateNewFolderOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Open">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleSchDialOpen} >
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={handleSchDialOpen}
+        >
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} />
+      <OpenSchDialog
+        open={schOpen}
+        close={handleSchDialClose}
+        openLocal={handelLocalSchOpen}
+      />
       <Tooltip title="Save">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={handelSchSave}
+        >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+      <SimpleSnackbar
+        open={snacOpen}
+        close={handleSnacClose}
+        message={message}
+      />
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Export">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={handelLocalSchSave}
+        >
           <SystemUpdateAltOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Image Export">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleImgClickOpen}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={handleImgClickOpen}
+        >
           <ImageOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <ImageExportDialog open={imgopen} onClose={handleImgClose} />
       <Tooltip title="Print Preview">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={PrintPreview}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={PrintPreview}
+        >
           <PrintOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Simulate">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { dispatch(toggleSimulate()) }}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={() => {
+            dispatch(toggleSimulate());
+          }}
+        >
           <PlayCircleOutlineIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Generate Netlist">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleClickOpen} >
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={handleClickOpen}
+        >
           <BorderClearIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <NetlistModal open={open} close={handleClose} netlist={netlist} />
       <Tooltip title="ERC Check">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={ErcCheck}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={ErcCheck}
+        >
           <BugReportOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
@@ -416,60 +495,105 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={Undo}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={Undo}
+        >
           <UndoIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Redo">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={Redo}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={Redo}
+        >
           <RedoIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Rotate">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={Rotate}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={Rotate}
+        >
           <RotateRightIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Zoom In">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomIn}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={ZoomIn}
+        >
           <ZoomInIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Zoom Out">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomOut}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={ZoomOut}
+        >
           <ZoomOutIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Default Size">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomAct}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={ZoomAct}
+        >
           <SettingsOverscanIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Delete">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleDeleteComp}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={handleDeleteComp}
+        >
           <DeleteIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Clear All">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={ClearGrid}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={ClearGrid}
+        >
           <ClearAllIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <Tooltip title="Help">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleHelpOpen}>
+        <IconButton
+          color="inherit"
+          className={classes.tools}
+          size="small"
+          onClick={handleHelpOpen}
+        >
           <HelpOutlineIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
       <span className={classes.pipe}>|</span>
       <IconButton
-        color='inherit'
-        aria-label='open drawer'
-        edge='end'
+        color="inherit"
+        aria-label="open drawer"
+        edge="end"
         size="small"
         onClick={mobileClose}
         className={classes.menuButton}
@@ -479,10 +603,10 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <CreateProject/>
       
     </>
-  )
+  );
 }
 
 SchematicToolbar.propTypes = {
   mobileClose: PropTypes.func,
-  gridRef: PropTypes.object.isRequired
-}
+  gridRef: PropTypes.object.isRequired,
+};

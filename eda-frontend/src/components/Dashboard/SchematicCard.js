@@ -1,5 +1,5 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react"
+import PropTypes from "prop-types"
 import {
   Button,
   Typography,
@@ -25,7 +25,7 @@ import MuiAlert from '@material-ui/lab/Alert'
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
-    paddingTop: '56.25%' // 16:9
+    paddingTop: "56.25%", // 16:9
   },
   rating: {
     marginTop: theme.spacing(1),
@@ -47,66 +47,83 @@ function SimpleSnackbar({ open, close, sch }) {
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
+        vertical: "bottom",
+        horizontal: "center",
       }}
       open={open}
       autoHideDuration={6000}
       onClose={close}
     >
-      <Alert icon={false} severity="warning" color="error" style={{ width: '100%' }} action={
-        <>
-          <Button size="small" aria-label="close" color="inherit" onClick={() => { dispatch(deleteSchematic(sch.save_id)) }}>
-            Yes
-          </Button>
-          <Button size="small" aria-label="close" color="inherit" onClick={close}>
-            NO
-          </Button>
-        </>
-      }
+      <Alert
+        icon={false}
+        severity="warning"
+        color="error"
+        style={{ width: "100%" }}
+        action={
+          <>
+            <Button
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => {
+                dispatch(deleteSchematic(sch.save_id, sch.version, sch.branch));
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={close}
+            >
+              NO
+            </Button>
+          </>
+        }
       >
-        {'Delete ' + sch.name + ' ?'}
+        {"Delete " + sch.name + " ?"}
       </Alert>
     </Snackbar>
-  )
+  );
 }
 
 SimpleSnackbar.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
-  sch: PropTypes.object
-}
+  sch: PropTypes.object,
+};
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
 function timeSince(jsonDate) {
   var json = jsonDate
 
-  var date = new Date(json)
+  var date = new Date(json);
 
-  var seconds = Math.floor((new Date() - date) / 1000)
+  var seconds = Math.floor((new Date() - date) / 1000);
 
-  var interval = Math.floor(seconds / 31536000)
+  var interval = Math.floor(seconds / 31536000);
 
   if (interval > 1) {
-    return interval + ' years'
+    return interval + " years";
   }
-  interval = Math.floor(seconds / 2592000)
+  interval = Math.floor(seconds / 2592000);
   if (interval > 1) {
-    return interval + ' months'
+    return interval + " months";
   }
-  interval = Math.floor(seconds / 86400)
+  interval = Math.floor(seconds / 86400);
   if (interval > 1) {
-    return interval + ' days'
+    return interval + " days";
   }
-  interval = Math.floor(seconds / 3600)
+  interval = Math.floor(seconds / 3600);
   if (interval > 1) {
-    return interval + ' hours'
+    return interval + " hours";
   }
-  interval = Math.floor(seconds / 60)
+  interval = Math.floor(seconds / 60);
   if (interval > 1) {
-    return interval + ' minutes'
+    return interval + " minutes";
   }
-  return Math.floor(seconds) + ' seconds'
+  return Math.floor(seconds) + " seconds";
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
@@ -123,14 +140,14 @@ export default function SchematicCard({ sch }) {
   const classes = useStyles()
 
   // To handel delete schematic snackbar
-  const [snacOpen, setSnacOpen] = React.useState(false)
+  const [snacOpen, setSnacOpen] = React.useState(false);
 
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
   const handleSnacClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return
+    if (reason === "clickaway") {
+      return;
     }
     setSnacOpen(false)
   }
@@ -148,7 +165,7 @@ export default function SchematicCard({ sch }) {
         <ButtonBase
           target="_blank"
           component={RouterLink}
-          to={'/editor?id=' + sch.save_id}
+          to={'/editor?id=' + sch.save_id + "&version=" + sch.version + "&branch=" + sch.branch}
           style={{ width: '100%' }}
         >
           <CardActionArea>
@@ -176,9 +193,9 @@ export default function SchematicCard({ sch }) {
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`}/>
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
-          <Tooltip title='Delete' placement="bottom" arrow>
+          <Tooltip title="Delete" placement="bottom" arrow>
             <DeleteIcon
-              color='secondary'
+              color="secondary"
               fontSize="small"
               // style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
@@ -187,18 +204,22 @@ export default function SchematicCard({ sch }) {
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
           {/* Display share status */}
-          <Tooltip title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'} placement="bottom" arrow>
+          <Tooltip
+            title={!sch.shared ? "SHARE OFF" : "SHARE ON"}
+            placement="bottom"
+            arrow
+          >
             <ShareIcon
-              color={!sch.shared ? 'disabled' : 'primary'}
+              color={!sch.shared ? "disabled" : "primary"}
               fontSize="small"
-              style={{ marginRight: '10px' }}
+              style={{ marginRight: "10px" }}
             />
           </Tooltip>
         </CardActions>
       </Card>
 
     </>
-  )
+  );
 }
 
 SchematicCard.propTypes = {

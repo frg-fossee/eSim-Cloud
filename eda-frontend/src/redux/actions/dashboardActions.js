@@ -105,7 +105,7 @@ export const fetchPublicProjects = () => (dispatch, getState) => {
 }
 
 // Api call for deleting saved schematic
-export const deleteSchematic = (saveId) => (dispatch, getState) => {
+export const deleteSchematic = (saveId,version,branch) => (dispatch, getState) => {
   const token = getState().authReducer.token
   const config = {
     headers: {
@@ -117,7 +117,7 @@ export const deleteSchematic = (saveId) => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.delete('save/' + saveId, config)
+  api.delete('save/' + saveId + "/" + version+ "/" + branch, config)
     .then(
       (res) => {
         if (res.status === 200) {

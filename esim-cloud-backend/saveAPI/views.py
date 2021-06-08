@@ -6,6 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
@@ -34,22 +35,39 @@ class StateSaveView(APIView):
     def post(self, request, *args, **kwargs):
         logger.info('Got POST for state save ')
         esim_libraries = json.loads(request.data.get('esim_libraries'))
-        img = Base64ImageField(max_length=None, use_url=True)
-        filename, content = img.update(request.data['base64_image'])
-        state_save = StateSave(
-            data_dump=request.data.get('data_dump'),
-            description=request.data.get('description'),
-            name=request.data.get('name'),
-            owner=request.user
-        )
-        state_save.base64_image.save(filename, content)
-        print(state_save)
-        state_save.esim_libraries.set(esim_libraries)
         try:
-            state_save.save()
-            return Response(StateSaveSerializer(state_save).data)
-        except Exception:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            queryset = StateSave.objects.get(
+                data_dump=request.data["data_dump"], branch=request.data["branch"])
+            serializer = StateSaveSerializer(data=request.data)
+            if serializer.is_valid():
+                queryset.name = serializer.data["name"]
+                queryset.description = serializer.data["description"]
+                queryset.save()
+                response = serializer.data
+                response['duplicate'] = True
+                return Response(response)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except StateSave.DoesNotExist:
+            img = Base64ImageField(max_length=None, use_url=True)
+            filename, content = img.update(request.data['base64_image'])
+            state_save = StateSave(
+                data_dump=request.data.get('data_dump'),
+                description=request.data.get('description'),
+                name=request.data.get('name'),
+                owner=request.user,
+                branch=request.data.get('branch'),
+                version=request.data.get('version')
+            )
+            if request.data.get('save_id'):
+                state_save.save_id = request.data.get('save_id')
+            state_save.base64_image.save(filename, content)
+            print(state_save)
+            state_save.esim_libraries.set(esim_libraries)
+            try:
+                state_save.save()
+                return Response(StateSaveSerializer(state_save).data)
+            except Exception:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class CopyStateView(APIView):
@@ -84,12 +102,13 @@ class StateFetchUpdateView(APIView):
     methods = ['GET']
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
-    def get(self, request, save_id):
+    def get(self, request, save_id, version, branch):
 
         if isinstance(save_id, uuid.UUID):
             # Check for permissions and sharing settings here
             try:
-                saved_state = StateSave.objects.get(save_id=save_id)
+                saved_state = StateSave.objects.get(
+                    save_id=save_id, version=version, branch=branch)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -164,10 +183,11 @@ class StateFetchUpdateView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
-    def delete(self, request, save_id):
+    def delete(self, request, save_id, version, branch):
         if isinstance(save_id, uuid.UUID):
             try:
-                saved_state = StateSave.objects.get(save_id=save_id)
+                saved_state = StateSave.objects.get(
+                    save_id=save_id, version=version, branch=branch)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -195,12 +215,13 @@ class StateShareView(APIView):
     methods = ['GET']
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
-    def post(self, request, save_id, sharing):
+    def post(self, request, save_id, sharing, version, branch):
 
         if isinstance(save_id, uuid.UUID):
             # Check for permissions and sharing settings here
             try:
-                saved_state = StateSave.objects.get(save_id=save_id)
+                saved_state = StateSave.objects.get(
+                    save_id=save_id, version=version, branch=branch)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -240,13 +261,13 @@ class UserSavesView(APIView):
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def get(self, request):
-        saved_state = StateSave.objects.filter(
-            owner=self.request.user, is_arduino=False).order_by('-save_time')
-        # try:
-        serialized = StateSaveSerializer(saved_state, many=True)
-        return Response(serialized.data)
-        # except Exception:
-        return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        saved_state = StateSave.objects.filter(owner=self.request.user).order_by(
+            "save_id", "-save_time").distinct("save_id")
+        try:
+            serialized = StateSaveSerializer(saved_state, many=True)
+            return Response(serialized.data)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ArduinoSaveList(APIView):
@@ -293,3 +314,35 @@ class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = SaveListSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SaveSearchFilterSet
+
+
+class StateSaveAllVersions(APIView):
+    serializer_class = SaveListSerializer
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(responses={200: SaveListSerializer})
+    def get(self, request, save_id):
+        queryset = StateSave.objects.filter(
+            owner=self.request.user, save_id=save_id)
+        try:
+            serialized = SaveListSerializer(
+                queryset, many=True, context={'request': request})
+            return Response(serialized.data)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GetStateSpecificVersion(APIView):
+    serializer_class = StateSaveSerializer
+    permission_classes = (IsAuthenticated,)
+
+    @swagger_auto_schema(responses={200: StateSaveSerializer})
+    def get(self, request, save_id, version, branch):
+        queryset = StateSave.objects.get(
+            save_id=save_id, version=version, owner=self.request.user, branch=branch)
+        try:
+            serialized = StateSaveSerializer(
+                queryset)
+            return Response(serialized.data)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
