@@ -31,7 +31,6 @@ import { deepPurple } from '@material-ui/core/colors'
 
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadUser, authDefault } from '../../redux/actions/index'
-import store from '../../redux/store'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -64,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepPurple[500]),
     backgroundColor: deepPurple[500],
     fontSize: '17px'
+  },
+  backDrop: {
+    backdropFilter: 'blur(10px)'
   }
 }))
 
@@ -105,18 +107,32 @@ function Header () {
   const schSave = useSelector(state => state.saveSchematicReducer)
   const [anchorEl, setAnchorEl] = React.useState(null)
 
+  const [loginDialog, setLoginDialog] = React.useState(false)
+  const [logoutConfirm, setLogoutConfirm] = React.useState(false)
+  const [reloginMessage, setReloginMessage] = React.useState('')
+
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
+  // Checks for localStore changes
   useEffect(() => {
     function checkUserData () {
       const userToken = localStorage.getItem('esim_token')
       if (userToken && userToken !== '') {
+        // esim_token was added by another tab
         dispatch(loadUser())
+        setLoginDialog(false)
       } else {
+        /* User logged out and esim_token removed from localstore
+        But redux store still has it */
+        if (auth.token && auth.token !== '') {
+          setReloginMessage('You have been logged out of your account. Login again to continue working.')
+          setLoginDialog(true)
+        }
+        // Need to reset authReducer state to default values
         dispatch(authDefault())
       }
     }
@@ -126,7 +142,7 @@ function Header () {
     return () => {
       window.removeEventListener('storage', checkUserData)
     }
-  }, [dispatch, history])
+  })
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -208,179 +224,241 @@ function Header () {
   }
 
   return (
-    <Toolbar variant="dense" color="default">
-      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
-
-      {/* Display logo */}
-      <IconButton edge="start" className={classes.button} color="primary">
-        <Avatar alt="esim logo" src={logo} className={classes.small} />
-      </IconButton>
-      <Typography
-        variant="h6"
-        color="inherit"
-        noWrap
-        className={classes.toolbarTitle}
-      >
-        <Link color="inherit" target='_blank' component={RouterLink} to="/">
-          eSim
-        </Link>
-      </Typography>
-
-      {/* Input field for schematic title */}
-      <Hidden xsDown>
-        <Input
-          className={classes.input}
-          color="secondary"
-          value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
-          onChange={titleHandler}
-          inputProps={{ 'aria-label': 'SchematicTitle' }}
-        />
-      </Hidden>
-
-      {/* Display last saved and shared option for saved schematics */}
-      {auth.isAuthenticated === true
-        ? <>
-          {(schSave.isSaved === true && schSave.details.save_time !== undefined)
-            ? <Typography
-              variant="body2"
-              style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
-            >
-              Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
-            </Typography>
-            : <></>
-          }
-          <Button
-            size="small"
-            variant={shared !== true ? 'outlined' : 'contained'}
-            color="primary"
-            className={schSave.isSaved === true && schSave.details.save_time !== undefined ? classes.button : classes.rightBlock}
-            startIcon={<ShareIcon />}
-            onClick={handleShare}
-          >
-            <Hidden xsDown>Share</Hidden>
-          </Button>
-        </>
-        : <></>
-      }
-
-      {/* Share dialog box to get share url */}
+    <>
       <Dialog
-        open={openShare}
-        onClose={handleShareClose}
-        aria-labelledby="share-dialog-title"
-        aria-describedby="share-dialog-description"
+        open={loginDialog}
+        BackdropProps={{
+          classes: {
+            root: classes.backDrop
+          }
+        }}
+        disableEscapeKeyDown
+        disableBackdropClick
       >
-        <DialogTitle id="share-dialog-title">{'Share Your Schematic'}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {'Re-Login to continue'}
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText id="share-dialog-description">
-            <FormControlLabel
-              control={<Switch checked={shared} onChange={handleShareChange} name="shared" />}
-              label=": Sharing On"
-            />
+          <DialogContentText id="alert-dialog-description">
+            {reloginMessage}
           </DialogContentText>
-          <DialogContentText id="share-dialog-description">
-            {shared === true
-              ? <input
-                ref={textAreaRef}
-                value={`${window.location.protocol}\\\\${window.location.host}/eda/#/editor?id=${schSave.details.save_id}`}
-                readOnly
-              />
-              : <> Turn On sharing </>
-            }
-          </DialogContentText>
-
         </DialogContent>
         <DialogActions>
-          {shared === true && document.queryCommandSupported('copy')
-            ? <Button onClick={copyToClipboard} color="primary" autoFocus>
-              Copy url
-            </Button>
-            : <></>
-          }
-          <Button onClick={handleShareClose} color="primary" autoFocus>
-            close
+          <Button onClick={() => { window.location.reload() }} color="secondary">
+            Reload Page
+          </Button>
+          <Button
+            component={RouterLink}
+            to="/login?close=close"
+            color="primary"
+            target="_blank"
+          >
+            Login
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Display login option or user menu as per authenticated status */}
-      {
-        (!auth.isAuthenticated
-          ? <Button
-            size="small"
-            component={RouterLink}
-            to="/login?close=close"
-            style={{ marginLeft: 'auto' }}
-            color="primary"
-            variant="outlined"
-            target="_blank"
-          >
-          Login
+      <Dialog
+        open={logoutConfirm}
+        onClose={() => { setLogoutConfirm(false) }}
+      >
+        <DialogTitle id="alert-dialog-title">
+          {'Are you sure you want to continue?'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You will lose all current progress if you logout now.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => { setLogoutConfirm(false) }} color="secondary">
+            Cancel
           </Button>
-          : (<>
+          <Button
+            style={{ color: '#ff1744' }}
+            onClick={() => {
+              dispatch(logout(history))
+            }}
+          >
+            Logout
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-            <IconButton
-              edge="start"
+      <Toolbar variant="dense" color="default">
+        <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+
+        {/* Display logo */}
+        <IconButton edge="start" className={classes.button} color="primary">
+          <Avatar alt="esim logo" src={logo} className={classes.small} />
+        </IconButton>
+        <Typography
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={classes.toolbarTitle}
+        >
+          <Link color="inherit" target='_blank' component={RouterLink} to="/">
+          eSim
+          </Link>
+        </Typography>
+
+        {/* Input field for schematic title */}
+        <Hidden xsDown>
+          <Input
+            className={classes.input}
+            color="secondary"
+            value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
+            onChange={titleHandler}
+            inputProps={{ 'aria-label': 'SchematicTitle' }}
+          />
+        </Hidden>
+
+        {/* Display last saved and shared option for saved schematics */}
+        {auth.isAuthenticated === true
+          ? <>
+            {(schSave.isSaved === true && schSave.details.save_time !== undefined)
+              ? <Typography
+                variant="body2"
+                style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
+              >
+              Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
+              </Typography>
+              : <></>
+            }
+            <Button
+              size="small"
+              variant={shared !== true ? 'outlined' : 'contained'}
               color="primary"
-              aria-controls="simple-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
+              className={schSave.isSaved === true && schSave.details.save_time !== undefined ? classes.button : classes.rightBlock}
+              startIcon={<ShareIcon />}
+              onClick={handleShare}
             >
-              <Avatar className={classes.purple}>
-                {auth.user.username.charAt(0).toUpperCase()}
-              </Avatar>
-            </IconButton>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-              TransitionComponent={Fade}
-              style={{ marginTop: '25px' }}
-            >
-              <MenuItem
-                target='_blank'
-                component={RouterLink}
-                to="/dashboard"
-                onClick={handleClose}
-              >
-                <ListItemText primary={auth.user.username} secondary={auth.user.email} />
-              </MenuItem>
-              <MenuItem
-                target='_blank'
-                component={RouterLink}
-                to="/dashboard/profile"
-                onClick={handleClose}
-              >
-                My Profile
-              </MenuItem>
-              <MenuItem
-                target='_blank'
-                component={RouterLink}
-                to="/dashboard/schematics"
-                onClick={handleClose}
-              >
-                My Schematics
-              </MenuItem>
-              <MenuItem
-                component={RouterLink}
-                to="/account/change_password"
-                onClick={handleClose}
-              >
-                Change password
-              </MenuItem>
-              <MenuItem onClick={() => {
-                store.dispatch(logout(history))
-              }}>
-                Logout
-              </MenuItem>
-            </Menu>
+              <Hidden xsDown>Share</Hidden>
+            </Button>
           </>
+          : <></>
+        }
+
+        {/* Share dialog box to get share url */}
+        <Dialog
+          open={openShare}
+          onClose={handleShareClose}
+          aria-labelledby="share-dialog-title"
+          aria-describedby="share-dialog-description"
+        >
+          <DialogTitle id="share-dialog-title">{'Share Your Schematic'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="share-dialog-description">
+              <FormControlLabel
+                control={<Switch checked={shared} onChange={handleShareChange} name="shared" />}
+                label=": Sharing On"
+              />
+            </DialogContentText>
+            <DialogContentText id="share-dialog-description">
+              {shared === true
+                ? <input
+                  ref={textAreaRef}
+                  value={`${window.location.protocol}\\\\${window.location.host}/eda/#/editor?id=${schSave.details.save_id}`}
+                  readOnly
+                />
+                : <> Turn On sharing </>
+              }
+            </DialogContentText>
+
+          </DialogContent>
+          <DialogActions>
+            {shared === true && document.queryCommandSupported('copy')
+              ? <Button onClick={copyToClipboard} color="primary" autoFocus>
+              Copy url
+              </Button>
+              : <></>
+            }
+            <Button onClick={handleShareClose} color="primary" autoFocus>
+            close
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Display login option or user menu as per authenticated status */}
+        {
+          (!auth.isAuthenticated
+            ? <Button
+              size="small"
+              component={RouterLink}
+              to="/login?close=close"
+              style={{ marginLeft: 'auto' }}
+              color="primary"
+              variant="outlined"
+              target="_blank"
+            >
+          Login
+            </Button>
+            : (<>
+
+              <IconButton
+                edge="start"
+                color="primary"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                <Avatar className={classes.purple}>
+                  {auth.user.username.charAt(0).toUpperCase()}
+                </Avatar>
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                TransitionComponent={Fade}
+                style={{ marginTop: '25px' }}
+              >
+                <MenuItem
+                  target='_blank'
+                  component={RouterLink}
+                  to="/dashboard"
+                  onClick={handleClose}
+                >
+                  <ListItemText primary={auth.user.username} secondary={auth.user.email} />
+                </MenuItem>
+                <MenuItem
+                  target='_blank'
+                  component={RouterLink}
+                  to="/dashboard/profile"
+                  onClick={handleClose}
+                >
+                My Profile
+                </MenuItem>
+                <MenuItem
+                  target='_blank'
+                  component={RouterLink}
+                  to="/dashboard/schematics"
+                  onClick={handleClose}
+                >
+                My Schematics
+                </MenuItem>
+                <MenuItem
+                  component={RouterLink}
+                  to="/account/change_password"
+                  onClick={handleClose}
+                >
+                Change password
+                </MenuItem>
+                <MenuItem onClick={() => {
+                  setLogoutConfirm(true)
+                }}>
+                Logout
+                </MenuItem>
+              </Menu>
+            </>
+            )
           )
-        )
-      }
-    </Toolbar>
+        }
+      </Toolbar>
+    </>
   )
 }
 
