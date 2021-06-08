@@ -104,7 +104,7 @@ export default function SignIn (props) {
     if (close) {
       dispatch(login(username, password, 'close'))
     }
-    localStorage.setItem('ard_url', '')
+    localStorage.removeItem('ard_redurl')
   }
 
   // Function call for google oAuth login.
