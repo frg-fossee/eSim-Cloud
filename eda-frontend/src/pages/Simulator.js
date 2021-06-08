@@ -168,12 +168,10 @@ export default function Simulator () {
                 let postfixUnit = ''
                 if (temp[i][0].includes('#branch')) {
                   postfixUnit = 'A'
-                }
-                else if(temp[i][0].includes('transfer_function')){            
-                    postfixUnit = ''     
-                } 
-                else if(temp[i][0].includes('impedance')){            
-                    postfixUnit = 'Ohm'                           
+                } else if (temp[i][0].includes('transfer_function')) {
+                  postfixUnit = ''
+                } else if (temp[i][0].includes('impedance')) {
+                  postfixUnit = 'Ohm'
                 } else {
                   temp[i][0] = `V(${temp[i][0]})`
                   postfixUnit = 'V'
