@@ -8,8 +8,11 @@ import uuid
 class lticonsumer(models.Model):
     consumer_key = models.CharField(max_length=50, null=False, unique=True)
     secret_key = models.CharField(max_length=50, null=False)
-    save_id = models.ForeignKey(to=StateSave, on_delete=models.CASCADE)
+    model_schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
+                                        related_name="model_schematic")
     score = models.FloatField()
+    initial_schematic = models.ForeignKey(to=StateSave, on_delete=models.SET_NULL,
+                                          null=True, related_name="initial_schematic")
 
     def __str__(self):
         return self.consumer_key
@@ -29,9 +32,11 @@ class ltiSession(models.Model):
 
 class Submission(models.Model):
     project = models.ForeignKey(to=lticonsumer, on_delete=models.CASCADE)
-    student = models.ForeignKey(to=get_user_model(), blank=True, null=True, on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        to=get_user_model(), blank=True, null=True, on_delete=models.CASCADE)
     score = models.FloatField()
-    ltisession = models.ForeignKey(to=ltiSession, on_delete=models.CASCADE, null=True)
+    ltisession = models.ForeignKey(
+        to=ltiSession, on_delete=models.CASCADE, null=True)
     schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE)
     lms_success = models.BooleanField(null=True)
 

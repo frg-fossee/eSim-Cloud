@@ -13,6 +13,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import SchematicCard from './SchematicCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
+import api from '../../utils/Api'
 
 const useStyles = makeStyles({
   mainHead: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles({
 })
 
 // Card displaying user my schematics page header.
-function MainCard () {
+function MainCard() {
   const classes = useStyles()
 
   return (
@@ -58,10 +59,11 @@ function MainCard () {
   )
 }
 
-export default function SchematicsList () {
+export default function SchematicsList() {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
+  const [ltiDetails, setLtiDetails] = React.useState(null)
 
   const dispatch = useDispatch()
 
@@ -69,6 +71,22 @@ export default function SchematicsList () {
   useEffect(() => {
     dispatch(fetchSchematics())
   }, [dispatch])
+
+  useEffect(() => {
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get('lti/exists', config)
+      .then(res => {
+        setLtiDetails(res.data)
+      }).catch(err => console.log(err))
+  }, [])
 
   return (
     <>
@@ -86,15 +104,37 @@ export default function SchematicsList () {
         </Grid>
 
         {/* List all schematics saved by user */}
-        {schematics.length !== 0
+        {(schematics.length !== 0 && ltiDetails !== null)
           ? <>
             {schematics.map(
               (sch) => {
-                return (
-                  <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-                    <SchematicCard sch={sch} />
-                  </Grid>
+                var actual = null
+                var flag = null
+                ltiDetails.map(
+                  //eslint-disable-next-line
+                  (lti) => {
+                    if (lti.model_schematic === sch.save_id || lti.initial_schematic === sch.save_id) {
+                      flag = 1
+                      actual = lti.consumer_key
+                      //eslint-disable-next-line
+                      return
+                    }
+                  }
                 )
+                if (flag) {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} consKey={actual} />
+                    </Grid>
+                  )
+                }
+                else {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
               }
             )}
           </>

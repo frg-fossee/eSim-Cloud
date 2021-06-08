@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from pylti.common import LTIException, verify_request_common, post_message, generate_request_xml, \
@@ -14,7 +15,7 @@ from saveAPI.models import StateSave
 from .models import ltiSession, lticonsumer, Submission
 from .utils import consumers, get_reverse, message_identifier
 from .serializers import consumerSerializer, consumerResponseSerializer, \
-    SubmissionSerializer, GetSubmissionsSerializer
+    SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer
 
 
 def denied(r):
@@ -25,7 +26,8 @@ class LTIExist(APIView):
 
     def get(self, request, save_id):
         try:
-            consumer = lticonsumer.objects.get(save_id=save_id)
+            consumer = lticonsumer.objects.get(Q(model_schematic__save_id=save_id)
+                                                  | Q(initial_schematic__save_id=save_id))
         except lticonsumer.DoesNotExist:
             return Response(data={"error": "LTIConsumer Not found"},
                             status=status.HTTP_404_NOT_FOUND)
@@ -36,7 +38,9 @@ class LTIExist(APIView):
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
             "config_url": config_url,
-            "score": consumer.score
+            "score": consumer.score,
+            "initial_schematic": str(consumer.initial_schematic.save_id),
+            "model_schematic": str(consumer.model_schematic.save_id)
         }
         response_serializer = consumerResponseSerializer(data=response_data)
         if response_serializer.is_valid():
@@ -47,15 +51,35 @@ class LTIExist(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class LTIAllConsumers(APIView):
+    permission_classes=(IsAuthenticated,)
+
+    def get(self, request):
+        saves = StateSave.objects.filter(owner=self.request.user)
+        consumers = []
+        for save in saves:
+            if save.model_schematic.all().first():
+                consumers.append(consumerExistsSerializer(save.model_schematic.all().first()).data)
+        return Response(consumers,
+                            status=status.HTTP_200_OK)
+
+
 class LTIBuildApp(APIView):
 
     @swagger_auto_schema(request_body=consumerSerializer,
                          responses={201: consumerResponseSerializer})
     def post(self, request):
         serialized = consumerSerializer(data=request.data)
+        temp = lticonsumer.objects.filter(
+            initial_schematic=request.data['model_schematic']
+        ).count()
+        if temp > 0:
+            return Response(data={"error": "Model schematic cannot be initial schematic for other LTI apps"},
+                            status=status.HTTP_400_BAD_REQUEST)
         if serialized.is_valid():
             serialized.save()
-            save_id = str(serialized.data["save_id"])
+            save_id = str(serialized.data["initial_schematic"])
             saved_state = StateSave.objects.get(save_id=save_id)
             saved_state.shared = True
             saved_state.save()
@@ -65,7 +89,9 @@ class LTIBuildApp(APIView):
                 "consumer_key": serialized.data.get('consumer_key'),
                 "secret_key": serialized.data.get('secret_key'),
                 "config_url": url,
-                "score": serialized.data.get('score')
+                "score": serialized.data.get('score'),
+                "initial_schematic": str(serialized.data["initial_schematic"]),
+                "model_schematic": str(serialized.data["model_schematic"])
             }
             print("Recieved POST for LTI APP:", response_data)
             response_serializer = consumerResponseSerializer(
@@ -87,7 +113,7 @@ class LTIDeleteApp(APIView):
     def delete(self, request, save_id):
         queryset = lticonsumer.objects.all()
         try:
-            consumer = queryset.get(save_id=save_id)
+            consumer = queryset.get(model_schematic=save_id)
             consumer.delete()
             return Response(data={"Message": "Successfully deleted!"},
                             status=status.HTTP_204_NO_CONTENT)
@@ -126,6 +152,7 @@ class LTIConfigView(View):
 
 class LTIAuthView(APIView):
     """POST handler for the LTI login POST back call"""
+
     def post(self, request, save_id):
         params = {key: request.data[key] for key in request.data}
         consumers_dict = consumers()
@@ -138,7 +165,6 @@ class LTIAuthView(APIView):
                    'oauth_version', 'oauth_signature']
         ltidata = {key: params.get(key) for key in ltikeys}
         lti_session = ltiSession.objects.create(**ltidata)
-        print("Before save")
         print("Got POST for validating LTI consumer")
         try:
             i = lticonsumer.objects.get(consumer_key=request.data.get(
@@ -147,18 +173,18 @@ class LTIAuthView(APIView):
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.save_id.save_id) \
+        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.initial_schematic.save_id) \
                    + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + lti_session.user_id \
                    + "&lti_nonce=" + lti_session.oauth_nonce
         try:
             print("Got verification request")
-            verify_request_common(consumers_dict, url, request.method, headers, params)
+            verify_request_common(consumers_dict, url,
+                                  request.method, headers, params)
             print("Verified consumer")
             # grade = LTIPostGrade(params, request)
             return HttpResponseRedirect(next_url)
         except LTIException:
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-
 
 
 class LTIPostGrade(APIView):
@@ -173,12 +199,14 @@ class LTIPostGrade(APIView):
         :exception: LTIPostMessageException if call failed
         """
         try:
-            lti_session = ltiSession.objects.get(id=request.data["ltisession"]["id"])
+            lti_session = ltiSession.objects.get(
+                id=request.data["ltisession"]["id"])
         except ltiSession.DoesNotExist:
             return Response(data={
                 "error": "No LTI session exists for this ID"
             }, status=status.HTTP_400_BAD_REQUEST)
-        consumer = lticonsumer.objects.get(consumer_key=lti_session.oauth_consumer_key)
+        consumer = lticonsumer.objects.get(
+            consumer_key=lti_session.oauth_consumer_key)
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
         schematic.save()

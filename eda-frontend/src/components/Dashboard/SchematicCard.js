@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -21,10 +21,15 @@ import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
+import FormControl from '@material-ui/core/FormControl'
+import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
 import ScreenShareIcon from '@material-ui/icons/ScreenShare'
 import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchSchematics } from '../../redux/actions/index'
 import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -51,14 +56,18 @@ const useStyles = makeStyles((theme) => ({
   delete: {
     backgroundColor: 'red',
     color: 'white'
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 150,
   }
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -95,7 +104,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -127,7 +136,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -136,8 +145,20 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
+export default function SchematicCard({ sch, consKey=null }) {
   const classes = useStyles()
+  const schematics = useSelector(state => state.dashboardReducer.schematics)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchSchematics())
+  }, [dispatch])
+
+  useEffect(() => {
+    setLTIDetails({ ...ltiDetails, consumerKey: consKey })
+    console.log(consKey)
+    //eslint-disable-next-line
+  }, [])
   // To handle LTI details
   const [ltiDetails, setLTIDetails] = React.useState({
     secretKey: '',
@@ -145,7 +166,8 @@ export default function SchematicCard ({ sch }) {
     configURL: '',
     configExists: false,
     consumerError: '',
-    score: ''
+    score: '',
+    studentSchematic: ''
   })
   const { secretKey, consumerKey, configURL, configExists, consumerError, score } = ltiDetails
 
@@ -157,14 +179,19 @@ export default function SchematicCard ({ sch }) {
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
+
+  const handleChange = (e) => {
+    setLTIDetails({ ...ltiDetails, studentSchematic: e.target.value })
+  }
   // Api call for getting LTI config url for specified circuit by passing consumer key and secret key
   // eslint-disable-next-line
   const handleLTIGenerate = (consumer_key, secret_key, save_id, score) => {
     const body = {
       consumer_key: consumer_key,
       secret_key: secret_key,
-      save_id: save_id,
-      score: score
+      model_schematic: save_id,
+      score: score,
+      initial_schematic: ltiDetails['studentSchematic']
     }
     console.log(body)
     api.post('lti/build/', body)
@@ -184,7 +211,6 @@ export default function SchematicCard ({ sch }) {
       })
   }
   const handleOpenLTI = () => {
-    // To-do write a get request to check if it params are already set
     setLTIModal(true)
     api.get(`lti/exist/${sch.save_id}`)
       .then(res => {
@@ -195,10 +221,11 @@ export default function SchematicCard ({ sch }) {
               consumerKey: res.data.consumer_key,
               configURL: res.data.config_url,
               score: res.data.score,
-              configExists: true
+              configExists: true,
+              studentSchematic: res.data.initial_schematic
             })
         }
-      })
+      }).catch(err => console.log(err))
   }
   const handleDeleteLTIApp = () => {
     api.delete(`lti/delete/${sch.save_id}`)
@@ -209,7 +236,8 @@ export default function SchematicCard ({ sch }) {
           configURL: '',
           configExists: false,
           consumerError: false,
-          score: ''
+          score: '',
+          studentSchematic: ''
         })
       })
       .catch(error => console.log(error))
@@ -270,77 +298,95 @@ export default function SchematicCard ({ sch }) {
           <Button
             target="_blank"
             component={RouterLink}
-            to={'/editor?id=' + sch.save_id}
+            to={consumerKey ? `/editor?id=${sch.save_id}&consumer_key=${consumerKey}` : `/editor?id=${sch.save_id}` }
             size="small"
             color="primary"
           >
             Launch in Editor
           </Button>
-          {/* Display create LTI app option */}
-          <Tooltip title='Create LTI app' placement="bottom" arrow>
-            <ScreenShareIcon
-              color='secondary'
-              fontSize="small"
-              style={{ marginLeft: 'auto' }}
-              onClick={() => { handleOpenLTI() }}
-            />
-          </Tooltip>
-          <Dialog onClose={handleCloseLTI} aria-labelledby="simple-dialog-title" open={ltiModal}>
-            <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
-            <DialogContent>
-              <Typography variant="overline" display="block" gutterBottom>
-                {consumerError}
-              </Typography>
-              <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} />
-              <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists} />
-              <TextField style={{ marginTop: '10px' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={configExists} />
-              {configURL && <Paper><div className={classes.config}>{configURL}</div></Paper>}
-              <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" disabled={configExists} onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id, score)}>
-                Generate LTI config URL
+        {/* Display create LTI app option */}
+        <Tooltip title='Create LTI app' placement="bottom" arrow>
+          <ScreenShareIcon
+            color='secondary'
+            fontSize="small"
+            style={{ marginLeft: 'auto' }}
+            onClick={() => { handleOpenLTI() }}
+          />
+        </Tooltip>
+        <Dialog onClose={handleCloseLTI} aria-labelledby="simple-dialog-title" open={ltiModal}>
+          <DialogTitle id="simple-dialog-title">Share circuit to LMS</DialogTitle>
+          <DialogContent>
+            <Typography variant="overline" display="block" gutterBottom>
+              {consumerError}
+            </Typography>
+            <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} />
+            <TextField style={{ marginLeft: '10px' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists} />
+            <TextField style={{ marginTop: '10px' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={configExists} />
+            <FormControl className={classes.formControl}>
+              <InputLabel shrink id="demo-simple-select-placeholder-label-label">
+                Student Schematic
+                </InputLabel>
+              <Select
+                labelId="demo-simple-select-placeholder-label-label"
+                id="demo-simple-select-placeholder-label"
+                value={ltiDetails['studentSchematic']}
+                onChange={handleChange}
+                displayEmpty
+                className={classes.selectEmpty}
+                inputProps={{ readOnly: configExists }}
+              >
+                {schematics.map(schematic => {
+                  return <MenuItem value={schematic.save_id}>{schematic.name}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+            {configURL && <Paper><div className={classes.config}>{configURL}</div></Paper>}
+            <Button style={{ marginTop: '25px', marginBottom: '10px' }} variant="contained" color="primary" disabled={configExists} onClick={() => handleLTIGenerate(consumerKey, secretKey, sch.save_id, score)}>
+              Generate LTI config URL
               </Button>
-              {configExists &&
-                <Button
-                  style={{ marginTop: '25px', marginBottom: '10px', marginLeft: '5px' }}
-                  variant="contained"
-                  className={classes.delete}
-                  startIcon={<DeleteIcon />}
-                  onClick={() => handleDeleteLTIApp()}
-                >
-                  Delete
+            {configExists &&
+              <Button
+                style={{ marginTop: '25px', marginBottom: '10px', marginLeft: '5px' }}
+                variant="contained"
+                className={classes.delete}
+                startIcon={<DeleteIcon />}
+                onClick={() => handleDeleteLTIApp()}
+              >
+                Delete
                 </Button>}
-              {configExists &&
-                <Button
-                  style={{ marginTop: '25px', marginBottom: '10px', marginLeft: '5px' }}
-                  disableElevation 
-                  color="primary"
-                  variant="contained"
-                  href={`#/submission?consumer_key=${ltiDetails.consumerKey}`}
-                >
-                  Submissions
+            {configExists &&
+              <Button
+                style={{ marginTop: '25px', marginBottom: '10px', marginLeft: '5px' }}
+                disableElevation
+                color="primary"
+                variant="contained"
+                href={`#/submission?consumer_key=${ltiDetails.consumerKey}`}
+              >
+                Submissions
                 </Button>}
 
-            </DialogContent>
-          </Dialog>
-          {/* Display delete option */}
-          <Tooltip title='Delete' placement="bottom" arrow>
-            <DeleteIcon
-              color='secondary'
-              fontSize="small"
-              onClick={() => { handleSnacClick() }}
-            />
-          </Tooltip>
-          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
+          </DialogContent>
+        </Dialog>
+        {/* Display delete option */}
+        <Tooltip title='Delete' placement="bottom" arrow>
+          <DeleteIcon
+            color='secondary'
+            fontSize="small"
+            onClick={() => { handleSnacClick() }}
+          />
+        </Tooltip>
+        <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
-          {/* Display share status */}
-          <Tooltip title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'} placement="bottom" arrow>
-            <ShareIcon
-              color={!sch.shared ? 'disabled' : 'primary'}
-              fontSize="small"
-              style={{ marginRight: '10px' }}
-            />
-          </Tooltip>
+        {/* Display share status */}
+        <Tooltip title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'} placement="bottom" arrow>
+          <ShareIcon
+            color={!sch.shared ? 'disabled' : 'primary'}
+            fontSize="small"
+            style={{ marginRight: '10px' }}
+          />
+        </Tooltip>
         </CardActions>
-      </Card>
+    </Card>
     </>
   )
 }

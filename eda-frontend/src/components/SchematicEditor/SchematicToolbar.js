@@ -25,6 +25,8 @@ import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import Button from '@material-ui/core/Button'
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
 import queryString from 'query-string'
@@ -57,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Notification snackbar to give alert messages
-function SimpleSnackbar ({ open, close, message }) {
+function SimpleSnackbar({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -87,7 +89,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar ({ mobileClose, gridRef }) {
+export default function SchematicToolbar({ mobileClose, gridRef }) {
   const classes = useStyles()
   const netfile = useSelector(state => state.netlistReducer)
   const auth = useSelector(state => state.authReducer)
@@ -104,6 +106,20 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const [submit, setSubmit] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
   const [saveId, setSaveId] = React.useState(null)
+  const [consumerKey, setConsumerKey] = React.useState('')
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [initalSch, setIntialSch] = React.useState('')
+  const [modelSch, setModelSch] = React.useState('')
+  const [id, setId] = React.useState('')
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  }
+
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
@@ -121,7 +137,24 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setLtiId(url.lti_id)
     setLtiNonce(url.lti_nonce)
     setLtiUserId(url.lti_user_id)
+    setConsumerKey(url.consumer_key)
+    setId(url.id)
+    // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if (consumerKey) {
+      console.log(schSave)
+      api.get(`lti/exist/${id}`)
+        .then(res => {
+          if (res.data.secret_key) {
+            setIntialSch(res.data.initial_schematic)
+            setModelSch(res.data.model_schematic)
+          }
+        }).catch(err => console.log(err))
+    }
+    // eslint-disable-next-line
+  }, [consumerKey])
 
   useEffect(() => {
     if (saveId !== null) {
@@ -143,7 +176,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           console.log(err)
         })
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [saveId])
 
   const onSubmission = () => {
@@ -196,8 +229,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setSnacOpen(false)
   }
 
+  const handleMenuOnClick = (e) => {
+    window.location.href = `/eda/#/editor?id=${e}&consumer_key=${consumerKey}`
+    window.location.reload()
+  }
+
   // Image Export of Schematic Diagram
-  async function exportImage (type) {
+  async function exportImage(type) {
     const svg = document.querySelector('#divGrid > svg').cloneNode(true)
     svg.removeAttribute('style')
     svg.setAttribute('width', gridRef.current.scrollWidth)
@@ -257,7 +295,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Download JPEG, PNG exported Image
-  function downloadImage (data, type) {
+  function downloadImage(data, type) {
     var evt = new MouseEvent('click', {
       view: window,
       bubbles: false,
@@ -272,7 +310,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Download SVG image
-  function downloadText (data, options) {
+  function downloadText(data, options) {
     const blob = new Blob(data, options)
     const evt = new MouseEvent('click', {
       view: window,
@@ -518,12 +556,29 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         </IconButton>
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
-      {ltiId && ltiUserId && ltiNonce && <Tooltip title="Submit">
+      {((ltiId && ltiUserId && ltiNonce) || consumerKey) && <Tooltip title="Submit">
         <Button size="small" variant="outlined" color="primary" className={classes.button} endIcon={<Icon>send</Icon>}
           onClick={onSubmission} >
           Submit
         </Button>
       </Tooltip>}
+      {consumerKey && <div>
+        <Button
+          size="small" color="primary"
+          aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
+          See schematics
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={() => handleMenuOnClick(modelSch)}>Model Schematic</MenuItem>
+          <MenuItem onClick={() => handleMenuOnClick(initalSch)}>Student Schematic </MenuItem>
+        </Menu>
+      </div>}
 
       <IconButton
         color='inherit'
