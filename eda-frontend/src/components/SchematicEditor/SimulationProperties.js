@@ -579,6 +579,7 @@ export default function SimulationProperties () {
                   expandIcon={<ExpandMoreIcon />}
                   aria-controls="panel1a-content"
                   id="panel1a-header"
+                  style={{ width: '100%  '}}
                 >
                   <Typography className={classes.heading}>DC Solver</Typography>
                 </ExpansionPanelSummary>
@@ -638,6 +639,7 @@ export default function SimulationProperties () {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                style={{ width: '97%'}}
               >
                 <Typography className={classes.heading}>DC Sweep</Typography>
               </ExpansionPanelSummary>
@@ -831,6 +833,7 @@ export default function SimulationProperties () {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                style={{ width: '97%'}}
               >
                 <Typography className={classes.heading}>Transient Analysis</Typography>
               </ExpansionPanelSummary>
@@ -957,6 +960,7 @@ export default function SimulationProperties () {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                style={{ width: '100%'}}
               >
                 <Typography className={classes.heading}>AC Analysis</Typography>
               </ExpansionPanelSummary>
@@ -1065,6 +1069,7 @@ export default function SimulationProperties () {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1a-content"
                 id="panel1a-header"
+                style={{ width: '97%'}}
               >
                 <Typography className={classes.heading}>Transfer Function Analysis</Typography>
               </ExpansionPanelSummary>
