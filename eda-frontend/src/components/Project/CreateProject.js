@@ -24,8 +24,10 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import { makeStyles } from '@material-ui/core/styles';
+import FormControl from '@material-ui/core/FormControl';
 import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus, createProject, getStatus } from '../../redux/actions'
+import api from "../../utils/Api"
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -43,7 +45,14 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     color: '#fff'
-  }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -59,10 +68,14 @@ function CreateProject() {
   const save_id = useSelector(state => state.saveSchematicReducer.details.save_id)
   const owner = useSelector(state => state.saveSchematicReducer.details.owner)
   const [status, setStatus] = React.useState(null)
+  const [versions,setVersions] = React.useState(null)
+  const [activeVersion,setActiveVersion] = React.useState(null)
   const [details, setDetails] = useState(
     {
       title: '',
-      description: ''
+      description: '',
+      branch: '',
+      version: ''
     })
   const [fields, setFields] = useState([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
   const [changed, setChanged] = useState(0)
@@ -76,6 +89,37 @@ function CreateProject() {
       setFields(project.details.fields)
     }
   }, [open, dispatch, project.details])
+  useEffect(()=>{
+    const config = {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    };
+    const token = localStorage.getItem("esim_token")
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    if (window.location.href.split("?id=")[1]) {
+      api
+        .get(
+          "save/versions/" +
+          window.location.href.split("?id=")[1].substring(0, 36),
+          config
+        )
+        .then((resp) => {
+          console.log(resp.data);
+          setVersions(resp.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        });
+    }
+  },[])
+  const handleActiveVersion = (e) =>{
+    setActiveVersion(e.target.value)
+    setDetails({...details,'branch':e.target.value.split("-")[1],'version':e.target.value.split("-")[0]})
+  }
   const handleSelectChange = (event) => {
     if (changed === 0) {
       setChanged(2)
@@ -206,6 +250,31 @@ function CreateProject() {
             </Button>}
           </Toolbar>
         </AppBar>
+        {versions != null && <Container maxWidth="lg" className={classes.header}>
+        <Grid
+            container
+            spacing={3}
+            direction="row"
+            justify="center"
+            alignItems="flex-start"
+        >
+          <Grid item xs={12} sm={12}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={activeVersion}
+              onChange={handleActiveVersion}
+            >
+              {versions.map(version=>{
+                return <MenuItem value={`${version.version}-${version.branch}`}>{version.name} from branch {version.branch}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
+          </Grid>
+        </Grid>
+        </Container>}
         <Container maxWidth="lg" className={classes.header}>
           <Grid
             container
