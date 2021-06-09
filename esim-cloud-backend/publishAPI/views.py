@@ -59,6 +59,7 @@ class ProjectViewSet(APIView):
             return Response(data)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def post(self, request, circuit_id):
         save_states = StateSave.objects.filter(save_id=circuit_id)
         if save_states:
@@ -66,13 +67,15 @@ class ProjectViewSet(APIView):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
-            active_state_save = save_states.get(branch=request.data[0]['branch'],version=request.data[0]['version'])
+            active_state_save = save_states.get(
+                branch=request.data[0]['branch'], version=request.data[0]['version'])
         except StateSave.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         if active_state_save.project is None:
             project = Project(title=request.data[0]['title'], description=request.data[0]
-                              ['description'], author=active_state_save.owner, is_arduino=active_state_save.is_arduino)
+                              ['description'], author=active_state_save.owner, is_arduino=active_state_save.is_arduino, 
+                              branch=request.data[0]['branch'], version=request.data[0]['version'])
             project.save()
             for field in request.data[1]:
                 field = Field(name=field['name'], text=field['text'])
@@ -100,7 +103,7 @@ class ProjectViewSet(APIView):
         else:
             can_edit = False
             if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
-              pass
+                pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             active_state_save.project.title = request.data[0]['title']
@@ -127,6 +130,8 @@ class ProjectViewSet(APIView):
             data['history'] = histories.data
             data['can_edit'] = can_edit
             return Response(data)
+
+
 class MyProjectViewSet(viewsets.ModelViewSet):
     """
      List users circuits ( Permission Groups )

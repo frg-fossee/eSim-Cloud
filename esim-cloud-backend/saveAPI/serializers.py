@@ -35,7 +35,6 @@ class Base64ImageField(serializers.ImageField):
 class StateSaveSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
     esim_libraries = LibrarySerializer(many=True, required=False)
-    project_id = serializers.CharField(read_only=True, source='project.project_id')
 
     class Meta:
         model = StateSave
@@ -47,7 +46,8 @@ class StateSaveSerializer(serializers.ModelSerializer):
 class SaveListSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
     esim_libraries = LibrarySerializer(many=True, required=False)
-
+    project_version = serializers.CharField(read_only=True,source='project.active_version')
+    project_branch = serializers.CharField(read_only=True,source='project.active_branch')
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'name', 'description',
