@@ -294,7 +294,7 @@ export class Wire {
     // set on change listener
     select.onchange = () => {
       // on change update the color
-      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'wire_color' })
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'wire_color' })
       this.setColor(colors[select.selectedIndex]);
     };
 
@@ -332,7 +332,7 @@ export class Wire {
     // Update Wire
     this.update();
 
-    UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'add' })
+    UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'add' })
   }
 
   /**

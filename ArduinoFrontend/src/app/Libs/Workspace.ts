@@ -556,7 +556,7 @@ export class Workspace {
       y - offsetY
     );
     window['scope'][classString].push(obj);
-    UndoUtils.pushChangeToUndo({ keyName: obj.keyName, event: 'add', element: obj.save() })
+    UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() })
   }
   /** Function updates the position of wires */
   static updateWires() {

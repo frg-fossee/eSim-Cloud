@@ -1,6 +1,8 @@
 import { Utils } from "./Utils";
 import { Workspace } from "./Workspace";
 import { isNull } from 'util';
+import { Point } from "./Point";
+import { Wire } from "./Wire";
 
 declare var window;
 
@@ -178,6 +180,11 @@ export abstract class UndoUtils {
         }
     }
 
+    static pushChangeToUndoAndReset(ele) {
+        this.redo = []
+        this.pushChangeToUndo(ele)
+    }
+
     static pushChangeToRedo(ele) {
         this.redo.push(ele)
         console.log('redo stack after -> ', this.redo)
@@ -191,9 +198,10 @@ export abstract class UndoUtils {
     /**
      * Load The Changes, Called after Undo and redo operation to add,delete new component
      */
-    static loadChange(ele, operation) {
+    static async loadChange(ele, operation) {
 
         var grup = window.scope[ele.keyName]
+        let createdEle = null
 
         // Only trigger if wire
         if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
@@ -226,19 +234,42 @@ export abstract class UndoUtils {
 
                     if (operation == 'undo')
                         UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
+
                     else if (operation == 'redo')
                         UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
 
-                    UndoUtils.removeElement(ele)
+                    console.log(window.scope)
+                    // UndoUtils.removeElement(ele)
 
                     if (ele.event == 'add' && operation == 'undo') {
+                        UndoUtils.removeElement(ele)
                         return
                     }
                     else if (ele.event == 'add' && operation == 'redo') {
-                        UndoUtils.createElement(ele);
+                        await UndoUtils.createElement(ele);
+                        UndoUtils.removeElement(ele)
                     }
                     else {
-                        UndoUtils.createElement(ele);
+                        console.log('works')
+                        UndoUtils.createElement(ele).then(createdEle => {
+                            // var existing = this.getExistingWindowElement(grup, ele);
+                            // for (const e in existing.nodes) {
+                            //     if (existing.nodes[e].connectedTo) {
+                            //         console.log(' - ', createdEle)
+                            //         let n1 = createdEle['nodes'][e]
+                            //         // existing.nodes[e].connectedTo.connect(n1, true, true)
+                            //         const wire = n1.startNewWire()
+                            //         const ct = existing.nodes[e].connectedTo
+                            //         if (ct.start.parent.id === ele.element.id) {
+                            //             ct.end.connectWire(wire)
+                            //         } else {
+                            //             ct.start.connectWire(wire)
+                            //         }
+
+                            //     }
+                            // }
+                            UndoUtils.removeElement(ele)
+                        })
                     }
 
                 }
@@ -257,30 +288,46 @@ export abstract class UndoUtils {
     }
 
     static createElement(ele) {
+        return new Promise((resolve, reject) => {
 
-        var comp = ele.element;
-        var key = ele.keyName
+            window.queue = 0;
 
-        if (key == 'wires') {
-            Workspace.LoadWires([ele.element])
-            return
-        }
+            var comp = ele.element;
+            var key = ele.keyName
 
-        // Get class from keyname using the map
-        const myClass = Utils.components[key].className;
-        // Create Component Object from class
-        const obj = new myClass(
-            window['canvas'],
-            comp.x,
-            comp.y
-        );
-        window.queue += 1;
-        // Add to scope
-        window['scope'][key].push(obj);
-        // Load data for each object
-        if (obj.load) {
-            obj.load(comp);
-        }
+            if (key == 'wires') {
+                Workspace.LoadWires([ele.element])
+                return
+            }
+
+            // Get class from keyname using the map
+            const myClass = Utils.components[key].className;
+            // Create Component Object from class
+            const obj = new myClass(
+                window['canvas'],
+                comp.x,
+                comp.y
+            );
+            window.queue += 1;
+            // Add to scope
+            window['scope'][key].push(obj);
+            // Load data for each object
+            if (obj.load) {
+                obj.load(comp);
+            }
+
+            // Wait until all components are drawn
+            const interval = setInterval(() => {
+                if (window.queue === 0) {
+                    clearInterval(interval);
+                    // start drawing wires
+                    resolve(obj);
+                    // Workspace.LoadWires(data.wires);
+                    // Hide loading animation
+                }
+            }, 100);
+
+        })
     }
 
     /**
