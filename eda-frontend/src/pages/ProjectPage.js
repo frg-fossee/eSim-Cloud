@@ -30,9 +30,10 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import MuiAlert from '@material-ui/lab/Alert';
-import { ZoomIn, ZoomOut, ZoomAct, GenerateCompList } from '../components/SchematicEditor/Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, GenerateCompList ,GenerateNetList} from '../components/SchematicEditor/Helper/ToolbarTools'
 import ReportComponent from '../components/Project/ReportComponent';
 import ChangeStatus from '../components/Project/ChangeStatus';
+import { NetlistModal } from '../components/SchematicEditor/ToolbarExtension';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -65,13 +66,15 @@ export default function ProjectPage(props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()
+  const [netListOpen, setNetListOpen] = React.useState(false)
   const [snackbarOpen, setSnackbarOpen] = React.useState(false)
   const [simulateOpen, setSimulateOpen] = React.useState(false)
   const [reportOpen, setReportOpen] = React.useState(false)
   const [reportDescription, setDescription] = React.useState(null)
+  const [netlist, genNetlist] = React.useState("")
   const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
-
+  const netfile = useSelector((state) => state.netlistReducer);
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props;
     return (
@@ -94,6 +97,10 @@ export default function ProjectPage(props) {
   const handleChangeDescription = (e) => {
     setDescription(e.target.value)
   }
+  const handleNetlistClick = () =>
+  {
+    setNetListOpen(!netListOpen)
+  }
   const onClick = (type) => {
     const query = new URLSearchParams(props.location.search)
     var save_id = query.get('save_id')
@@ -106,6 +113,22 @@ export default function ProjectPage(props) {
       case "Make copy":
         dispatch(makeCopy(save_id))
         setSnackbarOpen(true)
+        break;
+      case "Generate Netlist":
+        var compNetlist = GenerateNetList();
+        var netlist =
+          netfile.title +
+          "\n\n" +
+          compNetlist.models +
+          "\n" +
+          compNetlist.main +
+          "\n" +
+          netfile.controlLine +
+          "\n" +
+          netfile.controlBlock +
+          "\n";
+        genNetlist(netlist);
+        handleNetlistClick();
         break;
       default:
         break;
@@ -195,12 +218,14 @@ export default function ProjectPage(props) {
               </Dialog>
 
               <h1>Circuit Diagram:
-        <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
+                <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
                 <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick("Make copy")}>Make a Copy</Button>
                 <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
                   <PlayCircleOutlineIcon />Simulate
-          </Button>
+                </Button>
+                <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick("Generate Netlist")}>Generate Netlist</Button>
               </h1>
+              <NetlistModal open={netListOpen} close={handleNetlistClick} netlist={netlist} />
               <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}
@@ -267,7 +292,7 @@ export default function ProjectPage(props) {
           </Grid>
           :
           <>
-          Not Authorized
+            Not Authorized
           </>}
 
       </LayoutMain>
