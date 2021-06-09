@@ -223,7 +223,12 @@ export abstract class UndoUtils {
         if (grup.length <= 0) {
             window['scope'][ele.keyName] = [];
             if (ele.event == 'add' && operation == 'redo') {
-                UndoUtils.createElement(ele);
+                UndoUtils.createElement(ele).then(done => {
+                    if (ele.keyName === 'BreadBoard') {
+                        window['DragListeners'] = [];
+                        window['DragStopListeners'] = [];
+                    }
+                })
                 UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][0].save(), event: ele.event })
             }
         }
@@ -231,26 +236,21 @@ export abstract class UndoUtils {
         for (const e in grup) {
             if (grup[e].id == ele.element.id) {
                 if (window.scope[ele.keyName][e].load) {
-
                     if (operation == 'undo')
                         UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
 
                     else if (operation == 'redo')
                         UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
 
-                    console.log(window.scope)
-                    // UndoUtils.removeElement(ele)
-
                     if (ele.event == 'add' && operation == 'undo') {
                         UndoUtils.removeElement(ele)
                         return
                     }
                     else if (ele.event == 'add' && operation == 'redo') {
-                        await UndoUtils.createElement(ele);
+                        UndoUtils.createElement(ele)
                         UndoUtils.removeElement(ele)
                     }
                     else {
-                        console.log('works')
                         UndoUtils.createElement(ele).then(createdEle => {
                             // var existing = this.getExistingWindowElement(grup, ele);
                             // for (const e in existing.nodes) {
@@ -268,7 +268,12 @@ export abstract class UndoUtils {
 
                             //     }
                             // }
-                            UndoUtils.removeElement(ele)
+                            UndoUtils.removeElement(ele).then(done => {
+                                if (ele.keyName === 'BreadBoard') {
+                                    window['DragListeners'] = [];
+                                    window['DragStopListeners'] = [];
+                                }
+                            })
                         })
                     }
 
@@ -336,50 +341,53 @@ export abstract class UndoUtils {
      * @param uid Id of element to delete
      */
     static removeElement(ele) {
+        return new Promise((resolve, reject) => {
 
-        var key = ele.keyName
-        var uid = ele.element.id
-        var toRem = this.getExistingWindowElement(window.scope['key'], ele);
+            var key = ele.keyName
+            var uid = ele.element.id
+            var toRem = this.getExistingWindowElement(window.scope['key'], ele);
 
-        // If Current Selected item is a Wire which is not Connected from both end
-        if (key === 'wires') {
-            if (isNull(ele.element.end)) {
-                // Remove and deselect
-                toRem.remove();
-            }
-            window.Selected = null;
-            window.isSelected = false;
-        }
-
-        // get the component keyname
-        const items = window.scope[key];
-
-        // Use linear search find the element
-        for (let i = 0; i < items.length; ++i) {
-            if (items[i].id === uid) {
-                // remove from DOM
-                items[i].remove();
-                // Remove from scope
-                const k = items.splice(i, 1);
-                // Remove data from it recursively
-                Workspace.removeMeta(k[0]);
-
-                if (key !== 'wires') {
-                    let index = 0;
-                    while (index < window.scope.wires.length) {
-                        const wire = window.scope.wires[index];
-                        if (isNull(wire.start) && isNull(wire.end)) {
-                            window.scope.wires.splice(index, 1);
-                            continue;
-                        }
-                        ++index;
-                    }
+            // If Current Selected item is a Wire which is not Connected from both end
+            if (key === 'wires') {
+                if (isNull(ele.element.end)) {
+                    // Remove and deselect
+                    toRem.remove();
                 }
-
-                break;
+                window.Selected = null;
+                window.isSelected = false;
             }
-        }
-        window.hideProperties();
+
+            // get the component keyname
+            const items = window.scope[key];
+
+            // Use linear search find the element
+            for (let i = 0; i < items.length; ++i) {
+                if (items[i].id === uid) {
+                    // remove from DOM
+                    items[i].remove();
+                    // Remove from scope
+                    const k = items.splice(i, 1);
+                    // Remove data from it recursively
+                    Workspace.removeMeta(k[0]);
+
+                    if (key !== 'wires') {
+                        let index = 0;
+                        while (index < window.scope.wires.length) {
+                            const wire = window.scope.wires[index];
+                            if (isNull(wire.start) && isNull(wire.end)) {
+                                window.scope.wires.splice(index, 1);
+                                continue;
+                            }
+                            ++index;
+                        }
+                    }
+
+                    break;
+                }
+            }
+            window.hideProperties();
+            resolve(true)
+        })
     }
 
 }
