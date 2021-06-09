@@ -55,9 +55,6 @@ class ProjectSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(
         max_length=None, use_url=True, source='statesave.base64_image')
     status_name = serializers.CharField(read_only=True, source='state.name')
-    save_id = serializers.CharField(read_only=True, source='statesave.save_id')
-    save_time = serializers.CharField(
-        read_only=True, source='statesave.save_time')
     author_name = serializers.CharField(
         read_only=True, source='author.username')
     fields = FieldSerializer(many=True)
@@ -68,8 +65,6 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'description',
                   'base64_image',
                   'status_name',
-                  'save_id',
-                  'save_time',
                   'author_name',
                   'is_reported',
                   'fields',

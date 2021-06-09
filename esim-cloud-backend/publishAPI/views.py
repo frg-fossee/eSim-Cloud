@@ -93,6 +93,7 @@ class ProjectViewSet(APIView):
                 TransitionHistory.objects.filter(project=project), many=True)
             serialized = ProjectSerializer(project)
             data = serialized.data.copy()
+            data['save_id'] = active_state_save.save_id
             data['history'] = histories.data
             data['can_edit'] = can_edit
             return Response(data)
@@ -122,6 +123,7 @@ class ProjectViewSet(APIView):
                 TransitionHistory.objects.filter(project=active_state_save.project), many=True)
             serialized = ProjectSerializer(active_state_save.project)
             data = serialized.data.copy()
+            data['save_id'] = active_state_save.save_id
             data['history'] = histories.data
             data['can_edit'] = can_edit
             return Response(data)
