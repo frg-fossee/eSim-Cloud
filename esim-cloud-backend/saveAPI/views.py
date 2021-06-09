@@ -1,7 +1,7 @@
 import django_filters
 from django_filters import rest_framework as filters
-from saveAPI.serializers import StateSaveSerializer, SaveListSerializer
-from saveAPI.serializers import Base64ImageField
+from .serializers import StateSaveSerializer, SaveListSerializer
+from .serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.views import APIView
@@ -9,8 +9,9 @@ from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from saveAPI.models import StateSave
+from .models import StateSave
 from workflowAPI.models import Permission
+from publishAPI.models import Project
 from rest_framework import viewsets
 import uuid
 from django.contrib.auth import get_user_model
@@ -50,14 +51,26 @@ class StateSaveView(APIView):
         except StateSave.DoesNotExist:
             img = Base64ImageField(max_length=None, use_url=True)
             filename, content = img.update(request.data['base64_image'])
-            state_save = StateSave(
-                data_dump=request.data.get('data_dump'),
-                description=request.data.get('description'),
-                name=request.data.get('name'),
-                owner=request.user,
-                branch=request.data.get('branch'),
-                version=request.data.get('version')
-            )
+            if Project.objects.get(project_id=request.data.get('project_id')).exists():
+                project = Project.objects.get(project_id=request.data.get('project_id'))
+                state_save = StateSave(
+                    data_dump=request.data.get('data_dump'),
+                    description=request.data.get('description'),
+                    name=request.data.get('name'),
+                    owner=request.user,
+                    branch=request.data.get('branch'),
+                    version=request.data.get('version'),
+                    project=project
+                )
+            else:
+                state_save = StateSave(
+                    data_dump=request.data.get('data_dump'),
+                    description=request.data.get('description'),
+                    name=request.data.get('name'),
+                    owner=request.user,
+                    branch=request.data.get('branch'),
+                    version=request.data.get('version')
+                )
             if request.data.get('save_id'):
                 state_save.save_id = request.data.get('save_id')
             state_save.base64_image.save(filename, content)

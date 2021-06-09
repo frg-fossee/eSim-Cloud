@@ -59,6 +59,7 @@ class ProjectViewSet(APIView):
             return Response(data)
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     def post(self, request, circuit_id):
         print(request.data[0])
         save_states = StateSave.objects.filter(save_id=circuit_id)
@@ -101,7 +102,7 @@ class ProjectViewSet(APIView):
         else:
             can_edit = False
             if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
-              pass
+                pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             active_state_save.project.title = request.data[0]['title']
@@ -109,7 +110,8 @@ class ProjectViewSet(APIView):
             active_state_save.project.branch = request.data[0]['active_branch']
             active_state_save.project.version = request.data[0]['active_version']
             active_state_save.project.save()
-            ChangeStatus(self, request.data[2], active_state_save.project)
+            if request.data[2] != '':
+                ChangeStatus(self, request.data[2], active_state_save.project)
             if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
                 can_edit = True
             else:
@@ -128,6 +130,8 @@ class ProjectViewSet(APIView):
             data['history'] = histories.data
             data['can_edit'] = can_edit
             return Response(data)
+
+
 class MyProjectViewSet(viewsets.ModelViewSet):
     """
      List users circuits ( Permission Groups )

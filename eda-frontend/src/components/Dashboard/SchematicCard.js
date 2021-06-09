@@ -153,7 +153,7 @@ export default function SchematicCard({ sch }) {
   }
   const clickViewProject = () => {
     let win = window.open();
-    win.location.href = '/eda/#/project?save_id=' + sch.save_id + '&project_id=' + sch.project_id
+    win.location.href = '/eda/#/project?save_id=' + sch.save_id +'&version=' + sch.project_version + '&branch=' + sch.project_branch  + '&project_id=' + sch.project_id
     win.focus();
   }
 
