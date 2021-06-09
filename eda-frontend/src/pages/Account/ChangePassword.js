@@ -14,7 +14,7 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useSelector, useDispatch } from 'react-redux'
-import { changePassword, authDefault } from '../../redux/actions/index'
+import { changePassword } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,7 +46,6 @@ export default function ChangePassword () {
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
 
   useEffect(() => {
-    dispatch(authDefault())
     document.title = 'Change password - eSim '
   }, [dispatch])
 
