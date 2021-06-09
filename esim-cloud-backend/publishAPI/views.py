@@ -60,19 +60,20 @@ class ProjectViewSet(APIView):
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     def post(self, request, circuit_id):
+        print(request.data[0])
         save_states = StateSave.objects.filter(save_id=circuit_id)
         if save_states:
             pass
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
         try:
-            active_state_save = save_states.get(branch=request.data[0]['branch'],version=request.data[0]['version'])
+            active_state_save = save_states.get(branch=request.data[0]['active_branch'],version=request.data[0]['active_version'])
         except StateSave.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         if active_state_save.project is None:
             project = Project(title=request.data[0]['title'], description=request.data[0]
-                              ['description'], author=active_state_save.owner, is_arduino=active_state_save.is_arduino)
+                              ['description'], author=active_state_save.owner, is_arduino=active_state_save.is_arduino,active_branch=request.data[0]['active_branch'], active_version=request.data[0]['active_version'])
             project.save()
             for field in request.data[1]:
                 field = Field(name=field['name'], text=field['text'])
@@ -105,8 +106,8 @@ class ProjectViewSet(APIView):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             active_state_save.project.title = request.data[0]['title']
             active_state_save.project.description = request.data[0]['description']
-            active_state_save.project.branch = request.data[0]['branch']
-            active_state_save.project.version = request.data[0]['version']
+            active_state_save.project.branch = request.data[0]['active_branch']
+            active_state_save.project.version = request.data[0]['active_version']
             active_state_save.project.save()
             ChangeStatus(self, request.data[2], active_state_save.project)
             if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():

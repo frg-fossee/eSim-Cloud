@@ -70,12 +70,13 @@ function CreateProject() {
   const [status, setStatus] = React.useState(null)
   const [versions,setVersions] = React.useState(null)
   const [activeVersion,setActiveVersion] = React.useState("")
+  const [activeName,setActiveName] = React.useState(null)
   const [details, setDetails] = useState(
     {
       title: '',
       description: '',
-      branch: '',
-      version: ''
+      active_branch: '',
+      active_version: ''
     })
   const [fields, setFields] = useState([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
   const [changed, setChanged] = useState(0)
@@ -85,7 +86,7 @@ function CreateProject() {
       console.log(project.details)
     }
     if (project.details) {
-      setDetails({ title: project.details.title, description: project.details.description, version: project.details.version, branch: project.details.branch })
+      setDetails({ title: project.details.title, description: project.details.description, active_version: project.details.active_version, active_branch: project.details.active_branch })
       setFields(project.details.fields)
     }
   }, [open, dispatch, project.details])
@@ -116,9 +117,26 @@ function CreateProject() {
         });
     }
   },[])
+  useEffect(()=>{
+    if(versions&&project.details){
+      for(var i=0;i<versions.length;i++){
+        if(versions[i].version===project.details.active_version&&versions[i].branch===project.details.active_branch){
+          setActiveVersion(`${versions[i].version}-${versions[i].branch}`)
+          setActiveName(versions[i].name)
+          break
+        }
+      }
+    }
+  },[project.details,versions])
   const handleActiveVersion = (e) =>{
+    if (changed === 0) {
+      setChanged(1)
+    }
+    else if (changed === 2) {
+      setChanged(3)
+    }
     setActiveVersion(e.target.value)
-    setDetails({...details,'branch':e.target.value.split("-")[1],'version':e.target.value.split("-")[0]})
+    setDetails({...details,'active_branch':e.target.value.split("-")[1],'active_version':e.target.value.split("-")[0]})
   }
   const handleSelectChange = (event) => {
     if (changed === 0) {
@@ -171,7 +189,7 @@ function CreateProject() {
   }
   const clickPreview = () => {
     let win = window.open();
-    win.location.href = '/eda/#/project?save_id=' + project.details.save_id + '&project_id=' + project.details.project_id
+    win.location.href = '/eda/#/project?save_id=' + project.save_id + '&version=' + project.details.active_version + '&branch=' + project.details.active_branch +  '&project_id=' + project.details.project_id
     win.focus();
   }
   const addField = () => {
@@ -260,19 +278,22 @@ function CreateProject() {
             style={{backgroundColor:"white",borderRadius:"5px"}}
         >
           <Grid item xs={12} sm={12}>
-          <FormControl className={classes.formControl}>
-            <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={activeVersion}
-              onChange={handleActiveVersion}
-            >
-              {versions.map(version=>{
-                return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
+          {
+            ((project.details && project.details.can_edit)||!project.details) &&
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={activeVersion}
+                onChange={handleActiveVersion}
+              >
+                {versions.map(version=>{
+                  return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          }
           </Grid>
         </Grid>
         </Container>}
@@ -287,6 +308,7 @@ function CreateProject() {
             <Grid item xs={12} sm={12}>
               {project.details && <Paper style={{ padding: '.2% 0%', marginBottom: "1%" }}>
                 <h3 style={{ textAlign: 'center' }}>Status of the project: {project.details.status_name}  </h3>
+                <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of branch {project.details.active_branch}  </h3>
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
               <Paper className={classes.paper}>
