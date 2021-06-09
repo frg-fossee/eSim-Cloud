@@ -51,7 +51,7 @@ class StateSaveView(APIView):
         except StateSave.DoesNotExist:
             img = Base64ImageField(max_length=None, use_url=True)
             filename, content = img.update(request.data['base64_image'])
-            if Project.objects.get(project_id=request.data.get('project_id')).exists():
+            try:
                 project = Project.objects.get(project_id=request.data.get('project_id'))
                 state_save = StateSave(
                     data_dump=request.data.get('data_dump'),
@@ -62,7 +62,7 @@ class StateSaveView(APIView):
                     version=request.data.get('version'),
                     project=project
                 )
-            else:
+            except Project.DoesNotExist:
                 state_save = StateSave(
                     data_dump=request.data.get('data_dump'),
                     description=request.data.get('description'),
