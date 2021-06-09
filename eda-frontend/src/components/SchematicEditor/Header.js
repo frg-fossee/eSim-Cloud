@@ -30,7 +30,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle, setSchShared, loadUser, authDefault } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared, loadUser, loadMinUser } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -123,8 +123,19 @@ function Header () {
       const userToken = localStorage.getItem('esim_token')
       if (userToken && userToken !== '') {
         // esim_token was added by another tab
-        dispatch(loadUser())
-        setLoginDialog(false)
+        // dispatch(loadUser())
+        const newUser = parseInt(localStorage.getItem('user_id'))
+        if (auth.isAuthenticated === null) {
+          console.log('unauth -> auth')
+          dispatch(loadUser())
+        } else if (auth.user && auth.user.id === newUser) {
+          console.log('Got same user')
+          dispatch(loadMinUser())
+          setLoginDialog(false)
+        } else {
+          console.log('Changing message')
+          setReloginMessage('You have Logged in but as a different user!')
+        }
       } else {
         /* User logged out and esim_token removed from localstore
         But redux store still has it */
@@ -133,7 +144,7 @@ function Header () {
           setLoginDialog(true)
         }
         // Need to reset authReducer state to default values
-        dispatch(authDefault())
+        // dispatch(authDefault())
       }
     }
 
@@ -245,7 +256,7 @@ function Header () {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => { window.location.reload() }} color="secondary">
-            Reload Page
+            Continue Anyway
           </Button>
           <Button
             component={RouterLink}

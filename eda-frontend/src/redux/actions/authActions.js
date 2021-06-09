@@ -8,11 +8,78 @@ export const loadUser = () => (dispatch, getState) => {
 
   // Get token from localstorage and dispatch LOGIN_SUCCESSFUL
   const token = localStorage.getItem('esim_token')
+  const userId = localStorage.getItem('user_id')
   if (token) {
     dispatch({
       type: actions.LOGIN_SUCCESSFUL,
       payload: {
-        data: { auth_token: token }
+        data: {
+          auth_token: token,
+          user_id: userId
+        }
+      }
+    })
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
+  }
+
+  api.get('auth/users/me/', config)
+    .then(
+      (res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: actions.USER_LOADED,
+            payload: {
+              user: res.data
+            }
+          })
+        } else if (res.status >= 400 && res.status < 500) {
+          dispatch({
+            type: actions.LOGIN_FAILED,
+            payload: {
+              data: res.data
+            }
+          })
+        }
+      }
+    )
+    .catch((err) => {
+      console.error(err)
+      dispatch({
+        type: actions.LOGIN_FAILED,
+        payload: {
+          data: {}
+        }
+      })
+    })
+}
+
+// Api call for maintaining user login state throughout the application without excess actions
+export const loadMinUser = () => (dispatch) => {
+  // Get token from localstorage and dispatch LOGIN_SUCCESSFUL
+  const token = localStorage.getItem('esim_token')
+  const userId = localStorage.getItem('user_id')
+  if (token) {
+    dispatch({
+      type: actions.LOGIN_SUCCESSFUL,
+      payload: {
+        data: {
+          auth_token: token,
+          user_id: userId
+        }
       }
     })
   }
@@ -71,7 +138,7 @@ export const login = (username, password, toUrl) => {
   }
 
   return function (dispatch) {
-    api.post('auth/token/login/', body)
+    api.post('auth/user/token/', body)
       .then((res) => {
         if (res.status === 200) {
           dispatch({
