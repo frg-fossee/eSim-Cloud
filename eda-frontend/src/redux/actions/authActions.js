@@ -82,7 +82,7 @@ export const login = (username, password, toUrl) => {
           dispatch({
             type: actions.AUTHENTICATION_ERROR,
             payload: {
-              data: 'Incorrect Username or Password.'
+              data: res.data.non_field_errors[0]
             }
           })
         } else {
@@ -97,7 +97,7 @@ export const login = (username, password, toUrl) => {
       .catch((err) => {
         var res = err.response
         if (res.status === 400 || res.status === 403 || res.status === 401) {
-          dispatch(loginError('Incorrect Username or Password.'))
+          dispatch(loginError(res.data.non_field_errors[0]))
         } else {
           dispatch(loginError('Something went wrong! Login Failed'))
         }
@@ -218,7 +218,7 @@ const resetPasswordError = (message) => (dispatch) => {
 }
 
 // Redux action for display reset password confirmation error
-const resetPasswordConfirmError = (message) => (dispatch) => {
+export const resetPasswordConfirmError = (message) => (dispatch) => {
   dispatch({
     type: actions.RESET_PASSWORD_CONFIRM_FAILED,
     payload: {
