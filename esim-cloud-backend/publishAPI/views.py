@@ -60,16 +60,19 @@ class ProjectViewSet(APIView):
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     def post(self, request, circuit_id):
+        save_states = StateSave.objects.filter(save_id=circuit_id)
+        if save_states:
+            pass
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         try:
-            save_state = StateSave.objects.filter(save_id=circuit_id)
+            active_state_save = save_states.get(branch=request.data[0]['branch'],version=request.data[0]['version'])
         except StateSave.DoesNotExist:
-            return Response({'Error': 'No State found'}, status=status.HTTP_404_NOT_FOUND)
-        #Active State save bana and get it from the filtered objects 
+            return Response(status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
-        #Change these all to active state save
-        if save_state.project is None:
+        if active_state_save.project is None:
             project = Project(title=request.data[0]['title'], description=request.data[0]
-                              ['description'], author=save_state.owner, is_arduino=save_state.is_arduino)
+                              ['description'], author=active_state_save.owner, is_arduino=active_state_save.is_arduino)
             project.save()
             for field in request.data[1]:
                 field = Field(name=field['name'], text=field['text'])
@@ -77,11 +80,11 @@ class ProjectViewSet(APIView):
                 project.fields.add(field)
             project.save()
             can_edit = False
-            #iterate through the saves to get a new project
-            save_state.project = project
-            save_state.shared = True
-            save_state.save()
-            ChangeStatus(self, request.data[2], save_state.project)
+            for save_state in save_states:
+                save_state.project = project
+                save_state.shared = True
+                save_state.save()
+            ChangeStatus(self, request.data[2], active_state_save.project)
             if Permission.objects.filter(role__in=user_roles, edit_own_states=project.state).exists():
                 can_edit = True
             else:
@@ -94,47 +97,32 @@ class ProjectViewSet(APIView):
             data['can_edit'] = can_edit
             return Response(data)
         else:
-            #Active state save implement
             can_edit = False
-            flag = False
-            if Permission.objects.filter(role__in=user_roles, edit_own_states=save_state.project.state).exists():
-                try:
-                    flag = True
-                except:
-                    flag = False
+            if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
+              pass
             else:
-                if flag is False:
-                    return Response(status=status.HTTP_401_UNAUTHORIZED)
-            save_state.project.title = request.data[0]['title']
-            save_state.project.description = request.data[0]['description']
-            save_state.project.save()
-            ChangeStatus(self, request.data[2], save_state.project)
-            if Permission.objects.filter(role__in=user_roles, edit_own_states=save_state.project.state).exists():
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+            active_state_save.project.title = request.data[0]['title']
+            active_state_save.project.description = request.data[0]['description']
+            active_state_save.project.save()
+            ChangeStatus(self, request.data[2], active_state_save.project)
+            if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
                 can_edit = True
             else:
                 can_edit = False
-            save_state.project.fields.clear()
+            active_state_save.project.fields.clear()
             for field in request.data[1]:
                 field = Field(name=field['name'], text=field['text'])
                 field.save()
-                save_state.project.fields.add(field)
-            save_state.project.save()
+                active_state_save.project.fields.add(field)
+            active_state_save.project.save()
             histories = TransitionHistorySerializer(
-                TransitionHistory.objects.filter(project=save_state.project), many=True)
-            serialized = ProjectSerializer(save_state.project)
+                TransitionHistory.objects.filter(project=active_state_save.project), many=True)
+            serialized = ProjectSerializer(active_state_save.project)
             data = serialized.data.copy()
             data['history'] = histories.data
             data['can_edit'] = can_edit
             return Response(data)
-# class PublishViewSet(viewsets.ModelViewSet):
-#     """
-#      Publishing CRUD Operations
-#     """
-#     permission_classes = (DjangoModelPermissions,)
-#     queryset = Publish.objects.all()
-#     serializer_class = PublishSerializer
-
-
 class MyProjectViewSet(viewsets.ModelViewSet):
     """
      List users circuits ( Permission Groups )
