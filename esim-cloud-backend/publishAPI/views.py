@@ -111,7 +111,8 @@ class ProjectViewSet(APIView):
             active_state_save.project.branch = request.data[0]['branch']
             active_state_save.project.version = request.data[0]['version']
             active_state_save.project.save()
-            ChangeStatus(self, request.data[2], active_state_save.project)
+            if request.data[2] != '':
+                ChangeStatus(self, request.data[2], active_state_save.project)
             if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
                 can_edit = True
             else:

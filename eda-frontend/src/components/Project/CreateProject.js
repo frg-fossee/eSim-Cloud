@@ -115,7 +115,7 @@ function CreateProject() {
   const clickChange = () => {
     console.log(changed)
     if (changed === 1) {
-      dispatch(createProject(save_id, [details, fields]))
+      dispatch(createProject(save_id, [details, fields,'']))
     }
     else if (changed === 2) {
       dispatch(changeStatus(project.details.project_id, status, ''))
