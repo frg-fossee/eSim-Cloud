@@ -69,7 +69,7 @@ function CreateProject() {
   const owner = useSelector(state => state.saveSchematicReducer.details.owner)
   const [status, setStatus] = React.useState(null)
   const [versions,setVersions] = React.useState(null)
-  const [activeVersion,setActiveVersion] = React.useState(null)
+  const [activeVersion,setActiveVersion] = React.useState("")
   const [details, setDetails] = useState(
     {
       title: '',
@@ -85,7 +85,7 @@ function CreateProject() {
       console.log(project.details)
     }
     if (project.details) {
-      setDetails({ title: project.details.title, description: project.details.description })
+      setDetails({ title: project.details.title, description: project.details.description, version: project.details.version, branch: project.details.branch })
       setFields(project.details.fields)
     }
   }, [open, dispatch, project.details])
@@ -257,6 +257,7 @@ function CreateProject() {
             direction="row"
             justify="center"
             alignItems="flex-start"
+            style={{backgroundColor:"white",borderRadius:"5px"}}
         >
           <Grid item xs={12} sm={12}>
           <FormControl className={classes.formControl}>
@@ -268,7 +269,7 @@ function CreateProject() {
               onChange={handleActiveVersion}
             >
               {versions.map(version=>{
-                return <MenuItem value={`${version.version}-${version.branch}`}>{version.name} from branch {version.branch}</MenuItem>
+                return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch}</MenuItem>
               })}
             </Select>
           </FormControl>
