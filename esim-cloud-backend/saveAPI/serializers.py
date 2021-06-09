@@ -46,10 +46,11 @@ class StateSaveSerializer(serializers.ModelSerializer):
 class SaveListSerializer(serializers.ModelSerializer):
     base64_image = Base64ImageField(max_length=None, use_url=True)
     esim_libraries = LibrarySerializer(many=True, required=False)
+    project_id = serializers.CharField(read_only=True,source='project.project_id')
     project_version = serializers.CharField(read_only=True,source='project.active_version')
     project_branch = serializers.CharField(read_only=True,source='project.active_branch')
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'name', 'description',
                   'shared', 'base64_image', 'create_time', 'version', 
-                  'branch', 'esim_libraries','project_id')
+                  'branch', 'esim_libraries','project_id','project_version','project_branch')

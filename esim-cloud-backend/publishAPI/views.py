@@ -61,12 +61,8 @@ class ProjectViewSet(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, circuit_id):
-        print(request.data[0])
+        print(circuit_id)
         save_states = StateSave.objects.filter(save_id=circuit_id)
-        if save_states:
-            pass
-        else:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         try:
             active_state_save = save_states.get(branch=request.data[0]['active_branch'],version=request.data[0]['active_version'])
         except StateSave.DoesNotExist:
