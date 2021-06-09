@@ -61,7 +61,6 @@ class ProjectViewSet(APIView):
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, circuit_id):
-        print(circuit_id)
         save_states = StateSave.objects.filter(save_id=circuit_id)
         try:
             active_state_save = save_states.get(branch=request.data[0]['active_branch'],version=request.data[0]['active_version'])
@@ -103,8 +102,8 @@ class ProjectViewSet(APIView):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             active_state_save.project.title = request.data[0]['title']
             active_state_save.project.description = request.data[0]['description']
-            active_state_save.project.branch = request.data[0]['active_branch']
-            active_state_save.project.version = request.data[0]['active_version']
+            active_state_save.project.active_branch = request.data[0]['active_branch']
+            active_state_save.project.active_branch = request.data[0]['active_version']
             active_state_save.project.save()
             if request.data[2] != '':
                 ChangeStatus(self, request.data[2], active_state_save.project)
