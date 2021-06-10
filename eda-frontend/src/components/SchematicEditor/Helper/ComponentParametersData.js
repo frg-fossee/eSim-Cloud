@@ -202,7 +202,7 @@ const ComponentParameters = {
     MODEL: '',
     VALUE_UNIT: 'H',
     IC: '0',
-    DTEMP:'27',
+    DTEMP: '27'
   },
 
   M: {
@@ -215,7 +215,7 @@ const ComponentParameters = {
     EXTRA_EXPRESSION: '',
     MULTIPLICITY_PARAMETER: '1',
     MODEL: '.model mymosfet NMOS',
-    DTEMP:'27',
+    DTEMP: '27'
   },
 
   Q: {
@@ -225,9 +225,9 @@ const ComponentParameters = {
     N2: '',
     N3: '',
     EXTRA_EXPRESSION: '',
-    MODEL: '.model mybjt PNP',    
+    MODEL: '.model mybjt PNP',
     MULTIPLICITY_PARAMETER: '1',
-    DTEMP:'27',
+    DTEMP: '27'
   },
 
   V: {
@@ -342,10 +342,10 @@ const ComponentParameters = {
     EXTRA_EXPRESSION: '',
     MODEL: '',
     VALUE_UNIT: 'Ohm',
-    SHEET_RESISTANCE:'0',
-    FIRST_ORDER_TEMPERATURE_COEFF:'0',
-    SECOND_ORDER_TEMPERATURE_COEFF:'0',
-    PARAMETER_MEASUREMENT_TEMPERATURE:'27',
+    SHEET_RESISTANCE: '0',
+    FIRST_ORDER_TEMPERATURE_COEFF: '0',
+    SECOND_ORDER_TEMPERATURE_COEFF: '0',
+    PARAMETER_MEASUREMENT_TEMPERATURE: '27'
   },
 
   Z: {
@@ -389,8 +389,7 @@ const ComponentParameters = {
     MODEL: '',
     VALUE: '1',
     EXTRA_EXPRESSION: ''
-  },
-
+  }
 
 }
 
