@@ -61,6 +61,7 @@ export default function ComponentSidebar ({ compRef }) {
   const components = useSelector(state => state.schematicEditorReducer.components)
   const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
   const isAuthenticated = useSelector(state => state.authReducer.isAuthenticated)
+  const auth = useSelector(state => state.authReducer)
 
   const dispatch = useDispatch()
   const [isSearchedResultsEmpty, setIssearchedResultsEmpty] = useState(false)
@@ -166,7 +167,7 @@ export default function ComponentSidebar ({ compRef }) {
   // For Fetching Libraries
   useEffect(() => {
     dispatch(fetchLibraries())
-  }, [dispatch])
+  }, [dispatch, auth])
 
   useEffect(() => {
     if (libraries.filter((ob) => { return ob.default === true }).length !== 0) { setdef(true) } else { setdef(false) }

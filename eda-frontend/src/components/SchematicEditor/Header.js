@@ -30,7 +30,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle, setSchShared, loadUser, loadMinUser } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared, loadMinUser } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -123,17 +123,16 @@ function Header () {
       const userToken = localStorage.getItem('esim_token')
       if (userToken && userToken !== '') {
         // esim_token was added by another tab
-        // dispatch(loadUser())
         const newUser = parseInt(localStorage.getItem('user_id'))
         if (auth.isAuthenticated === null) {
           console.log('unauth -> auth')
-          dispatch(loadUser())
+          dispatch(loadMinUser())
         } else if (auth.user && auth.user.id === newUser) {
           console.log('Got same user')
           dispatch(loadMinUser())
           setLoginDialog(false)
         } else {
-          console.log('Changing message')
+          console.log('Different User')
           setReloginMessage('You have Logged in but as a different user!')
         }
       } else {
@@ -143,8 +142,6 @@ function Header () {
           setReloginMessage('You have been logged out of your account. Login again to continue working.')
           setLoginDialog(true)
         }
-        // Need to reset authReducer state to default values
-        // dispatch(authDefault())
       }
     }
 
