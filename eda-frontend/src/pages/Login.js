@@ -58,6 +58,14 @@ export default function SignIn (props) {
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
 
   useEffect(() => {
+    const query = new URLSearchParams(props.location.search)
+    if (query.get('logout')) {
+      localStorage.removeItem('esim_token')
+    }
+  // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
     dispatch(authDefault())
     document.title = 'Login - eSim '
 

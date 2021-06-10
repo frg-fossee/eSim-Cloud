@@ -257,7 +257,7 @@ function Header () {
           </Button>
           <Button
             component={RouterLink}
-            to="/login?close=close"
+            to="/login?close=close&logout=logout"
             color="primary"
             target="_blank"
           >

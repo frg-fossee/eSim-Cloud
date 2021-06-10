@@ -60,7 +60,6 @@ export default function ComponentSidebar ({ compRef }) {
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
   const components = useSelector(state => state.schematicEditorReducer.components)
   const isSimulate = useSelector(state => state.schematicEditorReducer.isSimulate)
-  const isAuthenticated = useSelector(state => state.authReducer.isAuthenticated)
   const auth = useSelector(state => state.authReducer)
 
   const dispatch = useDispatch()
@@ -98,7 +97,7 @@ export default function ComponentSidebar ({ compRef }) {
   }
 
   React.useEffect(() => {
-    if (isAuthenticated) {
+    if (auth.isAuthenticated) {
       const token = localStorage.getItem('esim_token')
       const config = {
         headers: {
@@ -117,7 +116,7 @@ export default function ComponentSidebar ({ compRef }) {
           console.log(err)
         })
     }
-  }, [isAuthenticated])
+  }, [auth])
 
   React.useEffect(() => {
     // if the user keeps typing, stop the API call!
@@ -167,7 +166,7 @@ export default function ComponentSidebar ({ compRef }) {
   // For Fetching Libraries
   useEffect(() => {
     dispatch(fetchLibraries())
-  }, [dispatch, auth])
+  }, [dispatch])
 
   useEffect(() => {
     if (libraries.filter((ob) => { return ob.default === true }).length !== 0) { setdef(true) } else { setdef(false) }
