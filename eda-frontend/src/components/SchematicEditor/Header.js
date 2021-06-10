@@ -448,6 +448,7 @@ function Header () {
                 My Schematics
                 </MenuItem>
                 <MenuItem
+                  target='_blank'
                   component={RouterLink}
                   to="/account/change_password"
                   onClick={handleClose}
