@@ -125,22 +125,21 @@ function Header () {
         // esim_token was added by another tab
         const newUser = parseInt(localStorage.getItem('user_id'))
         if (auth.isAuthenticated === null) {
-          console.log('unauth -> auth')
           dispatch(loadMinUser())
         } else if (auth.user && auth.user.id === newUser) {
-          console.log('Got same user')
           dispatch(loadMinUser())
           setLoginDialog(false)
         } else {
-          console.log('Different User')
           setReloginMessage('You have Logged in but as a different user!')
         }
       } else {
         /* User logged out and esim_token removed from localstore
         But redux store still has it */
         if (auth.token && auth.token !== '') {
-          setReloginMessage('You have been logged out of your account. Login again to continue working.')
-          setLoginDialog(true)
+          if (!loginDialog) {
+            setReloginMessage('You have been logged out of your account. Login again to continue working.')
+            setLoginDialog(true)
+          }
         }
       }
     }
