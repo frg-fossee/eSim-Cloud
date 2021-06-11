@@ -22,6 +22,7 @@ class CustomGroup(models.Model):
     group = models.OneToOneField(Group, unique=True, on_delete=CASCADE)
     is_arduino = models.BooleanField(default=False)
     is_type_reviewer = models.BooleanField(default=False)
+    is_default_role = models.BooleanField(default=False)
 
 class Permission(models.Model):
     role=models.OneToOneField(Group,related_name='permission_role',on_delete=CASCADE, unique=True,)

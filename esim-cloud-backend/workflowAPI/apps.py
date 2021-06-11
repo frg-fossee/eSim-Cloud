@@ -3,6 +3,6 @@ import workflowAPI
 
 class WorkflowapiConfig(AppConfig):
     name = 'workflowAPI'
+    verbose_name='Workflow API'
     def ready(self):
-        pass
-        # import workflowAPI.signals.handlers
+        import workflowAPI.signals.handlers
