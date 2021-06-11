@@ -118,7 +118,7 @@ export const saveSchematic = (title, description, xml, base64,newBranch = false,
         .then((res) => {
           var temp = versions
           var d = new Date(res.data.save_time)
-          res.data.date = d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear()
+          res.data.date = d.getDate() + "/" + parseInt(d.getMonth()+1) + "/" + d.getFullYear()
           res.data.time = d.getHours() + ":" + d.getMinutes()
           if (d.getMinutes() < 10) {
             res.data.time = d.getHours() + ":0" + d.getMinutes()

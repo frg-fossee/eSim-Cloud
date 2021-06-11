@@ -155,7 +155,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
           resp.data.forEach((value) => {
             var d = new Date(value.save_time)
             value.date =
-              d.getDate() + "/" + d.getMonth() + "/" + d.getFullYear();
+              d.getDate() + "/" + parseInt(d.getMonth()+1) + "/" + d.getFullYear();
             value.time = d.getHours() + ":" + d.getMinutes();
             if (d.getMinutes() < 10) {
               value.time = d.getHours() + ":0" + d.getMinutes();

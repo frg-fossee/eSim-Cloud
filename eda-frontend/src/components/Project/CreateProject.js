@@ -109,7 +109,15 @@ function CreateProject() {
           config
         )
         .then((resp) => {
-          console.log(resp.data);
+          for(var i=0;i<resp.data.length;i++){
+            var d = new Date(resp.data[i].save_time)
+            resp.data[i].date = d.getDate() + "/" + parseInt(d.getMonth()+1) + "/" + d.getFullYear()
+            resp.data[i].time = d.getHours() + ":" + d.getMinutes()
+            if (d.getMinutes() < 10) {
+              resp.data[i].time = d.getHours() + ":0" + d.getMinutes()
+            }
+          }
+          console.log(resp.data)
           setVersions(resp.data)
         })
         .catch((err) => {
@@ -289,7 +297,7 @@ function CreateProject() {
                     onChange={handleActiveVersion}
                   >
                     {versions.map(version => {
-                      return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch}</MenuItem>
+                      return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch} saved on {version.date} at {version.time}</MenuItem>
                     })}
                   </Select>
                 </FormControl>
