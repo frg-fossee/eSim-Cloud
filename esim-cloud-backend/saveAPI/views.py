@@ -53,7 +53,7 @@ class StateSaveView(APIView):
             filename, content = img.update(request.data['base64_image'])
             try:
                 project = Project.objects.get(
-                    project=request.data.get('project_id'))
+                    project_id=request.data.get('project_id'))
                 state_save = StateSave(
                     data_dump=request.data.get('data_dump'),
                     description=request.data.get('description'),
@@ -61,7 +61,7 @@ class StateSaveView(APIView):
                     owner=request.user,
                     branch=request.data.get('branch'),
                     version=request.data.get('version'),
-                    project=project
+                    project=project.project_id
                 )
             except Project.DoesNotExist:
                 state_save = StateSave(
@@ -206,7 +206,7 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
-            if saved_state.owner == self.request.user and Permission.objects.filter(role__in=self.request.user.groups.all(), del_own_states=saved_state.project.state).exists():
+            if saved_state.owner == self.request.user and (saved_state.project is None or Permission.objects.filter(role__in=self.request.user.groups.all(), del_own_states=saved_state.project.state).exists()):
                 pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)

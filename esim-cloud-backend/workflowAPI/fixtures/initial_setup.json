@@ -62,22 +62,42 @@
   {
     "model": "workflowAPI.customgroup",
     "pk": 1,
-    "fields": { "group": 3, "is_arduino": true, "is_type_reviewer": true }
+    "fields": {
+      "group": 3,
+      "is_arduino": true,
+      "is_type_reviewer": true,
+      "is_default_role": false
+    }
   },
   {
     "model": "workflowAPI.customgroup",
     "pk": 2,
-    "fields": { "group": 4, "is_arduino": false, "is_type_reviewer": true }
+    "fields": {
+      "group": 4,
+      "is_arduino": false,
+      "is_type_reviewer": true,
+      "is_default_role": false
+    }
   },
   {
     "model": "workflowAPI.customgroup",
     "pk": 3,
-    "fields": { "group": 2, "is_arduino": true, "is_type_reviewer": false }
+    "fields": {
+      "group": 2,
+      "is_arduino": true,
+      "is_type_reviewer": false,
+      "is_default_role": true
+    }
   },
   {
     "model": "workflowAPI.customgroup",
     "pk": 4,
-    "fields": { "group": 1, "is_arduino": false, "is_type_reviewer": false }
+    "fields": {
+      "group": 1,
+      "is_arduino": false,
+      "is_type_reviewer": false,
+      "is_default_role": true
+    }
   },
   {
     "model": "workflowAPI.permission",
@@ -168,7 +188,7 @@
       "to_state": 1,
       "restricted_for_creator": false,
       "only_for_creator": false,
-      "role": [3, 4]
+      "role": [1, 2, 3, 4]
     }
   },
   {

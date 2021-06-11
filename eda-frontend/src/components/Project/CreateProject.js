@@ -148,7 +148,6 @@ function CreateProject() {
     setStatus(event.target.value)
   };
   const changeFieldText = (e) => {
-    console.log(e.target.value)
     if (changed === 0) {
       setChanged(1)
     }
@@ -189,7 +188,7 @@ function CreateProject() {
   }
   const clickPreview = () => {
     let win = window.open();
-    win.location.href = '/eda/#/project?save_id=' + project.save_id + '&version=' + project.details.active_version + '&branch=' + project.details.active_branch +  '&project_id=' + project.details.project_id
+    win.location.href = '/eda/#/project?save_id=' + project.details.save_id + '&version=' + project.details.active_version + '&branch=' + project.details.active_branch +  '&project_id=' + project.details.project_id
     win.focus();
   }
   const addField = () => {
