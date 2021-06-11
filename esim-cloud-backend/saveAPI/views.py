@@ -37,7 +37,7 @@ class StateSaveView(APIView):
         logger.info('Got POST for state save ')
         esim_libraries = json.loads(request.data.get('esim_libraries'))
         try:
-            queryset = StateSave.objects.get(
+            queryset = StateSave.objects.get(save_id=request.data.get("save_id",None),
                 data_dump=request.data["data_dump"], branch=request.data["branch"])
             serializer = StateSaveSerializer(data=request.data)
             if serializer.is_valid():
