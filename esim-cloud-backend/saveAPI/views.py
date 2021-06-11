@@ -63,7 +63,7 @@ class StateSaveView(APIView):
                     version=request.data.get('version'),
                     project=project
                 )
-            except Project.DoesNotExist:
+            except:
                 state_save = StateSave(
                     data_dump=request.data.get('data_dump'),
                     description=request.data.get('description'),

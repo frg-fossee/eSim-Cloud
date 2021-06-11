@@ -17,7 +17,7 @@ function ChangeStatus({ project }) {
         setNote(e.target.value)
     }
     useEffect(() => {
-        if(project.details.history.reverse()[1].reviewer_notes)
+        if(project.details.history && project.details.history.reverse()[1].reviewer_notes)
         {
             setNote(project.details.history.reverse()[1].reviewer_notes)
         }
