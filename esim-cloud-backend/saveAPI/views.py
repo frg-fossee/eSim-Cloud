@@ -61,7 +61,7 @@ class StateSaveView(APIView):
                     owner=request.user,
                     branch=request.data.get('branch'),
                     version=request.data.get('version'),
-                    project=project.project_id
+                    project=project
                 )
             except Project.DoesNotExist:
                 state_save = StateSave(
@@ -82,7 +82,6 @@ class StateSaveView(APIView):
                 return Response(StateSaveSerializer(state_save).data)
             except Exception:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
 class CopyStateView(APIView):
     permission_classes = (IsAuthenticated,)

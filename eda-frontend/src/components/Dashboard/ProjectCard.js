@@ -75,7 +75,7 @@ export default function ProjectCard({ pub, is_review }) {
           <CardHeader title={pub.title} />
           <CardMedia
             className={classes.media}
-            image={pub.base64_image} />
+            image={pub.saves[0].base64_image} />
           <CardContent>
           <Typography variant="body2" component="p" noWrap={true}>
               {pub.description}

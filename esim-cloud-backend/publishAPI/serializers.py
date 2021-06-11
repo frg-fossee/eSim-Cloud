@@ -6,7 +6,7 @@ import base64
 import six
 import uuid
 import imghdr
-
+from saveAPI.serializers import StateSaveSerializer
 
 class Base64ImageField(serializers.ImageField):
 
@@ -62,6 +62,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only=True, source='author.username')
     fields = FieldSerializer(many=True)
     save_id = serializers.SerializerMethodField()
+    saves = StateSaveSerializer(read_only=True,many=True,source='statesave_set')
     class Meta:
         model = Project
         fields = ('project_id',
@@ -73,7 +74,8 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'fields',
                   'active_branch',
                   'active_version',
-                  'save_id'
+                  'save_id',
+                  'saves'
                   )
 
     def get_save_id(self, obj):

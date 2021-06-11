@@ -39,13 +39,14 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 export const saveSchematic = (title, description, xml, base64,newBranch = false, branchName = null, setVersions, versions) => (dispatch, getState) => {
   var libraries = []
   getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
-  console.log(libraries)
+  const project_id = getState().saveSchematicReducer.details.project_id
   var body = {
     data_dump: xml,
     base64_image: base64,
     name: title,
     description: description,
-    esim_libraries: JSON.stringify([...libraries])
+    esim_libraries: JSON.stringify([...libraries]),
+    project_id:project_id,
   }
   // Get token from localstorage
   const token = getState().authReducer.token;

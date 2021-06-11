@@ -249,6 +249,7 @@ export default function PropertiesSidebar({ gridRef, outlineRef }) {
   const handleBranch = (branchName) => {
     setDialogOpen(false)
     exportImage("PNG").then((res) => {
+      console.log(schSave.project_id)
       dispatch(saveSchematic(schSave.title,schSave.description,schSave.xmlData,res,true,branchName,setVersions,versions))
     })
     setBranchName("")

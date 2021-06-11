@@ -160,7 +160,7 @@ export default function ProjectPage(props) {
   return (
     <div className={classes.root}>
       <LayoutMain>
-        {project.details !== "400" ?
+        {project.details !== "401" ?
           <Grid container>
             <Grid item xs={1} />
             <Grid item xs={10}>
