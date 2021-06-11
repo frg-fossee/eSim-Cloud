@@ -297,7 +297,7 @@ function CreateProject() {
                     onChange={handleActiveVersion}
                   >
                     {versions.map(version => {
-                      return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                      return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
                     })}
                   </Select>
                 </FormControl>
