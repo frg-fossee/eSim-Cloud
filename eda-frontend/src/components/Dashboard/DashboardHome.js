@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Card displaying user dashboard home page header.
-function MainCard () {
+function MainCard() {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
 
@@ -54,7 +54,7 @@ function MainCard () {
   )
 }
 
-export default function DashboardHome () {
+export default function DashboardHome({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
 
@@ -84,7 +84,7 @@ export default function DashboardHome () {
         {/* List recent schematics saved by user */}
         <Grid item xs={12}>
           <Card>
-            <ProgressPanel />
+            <ProgressPanel ltiDetails={ltiDetails}/>
           </Card>
         </Grid>
       </Grid>

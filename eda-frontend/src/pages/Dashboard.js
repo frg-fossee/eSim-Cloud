@@ -10,6 +10,8 @@ import LayoutMain from '../components/Shared/LayoutMain'
 import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
 import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
+import api from '../utils/Api'
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,10 +25,27 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard () {
   const classes = useStyles()
+  const [ltiDetails, setLtiDetails] = React.useState(null)
 
   useEffect(() => {
     document.title = 'Dashboard - eSim '
   })
+
+  useEffect(() => {
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get('lti/exists', config)
+      .then(res => {
+        setLtiDetails(res.data)
+      }).catch(err => console.log(err))
+  }, [])
 
   return (
     <div className={classes.root}>
@@ -39,15 +58,15 @@ export default function Dashboard () {
         <div className={classes.toolbar} />
 
         {/* Subroutes under dashboard section */}
-        <Switch>
-          <Route exact path="/dashboard" component={DashboardHome} />
+        {ltiDetails !==null && <Switch>
+          <Route exact path="/dashboard" component={() => <DashboardHome ltiDetails={ltiDetails}/>} />
           <Route exact path="/dashboard/profile" />
           <Route
             exact
             path="/dashboard/schematics"
-            component={SchematicsList}
+            component={() => <SchematicsList ltiDetails={ltiDetails}/>}
           />
-        </Switch>
+        </Switch>}
       </LayoutMain>
     </div>
   )

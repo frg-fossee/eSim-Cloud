@@ -156,7 +156,6 @@ export default function SchematicCard({ sch, consKey=null }) {
 
   useEffect(() => {
     setLTIDetails({ ...ltiDetails, consumerKey: consKey })
-    console.log(consKey)
     //eslint-disable-next-line
   }, [])
   // To handle LTI details

@@ -13,7 +13,6 @@ import { Link as RouterLink } from 'react-router-dom'
 import SchematicCard from './SchematicCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
-import api from '../../utils/Api'
 
 const useStyles = makeStyles({
   mainHead: {
@@ -59,11 +58,10 @@ function MainCard() {
   )
 }
 
-export default function SchematicsList() {
+export default function SchematicsList({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
-  const [ltiDetails, setLtiDetails] = React.useState(null)
 
   const dispatch = useDispatch()
 
@@ -71,22 +69,6 @@ export default function SchematicsList() {
   useEffect(() => {
     dispatch(fetchSchematics())
   }, [dispatch])
-
-  useEffect(() => {
-    const token = localStorage.getItem('esim_token')
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.get('lti/exists', config)
-      .then(res => {
-        setLtiDetails(res.data)
-      }).catch(err => console.log(err))
-  }, [])
 
   return (
     <>
@@ -104,7 +86,7 @@ export default function SchematicsList() {
         </Grid>
 
         {/* List all schematics saved by user */}
-        {(schematics.length !== 0 && ltiDetails !== null)
+        {(schematics.length !== 0)
           ? <>
             {schematics.map(
               (sch) => {
