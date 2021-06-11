@@ -17,7 +17,7 @@ function ChangeStatus({ project }) {
         setNote(e.target.value)
     }
     useEffect(() => {
-        if(project.details.history && project.details.history.reverse()[1].reviewer_notes)
+        if(project.details.history.reverse()[1] !== undefined && project.details.history.reverse()[1]?.reviewer_notes)
         {
             setNote(project.details.history.reverse()[1].reviewer_notes)
         }
@@ -35,7 +35,7 @@ function ChangeStatus({ project }) {
                         placeholder='Reviewer Notes'
                         multiline
                         value={note}
-                        defaultValue={project.details.history.reverse()[1].reviewer_notes}
+                        defaultValue={project.details.history.reverse()[1] !== undefined && project.details.history.reverse()[1].reviewer_notes}
                         onChange={onChangeNote}
                         rows={2} />
                     <InputLabel style={{ marginTop: '0' }}>Select and Change the status of this project</InputLabel>
