@@ -1,6 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
-from .models import CircuitTag, Project, Report, TransitionHistory,Field
+from .models import CircuitTag, Project, Report, TransitionHistory, Field
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -35,8 +35,11 @@ class CircuitTagSerializer(serializers.ModelSerializer):
 class TransitionHistorySerializer(serializers.ModelSerializer):
     transition_author_name = serializers.CharField(
         read_only=True, source='transition_author.username')
-    from_state_name = serializers.CharField(read_only=True, source='from_state.name')
-    to_state_name = serializers.CharField(read_only=True, source='to_state.name')
+    from_state_name = serializers.CharField(
+        read_only=True, source='from_state.name')
+    to_state_name = serializers.CharField(
+        read_only=True, source='to_state.name')
+
     class Meta:
         model = TransitionHistory
         fields = ('transition_author_name',
@@ -46,16 +49,19 @@ class TransitionHistorySerializer(serializers.ModelSerializer):
                   'reviewer_notes',
                   'is_done_by_reviewer')
 
+
 class FieldSerializer(serializers.ModelSerializer):
     class Meta:
         model = Field
-        fields=('name','text')
+        fields = ('name', 'text')
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     status_name = serializers.CharField(read_only=True, source='state.name')
     author_name = serializers.CharField(
         read_only=True, source='author.username')
     fields = FieldSerializer(many=True)
+    save_id = serializers.SerializerMethodField()
     class Meta:
         model = Project
         fields = ('project_id',
@@ -67,7 +73,12 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'fields',
                   'active_branch',
                   'active_version',
+                  'save_id'
                   )
+
+    def get_save_id(self, obj):
+        return obj.statesave_set.first().save_id
+
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report

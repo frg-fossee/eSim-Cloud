@@ -9,7 +9,7 @@ import {
   CardMedia,
   Typography,
 } from '@material-ui/core'
-import React from 'react'
+import React,{useEffect} from 'react'
 import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
@@ -59,7 +59,9 @@ function timeSince(jsonDate) {
   return Math.floor(seconds) + ' seconds'
 }
 export default function ProjectCard({ pub, is_review }) {
-
+  useEffect(() => {
+    console.log(pub)
+  }, [])
   const classes = useStyles()
   return (
     <>
@@ -67,7 +69,7 @@ export default function ProjectCard({ pub, is_review }) {
       <ButtonBase
             target="_blank"
             component={RouterLink}
-            to={'/project?save_id=' + pub.save_id + '&project_id=' + pub.project_id}
+            to={'/project?save_id=' + pub.save_id + '&version=' + pub.active_version + '&branch=' + pub.active_branch + '&project_id=' + pub.project_id}
             style={{width:'100%'}}>
         <CardActionArea>
           <CardHeader title={pub.title} />

@@ -68,9 +68,9 @@ function CreateProject() {
   const save_id = useSelector(state => state.saveSchematicReducer.details.save_id)
   const owner = useSelector(state => state.saveSchematicReducer.details.owner)
   const [status, setStatus] = React.useState(null)
-  const [versions,setVersions] = React.useState(null)
-  const [activeVersion,setActiveVersion] = React.useState("")
-  const [activeName,setActiveName] = React.useState(null)
+  const [versions, setVersions] = React.useState(null)
+  const [activeVersion, setActiveVersion] = React.useState("")
+  const [activeName, setActiveName] = React.useState(null)
   const [details, setDetails] = useState(
     {
       title: '',
@@ -90,7 +90,7 @@ function CreateProject() {
       setFields(project.details.fields)
     }
   }, [open, dispatch, project.details])
-  useEffect(()=>{
+  useEffect(() => {
     const config = {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -116,19 +116,19 @@ function CreateProject() {
           console.log(err)
         });
     }
-  },[])
-  useEffect(()=>{
-    if(versions&&project.details){
-      for(var i=0;i<versions.length;i++){
-        if(versions[i].version===project.details.active_version&&versions[i].branch===project.details.active_branch){
+  }, [])
+  useEffect(() => {
+    if (versions && project.details) {
+      for (var i = 0; i < versions.length; i++) {
+        if (versions[i].version === project.details.active_version && versions[i].branch === project.details.active_branch) {
           setActiveVersion(`${versions[i].version}-${versions[i].branch}`)
           setActiveName(versions[i].name)
           break
         }
       }
     }
-  },[project.details,versions])
-  const handleActiveVersion = (e) =>{
+  }, [project.details, versions])
+  const handleActiveVersion = (e) => {
     if (changed === 0) {
       setChanged(1)
     }
@@ -136,7 +136,7 @@ function CreateProject() {
       setChanged(3)
     }
     setActiveVersion(e.target.value)
-    setDetails({...details,'active_branch':e.target.value.split("-")[1],'active_version':e.target.value.split("-")[0]})
+    setDetails({ ...details, 'active_branch': e.target.value.split("-")[1], 'active_version': e.target.value.split("-")[0] })
   }
   const handleSelectChange = (event) => {
     if (changed === 0) {
@@ -176,19 +176,19 @@ function CreateProject() {
   const clickChange = () => {
     console.log(changed)
     if (changed === 1) {
-      dispatch(createProject(save_id, [details, fields,'']))
+      dispatch(createProject(save_id, [details, fields, '']))
     }
     else if (changed === 2) {
       dispatch(changeStatus(project.details.project_id, status, ''))
     }
     else if (changed === 3) {
-      dispatch(createProject(save_id, [details, fields,status]))
+      dispatch(createProject(save_id, [details, fields, status]))
     }
     setChanged(0)
   }
   const clickPreview = () => {
     let win = window.open();
-    win.location.href = '/eda/#/project?save_id=' + project.details.save_id + '&version=' + project.details.active_version + '&branch=' + project.details.active_branch +  '&project_id=' + project.details.project_id
+    win.location.href = '/eda/#/project?save_id=' + project.details.save_id + '&version=' + project.details.active_version + '&branch=' + project.details.active_branch + '&project_id=' + project.details.project_id
     win.focus();
   }
   const addField = () => {
@@ -267,35 +267,37 @@ function CreateProject() {
             </Button>}
           </Toolbar>
         </AppBar>
-        {versions != null && <Container maxWidth="lg" className={classes.header}>
-        <Grid
-            container
-            spacing={3}
-            direction="row"
-            justify="center"
-            alignItems="flex-start"
-            style={{backgroundColor:"white",borderRadius:"5px"}}
-        >
-          <Grid item xs={12} sm={12}>
-          {
-            ((project.details && project.details.can_edit)||!project.details) &&
-            <FormControl className={classes.formControl}>
-              <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={activeVersion}
-                onChange={handleActiveVersion}
-              >
-                {versions.map(version=>{
-                  return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch}</MenuItem>
-                })}
-              </Select>
-            </FormControl>
-          }
-          </Grid>
-        </Grid>
-        </Container>}
+
+        {versions != null &&
+          ((project.details && project.details.can_edit) || !project.details) &&
+          <Container maxWidth="lg" className={classes.header}>
+            <Grid
+              container
+              spacing={3}
+              direction="row"
+              justify="center"
+              alignItems="flex-start"
+              style={{ backgroundColor: "white", borderRadius: "5px" }}
+            >
+              <Grid item xs={12} sm={12}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={activeVersion}
+                    onChange={handleActiveVersion}
+                  >
+                    {versions.map(version => {
+                      return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from branch {version.branch}</MenuItem>
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </Container>
+        }
+
         <Container maxWidth="lg" className={classes.header}>
           <Grid
             container

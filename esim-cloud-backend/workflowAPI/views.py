@@ -51,20 +51,14 @@ class RetriveProjectsViewSet(APIView):
             groups = self.request.user.groups.all()
         except:
             return Response({'error': 'You are not authorized!'}, status=http_status.HTTP_401_UNAUTHORIZED)
-        print(groups)
-        
         transistions = Transition.objects.filter(
             role__in=groups, only_for_creator=False)
-        print(transistions)
         projects = Project.objects.none()
         for transistion in transistions:
             if transistion.from_state.public is False or transistion.from_state.report is True:
                 project = Project.objects.filter(
                     state=transistion.from_state).exclude(author=self.request.user)
-                print(project)
-                # TODO: Make sure this gets distinct values
                 projects = projects | project
-        print(projects)
         if projects == Project.objects.none():
             return Response(status=http_status.HTTP_404_NOT_FOUND)
         else:
@@ -161,7 +155,6 @@ class ProjectStateView(APIView):
                                     transition_history.save()
                                     project.state = circuit_transition.to_state
                                     project.save()
-                                    print("Saved in changed status")
                                     state = project.state
                                     serialized = StatusSerializer(state)
                                     return Response(serialized.data)
