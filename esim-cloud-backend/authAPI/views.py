@@ -8,7 +8,8 @@ from random import randint
 from django.shortcuts import render
 from django.http import HttpResponseNotFound
 from djoser import utils
-from djoser.serializers import TokenCreateSerializer, TokenSerializer
+from djoser.serializers import TokenSerializer
+from authAPI.serializers import TokenCreateSerializer
 
 Token = djoser_settings.TOKEN_MODEL
 
