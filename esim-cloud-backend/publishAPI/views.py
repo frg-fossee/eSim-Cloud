@@ -103,7 +103,7 @@ class ProjectViewSet(APIView):
             active_state_save.project.title = request.data[0]['title']
             active_state_save.project.description = request.data[0]['description']
             active_state_save.project.active_branch = request.data[0]['active_branch']
-            active_state_save.project.active_branch = request.data[0]['active_version']
+            active_state_save.project.active_version = request.data[0]['active_version']
             active_state_save.project.save()
             if request.data[2] != '':
                 ChangeStatus(self, request.data[2], active_state_save.project)

@@ -144,12 +144,14 @@ export default function ProjectPage(props) {
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       var saveID = query.get('save_id')
+      var version = query.get('version')
+      var branch = query.get('branch')
       if (saveID.substr(0, 7) === 'gallery') {
         // Loading Gallery schemaic.
         dispatch(loadGallery(saveID.substr(7, saveID.length)))
       } else {
         // Loading User on-cloud saved schemaic.
-        dispatch(fetchSchematic(saveID))
+        dispatch(fetchSchematic(saveID,version,branch))
       }
     }
     console.log(GenerateCompList())
