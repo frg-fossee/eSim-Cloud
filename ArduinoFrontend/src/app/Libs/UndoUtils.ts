@@ -237,10 +237,10 @@ export abstract class UndoUtils {
             if (grup[e].id == ele.element.id) {
                 if (window.scope[ele.keyName][e].load) {
                     if (operation == 'undo')
-                        UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
+                        UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson })
 
                     else if (operation == 'redo')
-                        UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event })
+                        UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson })
 
                     if (ele.event == 'add' && operation == 'undo') {
                         UndoUtils.removeElement(ele)
@@ -250,26 +250,38 @@ export abstract class UndoUtils {
                         UndoUtils.createElement(ele)
                         UndoUtils.removeElement(ele)
                     }
+                    else if (ele.event == 'drag') {
+                        console.log('Drag ', ele.dragJson)
+                        var existing = this.getExistingWindowElement(grup, ele);
+                        if (operation == 'undo') {
+                            existing.transformPosition(-ele.dragJson.dx, -ele.dragJson.dy)
+                        } else {
+                            existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy)
+                        }
+                        for (const e in window.scope['wires']) {
+                            window.scope['wires'][e].update();
+                        }
+                    }
                     else {
                         UndoUtils.createElement(ele).then(createdEle => {
-                            var existing = this.getExistingWindowElement(grup, ele);
-                            for (const e in existing.nodes) {
-                                if (existing.nodes[e].connectedTo) {
-                                    let n1 = createdEle['nodes'][e]
-                                    // existing.nodes[e].connectedTo.connect(n1, true, true)
-                                    const wire = n1.startNewWire()
-                                    const ct = existing.nodes[e].connectedTo
-                                    console.log(ct.start.parent.id === ele.element.id)
-                                    if (ct.start.parent.id === ele.element.id) {
-                                        console.log('if')
-                                        ct.end.connectWire(wire)
-                                    } else {
-                                        console.log('else')
-                                        ct.start.connectWire(wire)
-                                    }
+                            // var existing = this.getExistingWindowElement(grup, ele);
+                            // for (const e in existing.nodes) {
+                            //     if (existing.nodes[e].connectedTo) {
+                            //         let n1 = createdEle['nodes'][e]
+                            //         // existing.nodes[e].connectedTo.connect(n1, true, true)
+                            //         const wire = n1.startNewWire()
+                            //         const ct = existing.nodes[e].connectedTo
+                            //         console.log(ct.start.parent.id === ele.element.id)
+                            //         if (ct.start.parent.id === ele.element.id) {
+                            //             console.log('if')
+                            //             ct.end.connectWire(wire)
+                            //         } else {
+                            //             console.log('else')
+                            //             ct.start.connectWire(wire)
+                            //         }
 
-                                }
-                            }
+                            //     }
+                            // }
                             UndoUtils.removeElement(ele).then(done => {
                                 if (ele.keyName === 'BreadBoard') {
                                     window['DragListeners'] = [];

@@ -312,8 +312,7 @@ export abstract class CircuitElement {
       //   node.remainShow();
       // }
 
-
-      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag' })
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } })
       this.tx += fdx;
       this.ty += fdy;
       window['onDragStopEvent'](this);
@@ -432,6 +431,28 @@ export abstract class CircuitElement {
    * Return the Name of the component.Can be inheriter to return custom name.
    */
   getName() { return this.title; }
+
+  /**
+   * Function to move/transform an element
+   * @param fdx relative x position to move
+   * @param fdy relative y position to move
+   */
+  transformPosition(fdx: number, fdy: number): void {
+    let tmpar = [];
+    this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
+
+    for (const node of this.nodes) {
+      tmpar.push(
+        [node.x, node.y]
+      );
+    }
+    for (let i = 0; i < this.nodes.length; ++i) {
+      this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+    }
+    this.tx += fdx;
+    this.ty += fdy;
+  }
+
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box
