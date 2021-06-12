@@ -252,22 +252,24 @@ export abstract class UndoUtils {
                     }
                     else {
                         UndoUtils.createElement(ele).then(createdEle => {
-                            // var existing = this.getExistingWindowElement(grup, ele);
-                            // for (const e in existing.nodes) {
-                            //     if (existing.nodes[e].connectedTo) {
-                            //         console.log(' - ', createdEle)
-                            //         let n1 = createdEle['nodes'][e]
-                            //         // existing.nodes[e].connectedTo.connect(n1, true, true)
-                            //         const wire = n1.startNewWire()
-                            //         const ct = existing.nodes[e].connectedTo
-                            //         if (ct.start.parent.id === ele.element.id) {
-                            //             ct.end.connectWire(wire)
-                            //         } else {
-                            //             ct.start.connectWire(wire)
-                            //         }
+                            var existing = this.getExistingWindowElement(grup, ele);
+                            for (const e in existing.nodes) {
+                                if (existing.nodes[e].connectedTo) {
+                                    let n1 = createdEle['nodes'][e]
+                                    // existing.nodes[e].connectedTo.connect(n1, true, true)
+                                    const wire = n1.startNewWire()
+                                    const ct = existing.nodes[e].connectedTo
+                                    console.log(ct.start.parent.id === ele.element.id)
+                                    if (ct.start.parent.id === ele.element.id) {
+                                        console.log('if')
+                                        ct.end.connectWire(wire)
+                                    } else {
+                                        console.log('else')
+                                        ct.start.connectWire(wire)
+                                    }
 
-                            //     }
-                            // }
+                                }
+                            }
                             UndoUtils.removeElement(ele).then(done => {
                                 if (ele.keyName === 'BreadBoard') {
                                     window['DragListeners'] = [];
