@@ -304,7 +304,6 @@ export class Workspace {
     if (window['isSelected'] && (window['Selected'] instanceof Wire)) {
       // if selected item is wire and it is not connected then add the point
       if (window.Selected.end == null) {
-        UndoUtils.pushWorkSpaceChange();
         const pt = Workspace.svgPoint(event.clientX, event.clientY);
         window.Selected.addPoint(pt.x, pt.y, event.shiftKey);
         return;
@@ -771,7 +770,6 @@ export class Workspace {
   /** Function to delete component fro Workspace */
   static DeleteComponent() {
     // Save Dump of current Workspace
-    UndoUtils.pushWorkSpaceChange();
     // Check if component is selected
     if (window['Selected']) {
       // is selected component is an arduini uno then show confirm message
@@ -848,7 +846,6 @@ export class Workspace {
   /** Function to paste component fro Workspace */
   static pasteComponent() {
     // Save Dump of current Workspace
-    UndoUtils.pushWorkSpaceChange();
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
       const ele = document.getElementById('contextMenu');

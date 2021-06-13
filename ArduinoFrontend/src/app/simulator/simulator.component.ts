@@ -138,8 +138,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       window.removeEventListener('beforeunload', Workspace.BeforeUnload);
     }
     // Make Redo & Undo Stack empty
-    UndoUtils.redoStack = []
-    UndoUtils.undoStack = []
+    UndoUtils.redo = []
+    UndoUtils.undo = []
   }
   /**
    * On Init Callback
@@ -396,7 +396,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   dragStart(event: DragEvent, key: string) {
     // Save Dump of current Workspace
-    UndoUtils.pushWorkSpaceChange();
     event.dataTransfer.dropEffect = 'copyMove';
     event.dataTransfer.setData('text', key);
   }
@@ -413,8 +412,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
 
   autoLayout() {
-    // Save Dump of current Workspace
-    UndoUtils.pushWorkSpaceChange();
     // this.isAutoLayoutInProgress = true;
     LayoutUtils.solveAutoLayout();
     // this.isAutoLayoutInProgress = false;
@@ -516,7 +513,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
   /** Function clear variables in the Workspace */
   ClearProject() {
-    UndoUtils.pushWorkSpaceChange();
     Workspace.ClearWorkspace();
     this.closeProject();
   }
