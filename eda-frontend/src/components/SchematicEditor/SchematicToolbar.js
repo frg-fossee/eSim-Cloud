@@ -123,11 +123,23 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
+    var printToPlotControlBlock = ''
+    var ctrlblk = netfile.controlBlock.split('\n')
+    for (var line = 0; line < ctrlblk.length; line++) {
+      if (ctrlblk[line].includes('print')) {
+        printToPlotControlBlock += 'plot '
+        var cleanCode = ctrlblk[line].split('print ')[1]
+        cleanCode = cleanCode.split('>')[0]
+        printToPlotControlBlock += cleanCode + '\n'
+      } else {
+        printToPlotControlBlock += ctrlblk[line] + '\n'
+      }
+    }
     var netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
-      netfile.controlBlock + '\n'
+      printToPlotControlBlock + '\n'
     genNetlist(netlist)
     setOpen(true)
   }

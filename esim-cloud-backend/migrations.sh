@@ -11,6 +11,6 @@ python manage.py migrate ltiAPI
 python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --noinput
-# rm -r kicad-symbols/symbol_svgs/
-# python manage.py seed_libs --clear
-# python manage.py seed_libs --location kicad-symbols/
+python manage.py createsuperuser_noinput --username=admin --password=admin
+python manage.py load_default_libs --username=admin --location=kicad-symbols/default/ --default
+python manage.py load_default_libs --username=admin --location=kicad-symbols/additional/

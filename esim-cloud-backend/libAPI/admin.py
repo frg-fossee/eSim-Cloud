@@ -1,12 +1,11 @@
+from libAPI.lib_utils import handle_uploaded_libs
 from django.contrib import admin, messages
 from django.contrib.auth import get_user_model
 from libAPI.models import LibraryComponent, \
     Library, \
     LibrarySet, \
-    FavouriteComponent, \
-    delete_uploaded_files, \
-    save_libs
-from .forms import LibrarySetForm
+    FavouriteComponent
+from libAPI.forms import LibrarySetForm
 from inline_actions.admin import InlineActionsMixin
 from inline_actions.admin import InlineActionsModelAdminMixin
 from django.shortcuts import redirect
@@ -92,12 +91,10 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
         files = request.FILES.getlist('files')
         if len(files) != 0:
             path = os.path.join(
-                settings.BASE_DIR,
+                settings.BASE_DIR[6:],
                 'kicad-symbols',
                 obj.user.username + '-' + obj.name)
-
-            save_libs(obj, path, files)  # defined in ./models.py
-            delete_uploaded_files(files, path)
+            handle_uploaded_libs(obj, path, files)  # defined in ./lib_utils.py
         return redirect('/api/admin/libAPI/libraryset/' + str(obj.id))
 
 

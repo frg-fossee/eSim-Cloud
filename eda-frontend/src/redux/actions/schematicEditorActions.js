@@ -90,17 +90,14 @@ export const fetchLibrary = (libraryId) => (dispatch) => {
   //   "saved_on": "2021-05-10T20:29:01.794498Z",
   //   "id": 363
   // } -- Single Object
-  // const token = store.getState().authReducer.token
-  // const config = {headers: {
-  //   'Content-Type': 'application/json'
-  // }}
-  // if(token)
-  //   config.headers.Authorization = `Token ${token}`
+  const token = store.getState().authReducer.token
   const config = {
     headers: {
-      Authorization: `Token ${store.getState().authReducer.token}`
+      'Content-Type': 'application/json'
     }
   }
+  if (token) { config.headers.Authorization = `Token ${token}` }
+
   api.get(`libraries/${libraryId}`, config).then(res => {
     dispatch({
       type: actions.FETCH_LIBRARY,
