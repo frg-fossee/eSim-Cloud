@@ -131,14 +131,14 @@ function Header () {
           dispatch(loadMinUser())
           setLoginDialog(false)
         } else {
-          setReloginMessage('You are logged in but the circuit belongs to a different user!\n')
+          setReloginMessage('You are logged in but the circuit belongs to a different user! Login again with the same credentials')
         }
       } else {
         /* User logged out and esim_token removed from localstore
         But redux store still has it */
         if (auth.token && auth.token !== '') {
           if (!loginDialog) {
-            setReloginMessage('You have been logged out of your account.\n')
+            setReloginMessage('You have been logged out of your account. Login again')
             setLoginDialog(true)
           }
         }
@@ -254,7 +254,7 @@ function Header () {
           <DialogContentText id="alert-dialog-description">
             <Typography variant='p'>
               {reloginMessage}
-              {'Login again to continue working on the circuit, otherwise all unsaved changes will be lost.'}
+              {' to continue working on the circuit, otherwise all unsaved changes will be lost.'}
             </Typography>
           </DialogContentText>
         </DialogContent>
