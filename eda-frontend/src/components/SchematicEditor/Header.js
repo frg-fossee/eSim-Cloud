@@ -28,6 +28,7 @@ import ShareIcon from '@material-ui/icons/Share'
 import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser } from '../../redux/actions/index'
@@ -130,14 +131,14 @@ function Header () {
           dispatch(loadMinUser())
           setLoginDialog(false)
         } else {
-          setReloginMessage('You have Logged in but as a different user!')
+          setReloginMessage('You are logged in but the circuit belongs to a different user!\n')
         }
       } else {
         /* User logged out and esim_token removed from localstore
         But redux store still has it */
         if (auth.token && auth.token !== '') {
           if (!loginDialog) {
-            setReloginMessage('You have been logged out of your account. Login again to continue working.')
+            setReloginMessage('You have been logged out of your account.\n')
             setLoginDialog(true)
           }
         }
@@ -239,20 +240,30 @@ function Header () {
             root: classes.backDrop
           }
         }}
+        maxWidth='xs'
         disableEscapeKeyDown
         disableBackdropClick
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Re-Login to continue'}
+        <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
+          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large"/><br/>
+          <Typography variant='h5' align='center'>
+            {'Login to continue working on the circuit'}
+          </Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {reloginMessage}
+            <Typography variant='p'>
+              {reloginMessage}
+              {'Login again to continue working on the circuit, otherwise all unsaved changes will be lost.'}
+            </Typography>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => { window.location.reload() }} color="secondary">
-            Continue Anyway
+          <Button
+            onClick={() => { window.location.reload() }}
+            color="secondary"
+          >
+            Start New Circuit
           </Button>
           <Button
             component={RouterLink}
@@ -269,12 +280,15 @@ function Header () {
         open={logoutConfirm}
         onClose={() => { setLogoutConfirm(false) }}
       >
-        <DialogTitle id="alert-dialog-title">
-          {'Are you sure you want to continue?'}
+        <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
+          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large"/><br/>
+          <Typography variant='h5' align='center'>
+            {'Are you sure you want to logout?'}
+          </Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You will lose all current progress if you logout now.
+            You will lose all unsaved changes if you logout now.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
