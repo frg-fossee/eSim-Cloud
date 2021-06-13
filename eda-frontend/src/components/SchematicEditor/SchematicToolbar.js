@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
@@ -362,6 +362,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const handleLibClose = () => {
     setlibsOpen(false)
   }
+
+  useEffect(() => {
+    function saveShortcut (event) {
+      if (event.keyCode === 83) {
+        console.log(event)
+        event.preventDefault()
+        handelSchSave()
+      }
+    }
+
+    window.addEventListener('keydown', saveShortcut)
+
+    return () => {
+      window.addEventListener('keydown', saveShortcut)
+    }
+  // eslint-disable-next-line
+  }, [])
 
   return (
     <>
