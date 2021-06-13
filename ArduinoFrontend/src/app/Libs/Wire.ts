@@ -52,8 +52,11 @@ export class Wire {
    * @param canvas Raphael Canvas / paper
    * @param start Start circuit node of wire
    */
-  constructor(public canvas, public start: Point) {
-    this.id = Date.now(); // Generate New id
+  constructor(public canvas, public start: Point, public existingId = null) {
+    if (existingId)
+      this.id = existingId;
+    else
+      this.id = Date.now(); // Generate New id
 
     // insert the position of start node in array
     this.points.push(start.position());
@@ -255,7 +258,7 @@ export class Wire {
     // Select current instance
     window['isSelected'] = true;
     window['Selected'] = this;
-    
+
     // Show properties
     window.showProperty(() => {
       return this.properties();
@@ -332,7 +335,7 @@ export class Wire {
     // Update Wire
     this.update();
 
-    UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'add' })
+    UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'add' })
   }
 
   /**

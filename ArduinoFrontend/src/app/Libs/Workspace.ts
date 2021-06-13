@@ -715,7 +715,7 @@ export class Workspace {
 
   }
   /** This function recreates the wire object */
-  static LoadWires(wires: any[]) {
+  static LoadWires(wires: any[], retainId = false) {
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -746,7 +746,13 @@ export class Workspace {
       // console.log([start, end]);
       // if both nodes are present then connect those nodes
       if (start && end) {
-        const tmp = new Wire(window.canvas, start);
+        let tmp: any;
+        if (retainId) {
+          tmp = new Wire(window.canvas, start, w.id);
+        }
+        else {
+          tmp = new Wire(window.canvas, start);
+        }
         tmp.load(w);
         start.connectedTo = tmp;
         end.connectedTo = tmp;

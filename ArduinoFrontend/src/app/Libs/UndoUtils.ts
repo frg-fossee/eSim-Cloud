@@ -99,6 +99,7 @@ export abstract class UndoUtils {
             return
         } else if (ele.event == 'wire_color' && operation == 'redo' && ele.keyName == 'wires') {
             const temp = this.getExistingWindowElement(grup, ele)
+            console.log(temp)
             UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: temp.save(), event: ele.event })
             temp.setColor(ele.element.color);
             return
@@ -214,7 +215,7 @@ export abstract class UndoUtils {
             var key = ele.keyName
 
             if (key == 'wires') {
-                Workspace.LoadWires([ele.element])
+                Workspace.LoadWires([ele.element], true)
                 return
             }
 
