@@ -6,7 +6,7 @@ const initialState = {
   xmlData: null,
   details: {},
   isSaved: null,
-  isShared: null,
+  isShared: null
 }
 
 export default function (state = initialState, action) {

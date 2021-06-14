@@ -58,7 +58,7 @@ class StateSaveView(APIView):
             filename, content = img.update(request.data['base64_image'])
             try:
                 project = Project.objects.get(
-                    project_id=request.data.get('project_id'))
+                    project_id=request.data.get('project_id',None))
                 state_save = StateSave(
                     data_dump=request.data.get('data_dump'),
                     description=request.data.get('description'),
@@ -66,7 +66,8 @@ class StateSaveView(APIView):
                     owner=request.user,
                     branch=request.data.get('branch'),
                     version=request.data.get('version'),
-                    project=project
+                    project=project,
+                    shared=True
                 )
             except:
                 state_save = StateSave(

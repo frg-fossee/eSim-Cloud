@@ -10,7 +10,7 @@ import {
   Menu,
   ListItemText,
   Fade,
-  MenuItem,
+  MenuItem
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${theme.palette.divider}`
   },
   root: {
-    width: 500,
+    width: 500
   },
   toolbar: {
     flexWrap: 'wrap'
@@ -50,12 +50,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '17px'
   },
   typography: {
-    padding: theme.spacing(2),
-  },
+    padding: theme.spacing(2)
+  }
 }))
 
 // Common navbar for Dashboard, Home, Simulator, Gallery, etc.
-export function Header() {
+export function Header () {
   const history = useHistory()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
@@ -269,7 +269,7 @@ export function Header() {
   )
 }
 
-export default function Navbar() {
+export default function Navbar () {
   const classes = useStyles()
 
   return (

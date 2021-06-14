@@ -6,7 +6,7 @@ const initialState = {
   isRegistered: null,
   isLoading: false,
   user: null,
-  roles:null,
+  roles: null,
   errors: '',
   regErrors: '',
   resetPasswordSuccess: false,
@@ -120,7 +120,7 @@ export default function (state = initialState, action) {
     }
 
     case actions.ROLE_LOADED: {
-      return{
+      return {
         ...state,
         roles: action.payload.data
       }

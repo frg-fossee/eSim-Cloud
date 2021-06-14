@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useState, useEffect } from 'react'
 import {
   Button,
@@ -16,26 +17,26 @@ import {
   MenuItem,
   InputLabel,
   List,
-  ListItem,
+  ListItem
 }
   from '@material-ui/core'
-import CloseIcon from '@material-ui/icons/Close';
-import PostAddIcon from '@material-ui/icons/PostAdd';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import { makeStyles } from '@material-ui/core/styles';
-import FormControl from '@material-ui/core/FormControl';
+import CloseIcon from '@material-ui/icons/Close'
+import PostAddIcon from '@material-ui/icons/PostAdd'
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
+import { makeStyles } from '@material-ui/core/styles'
+import FormControl from '@material-ui/core/FormControl'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus, createProject, getStatus } from '../../redux/actions'
-import api from "../../utils/Api"
+import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    position: 'relative',
+    position: 'relative'
   },
   title: {
     marginLeft: theme.spacing(2),
-    flex: 1,
+    flex: 1
   },
   header: {
     padding: theme.spacing(5, 0, 6),
@@ -48,20 +49,20 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 120
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
+    marginTop: theme.spacing(2)
+  }
+}))
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+const Transition = React.forwardRef(function Transition (props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />
+})
 
-function CreateProject() {
+function CreateProject () {
   const [open, setOpen] = useState(false)
-  const classes = useStyles();
+  const classes = useStyles()
   const dispatch = useDispatch()
   const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
@@ -69,7 +70,7 @@ function CreateProject() {
   const owner = useSelector(state => state.saveSchematicReducer.details.owner)
   const [status, setStatus] = React.useState(null)
   const [versions, setVersions] = React.useState(null)
-  const [activeVersion, setActiveVersion] = React.useState("")
+  const [activeVersion, setActiveVersion] = React.useState('')
   const [activeName, setActiveName] = React.useState(null)
   const [details, setDetails] = useState(
     {
@@ -93,28 +94,28 @@ function CreateProject() {
   useEffect(() => {
     const config = {
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    };
-    const token = localStorage.getItem("esim_token")
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    const token = localStorage.getItem('esim_token')
     // If token available add to headers
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    if (window.location.href.split("?id=")[1]) {
+    if (window.location.href.split('?id=')[1]) {
       api
         .get(
-          "save/versions/" +
-          window.location.href.split("?id=")[1].substring(0, 36),
+          'save/versions/' +
+          window.location.href.split('?id=')[1].substring(0, 36),
           config
         )
         .then((resp) => {
-          for(var i=0;i<resp.data.length;i++){
+          for (var i = 0; i < resp.data.length; i++) {
             var d = new Date(resp.data[i].save_time)
-            resp.data[i].date = d.getDate() + "/" + parseInt(d.getMonth()+1) + "/" + d.getFullYear()
-            resp.data[i].time = d.getHours() + ":" + d.getMinutes()
+            resp.data[i].date = d.getDate() + '/' + parseInt(d.getMonth() + 1) + '/' + d.getFullYear()
+            resp.data[i].time = d.getHours() + ':' + d.getMinutes()
             if (d.getMinutes() < 10) {
-              resp.data[i].time = d.getHours() + ":0" + d.getMinutes()
+              resp.data[i].time = d.getHours() + ':0' + d.getMinutes()
             }
           }
           console.log(resp.data)
@@ -122,7 +123,7 @@ function CreateProject() {
         })
         .catch((err) => {
           console.log(err)
-        });
+        })
     }
   }, [])
   useEffect(() => {
@@ -139,45 +140,40 @@ function CreateProject() {
   const handleActiveVersion = (e) => {
     if (changed === 0) {
       setChanged(1)
-    }
-    else if (changed === 2) {
+    } else if (changed === 2) {
       setChanged(3)
     }
     setActiveVersion(e.target.value)
-    setDetails({ ...details, 'active_branch': e.target.value.split("-")[1], 'active_version': e.target.value.split("-")[0] })
+    setDetails({ ...details, active_branch: e.target.value.split('-')[1], active_version: e.target.value.split('-')[0] })
   }
   const handleSelectChange = (event) => {
     if (changed === 0) {
       setChanged(2)
-    }
-    else if (changed === 1) {
+    } else if (changed === 1) {
       setChanged(3)
     }
     setStatus(event.target.value)
-  };
+  }
   const changeFieldText = (e) => {
     if (changed === 0) {
       setChanged(1)
-    }
-    else if (changed === 2) {
+    } else if (changed === 2) {
       setChanged(3)
     }
     var temp = [...fields]
     if (e.target.name === 'name') {
       temp[e.target.id].name = e.target.value
       setFields(temp)
-    }
-    else if (e.target.name === 'text') {
+    } else if (e.target.name === 'text') {
       temp[e.target.id].text = e.target.value
       setFields(temp)
-    }
-    else {
+    } else {
       setDetails({ ...details, [e.target.name]: e.target.value })
     }
   }
   const handleClick = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
   const createPub = () => {
     dispatch(createProject(save_id, [details, fields]))
   }
@@ -185,40 +181,36 @@ function CreateProject() {
     console.log(changed)
     if (changed === 1) {
       dispatch(createProject(save_id, [details, fields, '']))
-    }
-    else if (changed === 2) {
+    } else if (changed === 2) {
       dispatch(changeStatus(project.details.project_id, status, ''))
-    }
-    else if (changed === 3) {
+    } else if (changed === 3) {
       dispatch(createProject(save_id, [details, fields, status]))
     }
     setChanged(0)
   }
   const clickPreview = () => {
-    let win = window.open();
+    const win = window.open()
     win.location.href = '/eda/#/project?save_id=' + project.details.save_id + '&version=' + project.details.active_version + '&branch=' + project.details.active_branch + '&project_id=' + project.details.project_id
-    win.focus();
+    win.focus()
   }
   const addField = () => {
     setFields([...fields, { name: '', text: '' }])
     if (changed === 0) {
       setChanged(1)
-    }
-    else if (changed === 2) {
+    } else if (changed === 2) {
       setChanged(3)
     }
   }
   const onClickShift = (type, index) => {
     if (type === 'above') {
-      let temporary = [...fields]
-      let current = temporary[index]
+      const temporary = [...fields]
+      const current = temporary[index]
       temporary[index] = temporary[index - 1]
       temporary[index - 1] = current
       setFields(temporary)
-    }
-    else {
-      let temporary = [...fields]
-      let current = temporary[index]
+    } else {
+      const temporary = [...fields]
+      const current = temporary[index]
       temporary[index] = temporary[index + 1]
       temporary[index + 1] = current
       setFields(temporary)
@@ -231,8 +223,7 @@ function CreateProject() {
     setFields(list)
     if (changed === 0) {
       setChanged(1)
-    }
-    else if (changed === 2) {
+    } else if (changed === 2) {
       setChanged(3)
     }
   }
@@ -285,7 +276,7 @@ function CreateProject() {
               direction="row"
               justify="center"
               alignItems="flex-start"
-              style={{ backgroundColor: "white", borderRadius: "5px" }}
+              style={{ backgroundColor: 'white', borderRadius: '5px' }}
             >
               <Grid item xs={12} sm={12}>
                 <FormControl className={classes.formControl}>
@@ -297,7 +288,7 @@ function CreateProject() {
                     onChange={handleActiveVersion}
                   >
                     {versions.map(version => {
-                      return <MenuItem value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                      return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
                     })}
                   </Select>
                 </FormControl>
@@ -315,7 +306,7 @@ function CreateProject() {
             alignItems="flex-start"
           >
             <Grid item xs={12} sm={12}>
-              {project.details && <Paper style={{ padding: '.2% 0%', marginBottom: "1%" }}>
+              {project.details && <Paper style={{ padding: '.2% 0%', marginBottom: '1%' }}>
                 <h3 style={{ textAlign: 'center' }}>Status of the project: {project.details.status_name}  </h3>
                 <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of branch {project.details.active_branch}  </h3>
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
@@ -351,10 +342,10 @@ function CreateProject() {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                (
-                  <>
-                    <hr />
-                    {project.details && project.details.can_edit &&
+                  (
+                    <>
+                      <hr />
+                      {project.details && project.details.can_edit &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -371,39 +362,39 @@ function CreateProject() {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      id={index}
-                      label={"Title " + index}
-                      type="text"
-                      name='name'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.name}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      multiline
-                      id={index}
-                      label={"Text " + index}
-                      rows={4}
-                      type="text"
-                      name='text'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.text}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                  </>
-                ))}
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        id={index}
+                        label={'Title ' + index}
+                        type="text"
+                        name='name'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.name}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        multiline
+                        id={index}
+                        label={'Text ' + index}
+                        rows={4}
+                        type="text"
+                        name='text'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.text}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                    </>
+                  ))}
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
-                  project.states ?
-                    <div style={{ textAlign: 'left' }}>
+                  project.states
+                    ? <div style={{ textAlign: 'left' }}>
                       <br />
                       <InputLabel id="demo-simple-select-label">Change Status</InputLabel>
                       <Select
@@ -414,12 +405,12 @@ function CreateProject() {
                         value={status}
                       >
                         {project.states.map((item, index) =>
-                        (
-                          <MenuItem value={item}>{item}</MenuItem>
-                        ))}
+                          (
+                            <MenuItem key={item} value={item}>{item}</MenuItem>
+                          ))}
                       </Select>
-                    </div> :
-                    <h3 style={{ color: 'black', textAlign: 'left' }}>Project review in progress.</h3>
+                    </div>
+                    : <h3 style={{ color: 'black', textAlign: 'left' }}>Project review in progress.</h3>
                 }</>}
               </Paper>
             </Grid>
@@ -427,10 +418,10 @@ function CreateProject() {
               <Paper style={{ paddingTop: '0%', padding: '2%' }}>
                 <List>
                   <h3>List of Approved Reports</h3>
-                  {project.reports?.approved[0] ?
-                    <>
+                  {project.reports?.approved[0]
+                    ? <>
                       {project.reports.approved.map((item, index) => (
-                        <ListItem>
+                        <ListItem key={index}>
                           {index + 1}. {item.description}
                         </ListItem>
                       ))}
@@ -442,10 +433,10 @@ function CreateProject() {
               <Paper style={{ padding: '2%' }}>
                 <List>
                   <h3>History of this Project</h3>
-                  {(project.details?.history && project.details?.history[0]) ?
-                    <>
+                  {(project.details?.history && project.details?.history[0])
+                    ? <>
                       {project.details.history.slice(0).reverse().map((item, index) => (
-                        <ListItem>
+                        <ListItem key={index}>
                           <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
                             <br />
                             <h5>-On {item.transition_time} by {item.transition_author_name}</h5>

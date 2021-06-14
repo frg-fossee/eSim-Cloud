@@ -66,7 +66,7 @@ export const FETCH_MY_PROJECTS = 'FETCH_MY_PROJECTS'
 export const FETCH_PUBLIC_PROJECTS = 'FETCH_PUBLIC_PROJECTS'
 export const FETCH_OTHER_PROJECTS = 'FETCH_OTHER_PROJECTS'
 
-//Actions for handling Projects
+// Actions for handling Projects
 export const SET_CURRENT_PROJECT = 'SET_CURRENT_PROJECT'
 export const FETCH_REPORTS = 'FETCH_REPORTS'
 export const RESOLVE_REPORTS = 'RESOLVE_REPORTS'
