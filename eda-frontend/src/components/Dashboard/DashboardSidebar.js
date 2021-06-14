@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react'
+import React, { useEffect } from 'react'
 import {
   Hidden,
   Divider,
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Vertical Navbar for user dashboard
-export default function DashSidebar(props) {
+export default function DashSidebar (props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -56,7 +56,6 @@ export default function DashSidebar(props) {
     dispatch(fetchOtherProjects())
     dispatch(fetchRole())
   }, [dispatch])
-
 
   return (
     <>
@@ -87,7 +86,7 @@ export default function DashSidebar(props) {
                   variant="body2"
                   color="textSecondary"
                 >
-                  {auth.roles !== null && auth.roles.group.map(x => (<h3>{x}</h3>))}
+                  {auth.roles !== null && auth.roles.group.map((value, key) => (<h3 key={value}>{value}</h3>))}
                 </Typography>
               </React.Fragment>
             }
@@ -111,7 +110,6 @@ export default function DashSidebar(props) {
         >
           <ListItemText primary='My Schematics' />
         </ListItem>
-
 
         {/* List name of saved schematics */}
         <List className={classes.nestedSearch} >

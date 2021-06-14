@@ -1,5 +1,6 @@
 // Main Layout for Schemaic Editor page.
 /* eslint-disable react/prop-types */
+/* eslint-disable camelcase */
 import React, { useEffect } from 'react'
 import {
   Button,
@@ -16,11 +17,11 @@ import {
   ListItem
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
+import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import LayoutMain from '../components/Shared/LayoutMain'
-import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
 import { fetchSchematic, loadGallery, reportProject, makeCopy } from '../redux/actions/index'
@@ -29,15 +30,15 @@ import SimulationProperties from '../components/SchematicEditor/SimulationProper
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
-import MuiAlert from '@material-ui/lab/Alert';
-import { ZoomIn, ZoomOut, ZoomAct, GenerateCompList ,GenerateNetList} from '../components/SchematicEditor/Helper/ToolbarTools'
-import ReportComponent from '../components/Project/ReportComponent';
-import ChangeStatus from '../components/Project/ChangeStatus';
-import { NetlistModal } from '../components/SchematicEditor/ToolbarExtension';
+import MuiAlert from '@material-ui/lab/Alert'
+import { ZoomIn, ZoomOut, ZoomAct, GenerateCompList, GenerateNetList } from '../components/SchematicEditor/Helper/ToolbarTools'
+import ReportComponent from '../components/Project/ReportComponent'
+import ChangeStatus from '../components/Project/ChangeStatus'
+import { NetlistModal } from '../components/SchematicEditor/ToolbarExtension'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    minHeight: '30vh',
+    minHeight: '30vh'
 
   },
   toolbar: {
@@ -48,21 +49,20 @@ const useStyles = makeStyles((theme) => ({
 const styles = (theme) => ({
   root: {
     margin: 0,
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   closeButton: {
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
+    color: theme.palette.grey[500]
+  }
+})
 
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
+function Alert (props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-export default function ProjectPage(props) {
+export default function ProjectPage (props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()
@@ -71,12 +71,12 @@ export default function ProjectPage(props) {
   const [simulateOpen, setSimulateOpen] = React.useState(false)
   const [reportOpen, setReportOpen] = React.useState(false)
   const [reportDescription, setDescription] = React.useState(null)
-  const [netlist, genNetlist] = React.useState("")
+  const [netlist, genNetlist] = React.useState('')
   const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
-  const netfile = useSelector((state) => state.netlistReducer);
+  const netfile = useSelector((state) => state.netlistReducer)
   const DialogTitle = withStyles(styles)((props) => {
-    const { children, classes, onClose, ...other } = props;
+    const { children, classes, onClose, ...other } = props
     return (
       <MuiDialogTitle disableTypography className={classes.root} {...other}>
         <Typography variant="h6">{children}</Typography>
@@ -86,8 +86,8 @@ export default function ProjectPage(props) {
           </IconButton>
         ) : null}
       </MuiDialogTitle>
-    );
-  });
+    )
+  })
   const handleSimulateOpen = () => {
     setSimulateOpen(!simulateOpen)
   }
@@ -97,8 +97,7 @@ export default function ProjectPage(props) {
   const handleChangeDescription = (e) => {
     setDescription(e.target.value)
   }
-  const handleNetlistClick = () =>
-  {
+  const handleNetlistClick = () => {
     setNetListOpen(!netListOpen)
   }
   const onClick = (type) => {
@@ -106,37 +105,34 @@ export default function ProjectPage(props) {
     var save_id = query.get('save_id')
     var project_id = query.get('project_id')
     switch (type) {
-      case "Report":
+      case 'Report':
         dispatch(reportProject(reportDescription, project_id))
         handleReportOpen()
-        break;
-      case "Make copy":
+        break
+      case 'Make copy':
         dispatch(makeCopy(save_id))
         setSnackbarOpen(true)
-        break;
-      case "Generate Netlist":
-        var compNetlist = GenerateNetList();
+        break
+      case 'Generate Netlist':
+        var compNetlist = GenerateNetList()
         var netlist =
           netfile.title +
-          "\n\n" +
+          '\n\n' +
           compNetlist.models +
-          "\n" +
+          '\n' +
           compNetlist.main +
-          "\n" +
+          '\n' +
           netfile.controlLine +
-          "\n" +
+          '\n' +
           netfile.controlBlock +
-          "\n";
-        genNetlist(netlist);
-        handleNetlistClick();
-        break;
+          '\n'
+        genNetlist(netlist)
+        handleNetlistClick()
+        break
       default:
-        break;
+        break
     }
   }
-
-
-
 
   useEffect(() => {
     var container = gridRef.current
@@ -151,7 +147,7 @@ export default function ProjectPage(props) {
         dispatch(loadGallery(saveID.substr(7, saveID.length)))
       } else {
         // Loading User on-cloud saved schemaic.
-        dispatch(fetchSchematic(saveID,version,branch))
+        dispatch(fetchSchematic(saveID, version, branch))
       }
     }
     console.log(GenerateCompList())
@@ -160,8 +156,8 @@ export default function ProjectPage(props) {
   return (
     <div className={classes.root}>
       <LayoutMain>
-        {project.details !== "401" ?
-          <Grid container>
+        {project.details !== '401'
+          ? <Grid container>
             <Grid item xs={1} />
             <Grid item xs={10}>
               <div className={classes.toolbar} />
@@ -178,13 +174,12 @@ export default function ProjectPage(props) {
               <Typography>
                 <h3>{project.details?.description}</h3>
                 {project.details && project.details?.fields && project.details.fields.map(item => (
-                  <p>
+                  <p key={item}>
                     <h2 style={{ marginTop: '0' }}>{item.name}</h2>
                     <h3 style={{ marginTop: '0' }}>{item.text}</h3>
                   </p>
                 ))}
               </Typography>
-
 
               <Dialog
                 open={simulateOpen}
@@ -209,23 +204,23 @@ export default function ProjectPage(props) {
                     style={{ width: '100%' }}
                     value={reportDescription}
                     error={!reportDescription}
-                    helperText={"Please enter description"}
+                    helperText={'Please enter description'}
                     onChange={handleChangeDescription}
                     rows={8} />
                 </DialogContent>
                 <DialogActions>
-                  <Button onClick={() => onClick("Report")}>Report</Button>
+                  <Button onClick={() => onClick('Report')}>Report</Button>
                   <Button onClick={handleReportOpen}>Cancel</Button>
                 </DialogActions>
               </Dialog>
 
               <h1>Circuit Diagram:
                 <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
-                <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick("Make copy")}>Make a Copy</Button>
+                <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Make copy')}>Make a Copy</Button>
                 <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
                   <PlayCircleOutlineIcon />Simulate
                 </Button>
-                <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick("Generate Netlist")}>Generate Netlist</Button>
+                <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Generate Netlist')}>Generate Netlist</Button>
               </h1>
               <NetlistModal open={netListOpen} close={handleNetlistClick} netlist={netlist} />
               <Snackbar
@@ -235,7 +230,7 @@ export default function ProjectPage(props) {
               >
                 <Alert onClose={() => setSnackbarOpen(false)} severity="success">
                   Successfully made a copy!
-          </Alert>
+                </Alert>
               </Snackbar>
               <Grid container>
                 <Grid item xs={1}>
@@ -272,10 +267,10 @@ export default function ProjectPage(props) {
                   <Paper style={{ padding: '2%', marginTop: '3%' }}>
                     <List>
                       <h3>History of this Project</h3>
-                      {project.details?.history[0] ?
-                        <>
+                      {project.details?.history[0]
+                        ? <>
                           {project.details.history.slice(0).reverse().map((item, index) => (
-                            <ListItem>
+                            <ListItem key={index}>
                               <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
                                 <br />
                                 <h5>-On {item.transition_time} by {item.transition_author}</h5>
@@ -292,8 +287,7 @@ export default function ProjectPage(props) {
             </Grid>
             <Grid item xs={1} />
           </Grid>
-          :
-          <>
+          : <>
             Not Authorized
           </>}
 

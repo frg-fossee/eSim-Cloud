@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Dashboard() {
+export default function Dashboard () {
   const classes = useStyles()
 
   useEffect(() => {

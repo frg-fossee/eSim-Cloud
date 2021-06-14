@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useEffect } from 'react'
 import {
   Button,
@@ -13,28 +14,28 @@ import {
   Tab,
   Box
 } from '@material-ui/core'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 import { withStyles } from '@material-ui/core/styles'
-import MuiDialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+import MuiDialogTitle from '@material-ui/core/DialogTitle'
+import IconButton from '@material-ui/core/IconButton'
+import CloseIcon from '@material-ui/icons/Close'
 import { approveReports, fetchRole, getStatus, resolveReports } from '../../redux/actions/index'
 import { useDispatch, useSelector } from 'react-redux'
 
 const styles = (theme) => ({
   root: {
     margin: 0,
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   closeButton: {
     position: 'absolute',
     right: theme.spacing(1),
     top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+    color: theme.palette.grey[500]
+  }
+})
+function TabPanel (props) {
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -50,23 +51,21 @@ function TabPanel(props) {
         </Box>
       )}
     </div>
-  );
+  )
 }
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-function a11yProps(index) {
+  value: PropTypes.any.isRequired
+}
+function a11yProps (index) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
+    'aria-controls': `simple-tabpanel-${index}`
+  }
 }
 
-
-
-function ReportComponent(props) {
+function ReportComponent (props) {
   const [reportDetailsOpen, setReportDetailsOpen] = React.useState(false)
   const [status, setStatus] = React.useState(null)
   const [reportStatus, setReportStatus] = React.useState(null)
@@ -86,8 +85,8 @@ function ReportComponent(props) {
   }, [props.location.search, dispatch, reportDetailsOpen])
 
   const handleChangeTab = (event, newValue) => {
-    setTab(newValue);
-  };
+    setTab(newValue)
+  }
   const handleSelectChange = (event) => {
     setStatus(event.target.value)
   }
@@ -101,13 +100,12 @@ function ReportComponent(props) {
   const onSelectReportStatus = (e, report_id) => {
     if (reportStatus) {
       var temp = [...reportStatus]
-    }
-    else {
+    } else {
       temp = []
     }
-    var report = { 'id': report_id, approved: e.target.value }
+    var report = { id: report_id, approved: e.target.value }
     temp.push(report)
-    //TODO: Make this check better
+    // TODO: Make this check better
     if (e.target.value === true) {
       setReportApproved(true)
     }
@@ -117,16 +115,16 @@ function ReportComponent(props) {
     const query = new URLSearchParams(props.location.search)
     var project_id = query.get('project_id')
     switch (type) {
-      case "Change State":
+      case 'Change State':
         dispatch(approveReports(project_id, reportStatus, status))
         handleReportDetailsOpen()
-        break;
+        break
       default:
-        break;
+        break
     }
   }
   const DialogTitle = withStyles(styles)((props) => {
-    const { children, classes, onClose, ...other } = props;
+    const { children, classes, onClose, ...other } = props
     return (
       <MuiDialogTitle disableTypography className={classes.root} {...other}>
         <Typography variant="h6">{children}</Typography>
@@ -136,13 +134,13 @@ function ReportComponent(props) {
           </IconButton>
         ) : null}
       </MuiDialogTitle>
-    );
-  });
+    )
+  })
   return (
     <>{auth.user && <Paper style={{ padding: '0.06% 1%' }}>
 
       <h3 style={{ color: 'red' }}>This is a reported project
-    <Button style={{ float: 'right', verticalAlign: 'super' }} onClick={handleReportDetailsOpen}>View Reports</Button></h3>
+        <Button style={{ float: 'right', verticalAlign: 'super' }} onClick={handleReportDetailsOpen}>View Reports</Button></h3>
       <Dialog
         open={reportDetailsOpen}
         onClose={(handleReportDetailsOpen)}
@@ -151,14 +149,14 @@ function ReportComponent(props) {
         <DialogTitle style={{ paddingBottom: '0' }}><h1 style={{ marginBottom: '0', marginTop: '0' }}>Reports</h1></DialogTitle>
         <DialogContent>
           <Tabs value={tab} onChange={handleChangeTab}>
-            {auth.user.username !== props.project.details.author_name && <Tab label="Open Reports"  {...a11yProps(0)} />}
-            <Tab label="Approved Reports"  {...a11yProps(1)} />
-            {auth.user.username !== props.project.details.author_name && <Tab label="Closed Reports"  {...a11yProps(2)} />}
+            {auth.user.username !== props.project.details.author_name && <Tab label="Open Reports" {...a11yProps(0)} />}
+            <Tab label="Approved Reports" {...a11yProps(1)} />
+            {auth.user.username !== props.project.details.author_name && <Tab label="Closed Reports" {...a11yProps(2)} />}
           </Tabs>
           {auth.user.username !== props.project.details.author_name && <TabPanel value={tab} index={0}>
             {props.project.reports.open[0] ? <h3 style={{ marginTop: '0' }}>Do you want to approve any reports?</h3> : <h3 style={{ marginTop: '0' }}>No open reports</h3>}
             {props.project.reports && props.project.reports.open.map((item, index) => (
-              <Paper style={{ margin: '1% .2%', padding: '.5% .7%' }}>
+              <Paper key={index} style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
                     <p>
@@ -183,7 +181,7 @@ function ReportComponent(props) {
           </TabPanel>}
           <TabPanel value={tab} index={auth.user.username !== props.project.details.author_name ? 1 : 0}>
             {props.project.reports && props.project.reports.approved.map((item, index) => (
-              <Paper style={{ margin: '1% .2%', padding: '.5% .7%' }}>
+              <Paper key={index} style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
                     <p>
@@ -199,7 +197,7 @@ function ReportComponent(props) {
           </TabPanel>
           {auth.user.username !== props.project.details.author_name && <TabPanel value={tab} index={2}>
             {props.project.reports && props.project.reports.closed.map((item, index) => (
-              <Paper style={{ margin: '1% .2%', padding: '.5% .7%' }}>
+              <Paper key={index} style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
                     <p>
@@ -224,9 +222,9 @@ function ReportComponent(props) {
               variant='outlined'
             >
               {stateList.map((item, index) =>
-              (
-                <MenuItem value={item}>{item}</MenuItem>
-              ))}
+                (
+                  <MenuItem key={index} value={item}>{item}</MenuItem>
+                ))}
             </Select>}
         </DialogContent>
         {auth.roles && <DialogActions>
@@ -236,7 +234,7 @@ function ReportComponent(props) {
           }}>Resolve All Reports</Button>}
           {auth.roles.is_type_reviewer && (reportStatus) &&
             <Button onClick={() => {
-              onClick("Change State")
+              onClick('Change State')
             }}>Approve Reports</Button>}
           <Button onClick={handleReportDetailsOpen}>Close</Button>
         </DialogActions>}
@@ -245,6 +243,14 @@ function ReportComponent(props) {
     </Paper>}</>
 
   )
+}
+
+ReportComponent.propTypes = {
+  location: PropTypes.object,
+  children: PropTypes.node,
+  classes: PropTypes.object,
+  onClose: PropTypes.bool,
+  project: PropTypes.object
 }
 
 export default ReportComponent

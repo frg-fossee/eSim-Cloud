@@ -2,9 +2,9 @@ import * as actions from '../actions/actions'
 
 const InitialState = {
   schematics: [],
-  myProjects:[],
-  publicProjects:[],
-  otherProjects:[],
+  myProjects: [],
+  publicProjects: [],
+  otherProjects: []
 }
 
 export default function (state = InitialState, action) {
@@ -15,22 +15,22 @@ export default function (state = InitialState, action) {
         schematics: action.payload
       }
     }
-    case actions.FETCH_MY_PROJECTS:{
-      return{
+    case actions.FETCH_MY_PROJECTS: {
+      return {
         ...state,
-        myProjects:action.payload
+        myProjects: action.payload
       }
     }
-    case actions.FETCH_PUBLIC_PROJECTS:{
-      return{
+    case actions.FETCH_PUBLIC_PROJECTS: {
+      return {
         ...state,
-        publicProjects:action.payload
+        publicProjects: action.payload
       }
     }
-    case actions.FETCH_OTHER_PROJECTS:{
-      return{
+    case actions.FETCH_OTHER_PROJECTS: {
+      return {
         ...state,
-        otherProjects:action.payload
+        otherProjects: action.payload
       }
     }
 

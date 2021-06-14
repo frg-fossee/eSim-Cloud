@@ -1,5 +1,5 @@
-import React from "react"
-import PropTypes from "prop-types"
+import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   Typography,
@@ -12,7 +12,7 @@ import {
   Tooltip,
   Snackbar,
   ButtonBase,
-  Chip,
+  Chip
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
@@ -25,7 +25,7 @@ import MuiAlert from '@material-ui/lab/Alert'
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
-    paddingTop: "56.25%", // 16:9
+    paddingTop: '56.25%' // 16:9
   },
   rating: {
     marginTop: theme.spacing(1),
@@ -36,19 +36,19 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '10px'
   }
 }))
-function Alert(props) {
+function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar({ open, close, sch }) {
+function SimpleSnackbar ({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
     <Snackbar
       anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "center",
+        vertical: 'bottom',
+        horizontal: 'center'
       }}
       open={open}
       autoHideDuration={6000}
@@ -58,7 +58,7 @@ function SimpleSnackbar({ open, close, sch }) {
         icon={false}
         severity="warning"
         color="error"
-        style={{ width: "100%" }}
+        style={{ width: '100%' }}
         action={
           <>
             <Button
@@ -66,7 +66,7 @@ function SimpleSnackbar({ open, close, sch }) {
               aria-label="close"
               color="inherit"
               onClick={() => {
-                dispatch(deleteSchematic(sch.save_id, sch.version, sch.branch));
+                dispatch(deleteSchematic(sch.save_id, sch.version, sch.branch))
               }}
             >
               Yes
@@ -82,52 +82,52 @@ function SimpleSnackbar({ open, close, sch }) {
           </>
         }
       >
-        {"Delete " + sch.name + " ?"}
+        {'Delete ' + sch.name + ' ?'}
       </Alert>
     </Snackbar>
-  );
+  )
 }
 
 SimpleSnackbar.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
-  sch: PropTypes.object,
-};
+  sch: PropTypes.object
+}
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince(jsonDate) {
+function timeSince (jsonDate) {
   var json = jsonDate
 
-  var date = new Date(json);
+  var date = new Date(json)
 
-  var seconds = Math.floor((new Date() - date) / 1000);
+  var seconds = Math.floor((new Date() - date) / 1000)
 
-  var interval = Math.floor(seconds / 31536000);
+  var interval = Math.floor(seconds / 31536000)
 
   if (interval > 1) {
-    return interval + " years";
+    return interval + ' years'
   }
-  interval = Math.floor(seconds / 2592000);
+  interval = Math.floor(seconds / 2592000)
   if (interval > 1) {
-    return interval + " months";
+    return interval + ' months'
   }
-  interval = Math.floor(seconds / 86400);
+  interval = Math.floor(seconds / 86400)
   if (interval > 1) {
-    return interval + " days";
+    return interval + ' days'
   }
-  interval = Math.floor(seconds / 3600);
+  interval = Math.floor(seconds / 3600)
   if (interval > 1) {
-    return interval + " hours";
+    return interval + ' hours'
   }
-  interval = Math.floor(seconds / 60);
+  interval = Math.floor(seconds / 60)
   if (interval > 1) {
-    return interval + " minutes";
+    return interval + ' minutes'
   }
-  return Math.floor(seconds) + " seconds";
+  return Math.floor(seconds) + ' seconds'
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate(jsonDate) {
+function getDate (jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -136,25 +136,25 @@ function getDate(jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard({ sch }) {
+export default function SchematicCard ({ sch }) {
   const classes = useStyles()
 
   // To handel delete schematic snackbar
-  const [snacOpen, setSnacOpen] = React.useState(false);
+  const [snacOpen, setSnacOpen] = React.useState(false)
 
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
   const handleSnacClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
+    if (reason === 'clickaway') {
+      return
     }
     setSnacOpen(false)
   }
   const clickViewProject = () => {
-    let win = window.open();
-    win.location.href = '/eda/#/project?save_id=' + sch.save_id +'&version=' + sch.project_version + '&branch=' + sch.project_branch  + '&project_id=' + sch.project_id
-    win.focus();
+    const win = window.open()
+    win.location.href = '/eda/#/project?save_id=' + sch.save_id + '&version=' + sch.project_version + '&branch=' + sch.project_branch + '&project_id=' + sch.project_id
+    win.focus()
   }
 
   return (
@@ -165,7 +165,7 @@ export default function SchematicCard({ sch }) {
         <ButtonBase
           target="_blank"
           component={RouterLink}
-          to={'/editor?id=' + sch.save_id + "&version=" + sch.version + "&branch=" + sch.branch}
+          to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
           style={{ width: '100%' }}
         >
           <CardActionArea>
@@ -205,24 +205,24 @@ export default function SchematicCard({ sch }) {
 
           {/* Display share status */}
           <Tooltip
-            title={!sch.shared ? "SHARE OFF" : "SHARE ON"}
+            title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'}
             placement="bottom"
             arrow
           >
             <ShareIcon
-              color={!sch.shared ? "disabled" : "primary"}
+              color={!sch.shared ? 'disabled' : 'primary'}
               fontSize="small"
-              style={{ marginRight: "10px" }}
+              style={{ marginRight: '10px' }}
             />
           </Tooltip>
         </CardActions>
       </Card>
 
     </>
-  );
+  )
 }
 
 SchematicCard.propTypes = {
   sch: PropTypes.object,
-  createCircuit: PropTypes.func,
+  createCircuit: PropTypes.func
 }

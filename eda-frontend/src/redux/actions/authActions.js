@@ -1,7 +1,6 @@
 import * as actions from './actions'
 import api from '../../utils/Api'
 
-
 // Api call for maintaining user login state throughout the application
 export const loadUser = () => (dispatch, getState) => {
   // User Loading
@@ -256,7 +255,7 @@ export const googleLogin = (host, toUrl) => {
       })
   }
 }
- // Handles api call for user's password confirmation
+// Handles api call for user's password confirmation
 export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => (dispatch) => {
   const body = {
     uid: uid,
@@ -339,29 +338,29 @@ export const resetPassword = (email) => (dispatch) => {
       }
     })
 }
-  //API call for fetching user role.
-  export const fetchRole = () => (dispatch, getState) => {
-    const token = getState().authReducer.token
-    // add headers
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
+// API call for fetching user role.
+export const fetchRole = () => (dispatch, getState) => {
+  const token = getState().authReducer.token
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
     }
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    } else {
-      dispatch({ type: actions.LOADING_FAILED })
-      return
-    }
-    api.get(`workflow/role/`, config)
-      .then((res) => {
-        console.log(res.data)
-        dispatch({
-          type: actions.ROLE_LOADED,
-          payload: {
-            data: res.data
-          }
-        })
-      }).catch(() => { console.log("Error") })
   }
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
+  }
+  api.get('workflow/role/', config)
+    .then((res) => {
+      console.log(res.data)
+      dispatch({
+        type: actions.ROLE_LOADED,
+        payload: {
+          data: res.data
+        }
+      })
+    }).catch(() => { console.log('Error') })
+}

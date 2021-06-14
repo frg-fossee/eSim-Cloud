@@ -1,9 +1,10 @@
+/* eslint-disable camelcase */
 import * as actions from './actions'
 import api from '../../utils/Api'
 
 export const createProject = (save_id, details) => (dispatch, getState) => {
   // Get token from localstorage
-  const token = localStorage.getItem("esim_token")
+  const token = localStorage.getItem('esim_token')
 
   // add headers
   const config = {
@@ -57,11 +58,10 @@ export const fetchProject = () => (dispatch, getState) => {
       }
     )
     .catch((err) => {
-      if(err.response.status === 401)
-      {
+      if (err.response.status === 401) {
         dispatch({
-          type:actions.SET_CURRENT_PROJECT,
-          payload:"401"
+          type: actions.SET_CURRENT_PROJECT,
+          payload: '401'
         })
       }
     })
@@ -84,11 +84,12 @@ export const fetchReports = (projectID) => (dispatch, getState) => {
   api.get('workflow/report/' + projectID, config)
     .then(
       (res) => {
-        if (res.data.open !== [] && res.data.closed !== [] && res.data.approved !== [])
+        if (res.data.open !== [] && res.data.closed !== [] && res.data.approved !== []) {
           dispatch({
             type: actions.FETCH_REPORTS,
             payload: res.data
           })
+        }
       }
     )
     .catch((err) => { console.error(err) })
@@ -112,7 +113,7 @@ export const resolveReports = (projectID, stateName) => (dispatch, getState) => 
     .then(
       (res) => {
         dispatch({
-          type: actions.RESOLVE_REPORTS,
+          type: actions.RESOLVE_REPORTS
         })
         console.log(res.data)
       }
@@ -147,14 +148,14 @@ export const getStatus = (project_id) => (dispatch, getState) => {
     })
     .catch(error => console.log(error))
 }
-export const changeStatus = (project_id, status,notes) => (dispatch, getState) => {
-  //post the state
-  const token = localStorage.getItem("esim_token")
+export const changeStatus = (project_id, status, notes) => (dispatch, getState) => {
+  // post the state
+  const token = localStorage.getItem('esim_token')
   // add headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
-    },
+    }
   }
 
   // If token available add to headers
@@ -163,8 +164,8 @@ export const changeStatus = (project_id, status,notes) => (dispatch, getState) =
   }
   api.post(`/workflow/state/${project_id}`,
     {
-      'name': status,
-      'note':notes
+      name: status,
+      note: notes
     }, config)
     .then((res) => {
       dispatch(fetchProject())
@@ -186,7 +187,7 @@ export const reportProject = (reportDescription, project_id) => (dispatch, getSt
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.post(`workflow/report/create/${project_id}`, { 'description': reportDescription }, config)
+    api.post(`workflow/report/create/${project_id}`, { description: reportDescription }, config)
       .then(
         (res) => {
           dispatch(fetchReports(project_id))
@@ -210,8 +211,8 @@ export const approveReports = (project_id, reports, status) => (dispatch, getSta
   }
   api.post(`workflow/report/approve/${project_id}`,
     {
-      'reports': reports,
-      'state': { 'name': status }
+      reports: reports,
+      state: { name: status }
     }, config)
     .then(
       (res) => {

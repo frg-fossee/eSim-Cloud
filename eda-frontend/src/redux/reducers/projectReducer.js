@@ -4,7 +4,7 @@ const initialState =
 {
   details: null,
   reports: null,
-  states: null,
+  states: null
 }
 
 export default function (state = initialState, action) {
@@ -35,7 +35,7 @@ export default function (state = initialState, action) {
     }
     case actions.SET_STATE: {
       return {
-        ...state,
+        ...state
       }
     }
     default:

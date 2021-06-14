@@ -26,7 +26,7 @@ export const fetchSchematics = () => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
-//Api call for listing users projects to display on dashboard
+// Api call for listing users projects to display on dashboard
 export const fetchMyProjects = () => (dispatch, getState) => {
   const token = getState().authReducer.token
 
@@ -40,7 +40,7 @@ export const fetchMyProjects = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`publish/myproject/`, config)
+  api.get('publish/myproject/', config)
     .then(
       (res) => {
         console.log(res.data)
@@ -52,7 +52,7 @@ export const fetchMyProjects = () => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
-//Api call for listing other users projects to display on dashboard
+// Api call for listing other users projects to display on dashboard
 export const fetchOtherProjects = () => (dispatch, getState) => {
   const token = getState().authReducer.token
 
@@ -66,7 +66,7 @@ export const fetchOtherProjects = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`workflow/otherprojects/`, config)
+  api.get('workflow/otherprojects/', config)
     .then(
       (res) => {
         dispatch({
@@ -77,7 +77,7 @@ export const fetchOtherProjects = () => (dispatch, getState) => {
     )
     .catch((err) => { console.error(err) })
 }
-//Api call for listing public projects to display on dashboard
+// Api call for listing public projects to display on dashboard
 export const fetchPublicProjects = () => (dispatch, getState) => {
   const token = getState().authReducer.token
 
@@ -91,7 +91,7 @@ export const fetchPublicProjects = () => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.get(`publish/publishing/`, config)
+  api.get('publish/publishing/', config)
     .then(
       (res) => {
         dispatch({
@@ -105,7 +105,7 @@ export const fetchPublicProjects = () => (dispatch, getState) => {
 }
 
 // Api call for deleting saved schematic
-export const deleteSchematic = (saveId,version,branch) => (dispatch, getState) => {
+export const deleteSchematic = (saveId, version, branch) => (dispatch, getState) => {
   const token = getState().authReducer.token
   const config = {
     headers: {
@@ -117,11 +117,11 @@ export const deleteSchematic = (saveId,version,branch) => (dispatch, getState) =
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.delete('save/' + saveId + "/" + version+ "/" + branch, config)
+  api.delete('save/' + saveId + '/' + version + '/' + branch, config)
     .then(
       (res) => {
         if (res.status === 200) {
-          console.log("Called Delete")
+          console.log('Called Delete')
 
           dispatch(fetchSchematics())
         }
