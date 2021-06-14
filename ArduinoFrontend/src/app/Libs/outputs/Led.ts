@@ -1,5 +1,6 @@
 import { CircuitElement } from '../CircuitElement';
 import { Point } from '../Point';
+import { ArduinoUno } from './Arduino';
 /**
  * Declare window so that custom created function don't throw error
  */
@@ -24,6 +25,14 @@ export class LED extends CircuitElement {
    * Selectedindex wrt to color
    */
   selectedIndex = 0;
+  /**
+   * Voltage of PWM
+   */
+  voltage = 0;
+  /**
+   * PWM attached
+   */
+  pwmAttached = false;
   /**
    * Previous node value.
    */
@@ -81,7 +90,7 @@ export class LED extends CircuitElement {
       return;
     }
     this.prev = val;
-    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
+    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached) {
       // console.log(this.nodes[0].value);
       if (val >= 5) {
         this.anim();
@@ -91,6 +100,15 @@ export class LED extends CircuitElement {
       if (val >= 0) {
         this.nodes[1].setValue(val, null);
       }
+    } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached) {
+
+      let color = `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`
+      let split = color.split('-')
+      let genColor = 'none'
+      let alpha = (this.voltage / 5) * 9;
+      genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`
+      this.elements[3].attr({ fill: genColor });
+
     } else {
       // TODO: Show Toast
       this.handleConnectionError();
@@ -147,17 +165,60 @@ export class LED extends CircuitElement {
       title: 'LED'
     };
   }
+
+  /**
+   * Pin Name mapped to Pins
+   */
+  pinNamedMap: any = {};
+
   /**
    * Called when start simulation.
    */
   initSimulation(): void {
+
+    for (const node of this.nodes) {
+      this.pinNamedMap[node.label] = node;
+    }
+    const arduinoEnd: any = this.getArduino(this.pinNamedMap['POSITIVE']); // not able to determine if resistor is there
+    if (arduinoEnd) {
+      const arduino = arduinoEnd.parent;
+      (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
+        this.pwmAttached = true
+        this.voltage = v / 100;
+        // this.updateLED();
+      });
+    }
+
   }
   /** Function removes all the animations */
   closeSimulation(): void {
     this.prev = -2;
     this.fillColor('none');
   }
+
+  /**
+ * Return the node which is connected to arduino
+ * @param node The Node which need to be checked
+ */
+  private getArduino(node: Point) {
+    if (
+      node.connectedTo &&
+      node.connectedTo.start &&
+      node.connectedTo.start.parent.keyName === 'ArduinoUno'
+    ) {
+      return node.connectedTo.start;
+    }
+    if (
+      node.connectedTo &&
+      node.connectedTo.end &&
+      node.connectedTo.end.parent.keyName === 'ArduinoUno'
+    ) {
+      return node.connectedTo.end;
+    }
+    return null;
+  }
 }
+
 /**
  * RGBLED class
  */
