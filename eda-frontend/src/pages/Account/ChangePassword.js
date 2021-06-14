@@ -15,6 +15,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import { useSelector, useDispatch } from 'react-redux'
 import { changePassword } from '../../redux/actions/index'
+import { useHistory } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -44,6 +45,8 @@ export default function ChangePassword () {
 
   const dispatch = useDispatch()
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
+
+  const history = useHistory()
 
   useEffect(() => {
     document.title = 'Change password - eSim '
@@ -167,7 +170,7 @@ export default function ChangePassword () {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(changePassword(currentPassword, newPassword, reNewPassword))}
+            onClick={() => dispatch(changePassword(currentPassword, newPassword, reNewPassword, history))}
             className={classes.submit}
             disabled={false}
           >
