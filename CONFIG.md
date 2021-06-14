@@ -2,7 +2,7 @@
 
 **Make sure your migrations are all setup and you can see workflow API in the Django admin panel**
 
-Follow the order to setup the workflow
+Follow the order to setup the workflow [There is already a sample workflow setup up]
  
  ### Setting up states:
  
@@ -19,7 +19,6 @@ Attributes:
  - Review 
  - Published
  - Review
- - Banned
 
 ### Setting up Groups:
 Every group has a custom group model attached to it which lets you define the following parameters:
@@ -28,7 +27,7 @@ Attributes:
  - Other Circuit Accessible States: This is a many select field which specifies the states which can be accessed by that specific group (For example, for Contributor, it can only access other user's projects which are published and for reviewer, it can access Review, Reported and Published as well)
  -  *boolean*  Is Arduino: Specifies whether the role is for arduino or e-sim (True for arduino and false for esim)
  - *boolean*  Is Type Reviewer: This gives that group the ability to review the reported circuits.
-
+ - *boolean* Is Default: This defines which roles should be assigned to a new user.
 Suggested Roles:
 
  - Contributor [Arduino]
@@ -53,12 +52,10 @@ Attributes:
  - Published to Reported
  - Reported to Draft
  - Reported to Published
- - Reported to Banned
 
  
  
 ### Things to note:
 
- - For current version of back-end, all states are accessible to everyone for testing purposes.
  - The workflow API is being tested on E-Sim cloud and not on the Arduino Simulator as of yet.
 
