@@ -18,6 +18,7 @@ from django.contrib.auth import get_user_model
 import logging
 import traceback
 import json
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,6 +31,7 @@ class StateSaveView(APIView):
 
     # Permissions should be validated here
     permission_classes = (IsAuthenticated,)
+
     # parser_classes = (FormParser,)
 
     @swagger_auto_schema(request_body=StateSaveSerializer)
@@ -37,8 +39,10 @@ class StateSaveView(APIView):
         logger.info('Got POST for state save ')
         esim_libraries = json.loads(request.data.get('esim_libraries'))
         try:
-            queryset = StateSave.objects.get(save_id=request.data.get("save_id",None),
-                data_dump=request.data["data_dump"], branch=request.data["branch"])
+            queryset = StateSave.objects.get(
+                save_id=request.data.get("save_id", None),
+                data_dump=request.data["data_dump"],
+                branch=request.data["branch"])
             serializer = StateSaveSerializer(data=request.data)
             if serializer.is_valid():
                 queryset.name = serializer.data["name"]
@@ -47,7 +51,8 @@ class StateSaveView(APIView):
                 response = serializer.data
                 response['duplicate'] = True
                 return Response(response)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
         except StateSave.DoesNotExist:
             img = Base64ImageField(max_length=None, use_url=True)
             filename, content = img.update(request.data['base64_image'])
@@ -82,6 +87,7 @@ class StateSaveView(APIView):
                 return Response(StateSaveSerializer(state_save).data)
             except Exception:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 class CopyStateView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -205,7 +211,10 @@ class StateFetchUpdateView(APIView):
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
-            if saved_state.owner == self.request.user and (saved_state.project is None or Permission.objects.filter(role__in=self.request.user.groups.all(), del_own_states=saved_state.project.state).exists()):
+            if saved_state.owner == self.request.user and (
+                    saved_state.project is None or Permission.objects.filter(
+                        role__in=self.request.user.groups.all(),
+                        del_own_states=saved_state.project.state).exists()):
                 pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -274,7 +283,8 @@ class UserSavesView(APIView):
 
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def get(self, request):
-        saved_state = StateSave.objects.filter(owner=self.request.user).order_by(
+        saved_state = StateSave.objects.filter(
+            owner=self.request.user).order_by(
             "save_id", "-save_time").distinct("save_id")
         try:
             serialized = StateSaveSerializer(saved_state, many=True)
@@ -324,6 +334,7 @@ class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = StateSave.objects.filter(
             owner=self.request.user).order_by('-save_time')
         return queryset
+
     serializer_class = SaveListSerializer
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = SaveSearchFilterSet
@@ -352,7 +363,8 @@ class GetStateSpecificVersion(APIView):
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def get(self, request, save_id, version, branch):
         queryset = StateSave.objects.get(
-            save_id=save_id, version=version, owner=self.request.user, branch=branch)
+            save_id=save_id, version=version, owner=self.request.user,
+            branch=branch)
         try:
             serialized = StateSaveSerializer(
                 queryset)

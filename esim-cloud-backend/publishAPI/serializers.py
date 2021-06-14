@@ -8,6 +8,7 @@ import uuid
 import imghdr
 from saveAPI.serializers import StateSaveSerializer
 
+
 class Base64ImageField(serializers.ImageField):
 
     def to_internal_value(self, data):
@@ -20,7 +21,7 @@ class Base64ImageField(serializers.ImageField):
                 self.fail('invalid_image')
             file_name = str(uuid.uuid4())
             file_extension = imghdr.what(file_name, decoded_file)
-            complete_file_name = "%s.%s" % (file_name, file_extension, )
+            complete_file_name = "%s.%s" % (file_name, file_extension,)
             data = ContentFile(decoded_file, name=complete_file_name)
 
         return super(Base64ImageField, self).to_internal_value(data)
@@ -62,7 +63,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only=True, source='author.username')
     fields = FieldSerializer(many=True)
     save_id = serializers.SerializerMethodField()
-    saves = StateSaveSerializer(read_only=True,many=True,source='statesave_set')
+    saves = StateSaveSerializer(read_only=True, many=True,
+                                source='statesave_set')
+
     class Meta:
         model = Project
         fields = ('project_id',
@@ -80,6 +83,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_save_id(self, obj):
         return obj.statesave_set.first().save_id
+
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:

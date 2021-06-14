@@ -29,7 +29,6 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
-
 urlpatterns = [
     path('api/admin/', admin.site.urls),
 
@@ -44,8 +43,8 @@ urlpatterns = [
 
     # publishAPI routes
     path('api/', include(publishURLs)),
-    
-    #workflowAPI routes
+
+    # workflowAPI routes
     path('api/workflow/', include(workURLs)),
 
     # Arduino Routes
@@ -57,7 +56,6 @@ urlpatterns = [
     url(r'^api/auth/', include("djoser.social.urls")),
     url(r'^api/auth/', include(authURLs)),
 
-
     # For API Documentation
     url(r'^api/docs(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(
@@ -67,6 +65,6 @@ urlpatterns = [
     path('api/docs', schema_view.with_ui(
         'swagger',
         cache_timeout=0),
-        name='schema-swagger-ui'),
+         name='schema-swagger-ui'),
 
 ]

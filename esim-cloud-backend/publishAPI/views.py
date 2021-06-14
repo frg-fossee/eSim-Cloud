@@ -1,10 +1,13 @@
 from rest_framework import permissions
-from publishAPI.serializers import CircuitTagSerializer, ProjectSerializer, TransitionHistorySerializer  # noqa
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, AllowAny, DjangoModelPermissions  # noqa
+from publishAPI.serializers import CircuitTagSerializer, ProjectSerializer, \
+    TransitionHistorySerializer  # noqa
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, \
+    AllowAny, DjangoModelPermissions  # noqa
 from rest_framework.parsers import JSONParser, MultiPartParser
 from workflowAPI.models import Permission
 from publishAPI.models import CircuitTag, Project, Field, TransitionHistory
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, IsAuthenticated, AllowAny, \
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, \
+    IsAuthenticated, AllowAny, \
     DjangoModelPermissions  # noqa
 from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 from drf_yasg.utils import swagger_auto_schema
@@ -36,22 +39,30 @@ class ProjectViewSet(APIView):
         try:
             queryset = Project.objects.get(project_id=circuit_id)
         except Project.DoesNotExist:
-            return Response({'error': 'No circuit there'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'No circuit there'},
+                            status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
-        if queryset.author == self.request.user and Permission.objects.filter(role__in=user_roles, view_own_states=queryset.state).exists():
+        if queryset.author == self.request.user and Permission.objects.filter(
+                role__in=user_roles,
+                view_own_states=queryset.state).exists():
             pass
-        elif queryset.author != self.request.user and Permission.objects.filter(role__in=user_roles, view_other_states=queryset.state).exists():
+        elif queryset.author != self.request.user and Permission.objects.filter(  # noqa
+                role__in=user_roles,
+                view_other_states=queryset.state).exists():
             pass
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
         can_edit = False
-        if queryset.author == self.request.user and Permission.objects.filter(role__in=user_roles, edit_own_states=queryset.state).exists():
+        if queryset.author == self.request.user and Permission.objects.filter(
+                role__in=user_roles,
+                edit_own_states=queryset.state).exists():
             can_edit = True
         else:
             can_edit = False
         try:
-            histories = TransitionHistorySerializer(TransitionHistory.objects.filter(
-                project=queryset).order_by("transition_time"), many=True)
+            histories = TransitionHistorySerializer(
+                TransitionHistory.objects.filter(
+                    project=queryset).order_by("transition_time"), many=True)
             serialized = ProjectSerializer(queryset)
             data = serialized.data.copy()
             data['history'] = histories.data
@@ -63,13 +74,19 @@ class ProjectViewSet(APIView):
     def post(self, request, circuit_id):
         save_states = StateSave.objects.filter(save_id=circuit_id)
         try:
-            active_state_save = save_states.get(branch=request.data[0]['active_branch'],version=request.data[0]['active_version'])
+            active_state_save = save_states.get(
+                branch=request.data[0]['active_branch'],
+                version=request.data[0]['active_version'])
         except StateSave.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         if active_state_save.project is None:
-            project = Project(title=request.data[0]['title'], description=request.data[0]
-                              ['description'], author=active_state_save.owner, is_arduino=active_state_save.is_arduino,active_branch=request.data[0]['active_branch'], active_version=request.data[0]['active_version'])
+            project = Project(title=request.data[0]['title'],
+                              description=request.data[0]
+                              ['description'], author=active_state_save.owner,
+                              is_arduino=active_state_save.is_arduino,
+                              active_branch=request.data[0]['active_branch'],
+                              active_version=request.data[0]['active_version'])
             project.save()
             for field in request.data[1]:
                 field = Field(name=field['name'], text=field['text'])
@@ -81,8 +98,9 @@ class ProjectViewSet(APIView):
                 save_state.project = project
                 save_state.shared = True
                 save_state.save()
-            #ChangeStatus(self, request.data[2], active_state_save.project)
-            if Permission.objects.filter(role__in=user_roles, edit_own_states=project.state).exists():
+            # ChangeStatus(self, request.data[2], active_state_save.project)
+            if Permission.objects.filter(role__in=user_roles,
+                                         edit_own_states=project.state).exists():  # noqa
                 can_edit = True
             else:
                 can_edit = False
@@ -96,18 +114,23 @@ class ProjectViewSet(APIView):
             return Response(data)
         else:
             can_edit = False
-            if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
+            if Permission.objects.filter(role__in=user_roles,
+                                         edit_own_states=active_state_save.project.state).exists():  # noqa
                 pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             active_state_save.project.title = request.data[0]['title']
-            active_state_save.project.description = request.data[0]['description']
-            active_state_save.project.active_branch = request.data[0]['active_branch']
-            active_state_save.project.active_version = request.data[0]['active_version']
+            active_state_save.project.description = request.data[0][
+                'description']
+            active_state_save.project.active_branch = request.data[0][
+                'active_branch']
+            active_state_save.project.active_version = request.data[0][
+                'active_version']
             active_state_save.project.save()
             if request.data[2] != '':
                 ChangeStatus(self, request.data[2], active_state_save.project)
-            if Permission.objects.filter(role__in=user_roles, edit_own_states=active_state_save.project.state).exists():
+            if Permission.objects.filter(role__in=user_roles,
+                                         edit_own_states=active_state_save.project.state).exists():  # noqa
                 can_edit = True
             else:
                 can_edit = False
@@ -118,7 +141,8 @@ class ProjectViewSet(APIView):
                 active_state_save.project.fields.add(field)
             active_state_save.project.save()
             histories = TransitionHistorySerializer(
-                TransitionHistory.objects.filter(project=active_state_save.project), many=True)
+                TransitionHistory.objects.filter(
+                    project=active_state_save.project), many=True)
             serialized = ProjectSerializer(active_state_save.project)
             data = serialized.data.copy()
             data['save_id'] = active_state_save.save_id
@@ -142,7 +166,8 @@ class MyProjectViewSet(viewsets.ModelViewSet):
             queryset = Project.objects.filter(
                 author=self.request.user, is_arduino=False)
         except:
-            return Response({'error': 'No circuit there'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'No circuit there'},
+                            status=status.HTTP_404_NOT_FOUND)
         try:
             serialized = ProjectSerializer(queryset, many=True)
             return Response(serialized.data)

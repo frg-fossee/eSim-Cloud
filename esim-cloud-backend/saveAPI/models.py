@@ -5,6 +5,7 @@ from django.conf import settings
 import uuid
 from libAPI.models import Library
 from publishAPI.models import Project
+
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
     location=settings.FILE_STORAGE_ROOT, base_url=settings.FILE_STORAGE_URL)
@@ -24,10 +25,12 @@ class StateSave(models.Model):
     base64_image = models.ImageField(
         upload_to='circuit_images', storage=file_storage, null=True)
     version = models.CharField(max_length=20, null=False)
-    branch = models.CharField(max_length=20,null=False)
+    branch = models.CharField(max_length=20, null=False)
     is_arduino = models.BooleanField(default=False, null=False)
     esim_libraries = models.ManyToManyField(Library)
-    project = models.ForeignKey(to=Project,on_delete=models.CASCADE,null=True)
+    project = models.ForeignKey(to=Project, on_delete=models.CASCADE,
+                                null=True)
+
     def save(self, *args, **kwargs):
         super(StateSave, self).save(*args, **kwargs)
 
