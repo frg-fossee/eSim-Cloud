@@ -84,9 +84,9 @@ export default function ProjectCard({ pub, is_review }) {
             <Typography variant='body2' color='textSecondary' component='p'>
               Status: {pub.status_name}
             </Typography>
-            <Typography variant='body2' component='p' color='textSecondary' style={{ margin: '5px 0px 0px 0px' }}>
+            {/* <Typography variant='body2' component='p' color='textSecondary' style={{ margin: '5px 0px 0px 0px' }}>
               Updated at {timeSince(pub.save_time)} ago...
-            </Typography>
+            </Typography> */}
           </CardContent>
         </CardActionArea>
         </ButtonBase>

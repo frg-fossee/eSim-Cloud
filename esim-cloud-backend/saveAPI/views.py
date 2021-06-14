@@ -61,7 +61,8 @@ class StateSaveView(APIView):
                     owner=request.user,
                     branch=request.data.get('branch'),
                     version=request.data.get('version'),
-                    project=project
+                    project=project,
+                    shared=True
                 )
             except:
                 state_save = StateSave(
