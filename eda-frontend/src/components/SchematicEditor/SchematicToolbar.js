@@ -363,19 +363,35 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setlibsOpen(false)
   }
 
+  // Shortcuts that cant be put in Helper/KeyboardShortcuts.js
   useEffect(() => {
-    function saveShortcut (event) {
+    function shrtcts (event) {
       if (event.keyCode === 83) {
-        console.log(event)
         event.preventDefault()
         handelSchSave()
       }
+      if (event.keyCode === 80) {
+        event.preventDefault()
+        PrintPreview()
+      }
+      if (event.keyCode === 79) {
+        event.preventDefault()
+        handleSchDialOpen()
+      }
+      if (event.keyCode === 69) {
+        event.preventDefault()
+        if (event.shiftKey) {
+          handleImgClickOpen()
+        } else {
+          handelLocalSchSave()
+        }
+      }
     }
 
-    window.addEventListener('keydown', saveShortcut)
+    window.addEventListener('keydown', shrtcts)
 
     return () => {
-      window.addEventListener('keydown', saveShortcut)
+      window.addEventListener('keydown', shrtcts)
     }
   // eslint-disable-next-line
   }, [])
