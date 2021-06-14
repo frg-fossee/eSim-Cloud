@@ -58,7 +58,10 @@ export default function SignIn (props) {
   useEffect(() => {
     dispatch(authDefault())
     document.title = 'Login - eSim '
-    if (props.location.search !== '') {
+    const ardUrl = localStorage.getItem('ard_redurl')
+    if (ardUrl && ardUrl !== '') {
+      url = ardUrl
+    } else if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       url = query.get('url')
       localStorage.setItem('ard_redurl', url)

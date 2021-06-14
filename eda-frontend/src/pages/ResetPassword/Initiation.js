@@ -84,7 +84,7 @@ export default function ResetPassword () {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(resetPassword(email))}
+            onClick={() => { email.length > 0 && dispatch(resetPassword(email)) }}
             className={classes.submit}
             disabled={false}
           >
