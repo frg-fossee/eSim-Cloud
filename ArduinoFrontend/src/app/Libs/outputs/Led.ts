@@ -175,16 +175,19 @@ export class LED extends CircuitElement {
    * Called when start simulation.
    */
   initSimulation(): void {
-
+    let pwmPins = [3, 5, 6, 9, 10, 11]
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
     }
     const arduinoEnd: any = this.getArduino(this.pinNamedMap['POSITIVE']); // not able to determine if resistor is there
-    if (arduinoEnd) {
+
+    // Only add pwm if connected to a pwm pin in arduino
+    if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) != -1) {
       const arduino = arduinoEnd.parent;
       (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
         this.pwmAttached = true
         this.voltage = v / 100;
+        console.log(this.voltage)
         // this.updateLED();
       });
     }
@@ -194,6 +197,9 @@ export class LED extends CircuitElement {
   closeSimulation(): void {
     this.prev = -2;
     this.fillColor('none');
+    // reset PWM boolean & voltage = 0
+    this.pwmAttached = false
+    this.voltage = 0;
   }
 
   /**
