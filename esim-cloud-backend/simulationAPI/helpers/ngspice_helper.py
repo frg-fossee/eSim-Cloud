@@ -64,13 +64,14 @@ def ExecNetlist(filepath, file_id):
                 foo = '{}'.format(tmp)
                 output = {'fail': foo}
         else:
-            tmp = stdout.decode("utf-8")
-            foo = '{}'.format(tmp)
+            out = stdout.decode("utf-8")
+            err = stderr.decode("utf-8")
+            foo = '{}'.format(out+err)
             output = {'fail': foo}
-        # logger.info('output from ngspice_helper.py')
-        # logger.info(stderr)
-        # logger.info(output)
-        # logger.info(stdout)
+        logger.info('output from ngspice_helper.py')
+        logger.info(stderr)
+        logger.info(output)
+        logger.info(stdout)
         return output
     except Exception as e:
         logger.exception('Encountered Exception:')

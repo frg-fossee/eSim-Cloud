@@ -11,6 +11,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import { SpinnerDotted } from 'spinners-react'
 
 export function ScrollDialog (txt) {
   const [open, setOpen] = React.useState(false)
@@ -76,7 +77,8 @@ export default function Notice ({ status, msg, open, close }) {
           <div>
             <div className="error-notice">
               <div className="notice warning">
-                <strong>Loading...</strong>
+                <SpinnerDotted size="25" thickness="100" color="#f0ad4e" />
+                <strong> Loading...</strong>
               </div>
             </div>
           </div>
