@@ -37,7 +37,7 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 }
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64, newBranch = false, branchName = null, setVersions, versions) => (dispatch, getState) => {
+export const saveSchematic = (title, description, xml, base64, newBranch = false, branchName = null, setVersions, versions, branchOpen, setBranchOpen) => (dispatch, getState) => {
   var libraries = []
   getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
   const project_id = getState().saveSchematicReducer.details.project_id
@@ -116,6 +116,7 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
         .post('save', queryString.stringify(body), config)
         .then((res) => {
           var temp = versions
+          var tempBranch = branchOpen
           var d = new Date(res.data.save_time)
           res.data.date = d.getDate() + '/' + parseInt(d.getMonth() + 1) + '/' + d.getFullYear()
           res.data.time = d.getHours() + ':' + d.getMinutes()
@@ -123,6 +124,8 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
             res.data.time = d.getHours() + ':0' + d.getMinutes()
           }
           temp.unshift([res.data.branch, [res.data]])
+          tempBranch.unshift(false)
+          setBranchOpen(tempBranch)
           setVersions(temp)
           dispatch({
             type: actions.SET_SCH_SAVED,

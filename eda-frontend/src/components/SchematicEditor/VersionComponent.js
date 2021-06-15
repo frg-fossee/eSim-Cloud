@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import React from 'react'
-import Button from '@material-ui/core/Button'
+import { Button, IconButton } from '@material-ui/core'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import PropTypes from 'prop-types'
 import api from '../../utils/Api'
@@ -71,9 +71,9 @@ export default function VersionComponent ({
     })
   }
   return (
-    <>
+    <div style={{display: "flex", alignItems:"left",flexWrap: "wrap"}}>
       <Button
-        style={{ marginLeft: '10%', overflowX: 'hidden' }}
+        style={{ overflowX: 'hidden', width:"77%" }}
         size="small"
         color="primary"
         disabled={((version === window.location.href.split('version=')[1].substr(0, 20)) && (branch === decodeURI(window.location.href.split('branch=')[1])))}
@@ -85,12 +85,12 @@ export default function VersionComponent ({
       </Button>
       {
         checkActiveVersionOrProject(version, branch) &&
-        <Button onClick={() => handleVersionDelete(save_id, version, branch)}>
-          <DeleteOutlineIcon style={{ marginLeft: '10%' }} fontSize="small"/>
-        </Button>
+        <IconButton style={{backgroundColor:"transparent"}} onClick={() => handleVersionDelete(save_id, version, branch)}>
+          <DeleteOutlineIcon fontSize="small"/>
+        </IconButton>
       }
       <br />
-    </>
+    </div>
   )
 }
 

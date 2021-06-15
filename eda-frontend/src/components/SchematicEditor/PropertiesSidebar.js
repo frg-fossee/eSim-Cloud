@@ -254,7 +254,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     setDialogOpen(false)
     exportImage('PNG').then((res) => {
       console.log(schSave.project_id)
-      dispatch(saveSchematic(schSave.title, schSave.description, schSave.xmlData, res, true, branchName, setVersions, versions))
+      dispatch(saveSchematic(schSave.title, schSave.description, schSave.xmlData, res, true, branchName, setVersions, versions,branchOpen,setBranchOpen))
     })
     setBranchName('')
   }
@@ -283,6 +283,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     const saveId = window.location.href.split('id=')[1].substr(0, 36)
     api.delete(`/save/versions/${saveId}/${branchName}`, config).then(resp => {
       const temp = versions.filter(version => version[0] !== branchName)
+      var tempBranch = branchOpen
+      tempBranch.splice(index, 1)
+      setBranchOpen(tempBranch)
       setVersions(temp)
     })
   }
@@ -372,12 +375,14 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             {versions.map((branch, index) => {
               return (
                 <>
-                  <ListItem button onClick={() => handleClick(index)}>
-                    <ListItemText primary={'Variation ' + (versions.length - index) + ' : ' + branch[0]} />
-                    {checkActiveOrProject(branch[0]) && <div key={branch[0]} onClick={() => handleDelete(branch[0], index)}>
-                      <DeleteIcon />
-                    </div>}
-                  </ListItem>
+                  <div style={{display:"flex"}}>
+                    <ListItem style={{width:"80%"}} button onClick={() => handleClick(index)}>
+                      <ListItemText primary={'Variation ' + (versions.length - index) + ' : ' + branch[0]} />
+                    </ListItem>
+                    {checkActiveOrProject(branch[0]) && <Button key={branch[0]} onClick={() => handleDelete(branch[0], index)}>
+                        <DeleteIcon />
+                    </Button>}
+                  </div>
                   <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>
                     {
                       branch[1].map((version) =>
