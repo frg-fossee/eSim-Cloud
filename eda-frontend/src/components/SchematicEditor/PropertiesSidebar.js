@@ -254,7 +254,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     setDialogOpen(false)
     exportImage('PNG').then((res) => {
       console.log(schSave.project_id)
-      dispatch(saveSchematic(schSave.title, schSave.description, schSave.xmlData, res, true, branchName, setVersions, versions,branchOpen,setBranchOpen))
+      dispatch(saveSchematic(schSave.title, schSave.description, schSave.xmlData, res, true, branchName, setVersions, versions, branchOpen, setBranchOpen))
     })
     setBranchName('')
   }
@@ -375,12 +375,12 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             {versions.map((branch, index) => {
               return (
                 <>
-                  <div style={{display:"flex"}}>
-                    <ListItem style={{width:"80%"}} button onClick={() => handleClick(index)}>
+                  <div style={{ display: 'flex' }}>
+                    <ListItem style={{ width: '80%' }} button onClick={() => handleClick(index)}>
                       <ListItemText primary={'Variation ' + (versions.length - index) + ' : ' + branch[0]} />
                     </ListItem>
                     {checkActiveOrProject(branch[0]) && <Button key={branch[0]} onClick={() => handleDelete(branch[0], index)}>
-                        <DeleteIcon />
+                      <DeleteIcon />
                     </Button>}
                   </div>
                   <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>

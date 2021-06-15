@@ -71,9 +71,9 @@ export default function VersionComponent ({
     })
   }
   return (
-    <div style={{display: "flex", alignItems:"left",flexWrap: "wrap"}}>
+    <div style={{ display: 'flex', alignItems: 'left', flexWrap: 'wrap' }}>
       <Button
-        style={{ overflowX: 'hidden', width:"77%" }}
+        style={{ overflowX: 'hidden', width: '77%' }}
         size="small"
         color="primary"
         disabled={((version === window.location.href.split('version=')[1].substr(0, 20)) && (branch === decodeURI(window.location.href.split('branch=')[1])))}
@@ -85,7 +85,7 @@ export default function VersionComponent ({
       </Button>
       {
         checkActiveVersionOrProject(version, branch) &&
-        <IconButton style={{backgroundColor:"transparent"}} onClick={() => handleVersionDelete(save_id, version, branch)}>
+        <IconButton style={{ backgroundColor: 'transparent' }} onClick={() => handleVersionDelete(save_id, version, branch)}>
           <DeleteOutlineIcon fontSize="small"/>
         </IconButton>
       }
