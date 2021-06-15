@@ -10,7 +10,7 @@ def ChangeStatus(self, status, project):
     if isinstance(project.project_id, uuid.UUID):
         try:
             user_roles = self.request.user.groups.all()
-        except:
+        except:  # noqa
             return Exception({'message': 'No User Role'})
         if project.author == self.request.user and Permission.objects.filter(
                 role__in=user_roles,

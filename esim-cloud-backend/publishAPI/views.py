@@ -68,7 +68,7 @@ class ProjectViewSet(APIView):
             data['history'] = histories.data
             data['can_edit'] = can_edit
             return Response(data)
-        except:
+        except TransitionHistory.DoesNotExist:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, circuit_id):
@@ -165,14 +165,11 @@ class MyProjectViewSet(viewsets.ModelViewSet):
         try:
             queryset = Project.objects.filter(
                 author=self.request.user, is_arduino=False)
-        except:
+        except Project.DoesNotExist:
             return Response({'error': 'No circuit there'},
                             status=status.HTTP_404_NOT_FOUND)
-        try:
-            serialized = ProjectSerializer(queryset, many=True)
-            return Response(serialized.data)
-        except:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serialized = ProjectSerializer(queryset, many=True)
+        return Response(serialized.data)
 
 
 class PublicProjectViewSet(viewsets.ModelViewSet):
@@ -189,10 +186,7 @@ class PublicProjectViewSet(viewsets.ModelViewSet):
         try:
             queryset = Project.objects.filter(
                 is_arduino=False, state__public=True)
-        except:
+        except Project.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        try:
-            serialized = ProjectSerializer(queryset, many=True)
-            return Response(serialized.data)
-        except:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serialized = ProjectSerializer(queryset, many=True)
+        return Response(serialized.data)

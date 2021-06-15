@@ -35,7 +35,7 @@ class RetriveUserRoleView(APIView):
         try:
             serializer.is_valid()
             return Response(serializer.data)
-        except:
+        except:  # noqa
             serializer.is_valid()
             return Response(serializer.errors)
 
@@ -52,7 +52,7 @@ class RetriveProjectsViewSet(APIView):
     def get(self, request):
         try:
             groups = self.request.user.groups.all()
-        except:
+        except:  # noqa
             return Response({'error': 'You are not authorized!'},
                             status=http_status.HTTP_401_UNAUTHORIZED)
         transitions = Transition.objects.filter(
@@ -118,7 +118,7 @@ class ProjectStateView(APIView):
                                 status=http_status.HTTP_404_NOT_FOUND)
             try:
                 user_roles = self.request.user.groups.all()
-            except:
+            except:  # noqa
                 return Response(data={'message': 'No User Role'},
                                 status=http_status.HTTP_404_NOT_FOUND)
             if project.author == self.request.user and Permission.objects.filter(  # noqa
@@ -205,13 +205,13 @@ class ReportedProjectsView(viewsets.ViewSet):
         '''
         try:
             state = State.objects.get(report=True)
-        except:
+        except State.DoesNotExist:
             return Response({'Message': 'No reported State implemented'},
                             status=http_status.HTTP_404_NOT_FOUND)
         try:
             project = Project.objects.get(
                 project_id=project_id)
-        except:
+        except Project.DoesNotExist:
             return Response({'Message': 'No projects found'},
                             status=http_status.HTTP_404_NOT_FOUND)
         if project.state != State.objects.get(report=True):
@@ -235,7 +235,7 @@ class ReportedProjectsView(viewsets.ViewSet):
         '''
         try:
             projects = Project.objects.filter(is_reported=True)
-        except:
+        except Project.DoesNotExist:
             return Response({'Message': 'No projects found'},
                             status=http_status.HTTP_404_NOT_FOUND)
         serialized = ProjectSerializer(projects, many=True)
@@ -246,7 +246,7 @@ class ReportedProjectsView(viewsets.ViewSet):
     def approve_reports(self, request, project_id):
         try:
             groups = self.request.user.groups.all()
-        except:
+        except:  # noqa
             return Response({'error': 'You are not authorized!'},
                             status=http_status.HTTP_401_UNAUTHORIZED)
         for group in groups:
@@ -279,7 +279,7 @@ class ReportedProjectsView(viewsets.ViewSet):
         try:
             project = Project.objects.get(
                 project_id=project_id, is_reported=True)
-        except:
+        except Project.DoesNotExist:
             return Response({"Error": "No project found"},
                             status=http_status.HTTP_404_NOT_FOUND)
         try:
@@ -295,7 +295,7 @@ class ReportedProjectsView(viewsets.ViewSet):
                     project=project, report_open=False)
                 approved_reports = Report.objects.filter(
                     project=project, report_open=True, approved=True)
-        except:
+        except Report.DoesNotExist:
             return Response({"Message": "No reports found"},
                             status=http_status.HTTP_404_NOT_FOUND)
         open_serialized = ReportSerializer(open_reports, many=True)
@@ -313,7 +313,7 @@ class ReportedProjectsView(viewsets.ViewSet):
         '''
         try:
             groups = self.request.user.groups.all()
-        except:
+        except:  # noqa
             return Response({'error': 'You are not authorized!'},
                             status=http_status.HTTP_401_UNAUTHORIZED)
         for group in groups:
@@ -321,12 +321,12 @@ class ReportedProjectsView(viewsets.ViewSet):
                 try:
                     project = Project.objects.get(
                         project_id=project_id)
-                except:
+                except Project.DoesNotExist:
                     return Response({"Error": "No project found"},
                                     status=http_status.HTTP_404_NOT_FOUND)
                 try:
                     reports = Report.objects.filter(project=project)
-                except:
+                except Report.DoesNotExist:
                     return Response({"Message": "No reports found"},
                                     status=http_status.HTTP_404_NOT_FOUND)
                 if self.request.user != project.author:
@@ -345,7 +345,7 @@ class ReportedProjectsView(viewsets.ViewSet):
                         project.state = State.objects.get(
                             name=request.data['name'])
                         transition_history.save()
-                    except:
+                    except:  # noqa
                         pass
                     project.is_reported = False
                     project.save()

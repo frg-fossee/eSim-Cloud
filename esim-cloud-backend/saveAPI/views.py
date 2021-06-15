@@ -58,7 +58,7 @@ class StateSaveView(APIView):
             filename, content = img.update(request.data['base64_image'])
             try:
                 project = Project.objects.get(
-                    project_id=request.data.get('project_id',None))
+                    project_id=request.data.get('project_id', None))
                 state_save = StateSave(
                     data_dump=request.data.get('data_dump'),
                     description=request.data.get('description'),
@@ -207,20 +207,22 @@ class StateFetchUpdateView(APIView):
         if isinstance(save_id, uuid.UUID):
             try:
                 saved_state = StateSave.objects.get(
-                    save_id=save_id, version=version, branch=branch)
+                    save_id=save_id, version=version, branch=branch,
+                    owner=self.request.user)
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
-            if saved_state.owner == self.request.user and (
-                    saved_state.project is None or Permission.objects.filter(
-                        role__in=self.request.user.groups.all(),
-                        del_own_states=saved_state.project.state).exists()):
+            print(saved_state.project.active_branch)
+            print(saved_state.project.active_version)
+            if (saved_state.project.active_branch != branch and
+                saved_state.project.active_version != version) or \
+                (Permission.objects.filter(
+                 role__in=self.request.user.groups.all(),
+                 del_own_states=saved_state.project.state).exists()):
                 pass
             else:
-                return Response(status=status.HTTP_401_UNAUTHORIZED)
-            if saved_state.project is not None:
-                saved_state.project.delete()
+                return Response(status=status.HTTP_400_BAD_REQUEST)
             saved_state.delete()
             return Response({'done': True})
         else:
@@ -372,3 +374,35 @@ class GetStateSpecificVersion(APIView):
             return Response(serialized.data)
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def delete(self, request, save_id, version, branch):
+        try:
+            queryset = StateSave.objects.get(
+             save_id=save_id, version=version, owner=self.request.user,
+             branch=branch)
+            queryset.delete()
+            return Response(data=None, status=status.HTTP_204_NO_CONTENT)
+        except StateSave.DoesNotExist:
+            return Response({"error": "Circuit not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+
+
+class DeleteBranch(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request, save_id, branch):
+        try:
+            queryset = StateSave.objects.filter(
+                save_id=save_id,
+                branch=branch,
+                owner=self.request.user
+            )
+            if queryset[0].project.active_branch != branch:
+                queryset.delete()
+                return Response(data=None, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response(data=None, status=status.HTTP_400_BAD_REQUEST)
+        except StateSave.DoesNotExist:
+            return Response({"error": "circuit not found"},
+                            status=status.HTTP_404_NOT_FOUND)

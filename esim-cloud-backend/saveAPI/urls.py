@@ -36,7 +36,11 @@ urlpatterns = [
 
     path("save/versions/<str:version>/<uuid:save_id>/<str:branch>",
          saveAPI_views.GetStateSpecificVersion.as_view(),
-         name="getSpecificVersion")
+         name="getSpecificVersion"),
+
+    path("save/versions/<uuid:save_id>/<str:branch>",
+         saveAPI_views.DeleteBranch.as_view(),
+         name="deleteBranch")
 
 ]
 

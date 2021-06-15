@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize, IconButton, Collapse, Dialog, DialogTitle, DialogContent, Button } from '@material-ui/core'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
+import DeleteIcon from '@material-ui/icons/Delete'
 import { makeStyles } from '@material-ui/core/styles'
 import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
@@ -131,6 +132,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const [branchName, setBranchName] = React.useState('')
   const [dialogOpen, setDialogOpen] = React.useState(false)
 
+  const [projectBranch, setProjectBranch] = React.useState(null)
+  const [projectVersion, setProjectVersion] = React.useState(null)
+
   React.useEffect(() => {
     const config = {
       headers: {
@@ -151,6 +155,10 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         )
         .then((resp) => {
           console.log(resp.data)
+          if (resp.data.length > 0) {
+            setProjectBranch(resp.data[0].project_branch)
+            setProjectVersion(resp.data[0].project_version)
+          }
           var versionsAccordingFreq = {}
           resp.data.forEach((value) => {
             var d = new Date(value.save_time)
@@ -166,7 +174,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           var temp = []
           for (var i = 0; i < Object.entries(versionsAccordingFreq).length; i++) {
             console.log(Object.entries(versionsAccordingFreq)[0])
-            if (window.location.href.split('branch=')[1] === Object.entries(versionsAccordingFreq)[i][0]) { temp.push(true) } else { temp.push(false) }
+            if (decodeURI(window.location.href.split('branch=')[1]) === Object.entries(versionsAccordingFreq)[i][0]) { temp.push(true) } else { temp.push(false) }
           }
           setBranchOpen(temp.reverse())
         })
@@ -262,6 +270,29 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     setBranchOpen(left)
   }
 
+  const handleDelete = (branchName, index) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+    const token = localStorage.getItem('esim_token')
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    const saveId = window.location.href.split('id=')[1].substr(0, 36)
+    api.delete(`/save/versions/${saveId}/${branchName}`, config).then(resp => {
+      const temp = versions.filter(version => version[0] !== branchName)
+      setVersions(temp)
+    })
+  }
+
+  const checkActiveOrProject = (branch) => {
+    if (decodeURI(window.location.href.split('branch=')[1]) === branch) return false
+    if (branch === projectBranch) return false
+    return true
+  }
+
   const handleBranchName = (e) => {
     setBranchName(e.target.value)
   }
@@ -333,14 +364,6 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
                 onClick={() => handleBranch(branchName) }>
                 Create Variation
               </Button>
-              <Button
-                style={{ marginTop: '20px', marginBottom: '10px', marginLeft: '10px' }}
-                variant="contained"
-                color="primary"
-              // onClick={handleSave}
-              >
-                Save This Schematic
-              </Button>
             </DialogContent>
           </Dialog>
         </ListItem>
@@ -350,7 +373,10 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
               return (
                 <>
                   <ListItem button onClick={() => handleClick(index)}>
-                    <ListItemText primary={'Variation ' + (index + 1) + ' : ' + branch[0]} />
+                    <ListItemText primary={'Variation ' + (versions.length - index) + ' : ' + branch[0]} />
+                    {checkActiveOrProject(branch[0]) && <div key={branch[0]} onClick={() => handleDelete(branch[0], index)}>
+                      <DeleteIcon />
+                    </div>}
                   </ListItem>
                   <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>
                     {
@@ -362,7 +388,11 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
                           time={version.time}
                           save_id={version.save_id}
                           version={version.version}
-                          branch={version.branch} />
+                          branch={version.branch}
+                          setVersions={setVersions}
+                          setBranchOpen={setBranchOpen}
+                          projectBranch={projectBranch}
+                          projectVersion={projectVersion} />
                       )
                     }
                   </Collapse>

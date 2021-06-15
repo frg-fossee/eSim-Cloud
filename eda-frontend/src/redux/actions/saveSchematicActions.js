@@ -122,7 +122,7 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
           if (d.getMinutes() < 10) {
             res.data.time = d.getHours() + ':0' + d.getMinutes()
           }
-          temp.push([res.data.branch, [res.data]])
+          temp.unshift([res.data.branch, [res.data]])
           setVersions(temp)
           dispatch({
             type: actions.SET_SCH_SAVED,
