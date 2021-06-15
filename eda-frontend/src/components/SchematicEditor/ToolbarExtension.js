@@ -175,21 +175,21 @@ export function HelpScreen ({ open, close }) {
                     REDO
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    Ctrl + A
+                    Ctrl + Shift + Z
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>
                     ZOOM IN
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    Ctrl + I
+                    Ctrl + +
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>
                     ZOOM OUT
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    Ctrl + O
+                    Ctrl + -
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>
@@ -197,6 +197,55 @@ export function HelpScreen ({ open, close }) {
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
                     Ctrl + Y
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Save Circuit
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + S
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Print Circuit
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + P
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Open Dialog
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + O
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Export as JSON
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + E
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Export as Image
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + Shift + E
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Rotate Component
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + R
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Clear All
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Shift + Del
                   </Typography>
                 </fieldset>
               </Paper>
