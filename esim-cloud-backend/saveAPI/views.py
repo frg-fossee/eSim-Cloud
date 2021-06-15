@@ -69,7 +69,7 @@ class StateSaveView(APIView):
                     project=project,
                     shared=True
                 )
-            except:
+            except:  # noqa
                 state_save = StateSave(
                     data_dump=request.data.get('data_dump'),
                     description=request.data.get('description'),
