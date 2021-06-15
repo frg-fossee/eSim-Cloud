@@ -11,6 +11,10 @@ class CannotRunSpice(Exception):
     """Base class for exceptions in this module."""
     pass
 
+"""
+Note: If there is no valid data, the error text is propagated 
+through output. However, the celery task is passed.
+"""
 
 def ExecNetlist(filepath, file_id):
     if not os.path.isfile(filepath):
@@ -42,7 +46,29 @@ def ExecNetlist(filepath, file_id):
             logger.info('Ran ngSpice')
 
         logger.info("Reading Output")
-        output = extract_data_from_ngspice_output(current_dir+'/data.txt')
+        if os.path.isfile(current_dir+'/data.txt'):
+            output = extract_data_from_ngspice_output(current_dir+'/data.txt')
+            if output["data"]:
+              """
+              This means output data file exists and has 
+              data parsed by parse.py
+              """
+              pass
+            else:
+              """
+              if the output is blank, the err is logged in stderr
+              """
+              tmp = stderr.decode("utf-8")
+              foo = '{}'.format(tmp)
+              output = {'fail': foo}
+        else:
+            tmp = stdout.decode("utf-8")
+            foo = '{}'.format(tmp)
+            output = {'fail': foo}
+        # logger.info('output from ngspice_helper.py')
+        # logger.info(stderr)
+        # logger.info(output)
+        # logger.info(stdout)
         return output
     except Exception as e:
         logger.exception('Encountered Exception:')

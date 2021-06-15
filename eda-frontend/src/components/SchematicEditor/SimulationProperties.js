@@ -24,6 +24,7 @@ import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setRes
 import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
+import Notice from '../Shared/Notice'
 
 import api from '../../utils/Api'
 
@@ -56,6 +57,10 @@ export default function SimulationProperties () {
   const classes = useStyles()
   const [nodeList, setNodeList] = useState([])
   const [componentsList, setComponentsList] = useState([])
+  var [errMsg, setErrMsg] = useState('')
+  var [err, setErr] = useState(false)
+  var [status, setStatus] = useState('')
+  var stats = {loading: 'loading', error: 'error', success: 'success'}
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
     sweepType: 'Linear',
@@ -321,7 +326,18 @@ export default function SimulationProperties () {
     selectedValueTransientAnalComp = tmp
     // console.log(selectedValue)
   }
-
+  const handleErrOpen = () => {
+    setErr(true)
+  }
+  const handleErrClose = () => {
+    setErr(false)
+  }
+  const handleErrMsg = (msg) => {
+    setErrMsg(msg)
+  }
+  const handleStatus = (status) => {
+    setStatus(status)
+  }
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
     var titleA = netfile.title.split(' ')[1]
@@ -363,13 +379,26 @@ export default function SimulationProperties () {
 
   // Get the simulation result with task_Id
   function simulationResult (url) {
+    var isError = false
+    var msg
+    var resPending = true // to stop immature opening of simulation screen
     api
       .get(url)
       .then((res) => {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
+          handleStatus(stats['loading'])
           setTimeout(simulationResult(url), 1000)
-        } else {
+        } else if(res.data.details.hasOwnProperty('fail')){
+          resPending = false
+          setIsResult(false)
+          console.log('failed notif')
+          console.log(res.data.details)
+          msg = res.data.details['fail'].replace("b'", "")
+          isError = true          
+          console.log(err)
+        }else {
           var result = res.data.details
+          resPending = false
           if (result === null) {
             setIsResult(false)
           } else {
@@ -435,7 +464,19 @@ export default function SimulationProperties () {
           }
         }
       })
-      .then((res) => { handlesimulateOpen() })
+      .then((res) => { 
+        if (isError === false && resPending === false){
+          console.log('no error')
+          handleStatus(stats['success'])
+          handlesimulateOpen() 
+        }
+        else if(resPending === false){
+          handleStatus(stats['error'])
+          handleErrMsg(msg)
+        }
+        handleErrOpen()
+        
+      })
       .catch(function (error) {
         console.log(error)
       })
@@ -565,7 +606,7 @@ export default function SimulationProperties () {
     <>
       <div className={classes.SimulationOptions}>
         <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} task_id={taskId} />
-
+        <Notice status={status} open={err} msg={errMsg} close={handleErrClose}/>
         {/* Simulation modes list */}
         <List>
 

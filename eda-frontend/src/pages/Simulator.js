@@ -6,6 +6,7 @@ import textToFile from '../components/Simulator/textToFile'
 import SimulationScreen from '../components/Shared/SimulationScreen'
 import { useDispatch } from 'react-redux'
 import { setResultGraph, setResultText } from '../redux/actions/index'
+import Notice from '../components/Shared/Notice'
 
 import api from '../utils/Api'
 
@@ -27,6 +28,10 @@ export default function Simulator () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [netlistCode, setNetlistCode] = useState('')
+  var [errMsg, setErrMsg] = useState('')
+  var [err, setErr] = useState(false)
+  var [status, setStatus] = useState('')
+  var stats = {loading: 'loading', error: 'error', success: 'success'}
   const [state, setState] = React.useState({
     checkedA: false
 
@@ -49,6 +54,20 @@ export default function Simulator () {
   }
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
+  
+  const handleErrOpen = () => {
+    console.log('err is true now')
+    setErr(true)
+  }
+  const handleErrClose = () => {
+    setErr(false)
+  }
+  const handleErrMsg = (msg) => {
+    setErrMsg(msg)
+  }
+  const handleStatus = (status) => {
+    setStatus(status)
+  }
   const handlesimulateOpen = () => {
     setSimulateOpen(true)
   }
@@ -116,13 +135,27 @@ export default function Simulator () {
   const [isResult, setIsResult] = useState(false)
 
   function simulationResult (url) {
+    var isError = false
+    var msg
+    var resPending = true // to stop immature opening of simulation screen
     api
       .get(url)
       .then((res) => {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
+          handleStatus(stats['loading'])
           setTimeout(simulationResult(url), 1000)
-        } else {
+        } else if(res.data.details.hasOwnProperty('fail')){
+          resPending = false
+          setIsResult(false)
+          console.log('failed notif')
+          console.log(res.data.details)
+          msg = res.data.details['fail'].replace("b'", "")
+          isError = true          
+          console.log(err)
+        }
+        else {
           var result = res.data.details
+          resPending = false
           if (result === null) {
             setIsResult(false)
           } else {
@@ -186,7 +219,23 @@ export default function Simulator () {
           }
         }
       })
-      .then((res) => { handlesimulateOpen() })
+      .then((res) => { 
+        if (isError === false && resPending === false){
+          // console.log('no error')
+          handleStatus(stats['success'])
+          handlesimulateOpen() 
+        }
+        else if(resPending === false){
+          handleStatus(stats['error'])
+          handleErrMsg(msg)
+          
+          // console.log('reached error alert')
+          // console.log(msg)
+          // alert(msg)
+        }
+        handleErrOpen()
+        
+      })
       .catch(function (error) {
         console.log(error)
       })
@@ -202,6 +251,7 @@ export default function Simulator () {
         justify="center"
         alignItems="stretch"
       >
+        <Notice status={status} open={err} msg={errMsg} close={handleErrClose}/>
         <Grid item xs={12} >
           <Paper className={classes.paper}>
 
@@ -213,7 +263,6 @@ export default function Simulator () {
             </Typography>
           </Paper>
         </Grid>
-
         <Grid item xs={12} >
           <Paper className={classes.paper}>
 
@@ -221,7 +270,6 @@ export default function Simulator () {
               Enter Netlist
 
             </Typography>
-
             <FormControlLabel
               style={{ marginLeft: '10px' }}
               control={<Switch checked={state.checkedA} color="primary" onChange={handleChange} name="checkedA" />}
