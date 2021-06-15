@@ -28,10 +28,10 @@ export default function Simulator () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [netlistCode, setNetlistCode] = useState('')
-  var [errMsg, setErrMsg] = useState('')
-  var [err, setErr] = useState(false)
-  var [status, setStatus] = useState('')
-  var stats = {loading: 'loading', error: 'error', success: 'success'}
+  const [errMsg, setErrMsg] = useState('')
+  const [err, setErr] = useState(false)
+  const [status, setStatus] = useState('')
+  const stats = { loading: 'loading', error: 'error', success: 'success' }
   const [state, setState] = React.useState({
     checkedA: false
 
@@ -54,7 +54,7 @@ export default function Simulator () {
   }
 
   const [simulateOpen, setSimulateOpen] = React.useState(false)
-  
+
   const handleErrOpen = () => {
     console.log('err is true now')
     setErr(true)
@@ -77,17 +77,17 @@ export default function Simulator () {
   }
 
   const netlistCodeSanitization = (code) => {
-    var codeArray = code.split('\n')
-    var cleanCode = ''
-    var frontPlot = ''
-    for (var line = 0; line < codeArray.length; line++) {
+    const codeArray = code.split('\n')
+    let cleanCode = ''
+    let frontPlot = ''
+    for (let line = 0; line < codeArray.length; line++) {
       if (codeArray[line].includes('plot')) {
         frontPlot += codeArray[line].split('plot ')[1] + ' '
       }
     }
     frontPlot = `print ${frontPlot} > data.txt \n`
-    var flag = 0
-    for (var i = 0; i < codeArray.length; i++) {
+    let flag = 0
+    for (let i = 0; i < codeArray.length; i++) {
       if (codeArray[i].includes('plot')) {
         if (!flag) {
           cleanCode += frontPlot
@@ -101,8 +101,8 @@ export default function Simulator () {
   }
 
   function prepareNetlist () {
-    var sanatizedText = netlistCodeSanitization(netlistCode)
-    var file = textToFile(sanatizedText)
+    const sanatizedText = netlistCodeSanitization(netlistCode)
+    const file = textToFile(sanatizedText)
     sendNetlist(file)
   }
 
@@ -135,44 +135,43 @@ export default function Simulator () {
   const [isResult, setIsResult] = useState(false)
 
   function simulationResult (url) {
-    var isError = false
-    var msg
-    var resPending = true // to stop immature opening of simulation screen
+    let isError = false
+    let msg
+    let resPending = true // to stop immature opening of simulation screen
     api
       .get(url)
       .then((res) => {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
-          handleStatus(stats['loading'])
+          handleStatus(stats.loading)
           setTimeout(simulationResult(url), 1000)
-        } else if(res.data.details.hasOwnProperty('fail')){
+        } else if (Object.prototype.hasOwnProperty.call(res.data.details, 'fail')) {
           resPending = false
           setIsResult(false)
           console.log('failed notif')
           console.log(res.data.details)
-          msg = res.data.details['fail'].replace("b'", "")
-          isError = true          
+          msg = res.data.details.fail.replace("b'", '')
+          isError = true
           console.log(err)
-        }
-        else {
-          var result = res.data.details
+        } else {
+          const result = res.data.details
           resPending = false
           if (result === null) {
             setIsResult(false)
           } else {
-            var temp = res.data.details.data
+            const temp = res.data.details.data
 
-            var data = result.data
+            const data = result.data
             if (res.data.details.graph === 'true') {
-              var simResultGraph = { labels: [], x_points: [], y_points: [] }
+              const simResultGraph = { labels: [], x_points: [], y_points: [] }
               // populate the labels
-              for (var i = 0; i < data.length; i++) {
+              for (let i = 0; i < data.length; i++) {
                 simResultGraph.labels[0] = data[i].labels[0]
-                var lab = data[i].labels
+                const lab = data[i].labels
                 // lab is an array containeing labels names ['time','abc','def']
                 simResultGraph.x_points = data[0].x
 
                 // labels
-                for (var x = 1; x < lab.length; x++) {
+                for (let x = 1; x < lab.length; x++) {
                 //   if (lab[x].includes('#branch')) {
                 //     lab[x] = `I (${lab[x].replace('#branch', '')})`
                 //   }
@@ -184,7 +183,7 @@ export default function Simulator () {
                   simResultGraph.labels.push(lab[x])
                 }
                 // populate y_points
-                for (var z = 0; z < data[i].y.length; z++) {
+                for (let z = 0; z < data[i].y.length; z++) {
                   simResultGraph.y_points.push(data[i].y[z])
                 }
               }
@@ -196,7 +195,7 @@ export default function Simulator () {
               }
               dispatch(setResultGraph(simResultGraph))
             } else {
-              var simResultText = []
+              const simResultText = []
               for (let i = 0; i < temp.length; i++) {
                 let postfixUnit = ''
                 if (temp[i][0].includes('#branch')) {
@@ -219,22 +218,20 @@ export default function Simulator () {
           }
         }
       })
-      .then((res) => { 
-        if (isError === false && resPending === false){
+      .then((res) => {
+        if (isError === false && resPending === false) {
           // console.log('no error')
-          handleStatus(stats['success'])
-          handlesimulateOpen() 
-        }
-        else if(resPending === false){
-          handleStatus(stats['error'])
+          handleStatus(stats.success)
+          handlesimulateOpen()
+        } else if (resPending === false) {
+          handleStatus(stats.error)
           handleErrMsg(msg)
-          
+
           // console.log('reached error alert')
           // console.log(msg)
           // alert(msg)
         }
         handleErrOpen()
-        
       })
       .catch(function (error) {
         console.log(error)

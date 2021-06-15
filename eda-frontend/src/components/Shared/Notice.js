@@ -2,38 +2,37 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import './helper/Notice.css'
 import {
-  IconButton,  
+  IconButton
 } from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 
-
-export function ScrollDialog(txt) {
-  const [open, setOpen] = React.useState(false);
-  const [scroll, setScroll] = React.useState('paper');
+export function ScrollDialog (txt) {
+  const [open, setOpen] = React.useState(false)
+  const [scroll, setScroll] = React.useState('paper')
 
   const handleClickOpen = () => {
-    setOpen(true);
-    setScroll('paper');
-  };
+    setOpen(true)
+    setScroll('paper')
+  }
 
   const handleClose = () => {
-    setOpen(false);
-  };
-  const descriptionElementRef = React.useRef(null);
+    setOpen(false)
+  }
+  const descriptionElementRef = React.useRef(null)
   React.useEffect(() => {
     if (open) {
-      const { current: descriptionElement } = descriptionElementRef;
+      const { current: descriptionElement } = descriptionElementRef
       if (descriptionElement !== null) {
-        descriptionElement.focus();
+        descriptionElement.focus()
       }
     }
-  }, [open]);
+  }, [open])
 
   return (
     <div>
@@ -63,30 +62,30 @@ export function ScrollDialog(txt) {
         </DialogActions>
       </Dialog>
     </div>
-  );
+  )
 }
-export default function Notice({status, msg, open, close}){
+export default function Notice ({ status, msg, open, close }) {
   // open = true
   // status = 'success'
   const MAX_CHARS = 180
-  var err = msg.substring(0,MAX_CHARS)
-  if(open === true){
+  const err = msg.substring(0, MAX_CHARS)
+  if (open === true) {
     switch (status) {
       case 'loading':
-        return(
+        return (
           <div>
-            <div class="error-notice">
-              <div class="notice warning">
+            <div className="error-notice">
+              <div className="notice warning">
                 <strong>Loading...</strong>
               </div>
             </div>
           </div>
         )
       case 'success':
-        return(
+        return (
           <div>
-            <div class="error-notice">
-              <div class="notice success">
+            <div className="error-notice">
+              <div className="notice success">
                 <IconButton edge="start" size="small" color="inherit" onClick={close} aria-label="close">
                   <CloseIcon />
                 </IconButton>
@@ -96,25 +95,24 @@ export default function Notice({status, msg, open, close}){
           </div>
         )
       case 'error':
-        return(
+        return (
           <div>
-            <div class="error-notice">
-              <div class="notice danger">
+            <div className="error-notice">
+              <div className="notice danger">
                 <IconButton edge="start" size="small" color="inherit" onClick={close} aria-label="close">
                   <CloseIcon />
                 </IconButton>
-                <strong>  Error</strong>- {err}<b>...</b> <ScrollDialog txt={msg}/>                
-              </div>  
+                <strong>  Error</strong>- {err}<b>...</b> <ScrollDialog txt={msg}/>
+              </div>
             </div>
           </div>
         )
       default:
         return (
           <div></div>
-        )      
-    }  
-  }
-  else{
+        )
+    }
+  } else {
     return (<div></div>)
   }
 }
