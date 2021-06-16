@@ -46,7 +46,7 @@ export function ScrollDialog (txt) {
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">Error Details</DialogTitle>
+        <DialogTitle id="scroll-dialog-title" classes={{ root: "title" }}>Error Details</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <DialogContentText
             id="scroll-dialog-description"
