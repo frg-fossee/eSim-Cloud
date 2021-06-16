@@ -235,10 +235,17 @@ export function HelpScreen ({ open, close }) {
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>
-                    Rotate Component
+                    Rotate Component Clockwise
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    Ctrl + R
+                    Alt + Right Arrow
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Rotate Component Anti-Clockwise
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Alt + Left Arrow
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>

@@ -159,7 +159,7 @@ export function ClearGrid() {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
 }
 
-// ROTATE COMPONENT
+// ROTATE COMPONENT CLOCKWISE
 export function Rotate() {
   var view = graph.getView()
   var cell = graph.getSelectionCell()
@@ -170,6 +170,21 @@ export function Rotate() {
   // console.log(vHandler)
   if (cell != null) {
     vHandler.rotateCell(cell, 90, cell.getParent())
+  }
+  vHandler.destroy()
+}
+
+// ROTATE COMPONENT Anti-CLOCKWISE
+export function RotateACW() {
+  var view = graph.getView()
+  var cell = graph.getSelectionCell()
+  var state = view.getState(cell, true)
+  // console.log(state)
+  var vHandler = graph.createVertexHandler(state)
+  // console.log('Handler')
+  // console.log(vHandler)
+  if (cell != null) {
+    vHandler.rotateCell(cell, -90, cell.getParent())
   }
   vHandler.destroy()
 }
