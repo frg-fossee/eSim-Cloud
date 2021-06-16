@@ -393,10 +393,10 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       }
     }
 
-    window.addEventListener('keyup', shrtcts)
+    window.addEventListener('keydown', shrtcts)
 
     return () => {
-      window.addEventListener('keyup', shrtcts)
+      window.addEventListener('keydown', shrtcts)
     }
   // eslint-disable-next-line
   }, [])
