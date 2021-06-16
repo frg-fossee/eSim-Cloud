@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 import MxGraphFactory from 'mxgraph'
-import { Undo, Redo, ZoomIn, ZoomOut, ZoomAct, DeleteComp, ClearGrid, Rotate } from './ToolbarTools'
+import { Undo, Redo, ZoomIn, ZoomOut, ZoomAct, DeleteComp, ClearGrid } from './ToolbarTools'
 
 const {
   mxKeyHandler,
@@ -20,12 +20,12 @@ export default function KeyboardShortcuts (graph) {
   }
 
   // Rotate Ctrl + R
-  keyHandler.bindKey(82, function (evt) {
-    evt.preventDefault()
-    if (graph.isEnabled) {
-      Rotate()
-    }
-  })
+  // keyHandler.bindKey(82, function (evt) {
+  //   evt.preventDefault()
+  //   if (evt.ctrlKey && graph.isEnabled) {
+  //     Rotate()
+  //   }
+  // })
 
   // Delete - Del / Clear All - Shift + Del
   keyHandler.bindKey(46, function (evt) {
@@ -56,9 +56,21 @@ export default function KeyboardShortcuts (graph) {
       ZoomIn()
     }
   })
+  keyHandler.bindControlKey(107, function (evt) {
+    evt.preventDefault()
+    if (graph.isEnabled()) {
+      ZoomIn()
+    }
+  })
 
   // Zoom Out - Ctrl + -
   keyHandler.bindControlKey(189, function (evt) {
+    evt.preventDefault()
+    if (graph.isEnabled()) {
+      ZoomOut()
+    }
+  })
+  keyHandler.bindControlKey(109, function (evt) {
     evt.preventDefault()
     if (graph.isEnabled()) {
       ZoomOut()
