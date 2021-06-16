@@ -59,10 +59,10 @@ const styles = (theme) => ({
   }
 })
 
-function Alert(props) {
+function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-export default function ProjectPage(props) {
+export default function ProjectPage (props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()
@@ -162,8 +162,8 @@ export default function ProjectPage(props) {
       <LayoutMain>
         {project.details !== '401'
           ? <>
-            {statusChanged ?
-              <>
+            {statusChanged
+              ? <>
                 Status Changed
               </> : <Grid container>
                 <Grid item xs={1} />
@@ -174,7 +174,7 @@ export default function ProjectPage(props) {
                     {project.details && <h4 style={{ marginTop: '0' }}>By: {project.details.author_name} </h4>}
                   </Typography>
                   {project.reports && project.details.is_reported &&
-                    <ReportComponent project={project}  changedStatus={changedStatus} location={props.location} />
+                    <ReportComponent project={project} changedStatus={changedStatus} location={props.location} />
                   }
                   {project.details && !project.details?.is_reported && project.details?.author_name !== auth.user?.username &&
                     <ChangeStatus project={project} changedStatus={changedStatus} />
@@ -223,11 +223,11 @@ export default function ProjectPage(props) {
                   </Dialog>
 
                   <h1>Circuit Diagram:
-                <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
+                    <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
                     <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Make copy')}>Make a Copy</Button>
                     <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
                       <PlayCircleOutlineIcon />Simulate
-                </Button>
+                    </Button>
                     <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Generate Netlist')}>Generate Netlist</Button>
                   </h1>
                   <NetlistModal open={netListOpen} close={handleNetlistClick} netlist={netlist} />
@@ -238,7 +238,7 @@ export default function ProjectPage(props) {
                   >
                     <Alert onClose={() => setSnackbarOpen(false)} severity="success">
                       Successfully made a copy!
-                </Alert>
+                    </Alert>
                   </Snackbar>
                   <Grid container>
                     <Grid item xs={1}>

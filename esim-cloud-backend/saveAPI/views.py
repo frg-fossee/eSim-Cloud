@@ -214,13 +214,13 @@ class StateFetchUpdateView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
             if (saved_state.project is None) or \
-                (saved_state.project is not None and 
-                (saved_state.project.active_branch != branch or \
-                saved_state.project.active_version != version)) or \
-                (saved_state.project is not None and 
+                (saved_state.project is not None and
+                 (saved_state.project.active_branch != branch or
+                  saved_state.project.active_version != version)) or \
+                (saved_state.project is not None and
                  Permission.objects.filter(
-                 role__in=self.request.user.groups.all(),
-                 del_own_states=saved_state.project.state).exists()):
+                    role__in=self.request.user.groups.all(),
+                    del_own_states=saved_state.project.state).exists()):
                 pass
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -399,7 +399,8 @@ class DeleteBranch(APIView):
                 branch=branch,
                 owner=self.request.user
             )
-            if queryset[0].project is None or queryset[0].project.active_branch != branch:
+            if queryset[0].project is None or \
+               queryset[0].project.active_branch != branch:
                 queryset.delete()
                 return Response(data=None, status=status.HTTP_204_NO_CONTENT)
             else:

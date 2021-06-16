@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { getStatus, changeStatus } from '../../redux/actions'
 import PropTypes from 'prop-types'
 
-function ChangeStatus ({ project,changedStatus }) {
+function ChangeStatus ({ project, changedStatus }) {
   const dispatch = useDispatch()
   const [status, setStatus] = React.useState(null)
   const [note, setNote] = React.useState('')
@@ -14,7 +14,7 @@ function ChangeStatus ({ project,changedStatus }) {
   }
   const clickChangeStatus = () => {
     dispatch(changeStatus(project.details.project_id, status, note))
-    changedStatus();
+    changedStatus()
   }
   const onChangeNote = (e) => {
     setNote(e.target.value)
@@ -58,7 +58,7 @@ function ChangeStatus ({ project,changedStatus }) {
 
 ChangeStatus.propTypes = {
   project: PropTypes.object,
-  changedStatus:PropTypes.func,
+  changedStatus: PropTypes.func
 }
 
 export default ChangeStatus

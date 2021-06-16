@@ -251,7 +251,7 @@ ReportComponent.propTypes = {
   classes: PropTypes.object,
   onClose: PropTypes.bool,
   project: PropTypes.object,
-  changedStatus: PropTypes.func,
+  changedStatus: PropTypes.func
 }
 
 export default ReportComponent
