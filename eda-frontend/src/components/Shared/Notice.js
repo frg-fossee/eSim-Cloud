@@ -53,7 +53,7 @@ export function ScrollDialog (txt) {
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-            {<pre> {txt.txt} </pre>}
+            {<pre>{txt.txt} </pre>}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
