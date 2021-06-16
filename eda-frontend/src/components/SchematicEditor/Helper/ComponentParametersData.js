@@ -8,7 +8,8 @@ const ComponentParameters = {
     VALUE: '',
     EXTRA_EXPRESSION: '',
     MODEL: '',
-    VALUE_UNIT: 'F'
+    VALUE_UNIT: 'F',
+    IC: '0'
   },
 
   D: {
@@ -17,7 +18,7 @@ const ComponentParameters = {
     N1: '',
     N2: '',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '.model mydiode D'
   },
 
   I: {
@@ -133,7 +134,8 @@ const ComponentParameters = {
     NC2: '',
     VALUE: '',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '',
+    VALUE_UNIT: 'mho'
   },
 
   F: {
@@ -198,7 +200,9 @@ const ComponentParameters = {
     VALUE: '',
     EXTRA_EXPRESSION: '',
     MODEL: '',
-    VALUE_UNIT: 'H'
+    VALUE_UNIT: 'H',
+    IC: '0',
+    DTEMP: '27'
   },
 
   M: {
@@ -209,7 +213,9 @@ const ComponentParameters = {
     N3: '',
     N4: '',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MULTIPLICITY_PARAMETER: '1',
+    MODEL: '.model mymosfet NMOS',
+    DTEMP: '27'
   },
 
   Q: {
@@ -219,7 +225,9 @@ const ComponentParameters = {
     N2: '',
     N3: '',
     EXTRA_EXPRESSION: '',
-    MODEL: ''
+    MODEL: '.model mybjt PNP',
+    MULTIPLICITY_PARAMETER: '1',
+    DTEMP: '27'
   },
 
   V: {
@@ -333,7 +341,11 @@ const ComponentParameters = {
     VALUE: '1',
     EXTRA_EXPRESSION: '',
     MODEL: '',
-    VALUE_UNIT: 'Ohm'
+    VALUE_UNIT: 'Ohm',
+    SHEET_RESISTANCE: '0',
+    FIRST_ORDER_TEMPERATURE_COEFF: '0',
+    SECOND_ORDER_TEMPERATURE_COEFF: '0',
+    PARAMETER_MEASUREMENT_TEMPERATURE: '27'
   },
 
   Z: {
@@ -346,7 +358,7 @@ const ComponentParameters = {
     MODEL: ''
   },
 
-  S: {
+  SW: {
     PREFIX: 'S',
     NAME: '',
     N1: '',
@@ -366,6 +378,17 @@ const ComponentParameters = {
     MODEL: '',
     EXTRA_EXPRESSION: ''
 
+  },
+  E: {
+    PREFIX: 'E',
+    NAME: '',
+    N1: '',
+    N2: '',
+    NC1: '',
+    NC2: '',
+    MODEL: '',
+    VALUE: '1',
+    EXTRA_EXPRESSION: ''
   }
 
 }

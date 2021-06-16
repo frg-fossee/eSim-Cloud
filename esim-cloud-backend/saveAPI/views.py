@@ -37,7 +37,7 @@ class StateSaveView(APIView):
         filename, content = img.update(request.data['base64_image'])
         state_save = StateSave(
             data_dump=request.data.get('data_dump'),
-            description=request.data.get('descirption'),
+            description=request.data.get('description'),
             name=request.data.get('name'),
             owner=request.user
         )

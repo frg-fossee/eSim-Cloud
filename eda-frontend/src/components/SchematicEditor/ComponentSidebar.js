@@ -127,7 +127,8 @@ export default function ComponentSidebar ({ compRef }) {
       setLoading(true)
       var config = {}
       const token = localStorage.getItem('esim_token')
-      if (token !== null || token !== undefined) {
+      if (token !== null && token !== undefined) {
+        console.log(token)
         config = {
           headers: {
             Authorization: `Token ${token}`
