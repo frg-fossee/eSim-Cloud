@@ -42,7 +42,7 @@ class StateSaveView(APIView):
             description=request.data.get('description'),
             name=request.data.get('name'),
             owner=request.user,
-            is_arduino=True if esim_libraries == None else False,
+            is_arduino=True if esim_libraries is None else False,
         )
         state_save.base64_image.save(filename, content)
         if esim_libraries:
