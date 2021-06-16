@@ -250,7 +250,8 @@ ReportComponent.propTypes = {
   children: PropTypes.node,
   classes: PropTypes.object,
   onClose: PropTypes.bool,
-  project: PropTypes.object
+  project: PropTypes.object,
+  changedStatus: PropTypes.func,
 }
 
 export default ReportComponent

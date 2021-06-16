@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { getStatus, changeStatus } from '../../redux/actions'
 import PropTypes from 'prop-types'
 
-function ChangeStatus ({ project }) {
+function ChangeStatus ({ project,changedStatus }) {
   const dispatch = useDispatch()
   const [status, setStatus] = React.useState(null)
   const [note, setNote] = React.useState('')
@@ -14,15 +14,12 @@ function ChangeStatus ({ project }) {
   }
   const clickChangeStatus = () => {
     dispatch(changeStatus(project.details.project_id, status, note))
+    changedStatus();
   }
   const onChangeNote = (e) => {
     setNote(e.target.value)
   }
   useEffect(() => {
-    // if(project.details.history.reverse()[1] !== undefined && project.details.history.reverse()[1]?.reviewer_notes)
-    // {
-    //     setNote(project.details.history.reverse()[1].reviewer_notes)
-    // }
     dispatch(getStatus(project.details?.project_id))
   }, [dispatch, project.details])
   return (
@@ -60,7 +57,8 @@ function ChangeStatus ({ project }) {
 }
 
 ChangeStatus.propTypes = {
-  project: PropTypes.object
+  project: PropTypes.object,
+  changedStatus:PropTypes.func,
 }
 
 export default ChangeStatus
