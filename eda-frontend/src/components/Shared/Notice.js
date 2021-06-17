@@ -69,7 +69,9 @@ export default function Notice ({ status, msg, open, close }) {
   // open = true
   // status = 'success'
   const MAX_CHARS = 180
-  const err = msg.substring(0, MAX_CHARS)
+  const err = ((msg.length) > MAX_CHARS)
+    ? msg.substring(0, MAX_CHARS) + "..." 
+    :msg.substring(0, MAX_CHARS)
   if (open === true) {
     switch (status) {
       case 'loading':
@@ -104,7 +106,7 @@ export default function Notice ({ status, msg, open, close }) {
                 <IconButton edge="start" size="small" color="inherit" onClick={close} aria-label="close">
                   <CloseIcon />
                 </IconButton>
-                <strong>  Error</strong>- {err}<b>...</b> <ScrollDialog txt={msg}/>
+                <strong>  Error</strong>- {err} <ScrollDialog txt={msg}/>
               </div>
             </div>
           </div>

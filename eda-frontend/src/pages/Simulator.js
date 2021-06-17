@@ -56,7 +56,6 @@ export default function Simulator () {
   const [simulateOpen, setSimulateOpen] = React.useState(false)
 
   const handleErrOpen = () => {
-    console.log('err is true now')
     setErr(true)
   }
   const handleErrClose = () => {

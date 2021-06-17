@@ -1,3 +1,4 @@
+from celery.exceptions import SoftTimeLimitExceeded
 import os
 import logging
 import subprocess
@@ -72,6 +73,10 @@ def ExecNetlist(filepath, file_id):
         logger.info(stderr)
         logger.info(output)
         logger.info(stdout)
+        return output
+    except SoftTimeLimitExceeded:
+        output = {'fail': "time limit exceeded"}
+        print('tle')
         return output
     except Exception as e:
         logger.exception('Encountered Exception:')
