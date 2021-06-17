@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize, IconButton, Collapse, Dialog, DialogTitle, DialogContent, Button } from '@material-ui/core'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
+import Popover from '@material-ui/core/Popover'
+import Typography from '@material-ui/core/Typography'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { makeStyles } from '@material-ui/core/styles'
 import ComponentProperties from './ComponentProperties'
@@ -14,6 +16,9 @@ import Canvg from 'canvg'
 import './Helper/SchematicEditor.css'
 
 const useStyles = makeStyles((theme) => ({
+  typography: {
+    padding: theme.spacing(2)
+  },
   toolbar: {
     minHeight: '90px'
   },
@@ -135,6 +140,10 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const [projectBranch, setProjectBranch] = React.useState(null)
   const [projectVersion, setProjectVersion] = React.useState(null)
 
+  const [anchorEl, setAnchorEl] = React.useState(null)
+
+  const [popoverOpen, setPopoverOpen] = React.useState(null)
+
   React.useEffect(() => {
     const config = {
       headers: {
@@ -176,6 +185,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             console.log(Object.entries(versionsAccordingFreq)[0])
             if (decodeURI(window.location.href.split('branch=')[1]) === Object.entries(versionsAccordingFreq)[i][0]) { temp.push(true) } else { temp.push(false) }
           }
+          var popoverTemp = new Array(Object.entries(versionsAccordingFreq).length)
+          popoverTemp.fill(false)
+          setPopoverOpen(popoverTemp)
           setBranchOpen(temp.reverse())
         })
         .catch((err) => {
@@ -271,6 +283,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   }
 
   const handleDelete = (branchName, index) => {
+    var temp = popoverOpen
+    temp.fill(false)
+    setPopoverOpen(temp)
     const config = {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
@@ -287,7 +302,31 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
       tempBranch.splice(index, 1)
       setBranchOpen(tempBranch)
       setVersions(temp)
+      const tempPopover = popoverOpen.filter(popoverIndex => popoverIndex !== true)
+      setPopoverOpen(tempPopover)
+    }).catch(err => {
+      console.log(err)
     })
+  }
+
+  const handleClickPopover = (e, index) => {
+    setAnchorEl(e.currentTarget)
+    var left = popoverOpen.slice(0, index)
+    var right = popoverOpen.slice(index + 1)
+    var temp = !popoverOpen[index]
+    left.push(temp)
+    left = left.concat(right)
+    setPopoverOpen(left)
+  }
+
+  const handleClosePopover = (index) => {
+    setAnchorEl(null)
+    var left = popoverOpen.slice(0, index)
+    var right = popoverOpen.slice(index + 1)
+    var temp = !popoverOpen[index]
+    left.push(temp)
+    left = left.concat(right)
+    setPopoverOpen(left)
   }
 
   const checkActiveOrProject = (branch) => {
@@ -370,7 +409,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             </DialogContent>
           </Dialog>
         </ListItem>
-        {(versions && branchOpen)
+        {(versions && branchOpen && popoverOpen)
           ? <>
             {versions.map((branch, index) => {
               return (
@@ -379,9 +418,32 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
                     <ListItem style={{ width: '80%' }} button onClick={() => handleClick(index)}>
                       <ListItemText primary={'Variation ' + (versions.length - index) + ' : ' + branch[0]} />
                     </ListItem>
-                    {checkActiveOrProject(branch[0]) && <Button key={branch[0]} onClick={() => handleDelete(branch[0], index)}>
-                      <DeleteIcon />
-                    </Button>}
+                    {checkActiveOrProject(branch[0]) &&
+                    <>
+                      <Button key={branch[0]} onClick={(e) => handleClickPopover(e, index)}>
+                        <DeleteIcon />
+                      </Button>
+                      <Popover
+                        open={popoverOpen[index]}
+                        anchorEl={anchorEl}
+                        onClose={() => handleClosePopover(index)}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'center'
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'center'
+                        }}
+                      >
+                        <Typography className={classes.typography}>
+                          <b>Are you sure you want to delete variation {branch[0]}?</b>
+                        </Typography>
+                        <Button style={{ marginLeft: '5%', backgroundColor: 'transparent' }} onClick={() => handleDelete(branch[0], index)}>
+                          Delete Variation
+                        </Button>
+                      </Popover>
+                    </>}
                   </div>
                   <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>
                     {

@@ -4,6 +4,15 @@ import { Button, IconButton } from '@material-ui/core'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import PropTypes from 'prop-types'
 import api from '../../utils/Api'
+import Popover from '@material-ui/core/Popover'
+import Typography from '@material-ui/core/Typography'
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyles = makeStyles((theme) => ({
+  typography: {
+    padding: theme.spacing(2)
+  }
+}))
 
 export default function VersionComponent ({
   name,
@@ -17,16 +26,34 @@ export default function VersionComponent ({
   projectBranch,
   projectVersion
 }) {
+  const classes = useStyles()
+
+  const [anchorEl, setAnchorEl] = React.useState(null)
+
+  const [popoverOpen, setPopoverOpen] = React.useState(false)
+
+  const handleClickPopover = (e) => {
+    setAnchorEl(e.currentTarget)
+    setPopoverOpen(true)
+  }
+
+  const handleClosePopover = () => {
+    setAnchorEl(null)
+    setPopoverOpen(false)
+  }
+
   const handleClick = (e) => {
     e.preventDefault()
     window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=' + branch
     window.location.reload()
   }
+
   const checkActiveVersionOrProject = (version, branch) => {
     if (version === window.location.href.split('version=')[1].substr(0, 20) && branch === decodeURI(window.location.href.split('branch=')[1])) return false
     if (version === projectVersion && branch === projectBranch) return false
     return true
   }
+
   const handleVersionDelete = (save_id, version, branch) => {
     const config = {
       headers: {
@@ -68,8 +95,11 @@ export default function VersionComponent ({
         .catch((err) => {
           console.log(err)
         })
+    }).catch(err => {
+      console.log(err)
     })
   }
+
   return (
     <div style={{ display: 'flex', alignItems: 'left', flexWrap: 'wrap' }}>
       <Button
@@ -85,9 +115,31 @@ export default function VersionComponent ({
       </Button>
       {
         checkActiveVersionOrProject(version, branch) &&
-        <IconButton style={{ backgroundColor: 'transparent' }} onClick={() => handleVersionDelete(save_id, version, branch)}>
-          <DeleteOutlineIcon fontSize="small"/>
-        </IconButton>
+        <>
+          <IconButton style={{ backgroundColor: 'transparent' }} onClick={(e) => handleClickPopover(e)}>
+            <DeleteOutlineIcon fontSize="small"/>
+          </IconButton>
+          <Popover
+            open={popoverOpen}
+            anchorEl={anchorEl}
+            onClose={() => handleClosePopover()}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center'
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center'
+            }}
+          >
+            <Typography className={classes.typography}>
+              <b>Are you sure you want to delete this version?</b>
+            </Typography>
+            <Button style={{ marginLeft: '5%', backgroundColor: 'transparent' }} onClick={() => handleVersionDelete(save_id, version, branch)}>
+            Delete Version
+            </Button>
+          </Popover>
+        </>
       }
       <br />
     </div>
