@@ -97,7 +97,7 @@ class ProjectViewSet(APIView):
             for save_state in save_states:
                 save_state.project = project
                 save_state.shared = True
-                save_state.save()
+                save_state.save(update_fields=['project', 'shared', ])
             # ChangeStatus(self, request.data[2], active_state_save.project)
             if Permission.objects.filter(role__in=user_roles,
                                          edit_own_states=project.state).exists():  # noqa
