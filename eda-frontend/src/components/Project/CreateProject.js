@@ -72,6 +72,8 @@ function CreateProject () {
   const [versions, setVersions] = React.useState(null)
   const [activeVersion, setActiveVersion] = React.useState('')
   const [activeName, setActiveName] = React.useState(null)
+  const [activeSaveTime, setActiveSaveTime] = React.useState(null)
+  const [activeSaveDate, setActiveSaveDate] = React.useState(null)
   const [details, setDetails] = useState(
     {
       title: '',
@@ -132,6 +134,8 @@ function CreateProject () {
         if (versions[i].version === project.details.active_version && versions[i].branch === project.details.active_branch) {
           setActiveVersion(`${versions[i].version}-${versions[i].branch}`)
           setActiveName(versions[i].name)
+          setActiveSaveTime(versions[i].time)
+          setActiveSaveDate(versions[i].date)
           break
         }
       }
@@ -308,7 +312,7 @@ function CreateProject () {
             <Grid item xs={12} sm={12}>
               {project.details && <Paper style={{ padding: '.2% 0%', marginBottom: '1%' }}>
                 <h3 style={{ textAlign: 'center' }}>Status of the project: {project.details.status_name}  </h3>
-                <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of branch {project.details.active_branch}  </h3>
+                <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of variation {project.details.active_branch} saved on {activeSaveDate} at {activeSaveTime} hours</h3>
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
               <Paper className={classes.paper}>
