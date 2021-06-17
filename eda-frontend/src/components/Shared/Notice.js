@@ -14,7 +14,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import { SpinnerDotted } from 'spinners-react'
 
 export function ScrollDialog (txt) {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState(true)
   const [scroll, setScroll] = React.useState('paper')
 
   const handleClickOpen = () => {
