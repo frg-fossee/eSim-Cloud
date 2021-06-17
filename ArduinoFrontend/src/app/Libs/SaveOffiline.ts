@@ -8,6 +8,9 @@ declare var window;
  * Class to Save Project in IndexedDB
  */
 export class SaveOffline {
+  public static readPromiseHandler: Boolean = false;
+  public static savePromiseHandler: Boolean = false;
+  public static deletePromiseHandler: Boolean = false;
   /**
    * Check if IndexedDB exist if not show alert
    * @param callback If IndexedDB exist call the callback
@@ -66,6 +69,7 @@ export class SaveOffline {
         callback(mydata);
       }
       AlertService.showAlert('Done saved.');
+      this.savePromiseHandler = true;
     })) {
       return;
     }
@@ -106,6 +110,7 @@ export class SaveOffline {
             callback(data);
           }
         }
+        this.readPromiseHandler = true;
       };
     })) {
       return;
@@ -137,6 +142,7 @@ export class SaveOffline {
         if (callback) {
           callback();
         }
+        this.deletePromiseHandler = true;
       };
     })) {
       return;
@@ -169,6 +175,7 @@ export class SaveOffline {
         if (callback) {
           callback(mydata);
         }
+        this.savePromiseHandler = true;
       };
     })) {
       return;
@@ -199,10 +206,12 @@ export class SaveOffline {
 
       ok.onerror = () => {
         AlertService.showAlert('Unable to retrieve data from database!');
+        this.readPromiseHandler = true;
       };
 
       ok.onsuccess = () => {
         callback(ok.result);
+        this.readPromiseHandler = true;
       };
     })) {
       return;
