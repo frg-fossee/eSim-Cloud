@@ -790,6 +790,8 @@ export class Workspace {
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
 
+      UndoUtils.pushChangeToUndoAndReset({ keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' })
+
       // If Current Selected item is a Wire which is not Connected from both end
       if (key === 'wires') {
         if (isNull(window.Selected.end)) {

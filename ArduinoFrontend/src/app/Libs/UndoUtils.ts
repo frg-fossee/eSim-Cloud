@@ -55,6 +55,23 @@ export abstract class UndoUtils {
      * @param ele event snapshot
      */
     static pushChangeToUndoAndReset(ele) {
+
+        // This is used to save wires connected to element in case of delete event only
+        if (ele.event === 'delete') {
+            let step = 0;
+            var grup = window.scope[ele.keyName]
+            const temp = this.getExistingWindowElement(grup, ele)
+            console.log(temp.nodes)
+            for (const e in temp.nodes) {
+                if (temp.nodes[e].connectedTo) {
+                    let wire = temp.nodes[e].connectedTo
+                    UndoUtils.pushChangeToUndo({ keyName: wire.keyName, element: wire.save(), event: 'delete' })
+                    step += 1;
+                }
+            }
+            ele.step = step;
+        }
+
         this.redo = []
         this.pushChangeToUndo(ele)
     }
@@ -87,6 +104,18 @@ export abstract class UndoUtils {
 
         var grup = window.scope[ele.keyName]
         let createdEle = null
+        console.log(ele)
+        if (operation == 'undo' && ele.event == 'delete') {
+            UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event })
+            UndoUtils.createElement(ele).then(res => {
+                console.log(res)
+                for (let i = 0; i <= ele.step; i++) {
+                    this.workspaceUndo();
+                }
+            })
+        } else if (operation == 'redo' && ele.event == 'delete') {
+            UndoUtils.removeElement(ele)
+        }
 
         // Only trigger if wire
         if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
@@ -234,15 +263,18 @@ export abstract class UndoUtils {
             if (obj.load) {
                 obj.load(comp);
             }
-
+            console.log('rr')
             // Wait until all components are drawn
             const interval = setInterval(() => {
+                console.log('rrrr')
                 if (window.queue === 0) {
                     clearInterval(interval);
                     // start drawing wires
                     resolve(obj);
                     // Workspace.LoadWires(data.wires);
                     // Hide loading animation
+                } else {
+                    resolve(obj)
                 }
             }, 100);
 
