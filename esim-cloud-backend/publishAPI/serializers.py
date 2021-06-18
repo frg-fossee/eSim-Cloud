@@ -63,8 +63,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         read_only=True, source='author.username')
     fields = FieldSerializer(many=True)
     save_id = serializers.SerializerMethodField()
-    saves = StateSaveSerializer(read_only=True, many=True,
-                                source='statesave_set')
+    active_save = serializers.SerializerMethodField()
 
     class Meta:
         model = Project
@@ -78,11 +77,13 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'active_branch',
                   'active_version',
                   'save_id',
-                  'saves'
+                  'active_save'
                   )
 
     def get_save_id(self, obj):
         return obj.statesave_set.first().save_id
+    def get_active_save(self, obj):
+        return StateSaveSerializer(obj.statesave_set.get(save_id=obj.statesave_set.first().save_id,branch=obj.active_branch,version=obj.active_version)).data
 
 
 class ReportSerializer(serializers.ModelSerializer):

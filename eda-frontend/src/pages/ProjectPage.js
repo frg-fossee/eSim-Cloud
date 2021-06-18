@@ -111,7 +111,7 @@ export default function ProjectPage (props) {
         handleReportOpen()
         break
       case 'Make copy':
-        dispatch(makeCopy(save_id))
+        dispatch(makeCopy(save_id,project.details.active_version,project.details.active_branch))
         setSnackbarOpen(true)
         break
       case 'Generate Netlist':
