@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { SaveOnline } from '../Libs/SaveOnline';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * For Handling Time ie. Prevent moment error
@@ -76,7 +77,14 @@ export class DashboardComponent implements OnInit {
    * @param snackbar Material Snackbar
    * @param title Document Title
    */
-  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title, private alertService: AlertService) {
+  constructor(
+    private api: ApiService, 
+    private snackbar: MatSnackBar, 
+    private title: Title, 
+    private alertService: AlertService,
+    private router: Router,
+    private aroute: ActivatedRoute
+  ) {
     this.title.setTitle('Dashboard | Arduino On Cloud');
   }
   /**
@@ -402,15 +410,18 @@ export class DashboardComponent implements OnInit {
         AlertService.showAlert('Please Login');
         return;
       }
-      this.api.readProject(id, token).subscribe(this.DownloadFile, (err: HttpErrorResponse) => {
-        if (err.status === 401) {
-          AlertService.showAlert('You are Not Authorized to download this circuit');
-          window.open('../../../', '_self');
-          return;
+      this.api.readProject(id, token).subscribe(
+        data => this.DownloadFile(this.convertToOfflineFormat(id, data)), 
+        (err: HttpErrorResponse) => {
+          if (err.status === 401) {
+            AlertService.showAlert('You are Not Authorized to download this circuit');
+            window.open('../../../', '_self');
+            return;
+          }
+          AlertService.showAlert('Something Went Wrong');
+          console.log(err);
         }
-        AlertService.showAlert('Something Went Wrong');
-        console.log(err);
-      });
+      );
     }
   }
 
@@ -442,23 +453,71 @@ export class DashboardComponent implements OnInit {
       SaveOffline.Update(fileData)
     },
     () => {
-      let projectId = fileData.id
-      let projectTitle = fileData.project.title
-      let description = fileData.project.description
       if (!(Login.getToken())) {
         AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
         return;
       }
       // if project id is uuid (online circuit)
-      if (SaveOnline.isUUID(projectId)) {
+      if (SaveOnline.isUUID(fileData.id)) {
         // Update Project to DB
-        SaveOnline.Save(projectTitle, description, this.api, (_) => AlertService.showAlert('Updated'), projectId);
+        SaveOnline.SaveFromDashboard(fileData, this.api, (_) => AlertService.showAlert('Updated'));
       } else {
         // Save Project and show alert
-        SaveOnline.Save(projectTitle, description, this.api, (out) => {
+        SaveOnline.SaveFromDashboard(fileData, this.api, (out) => {
           AlertService.showAlert('Saved');
+          // add new quert parameters
+          this.router.navigate(
+            [],
+            {
+              relativeTo: this.aroute,
+              queryParams: {
+                id: out.save_id,
+                online: true,
+                offline: null,
+                gallery: null
+              },
+              queryParamsHandling: 'merge'
+            }
+        );
         });
       }
     });
+  }
+
+  /**
+   * 
+   * @param id Project Id
+   * @param data JSON data of the circuit
+   * @returns JSON data of the circuit with format for saving it 
+   */
+  convertToOfflineFormat(id, data) {
+    let obj = JSON.parse(data.data_dump)
+    let project = {
+        name: data.name,
+        description: data.description,
+        image: data.base64_image,
+        created_at: Date.now(),
+    }
+    obj['id'] = id;
+    obj['project'] = project;
+    return data;
+  }
+
+  convertToOnlineFormat(data) {
+    const obj = {
+      data_dump: '',
+      is_arduino: true,
+      description: data.project.description,
+      name: data.project.name,
+      base64_image: data.project.image,
+    };
+    // Remove unwanted props from JSON
+    delete data['id']
+    delete data['project']
+    // Data Dump will contain Circuit data
+    const dataDump = data;
+    // Convert Data Dump to an String and add to Save Object
+    obj.data_dump = JSON.stringify(dataDump);
+    return obj;
   }
 }

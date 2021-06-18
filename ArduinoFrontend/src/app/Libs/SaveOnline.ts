@@ -116,5 +116,65 @@ export class SaveOnline {
 
   }
 
+  static SaveFromDashboard(data: any, api: ApiService, callback: (data: any) => void = null) {
+    let id = data.id;
+    // Get Token
+    const token = Login.getToken();
+    if (token) {
+      // if id is present then update
+      let toUpdate = false;
+      if (isNull(id)) {
+      } else {
+        toUpdate = true;
+      }
+      // Save Object that needs to send to server
+      const saveObj = {
+        data_dump: '',
+        is_arduino: true,
+        description: data.project.description,
+        name: data.project.name,
+        base64_image: data.project.image,
+      };
+      // Remove unwanted props from JSON
+      delete data['id']
+      delete data['project']
+      // Data Dump will contain Circuit data
+      const dataDump = data;
+      // Convert Data Dump to an String and add to Save Object
+      saveObj.data_dump = JSON.stringify(dataDump);
+      // if update then update the project
+      if (toUpdate) {
+        api.updateProject(id, saveObj, token).subscribe(out => {
+          if (callback) {
+            callback(out);
+          }
+        }, err => {
+          if (err.status === 401) {
+            AlertService.showAlert('You Cannot Save the Circuit as you are not the Ownwer');
+            return;
+          }
+          console.log(err);
+        });
+      } else {
+        // Otherwise save the project
+        api.saveProject(saveObj, token).subscribe(output => {
+          if (callback) {
+            callback(output);
+          }
+        }, err => {
+          let message = '';
+          for (const key in err.error) {
+            if (err.error[key]) {
+              message += '\n' + key;
+              for (const item of err.error[key]) {
+                message += `${item},`;
+              }
+            }
+          }
+          AlertService.showAlert(message);
+        });
+      }
+    }
+  }
 }
 
