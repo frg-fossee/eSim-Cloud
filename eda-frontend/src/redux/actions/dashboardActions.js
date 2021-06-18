@@ -18,6 +18,8 @@ export const fetchSchematics = () => (dispatch, getState) => {
   api.get('save/list', config)
     .then(
       (res) => {
+        console.log(res.data)
+
         dispatch({
           type: actions.FETCH_SCHEMATICS,
           payload: res.data

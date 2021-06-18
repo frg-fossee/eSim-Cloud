@@ -78,7 +78,7 @@ class ProjectViewSet(APIView):
                 branch=request.data[0]['active_branch'],
                 version=request.data[0]['active_version'])
         except StateSave.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'Save does not exist'},status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         if active_state_save.project is None:
             project = Project(title=request.data[0]['title'],

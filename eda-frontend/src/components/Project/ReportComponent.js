@@ -70,7 +70,6 @@ function ReportComponent (props) {
   const [status, setStatus] = React.useState(null)
   const [reportStatus, setReportStatus] = React.useState(null)
   const [tab, setTab] = React.useState(0)
-  const [reportApproved, setReportApproved] = React.useState(false)
   const auth = useSelector(state => state.authReducer)
   const stateList = useSelector(state => state.projectReducer.states)
   const dispatch = useDispatch()
@@ -105,10 +104,6 @@ function ReportComponent (props) {
     }
     var report = { id: report_id, approved: e.target.value }
     temp.push(report)
-    // TODO: Make this check better
-    if (e.target.value === true) {
-      setReportApproved(true)
-    }
     setReportStatus(temp)
   }
   const onClick = (type) => {
@@ -211,7 +206,7 @@ function ReportComponent (props) {
               </Paper>
             ))}
           </TabPanel>}
-          {stateList && ((tab === 1 && props.project.reports.approved[0]) || (tab === 0 && reportApproved)) && auth.user.username !== props.project.details.author_name &&
+          {stateList && ((tab === 1 && props.project.reports.approved[0]) || (tab === 0)) && auth.user.username !== props.project.details.author_name &&
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
