@@ -179,7 +179,7 @@ export class LED extends CircuitElement {
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
     }
-    const arduinoEnd: any = this.getArduino(this.pinNamedMap['POSITIVE']); // not able to determine if resistor is there
+    const arduinoEnd: any = this.getRecArduino(this.pinNamedMap['POSITIVE']); // not able to determine if resistor is there
 
     // Only add pwm if connected to a pwm pin in arduino
     if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) != -1) {
@@ -203,26 +203,41 @@ export class LED extends CircuitElement {
   }
 
   /**
- * Return the node which is connected to arduino
- * @param node The Node which need to be checked
- */
-  private getArduino(node: Point) {
-    if (
-      node.connectedTo &&
-      node.connectedTo.start &&
-      node.connectedTo.start.parent.keyName === 'ArduinoUno'
-    ) {
+  * Return the node which is connected to arduino by recursively finding connected node
+  * @param node The Node which need to be checked
+  */
+  private getRecArduino(node: Point) {
+    if (node.connectedTo.start.parent.keyName == 'ArduinoUno') {
+      // if (node.connectedTo.start.label == 'GND') {
+      //   console.log('its a gnd')
+      // }
       return node.connectedTo.start;
-    }
-    if (
-      node.connectedTo &&
-      node.connectedTo.end &&
-      node.connectedTo.end.parent.keyName === 'ArduinoUno'
-    ) {
+    } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
+      // if (node.connectedTo.end.label == 'GND') {
+      //   console.log('its a gnd')
+      // }
       return node.connectedTo.end;
+    } else {
+
+      if (node.connectedTo.end.x != node.x || node.connectedTo.end.y != node.y) {
+        for (const e in node.connectedTo.end.parent.nodes) {
+          if (node.connectedTo.end.parent.nodes[e].x != node.connectedTo.end.x || node.connectedTo.end.parent.nodes[e].y != node.connectedTo.end.y) {
+            return this.getRecArduino(node.connectedTo.end.parent.nodes[e])
+          }
+        }
+      }
+      else if (node.connectedTo.start.x != node.x || node.connectedTo.start.y != node.y) {
+        for (const e in node.connectedTo.start.parent.nodes) {
+          if (node.connectedTo.start.parent.nodes[e].x != node.connectedTo.start.x || node.connectedTo.start.parent.nodes[e].y != node.connectedTo.start.y) {
+            return this.getRecArduino(node.connectedTo.start.parent.nodes[e])
+          }
+        }
+      }
+
     }
-    return null;
+
   }
+
 }
 
 /**
@@ -279,10 +294,10 @@ export class RGBLED extends CircuitElement {
       R = G = B = 209;
     }
     this.elements[1].attr({
-      fill: `rgba(${R},${G},${B},0.8)`
+      fill: `rgba(${R}, ${G}, ${B}, 0.8)`
     });
     this.glow = this.elements[1].glow({
-      color: `rgb(${R},${G},${B})`
+      color: `rgb(${R}, ${G}, ${B})`
     });
   }
   /**
