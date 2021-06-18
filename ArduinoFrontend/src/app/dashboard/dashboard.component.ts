@@ -465,7 +465,7 @@ export class DashboardComponent implements OnInit {
         // Save Project and show alert
         SaveOnline.SaveFromDashboard(fileData, this.api, (out) => {
           AlertService.showAlert('Saved');
-          // add new quert parameters
+          // add new query parameters
           this.router.navigate(
             [],
             {
@@ -485,10 +485,10 @@ export class DashboardComponent implements OnInit {
   }
 
   /**
-   * 
+   * Converts JSON of cloud-stored circuit into JSON format for storing it temporarily
    * @param id Project Id
    * @param data JSON data of the circuit
-   * @returns JSON data of the circuit with format for saving it 
+   * @returns JSON data of the circuit with format for saving it temporarily
    */
   convertToOfflineFormat(id, data) {
     let obj = JSON.parse(data.data_dump)
@@ -503,6 +503,11 @@ export class DashboardComponent implements OnInit {
     return data;
   }
 
+  /**
+   * Converts JSON of temporarily saved circuit to JSON format on Cloud 
+   * @param data JSON data of the circuit
+   * @returns JSON data of the circuit with format for saving it on cloud
+   */
   convertToOnlineFormat(data) {
     const obj = {
       data_dump: '',
