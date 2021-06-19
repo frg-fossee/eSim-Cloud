@@ -44,11 +44,12 @@ export function Save() {
 
 // UNDO
 export function Undo() {
+  console.log(undoManager)
   if (undoManager.indexOfNextAdd === 0) {
     // Nothing to undo
     return
   }
-  if(undoManager.history[undoManager.indexOfNextAdd - 1].changes.length > 2) {
+  if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 12) {
     // Found wire
     undoManager.undo()
   } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 2) {
@@ -69,7 +70,8 @@ export function Undo() {
 
 // REDO
 export function Redo() {
-  if(undoManager.indexOfNextAdd === undoManager.history.length) {
+  console.log(undoManager)
+  if (undoManager.indexOfNextAdd === undoManager.history.length) {
     // Nothing to redo
     return
   }
@@ -80,7 +82,7 @@ export function Redo() {
     // Found Component
     let undos = 1
     for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, undos++) {
-      if (undoManager.history[i].changes.length !== 2) break;
+      if (undoManager.history[i].changes.length === 12 || undoManager.history[i].changes.length === 1) break;
     }
     while (undos !== 0) {
       undoManager.redo()
