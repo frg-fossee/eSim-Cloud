@@ -47,13 +47,14 @@ class ProjectViewSet(APIView):
                     role__in=user_roles,
                     view_own_states=queryset.state).exists():
                 pass
-            elif queryset.author != self.request.user and Permission.objects.filter(  # noqa
+            elif queryset.author != self.request.user and Permission.objects.filter(
+                    # noqa
                     role__in=user_roles,
                     view_other_states=queryset.state).exists():
                 pass
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
-            
+
             if queryset.author == self.request.user and Permission.objects.filter(
                     role__in=user_roles,
                     edit_own_states=queryset.state).exists():
@@ -79,7 +80,8 @@ class ProjectViewSet(APIView):
                 branch=request.data[0]['active_branch'],
                 version=request.data[0]['active_version'])
         except StateSave.DoesNotExist:
-            return Response({'Save does not exist'},status=status.HTTP_404_NOT_FOUND)
+            return Response({'Save does not exist'},
+                            status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         if active_state_save.project is None:
             project = Project(title=request.data[0]['title'],

@@ -1,10 +1,8 @@
 /* eslint-disable camelcase */
 import {
-  Button,
   ButtonBase,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardHeader,
   CardMedia,

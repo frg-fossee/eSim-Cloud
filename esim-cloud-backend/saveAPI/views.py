@@ -102,13 +102,19 @@ class CopyStateView(APIView):
             except StateSave.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
-            copy_state = StateSave(name=saved_state.name, description=saved_state.description, data_dump=saved_state.data_dump,
-                                   base64_image=saved_state.base64_image, is_arduino=saved_state.is_arduino,
-                                   owner=self.request.user,branch='master',version=version)
+            copy_state = StateSave(name=saved_state.name,
+                                   description=saved_state.description,
+                                   data_dump=saved_state.data_dump,
+                                   base64_image=saved_state.base64_image,
+                                   is_arduino=saved_state.is_arduino,
+                                   owner=self.request.user, branch='master',
+                                   version=version)
             copy_state.save()
             copy_state.esim_libraries.set(saved_state.esim_libraries.all())
             copy_state.save()
-            return Response({"save_id": copy_state.save_id,"version":copy_state.version,"branch":copy_state.branch})
+            return Response(
+                {"save_id": copy_state.save_id, "version": copy_state.version,
+                 "branch": copy_state.branch})
 
 
 class StateFetchUpdateView(APIView):
@@ -215,13 +221,13 @@ class StateFetchUpdateView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
             if (saved_state.project is None) or \
-                (saved_state.project is not None and
-                 (saved_state.project.active_branch != branch or
-                  saved_state.project.active_version != version)) or \
-                (saved_state.project is not None and
-                 Permission.objects.filter(
-                    role__in=self.request.user.groups.all(),
-                    del_own_states=saved_state.project.state).exists()):
+                    (saved_state.project is not None and
+                     (saved_state.project.active_branch != branch or
+                      saved_state.project.active_version != version)) or \
+                    (saved_state.project is not None and
+                     Permission.objects.filter(
+                         role__in=self.request.user.groups.all(),
+                         del_own_states=saved_state.project.state).exists()):
                 pass
             else:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -390,7 +396,6 @@ class GetStateSpecificVersion(APIView):
 
 
 class DeleteBranch(APIView):
-
     permission_classes = (IsAuthenticated,)
 
     def delete(self, request, save_id, branch):
@@ -401,7 +406,7 @@ class DeleteBranch(APIView):
                 owner=self.request.user
             )
             if queryset[0].project is None or \
-               queryset[0].project.active_branch != branch:
+                    queryset[0].project.active_branch != branch:
                 queryset.delete()
                 return Response(data=None, status=status.HTTP_204_NO_CONTENT)
             else:

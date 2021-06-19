@@ -82,8 +82,12 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_save_id(self, obj):
         return obj.statesave_set.first().save_id
+
     def get_active_save(self, obj):
-        return StateSaveSerializer(obj.statesave_set.get(save_id=obj.statesave_set.first().save_id,branch=obj.active_branch,version=obj.active_version)).data
+        return StateSaveSerializer(
+            obj.statesave_set.get(save_id=obj.statesave_set.first().save_id,
+                                  branch=obj.active_branch,
+                                  version=obj.active_version)).data
 
 
 class ReportSerializer(serializers.ModelSerializer):
