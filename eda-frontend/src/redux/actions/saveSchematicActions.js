@@ -37,7 +37,6 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 export const saveSchematic = (title, description, xml, base64) => (dispatch, getState) => {
   var libraries = []
   getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
-  console.log(libraries)
   const body = {
     data_dump: xml,
     base64_image: base64,

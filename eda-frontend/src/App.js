@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HashRouter, Switch, Route, Redirect } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
@@ -24,9 +24,15 @@ import ChangePassword from './pages/Account/ChangePassword'
 // and restricted routes disabled for authenticated users. [ e.g : login , signup ]
 function PrivateRoute ({ component: Component, ...rest }) {
   const auth = useSelector(state => state.authReducer)
+  const [count, setcount] = useState(0)
   const dispatch = useDispatch()
 
   useEffect(() => dispatch(loadUser()), [dispatch])
+
+  if (count === 0) {
+    setcount(1)
+    dispatch(loadUser())
+  }
 
   return <Route {...rest} render={props => {
     if (auth.isLoading) {
