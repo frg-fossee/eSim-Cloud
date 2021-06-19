@@ -42,27 +42,48 @@ export function Save() {
   return value
 }
 
+// Func to check if wire change
+const checkWireChange = (changes) => {
+  for (const change of changes) {
+    if (change.__proto__.constructor.name === 'mxTerminalChange') { return true }
+  }
+  return false
+}
+
+
 // UNDO
 export function Undo() {
-  console.log(undoManager)
   if (undoManager.indexOfNextAdd === 0) {
     // Nothing to undo
     return
   }
-  if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 12) {
-    // Found wire
+  if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd - 1].changes)) {
+    // Found Wire
     undoManager.undo()
   } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 2) {
-    // Found component
+    // Found Component
     let undos = 1
     for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
-      if (undoManager.history[i].changes.length === 1) break;
+      if (undoManager.history[i].changes.length === 1
+        // && undoManager.history[i].changes.__proto__.constructor.name == 'mxChildChange'
+      ) { break }
     }
     while(undos !== 0) {
       undoManager.undo()
       undos--
     }
-  } else {
+  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 1) {
+    // Found Rotate
+    let undos = 0
+    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
+      if (undoManager.history[i].changes.length !== 1) { break }
+    }
+    while(undos !== 0) {
+      undoManager.undo()
+      undos--
+    }
+  }
+  else {
     // Default case !?
     undoManager.undo()
   }
@@ -70,7 +91,6 @@ export function Undo() {
 
 // REDO
 export function Redo() {
-  console.log(undoManager)
   if (undoManager.indexOfNextAdd === undoManager.history.length) {
     // Nothing to redo
     return
@@ -78,15 +98,27 @@ export function Redo() {
   else if (undoManager.history[undoManager.indexOfNextAdd].changes.length > 2) {
     // Found Wire
     undoManager.redo()
-  } else if (undoManager.history[undoManager.indexOfNextAdd].changes.length === 1) {
+  } else if (
+    undoManager.history[undoManager.indexOfNextAdd].changes.length === 1
+    && undoManager.history[undoManager.indexOfNextAdd].changes[0].__proto__.constructor.name == 'mxChildChange'
+  ) {
     // Found Component
-    let undos = 1
-    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, undos++) {
-      if (undoManager.history[i].changes.length === 12 || undoManager.history[i].changes.length === 1) break;
+    let redos = 1
+    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
+      if (undoManager.history[i].changes.length === 12 || undoManager.history[i].changes.length === 1) { break }
     }
-    while (undos !== 0) {
+    while (redos !== 0) {
       undoManager.redo()
-      undos--
+      redos--
+    }
+  } else if (undoManager.history[undoManager.indexOfNextAdd].changes.length === 1) {
+    let redos = 1;
+    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
+      if (undoManager.history[i].changes.length !== 1) { break }
+    }
+    while (redos !== 0) {
+      redos--
+      undoManager.redo()
     }
   } else {
     // Default Case !?
