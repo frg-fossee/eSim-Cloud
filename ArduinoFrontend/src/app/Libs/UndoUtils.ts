@@ -61,7 +61,6 @@ export abstract class UndoUtils {
             let step = 0;
             var grup = window.scope[ele.keyName]
             const temp = this.getExistingWindowElement(grup, ele)
-            console.log(temp.nodes)
             for (const e in temp.nodes) {
                 if (temp.nodes[e].connectedTo) {
                     let wire = temp.nodes[e].connectedTo
@@ -82,7 +81,6 @@ export abstract class UndoUtils {
      */
     static pushChangeToRedo(ele) {
         this.redo.push(ele)
-        console.log('redo stack after -> ', this.redo)
     }
 
     /**
@@ -91,7 +89,6 @@ export abstract class UndoUtils {
      */
     static pushChangeToUndo(ele) {
         this.undo.push(ele);
-        console.log('undo stack after -> ', this.undo)
     }
 
     /**
@@ -104,15 +101,14 @@ export abstract class UndoUtils {
 
         var grup = window.scope[ele.keyName]
         let createdEle = null
-        console.log(ele)
         if (operation == 'undo' && ele.event == 'delete') {
             UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event })
             UndoUtils.createElement(ele).then(res => {
-                console.log(res)
-                for (let i = 0; i <= ele.step; i++) {
+                for (let i = 0; i < ele.step; i++) {
                     this.workspaceUndo();
                 }
             })
+            return
         } else if (operation == 'redo' && ele.event == 'delete') {
             UndoUtils.removeElement(ele)
         }
@@ -128,7 +124,6 @@ export abstract class UndoUtils {
             return
         } else if (ele.event == 'wire_color' && operation == 'redo' && ele.keyName == 'wires') {
             const temp = this.getExistingWindowElement(grup, ele)
-            console.log(temp)
             UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: temp.save(), event: ele.event })
             temp.setColor(ele.element.color);
             return
@@ -237,7 +232,6 @@ export abstract class UndoUtils {
      */
     static createElement(ele) {
         return new Promise((resolve, reject) => {
-
             window.queue = 0;
 
             var comp = ele.element;
@@ -263,7 +257,6 @@ export abstract class UndoUtils {
             if (obj.load) {
                 obj.load(comp);
             }
-            console.log('rr')
             // Wait until all components are drawn
             const interval = setInterval(() => {
                 console.log('rrrr')
