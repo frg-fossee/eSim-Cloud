@@ -58,7 +58,10 @@ export default function SignIn (props) {
   useEffect(() => {
     dispatch(authDefault())
     document.title = 'Login - eSim '
-    if (props.location.search !== '') {
+    const ardUrl = localStorage.getItem('ard_redurl')
+    if (ardUrl && ardUrl !== '') {
+      url = ardUrl
+    } else if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       url = query.get('url')
       localStorage.setItem('ard_redurl', url)
@@ -156,7 +159,7 @@ export default function SignIn (props) {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link component={RouterLink} to="#" variant="body2">
+              <Link component={RouterLink} to="/reset-password" variant="body2">
                 Forgot password?
               </Link>
             </Grid>

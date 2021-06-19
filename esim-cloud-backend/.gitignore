@@ -5,3 +5,4 @@ static/
 symbols/*
 .DS_Store
 symbol_svgs
+kicad-symbols/*
