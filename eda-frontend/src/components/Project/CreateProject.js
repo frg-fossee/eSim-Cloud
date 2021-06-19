@@ -438,6 +438,17 @@ function CreateProject () {
                       ))}
                     </> : <h4>No approved reports.</h4>}
                 </List>
+                <List>
+                  <h3>List of Unapproved Reports</h3>
+                  {project.reports?.open[0]
+                    ? <>
+                      {project.reports.open.map((item, index) => (
+                        <ListItem key={index}>
+                          {index + 1}. {item.description}
+                        </ListItem>
+                      ))}
+                    </> : <h4>No Unapproved reports.</h4>}
+                </List>
               </Paper>
             </Grid>
             <Grid item xs={6} sm={6}>

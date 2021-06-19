@@ -144,20 +144,21 @@ function ReportComponent (props) {
         <DialogTitle style={{ paddingBottom: '0' }}><h1 style={{ marginBottom: '0', marginTop: '0' }}>Reports</h1></DialogTitle>
         <DialogContent>
           <Tabs value={tab} onChange={handleChangeTab}>
-            {auth.user.username !== props.project.details.author_name && <Tab label="Open Reports" {...a11yProps(0)} />}
+           <Tab label="Open Reports" {...a11yProps(0)} />
             <Tab label="Approved Reports" {...a11yProps(1)} />
-            {auth.user.username !== props.project.details.author_name && <Tab label="Closed Reports" {...a11yProps(2)} />}
+            {auth.user.username !== props.project.details.author_name && auth.roles?.is_type_reviewer && <Tab label="Closed Reports" {...a11yProps(2)} />}
           </Tabs>
-          {auth.user.username !== props.project.details.author_name && <TabPanel value={tab} index={0}>
-            {props.project.reports.open[0] ? <h3 style={{ marginTop: '0' }}>Do you want to approve any reports?</h3> : <h3 style={{ marginTop: '0' }}>No open reports</h3>}
-            {props.project.reports && props.project.reports.open.map((item, index) => (
+          <TabPanel value={tab} index={0}>
+            {(props.project.reports.open[0] && auth.user.username !== props.project.details.author_name && auth.roles?.is_type_reviewer) && <h3 style={{ marginTop: '0' }}>Do you want to approve any reports?</h3>}
+            {props.project.reports ? props.project.reports.open.map((item, index) => (
               <Paper key={index} style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
                     <p>
                       {item.description}
                     </p>
-                  </Grid>{auth.user.username !== props.project.details.author_name &&
+                  </Grid>
+                  {auth.user.username !== props.project.details.author_name && auth.roles?.is_type_reviewer && 
                     <Grid item xs={6}>
                       <Select
                         defaultValue={item.approved}
@@ -172,10 +173,10 @@ function ReportComponent (props) {
                     </Grid>}
                 </Grid>
               </Paper>
-            ))}
-          </TabPanel>}
-          <TabPanel value={tab} index={auth.user.username !== props.project.details.author_name ? 1 : 0}>
-            {props.project.reports && props.project.reports.approved.map((item, index) => (
+            )): <>No Open Reports</>}
+          </TabPanel>
+          <TabPanel value={tab} index={1}>
+            {props.project.reports.approved[0] ? props.project.reports.approved.map((item, index) => (
               <Paper key={index} style={{ margin: '1% .2%', padding: '.5% .7%' }}>
                 <Grid container>
                   <Grid item xs={6}>
@@ -188,7 +189,7 @@ function ReportComponent (props) {
                     </Grid>}
                 </Grid>
               </Paper>
-            ))}
+            )) : <>No Approved Reports</>}
           </TabPanel>
           {auth.user.username !== props.project.details.author_name && <TabPanel value={tab} index={2}>
             {props.project.reports && props.project.reports.closed.map((item, index) => (
@@ -206,7 +207,7 @@ function ReportComponent (props) {
               </Paper>
             ))}
           </TabPanel>}
-          {stateList && ((tab === 1 && props.project.reports.approved[0]) || (tab === 0)) && auth.user.username !== props.project.details.author_name &&
+          {stateList && (tab === 1 && props.project.reports.approved[0]) && auth.roles.is_type_reviewer && auth.user.username !== props.project.details.author_name &&
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"

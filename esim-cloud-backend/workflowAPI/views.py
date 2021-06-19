@@ -283,7 +283,8 @@ class ReportedProjectsView(viewsets.ViewSet):
                             status=http_status.HTTP_404_NOT_FOUND)
         try:
             if self.request.user == project.author:
-                open_reports = []
+                open_reports = Report.objects.filter(
+                    project=project, report_open=True, approved=None)
                 resolved_reports = []
                 approved_reports = Report.objects.filter(
                     project=project, report_open=True, approved=True)

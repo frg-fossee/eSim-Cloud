@@ -190,6 +190,7 @@ export const reportProject = (reportDescription, project_id) => (dispatch, getSt
     api.post(`workflow/report/create/${project_id}`, { description: reportDescription }, config)
       .then(
         (res) => {
+          dispatch(fetchProject(project_id))
           dispatch(fetchReports(project_id))
         }
       )
