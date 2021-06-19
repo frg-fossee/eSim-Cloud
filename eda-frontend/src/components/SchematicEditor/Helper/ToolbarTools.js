@@ -44,8 +44,9 @@ export function Save() {
 
 // UNDO
 export function Undo() {
-  if (undoManager.history.length === 0) {
+  if (undoManager.indexOfNextAdd === 0) {
     // Nothing to undo
+    return
   }
   if(undoManager.history[undoManager.indexOfNextAdd - 1].changes.length > 2) {
     // Found wire
@@ -64,23 +65,19 @@ export function Undo() {
     // Default case !?
     undoManager.undo()
   }
-  console.log(undoManager)
 }
 
 // REDO
 export function Redo() {
-  console.log(undoManager)
   if(undoManager.indexOfNextAdd === undoManager.history.length) {
     // Nothing to redo
     return
   }
   else if (undoManager.history[undoManager.indexOfNextAdd].changes.length > 2) {
     // Found Wire
-    console.log("Found Wire")
     undoManager.redo()
   } else if (undoManager.history[undoManager.indexOfNextAdd].changes.length === 1) {
     // Found Component
-    console.log("Found Component")
     let undos = 1
     for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, undos++) {
       if (undoManager.history[i].changes.length !== 2) break;
