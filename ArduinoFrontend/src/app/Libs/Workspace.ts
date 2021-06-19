@@ -715,7 +715,7 @@ export class Workspace {
 
   }
   /** This function recreates the wire object */
-  static LoadWires(wires: any[], retainId = false) {
+  static LoadWires(wires: any[], retainId = false, pushUndo = false) {
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -756,7 +756,7 @@ export class Workspace {
         tmp.load(w);
         start.connectedTo = tmp;
         end.connectedTo = tmp;
-        tmp.connect(end, true, true);
+        tmp.connect(end, true, true, pushUndo);
         window['scope']['wires'].push(tmp);
         tmp.update();
         if (start.connectCallback) {
@@ -790,7 +790,8 @@ export class Workspace {
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
 
-      UndoUtils.pushChangeToUndoAndReset({ keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' })
+      if (!(window.Selected instanceof Wire && !window.Selected.isConnected()))
+        UndoUtils.pushChangeToUndoAndReset({ keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' })
 
       // If Current Selected item is a Wire which is not Connected from both end
       if (key === 'wires') {

@@ -104,8 +104,12 @@ export abstract class UndoUtils {
         if (operation == 'undo' && ele.event == 'delete') {
             UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event })
             UndoUtils.createElement(ele).then(res => {
+                if (ele.keyName === 'BreadBoard') {
+                    window['DragListeners'] = [];
+                    window['DragStopListeners'] = [];
+                }
                 for (let i = 0; i < ele.step; i++) {
-                    this.workspaceUndo();
+                    UndoUtils.createElement(this.undo.pop())
                 }
             })
             return
@@ -238,7 +242,7 @@ export abstract class UndoUtils {
             var key = ele.keyName
 
             if (key == 'wires') {
-                Workspace.LoadWires([ele.element], true)
+                Workspace.LoadWires([ele.element], true, true)
                 return
             }
 
