@@ -44,12 +44,55 @@ export function Save() {
 
 // UNDO
 export function Undo() {
-  undoManager.undo()
+  if (undoManager.history.length === 0) {
+    // Nothing to undo
+  }
+  if(undoManager.history[undoManager.indexOfNextAdd - 1].changes.length > 2) {
+    // Found wire
+    undoManager.undo()
+  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 2) {
+    // Found component
+    let undos = 1
+    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
+      if (undoManager.history[i].changes.length === 1) break;
+    }
+    while(undos !== 0) {
+      undoManager.undo()
+      undos--
+    }
+  } else {
+    // Default case !?
+    undoManager.undo()
+  }
+  console.log(undoManager)
 }
 
 // REDO
 export function Redo() {
-  undoManager.redo()
+  console.log(undoManager)
+  if(undoManager.indexOfNextAdd === undoManager.history.length) {
+    // Nothing to redo
+    return
+  }
+  else if (undoManager.history[undoManager.indexOfNextAdd].changes.length > 2) {
+    // Found Wire
+    console.log("Found Wire")
+    undoManager.redo()
+  } else if (undoManager.history[undoManager.indexOfNextAdd].changes.length === 1) {
+    // Found Component
+    console.log("Found Component")
+    let undos = 1
+    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, undos++) {
+      if (undoManager.history[i].changes.length !== 2) break;
+    }
+    while (undos !== 0) {
+      undoManager.redo()
+      undos--
+    }
+  } else {
+    // Default Case !?
+    undoManager.redo()
+  }
 }
 
 // Zoom IN
