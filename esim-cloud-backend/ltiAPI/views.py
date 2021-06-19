@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib import messages
+from saveAPI.serializers import StateSaveSerializer
 from django.views import View
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -27,42 +27,42 @@ class LTIExist(APIView):
     def get(self, request, save_id):
         try:
             consumer = lticonsumer.objects.get(Q(model_schematic__save_id=save_id)
-                                                  | Q(initial_schematic__save_id=save_id))
+                                               | Q(initial_schematic__save_id=save_id))
         except lticonsumer.DoesNotExist:
             return Response(data={"error": "LTIConsumer Not found"},
                             status=status.HTTP_404_NOT_FOUND)
         host = request.get_host()
         save_id = str(save_id)
+        init_sch_serialized = StateSaveSerializer(
+            instance=consumer.initial_schematic)
+        model_sch_serialized = StateSaveSerializer(
+            instance=consumer.model_schematic)
         config_url = "http://" + host + "/api/lti/auth/" + save_id + "/"
         response_data = {
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
             "config_url": config_url,
             "score": consumer.score,
-            "initial_schematic": str(consumer.initial_schematic.save_id),
-            "model_schematic": str(consumer.model_schematic.save_id)
+            "initial_schematic": init_sch_serialized.data,
+            "model_schematic": model_sch_serialized.data,
+            "test_case": consumer.test_case.id
         }
-        response_serializer = consumerResponseSerializer(data=response_data)
-        if response_serializer.is_valid():
-            return Response(response_serializer.data,
-                            status=status.HTTP_200_OK)
-        else:
-            return Response(response_serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(response_data,
+                        status=status.HTTP_200_OK)
 
 
 class LTIAllConsumers(APIView):
-    permission_classes=(IsAuthenticated,)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         saves = StateSave.objects.filter(owner=self.request.user)
         consumers = []
         for save in saves:
             if save.model_schematic.all().first():
-                consumers.append(consumerExistsSerializer(save.model_schematic.all().first()).data)
+                consumers.append(consumerExistsSerializer(
+                    save.model_schematic.all().first()).data)
         return Response(consumers,
-                            status=status.HTTP_200_OK)
+                        status=status.HTTP_200_OK)
 
 
 class LTIBuildApp(APIView):
@@ -79,29 +79,35 @@ class LTIBuildApp(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         if serialized.is_valid():
             serialized.save()
-            save_id = str(serialized.data["initial_schematic"])
-            saved_state = StateSave.objects.get(save_id=save_id)
-            saved_state.shared = True
-            saved_state.save()
-            host = request.get_host()
-            url = "http://" + host + "/api/lti/auth/" + save_id + "/"
-            response_data = {
-                "consumer_key": serialized.data.get('consumer_key'),
-                "secret_key": serialized.data.get('secret_key'),
-                "config_url": url,
-                "score": serialized.data.get('score'),
-                "initial_schematic": str(serialized.data["initial_schematic"]),
-                "model_schematic": str(serialized.data["model_schematic"])
-            }
-            print("Recieved POST for LTI APP:", response_data)
-            response_serializer = consumerResponseSerializer(
-                data=response_data
-            )
-            if response_serializer.is_valid():
-                return Response(response_serializer.data,
-                                status=status.HTTP_201_CREATED)
+            save_id = serialized.data.get("initial_schematic")
+            if save_id is not None:
+                save_id = str(save_id)
+                saved_state = StateSave.objects.get(save_id=save_id)
+                saved_state.shared = True
+                saved_state.save()
+                host = request.get_host()
+                url = "http://" + host + "/api/lti/auth/" + save_id + "/"
+                response_data = {
+                    "consumer_key": serialized.data.get('consumer_key'),
+                    "secret_key": serialized.data.get('secret_key'),
+                    "config_url": url,
+                    "score": serialized.data.get('score'),
+                    "initial_schematic": str(serialized.data["initial_schematic"]),
+                    "model_schematic": str(serialized.data["model_schematic"]),
+                    "test_case": serialized.data['test_case']
+                }
+                print("Recieved POST for LTI APP:", response_data)
+                response_serializer = consumerResponseSerializer(
+                    data=response_data
+                )
+                if response_serializer.is_valid():
+                    return Response(response_serializer.data,
+                                    status=status.HTTP_201_CREATED)
+                else:
+                    return Response(response_serializer.errors,
+                                    status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response(response_serializer.errors,
+                return Response({"error": "Initial Schematic not provided"},
                                 status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(serialized.errors,

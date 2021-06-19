@@ -7,13 +7,15 @@ from django.contrib.auth import get_user_model
 class consumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = lticonsumer
-        fields = ['consumer_key', 'secret_key', 'model_schematic', 'score', 'initial_schematic']
+        fields = ['consumer_key', 'secret_key', 'model_schematic', 'score', 'initial_schematic', 'test_case']
 
     def create(self, validated_data):
         model_schematic = validated_data.pop("model_schematic")
         initial_schematic = validated_data.pop("initial_schematic")
+        test_case = validated_data.pop("test_case")
         consumer = lticonsumer.objects.create(model_schematic=model_schematic,
                                               initial_schematic=initial_schematic,
+                                              test_case=test_case,
                                               **validated_data)
         return consumer
 
@@ -31,6 +33,7 @@ class consumerResponseSerializer(serializers.Serializer):
     score = serializers.FloatField()
     initial_schematic = serializers.UUIDField()
     model_schematic = serializers.UUIDField()
+    test_case = serializers.IntegerField()
 
 
 class SessionSerializer(serializers.ModelSerializer):

@@ -1,7 +1,7 @@
 from django.db import models
 from saveAPI.models import StateSave
 from django.contrib.auth import get_user_model
-import uuid
+from simulationAPI.models import simulation
 
 
 # Create your models here.
@@ -13,6 +13,7 @@ class lticonsumer(models.Model):
     score = models.FloatField()
     initial_schematic = models.ForeignKey(to=StateSave, on_delete=models.SET_NULL,
                                           null=True, related_name="initial_schematic")
+    test_case = models.ForeignKey(to=simulation, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.consumer_key

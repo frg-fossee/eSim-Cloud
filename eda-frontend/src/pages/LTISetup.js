@@ -1,4 +1,4 @@
-// Main Layout for Submission Page
+// Main Layout for LTI Setup Page
 import React, { useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { CssBaseline } from '@material-ui/core'
@@ -10,7 +10,7 @@ import LayoutMain from '../components/Shared/LayoutMain'
 import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
 import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
-import SubmissionTable from '../components/LTI/SubmissionTable'
+import LTIConfig from '../components/LTI/LTI'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,12 +24,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 
-export default function Submissions() {
+export default function LTISetup() {
   const classes = useStyles()
   // var auth = useSelector(state => state.authReducer)
 
   useEffect(() => {
-    document.title = 'Submissions - eSim'
+    document.title = 'LTI - eSim'
     //eslint-disable-next-line
   }, [])
 
@@ -51,7 +51,7 @@ export default function Submissions() {
             component={SchematicsList}
           />
         </Switch>
-        <SubmissionTable />
+        <LTIConfig />
       </LayoutMain>
     </div>
   )

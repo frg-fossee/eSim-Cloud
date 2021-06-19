@@ -1,8 +1,12 @@
-from djongo import models
+from django.db import models
+from django.contrib.postgres.fields import JSONField
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.conf import settings
 import uuid
+from saveAPI.models import StateSave
+
+from django.db.models.aggregates import Max
 
 
 class Task(models.Model):
@@ -32,3 +36,15 @@ class spiceFile(models.Model):
 
     def save(self, *args, **kwargs):
         super(spiceFile, self).save(*args, **kwargs)
+
+
+class simulation(models.Model):
+    simulation_type = models.CharField(
+        max_length=30, null=True, blank=True)
+    task = models.ForeignKey(to=Task, on_delete=models.CASCADE)
+    simulation_time = models.DateTimeField(auto_now_add=True)
+    schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(
+        to=get_user_model(), null=True, on_delete=models.CASCADE)
+    netlist = models.TextField()
+    result = JSONField(null=True, blank=True)
