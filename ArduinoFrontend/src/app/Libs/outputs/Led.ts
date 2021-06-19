@@ -179,8 +179,11 @@ export class LED extends CircuitElement {
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
     }
-    const arduinoEnd: any = this.getRecArduino(this.pinNamedMap['POSITIVE']); // not able to determine if resistor is there
-
+    const arduinoEnd: any = this.getRecArduino(this.pinNamedMap['POSITIVE']);
+    // do not run addPwm if arduino is not connected
+    if (!arduinoEnd) {
+      return;
+    }
     // Only add pwm if connected to a pwm pin in arduino
     if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) != -1) {
       const arduino = arduinoEnd.parent;
@@ -208,15 +211,11 @@ export class LED extends CircuitElement {
   */
   private getRecArduino(node: Point) {
     if (node.connectedTo.start.parent.keyName == 'ArduinoUno') {
-      // if (node.connectedTo.start.label == 'GND') {
-      //   console.log('its a gnd')
-      // }
       return node.connectedTo.start;
     } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
-      // if (node.connectedTo.end.label == 'GND') {
-      //   console.log('its a gnd')
-      // }
       return node.connectedTo.end;
+    } else if (node.connectedTo.end.parent.keyName == "Battery9v") {
+      return false;
     } else {
 
       if (node.connectedTo.end.x != node.x || node.connectedTo.end.y != node.y) {
@@ -237,7 +236,6 @@ export class LED extends CircuitElement {
     }
 
   }
-
 }
 
 /**
