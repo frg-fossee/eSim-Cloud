@@ -265,7 +265,7 @@ export const makeCopy = (saveID, version, branch) => (dispatch, getState) => {
   api.post(`/save/copy/${version}/${saveID}/${branch}`, {}, config)
     .then(res => {
       const win = window.open()
-      win.location.href = '/eda/#/editor?id=' + res.data.save_id + "&version=" + res.data.version + "&branch=" + res.data.branch
+      win.location.href = '/eda/#/editor?id=' + res.data.save_id + '&version=' + res.data.version + '&branch=' + res.data.branch
       win.focus()
     })
     .catch(error => console.log(error))

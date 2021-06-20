@@ -142,7 +142,7 @@ function CreateProject () {
             return b[1][b[1].length - 1].full_time - a[1][a[1].length - 1].full_time
           })
           var versionsTemp = []
-          for (var j = 0; j < versionsArray.length; j++){
+          for (var j = 0; j < versionsArray.length; j++) {
             versionsTemp = versionsTemp.concat(versionsArray[j][1])
           }
           console.log(versionsTemp)

@@ -119,7 +119,7 @@ export const deleteSchematic = (saveId) => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  api.delete('save/' + saveId , config)
+  api.delete('save/' + saveId, config)
     .then(
       (res) => {
         if (res.status === 200 || res.status === 204) {

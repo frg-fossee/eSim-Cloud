@@ -59,7 +59,7 @@ const styles = (theme) => ({
   }
 })
 
-function Alert(props) {
+function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 function getDate (jsonDate) {
@@ -70,7 +70,7 @@ function getDate (jsonDate) {
   return `${day}-${month}-${year}`
 }
 
-export default function ProjectPage(props) {
+export default function ProjectPage (props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()

@@ -144,7 +144,7 @@ function ReportComponent (props) {
         <DialogTitle style={{ paddingBottom: '0' }}><h1 style={{ marginBottom: '0', marginTop: '0' }}>Reports</h1></DialogTitle>
         <DialogContent>
           <Tabs value={tab} onChange={handleChangeTab}>
-           <Tab label="Open Reports" {...a11yProps(0)} />
+            <Tab label="Open Reports" {...a11yProps(0)} />
             <Tab label="Approved Reports" {...a11yProps(1)} />
             {auth.user.username !== props.project.details.author_name && auth.roles?.is_type_reviewer && <Tab label="Closed Reports" {...a11yProps(2)} />}
           </Tabs>
@@ -158,7 +158,7 @@ function ReportComponent (props) {
                       {item.description}
                     </p>
                   </Grid>
-                  {auth.user.username !== props.project.details.author_name && auth.roles?.is_type_reviewer && 
+                  {auth.user.username !== props.project.details.author_name && auth.roles?.is_type_reviewer &&
                     <Grid item xs={6}>
                       <Select
                         defaultValue={item.approved}
@@ -173,7 +173,7 @@ function ReportComponent (props) {
                     </Grid>}
                 </Grid>
               </Paper>
-            )): <>No Open Reports</>}
+            )) : <>No Open Reports</>}
           </TabPanel>
           <TabPanel value={tab} index={1}>
             {props.project.reports.approved[0] ? props.project.reports.approved.map((item, index) => (

@@ -415,6 +415,7 @@ class DeleteBranch(APIView):
             return Response({"error": "circuit not found"},
                             status=status.HTTP_404_NOT_FOUND)
 
+
 class DeleteCircuit(APIView):
 
     permission_classes = (IsAuthenticated,)
