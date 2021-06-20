@@ -21,7 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
 import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
-
+import ReportProblemIcon from '@material-ui/icons/ReportProblem';
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
@@ -36,12 +36,12 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '10px'
   }
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -95,7 +95,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -127,7 +127,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -136,7 +136,7 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
+export default function SchematicCard({ sch }) {
   const classes = useStyles()
 
   // To handel delete schematic snackbar
@@ -171,7 +171,8 @@ export default function SchematicCard ({ sch }) {
           <CardActionArea>
             <CardHeader
               title={sch.name}
-              subheader={'Created On ' + getDate(sch.create_time)} /* Display created date */
+              subheader={'Created On ' + getDate(sch.create_time)}
+              action={sch.project_id && sch.is_reported === true && <Tooltip title='Project is reported!' arrow><ReportProblemIcon style={{ color: 'red' }} /></Tooltip>}
             />
             <CardMedia
               className={classes.media}
@@ -190,7 +191,7 @@ export default function SchematicCard ({ sch }) {
           </CardActionArea>
         </ButtonBase>
         <CardActions>
-          <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`}/>
+          <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
           {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>

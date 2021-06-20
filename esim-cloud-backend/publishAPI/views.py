@@ -32,7 +32,6 @@ class TagsViewSet(viewsets.ModelViewSet):
 
 class ProjectViewSet(APIView):
     parser_classes = (FormParser, JSONParser)
-    permission_classes = (IsAuthenticated,)
     serializer_class = ProjectSerializer
 
     def get(self, request, circuit_id):
@@ -42,23 +41,26 @@ class ProjectViewSet(APIView):
             return Response({'error': 'No circuit there'},
                             status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
-        if queryset.author == self.request.user and Permission.objects.filter(
-                role__in=user_roles,
-                view_own_states=queryset.state).exists():
-            pass
-        elif queryset.author != self.request.user and Permission.objects.filter(  # noqa
-                role__in=user_roles,
-                view_other_states=queryset.state).exists():
-            pass
-        else:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
         can_edit = False
-        if queryset.author == self.request.user and Permission.objects.filter(
-                role__in=user_roles,
-                edit_own_states=queryset.state).exists():
-            can_edit = True
-        else:
-            can_edit = False
+        if queryset.state.public == False:
+            if queryset.author == self.request.user and Permission.objects.filter(
+                    role__in=user_roles,
+                    view_own_states=queryset.state).exists():
+                pass
+            elif queryset.author != self.request.user and Permission.objects.filter(
+                    # noqa
+                    role__in=user_roles,
+                    view_other_states=queryset.state).exists():
+                pass
+            else:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+            if queryset.author == self.request.user and Permission.objects.filter(
+                    role__in=user_roles,
+                    edit_own_states=queryset.state).exists():
+                can_edit = True
+            else:
+                can_edit = False
         try:
             histories = TransitionHistorySerializer(
                 TransitionHistory.objects.filter(
@@ -78,7 +80,8 @@ class ProjectViewSet(APIView):
                 branch=request.data[0]['active_branch'],
                 version=request.data[0]['active_version'])
         except StateSave.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            return Response({'Save does not exist'},
+                            status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         if active_state_save.project is None:
             project = Project(title=request.data[0]['title'],
@@ -177,7 +180,6 @@ class PublicProjectViewSet(viewsets.ModelViewSet):
      List published circuits
     """
     parser_classes = (FormParser, JSONParser)
-    permission_classes = (IsAuthenticated,)
     serializer_class = ProjectSerializer
     queryset = Project.objects.none()
 

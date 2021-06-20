@@ -59,10 +59,18 @@ const styles = (theme) => ({
   }
 })
 
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-export default function ProjectPage (props) {
+function getDate (jsonDate) {
+  var json = jsonDate
+  var date = new Date(json)
+  const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
+  const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
+  return `${day}-${month}-${year}`
+}
+
+export default function ProjectPage(props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()
@@ -111,7 +119,7 @@ export default function ProjectPage (props) {
         handleReportOpen()
         break
       case 'Make copy':
-        dispatch(makeCopy(save_id))
+        dispatch(makeCopy(save_id, project.details.active_version, project.details.active_branch))
         setSnackbarOpen(true)
         break
       case 'Generate Netlist':
@@ -223,8 +231,8 @@ export default function ProjectPage (props) {
                   </Dialog>
 
                   <h1>Circuit Diagram:
-                    <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>
-                    <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Make copy')}>Make a Copy</Button>
+                    {auth.isAuthenticated && <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>}
+                    {auth.isAuthenticated && <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Make copy')}>Make a Copy</Button>}
                     <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
                       <PlayCircleOutlineIcon />Simulate
                     </Button>
@@ -281,7 +289,7 @@ export default function ProjectPage (props) {
                                 <ListItem key={index}>
                                   <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
                                     <br />
-                                    <h5>-On {item.transition_time} by {item.transition_author}</h5>
+                                    <h5>-On {getDate(item.transition_time)} by {item.transition_author_name}</h5>
                                     {item.reviewer_notes && <h5>-Notes: {item.reviewer_notes}</h5>}
                                   </p>
                                 </ListItem>

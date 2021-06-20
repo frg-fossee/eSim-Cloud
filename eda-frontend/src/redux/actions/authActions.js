@@ -355,7 +355,6 @@ export const fetchRole = () => (dispatch, getState) => {
   }
   api.get('workflow/role/', config)
     .then((res) => {
-      console.log(res.data)
       dispatch({
         type: actions.ROLE_LOADED,
         payload: {

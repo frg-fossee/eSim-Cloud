@@ -251,10 +251,7 @@ class ReportedProjectsView(viewsets.ViewSet):
                             status=http_status.HTTP_401_UNAUTHORIZED)
         for group in groups:
             if group.customgroup.is_type_reviewer is True:
-                flag = False
                 for report in request.data['reports']:
-                    if report['approved']:
-                        flag = True
                     temp = Report.objects.get(id=report['id'])
                     temp.approved = report['approved']
                     if report['approved'] is False:
@@ -262,9 +259,11 @@ class ReportedProjectsView(viewsets.ViewSet):
                     temp.save()
                 project = Project.objects.get(
                     project_id=project_id)
-                project.state = State.objects.get(
+                state = State.objects.get(
                     name=request.data['state']['name'])
-                project.is_reported = flag
+                project.state = state
+                if state.public:
+                    project.is_reported = False
                 project.save()
                 return Response({"Approval sent"})
         else:
@@ -284,7 +283,8 @@ class ReportedProjectsView(viewsets.ViewSet):
                             status=http_status.HTTP_404_NOT_FOUND)
         try:
             if self.request.user == project.author:
-                open_reports = []
+                open_reports = Report.objects.filter(
+                    project=project, report_open=True, approved=None)
                 resolved_reports = []
                 approved_reports = Report.objects.filter(
                     project=project, report_open=True, approved=True)

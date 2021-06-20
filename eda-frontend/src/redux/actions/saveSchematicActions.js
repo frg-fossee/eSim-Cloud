@@ -249,7 +249,7 @@ export const openLocalSch = (obj) => (dispatch, getState) => {
 }
 
 // Action for making a copy of a schematic
-export const makeCopy = (saveID) => (dispatch, getState) => {
+export const makeCopy = (saveID, version, branch) => (dispatch, getState) => {
   const token = getState().authReducer.token
 
   // add headers
@@ -262,10 +262,10 @@ export const makeCopy = (saveID) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  api.post(`/save/copy/${saveID}`, {}, config)
+  api.post(`/save/copy/${version}/${saveID}/${branch}`, {}, config)
     .then(res => {
       const win = window.open()
-      win.location.href = '/eda/#/editor?id=' + res.data.save_id
+      win.location.href = '/eda/#/editor?id=' + res.data.save_id + "&version=" + res.data.version + "&branch=" + res.data.branch
       win.focus()
     })
     .catch(error => console.log(error))

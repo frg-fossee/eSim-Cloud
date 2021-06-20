@@ -31,7 +31,6 @@ function PrivateRoute ({ component: Component, ...rest }) {
   }, [dispatch])
 
   return <Route {...rest} render={props => {
-    console.log(auth)
     if (auth.isLoading) {
       return <CircularProgress style={{ margin: '50vh 50vw' }} />
     } else if (!auth.isAuthenticated) {

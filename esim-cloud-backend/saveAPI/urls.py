@@ -24,7 +24,7 @@ urlpatterns = [
     path('save/<uuid:save_id>/<str:version>/<str:branch>',
          saveAPI_views.StateFetchUpdateView.as_view(), name='fetchState'),
 
-    path('save/copy/<uuid:save_id>',
+    path('save/copy/<str:version>/<uuid:save_id>/<str:branch>',
          saveAPI_views.CopyStateView.as_view(), name='copyState'),
 
     path(

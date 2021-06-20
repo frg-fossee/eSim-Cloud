@@ -59,6 +59,13 @@ const useStyles = makeStyles((theme) => ({
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
+function getDate (jsonDate) {
+  var json = jsonDate
+  var date = new Date(json)
+  const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
+  const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
+  return `${day}-${month}-${year}`
+}
 
 function CreateProject () {
   const [open, setOpen] = useState(false)
@@ -367,7 +374,7 @@ function CreateProject () {
                   (
                     <>
                       <hr />
-                      {project.details && project.details.can_edit &&
+                      {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -449,6 +456,17 @@ function CreateProject () {
                       ))}
                     </> : <h4>No approved reports.</h4>}
                 </List>
+                <List>
+                  <h3>List of Unapproved Reports</h3>
+                  {project.reports?.open[0]
+                    ? <>
+                      {project.reports.open.map((item, index) => (
+                        <ListItem key={index}>
+                          {index + 1}. {item.description}
+                        </ListItem>
+                      ))}
+                    </> : <h4>No Unapproved reports.</h4>}
+                </List>
               </Paper>
             </Grid>
             <Grid item xs={6} sm={6}>
@@ -459,9 +477,9 @@ function CreateProject () {
                     ? <>
                       {project.details.history.slice(0).reverse().map((item, index) => (
                         <ListItem key={index}>
-                          <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
+                          <p style={{ margin: '0%' }}>{project.details.history.length - index}. {item.from_state_name} to {item.to_state_name}
                             <br />
-                            <h5>-On {item.transition_time} by {item.transition_author_name}</h5>
+                            <h5>-On {getDate(item.transition_time)} by {item.transition_author_name}</h5>
                             {item.reviewer_notes}
 
                           </p>
