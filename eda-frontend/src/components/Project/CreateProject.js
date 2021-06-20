@@ -120,8 +120,26 @@ function CreateProject () {
               resp.data[i].time = d.getHours() + ':0' + d.getMinutes()
             }
           }
-          console.log(resp.data)
-          setVersions(resp.data)
+          var versionsAccordingFreq = {}
+          resp.data.forEach((value) => {
+            value.full_time = new Date(value.save_time)
+            versionsAccordingFreq[value.branch] ? versionsAccordingFreq[value.branch].push(value) : versionsAccordingFreq[value.branch] = [value]
+          })
+          var versionsArray = Object.entries(versionsAccordingFreq)
+          for (var k = 0; k < versionsArray.length; k++) {
+            versionsArray[k][1].sort((a, b) => {
+              return b.full_time - a.full_time
+            })
+          }
+          versionsArray.sort((a, b) => {
+            return b[1][b[1].length - 1].full_time - a[1][a[1].length - 1].full_time
+          })
+          var versionsTemp = []
+          for (var j = 0; j < versionsArray.length; j++){
+            versionsTemp = versionsTemp.concat(versionsArray[j][1])
+          }
+          console.log(versionsTemp)
+          setVersions(versionsTemp)
         })
         .catch((err) => {
           console.log(err)

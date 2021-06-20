@@ -40,7 +40,10 @@ urlpatterns = [
 
     path("save/versions/<uuid:save_id>/<str:branch>",
          saveAPI_views.DeleteBranch.as_view(),
-         name="deleteBranch")
+         name="deleteBranch"),
+
+    path("save/<uuid:save_id>",saveAPI_views.DeleteCircuit.as_view(),
+         name="deleteCircuit")
 
 ]
 

@@ -163,7 +163,6 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           config
         )
         .then((resp) => {
-          console.log(resp.data)
           if (resp.data.length > 0) {
             setProjectBranch(resp.data[0].project_branch)
             setProjectVersion(resp.data[0].project_version)
@@ -171,6 +170,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           var versionsAccordingFreq = {}
           resp.data.forEach((value) => {
             var d = new Date(value.save_time)
+            value.full_time = d
             value.date =
               d.getDate() + '/' + parseInt(d.getMonth() + 1) + '/' + d.getFullYear()
             value.time = d.getHours() + ':' + d.getMinutes()
@@ -179,16 +179,24 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             }
             versionsAccordingFreq[value.branch] ? versionsAccordingFreq[value.branch].push(value) : versionsAccordingFreq[value.branch] = [value]
           })
-          setVersions(Object.entries(versionsAccordingFreq).reverse())
-          var temp = []
-          for (var i = 0; i < Object.entries(versionsAccordingFreq).length; i++) {
-            console.log(Object.entries(versionsAccordingFreq)[0])
-            if (decodeURI(window.location.href.split('branch=')[1]) === Object.entries(versionsAccordingFreq)[i][0]) { temp.push(true) } else { temp.push(false) }
+          var versionsArray = Object.entries(versionsAccordingFreq)
+          for (var i = 0; i < versionsArray.length; i++) {
+            versionsArray[i][1].sort((a, b) => {
+              return b.full_time - a.full_time
+            })
           }
-          var popoverTemp = new Array(Object.entries(versionsAccordingFreq).length)
+          versionsArray.sort((a, b) => {
+            return b[1][b[1].length - 1].full_time - a[1][a[1].length - 1].full_time
+          })
+          setVersions(versionsArray)
+          var temp = []
+          for (var j = 0; j < versionsArray.length; j++) {
+            if (decodeURI(window.location.href.split('branch=')[1]) === versionsArray[j][0]) { temp.push(true) } else { temp.push(false) }
+          }
+          var popoverTemp = new Array(versionsArray.length)
           popoverTemp.fill(false)
           setPopoverOpen(popoverTemp)
-          setBranchOpen(temp.reverse())
+          setBranchOpen(temp)
         })
         .catch((err) => {
           console.log(err)
@@ -463,7 +471,6 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
                       )
                     }
                   </Collapse>
-
                 </>
               )
             }

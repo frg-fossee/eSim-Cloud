@@ -66,7 +66,7 @@ function SimpleSnackbar ({ open, close, sch }) {
               aria-label="close"
               color="inherit"
               onClick={() => {
-                dispatch(deleteSchematic(sch.save_id, sch.version, sch.branch))
+                dispatch(deleteSchematic(sch.save_id))
               }}
             >
               Yes
@@ -193,14 +193,14 @@ export default function SchematicCard ({ sch }) {
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`}/>
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
-          <Tooltip title="Delete" placement="bottom" arrow>
+          {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>
             <DeleteIcon
               color="secondary"
               fontSize="small"
               // style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
             />
-          </Tooltip>
+          </Tooltip>}
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
           {/* Display share status */}

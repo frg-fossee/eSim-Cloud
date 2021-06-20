@@ -408,3 +408,22 @@ class DeleteBranch(APIView):
         except StateSave.DoesNotExist:
             return Response({"error": "circuit not found"},
                             status=status.HTTP_404_NOT_FOUND)
+
+class DeleteCircuit(APIView):
+
+    permission_classes = (IsAuthenticated,)
+
+    def delete(self, request, save_id):
+        try:
+            queryset = StateSave.objects.filter(
+                save_id=save_id,
+                owner=self.request.user
+            )
+            if queryset[0].project is None:
+                queryset.delete()
+                return Response(data=None, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response(data=None, status=status.HTTP_400_BAD_REQUEST)
+        except StateSave.DoesNotExist:
+            return Response({"error": "circuit not found"},
+                            status=status.HTTP_404_NOT_FOUND)
