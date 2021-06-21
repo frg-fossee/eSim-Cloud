@@ -423,7 +423,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <LibraryAddRoundedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SelectLibrariesModal open={libsOpen} close={handleLibClose} auth={auth.isAuthenticated}/>
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose}/>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">
