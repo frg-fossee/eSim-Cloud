@@ -92,13 +92,13 @@ export class DashboardComponent implements OnInit {
    */
   ngOnInit() {
     this.readTempItems();
-    this.readOnlineItems();
+    this.readOnCloudItems();
   }
 
   /**
    * Read the online saved circuits.
    */
-   readOnlineItems() {
+   readOnCloudItems() {
     // Get Login token
     const token = Login.getToken();
     // if token is present get the list of project created by a user
@@ -384,14 +384,7 @@ export class DashboardComponent implements OnInit {
         fileData = reader.result;
         fileData = await JSON.parse(fileData);
         this.SaveCircuit(fileData);
-        const interval = setInterval(() => {
-          if(SaveOffline.savePromiseHandler) {
-            clearInterval(interval);
-            this.readTempItems()
-            this.readOnlineItems();
-            SaveOffline.savePromiseHandler = false;
-          }
-        }, 100);
+        document.getElementById("importFileBTN")["value"] = null;
       }
     }
   }
@@ -402,8 +395,12 @@ export class DashboardComponent implements OnInit {
    * @param offline Is Offline Circuit
    */
   ExportCircuit(id, offline) {
-    if (offline)
+    if (offline) {
+      if(typeof id !== 'number') {
+        id = Date.now();
+      }
       SaveOffline.Read(id, this.DownloadFile);
+    }
     else {
       const token = Login.getToken();
       if (!token) {
@@ -411,7 +408,32 @@ export class DashboardComponent implements OnInit {
         return;
       }
       this.api.readProject(id, token).subscribe(
-        data => this.DownloadFile(this.convertToOfflineFormat(id, data)), 
+        data => {
+          // Converting data to required format
+          let obj = JSON.parse(data['data_dump'])
+          let project = {
+              name: data['name'],
+              description: data['description'],
+              image: data['base64_image'],
+              created_at: data['create_time'],
+          }
+          obj['id'] = id;
+          obj['project'] = project;
+          // Getting image data from image url
+          let image = document.createElement('img');
+          image.setAttribute('src', project.image);
+          image.setAttribute('visibility', 'hidden');
+          image.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            canvas.getContext('2d').drawImage(image, 0, 0, image.width, image.height);
+            obj.project.image = canvas.toDataURL();
+            this.DownloadFile(obj);
+            image.parentElement.removeChild(image);
+            canvas.parentElement.removeChild(canvas);
+          }
+        }, 
         (err: HttpErrorResponse) => {
           if (err.status === 401) {
             AlertService.showAlert('You are Not Authorized to download this circuit');
@@ -430,7 +452,7 @@ export class DashboardComponent implements OnInit {
    * @param data Data in JSON format with meta details like id, project info
    */
   DownloadFile(data) {
-    const filename = data.project.name + '.json';
+    const filename = (data.project.name ? data.project.name : 'Undefined') + '.json';
     const fileJSON = JSON.stringify(data);
     let element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileJSON));
@@ -447,82 +469,25 @@ export class DashboardComponent implements OnInit {
    */
   SaveCircuit(fileData) {
     AlertService.showConfirm("Save offline?", () => {
-      if (!(fileData.id)) {
+      let toUpdate = true;
+      if (!(fileData.id) || typeof fileData.id !== 'number') {
+        toUpdate = false;
         fileData.id = Date.now();
       }
-      SaveOffline.Update(fileData)
+      SaveOffline.Update(fileData, (_) => {
+        AlertService.showAlert(toUpdate ? 'Updated' : 'Saved');
+        this.readTempItems();
+      });
     },
     () => {
       if (!(Login.getToken())) {
         AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
         return;
       }
-      // if project id is uuid (online circuit)
-      if (SaveOnline.isUUID(fileData.id)) {
-        // Update Project to DB
-        SaveOnline.SaveFromDashboard(fileData, this.api, (_) => AlertService.showAlert('Updated'));
-      } else {
-        // Save Project and show alert
-        SaveOnline.SaveFromDashboard(fileData, this.api, (out) => {
-          AlertService.showAlert('Saved');
-          // add new query parameters
-          this.router.navigate(
-            [],
-            {
-              relativeTo: this.aroute,
-              queryParams: {
-                id: out.save_id,
-                online: true,
-                offline: null,
-                gallery: null
-              },
-              queryParamsHandling: 'merge'
-            }
-        );
-        });
-      }
+      // If project id is uuid (online circuit) then accordingly save or update
+      SaveOnline.SaveFromDashboard(fileData, this.api, (_) => {
+        this.readOnCloudItems();
+      }, SaveOnline.isUUID(fileData.id));
     });
-  }
-
-  /**
-   * Converts JSON of cloud-stored circuit into JSON format for storing it temporarily
-   * @param id Project Id
-   * @param data JSON data of the circuit
-   * @returns JSON data of the circuit with format for saving it temporarily
-   */
-  convertToOfflineFormat(id, data) {
-    let obj = JSON.parse(data.data_dump)
-    let project = {
-        name: data.name,
-        description: data.description,
-        image: data.base64_image,
-        created_at: Date.now(),
-    }
-    obj['id'] = id;
-    obj['project'] = project;
-    return data;
-  }
-
-  /**
-   * Converts JSON of temporarily saved circuit to JSON format on Cloud 
-   * @param data JSON data of the circuit
-   * @returns JSON data of the circuit with format for saving it on cloud
-   */
-  convertToOnlineFormat(data) {
-    const obj = {
-      data_dump: '',
-      is_arduino: true,
-      description: data.project.description,
-      name: data.project.name,
-      base64_image: data.project.image,
-    };
-    // Remove unwanted props from JSON
-    delete data['id']
-    delete data['project']
-    // Data Dump will contain Circuit data
-    const dataDump = data;
-    // Convert Data Dump to an String and add to Save Object
-    obj.data_dump = JSON.stringify(dataDump);
-    return obj;
   }
 }

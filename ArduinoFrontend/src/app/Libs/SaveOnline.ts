@@ -4,6 +4,8 @@ import { Download, ImageType } from './Download';
 import { ApiService } from '../api.service';
 import { Workspace } from './Workspace';
 import { AlertService } from '../alert/alert-service/alert.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ConvertJSONFormat } from './ConvertJSONFormat';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -115,66 +117,86 @@ export class SaveOnline {
     }
 
   }
-
-  static SaveFromDashboard(data: any, api: ApiService, callback: (data: any) => void = null) {
+  /**
+   * Save or Update Project from Dashboard
+   * @param data Project data
+   * @param api API Service
+   * @param callback Callback when save/update is done
+   * @param toUpdate Determines whether to save or update the circuit
+   */
+  static SaveFromDashboard(data: any, api: ApiService, callback: (data: any) => void = null, toUpdate: Boolean) {
     let id = data.id;
     // Get Token
     const token = Login.getToken();
     if (token) {
-      // if id is present then update
-      let toUpdate = false;
-      if (isNull(id)) {
-      } else {
-        toUpdate = true;
-      }
-      // Save Object that needs to send to server
-      const saveObj = {
-        data_dump: '',
-        is_arduino: true,
-        description: data.project.description,
-        name: data.project.name,
-        base64_image: data.project.image,
-      };
-      // Remove unwanted props from JSON
-      delete data['id']
-      delete data['project']
-      // Data Dump will contain Circuit data
-      const dataDump = data;
-      // Convert Data Dump to an String and add to Save Object
-      saveObj.data_dump = JSON.stringify(dataDump);
-      // if update then update the project
-      if (toUpdate) {
-        api.updateProject(id, saveObj, token).subscribe(out => {
-          if (callback) {
-            callback(out);
-          }
-        }, err => {
-          if (err.status === 401) {
-            AlertService.showAlert('You Cannot Save the Circuit as you are not the Ownwer');
-            return;
-          }
-          console.log(err);
-        });
-      } else {
-        // Otherwise save the project
-        api.saveProject(saveObj, token).subscribe(output => {
-          if (callback) {
-            callback(output);
-          }
-        }, err => {
-          let message = '';
-          for (const key in err.error) {
-            if (err.error[key]) {
-              message += '\n' + key;
-              for (const item of err.error[key]) {
-                message += `${item},`;
-              }
+      // Converting data to required format
+      let saveObj = ConvertJSONFormat.convertToOnlineFormat(data);
+      if(toUpdate) {
+        api.readProject(id, token).subscribe(data=>{
+          // if exists then update the project
+          api.updateProject(id, saveObj, token).subscribe(out => {
+            if (callback) {
+              AlertService.showAlert('Updated');
+              callback(out);
             }
+          }, err => {
+            if (err.status === 401) {
+              AlertService.showAlert('You Cannot Save the Circuit as you are not the Ownwer');
+              return;
+            }
+            console.log(err);
+          });
+        },
+          (err: HttpErrorResponse) => {
+            if(err.status == 404) {
+              // Otherwise save the project
+              this.CallToAPISaveService(api, saveObj, token, callback);
+              AlertService.showAlert('Circuit ID has been changed as circuit was deleted')
+            }
+            else if (err.status === 401) {
+              AlertService.showAlert('You are Not Authorized to download this circuit');
+              window.open('../../../', '_self');
+              return;
+            }
+            else {
+              AlertService.showAlert('Something Went Wrong');
+            }
+            console.log(err);
           }
-          AlertService.showAlert(message);
-        });
+        );
+      }
+      else {
+        // Save the project due to invalid id
+        this.CallToAPISaveService(api, saveObj, token, callback);
       }
     }
+  }
+  /**
+   * Calls api to save project data on cloud. 
+   * This function was created to reduce repeating code from above function.
+   * @param api API Service
+   * @param saveObj JSON Object containing Project
+   * @param token Login Token
+   * @param callback Callback when project saved
+   */
+  static CallToAPISaveService(api: ApiService, saveObj: any, token: string, callback:(data: any) => void = null) {
+    api.saveProject(saveObj, token).subscribe(output => {
+      if (callback) {
+        AlertService.showAlert('Saved');
+        callback(output);
+      }
+    }, err => {
+      let message = '';
+      for (const key in err.error) {
+        if (err.error[key]) {
+          message += '\n' + key;
+          for (const item of err.error[key]) {
+            message += `${item},`;
+          }
+        }
+      }
+      AlertService.showAlert(message);
+    });
   }
 }
 
