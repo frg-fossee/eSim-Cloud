@@ -6,8 +6,83 @@ export const loadUser = () => (dispatch, getState) => {
   // User Loading
   dispatch({ type: actions.USER_LOADING })
 
-  // Get token from localstorage
-  const token = getState().authReducer.token
+  // Get token from localstorage and dispatch LOGIN_SUCCESSFUL
+  const token = localStorage.getItem('esim_token')
+  const userId = localStorage.getItem('user_id')
+  if (token) {
+    dispatch({
+      type: actions.LOGIN_SUCCESSFUL,
+      payload: {
+        data: {
+          auth_token: token,
+          user_id: userId
+        }
+      }
+    })
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
+  }
+
+  api.get('auth/users/me/', config)
+    .then(
+      (res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: actions.USER_LOADED,
+            payload: {
+              user: res.data
+            }
+          })
+        } else if (res.status >= 400 && res.status < 500) {
+          dispatch({
+            type: actions.LOGIN_FAILED,
+            payload: {
+              data: res.data
+            }
+          })
+        }
+      }
+    )
+    .catch((err) => {
+      console.error(err)
+      dispatch({
+        type: actions.LOGIN_FAILED,
+        payload: {
+          data: {}
+        }
+      })
+    })
+}
+
+// Api call for maintaining user login state throughout the application without excess actions
+export const loadMinUser = () => (dispatch) => {
+  // Get token from localstorage and dispatch LOGIN_SUCCESSFUL
+  const token = localStorage.getItem('esim_token')
+  const userId = localStorage.getItem('user_id')
+  if (token) {
+    dispatch({
+      type: actions.LOGIN_SUCCESSFUL,
+      payload: {
+        data: {
+          auth_token: token,
+          user_id: userId
+        }
+      }
+    })
+  }
 
   // add headers
   const config = {
@@ -63,7 +138,7 @@ export const login = (username, password, toUrl) => {
   }
 
   return function (dispatch) {
-    api.post('auth/token/login/', body)
+    api.post('auth/user/token/', body)
       .then((res) => {
         if (res.status === 200) {
           dispatch({
@@ -74,6 +149,10 @@ export const login = (username, password, toUrl) => {
           })
           if (toUrl === '') {
             dispatch(loadUser())
+          } else if (toUrl === 'close') {
+            window.opener = null
+            window.open('', '_self')
+            window.close()
           } else {
             window.open(toUrl, '_self')
             localStorage.setItem('ard_redurl', '')
@@ -82,7 +161,7 @@ export const login = (username, password, toUrl) => {
           dispatch({
             type: actions.AUTHENTICATION_ERROR,
             payload: {
-              data: 'Incorrect Username or Password.'
+              data: res.data.non_field_errors[0]
             }
           })
         } else {
@@ -97,7 +176,7 @@ export const login = (username, password, toUrl) => {
       .catch((err) => {
         var res = err.response
         if (res.status === 400 || res.status === 403 || res.status === 401) {
-          dispatch(loginError('Incorrect Username or Password.'))
+          dispatch(loginError(res.data.non_field_errors[0]))
         } else {
           dispatch(loginError('Something went wrong! Login Failed'))
         }
@@ -218,7 +297,7 @@ const resetPasswordError = (message) => (dispatch) => {
 }
 
 // Redux action for display reset password confirmation error
-const resetPasswordConfirmError = (message) => (dispatch) => {
+export const resetPasswordConfirmError = (message) => (dispatch) => {
   dispatch({
     type: actions.RESET_PASSWORD_CONFIRM_FAILED,
     payload: {

@@ -24,7 +24,7 @@ export default function (state = initialState, action) {
     }
     case actions.DEFAULT_STORE: {
       return {
-        ...state,
+        ...initialState,
         errors: '',
         regErrors: ''
       }
@@ -55,6 +55,7 @@ export default function (state = initialState, action) {
     }
 
     case actions.LOGIN_SUCCESSFUL: {
+      localStorage.setItem('user_id', action.payload.data.user_id)
       localStorage.setItem('esim_token', action.payload.data.auth_token)
       return {
         ...state,

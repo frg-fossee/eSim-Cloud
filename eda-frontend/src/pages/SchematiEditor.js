@@ -60,7 +60,8 @@ export default function SchematiEditor (props) {
         dispatch(fetchSchematic(cktid, version, branch))
       }
     }
-  }, [compRef, gridRef, outlineRef, props.location, dispatch])
+  // eslint-disable-next-line
+  }, [])
 
   return (
     <div className={classes.root}>

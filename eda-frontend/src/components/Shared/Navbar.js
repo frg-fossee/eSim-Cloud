@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import {
   AppBar,
   Button,
@@ -14,10 +16,9 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { Link as RouterLink, useHistory } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import store from '../../redux/store'
-import { logout } from '../../redux/actions/index'
+import { authDefault, loadUser, logout } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -60,6 +61,7 @@ export function Header () {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const auth = store.getState().authReducer
+  const dispatch = useDispatch()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -68,6 +70,23 @@ export function Header () {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  useEffect(() => {
+    function checkUserData () {
+      const userToken = localStorage.getItem('esim_token')
+      if (userToken && userToken !== '') {
+        dispatch(loadUser())
+      } else {
+        dispatch(authDefault())
+      }
+    }
+
+    window.addEventListener('storage', checkUserData)
+
+    return () => {
+      window.removeEventListener('storage', checkUserData)
+    }
+  }, [dispatch, history])
 
   return (
     <>
@@ -199,9 +218,10 @@ export function Header () {
         (!auth.isAuthenticated ? (<Button
           size="small"
           component={RouterLink}
-          to="/login"
+          to="/login?close=close"
           color="primary"
           variant="outlined"
+          target="_blank"
         >
           Login
         </Button>)
