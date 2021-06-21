@@ -181,7 +181,6 @@ export class LED extends CircuitElement {
       this.pinNamedMap[node.label] = node;
     }
     const arduinoEnd: any = this.getRecArduino(this.pinNamedMap['POSITIVE']);
-    console.log(arduinoEnd)
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd) {
       return;
