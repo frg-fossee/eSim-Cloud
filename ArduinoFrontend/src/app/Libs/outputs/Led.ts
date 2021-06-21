@@ -1,4 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
+import { BreadBoard } from '../General';
 import { Point } from '../Point';
 import { ArduinoUno } from './Arduino';
 /**
@@ -180,6 +181,7 @@ export class LED extends CircuitElement {
       this.pinNamedMap[node.label] = node;
     }
     const arduinoEnd: any = this.getRecArduino(this.pinNamedMap['POSITIVE']);
+    console.log(arduinoEnd)
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd) {
       return;
@@ -214,7 +216,13 @@ export class LED extends CircuitElement {
       return node.connectedTo.start;
     } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
       return node.connectedTo.end;
+    } else if (node.connectedTo.start.parent.keyName == "BreadBoard") {
+      return this.getRecArduinoBread(node);
+    } else if (node.connectedTo.end.parent.keyName == "BreadBoard") {
+      return this.getRecArduinoBread(node);
     } else if (node.connectedTo.end.parent.keyName == "Battery9v") {
+      return false;
+    } else if (node.connectedTo.end.parent.keyName == "CoinCell") {
       return false;
     } else {
 
@@ -234,8 +242,43 @@ export class LED extends CircuitElement {
       }
 
     }
-
   }
+
+  private getRecArduinoBread(node: Point) {
+    if (node.connectedTo.end.label != node.label) {
+      let bb = (node.connectedTo.end.parent as BreadBoard)
+      for (const e in bb.joined) {
+        if (bb.joined[e].label != node.connectedTo.end.label) {
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.end.label.substring(1, node.connectedTo.end.label.length)) {
+            if (bb.joined[e].isConnected()) {
+              if (bb.joined[e].connectedTo.end.label != bb.joined[e].label)
+                return this.getRecArduino(bb.joined[e].connectedTo.start)
+              else
+                return this.getRecArduino(bb.joined[e].connectedTo.start)
+            }
+          }
+        }
+      }
+    } else if (node.connectedTo.start.label != node.label) {
+      let bb = (node.connectedTo.start.parent as BreadBoard)
+      for (const e in bb.joined) {
+        if (bb.joined[e].label != node.connectedTo.start.label) {
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.start.label.substring(1, node.connectedTo.start.label.length)) {
+            if (bb.joined[e].isConnected()) {
+              if (bb.joined[e].connectedTo.start.label != bb.joined[e].label)
+                return this.getRecArduino(bb.joined[e].connectedTo.start)
+              else
+                return this.getRecArduino(bb.joined[e].connectedTo.end)
+            }
+          }
+        }
+      }
+    }
+    else {
+      console.log('else - ', node) // pass
+    }
+  }
+
 }
 
 /**
