@@ -42,12 +42,12 @@ class ProjectViewSet(APIView):
                             status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         can_edit = False
-        if queryset.state.public == False:
-            if queryset.author == self.request.user and Permission.objects.filter(
+        if queryset.state.public is False:
+            if queryset.author == self.request.user and Permission.objects.filter(  # noqa
                     role__in=user_roles,
                     view_own_states=queryset.state).exists():
                 pass
-            elif queryset.author != self.request.user and Permission.objects.filter(
+            elif queryset.author != self.request.user and Permission.objects.filter(  # noqa
                     # noqa
                     role__in=user_roles,
                     view_other_states=queryset.state).exists():
@@ -55,7 +55,7 @@ class ProjectViewSet(APIView):
             else:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-            if queryset.author == self.request.user and Permission.objects.filter(
+            if queryset.author == self.request.user and Permission.objects.filter(  # noqa
                     role__in=user_roles,
                     edit_own_states=queryset.state).exists():
                 can_edit = True
