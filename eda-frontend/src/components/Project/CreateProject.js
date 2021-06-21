@@ -56,10 +56,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -67,7 +67,7 @@ function getDate (jsonDate) {
   return `${day}-${month}-${year}`
 }
 
-function CreateProject () {
+function CreateProject() {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -93,7 +93,7 @@ function CreateProject () {
   useEffect(() => {
     if (open && project.details?.project_id) {
       dispatch(getStatus(project.details?.project_id))
-      console.log(project.details)
+      setStatus(project.details?.status_name)
     }
     if (project.details) {
       setDetails({ title: project.details.title, description: project.details.description, active_version: project.details.active_version, active_branch: project.details.active_branch })
@@ -176,10 +176,22 @@ function CreateProject () {
     setDetails({ ...details, active_branch: e.target.value.split('-')[1], active_version: e.target.value.split('-')[0] })
   }
   const handleSelectChange = (event) => {
-    if (changed === 0) {
-      setChanged(2)
-    } else if (changed === 1) {
-      setChanged(3)
+    if (event.target.value !== project.details.status_name) {
+      if (changed === 0) {
+        setChanged(2)
+      } else if (changed === 1) {
+        setChanged(3)
+      }
+    }
+    else {
+      if(changed == 2)
+      {
+        setChanged(0)
+      }
+      else if(changed == 3)
+      {
+        setChanged(1)
+      }
     }
     setStatus(event.target.value)
   }
@@ -211,9 +223,16 @@ function CreateProject () {
     if (changed === 1) {
       dispatch(createProject(save_id, [details, fields, '']))
     } else if (changed === 2) {
-      dispatch(changeStatus(project.details.project_id, status, ''))
+      if (status !== project.details.status_name) {
+        dispatch(changeStatus(project.details.project_id, status, ''))
+      }
     } else if (changed === 3) {
-      dispatch(createProject(save_id, [details, fields, status]))
+      if (status !== project.details.status_name) {
+        dispatch(createProject(save_id, [details, fields, status]))
+      }
+      else {
+        dispatch(createProject(save_id, [details, fields, '']))
+      }
     }
     setChanged(0)
   }
@@ -371,10 +390,10 @@ function CreateProject () {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                  (
-                    <>
-                      <hr />
-                      {((project.details && project.details.can_edit) || !project.details) &&
+                (
+                  <>
+                    <hr />
+                    {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -391,34 +410,34 @@ function CreateProject () {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        id={index}
-                        label={'Title ' + index}
-                        type="text"
-                        name='name'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.name}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        multiline
-                        id={index}
-                        label={'Text ' + index}
-                        rows={4}
-                        type="text"
-                        name='text'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.text}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                    </>
-                  ))}
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      id={index}
+                      label={'Title ' + index}
+                      type="text"
+                      name='name'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.name}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      multiline
+                      id={index}
+                      label={'Text ' + index}
+                      rows={4}
+                      type="text"
+                      name='text'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.text}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                  </>
+                ))}
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
@@ -434,9 +453,10 @@ function CreateProject () {
                         value={status}
                       >
                         {project.states.map((item, index) =>
-                          (
-                            <MenuItem key={item} value={item}>{item}</MenuItem>
-                          ))}
+                        (
+                          <MenuItem key={item} value={item}>{item}</MenuItem>
+                        ))}
+                        <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
                       </Select>
                     </div>
                     : <h3 style={{ color: 'black', textAlign: 'left' }}>Project review in progress.</h3>
