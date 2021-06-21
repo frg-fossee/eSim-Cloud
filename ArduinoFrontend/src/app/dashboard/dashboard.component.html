@@ -20,7 +20,7 @@
     </div>-->
   <div class="row" style="margin: 1em">
     <div class="col-sm-3">
-      <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
+      <a type="button" class="btn btn-primary mb-3 m-2" [routerLink]="['/simulator']">+ New
         Circuit</a>
       <label for="importFileBTN" mat-icon-button class="btn btn-primary mb-3 m-2">Import Circuit</label>
       <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file" (change)="ImportCircuit($event)" hidden/>
