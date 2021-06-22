@@ -57,7 +57,8 @@ export default function SchematiEditor (props) {
         dispatch(fetchSchematic(cktid))
       }
     }
-  }, [compRef, gridRef, outlineRef, props.location, dispatch])
+  // eslint-disable-next-line
+  }, [])
 
   return (
 
