@@ -467,7 +467,17 @@ export class DashboardComponent implements OnInit {
    * @param fileData JSON Object of the circuit
    */
   SaveCircuit(fileData) {
-    AlertService.showConfirm('Save offline?', () => {
+    AlertService.showOptions('Where do you want to save it?', () => {
+      if (!(Login.getToken())) {
+        AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
+        return;
+      }
+      // If project id is uuid (online circuit) then accordingly save or update
+      SaveOnline.SaveFromDashboard(fileData, this.api, (_) => {
+        this.readOnCloudItems();
+      }, SaveOnline.isUUID(fileData.id));
+    },
+    () => {
       let toUpdate = true;
       if (!(fileData.id) || typeof fileData.id !== 'number') {
         toUpdate = false;
@@ -478,15 +488,6 @@ export class DashboardComponent implements OnInit {
         this.readTempItems();
       });
     },
-    () => {
-      if (!(Login.getToken())) {
-        AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
-        return;
-      }
-      // If project id is uuid (online circuit) then accordingly save or update
-      SaveOnline.SaveFromDashboard(fileData, this.api, (_) => {
-        this.readOnCloudItems();
-      }, SaveOnline.isUUID(fileData.id));
-    });
+    () => {}, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
   }
 }
