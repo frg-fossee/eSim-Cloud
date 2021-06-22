@@ -59,14 +59,12 @@ const checkWireChange = (changes) => {
 export function Undo() {
   if (undoManager.indexOfNextAdd === 0) {
     // Nothing to undo
-    console.log("Nothing to undo")
     return
   } else if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd - 1].changes)) {
     // Found Wire
     undoManager.undo()
   } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length > 1) {
     // Found Component
-    console.log("Found Component")
     let undos = 1
     for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
       if (undoManager.history[i].changes.length === 1
@@ -79,7 +77,6 @@ export function Undo() {
     }
   } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 1) {
     // Found Rotate/Move
-    console.log("Found Rotate/Move")
     let undos = 0
     for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
       if (undoManager.history[i].changes.length !== 1) { break }
@@ -91,10 +88,8 @@ export function Undo() {
   }
   else {
     // Default case !?
-    console.log("Default case !?")
     undoManager.undo()
   }
-  console.log(undoManager)
 }
 
 // REDO
@@ -137,7 +132,6 @@ export function Redo() {
     // Default Case !?
     undoManager.redo()
   }
-  console.log(undoManager)
 }
 
 // Zoom IN
