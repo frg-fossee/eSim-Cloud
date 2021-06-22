@@ -176,6 +176,7 @@ export class LED extends CircuitElement {
    * Called when start simulation.
    */
   initSimulation(): void {
+    this.visitedNodes = [];
     let pwmPins = [3, 5, 6, 9, 10, 11]
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
@@ -206,6 +207,8 @@ export class LED extends CircuitElement {
     this.voltage = 0;
   }
 
+  visitedNodes = [];
+
   /**
   * Return the node which is connected to arduino by recursively finding connected node
   * @param node The Node which need to be checked
@@ -215,16 +218,15 @@ export class LED extends CircuitElement {
       return node.connectedTo.start;
     } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
       return node.connectedTo.end;
-    } else if (node.connectedTo.start.parent.keyName == "BreadBoard") {
+    } else if (node.connectedTo.start.parent.keyName == "BreadBoard" && !this.visitedNodes.includes(node.connectedTo.start.label)) {
       return this.getRecArduinoBread(node);
-    } else if (node.connectedTo.end.parent.keyName == "BreadBoard") {
+    } else if (node.connectedTo.end.parent.keyName == "BreadBoard" && !this.visitedNodes.includes(node.connectedTo.end.label)) {
       return this.getRecArduinoBread(node);
     } else if (node.connectedTo.end.parent.keyName == "Battery9v") {
       return false;
     } else if (node.connectedTo.end.parent.keyName == "CoinCell") {
       return false;
     } else {
-
       if (node.connectedTo.end.x != node.x || node.connectedTo.end.y != node.y) {
         for (const e in node.connectedTo.end.parent.nodes) {
           if (node.connectedTo.end.parent.nodes[e].x != node.connectedTo.end.x || node.connectedTo.end.parent.nodes[e].y != node.connectedTo.end.y) {
@@ -247,13 +249,16 @@ export class LED extends CircuitElement {
     if (node.connectedTo.end.label != node.label) {
       let bb = (node.connectedTo.end.parent as BreadBoard)
       for (const e in bb.joined) {
+        this.visitedNodes.push(bb.joined[e].label)
         if (bb.joined[e].label != node.connectedTo.end.label) {
           if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.end.label.substring(1, node.connectedTo.end.label.length)) {
             if (bb.joined[e].isConnected()) {
-              if (bb.joined[e].connectedTo.end.label != bb.joined[e].label)
-                return this.getRecArduino(bb.joined[e].connectedTo.start)
-              else
-                return this.getRecArduino(bb.joined[e].connectedTo.start)
+              if (bb.joined[e].connectedTo.end.label != bb.joined[e].label) {
+                return this.getRecArduino(bb.joined[e])
+              }
+              else {
+                return this.getRecArduino(bb.joined[e])
+              }
             }
           }
         }
@@ -261,13 +266,16 @@ export class LED extends CircuitElement {
     } else if (node.connectedTo.start.label != node.label) {
       let bb = (node.connectedTo.start.parent as BreadBoard)
       for (const e in bb.joined) {
+        this.visitedNodes.push(bb.joined[e].label)
         if (bb.joined[e].label != node.connectedTo.start.label) {
           if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.start.label.substring(1, node.connectedTo.start.label.length)) {
             if (bb.joined[e].isConnected()) {
-              if (bb.joined[e].connectedTo.start.label != bb.joined[e].label)
-                return this.getRecArduino(bb.joined[e].connectedTo.start)
-              else
-                return this.getRecArduino(bb.joined[e].connectedTo.end)
+              if (bb.joined[e].connectedTo.start.label != bb.joined[e].label) {
+                return this.getRecArduino(bb.joined[e])
+              }
+              else {
+                return this.getRecArduino(bb.joined[e])
+              }
             }
           }
         }
