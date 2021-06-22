@@ -124,15 +124,15 @@ export class SaveOnline {
    * @param callback Callback when save/update is done
    * @param toUpdate Determines whether to save or update the circuit
    */
-  static SaveFromDashboard(data: any, api: ApiService, callback: (data: any) => void = null, toUpdate: Boolean) {
-    let id = data.id;
+  static SaveFromDashboard(data: any, api: ApiService, callback: (data: any) => void = null, toUpdate: boolean) {
+    const id = data.id;
     // Get Token
     const token = Login.getToken();
     if (token) {
       // Converting data to required format
-      let saveObj = ConvertJSONFormat.convertToOnlineFormat(data);
-      if(toUpdate) {
-        api.readProject(id, token).subscribe(data=>{
+      const saveObj = ConvertJSONFormat.convertToOnlineFormat(data);
+      if (toUpdate) {
+        api.readProject(id, token).subscribe(() => {
           // if exists then update the project
           api.updateProject(id, saveObj, token).subscribe(out => {
             if (callback) {
@@ -148,38 +148,35 @@ export class SaveOnline {
           });
         },
           (err: HttpErrorResponse) => {
-            if(err.status == 404) {
+            if (err.status === 404) {
               // Otherwise save the project
               this.CallToAPISaveService(api, saveObj, token, callback);
-              AlertService.showAlert('Circuit ID has been changed as circuit was deleted')
-            }
-            else if (err.status === 401) {
+              AlertService.showAlert('Circuit ID has been changed as circuit was deleted');
+            } else if (err.status === 401) {
               AlertService.showAlert('You are Not Authorized to download this circuit');
               window.open('../../../', '_self');
               return;
-            }
-            else {
+            } else {
               AlertService.showAlert('Something Went Wrong');
             }
             console.log(err);
           }
         );
-      }
-      else {
+      } else {
         // Save the project due to invalid id
         this.CallToAPISaveService(api, saveObj, token, callback);
       }
     }
   }
   /**
-   * Calls api to save project data on cloud. 
+   * Calls api to save project data on cloud.
    * This function was created to reduce repeating code from above function.
    * @param api API Service
    * @param saveObj JSON Object containing Project
    * @param token Login Token
    * @param callback Callback when project saved
    */
-  static CallToAPISaveService(api: ApiService, saveObj: any, token: string, callback:(data: any) => void = null) {
+  static CallToAPISaveService(api: ApiService, saveObj: any, token: string, callback: (data: any) => void = null) {
     api.saveProject(saveObj, token).subscribe(output => {
       if (callback) {
         AlertService.showAlert('Saved');

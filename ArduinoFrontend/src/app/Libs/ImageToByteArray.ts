@@ -1,16 +1,16 @@
 export class ImageToByteArray {
-    static result: string = "";
+    static result = '';
 
     static getDataURLForm(url: string) {
-        this.result = "";
+        this.result = '';
         const image = this.createImage(url);
         image.onload = () => {
             this.result = this.convertImage(image);
-        }
+        };
     }
 
     static createImage(url: string) {
-        let image = document.createElement('img');
+        const image = document.createElement('img');
         image.setAttribute('src', url);
         image.setAttribute('visibility', 'hidden');
         return image;

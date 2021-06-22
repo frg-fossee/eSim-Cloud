@@ -78,9 +78,9 @@ export class DashboardComponent implements OnInit {
    * @param title Document Title
    */
   constructor(
-    private api: ApiService, 
-    private snackbar: MatSnackBar, 
-    private title: Title, 
+    private api: ApiService,
+    private snackbar: MatSnackBar,
+    private title: Title,
     private alertService: AlertService,
     private router: Router,
     private aroute: ActivatedRoute
@@ -377,15 +377,15 @@ export class DashboardComponent implements OnInit {
     let fileData;
 
     if (file) {
-      let reader = new FileReader();
+      const reader = new FileReader();
       reader.readAsText(file);
 
       reader.onload = async () => {
         fileData = reader.result;
         fileData = await JSON.parse(fileData);
         this.SaveCircuit(fileData);
-        document.getElementById("importFileBTN")["value"] = null;
-      }
+        document.getElementById('importFileBTN')['value'] = null;
+      };
     }
   }
 
@@ -396,12 +396,11 @@ export class DashboardComponent implements OnInit {
    */
   ExportCircuit(id, offline) {
     if (offline) {
-      if(typeof id !== 'number') {
+      if (typeof id !== 'number') {
         id = Date.now();
       }
       SaveOffline.Read(id, this.DownloadFile);
-    }
-    else {
+    } else {
       const token = Login.getToken();
       if (!token) {
         AlertService.showAlert('Please Login');
@@ -410,17 +409,17 @@ export class DashboardComponent implements OnInit {
       this.api.readProject(id, token).subscribe(
         data => {
           // Converting data to required format
-          let obj = JSON.parse(data['data_dump'])
-          let project = {
+          const obj = JSON.parse(data['data_dump']);
+          const project = {
               name: data['name'],
               description: data['description'],
               image: data['base64_image'],
               created_at: data['create_time'],
-          }
+          };
           obj['id'] = id;
           obj['project'] = project;
           // Getting image data from image url
-          let image = document.createElement('img');
+          const image = document.createElement('img');
           image.setAttribute('src', project.image);
           image.setAttribute('visibility', 'hidden');
           image.onload = () => {
@@ -432,8 +431,8 @@ export class DashboardComponent implements OnInit {
             this.DownloadFile(obj);
             image.parentElement.removeChild(image);
             canvas.parentElement.removeChild(canvas);
-          }
-        }, 
+          };
+        },
         (err: HttpErrorResponse) => {
           if (err.status === 401) {
             AlertService.showAlert('You are Not Authorized to download this circuit');
@@ -454,7 +453,7 @@ export class DashboardComponent implements OnInit {
   DownloadFile(data) {
     const filename = (data.project.name ? data.project.name : 'Undefined') + '.json';
     const fileJSON = JSON.stringify(data);
-    let element = document.createElement('a');
+    const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileJSON));
     element.setAttribute('download', filename);
     element.style.display = 'none';
@@ -468,7 +467,7 @@ export class DashboardComponent implements OnInit {
    * @param fileData JSON Object of the circuit
    */
   SaveCircuit(fileData) {
-    AlertService.showConfirm("Save offline?", () => {
+    AlertService.showConfirm('Save offline?', () => {
       let toUpdate = true;
       if (!(fileData.id) || typeof fileData.id !== 'number') {
         toUpdate = false;

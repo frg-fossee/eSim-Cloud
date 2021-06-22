@@ -1,20 +1,20 @@
-import { ImageToByteArray } from "./ImageToByteArray";
+import { ImageToByteArray } from './ImageToByteArray';
 
 export class ConvertJSONFormat {
-    /**
+  /**
    * Converts JSON of cloud-stored circuit into JSON format for storing it temporarily
    * @param id Project Id
    * @param data JSON data of the circuit
    * @returns JSON data of the circuit with format for saving it temporarily
    */
   static async convertToOfflineFormat(id, data) {
-    let obj = JSON.parse(data.data_dump)
-    let project = {
+    const obj = JSON.parse(data.data_dump);
+    const project = {
         name: data.name,
         description: data.description,
         image: data.base64_image,
         created_at: Date.now(),
-    }
+    };
     obj['id'] = id;
     obj['project'] = project;
 
@@ -22,12 +22,12 @@ export class ConvertJSONFormat {
     // Image data is recieved after the image gets loaded which is async code
     // In short, for now this function will not return image data but its url.
     ImageToByteArray.getDataURLForm(project.image);
-    obj.project.image = ImageToByteArray.result !== '' ? ImageToByteArray.result: project.image;
+    obj.project.image = ImageToByteArray.result !== '' ? ImageToByteArray.result : project.image;
     return obj;
   }
 
   /**
-   * Converts JSON of temporarily saved circuit to JSON format on Cloud 
+   * Converts JSON of temporarily saved circuit to JSON format on Cloud
    * @param data JSON data of the circuit
    * @returns JSON data of the circuit with format for saving it on cloud
    */
@@ -40,8 +40,8 @@ export class ConvertJSONFormat {
       base64_image: data.project.image,
     };
     // Remove unwanted props from JSON
-    delete data['id']
-    delete data['project']
+    delete data['id'];
+    delete data['project'];
     // Data Dump will contain Circuit data
     const dataDump = data;
     // Convert Data Dump to an String and add to Save Object
