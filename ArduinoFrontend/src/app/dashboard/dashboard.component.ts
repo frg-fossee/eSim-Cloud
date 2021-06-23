@@ -478,15 +478,24 @@ export class DashboardComponent implements OnInit {
       }, SaveOnline.isUUID(fileData.id));
     },
     () => {
-      let toUpdate = true;
       if (!(fileData.id) || typeof fileData.id !== 'number') {
-        toUpdate = false;
         fileData.id = Date.now();
+        SaveOffline.Save(fileData, (_) => {
+          this.readTempItems();
+        });
+      } else {
+        SaveOffline.Read(fileData.id, (data) => {
+          if (data) {
+            SaveOffline.Update(fileData, (_) => {
+              this.readTempItems();
+            });
+          } else {
+            SaveOffline.Save(fileData, (_) => {
+              this.readTempItems();
+            });
+          }
+        });
       }
-      SaveOffline.Update(fileData, (_) => {
-        AlertService.showAlert(toUpdate ? 'Updated' : 'Saved');
-        this.readTempItems();
-      });
     },
     () => {}, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
   }

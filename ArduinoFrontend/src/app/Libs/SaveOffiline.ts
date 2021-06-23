@@ -199,6 +199,7 @@ export class SaveOffline {
 
       ok.onerror = () => {
         AlertService.showAlert('Unable to retrieve data from database!');
+        callback(null);
       };
 
       ok.onsuccess = () => {
