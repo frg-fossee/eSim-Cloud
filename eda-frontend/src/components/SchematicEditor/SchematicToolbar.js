@@ -23,9 +23,10 @@ import ClearAllIcon from '@material-ui/icons/ClearAll'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
+import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog } from './ToolbarExtension'
+import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
@@ -96,11 +97,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
+    var printToPlotControlBlock = ''
+    var ctrlblk = netfile.controlBlock.split('\n')
+    for (var line = 0; line < ctrlblk.length; line++) {
+      if (ctrlblk[line].includes('print')) {
+        printToPlotControlBlock += 'plot '
+        var cleanCode = ctrlblk[line].split('print ')[1]
+        cleanCode = cleanCode.split('>')[0]
+        printToPlotControlBlock += cleanCode + '\n'
+      } else {
+        printToPlotControlBlock += ctrlblk[line] + '\n'
+      }
+    }
     var netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
-      netfile.controlBlock + '\n'
+      printToPlotControlBlock + '\n'
     genNetlist(netlist)
     setOpen(true)
   }
@@ -340,6 +353,16 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setSchOpen(false)
   }
 
+  const [libsOpen, setlibsOpen] = React.useState(false)
+
+  const handleLibOpen = () => {
+    setlibsOpen(true)
+  }
+
+  const handleLibClose = () => {
+    setlibsOpen(false)
+  }
+
   return (
     <>
       <Tooltip title="New">
@@ -395,6 +418,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <BugReportOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      <Tooltip title="Select Libraries">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleLibOpen}>
+          <LibraryAddRoundedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose}/>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">
