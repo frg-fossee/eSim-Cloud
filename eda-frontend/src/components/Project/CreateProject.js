@@ -183,10 +183,10 @@ function CreateProject() {
       }
     }
     else {
-      if (changed == 2) {
+      if (changed === 2) {
         setChanged(0)
       }
-      else if (changed == 3) {
+      else if (changed === 3) {
         setChanged(1)
       }
     }
