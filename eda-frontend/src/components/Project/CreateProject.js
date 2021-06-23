@@ -62,9 +62,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
-  const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
-  const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
-  return `${day}-${month}-${year}`
+  let formatted_date = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " at " + date.getHours() + ":" + date.getMinutes();
+  return `${formatted_date}`
 }
 
 function CreateProject() {
@@ -184,12 +183,10 @@ function CreateProject() {
       }
     }
     else {
-      if(changed == 2)
-      {
+      if (changed == 2) {
         setChanged(0)
       }
-      else if(changed == 3)
-      {
+      else if (changed == 3) {
         setChanged(1)
       }
     }
@@ -442,24 +439,23 @@ function CreateProject() {
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
                   project.states
-                    ? <div style={{ textAlign: 'left' }}>
-                      <br />
-                      <InputLabel id="demo-simple-select-label">Change Status</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        style={{ width: '50%' }}
-                        onChange={handleSelectChange}
-                        value={status}
-                      >
-                        {project.states.map((item, index) =>
-                        (
-                          <MenuItem key={item} value={item}>{item}</MenuItem>
-                        ))}
-                        <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
-                      </Select>
-                    </div>
-                    : <h3 style={{ color: 'black', textAlign: 'left' }}>Project review in progress.</h3>
+                  && <div style={{ textAlign: 'left' }}>
+                    <br />
+                    <InputLabel id="demo-simple-select-label">Change Status</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      style={{ width: '50%' }}
+                      onChange={handleSelectChange}
+                      value={status}
+                    >
+                      {project.states.map((item, index) =>
+                      (
+                        <MenuItem key={item} value={item}>{item}</MenuItem>
+                      ))}
+                      <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
+                    </Select>
+                  </div>
                 }</>}
               </Paper>
             </Grid>
