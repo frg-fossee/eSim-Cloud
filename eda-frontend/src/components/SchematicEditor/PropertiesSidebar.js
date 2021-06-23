@@ -161,7 +161,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         </div>
       </List>
 
-      <ComponentProperties />
+      {/* <ComponentProperties /> */}
     </>
   )
 }

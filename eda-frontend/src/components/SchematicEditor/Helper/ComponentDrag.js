@@ -114,6 +114,9 @@ export default function LoadGrid (container, sidebar, outline) {
       // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
       if (cell !== undefined && cell.CellType === 'Component') {
         store.dispatch({
+          type: actions.CLOSE_COMP_PROPERTIES
+        })
+        store.dispatch({
           type: actions.GET_COMP_PROPERTIES,
           payload: {
             id: cell.id,

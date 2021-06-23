@@ -2,9 +2,39 @@
 import React, { useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setCompProperties } from '../../redux/actions/index'
-import { ListItem, ListItemText, Button, TextField, TextareaAutosize } from '@material-ui/core'
+import { ListItem, ListItemText, Button, TextField, TextareaAutosize, Paper } from '@material-ui/core'
 
 export default function ComponentProperties () {
+  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const [scroll, setScroll] = useState(0)
+  const [scrolling, setScrolling] = useState(false)
+
+  useEffect(() => {
+    addEventListeners()
+    return () => removeEventListeners()
+  })
+
+  const addEventListeners = () => {
+    document.addEventListener("mousemove", onMouseMove)
+    window.addEventListener("scroll", handleScroll)
+  }
+
+  const removeEventListeners = () => {
+    document.removeEventListener("mousemove", onMouseMove)
+    window.removeEventListener("scroll", handleScroll)
+  }
+
+  const onMouseMove = (e) => {
+    if(!isOpen)
+    setPosition({ x: e.clientX+50, y: e.clientY-150 })
+  }
+
+  const handleScroll = (e) => {
+    console.log(window.scrollY)
+    setScrolling(true)
+    var temp = window.scrollY
+    setScroll(temp)
+  }
   // component properties that are displayed on the right side bar when user clicks on a component on the grid.
 
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
@@ -32,7 +62,8 @@ export default function ComponentProperties () {
 
   return (
 
-    <div style={isOpen ? {} : { display: 'none' }}>
+    <div style={isOpen ? scrolling ? {display: 'none'} : {position:'fixed', left: `${position.x}px`, top: `${position.y}px`} : { display: 'none' }}>
+      <Paper>
 
       <ListItem>
         <ListItemText primary='Component Properties' secondary={properties.NAME} />
@@ -84,6 +115,7 @@ export default function ComponentProperties () {
       <ListItem>
         <Button size='small' variant="contained" color="primary" onClick={setProps}>SET PARAMETERS</Button>
       </ListItem>
+      </Paper>
 
     </div>
   )
