@@ -1,5 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
-import { BreadBoard } from '../General';
+import { BreadBoard, Resistor } from '../General';
 import { Point } from '../Point';
 import { ArduinoUno } from './Arduino';
 /**
@@ -177,11 +177,14 @@ export class LED extends CircuitElement {
    */
   initSimulation(): void {
     this.visitedNodes = [];
+    this.visitedNodesv2.clear()
     let pwmPins = [3, 5, 6, 9, 10, 11]
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
     }
-    const arduinoEnd: any = this.getRecArduino(this.pinNamedMap['POSITIVE']);
+    // const arduinoEnd: any = this.getRecArduino(this.pinNamedMap['POSITIVE']);
+    const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE']);
+    console.log(arduinoEnd)
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd) {
       return;
@@ -214,30 +217,44 @@ export class LED extends CircuitElement {
   * @param node The Node which need to be checked
   */
   private getRecArduino(node: Point) {
+    console.log(node)
     if (node.connectedTo.start.parent.keyName == 'ArduinoUno') {
+      console.log('1')
       return node.connectedTo.start;
     } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
+      console.log('2')
       return node.connectedTo.end;
     } else if (node.connectedTo.start.parent.keyName == "BreadBoard" && !this.visitedNodes.includes(node.connectedTo.start.label)) {
+      console.log('3')
       return this.getRecArduinoBread(node);
     } else if (node.connectedTo.end.parent.keyName == "BreadBoard" && !this.visitedNodes.includes(node.connectedTo.end.label)) {
+      console.log('4')
       return this.getRecArduinoBread(node);
     } else if (node.connectedTo.end.parent.keyName == "Battery9v") {
+      console.log('5')
       return false;
     } else if (node.connectedTo.end.parent.keyName == "CoinCell") {
+      console.log('6')
       return false;
     } else {
+      console.log('7')
       if (node.connectedTo.end.x != node.x || node.connectedTo.end.y != node.y) {
         for (const e in node.connectedTo.end.parent.nodes) {
-          if (node.connectedTo.end.parent.nodes[e].x != node.connectedTo.end.x || node.connectedTo.end.parent.nodes[e].y != node.connectedTo.end.y) {
+          if ((node.connectedTo.end.parent.nodes[e].x != node.connectedTo.end.x || node.connectedTo.end.parent.nodes[e].y != node.connectedTo.end.y) && !this.visitedNodes.includes(node.connectedTo.end.parent.nodes[e].label)) {
+            this.visitedNodes.push(node.connectedTo.end.parent.nodes[e].label)
             return this.getRecArduino(node.connectedTo.end.parent.nodes[e])
+          } else {
+            console.log('skiped ', this.visitedNodes)
           }
         }
       }
       else if (node.connectedTo.start.x != node.x || node.connectedTo.start.y != node.y) {
         for (const e in node.connectedTo.start.parent.nodes) {
-          if (node.connectedTo.start.parent.nodes[e].x != node.connectedTo.start.x || node.connectedTo.start.parent.nodes[e].y != node.connectedTo.start.y) {
+          if ((node.connectedTo.start.parent.nodes[e].x != node.connectedTo.start.x || node.connectedTo.start.parent.nodes[e].y != node.connectedTo.start.y) && !this.visitedNodes.includes(node.connectedTo.start.parent.nodes[e].label)) {
+            this.visitedNodes.push(node.connectedTo.start.parent.nodes[e].label)
             return this.getRecArduino(node.connectedTo.start.parent.nodes[e])
+          } else {
+            console.log('skiped ', this.visitedNodes)
           }
         }
       }
@@ -275,6 +292,114 @@ export class LED extends CircuitElement {
               }
               else {
                 return this.getRecArduino(bb.joined[e])
+              }
+            }
+          }
+        }
+      }
+    }
+    else {
+      console.log('else - ', node) // pass
+    }
+  }
+
+  visitedNodesv2 = new Set()
+
+  getRecArduinov2(node: Point) {
+    /**
+     * ALGO:
+     * 1. Recurs till breadboard
+     * 2. In BreadBoard:
+     *    i)   Find path From - To
+     *    ii)  Recurse Algo
+     * 3. Check for Arduino
+     */
+
+    console.log(node)
+    if (node.connectedTo.start.parent.keyName == 'ArduinoUno') {
+      console.log('1')
+      return node.connectedTo.start;
+    } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
+      console.log('2')
+      return node.connectedTo.end;
+    } else if (node.connectedTo.start.parent.keyName == "BreadBoard" && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
+      console.log('3')
+      return this.getRecArduinoBreadv2(node);
+    } else if (node.connectedTo.end.parent.keyName == "BreadBoard" && !this.visitedNodesv2.has(node.connectedTo.end.gid)) {
+      console.log('4')
+      return this.getRecArduinoBreadv2(node);
+    } else if (node.connectedTo.end.parent.keyName == "Battery9v") {
+      console.log('5')
+      return false;
+    } else if (node.connectedTo.end.parent.keyName == "CoinCell") {
+      console.log('6')
+      return false;
+    } else {
+      console.log('7')
+      if (node.connectedTo.end.gid != node.gid) {
+        for (const e in node.connectedTo.end.parent.nodes) {
+          if (node.connectedTo.end.parent.nodes[e].gid != node.connectedTo.end.gid && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid)) {
+            this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid)
+            return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e])
+          } else {
+            console.log('skiped ', this.visitedNodesv2)
+          }
+        }
+      }
+      else if (node.connectedTo.start.gid != node.gid) {
+        for (const e in node.connectedTo.start.parent.nodes) {
+          if (node.connectedTo.start.parent.nodes[e].gid != node.connectedTo.start.gid && !this.visitedNodesv2.has(node.connectedTo.start.parent.nodes[e].gid)) {
+            this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid)
+            return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e])
+          } else {
+            console.log('skiped ', this.visitedNodesv2)
+          }
+        }
+      }
+
+    }
+
+  }
+
+  private getRecArduinoBreadv2(node: Point) {
+    console.log('bb - ', node)
+    if (node.connectedTo.end.gid != node.gid) {
+      let bb = (node.connectedTo.end.parent as BreadBoard)
+      for (const e in bb.joined) {
+        this.visitedNodesv2.add(bb.joined[e].gid)
+        if (bb.joined[e].gid != node.connectedTo.end.gid) {
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.end.label.substring(1, node.connectedTo.end.label.length)) {
+            let ascii = node.connectedTo.end.label.charCodeAt(0)
+            let currAscii = bb.joined[e].label.charCodeAt(0)
+            if (ascii >= 97 && ascii <= 101) {
+              if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
+                return this.getRecArduinov2(bb.joined[e])
+              }
+            }
+            else if (ascii >= 102 && ascii <= 106) {
+              if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e])
+              }
+            }
+          }
+        }
+      }
+    } else if (node.connectedTo.start.gid != node.gid) {
+      let bb = (node.connectedTo.start.parent as BreadBoard)
+      for (const e in bb.joined) {
+        this.visitedNodesv2.add(bb.joined[e].gid)
+        if (bb.joined[e].gid != node.connectedTo.start.gid) {
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.start.label.substring(1, node.connectedTo.start.label.length)) {
+            let ascii = node.connectedTo.start.label.charCodeAt(0)
+            let currAscii = bb.joined[e].label.charCodeAt(0)
+            if (ascii >= 97 && ascii <= 101) {
+              if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
+                return this.getRecArduinov2(bb.joined[e])
+              }
+            }
+            else if (ascii >= 102 && ascii <= 106) {
+              if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e])
               }
             }
           }
