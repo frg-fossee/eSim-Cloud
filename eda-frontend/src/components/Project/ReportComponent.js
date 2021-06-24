@@ -34,7 +34,7 @@ const styles = (theme) => ({
     color: theme.palette.grey[500]
   }
 })
-function TabPanel (props) {
+function TabPanel(props) {
   const { children, value, index, ...other } = props
 
   return (
@@ -58,14 +58,14 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired
 }
-function a11yProps (index) {
+function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`
   }
 }
 
-function ReportComponent (props) {
+function ReportComponent(props) {
   const [reportDetailsOpen, setReportDetailsOpen] = React.useState(false)
   const [status, setStatus] = React.useState(null)
   const [reportStatus, setReportStatus] = React.useState(null)
@@ -112,6 +112,7 @@ function ReportComponent (props) {
     switch (type) {
       case 'Change State':
         dispatch(approveReports(project_id, reportStatus, status))
+        props.changedStatus()
         handleReportDetailsOpen()
         break
       default:
@@ -207,7 +208,7 @@ function ReportComponent (props) {
               </Paper>
             ))}
           </TabPanel>}
-          {stateList && (tab === 1 && props.project.reports.approved[0]) && auth.roles.is_type_reviewer && auth.user.username !== props.project.details.author_name &&
+          {stateList && (tab === 1 && props.project.reports.approved[0] || (tab === 0 && reportStatus)) && auth.roles?.is_type_reviewer && auth.user.username !== props.project.details.author_name &&
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -218,17 +219,17 @@ function ReportComponent (props) {
               variant='outlined'
             >
               {stateList.map((item, index) =>
-                (
-                  <MenuItem key={index} value={item}>{item}</MenuItem>
-                ))}
+              (
+                <MenuItem key={index} value={item}>{item}</MenuItem>
+              ))}
             </Select>}
         </DialogContent>
         {auth.roles && <DialogActions>
-          {auth.user.username !== props.project.details.author_name && props.project.reports.approved[0] && auth.roles.is_type_reviewer && tab === 1 && <Button onClick={() => {
+          {auth.user.username !== props.project.details.author_name && props.project.reports.approved[0] && auth.roles?.is_type_reviewer && tab === 1 && <Button onClick={() => {
             dispatch(resolveReports(props.project.details.project_id, status))
             handleReportDetailsOpen()
           }}>Resolve All Reports</Button>}
-          {auth.roles.is_type_reviewer && (reportStatus) &&
+          {auth.roles?.is_type_reviewer && (reportStatus) &&
             <Button onClick={() => {
               onClick('Change State')
             }}>Approve Reports</Button>}

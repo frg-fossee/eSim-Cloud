@@ -35,9 +35,8 @@ def ChangeStatus(self, status, project):
                 transition_history = TransitionHistory(
                     project_id=project.project_id,
                     transition_author=self.request.user,
-                    from_state=project.state,
-                    reviewer_notes='',
-                    to_state=circuit_transition.to_state)
+                    transition=circuit_transition,
+                    reviewer_notes='',)
                 transition_history.save()
                 project.state = circuit_transition.to_state
                 project.save()
@@ -59,9 +58,8 @@ def ChangeStatus(self, status, project):
                                 transition_history = TransitionHistory(
                                     project_id=project.project_id,
                                     transition_author=self.request.user,
-                                    from_state=project.state,
-                                    reviewer_notes='',
-                                    to_state=circuit_transition.to_state)
+                                    transition=circuit_transition,
+                                    reviewer_notes='',)
                                 transition_history.save()
                                 project.state = circuit_transition.to_state
                                 project.save()

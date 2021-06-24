@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import uuid
-from workflowAPI.models import State
+from workflowAPI.models import State, Transition
 
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
@@ -56,10 +56,7 @@ class TransitionHistory(models.Model):
         Project, editable=False, on_delete=models.CASCADE, null=True)
     transition_author = models.ForeignKey(
         get_user_model(), on_delete=models.CASCADE)
-    from_state = models.ForeignKey(
-        State, related_name='historyfromtransitions', on_delete=CASCADE)
-    to_state = models.ForeignKey(
-        State, related_name='historytotransitions', on_delete=CASCADE)
+    transition = models.ForeignKey(to=Transition,on_delete=models.CASCADE,null=True)
     transition_time = models.DateTimeField(auto_now_add=True)
     reviewer_notes = models.CharField(max_length=500, blank=True)
     is_done_by_reviewer = models.BooleanField(default=False, null=True)

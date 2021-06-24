@@ -29,6 +29,7 @@ import FormControl from '@material-ui/core/FormControl'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus, createProject, getStatus } from '../../redux/actions'
 import api from '../../utils/Api'
+import ProjectTimeline from './ProjectTimeline'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -59,12 +60,7 @@ const useStyles = makeStyles((theme) => ({
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
-function getDate(jsonDate) {
-  var json = jsonDate
-  var date = new Date(json)
-  let formatted_date = date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " at " + date.getHours() + ":" + date.getMinutes();
-  return `${formatted_date}`
-}
+
 
 function CreateProject() {
   const [open, setOpen] = useState(false)
@@ -473,7 +469,7 @@ function CreateProject() {
                     </> : <h4>No approved reports.</h4>}
                 </List>
                 <List>
-                  <h3>List of Unapproved Reports</h3>
+                  <h3>List of Reports yet to be evaluated by a Reviewer.</h3>
                   {project.reports?.open[0]
                     ? <>
                       {project.reports.open.map((item, index) => (
@@ -491,16 +487,8 @@ function CreateProject() {
                   <h3>History of this Project</h3>
                   {(project.details?.history && project.details?.history[0])
                     ? <>
-                      {project.details.history.slice(0).reverse().map((item, index) => (
-                        <ListItem key={index}>
-                          <p style={{ margin: '0%' }}>{project.details.history.length - index}. {item.from_state_name} to {item.to_state_name}
-                            <br />
-                            <h5>-On {getDate(item.transition_time)} by {item.transition_author_name}</h5>
-                            {item.reviewer_notes}
-
-                          </p>
-                        </ListItem>
-                      ))}</>
+                        <ProjectTimeline history={project.details.history.slice(0).reverse()}/>
+                      </>
                     : <h4>No history of this project.</h4>
                   }
                 </List>

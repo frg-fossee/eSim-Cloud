@@ -144,9 +144,8 @@ class ProjectStateView(APIView):
                     transition_history = TransitionHistory(
                         project_id=project_id,
                         transition_author=request.user,
-                        from_state=project.state,
-                        reviewer_notes=request.data['note'],
-                        to_state=circuit_transition.to_state)
+                        transition=circuit_transition,
+                        reviewer_notes=request.data['note'])
                     transition_history.save()
                     project.state = circuit_transition.to_state
                     project.save()
@@ -169,9 +168,8 @@ class ProjectStateView(APIView):
                                     transition_history = TransitionHistory(
                                         project_id=project_id,
                                         transition_author=request.user,
-                                        from_state=project.state,
-                                        reviewer_notes=request.data['note'],
-                                        to_state=circuit_transition.to_state)
+                                        transition=circuit_transition,
+                                        reviewer_notes=request.data['note'])
                                     transition_history.save()
                                     project.state = circuit_transition.to_state
                                     project.save()
@@ -217,8 +215,9 @@ class ReportedProjectsView(viewsets.ViewSet):
         if project.state != State.objects.get(report=True):
             transition_history = TransitionHistory(project_id=project_id,
                                                    transition_author=request.user,  # noqa
-                                                   from_state=project.state,
+                                                   transition=Transition.objects.get(from_state=project.state,
                                                    to_state=state)
+                                                   )
             transition_history.save()
             project.state = state
             project.is_reported = True
@@ -261,6 +260,14 @@ class ReportedProjectsView(viewsets.ViewSet):
                     project_id=project_id)
                 state = State.objects.get(
                     name=request.data['state']['name'])
+                transition = Transition.objects.get(
+                    from_state=project.state,
+                    to_state=state)
+                transition_history = TransitionHistory(
+                    project_id=project_id,
+                    transition_author=self.request.user,
+                    transition=transition)
+                transition_history.save()
                 project.state = state
                 if state.public:
                     project.is_reported = False
@@ -338,9 +345,10 @@ class ReportedProjectsView(viewsets.ViewSet):
                         transition_history = TransitionHistory(
                             project_id=project_id,
                             transition_author=request.user,
-                            from_state=project.state,
-                            to_state=State.objects.get(
-                                name=request.data['name']))
+                            transition=Transition.objects.get(from_state=project.state,
+                                                              to_state=State.objects.get(
+                                                                  name=request.data['name']))
+                        )
 
                         project.state = State.objects.get(
                             name=request.data['name'])

@@ -20,9 +20,8 @@ class Transitions(admin.ModelAdmin):
 @admin.register(TransitionHistory)
 class TransitionHistories(admin.ModelAdmin):
     readonly_fields = (
-        'id', 'transition_author', 'transition_time', 'from_state', 'to_state')
-    list_display = ['id', 'transition_author', 'transition_time', 'from_state',
-                    'to_state']
+        'id','transition', 'transition_author', 'transition_time','reviewer_notes','is_done_by_reviewer' )
+    list_display = ['id' , 'transition','transition_author', 'transition_time',]
 
 
 @admin.register(Permission)

@@ -37,10 +37,13 @@ class TransitionHistorySerializer(serializers.ModelSerializer):
     transition_author_name = serializers.CharField(
         read_only=True, source='transition_author.username')
     from_state_name = serializers.CharField(
-        read_only=True, source='from_state.name')
+        read_only=True, source='transition.from_state.name')
     to_state_name = serializers.CharField(
-        read_only=True, source='to_state.name')
-
+        read_only=True, source='transition.to_state.name')
+    event = serializers.CharField(
+        read_only=True, source='transition.event')
+    history = serializers.CharField(
+        read_only=True, source='transition.history')
     class Meta:
         model = TransitionHistory
         fields = ('transition_author_name',
@@ -48,7 +51,9 @@ class TransitionHistorySerializer(serializers.ModelSerializer):
                   'to_state_name',
                   'transition_time',
                   'reviewer_notes',
-                  'is_done_by_reviewer')
+                  'is_done_by_reviewer',
+                  'event',
+                  'history')
 
 
 class FieldSerializer(serializers.ModelSerializer):
