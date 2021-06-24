@@ -1105,22 +1105,24 @@ export class Workspace {
         }
       }
     }
+    // Save the Thumbnail for the circuit
+    Download.ExportImage(ImageType.PNG).then(v => {
+      saveObj.project['image'] = v; // Add the base64 image
+      // Export JSON File & Download it
+      const filename = `${name}.json`;
+      const jsonStr = JSON.stringify(saveObj);
 
-    // Export JSON File & Download it
-    const filename = `${name}.json`;
-    const jsonStr = JSON.stringify(saveObj);
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
+      element.setAttribute('download', filename);
 
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
-    element.setAttribute('download', filename);
+      element.style.display = 'none';
+      document.body.appendChild(element);
 
-    element.style.display = 'none';
-    document.body.appendChild(element);
+      element.click();
 
-    element.click();
-
-    document.body.removeChild(element);
-
+      document.body.removeChild(element);
+    });
     return true;
 
   }
