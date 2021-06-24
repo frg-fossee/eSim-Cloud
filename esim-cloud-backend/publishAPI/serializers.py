@@ -44,6 +44,7 @@ class TransitionHistorySerializer(serializers.ModelSerializer):
         read_only=True, source='transition.event')
     history = serializers.CharField(
         read_only=True, source='transition.history')
+
     class Meta:
         model = TransitionHistory
         fields = ('transition_author_name',

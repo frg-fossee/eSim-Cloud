@@ -215,8 +215,9 @@ class ReportedProjectsView(viewsets.ViewSet):
         if project.state != State.objects.get(report=True):
             transition_history = TransitionHistory(project_id=project_id,
                                                    transition_author=request.user,  # noqa
-                                                   transition=Transition.objects.get(from_state=project.state,
-                                                   to_state=state)
+                                                   transition=Transition.objects.get(  # noqa
+                                                       from_state=project.state,    # noqa
+                                                       to_state=state)
                                                    )
             transition_history.save()
             project.state = state
@@ -345,9 +346,10 @@ class ReportedProjectsView(viewsets.ViewSet):
                         transition_history = TransitionHistory(
                             project_id=project_id,
                             transition_author=request.user,
-                            transition=Transition.objects.get(from_state=project.state,
-                                                              to_state=State.objects.get(
-                                                                  name=request.data['name']))
+                            transition=Transition.objects.get(
+                                from_state=project.state,
+                                to_state=State.objects.get(
+                                    name=request.data['name']))
                         )
 
                         project.state = State.objects.get(

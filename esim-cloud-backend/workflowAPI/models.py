@@ -65,8 +65,8 @@ class Transition(models.Model):
                                                  verbose_name="Transition allowed for all users of specified roles except creator")  # noqa
     only_for_creator = models.BooleanField(default=False, null=False,
                                            verbose_name="Transition that ONLY the creator should be able to do it.")  # noqa
-    event = models.CharField(blank=True, null=True,max_length=200)
-    history = models.CharField(blank=True, null=True,max_length=200)
+    event = models.CharField(blank=True, null=True, max_length=200)
+    history = models.CharField(blank=True, null=True, max_length=200)
 
     def __str__(self):
         return self.name

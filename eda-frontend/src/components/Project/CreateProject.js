@@ -57,12 +57,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-
-function CreateProject() {
+function CreateProject () {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -177,12 +176,10 @@ function CreateProject() {
       } else if (changed === 1) {
         setChanged(3)
       }
-    }
-    else {
+    } else {
       if (changed === 2) {
         setChanged(0)
-      }
-      else if (changed === 3) {
+      } else if (changed === 3) {
         setChanged(1)
       }
     }
@@ -222,8 +219,7 @@ function CreateProject() {
     } else if (changed === 3) {
       if (status !== project.details.status_name) {
         dispatch(createProject(save_id, [details, fields, status]))
-      }
-      else {
+      } else {
         dispatch(createProject(save_id, [details, fields, '']))
       }
     }
@@ -383,10 +379,10 @@ function CreateProject() {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                (
-                  <>
-                    <hr />
-                    {((project.details && project.details.can_edit) || !project.details) &&
+                  (
+                    <>
+                      <hr />
+                      {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -403,39 +399,39 @@ function CreateProject() {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      id={index}
-                      label={'Title ' + index}
-                      type="text"
-                      name='name'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.name}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      multiline
-                      id={index}
-                      label={'Text ' + index}
-                      rows={4}
-                      type="text"
-                      name='text'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.text}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                  </>
-                ))}
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        id={index}
+                        label={'Title ' + index}
+                        type="text"
+                        name='name'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.name}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        multiline
+                        id={index}
+                        label={'Text ' + index}
+                        rows={4}
+                        type="text"
+                        name='text'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.text}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                    </>
+                  ))}
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
-                  project.states
-                  && <div style={{ textAlign: 'left' }}>
+                  project.states &&
+                  <div style={{ textAlign: 'left' }}>
                     <br />
                     <InputLabel id="demo-simple-select-label">Change Status</InputLabel>
                     <Select
@@ -446,9 +442,9 @@ function CreateProject() {
                       value={status}
                     >
                       {project.states.map((item, index) =>
-                      (
-                        <MenuItem key={item} value={item}>{item}</MenuItem>
-                      ))}
+                        (
+                          <MenuItem key={item} value={item}>{item}</MenuItem>
+                        ))}
                       <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
                     </Select>
                   </div>
@@ -487,8 +483,8 @@ function CreateProject() {
                   <h3>History of this Project</h3>
                   {(project.details?.history && project.details?.history[0])
                     ? <>
-                        <ProjectTimeline history={project.details.history.slice(0).reverse()}/>
-                      </>
+                      <ProjectTimeline history={project.details.history.slice(0).reverse()}/>
+                    </>
                     : <h4>No history of this project.</h4>
                   }
                 </List>

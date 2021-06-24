@@ -34,7 +34,7 @@ const styles = (theme) => ({
     color: theme.palette.grey[500]
   }
 })
-function TabPanel(props) {
+function TabPanel (props) {
   const { children, value, index, ...other } = props
 
   return (
@@ -58,14 +58,14 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired
 }
-function a11yProps(index) {
+function a11yProps (index) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`
   }
 }
 
-function ReportComponent(props) {
+function ReportComponent (props) {
   const [reportDetailsOpen, setReportDetailsOpen] = React.useState(false)
   const [status, setStatus] = React.useState(null)
   const [reportStatus, setReportStatus] = React.useState(null)
@@ -219,9 +219,9 @@ function ReportComponent(props) {
               variant='outlined'
             >
               {stateList.map((item, index) =>
-              (
-                <MenuItem key={index} value={item}>{item}</MenuItem>
-              ))}
+                (
+                  <MenuItem key={index} value={item}>{item}</MenuItem>
+                ))}
             </Select>}
         </DialogContent>
         {auth.roles && <DialogActions>
