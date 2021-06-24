@@ -8,7 +8,6 @@ export class Login {
    * Get Auth Token
    */
   static getToken(): string {
-    // localStorage.setItem('esim_token','weer');
     return window.localStorage.getItem('esim_token');
   }
   /**
