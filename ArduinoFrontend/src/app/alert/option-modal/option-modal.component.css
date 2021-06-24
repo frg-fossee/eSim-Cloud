@@ -1,0 +1,10 @@
+.option-buttons{
+    text-align: center;
+    display: block;
+}
+
+.response-button {
+    display: block;
+    width: 100%;
+    margin: 10px 0px !important;
+}
