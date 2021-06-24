@@ -27,7 +27,6 @@ export default function (state = initialState, action) {
         details: action.payload
       }
     }
-
     case actions.CLEAR_DETAILS: {
       return {
         ...state,

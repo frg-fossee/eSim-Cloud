@@ -26,19 +26,20 @@ export default function KeyboardShortcuts (graph) {
   //   }
   // })
 
-  // Undo - Ctrl + Z
-  keyHandler.bindControlKey(90, function (evt) {
-    if (graph.isEnabled()) {
-      Undo()
-    }
-  })
-
-  // Redo - Ctrl + A
-  keyHandler.bindControlKey(65, function (evt) {
-    if (graph.isEnabled()) {
-      Redo()
-    }
-  })
+  if (window.location.href.split('/')[5].substring(0, 11) !== 'project') {
+    // Undo - Ctrl + Z
+    keyHandler.bindControlKey(90, function (evt) {
+      if (graph.isEnabled()) {
+        Undo()
+      }
+    })
+    // Redo - Ctrl + A
+    keyHandler.bindControlKey(65, function (evt) {
+      if (graph.isEnabled()) {
+        Redo()
+      }
+    })
+  }
 
   // Zoom In - Ctrl + I
   keyHandler.bindControlKey(73, function (evt) {

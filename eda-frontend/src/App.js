@@ -11,14 +11,15 @@ import SchematicEditor from './pages/SchematiEditor'
 
 import Simulator from './pages/Simulator'
 import Gallery from './pages/Gallery'
+import PublicProjects from './pages/Projects'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
 import ResetPassword from './pages/ResetPassword/Initiation'
 import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
-
+import ChangePassword from './pages/Account/ChangePassword'
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
-import ChangePassword from './pages/Account/ChangePassword'
+import ProjectPage from './pages/ProjectPage'
 
 // Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
 // and restricted routes disabled for authenticated users. [ e.g : login , signup ]
@@ -26,8 +27,9 @@ function PrivateRoute ({ component: Component, ...rest }) {
   const auth = useSelector(state => state.authReducer)
   const [count, setcount] = useState(0)
   const dispatch = useDispatch()
-
-  useEffect(() => dispatch(loadUser()), [dispatch])
+  useEffect(() => {
+    dispatch(loadUser())
+  }, [dispatch])
 
   if (count === 0) {
     setcount(1)
@@ -79,8 +81,10 @@ function App () {
           ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
           : <Route path="/editor" component={SchematicEditor} />
         }
+        <PublicRoute exact path="/project" restricted={false} nav={true} component={ProjectPage} />
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
+        <PublicRoute exact path="/projects" restricted={false} nav={true} component={PublicProjects} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/account/change_password" component={ChangePassword} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
