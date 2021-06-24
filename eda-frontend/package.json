@@ -14,6 +14,7 @@
     "canvg": "^3.0.6",
     "chart.js": "^2.9.3",
     "chartjs-plugin-colorschemes": "^0.4.0",
+    "disable-scroll": "^0.6.0",
     "file-saver": "^2.0.2",
     "material-ui-popup-state": "^1.5.4",
     "multiselect-react-dropdown": "^1.6.11",

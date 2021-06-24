@@ -140,7 +140,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         <ListItem button divider>
           <h2 style={{ margin: '5px' }}>Properties</h2>
         </ListItem>
-        <div style={isOpen ? { display: 'none' } : {} }>
+        <div style={false ? { display: 'none' } : {} }>
           <GridProperties gridRef={gridRef} />
 
           {/* Display component position box */}
