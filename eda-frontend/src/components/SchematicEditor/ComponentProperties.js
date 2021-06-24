@@ -21,7 +21,10 @@ export default function ComponentProperties () {
       var temp = document.getElementById("properties-modal").clientHeight
       console.log(temp,screen.height,y)
       if(screen.height - 260 - y < temp){
-        y = 100 
+        if(temp+100>=y)
+          y = 100
+        else
+          y = y - temp
       }
       console.log(y)
       setHeight(y)
