@@ -91,7 +91,6 @@ export class LED extends CircuitElement {
   }
   /** Simulation Logic */
   logic(val: number) {
-    // console.log(val);
     if (this.prev === val) {
       return;
     }
@@ -195,10 +194,13 @@ export class LED extends CircuitElement {
     if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) != -1) {
       const arduino = arduinoEnd.parent;
       (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
-        this.pwmAttached = true
         this.voltage = v / 100;
         console.log(this.voltage)
-        // this.updateLED();
+        if (this.voltage > 5) {
+          this.pwmAttached = false;
+        } else {
+          this.pwmAttached = true
+        }
       });
     }
 
