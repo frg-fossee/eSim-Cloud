@@ -217,6 +217,7 @@ export class LED extends CircuitElement {
   * @param node The Node which need to be checked
   */
   getRecArduinov2(node: Point) {
+    console.log(node)
     if (node.connectedTo.start.parent.keyName == 'ArduinoUno') {
       return node.connectedTo.start;
     } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
@@ -256,6 +257,7 @@ export class LED extends CircuitElement {
   }
 
   private getRecArduinoBreadv2(node: Point) {
+    console.log(node)
     if (node.connectedTo.end.gid != node.gid) {
       let bb = (node.connectedTo.end.parent as BreadBoard)
       for (const e in bb.joined) {
@@ -271,6 +273,10 @@ export class LED extends CircuitElement {
             }
             else if (ascii >= 102 && ascii <= 106) {
               if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e])
+              }
+            } else {
+              if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
                 return this.getRecArduinov2(bb.joined[e])
               }
             }
@@ -292,6 +298,10 @@ export class LED extends CircuitElement {
             }
             else if (ascii >= 102 && ascii <= 106) {
               if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e])
+              }
+            } else {
+              if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
                 return this.getRecArduinov2(bb.joined[e])
               }
             }
