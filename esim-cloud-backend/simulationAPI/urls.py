@@ -15,6 +15,10 @@ urlpatterns = [
          simulationAPI_views.CeleryResultView.as_view(), name='celery_status'),
 
     path('history/<uuid:save_id>/<str:sim>',
-         simulationAPI_views.SimulationResults.as_view()),
-    path('history/<str:sim>', simulationAPI_views.SimulationResultsSimulator.as_view()),
+         simulationAPI_views.SimulationResults.as_view(), 
+         name='schematic sim history'),
+
+    path('history/<str:sim>',
+         simulationAPI_views.SimulationResultsSimulator.as_view(), 
+         name='simulator sim history'),
 ]

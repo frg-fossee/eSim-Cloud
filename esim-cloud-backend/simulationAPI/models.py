@@ -43,7 +43,8 @@ class simulation(models.Model):
         max_length=30, null=True, blank=True)
     task = models.ForeignKey(to=Task, on_delete=models.CASCADE)
     simulation_time = models.DateTimeField(auto_now_add=True)
-    schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE, null=True, blank=True)
+    schematic = models.ForeignKey(
+        to=StateSave, on_delete=models.CASCADE, null=True, blank=True)
     owner = models.ForeignKey(
         to=get_user_model(), null=True, on_delete=models.CASCADE)
     netlist = models.TextField()

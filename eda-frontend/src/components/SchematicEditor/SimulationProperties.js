@@ -358,7 +358,7 @@ export default function SimulationProperties () {
     formData.append('file', file)
     formData.append('simulationType', typeSimulation)
     console.log(url.id)
-    if(url.id){
+    if (url.id) {
       formData.append('save_id', url.id)
     }
     console.log(formData)

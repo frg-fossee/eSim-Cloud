@@ -34,6 +34,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
 class simulationSerializer(serializers.ModelSerializer):
     schematic = SaveListSerializer(many=False)
+
     class Meta:
         model = simulation
         fields = '__all__'

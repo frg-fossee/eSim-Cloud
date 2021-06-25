@@ -32,7 +32,7 @@ import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen({ open, close, isResult, simType = "NgSpiceSimulator" }) {
+export default function SimulationScreen ({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -104,8 +104,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
       }
       if (url.id) {
         getUrl = `simulation/history/${url.id}/${simType}`
-      }
-      else {
+      } else {
         getUrl = `simulation/history/${simType}`
       }
       if (token) {
@@ -167,8 +166,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
               simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
             }
             schematic = simResultGraph
-          }
-          else {
+          } else {
             var simResultText = []
             for (let i = 0; i < data.length; i++) {
               let postfixUnit = ''
@@ -191,8 +189,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
         }
       })
       setComparingSim(schematic)
-    }
-    else {
+    } else {
       setCompare(false)
     }
   }
@@ -619,13 +616,13 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                           }
 
                         </TextField>
-                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: "1%" }} className={classes.formControl}>
+                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: '1%' }} className={classes.formControl}>
                           <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
                           <Select
                             labelId="select-simulation-history"
                             id="select-sim"
                             value={historyId}
-                            style={{ minWidth: "300px" }}
+                            style={{ minWidth: '300px' }}
                             onChange={handleChangeSim}
                             label="Compare simulation"
                             className={classes.selectEmpty}
@@ -652,14 +649,14 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                       />}
                     </Paper>
                     {compare && comparingSim && <div style={{ display: 'flex' }}>
-                      <TableContainer component={Paper} style={{ float: "left" }}>
+                      <TableContainer component={Paper} style={{ float: 'left' }}>
                         <Table className={classes.table} aria-label="simple table">
                           <TableHead>
                             <TableRow>
                               <TableCell></TableCell>
                               {
                                 result.graph.labels.map(ele => {
-                                  return <TableCell align="center">{ele}</TableCell>
+                                  return <TableCell key={ele} align="center">{ele}</TableCell>
                                 })
                               }
                             </TableRow>
@@ -670,7 +667,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                               <TableCell align="center">{Math.max(...result.graph.x_points)} </TableCell>
                               {
                                 result.graph.y_points.map(ele => {
-                                  return <TableCell align="center">{Math.max(...ele)}</TableCell>
+                                  return <TableCell key={ele} align="center">{Math.max(...ele)}</TableCell>
                                 })}
                             </TableRow>
                             <TableRow>
@@ -678,20 +675,20 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                               <TableCell align="center">{Math.min(...result.graph.x_points)} </TableCell>
                               {
                                 result.graph.y_points.map(ele => {
-                                  return <TableCell align="center">{Math.min(...ele)}</TableCell>
+                                  return <TableCell key={ele} align="center">{Math.min(...ele)}</TableCell>
                                 })}
                             </TableRow>
                           </TableBody>
                         </Table>
                       </TableContainer>
-                      <TableContainer component={Paper} style={{ float: "right", marginLeft: "2%" }}>
+                      <TableContainer component={Paper} style={{ float: 'right', marginLeft: '2%' }}>
                         <Table className={classes.table} aria-label="simple table">
                           <TableHead>
                             <TableRow>
                               <TableCell></TableCell>
                               {
                                 comparingSim.labels.map(ele => {
-                                  return <TableCell align="center">{ele}</TableCell>
+                                  return <TableCell key={ele} align="center">{ele}</TableCell>
                                 })
                               }
                             </TableRow>
@@ -702,7 +699,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                               <TableCell align="center">{Math.max(...comparingSim.x_points)} </TableCell>
                               {
                                 comparingSim.y_points.map(ele => {
-                                  return <TableCell align="center">{Math.max(...ele)}</TableCell>
+                                  return <TableCell key={ele} align="center">{Math.max(...ele)}</TableCell>
                                 })}
                             </TableRow>
                             <TableRow>
@@ -710,7 +707,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                               <TableCell align="center">{Math.min(...comparingSim.x_points)} </TableCell>
                               {
                                 comparingSim.y_points.map(ele => {
-                                  return <TableCell align="center">{Math.min(...ele)}</TableCell>
+                                  return <TableCell key={ele} align="center">{Math.min(...ele)}</TableCell>
                                 })}
                             </TableRow>
                           </TableBody>
@@ -718,17 +715,17 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                       </TableContainer>
                     </div>}
                     <Paper className={classes.paper}>
-                      {compare && <div style={{ display: "flex", textAlign: "left" }}>
-                        <div style={{ width: "50%" }}>
-                          <h2 style={{ marginLeft: "30%" }}>Current Netlist</h2>
-                          <div>{netlist.split("\n").map((i, key) => {
-                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                      {compare && <div style={{ display: 'flex', textAlign: 'left' }}>
+                        <div style={{ width: '50%' }}>
+                          <h2 style={{ marginLeft: '30%' }}>Current Netlist</h2>
+                          <div>{netlist.split('\n').map((i, key) => {
+                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
                           })}</div>
                         </div>
-                        <div style={{ width: "50%" }}>
-                          <h2 style={{ marginLeft: "30%" }}>Compared Netlist</h2>
-                          <div>{compareNetlist.split("\n").map((i, key) => {
-                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                        <div style={{ width: '50%' }}>
+                          <h2 style={{ marginLeft: '30%' }}>Compared Netlist</h2>
+                          <div>{compareNetlist.split('\n').map((i, key) => {
+                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
                           })}</div>
                         </div>
 
@@ -791,13 +788,13 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                           }
 
                         </TextField>
-                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: "1%" }} className={classes.formControl}>
+                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: '1%' }} className={classes.formControl}>
                           <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
                           <Select
                             labelId="select-simulation-history"
                             id="select-sim"
                             value={historyId}
-                            style={{ minWidth: "300px" }}
+                            style={{ minWidth: '300px' }}
                             onChange={handleChangeSim}
                             label="Compare simulation"
                             className={classes.selectEmpty}
@@ -812,7 +809,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                         </FormControl>}
                       </div>
                       <div style={{ display: 'flex' }}>
-                        <TableContainer component={Paper} style={{ float: "left" }}>
+                        <TableContainer component={Paper} style={{ float: 'left' }}>
                           <Table className={classes.table} aria-label="simple table">
                             <TableHead>
                               <TableRow>
@@ -841,7 +838,7 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                             </TableBody>
                           </Table>
                         </TableContainer>
-                        {compare && <TableContainer component={Paper} style={{ float: "right", marginLeft: "2%" }}>
+                        {compare && <TableContainer component={Paper} style={{ float: 'right', marginLeft: '2%' }}>
                           <Table className={classes.table} aria-label="simple table">
                             <TableHead>
                               <TableRow>
@@ -870,17 +867,17 @@ export default function SimulationScreen({ open, close, isResult, simType = "NgS
                       </div>
                     </Paper>
                     <Paper className={classes.paper}>
-                      {compare && <div style={{ display: "flex", textAlign: "left" }}>
-                        <div style={{ width: "50%" }}>
-                          <h2 style={{ marginLeft: "30%" }}>Current Netlist</h2>
-                          <div>{netlist.split("\n").map((i, key) => {
-                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                      {compare && <div style={{ display: 'flex', textAlign: 'left' }}>
+                        <div style={{ width: '50%' }}>
+                          <h2 style={{ marginLeft: '30%' }}>Current Netlist</h2>
+                          <div>{netlist.split('\n').map((i, key) => {
+                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
                           })}</div>
                         </div>
-                        <div style={{ width: "50%" }}>
-                          <h2 style={{ marginLeft: "30%" }}>Compared Netlist</h2>
-                          <div>{compareNetlist.split("\n").map((i, key) => {
-                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                        <div style={{ width: '50%' }}>
+                          <h2 style={{ marginLeft: '30%' }}>Compared Netlist</h2>
+                          <div>{compareNetlist.split('\n').map((i, key) => {
+                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
                           })}</div>
                         </div>
 
@@ -908,6 +905,7 @@ SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
   isResult: PropTypes.bool,
-  taskId: PropTypes.string
+  taskId: PropTypes.string,
+  simType: PropTypes.string
   // simResults: PropTypes.object
 }

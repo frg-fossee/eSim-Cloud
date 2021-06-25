@@ -1,4 +1,5 @@
-from simulationAPI.serializers import TaskSerializer, simulationSerializer, simulationSaveSerializer
+from simulationAPI.serializers import TaskSerializer, \
+    simulationSerializer, simulationSaveSerializer
 from simulationAPI.tasks import process_task
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -65,7 +66,8 @@ class NetlistUploader(APIView):
         if serializer.is_valid():
             serializer.save()
             saveNetlistDB(
-                serializer.data['task_id'], serializer.data['file'][0]['file'], request)
+                serializer.data['task_id'], serializer.data['file'][0]['file'],
+                request)
             task_id = serializer.data['task_id']
             celery_task = process_task.apply_async(
                 kwargs={'task_id': str(task_id)}, task_id=str(task_id))
