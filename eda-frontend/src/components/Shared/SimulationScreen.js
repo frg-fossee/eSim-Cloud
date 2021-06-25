@@ -119,6 +119,7 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
             if (!ele.result.graph || temp !== temp2) {
               arr.push(index)
             }
+            return 0
           })
           for (var i = arr.length - 1; i >= 0; i--) {
             res.data.splice(arr[i], 1)
