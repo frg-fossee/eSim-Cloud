@@ -138,6 +138,20 @@ export default function LoadGrid (container, sidebar, outline) {
     graph.setConnectableEdges(true)
     graph.setDisconnectOnMove(false)
     graph.foldingEnabled = false
+    graph.vertexLabelsMovable = false
+
+    // Disables default label of component cells and allows others
+    graph.labelsVisible = function (cell) {
+      return cell.Component ? false : true
+    }
+    graph.convertValueToString = function (cell) {
+      return cell.Component ? null : cell.value
+    }
+
+    // Disables movement of children cells of a component 
+    graph.isCellMovable = function (cell) {
+      return cell.Component ? true : false
+    }
 
     // Panning handler consumed right click so this must be
     // disabled if right click should stop connection handler.
