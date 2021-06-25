@@ -16,11 +16,12 @@ import {
   Tooltip,
   IconButton
 } from '@material-ui/core'
+import queryString from 'query-string'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
+import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText, setNetlist } from '../../redux/actions/index'
 import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
@@ -89,6 +90,8 @@ export default function SimulationProperties () {
 
   const [controlBlockParam, setControlBlockParam] = useState('')
   const [disabled, setDisabled] = React.useState(false)
+  const [simType, setSimType] = React.useState('')
+  var typeSimulation = ''
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
@@ -349,13 +352,25 @@ export default function SimulationProperties () {
 
   // Upload the nelist
   function netlistConfig (file) {
+    const token = localStorage.getItem('esim_token')
+    var url = queryString.parse(window.location.href.split('editor?')[1])
     const formData = new FormData()
     formData.append('file', file)
+    formData.append('simulationType', typeSimulation)
+    console.log(url.id)
+    if(url.id){
+      formData.append('save_id', url.id)
+    }
+    console.log(formData)
     const config = {
       headers: {
         'content-type': 'multipart/form-data'
       }
     }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    setSimType(typeSimulation)
     return api.post('simulation/upload', formData, config)
   }
 
@@ -450,18 +465,21 @@ export default function SimulationProperties () {
     switch (type) {
       case 'DcSolver':
         // console.log('To be implemented')
+        typeSimulation = 'DcSolver'
         controlLine = '.op'
 
         dispatch(setResultTitle('DC Solver Output'))
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
+        typeSimulation = 'DcSweep'
         controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
         dispatch(setResultTitle('DC Sweep Output'))
         selectedValue = selectedValueDCSweep
         selectedValueComp = selectedValueDCSweepComp
         break
       case 'Transient':
+        typeSimulation = 'Transient'
         // console.log(transientAnalysisControlLine)
         var uic = ''
         if (transientAnalysisControlLine.skipInitial === true) uic = 'UIC'
@@ -473,13 +491,14 @@ export default function SimulationProperties () {
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
+        typeSimulation = 'Ac'
         controlLine = `.ac ${acAnalysisControlLine.input} ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
 
         dispatch(setResultTitle('AC Analysis Output'))
         break
 
       case 'tfAnalysis':
-
+        typeSimulation = 'tfAnalysis'
         selectedValue = selectedValueTFAnal
         if (tfAnalysisControlLine.outputNodes === true) {
           selectedValue.forEach((value, i) => {
@@ -542,7 +561,7 @@ export default function SimulationProperties () {
       compNetlist.main + '\n' +
       controlLine + '\n' +
       controlBlock + '\n'
-
+    dispatch(setNetlist(netlist))
     prepareNetlist(netlist)
 
     // handlesimulateOpen()
@@ -564,7 +583,7 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} task_id={taskId} />
+        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} task_id={taskId} simType={simType} />
 
         {/* Simulation modes list */}
         <List>

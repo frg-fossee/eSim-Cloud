@@ -17,17 +17,22 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
-
+import api from '../../utils/Api'
+import queryString from 'query-string'
 import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -51,16 +56,22 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult, taskId }) {
+export default function SimulationScreen({ open, close, isResult, simType = "NgSpiceSimulator" }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
+  const netlist = useSelector((state) => state.netlistReducer.netlist)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
   const [scalesNonGraphArray, setScalesNonGraph] = useState([])
   const [exactDecimal, setExactDecimal] = useState([])
   const [notation, setNotation] = React.useState('Engineering')
   const [precision, setPrecision] = React.useState(5)
+  const [history, setHistory] = React.useState('')
+  const [historyId, setHistoryId] = React.useState('')
+  const [comparingSim, setComparingSim] = React.useState('')
+  const [compare, setCompare] = React.useState(false)
+  const [compareNetlist, setCompareNetlist] = React.useState(false)
   const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
   const scalesNonGraph = []
   const exactDecimalArray = []
@@ -74,6 +85,118 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
     n: 0.000000001,
     p: 0.000000000001
   }
+  useEffect(() => {
+    if (close) {
+      setHistoryId('')
+      setCompare(false)
+      setComparingSim('')
+    }
+  }, [close])
+  useEffect(() => {
+    if (open) {
+      var url = queryString.parse(window.location.href.split('editor?')[1])
+      var getUrl = ''
+      const token = localStorage.getItem('esim_token')
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+      if (url.id) {
+        getUrl = `simulation/history/${url.id}/${simType}`
+      }
+      else {
+        getUrl = `simulation/history/${simType}`
+      }
+      if (token) {
+        config.headers.Authorization = `Token ${token}`
+
+        api.get(getUrl, config).then(res => {
+          var arr = []
+          var temp2 = (result.isGraph === 'true')
+          res.data.map((ele, index) => {
+            ele.simulation_time = new Date(ele.simulation_time)
+            var temp = (ele.result.graph === 'true')
+            if (!ele.result.graph || temp !== temp2) {
+              arr.push(index)
+            }
+          })
+          for (var i = arr.length - 1; i >= 0; i--) {
+            res.data.splice(arr[i], 1)
+          }
+          console.log(res.data)
+          setHistory(res.data)
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+    }
+    // eslint-disable-next-line
+  }, [open])
+
+  const handleChangeSim = (e) => {
+    setHistoryId(e.target.value)
+    var schematic = []
+    if (e.target.value !== '') {
+      setCompare(true)
+      history.forEach(element => {
+        var data = element.result.data
+        if (element.id === e.target.value) {
+          if (element.result.graph === 'true') {
+            var simResultGraph = { labels: [], x_points: [], y_points: [] }
+            // populate the labels
+            for (var i = 0; i < data.length; i++) {
+              simResultGraph.labels[0] = data[i].labels[0]
+              var lab = data[i].labels
+              // lab is an array containeing labels names ['time','abc','def']
+              simResultGraph.x_points = data[0].x
+
+              // labels
+              for (var x = 1; x < lab.length; x++) {
+                simResultGraph.labels.push(lab[x])
+              }
+              // populate y_points
+              for (var z = 0; z < data[i].y.length; z++) {
+                simResultGraph.y_points.push(data[i].y[z])
+              }
+            }
+
+            simResultGraph.x_points = simResultGraph.x_points.map(d => parseFloat(d))
+
+            for (let i1 = 0; i1 < simResultGraph.y_points.length; i1++) {
+              simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
+            }
+            schematic = simResultGraph
+          }
+          else {
+            var simResultText = []
+            for (let i = 0; i < data.length; i++) {
+              let postfixUnit = ''
+              if (data[i][0].includes('#branch')) {
+                postfixUnit = 'A'
+              } else if (data[i][0].includes('transfer_function')) {
+                postfixUnit = ''
+              } else if (data[i][0].includes('impedance')) {
+                postfixUnit = 'Ohm'
+              } else {
+                data[i][0] = `V(${data[i][0]})`
+                postfixUnit = 'V'
+              }
+
+              simResultText.push(data[i][0] + ' ' + data[i][1] + ' ' + parseFloat(data[i][2]) + ' ' + postfixUnit + '\n')
+            }
+            schematic = simResultText
+          }
+          setCompareNetlist(element.netlist)
+        }
+      })
+      setComparingSim(schematic)
+    }
+    else {
+      setCompare(false)
+    }
+  }
+
   const toFixed = (x) => {
     var e = 0
     if (Math.abs(x) < 1.0) {
@@ -394,6 +517,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                           size='small'
                           variant="outlined"
                           select
+                          disabled={compare}
                           label="Select X Axis Scale"
                           value={xscale}
                           onChange={handleXScale}
@@ -432,6 +556,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                           style={{ width: '20%', marginLeft: '10px' }}
                           id="yscale"
                           size='small'
+                          disabled={compare}
                           variant="outlined"
                           select
                           label="Select Y Axis Scale"
@@ -475,6 +600,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                           size='small'
                           variant="outlined"
                           select
+                          disabled={compare}
                           label="Select Precision"
                           value={precision}
                           onChange={handlePrecision}
@@ -493,18 +619,120 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                           }
 
                         </TextField>
-                        {result.isGraph === 'true' && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
+                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: "1%" }} className={classes.formControl}>
+                          <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
+                          <Select
+                            labelId="select-simulation-history"
+                            id="select-sim"
+                            value={historyId}
+                            style={{ minWidth: "300px" }}
+                            onChange={handleChangeSim}
+                            label="Compare simulation"
+                            className={classes.selectEmpty}
+                          >
+                            <MenuItem value="">
+                              None
+                            </MenuItem>
+                            {history.map(sim => {
+                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                            })}
+                          </Select>
+                        </FormControl>}
+                        {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginTop: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
                           Download Graph Output
                         </Button>}
                       </div>
-                      <Graph
+                      {!compare && <Graph
                         labels={result.graph.labels}
                         x={result.graph.x_points}
                         y={result.graph.y_points}
                         xscale={xscale}
                         yscale={yscale}
                         precision={precision}
-                      />
+                      />}
+                    </Paper>
+                    {compare && comparingSim && <div style={{ display: 'flex' }}>
+                      <TableContainer component={Paper} style={{ float: "left" }}>
+                        <Table className={classes.table} aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell></TableCell>
+                              {
+                                result.graph.labels.map(ele => {
+                                  return <TableCell align="center">{ele}</TableCell>
+                                })
+                              }
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell>Max value</TableCell>
+                              <TableCell align="center">{Math.max(...result.graph.x_points)} </TableCell>
+                              {
+                                result.graph.y_points.map(ele => {
+                                  return <TableCell align="center">{Math.max(...ele)}</TableCell>
+                                })}
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>Min value</TableCell>
+                              <TableCell align="center">{Math.min(...result.graph.x_points)} </TableCell>
+                              {
+                                result.graph.y_points.map(ele => {
+                                  return <TableCell align="center">{Math.min(...ele)}</TableCell>
+                                })}
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                      <TableContainer component={Paper} style={{ float: "right", marginLeft: "2%" }}>
+                        <Table className={classes.table} aria-label="simple table">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell></TableCell>
+                              {
+                                comparingSim.labels.map(ele => {
+                                  return <TableCell align="center">{ele}</TableCell>
+                                })
+                              }
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            <TableRow>
+                              <TableCell>Max value</TableCell>
+                              <TableCell align="center">{Math.max(...comparingSim.x_points)} </TableCell>
+                              {
+                                comparingSim.y_points.map(ele => {
+                                  return <TableCell align="center">{Math.max(...ele)}</TableCell>
+                                })}
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>Min value</TableCell>
+                              <TableCell align="center">{Math.min(...comparingSim.x_points)} </TableCell>
+                              {
+                                comparingSim.y_points.map(ele => {
+                                  return <TableCell align="center">{Math.min(...ele)}</TableCell>
+                                })}
+                            </TableRow>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </div>}
+                    <Paper className={classes.paper}>
+                      {compare && <div style={{ display: "flex", textAlign: "left" }}>
+                        <div style={{ width: "50%" }}>
+                          <h2 style={{ marginLeft: "30%" }}>Current Netlist</h2>
+                          <div>{netlist.split("\n").map((i, key) => {
+                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                          })}</div>
+                        </div>
+                        <div style={{ width: "50%" }}>
+                          <h2 style={{ marginLeft: "30%" }}>Compared Netlist</h2>
+                          <div>{compareNetlist.split("\n").map((i, key) => {
+                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                          })}</div>
+                        </div>
+
+                      </div>}
                     </Paper>
                   </Grid>
                   : (result.isGraph === 'true') ? <span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span> : <span></span>
@@ -532,10 +760,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                           }}
                         >
                           <option value='Engineering'>
-                                Engineering Notation
+                            Engineering Notation
                           </option>
                           <option value='Scientific'>
-                                Scientific Notation
+                            Scientific Notation
                           </option>
                         </TextField>
 
@@ -563,38 +791,100 @@ export default function SimulationScreen ({ open, close, isResult, taskId }) {
                           }
 
                         </TextField>
+                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: "1%" }} className={classes.formControl}>
+                          <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
+                          <Select
+                            labelId="select-simulation-history"
+                            id="select-sim"
+                            value={historyId}
+                            style={{ minWidth: "300px" }}
+                            onChange={handleChangeSim}
+                            label="Compare simulation"
+                            className={classes.selectEmpty}
+                          >
+                            <MenuItem value="">
+                              None
+                            </MenuItem>
+                            {history.map(sim => {
+                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                            })}
+                          </Select>
+                        </FormControl>}
                       </div>
-
-                      <TableContainer component={Paper}>
-                        <Table className={classes.table} aria-label="simple table">
-                          <TableHead>
-                            <TableRow>
-                              <TableCell align="center">Node/Branch</TableCell>
-                              <TableCell align="center">Value</TableCell>
-                              <TableCell align="center">Unit</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {result.text.map((line, index) => (
-                              <TableRow key={index}>
-                                <TableCell align="center">{line.split('=')[0]}</TableCell>
-                                <TableCell align="center">
-                                  {(line.split(' ')[3] === '\n')
-                                    ? (parseFloat(line.split(' ')[2]))
-                                    : (notation === 'Scientific'
-                                      ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + 'e' + ((exactDecimal[index]) >= 0
-                                        ? '+' + (exactDecimal[index]).toString() : exactDecimal[index]).toString())
-                                      : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}
-                                </TableCell>
-                                <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
+                      <div style={{ display: 'flex' }}>
+                        <TableContainer component={Paper} style={{ float: "left" }}>
+                          <Table className={classes.table} aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell align="center">Node/Branch</TableCell>
+                                <TableCell align="center">Value</TableCell>
+                                <TableCell align="center">Unit</TableCell>
                               </TableRow>
-                            ))
-                            }
+                            </TableHead>
+                            <TableBody>
+                              {result.text.map((line, index) => (
+                                <TableRow key={index}>
+                                  <TableCell align="center">{line.split('=')[0]}</TableCell>
+                                  <TableCell align="center">
+                                    {(line.split(' ')[3] === '\n')
+                                      ? (parseFloat(line.split(' ')[2]))
+                                      : (notation === 'Scientific'
+                                        ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + 'e' + ((exactDecimal[index]) >= 0
+                                          ? '+' + (exactDecimal[index]).toString() : exactDecimal[index]).toString())
+                                        : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}
+                                  </TableCell>
+                                  <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
+                                </TableRow>
+                              ))
+                              }
 
-                          </TableBody>
-                        </Table>
-                      </TableContainer>
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                        {compare && <TableContainer component={Paper} style={{ float: "right", marginLeft: "2%" }}>
+                          <Table className={classes.table} aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell align="center">Node/Branch</TableCell>
+                                <TableCell align="center">Value</TableCell>
+                                <TableCell align="center">Unit</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {comparingSim.map((line, index) => {
+                                return (
+                                  <TableRow key={index}>
+                                    <TableCell align="center">{line.split('=')[0]}</TableCell>
+                                    <TableCell align="center">
+                                      {(parseFloat(line.split(' ')[2]).toFixed(precision))}
+                                    </TableCell>
+                                    <TableCell align="center">{(line.split(' ')[3] === '\n') ? '' : line.split(' ')[3]}</TableCell>
+                                  </TableRow>
+                                )
+                              })
+                              }
 
+                            </TableBody>
+                          </Table>
+                        </TableContainer>}
+                      </div>
+                    </Paper>
+                    <Paper className={classes.paper}>
+                      {compare && <div style={{ display: "flex", textAlign: "left" }}>
+                        <div style={{ width: "50%" }}>
+                          <h2 style={{ marginLeft: "30%" }}>Current Netlist</h2>
+                          <div>{netlist.split("\n").map((i, key) => {
+                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                          })}</div>
+                        </div>
+                        <div style={{ width: "50%" }}>
+                          <h2 style={{ marginLeft: "30%" }}>Compared Netlist</h2>
+                          <div>{compareNetlist.split("\n").map((i, key) => {
+                            return <h3 style={{ marginLeft: "30%" }} key={key}>{i}</h3>
+                          })}</div>
+                        </div>
+
+                      </div>}
                     </Paper>
                   </Grid>
                   : <span></span>

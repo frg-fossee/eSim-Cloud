@@ -71,7 +71,7 @@ ROOT_URLCONF = 'esimCloud.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,9 +113,8 @@ DATABASES = {
 
 }
 
-
 DATABASE_ROUTERS = (
-    'simulationAPI.dbrouters.mongoRouter',
+    # 'simulationAPI.dbrouters.mongoRouter',
     # 'saveAPI.dbrouters.mongoRouter',<- to Store saveAPI models in mongodb
     # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
 )
@@ -123,19 +122,18 @@ DATABASE_ROUTERS = (
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',    # noqa
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',              # noqa
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',             # noqa
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',            # noqa
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',  # noqa
     },
 ]
-
 
 # Mail server config
 
@@ -169,7 +167,9 @@ DJOSER = {
     'SET_PASSWORD_RETYPE': True,
     # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'api/auth/users/activate/{uid}/{token}',
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': [
+      "http://localhost:8000/api/auth/google-callback",
+      "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy',
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True
 }
@@ -190,7 +190,7 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

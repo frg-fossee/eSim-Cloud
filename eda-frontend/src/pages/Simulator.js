@@ -6,6 +6,8 @@ import textToFile from '../components/Simulator/textToFile'
 import SimulationScreen from '../components/Shared/SimulationScreen'
 import { useDispatch } from 'react-redux'
 import { setResultGraph, setResultText } from '../redux/actions/index'
+import { setNetlist } from '../redux/actions/index'
+
 
 import api from '../utils/Api'
 
@@ -23,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Simulator () {
+export default function Simulator() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const [netlistCode, setNetlistCode] = useState('')
@@ -81,14 +83,16 @@ export default function Simulator () {
     return cleanCode
   }
 
-  function prepareNetlist () {
+  function prepareNetlist() {
     var sanatizedText = netlistCodeSanitization(netlistCode)
+    dispatch(setNetlist(sanatizedText))
     var file = textToFile(sanatizedText)
     sendNetlist(file)
   }
 
   // Upload the nelist
-  function netlistConfig (file) {
+  function netlistConfig(file) {
+    const token = localStorage.getItem('esim_token')
     const formData = new FormData()
     formData.append('file', file)
     const config = {
@@ -96,10 +100,13 @@ export default function Simulator () {
         'content-type': 'multipart/form-data'
       }
     }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
     return api.post('simulation/upload', formData, config)
   }
 
-  function sendNetlist (file) {
+  function sendNetlist(file) {
     setIsResult(false)
     netlistConfig(file)
       .then((response) => {
@@ -115,7 +122,7 @@ export default function Simulator () {
 
   const [isResult, setIsResult] = useState(false)
 
-  function simulationResult (url) {
+  function simulationResult(url) {
     api
       .get(url)
       .then((res) => {
@@ -140,9 +147,9 @@ export default function Simulator () {
 
                 // labels
                 for (var x = 1; x < lab.length; x++) {
-                //   if (lab[x].includes('#branch')) {
-                //     lab[x] = `I (${lab[x].replace('#branch', '')})`
-                //   }
+                  //   if (lab[x].includes('#branch')) {
+                  //     lab[x] = `I (${lab[x].replace('#branch', '')})`
+                  //   }
                   //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
                   //  else {
                   // lab[x] = `V (${lab[x]})`
