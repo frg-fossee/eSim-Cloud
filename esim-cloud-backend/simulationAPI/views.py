@@ -9,6 +9,11 @@ from rest_framework.exceptions import ValidationError
 from celery.result import AsyncResult
 import uuid
 import logging
+from .models import runtimeStat
+import celery.signals
+from celery import current_task
+import time
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -63,3 +68,23 @@ class CeleryResultView(APIView):
             return Response(response_data)
         else:
             raise ValidationError('Invalid uuid format')
+
+
+@celery.signals.task_prerun.connect
+def statsd_task_prerun(task_id, **kwargs):
+    current_task.start_time = time.time()
+    print(task_id)
+
+
+@celery.signals.task_postrun.connect
+def statsd_task_postrun(task_id, **kwargs):
+    runtime = time.time() - current_task.start_time
+    runtime = math.ceil(runtime)
+    statObj, created = runtimeStat.objects.get_or_create(exec_time=runtime)
+    statObj.qty += 1
+    statObj.save()
+    # print(statObj)
+    # print(statObj.exec_time)
+    # print(statObj.qty)
+    # print(task_id)
+    print(runtime)

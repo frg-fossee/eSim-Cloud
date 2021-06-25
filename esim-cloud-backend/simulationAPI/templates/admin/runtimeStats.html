@@ -1,0 +1,59 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+    <h1> Runtime Statistics </h1>
+{% endblock %}
+
+{% block result_list %}
+    <!-- Our content goes here... -->
+
+    <div class="results">
+        <table>
+
+        <thead>
+        <tr>
+            <th>
+            <div class="text">
+                <a href="#">Execution Time</a>
+            </div>
+            </th>
+            <th>
+            <div class="text">
+                <a href="#">Total</a>
+            </div>
+            </th>
+            <th>
+            <div class="text">
+                <a href="#">
+                <strong>%  Of Total Simulations</strong>
+                </a>
+            </div>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for row in summary %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+            <td> {{ row.exec_time }} </td>
+            <td> {{ row.qty  }} </td>
+            <td>
+            <strong>
+            {% widthratio row.qty summary_total 100%}
+            </strong>
+            </td>
+        </tr>
+        
+        {% endfor %}
+        <tr style="font-weight:bold; border-top:2px solid #DDDDDD;">
+            <td> Total </td>
+            <td> {{ summary_total }} </td>
+            <td> 100% </td>
+        </tr>
+        </tbody>
+
+    </table>
+    </div>
+{% endblock %}
+
+{% block pagination %}{% endblock %}
