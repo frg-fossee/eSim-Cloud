@@ -182,13 +182,5 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         pins[i].ParentComponent = v1
         pins[i].PinNumber = currentPin.pinNumber
       }
-      pins[i + 1] = graph.insertVertex(
-        v1, null, v1.CompObject.name,
-        parseInt(v1.geometry.width), parseInt(v1.geometry.height),
-        0.5, 0.5, 'align=left;verticalAlign=top;fontColor=blue;rotation=0'
-      )
-      pins[i + 1].geometry.relative = false
-      pins[i + 1].Pin = false
-      pins[i + 1].setConnectable(false)
     })
 }
