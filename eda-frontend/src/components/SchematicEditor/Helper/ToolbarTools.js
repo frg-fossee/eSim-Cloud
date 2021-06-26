@@ -42,14 +42,96 @@ export function Save() {
   return value
 }
 
+// Function to clear undo/redo history
+export function clearHistory() {
+  undoManager.clear()
+}
+
+// Func to check if wire change
+const checkWireChange = (changes) => {
+  for (const change of changes) {
+    if (change.__proto__.constructor.name === 'mxTerminalChange') { return true }
+  }
+  return false
+}
+
 // UNDO
 export function Undo() {
-  undoManager.undo()
+  if (undoManager.indexOfNextAdd === 0) {
+    // Nothing to undo
+    return
+  } else if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd - 1].changes)) {
+    // Found Wire
+    undoManager.undo()
+  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length > 1) {
+    // Found Component
+    let undos = 1
+    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
+      if (undoManager.history[i].changes.length === 1
+        || checkWireChange(undoManager.history[i].changes)
+      ) { break }
+    }
+    while(undos !== 0) {
+      undoManager.undo()
+      undos--
+    }
+  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 1) {
+    // Found Rotate/Move
+    let undos = 0
+    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
+      if (undoManager.history[i].changes.length !== 1) { break }
+    }
+    while(undos !== 0) {
+      undoManager.undo()
+      undos--
+    }
+  }
+  else {
+    // Default case !?
+    undoManager.undo()
+  }
 }
 
 // REDO
 export function Redo() {
-  undoManager.redo()
+  if (undoManager.indexOfNextAdd === undoManager.history.length) {
+    // Nothing to redo
+    return
+  } else if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd].changes)) {
+    // Found Wire
+    undoManager.redo()
+  } else if (
+    undoManager.history[undoManager.indexOfNextAdd].changes.length === 1
+    && undoManager.history[undoManager.indexOfNextAdd].changes[0].__proto__.constructor.name === 'mxChildChange'
+  ) {
+    // Found Component
+    let redos = 1
+    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
+      if (undoManager.history[i].changes.length === 12 ||
+        undoManager.history[i].changes.length === 1 ||
+        checkWireChange(undoManager.history[i].changes)
+      ) { break }
+    }
+    while (redos !== 0) {
+      undoManager.redo()
+      redos--
+    }
+  } else if (undoManager.history[undoManager.indexOfNextAdd].changes.length === 1) {
+    //Found component Rotate/Move
+    let redos = 1;
+    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
+      if (undoManager.history[i].changes.length !== 1 ||
+        undoManager.history[i].changes[0].__proto__.constructor.name === 'mxChildChange'
+      ) { break }
+    }
+    while (redos !== 0) {
+      redos--
+      undoManager.redo()
+    }
+  } else {
+    // Default Case !?
+    undoManager.redo()
+  }
 }
 
 // Zoom IN
@@ -342,6 +424,11 @@ export function GenerateNetList() {
           netlist.componentlist.push(component.properties.PREFIX)
           netlist.nodelist.push(compobj.node2, compobj.node1)
         }
+        console.log('component properties', component.properties)
+        if (component.properties.MODEL.length > 0) {
+            k = k + ' ' + component.properties.MODEL.split(' ')[1]
+        }
+
         if (component.properties.PREFIX.charAt(0) === 'V' || component.properties.PREFIX.charAt(0) === 'v' || component.properties.PREFIX.charAt(0) === 'I' || component.properties.PREFIX.charAt(0) === 'i') {
           const comp = component.properties
           if (comp.NAME === 'SINE') {
@@ -361,7 +448,55 @@ export function GenerateNetList() {
               component.value = component.value + '\n' + component.properties.VALUE
             }
           }
-        } else {
+        }else if(component.properties.PREFIX.charAt(0) === 'C' || component.properties.PREFIX.charAt(0) === 'c'){
+            k = k + ' ' + component.properties.VALUE
+            if(component.properties.IC != 0){
+                k = k + ' IC=' + component.properties.IC
+            }
+            component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'L' || component.properties.PREFIX.charAt(0) === 'l'){
+            k = k + ' ' + component.properties.VALUE
+            if(component.properties.IC != 0){
+                k = k + ' IC=' + component.properties.IC
+            }
+            if(component.properties.DTEMP != 27){
+                k = k + ' dtemp=' + component.properties.DTEMP
+            }            
+            component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'M' || component.properties.PREFIX.charAt(0) === 'm'){
+            // k = k + ' ' + component.properties.VALUE   
+            if(component.properties.MULTIPLICITY_PARAMETER != 1){
+                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+            }
+            if(component.properties.DTEMP != 27){
+                k = k + ' dtemp=' + component.properties.DTEMP
+            }            
+            // component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'Q' || component.properties.PREFIX.charAt(0) === 'q'){
+            // k = k + ' ' + component.properties.VALUE
+            if(component.properties.MULTIPLICITY_PARAMETER != 1){
+                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+            }
+            if(component.properties.DTEMP != 27){
+                k = k + ' dtemp=' + component.properties.DTEMP
+            }            
+            // component.value = component.value + '\n' + component.properties.VALUE
+        }else if(component.properties.PREFIX.charAt(0) === 'R' || component.properties.PREFIX.charAt(0) === 'r'){
+            k = k + ' ' + component.properties.VALUE
+            if(component.properties.SHEET_RESISTANCE != 0){
+                k = k + ' RSH=' + component.properties.SHEET_RESISTANCE
+            }
+            if(component.properties.FIRST_ORDER_TEMPERATURE_COEFF != 0){
+                k = k + ' tc1=' + component.properties.FIRST_ORDER_TEMPERATURE_COEFF
+            }
+            if(component.properties.SECOND_ORDER_TEMPERATURE_COEFF != 0){
+                k = k + ' tc2=' + component.properties.SECOND_ORDER_TEMPERATURE_COEFF
+            }
+            if(component.properties.PARAMETER_MEASUREMENT_TEMPERATURE != 27){
+                k = k + ' TNOM=' + component.properties.PARAMETER_MEASUREMENT_TEMPERATURE
+            }
+            component.value = component.value + '\n' + component.properties.VALUE
+        }else {
           if (component.properties.VALUE !== undefined) {
             k = k + ' ' + component.properties.VALUE
             component.value = component.value + '\n' + component.properties.VALUE
@@ -372,9 +507,7 @@ export function GenerateNetList() {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
           component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
-        if (component.properties.MODEL.length > 0) {
-          k = k + ' ' + component.properties.MODEL.split(' ')[1]
-        }
+        
         if (component.properties.MODEL.length > 0) {
           spiceModels += component.properties.MODEL + '\n'
         }

@@ -1,3 +1,4 @@
+from libAPI.lib_utils import handle_uploaded_libs
 import django_filters
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -8,9 +9,7 @@ from libAPI.serializers import LibrarySerializer, \
 from libAPI.models import Library, \
     LibraryComponent, \
     LibrarySet, \
-    FavouriteComponent, \
-    save_libs, \
-    delete_uploaded_files
+    FavouriteComponent
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -30,13 +29,12 @@ logger = logging.getLogger(__name__)
 class IsLibraryOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if obj.library_set.default:
+        if request.method in SAFE_METHODS:
             return True
         if request.user.is_authenticated:
             if obj.library_set.user == request.user:
                 return True
-            elif obj.library_set.user.is_superuser \
-                    and request.method in SAFE_METHODS:
+            elif request.user.is_superuser:
                 return True
         return False
 
@@ -91,11 +89,9 @@ class LibraryViewSet(viewsets.ModelViewSet):
     # Default Libraries
     @action(detail=False, methods=['GET'], name="All Default Libraries")
     def default(self, request):
-        User = get_user_model()
-        superusers = User.objects.filter(is_superuser=True)
         return Response(LibrarySerializer(
-            Library.objects.filter(Q(library_set__default=True)),
-            many=True).data
+            Library.objects.filter(
+                Q(library_set__default=True)), many=True).data
         )
 
 
@@ -115,10 +111,7 @@ class LibraryComponentFilterSet(django_filters.FilterSet):
 class IsComponentOwner(BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if obj.component_library.library_set.default:
-            return True
-        elif obj.component_library.library_set.user \
-                and request.method in SAFE_METHODS:
+        if request.method in SAFE_METHODS:
             return True
         elif request.user.is_authenticated:
             if obj.component_library.library_set.user == request.user:
@@ -141,8 +134,8 @@ class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
         superusers = User.objects.filter(is_superuser=True)
         if self.request.user.is_authenticated:
             library_set = LibrarySet.objects.filter(
-                Q(user=self.request.user) | Q(
-                    default=True) | Q(user__in=superusers)
+                Q(user=self.request.user) |
+                Q(default=True) | Q(user__in=superusers)
             )
             libraries = Library.objects.filter(library_set__in=library_set)
             components = LibraryComponent.objects.filter(
@@ -189,15 +182,14 @@ class LibrarySetViewSet(viewsets.ModelViewSet):
         files = request.FILES.getlist('files')
         if len(files) != 0:
             path = os.path.join(
-                settings.BASE_DIR,
+                settings.BASE_DIR[6:],
                 'kicad-symbols',
                 library_set.user.username + '-' + library_set.name)
             try:
-                save_libs(library_set, path, files)  # defined in ./models.py
-                delete_uploaded_files(files, path)
+                # defined in ./lib_utils.py
+                handle_uploaded_libs(library_set, path, files)
                 return Response(status=status.HTTP_201_CREATED)
             except Exception:
-                delete_uploaded_files(files, path)
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)

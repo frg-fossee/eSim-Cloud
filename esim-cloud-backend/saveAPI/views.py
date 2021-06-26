@@ -32,18 +32,21 @@ class StateSaveView(APIView):
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
         logger.info('Got POST for state save ')
-        esim_libraries = json.loads(request.data.get('esim_libraries'))
+        esim_libraries = None
+        if request.data.get('esim_libraries'):
+            esim_libraries = json.loads(request.data.get('esim_libraries'))
         img = Base64ImageField(max_length=None, use_url=True)
         filename, content = img.update(request.data['base64_image'])
         state_save = StateSave(
             data_dump=request.data.get('data_dump'),
-            description=request.data.get('descirption'),
+            description=request.data.get('description'),
             name=request.data.get('name'),
-            owner=request.user
+            owner=request.user,
+            is_arduino=True if esim_libraries is None else False,
         )
         state_save.base64_image.save(filename, content)
-        print(state_save)
-        state_save.esim_libraries.set(esim_libraries)
+        if esim_libraries:
+            state_save.esim_libraries.set(esim_libraries)
         try:
             state_save.save()
             return Response(StateSaveSerializer(state_save).data)
@@ -267,6 +270,7 @@ class SaveSearchViewSet(viewsets.ReadOnlyModelViewSet):
     """
     Search Project
     """
+
     def get_queryset(self):
         queryset = StateSave.objects.filter(
             owner=self.request.user).order_by('-save_time')
