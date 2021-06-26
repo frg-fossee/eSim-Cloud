@@ -41,7 +41,11 @@ export class LED extends CircuitElement {
   /**
    * Set to keep track of visited nodes
    */
-  visitedNodesv2 = new Set()
+  visitedNodesv2 = new Set();
+  /**
+   * Pin Name mapped to Pins
+   */
+  pinNamedMap: any = {};
 
   /**
    * LED constructor
@@ -105,21 +109,19 @@ export class LED extends CircuitElement {
       if (val >= 0) {
         this.nodes[1].setValue(val, null);
       }
-    } // Run if PWM is attached
-    else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached) {
-
+    } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached) {
+      // TODO: Run if PWM is attached
       /**
        * create color and add alpha to color
        */
-      let color = `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`
-      let split = color.split('-')
-      let genColor = 'none'
-      let alpha = (this.voltage / 5) * 9;
-      genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`
+      const color = `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`;
+      const split = color.split('-');
+      let genColor = 'none';
+      const alpha = (this.voltage / 5) * 9;
+      genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`;
       this.elements[3].attr({ fill: genColor });
 
-    } // Handle connection errors
-    else {
+    } else {
       // TODO: Show Toast
       this.handleConnectionError();
       window.showToast('LED is not Connected properly');
@@ -177,16 +179,11 @@ export class LED extends CircuitElement {
   }
 
   /**
-   * Pin Name mapped to Pins
-   */
-  pinNamedMap: any = {};
-
-  /**
    * Called when start simulation.
    */
   initSimulation(): void {
-    this.visitedNodesv2.clear()
-    let pwmPins = [3, 5, 6, 9, 10, 11]
+    this.visitedNodesv2.clear();
+    const pwmPins = [3, 5, 6, 9, 10, 11];
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
     }
@@ -198,7 +195,7 @@ export class LED extends CircuitElement {
       return;
     }
     // Only add pwm if connected to a pwm pin in arduino
-    if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) != -1) {
+    if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) !== -1) {
       const arduino = arduinoEnd.parent;
       (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
         // Calculate voltage of pwm pin
@@ -207,7 +204,7 @@ export class LED extends CircuitElement {
         if (this.voltage > 6) {
           this.pwmAttached = false;
         } else {
-          this.pwmAttached = true
+          this.pwmAttached = true;
         }
       });
     }
@@ -218,57 +215,58 @@ export class LED extends CircuitElement {
     this.prev = -2;
     this.fillColor('none');
     // reset PWM boolean & voltage = 0
-    this.pwmAttached = false
+    this.pwmAttached = false;
     this.voltage = 0;
   }
 
   /**
-  * Return the node which is connected to arduino by recursively finding connected node
-  * @param node The Node which need to be checked
-  */
+   * Return the node which is connected to arduino by recursively finding connected node
+   * @param node The Node which need to be checked
+   */
   getRecArduinov2(node: Point) {
-    if (node.connectedTo.start.parent.keyName == 'ArduinoUno') {
+    if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
       // TODO: Return if arduino is connected to start node
       return node.connectedTo.start;
-    } else if (node.connectedTo.end.parent.keyName == 'ArduinoUno') {
+    } else if (node.connectedTo.end.parent.keyName === 'ArduinoUno') {
       // TODO: Return if arduino is connected to end node
       return node.connectedTo.end;
-    } else if (node.connectedTo.start.parent.keyName == "BreadBoard" && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
+    } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
       // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
       return this.getRecArduinoBreadv2(node);
-    } else if (node.connectedTo.end.parent.keyName == "BreadBoard" && !this.visitedNodesv2.has(node.connectedTo.end.gid)) {
+    } else if (node.connectedTo.end.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.end.gid)) {
       // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
       return this.getRecArduinoBreadv2(node);
-    } else if (node.connectedTo.end.parent.keyName == "Battery9v") {
+    } else if (node.connectedTo.end.parent.keyName === 'Battery9v') {
       // TODO: Return false if node's end is connected to 9V Battery
       return false;
-    } else if (node.connectedTo.end.parent.keyName == "CoinCell") {
+    } else if (node.connectedTo.end.parent.keyName === 'CoinCell') {
       // TODO: Return false if node's end is connected to Coin Cell
       return false;
     } else {
       // TODO: If nothing matches
       // IF/ELSE: Determine if start is to be used OR end for further recursion
-      if (node.connectedTo.end.gid != node.gid) {
+      if (node.connectedTo.end.gid !== node.gid) {
         // Loops through all nodes in parent
         for (const e in node.connectedTo.end.parent.nodes) {
           // IF: gid is different && gid not in visited node
-          if (node.connectedTo.end.parent.nodes[e].gid != node.connectedTo.end.gid && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid)) {
+          if (node.connectedTo.end.parent.nodes[e].gid !== node.connectedTo.end.gid
+            && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid)) {
             // add gid in visited nodes
-            this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid)
+            this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid);
             // call back Arduino Recursive Fn
-            return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e])
+            return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e]);
           }
         }
-      }
-      else if (node.connectedTo.start.gid != node.gid) {
+      } else if (node.connectedTo.start.gid !== node.gid) {
         // Loops through all nodes in parent
         for (const e in node.connectedTo.start.parent.nodes) {
           // IF: gid is different && gid not in visited node
-          if (node.connectedTo.start.parent.nodes[e].gid != node.connectedTo.start.gid && !this.visitedNodesv2.has(node.connectedTo.start.parent.nodes[e].gid)) {
+          if (node.connectedTo.start.parent.nodes[e].gid !== node.connectedTo.start.gid
+            && !this.visitedNodesv2.has(node.connectedTo.start.parent.nodes[e].gid)) {
             // add gid in visited nodes
-            this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid)
+            this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid);
             // call back Arduino Recursive Fn
-            return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e])
+            return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e]);
           }
         }
       }
@@ -283,59 +281,59 @@ export class LED extends CircuitElement {
    */
   private getRecArduinoBreadv2(node: Point) {
     // IF/ELSE: Determine if start is to be used OR end for further recursion
-    if (node.connectedTo.end.gid != node.gid) {
-      let bb = (node.connectedTo.end.parent as BreadBoard)
+    if (node.connectedTo.end.gid !== node.gid) {
+      const bb = (node.connectedTo.end.parent as BreadBoard);
       // loop through joined nodes of breadboard
       for (const e in bb.joined) {
-        if (bb.joined[e].gid != node.connectedTo.end.gid) {
+        if (bb.joined[e].gid !== node.connectedTo.end.gid) {
           // Run only if substring matches
-          if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.end.label.substring(1, node.connectedTo.end.label.length)) {
-            let ascii = node.connectedTo.end.label.charCodeAt(0)
-            let currAscii = bb.joined[e].label.charCodeAt(0)
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length)
+            === node.connectedTo.end.label.substring(1, node.connectedTo.end.label.length)) {
+            const ascii = node.connectedTo.end.label.charCodeAt(0);
+            const currAscii = bb.joined[e].label.charCodeAt(0);
             // add gid to VisitedNode
-            this.visitedNodesv2.add(bb.joined[e].gid)
+            this.visitedNodesv2.add(bb.joined[e].gid);
             // IF/ELSE: determine which part of breadboard is connected
             if (ascii >= 97 && ascii <= 101) {
               if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
-                return this.getRecArduinov2(bb.joined[e])
+                return this.getRecArduinov2(bb.joined[e]);
               }
-            }
-            else if (ascii >= 102 && ascii <= 106) {
+            } else if (ascii >= 102 && ascii <= 106) {
               if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
-                return this.getRecArduinov2(bb.joined[e])
+                return this.getRecArduinov2(bb.joined[e]);
               }
             } else {
               if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
-                return this.getRecArduinov2(bb.joined[e])
+                return this.getRecArduinov2(bb.joined[e]);
               }
             }
           }
         }
       }
-    } else if (node.connectedTo.start.gid != node.gid) {
-      let bb = (node.connectedTo.start.parent as BreadBoard)
+    } else if (node.connectedTo.start.gid !== node.gid) {
+      const bb = (node.connectedTo.start.parent as BreadBoard);
       // loop through joined nodes of breadboard
       for (const e in bb.joined) {
-        if (bb.joined[e].gid != node.connectedTo.start.gid) {
+        if (bb.joined[e].gid !== node.connectedTo.start.gid) {
           // Run only if substring matches
-          if (bb.joined[e].label.substring(1, bb.joined[e].label.length) == node.connectedTo.start.label.substring(1, node.connectedTo.start.label.length)) {
-            let ascii = node.connectedTo.start.label.charCodeAt(0)
-            let currAscii = bb.joined[e].label.charCodeAt(0)
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length)
+            === node.connectedTo.start.label.substring(1, node.connectedTo.start.label.length)) {
+            const ascii = node.connectedTo.start.label.charCodeAt(0);
+            const currAscii = bb.joined[e].label.charCodeAt(0);
             // add gid to VisitedNode
-            this.visitedNodesv2.add(bb.joined[e].gid)
+            this.visitedNodesv2.add(bb.joined[e].gid);
             // IF/ELSE: determine which part of breadboard is connected
             if (ascii >= 97 && ascii <= 101) {
               if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
-                return this.getRecArduinov2(bb.joined[e])
+                return this.getRecArduinov2(bb.joined[e]);
               }
-            }
-            else if (ascii >= 102 && ascii <= 106) {
+            } else if (ascii >= 102 && ascii <= 106) {
               if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
-                return this.getRecArduinov2(bb.joined[e])
+                return this.getRecArduinov2(bb.joined[e]);
               }
             } else {
               if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
-                return this.getRecArduinov2(bb.joined[e])
+                return this.getRecArduinov2(bb.joined[e]);
               }
             }
           }
