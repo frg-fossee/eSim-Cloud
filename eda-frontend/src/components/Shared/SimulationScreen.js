@@ -32,7 +32,7 @@ import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
+export default function SimulationScreen({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -178,7 +178,9 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
               } else if (data[i][0].includes('impedance')) {
                 postfixUnit = 'Ohm'
               } else {
-                data[i][0] = `V(${data[i][0]})`
+                if (data[i][0][0] !== 'V') {
+                  data[i][0] = `V(${data[i][0]})`
+                }
                 postfixUnit = 'V'
               }
 
