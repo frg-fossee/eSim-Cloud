@@ -139,7 +139,7 @@ services:
   db:
     image: postgres
     volumes:
-      - ./postgres_data:/var/lib/postgresql/data/   
+      - ./postgres_data:/var/lib/postgresql/data/
     env_file:
       - .env
 
