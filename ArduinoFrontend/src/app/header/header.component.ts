@@ -46,7 +46,6 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     // Get Login Token
     this.token = Login.getToken();
-    // If token is available then get username
     if (this.token) {
       this.api.userInfo(this.token).subscribe((v) => {
         this.username = v.username;
