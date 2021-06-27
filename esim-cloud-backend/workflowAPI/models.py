@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import Group
 from django.db.models.deletion import CASCADE, SET_NULL
 from django.contrib.auth import get_user_model
+from django.db.models.fields import related
 
 
 # State model which has been linked to circuits in publishAPI
@@ -65,8 +66,12 @@ class Transition(models.Model):
                                                  verbose_name="Transition allowed for all users of specified roles except creator")  # noqa
     only_for_creator = models.BooleanField(default=False, null=False,
                                            verbose_name="Transition that ONLY the creator should be able to do it.")  # noqa
-    event = models.CharField(blank=True, null=True, max_length=200)
-    history = models.CharField(blank=True, null=True, max_length=200)
+    event_creator = models.CharField(blank=True, null=True, max_length=200,verbose_name='Event Text for the Creator')
+    history_creator = models.CharField(blank=True, null=True, max_length=200,verbose_name='History Text for the Creator')
+    event_reviewer = models.CharField(blank=True, null=True, max_length=200,verbose_name='Event Text for the Reviewer')
+    history_reviewer = models.CharField(blank=True, null=True, max_length=200,verbose_name='History Text for the Reviewer')
+    event_other = models.CharField(blank=True, null=True, max_length=200,verbose_name='Event Text for the Other User')
+    history_other = models.CharField(blank=True, null=True, max_length=200,verbose_name='History Text for the Other User')
 
     def __str__(self):
         return self.name

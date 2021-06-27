@@ -7,7 +7,7 @@ import six
 import uuid
 import imghdr
 from saveAPI.serializers import StateSaveSerializer
-
+from workflowAPI.models import Transition
 
 class Base64ImageField(serializers.ImageField):
 
@@ -32,6 +32,10 @@ class CircuitTagSerializer(serializers.ModelSerializer):
         model = CircuitTag
         fields = ('tag', 'description', 'id')
 
+class TransitionElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transition
+        fields = '__all__' 
 
 class TransitionHistorySerializer(serializers.ModelSerializer):
     transition_author_name = serializers.CharField(
@@ -40,21 +44,14 @@ class TransitionHistorySerializer(serializers.ModelSerializer):
         read_only=True, source='transition.from_state.name')
     to_state_name = serializers.CharField(
         read_only=True, source='transition.to_state.name')
-    event = serializers.CharField(
-        read_only=True, source='transition.event')
-    history = serializers.CharField(
-        read_only=True, source='transition.history')
-
+    transition = TransitionElementSerializer()
     class Meta:
         model = TransitionHistory
         fields = ('transition_author_name',
                   'from_state_name',
                   'to_state_name',
                   'transition_time',
-                  'reviewer_notes',
-                  'is_done_by_reviewer',
-                  'event',
-                  'history')
+                  'transition',)
 
 
 class FieldSerializer(serializers.ModelSerializer):

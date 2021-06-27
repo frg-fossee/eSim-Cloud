@@ -483,7 +483,7 @@ function CreateProject () {
                   <h3>History of this Project</h3>
                   {(project.details?.history && project.details?.history[0])
                     ? <>
-                      <ProjectTimeline history={project.details.history.slice(0).reverse()}/>
+                      <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === owner} />
                     </>
                     : <h4>No history of this project.</h4>
                   }
