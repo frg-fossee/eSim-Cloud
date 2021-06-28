@@ -1,428 +1,466 @@
 <!-- As a heading -->
 <nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: whitesmoke;height: 50px;">
     <a (click)="exitProject()">
-        <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-md-block" alt="AOC">
+      <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;"
+        class="d-md-block" alt="AOC">
     </a>
     <!-- <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span> -->
     <form style="min-width: 300px;">
-        <mat-form-field style="width: 100%;">
-            <input matInput [value]="projectTitle" (focusout)="onFocusOut($event)" class="text-dark">
-        </mat-form-field>
-        <!-- <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
-      id="project-title" > -->
+      <mat-form-field style="width: 100%;">
+        <input matInput [value]="projectTitle" (focusout)="onFocusOut($event)" class="text-dark">
+      </mat-form-field>
+      <!-- <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
+        id="project-title" > -->
     </form>
     <div class="collapse navbar-collapse">
-        <ul class="navbar-nav mr-auto">
-            <!-- <li id="projectid" class="nav-item dropdown text-white"> -->
-            <!-- <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" -->
-            <!-- aria-haspopup="true" aria-expanded="false"> -->
-            <!-- Project -->
-            <!-- </a> -->
-            <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="z-index: 1001;background-color: #b8b8b8;"> -->
-            <!-- <a class="dropdown-item text-dark" [routerLink]="['/simulator']" target="_blank">New Project</a> -->
-            <!-- <a class="dropdown-item text-dark" (click)="openProject()">Clear Project</a> -->
-            <!-- <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a> -->
-            <!-- <a class="dropdown-item text-dark" (click)="SaveProjectOff()">Save Temporary</a> -->
-            <!-- </div> -->
-            <!-- </li> -->
-            <!-- <li class="nav-item"> -->
-            <!-- <a class="nav-link text-dark" id="navbarDropdown" role="button" (click)="openDailog()"> -->
-            <!-- Export -->
-            <!-- </a> -->
-            <!-- <button mat-button class="text-dark m-auto" >
-          Export
-        </button> -->
-            <!-- </li> -->
-            <!-- <li class="nav-item dropdown text-white">
-        <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          View
-        </a>
-        <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item text-dark" role="button" (click)="openview()">Component List</a>
-        </div>
-      </li> -->
-        </ul>
-
-        <div class="navbar-nav ml-auto">
-            <a mat-raised-button [href]="window.location.protocol + '//' + window.location.hostname" style="margin-right: 10px;">Home</a>
-            <a mat-raised-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
-            <a mat-raised-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
-            <a mat-raised-button [routerLink]="['/simulator']" style="margin-right: 10px;">Editor</a>
-            <a mat-raised-button (click)="Login()" *ngIf="!token" style="margin-right: 10px;">Login</a>
-            <div class="dropdown show" *ngIf="token" style="margin-right: 10px;margin-top: 5px;">
-                <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="Login Image">
-                <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;" aria-labelledby="dropdownMenuLink">
-                    <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
-                    <div class="dropdown-divider"></div>
-                    <!-- <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
-                         <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i> New</a>
-                         <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i> Dashboard</a>
-                         <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i> Gallery</a> -->
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- <div class="navbar-nav ml-auto" *ngIf="token"> -->
-        <!--<div class="dropdown my-dropdown" *ngIf="token">
-        <div class="w3-dropdown-hover">
-          <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
-            alt="Login Image">
-          <div class="dropdown-content" style="color: #000;z-index: 1001;">
-            <div *ngIf="username">
-              <i class="fas fa-user" style="margin-left: 5px;"></i> {{username}}
-            </div>
-            <hr style="margin-top: 5px;margin-bottom: 0;">
-            <div>
-              <a href="../../"><i class="fa fa-home" style="margin-left: 5px;"></i> Home</a>
-            </div>
-            <div>
-              <a [routerLink]="['/simulator']"><i class="fa fa-plus" style="margin-left: 5px;"></i> New</a>
-            </div>
-            <div class="list">
-              <a [routerLink]="['/dashboard']"><i class="fa fa-credit-card" style="margin-left: 5px;"></i> Dashboard</a>
-            </div>
-            <div>
-              <a [routerLink]="['/gallery']"><i class="fa fa-th" style="margin-left: 5px;"></i> Gallery</a>
-            </div>
-            <hr style="margin-top: 5px;margin-bottom: 0;">
-            <div (click)="Logout()">
-              <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> Logout
+      <ul class="navbar-nav mr-auto">
+        <!-- <li id="projectid" class="nav-item dropdown text-white"> -->
+        <!-- <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" -->
+        <!-- aria-haspopup="true" aria-expanded="false"> -->
+        <!-- Project -->
+        <!-- </a> -->
+        <!-- <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="z-index: 1001;background-color: #b8b8b8;"> -->
+        <!-- <a class="dropdown-item text-dark" [routerLink]="['/simulator']" target="_blank">New Project</a> -->
+        <!-- <a class="dropdown-item text-dark" (click)="openProject()">Clear Project</a> -->
+        <!-- <a class="dropdown-item text-dark" (click)="SaveProject()">Save</a> -->
+        <!-- <a class="dropdown-item text-dark" (click)="SaveProjectOff()">Save Temporary</a> -->
+        <!-- </div> -->
+        <!-- </li> -->
+        <!-- <li class="nav-item"> -->
+        <!-- <a class="nav-link text-dark" id="navbarDropdown" role="button" (click)="openDailog()"> -->
+        <!-- Export -->
+        <!-- </a> -->
+        <!-- <button mat-button class="text-dark m-auto" >
+            Export
+          </button> -->
+        <!-- </li> -->
+        <!-- <li class="nav-item dropdown text-white">
+          <a class="nav-link dropdown-toggle text-dark" id="navbarDropdown" role="button" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            View
+          </a>
+          <div class="dropdown-menu" style="background-color: #b8b8b8" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item text-dark" role="button" (click)="openview()">Component List</a>
+          </div>
+        </li> -->
+      </ul>
+  
+      <div class="navbar-nav ml-auto" *ngIf="!token">
+        <a mat-raised-button [href]="window.location.protocol + '//' + window.location.hostname" style="margin-right: 10px;">Home</a>
+        <a mat-raised-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
+        <a mat-raised-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
+        <a mat-raised-button [routerLink]="['/simulator']" style="margin-right: 10px;">Editor</a>
+        <a mat-raised-button (click)="Login()">Login</a>
+        <div class="dropdown show" *ngIf="token" style="margin-right: 10px;margin-top: 5px;">
+                  <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center" alt="Login Image">
+                  <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;" aria-labelledby="dropdownMenuLink">
+                      <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+                      <div class="dropdown-divider"></div>
+                      <!-- <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
+                           <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i> New</a>
+                           <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i> Dashboard</a>
+                           <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i> Gallery</a> -->
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
+                  </div>
+              </div>
+      </div>
+  
+      <!-- <div class="navbar-nav ml-auto" *ngIf="token">
+        <div class="dropdown my-dropdown" *ngIf="token">
+          <div class="w3-dropdown-hover">
+            <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
+              alt="Login Image">
+            <div class="dropdown-content" style="color: #000;z-index: 1001;">
+              <div *ngIf="username">
+                <i class="fas fa-user" style="margin-left: 5px;"></i> {{username}}
+              </div>
+              <hr style="margin-top: 5px;margin-bottom: 0;">
+              <div>
+                <a href="../../"><i class="fa fa-home" style="margin-left: 5px;"></i> Home</a>
+              </div>
+              <div>
+                <a [routerLink]="['/simulator']"><i class="fa fa-plus" style="margin-left: 5px;"></i> New</a>
+              </div>
+              <div class="list">
+                <a [routerLink]="['/dashboard']"><i class="fa fa-credit-card" style="margin-left: 5px;"></i> Dashboard</a>
+              </div>
+              <div>
+                <a [routerLink]="['/gallery']"><i class="fa fa-th" style="margin-left: 5px;"></i> Gallery</a>
+              </div>
+              <hr style="margin-top: 5px;margin-bottom: 0;">
+              <div (click)="Logout()">
+                <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> Logout
+              </div>
             </div>
           </div>
         </div>
-      </div>-->
-        <!-- </div> -->
-
-
+        <div class="dropdown show" *ngIf="token">
+          <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
+            class="d-inline-block align-center" alt="Login Image">
+          <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;"
+            aria-labelledby="dropdownMenuLink">
+            <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
+            <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i> New</a>
+            <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i> Dashboard</a>
+            <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i> Gallery</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
+          </div>
+        </div>
+      </div> -->
+  
+  
     </div>
-</nav>
-
-
-<!-- start of icon block -->
-<div id="secondary-header">
+  </nav>
+  
+  
+  <!-- start of icon block -->
+  <div id="secondary-header">
     <!-- <button mat-raised-button class="ml-2 mb-1 mt-1 mr-1 btn-fst" (click)="toggleCodeEditor(codeDiv)"
-    [style.background-color]="toggle ? 'white' : 'lightblue'">
-    <i class='far fa-file-code'></i>Code</button> -->
-
+      [style.background-color]="toggle ? 'white' : 'lightblue'">
+      <i class='far fa-file-code'></i>Code</button> -->
+  
     <!-- <button mat-raised-button id="simulate" class="mb-1 mt-1 btn-fst" [disabled]="disabled" (click)="StartSimulation()"
-    [style.background-color]="stoggle ? 'white' : 'lightgreen'">
-    <i [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
-    {{ stoggle ? 'Start Simulation' : 'Stop Simulation' }}
-  </button> -->
-
-
-
-    <button mat-icon-button matTooltip="Code" (click)="toggleCodeEditor(codeDiv)" style="align-items: center;margin-left: 10px;background: transparent;" class="mt-1" [style.background-color]="toggle ? 'transparent' : 'lightblue'">
-    <i style="font-size: 20px;color: black;" class="far fa-file-code"></i>
-  </button>
-
-
-    <button mat-icon-button [matTooltip]="stoggle ? 'Start Simulation' : 'Stop Simulation'" [disabled]="disabled" (click)="StartSimulation()" style="align-items: center;background: transparent;" class="mt-1" [style.background-color]="stoggle ? 'transparent' : 'lightgreen'">
-    <i style="font-size: 20px;color: black;" [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
-  </button>
-
+      [style.background-color]="stoggle ? 'white' : 'lightgreen'">
+      <i [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
+      {{ stoggle ? 'Start Simulation' : 'Stop Simulation' }}
+    </button> -->
+  
+  
+  
+    <button mat-icon-button matTooltip="Code" (click)="toggleCodeEditor(codeDiv)"
+      style="align-items: center;margin-left: 10px;background: transparent;" class="mt-1"
+      [style.background-color]="toggle ? 'transparent' : 'lightblue'">
+      <i style="font-size: 20px;color: black;" class="far fa-file-code"></i>
+    </button>
+  
+  
+    <button mat-icon-button [matTooltip]="stoggle ? 'Start Simulation' : 'Stop Simulation'" [disabled]="disabled"
+      (click)="StartSimulation()" style="align-items: center;background: transparent;" class="mt-1"
+      [style.background-color]="stoggle ? 'transparent' : 'lightgreen'">
+      <i style="font-size: 20px;color: black;" [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
+    </button>
+  
     <!--simulation loading svg-->
     <div id="simload" style="display:none;height:20%;padding: 10px;">
-        <img src="./assets/images/Spin.svg" width="30" height="30">
+      <img src="./assets/images/Spin.svg" width="30" height="30">
     </div>
     <!--/simulation loading svg-->
-
+  
     <!-- Import export -->
     <span class="pipe">|</span>
-    <button mat-icon-button matTooltip="Download JSON file" (click)="exportJson()" id="importBtn" style="align-items: center;background: transparent; margin: auto;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class="fa fa-download" id="download_icon"></i>
-  </button>
-
-    <button mat-icon-button matTooltip="Import JSON file" style="align-items: center;background: transparent; margin: auto;" class="mt-1">
-    <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
-    <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
-    </label>
-  </button>
-    <span class="pipe">|</span>
-    <!-- Import export -->
-
-    <a href="../#/simulator" target="_blank">
-        <button mat-icon-button matTooltip="New Project" style="align-items: center;background: transparent;" class="mt-1">
-      <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
+    <button mat-icon-button matTooltip="Download JSON file" (click)="exportJson()" id="importBtn"
+      style="align-items: center;background: transparent; margin: auto;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class="fa fa-download" id="download_icon"></i>
     </button>
+  
+    <button mat-icon-button matTooltip="Import JSON file"
+      style="align-items: center;background: transparent; margin: auto;" class="mt-1">
+      <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
+      <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+      </label>
+    </button>
+    <span class="pipe">|</span>
+    <!-- Import export -->
+  
+    <a href="../#/simulator" target="_blank">
+      <button mat-icon-button matTooltip="New Project" style="align-items: center;background: transparent;" class="mt-1">
+        <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
+      </button>
     </a>
-
-
-    <button mat-icon-button matTooltip="Clear Project" (click)="openProject()" style="align-items: center;background: transparent;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class="fa fa-times-circle"></i>
-  </button>
-    <button mat-icon-button matTooltip="Save Project" (click)="SaveProject()" style="align-items: center;background: transparent;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class="fa fa-cloud"></i>
-  </button>
-    <button mat-icon-button matTooltip="Save Temporary" (click)="SaveProjectOff()" style="align-items: center;background: transparent;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class="fa fa-save"></i>
-  </button>
+  
+  
+    <button mat-icon-button matTooltip="Clear Project" (click)="openProject()"
+      style="align-items: center;background: transparent;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class="fa fa-times-circle"></i>
+    </button>
+    <button mat-icon-button matTooltip="Save Project" (click)="SaveProject()"
+      style="align-items: center;background: transparent;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class="fa fa-cloud"></i>
+    </button>
+    <button mat-icon-button matTooltip="Save Temporary" (click)="SaveProjectOff()"
+      style="align-items: center;background: transparent;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class="fa fa-save"></i>
+    </button>
     <span class="pipe">|</span>
-    <button mat-icon-button matTooltip="Export File" (click)="openDailog()" style="align-items: center;background: transparent;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class="fa fa-file-export"></i>
-  </button>
-    <button mat-icon-button matTooltip="View Component List" (click)="openview()" style="align-items: center;background: transparent;" class="mt-1">
-    <i style="font-size: 20px;color: black;" class="fa fa-list-alt"></i>
-  </button>
+    <button mat-icon-button matTooltip="Export File" (click)="openDailog()"
+      style="align-items: center;background: transparent;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class="fa fa-file-export"></i>
+    </button>
+    <button mat-icon-button matTooltip="View Component List" (click)="openview()"
+      style="align-items: center;background: transparent;" class="mt-1">
+      <i style="font-size: 20px;color: black;" class="fa fa-list-alt"></i>
+    </button>
     <span class="pipe">|</span>
-
-    <button mat-icon-button matTooltip="Delete" class="mt-1" style="align-items: center;background: transparent;" (click)="delete()"><i style="font-size: 20px;color: black;" class="fa fa-trash"></i></button>
-
-    <button mat-icon-button matTooltip="Zoom in" class="mt-1" style="align-items: center;background: transparent;" (click)="zoom(0)"><i style="font-size: 20px;color: black;" class="fa fa-search-plus"></i></button>
-
-    <button mat-icon-button matTooltip="Zoom out" class="mt-1" style="margin-right: 30px;align-items: center;background: transparent;" (click)="zoom(1)"><i
-      style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
-
-    <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1" style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
-    style="font-size: 20px;color: black;" [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
-
+  
+    <button mat-icon-button matTooltip="Delete" class="mt-1" style="align-items: center;background: transparent;"
+      (click)="delete()"><i style="font-size: 20px;color: black;" class="fa fa-trash"></i></button>
+  
+    <button mat-icon-button matTooltip="Zoom in" class="mt-1" style="align-items: center;background: transparent;"
+      (click)="zoom(0)"><i style="font-size: 20px;color: black;" class="fa fa-search-plus"></i></button>
+  
+    <button mat-icon-button matTooltip="Zoom out" class="mt-1"
+      style="margin-right: 30px;align-items: center;background: transparent;" (click)="zoom(1)"><i
+        style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
+  
+    <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
+    style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+      style="font-size: 20px;color: black;" [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
+  
     <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
-
-  <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-share"></i></button>
-
-  <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-link fa-rotate-45"
-      style="font-size:20px"></i></button> -->
+    <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-share"></i></button>
+    <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-link fa-rotate-45"
+        style="font-size:20px"></i></button> -->
     <span style="flex:1 1 auto;"></span>
-
-</div>
-<!-- end of icon block -->
-
-
-<div class="code-editor" style="z-index: 1000;" #codeDiv>
+  
+  </div>
+  <!-- end of icon block -->
+  
+  
+  <div class="code-editor" style="z-index: 1000;" #codeDiv>
     <app-code-editor width="500" height="100" [reinit]="openCodeEditor"></app-code-editor>
-</div>
-
-
-
-<div class="d-flex" id="wrapper">
+  </div>
+  
+  
+  
+  <div class="d-flex" id="wrapper">
     <!-- Sidebar -->
     <div class="border-right" id="sidebar-wrapper" style="background-color:white;">
-        <h4 class="text-center text-primary mt-2">Circuit Components</h4>
-
-        <div>
-            <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(generalItems)">
-                General
-            </div>
-
-            <div class="collapse-div" #generalItems>
-                <div class="component-row" *ngFor="let row of componentsBox.general">
-                    <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true" (dragstart)="dragStart($event,item)">
-                        <img src={{components[item].image}} alt="{{components[item].name}}">
-                        <label style="font-size: smaller;">{{components[item].name}}</label>
-                    </div>
-                </div>
-
-            </div>
+      <h4 class="text-center text-primary mt-2">Circuit Components</h4>
+  
+      <div>
+        <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(generalItems)">
+          General
         </div>
-
-        <div>
-
-            <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(itemsController)">
-                Controllers
+  
+        <div class="collapse-div" #generalItems>
+          <div class="component-row" *ngFor="let row of componentsBox.general">
+            <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+              (dragstart)="dragStart($event,item)">
+              <img src={{components[item].image}} alt="{{components[item].name}}">
+              <label style="font-size: smaller;">{{components[item].name}}</label>
             </div>
-
-            <div class="collapse-div" #itemsController>
-                <div class="component-row" *ngFor="let row of componentsBox.controllers">
-                    <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true" (dragstart)="dragStart($event,item)">
-                        <img src={{components[item].image}} alt="{{components[item].name}}">
-                        <label style="font-size: smaller;">{{components[item].name}}</label>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <div>
-
-            <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(outputDiv)">
-                Output
-            </div>
-
-            <div class="collapse-div" #outputDiv>
-                <div class="component-row" *ngFor="let row of componentsBox.output">
-                    <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true" (dragstart)="dragStart($event,item)">
-                        <img src={{components[item].image}} alt="{{components[item].name}}" style="margin: auto;">
-                        <label style="font-size: smaller;">{{components[item].name}}</label>
-                    </div>
-                    <!-- <div class="component-card">
-            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
-            <label>Buzzer</label>
           </div>
-          <div class="component-card">
-            <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
-            <label>Buzzer</label>
-          </div> -->
-                </div>
-
-            </div>
+  
         </div>
-
-        <div>
-
-            <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(inputDiv)">
-                Input
-            </div>
-
-            <div class="collapse-div" #inputDiv>
-                <div class="component-row" *ngFor="let row of componentsBox.input">
-                    <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true" (dragstart)="dragStart($event,item)">
-                        <img src={{components[item].image}} alt="{{components[item].name}}" style="margin: auto;">
-                        <label style="font-size: smaller;">{{components[item].name}}</label>
-                    </div>
-                </div>
-            </div>
+      </div>
+  
+      <div>
+  
+        <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(itemsController)">
+          Controllers
         </div>
-
-        <div>
-
-            <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(sourceDiv)">
-                Sources
+  
+        <div class="collapse-div" #itemsController>
+          <div class="component-row" *ngFor="let row of componentsBox.controllers">
+            <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+              (dragstart)="dragStart($event,item)">
+              <img src={{components[item].image}} alt="{{components[item].name}}">
+              <label style="font-size: smaller;">{{components[item].name}}</label>
             </div>
-            <div class="collapse-div" #sourceDiv>
-                <div class="component-row" *ngFor="let row of componentsBox.power">
-                    <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true" (dragstart)="dragStart($event,item)">
-                        <img src={{components[item].image}} alt="{{components[item].name}}">
-                        <label>{{components[item].name}}</label>
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(driverDiv)">
-                Drivers
-            </div>
-
-            <div class="collapse-div" #driverDiv>
-                <div class="component-row" *ngFor="let row of componentsBox.drivers">
-                    <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true" (dragstart)="dragStart($event,item)">
-                        <img src={{components[item].image}} alt="{{components[item].name}}">
-                        <label style="font-size: smaller;">{{components[item].name}}</label>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(miscDiv)">
-                Miscellaneous
-            </div>
-
-            <div class="collapse-div" #miscDiv>
-                <div class="component-row" *ngFor="let row of componentsBox.misc">
-                    <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true" (dragstart)="dragStart($event,item)">
-                        <img src={{components[item].image}} alt="{{components[item].name}}">
-                        <label style="font-size: smaller;">{{components[item].name}}</label>
-                    </div>
-                </div>
-
-            </div>
+          </div>
+  
         </div>
-
-
+      </div>
+  
+      <div>
+  
+        <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(outputDiv)">
+          Output
+        </div>
+  
+        <div class="collapse-div" #outputDiv>
+          <div class="component-row" *ngFor="let row of componentsBox.output">
+            <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+              (dragstart)="dragStart($event,item)">
+              <img src={{components[item].image}} alt="{{components[item].name}}" style="margin: auto;">
+              <label style="font-size: smaller;">{{components[item].name}}</label>
+            </div>
+            <!-- <div class="component-card">
+              <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
+              <label>Buzzer</label>
+            </div>
+            <div class="component-card">
+              <img src="./assets/images/components/Buzzer.png" alt="Buzzer">
+              <label>Buzzer</label>
+            </div> -->
+          </div>
+  
+        </div>
+      </div>
+  
+      <div>
+  
+        <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(inputDiv)">
+          Input
+        </div>
+  
+        <div class="collapse-div" #inputDiv>
+          <div class="component-row" *ngFor="let row of componentsBox.input">
+            <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+              (dragstart)="dragStart($event,item)">
+              <img src={{components[item].image}} alt="{{components[item].name}}" style="margin: auto;">
+              <label style="font-size: smaller;">{{components[item].name}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div>
+  
+        <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(sourceDiv)">
+          Sources
+        </div>
+        <div class="collapse-div" #sourceDiv>
+          <div class="component-row" *ngFor="let row of componentsBox.power">
+            <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+              (dragstart)="dragStart($event,item)">
+              <img src={{components[item].image}} alt="{{components[item].name}}">
+              <label>{{components[item].name}}</label>
+            </div>
+          </div>
+  
+        </div>
+  
+  
+        <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(driverDiv)">
+          Drivers
+        </div>
+  
+        <div class="collapse-div" #driverDiv>
+          <div class="component-row" *ngFor="let row of componentsBox.drivers">
+            <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+              (dragstart)="dragStart($event,item)">
+              <img src={{components[item].image}} alt="{{components[item].name}}">
+              <label style="font-size: smaller;">{{components[item].name}}</label>
+            </div>
+          </div>
+  
+        </div>
+  
+        <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(miscDiv)">
+          Miscellaneous
+        </div>
+  
+        <div class="collapse-div" #miscDiv>
+          <div class="component-row" *ngFor="let row of componentsBox.misc">
+            <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
+              (dragstart)="dragStart($event,item)">
+              <img src={{components[item].image}} alt="{{components[item].name}}">
+              <label style="font-size: smaller;">{{components[item].name}}</label>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+  
+  
     </div>
-
+  
     <!-- /#sidebar-wrapper -->
-
+  
     <!-- Page Content -->
     <div id="page-content-wrapper">
-        <div id="holder"></div>
+      <div id="holder"></div>
     </div>
-</div>
-<!-- /#page-content-wrapper -->
-
-
-<div id="propertybox" style="top: 110px;left: calc(100vw - 230px);z-index: 600;" (mousedown)="propertyMouseDown($event)">
+  </div>
+  <!-- /#page-content-wrapper -->
+  
+  
+  <div id="propertybox" style="top: 110px;left: calc(100vw - 230px);z-index: 600;"
+    (mousedown)="propertyMouseDown($event)">
     <div style="display: flex;justify-content: space-between;">
-        <h6 class="title">Project Info</h6>
-        <span style="flex:1 1 auto;"></span>
-        <i class='fas fa-arrows-alt' (mousedown)="startPropertyDrag()" style="cursor: move;"></i>
+      <h6 class="title">Project Info</h6>
+      <span style="flex:1 1 auto;"></span>
+      <i class='fas fa-arrows-alt' (mousedown)="startPropertyDrag()" style="cursor: move;"></i>
     </div>
     <div class="body" style="display: flex;flex-direction: column;"></div>
     <div *ngIf="showProperty">
-        <mat-form-field>
-            <mat-label>Project Title</mat-label>
-            <input matInput [(ngModel)]="projectTitle">
-        </mat-form-field>
-        <mat-form-field class="example-full-width">
-            <mat-label>Description</mat-label>
-            <textarea matInput [(ngModel)]="description"></textarea>
-        </mat-form-field>
+      <mat-form-field>
+        <mat-label>Project Title</mat-label>
+        <input matInput [(ngModel)]="projectTitle">
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="description"></textarea>
+      </mat-form-field>
     </div>
     <div *ngIf="!showProperty" style="display: flex;margin-top: 10px;">
-        <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button>
+      <button mat-raised-button color="primary" style="margin-left: auto;" (click)="openInfo()">View Info</button>
     </div>
-</div>
-
-
-<div id="bubblebox"></div>
-<!--context menu-->
-
-<div id="contextMenu" class="context-menu">
+  </div>
+  
+  
+  <div id="bubblebox"></div>
+  <!--context menu-->
+  
+  <div id="contextMenu" class="context-menu">
     <ul>
-        <li (click)="copy()">
-            <h6><i class="fas fa-copy mr-2"></i> Copy</h6>
-        </li>
-        <li (click)="paste()">
-            <h6><i class="fas fa-paste mr-2"></i> Paste</h6>
-        </li>
-        <li (click)="delete()">
-            <h6><i class="fas fa-trash-alt mr-2"></i> Delete</h6>
-        </li>
+      <li (click)="copy()">
+        <h6><i class="fas fa-copy mr-2"></i> Copy</h6>
+      </li>
+      <li (click)="paste()">
+        <h6><i class="fas fa-paste mr-2"></i> Paste</h6>
+      </li>
+      <li (click)="delete()">
+        <h6><i class="fas fa-trash-alt mr-2"></i> Delete</h6>
+      </li>
     </ul>
-</div>
-<!--/context menu-->
-<!--toast message-->
-<div id="ToastMessage" class="toast text-white" role="alert" aria-live="assertive" aria-atomic="true">
+  </div>
+  <!--/context menu-->
+  <!--toast message-->
+  <div id="ToastMessage" class="toast text-white" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-body"></div>
-</div>
-<!--/toast message-->
-<!--console ui-->
-<div id="console" style="display: none;">
+  </div>
+  <!--/toast message-->
+  <!--console ui-->
+  <div id="console" style="display: none;">
     <div class="head">
-        <button class="btn" style="background-color: white;" (click)="minimizeConsole()"><i
-        [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
-        <button class="btn" style="background:transparent" (click)="expandConsole()"><i
-        [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
+      <button class="btn" style="background-color: white;" (click)="minimizeConsole()"><i
+          [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
+      <button class="btn" style="background:transparent" (click)="expandConsole()"><i
+          [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
     </div>
     <div class="body">
-        <div id="msg"></div>
-        <div>
-            <form style="display: flex;">
-                <select>
-          <option>300</option>
-          <option>600</option>
-          <option>1200</option>
-          <option>2400</option>
-          <option>4800</option>
-          <option selected>9600</option>
-          <option>14400</option>
-          <option>19200</option>
-          <option>28800</option>
-          <option>31250</option>
-          <option>38400</option>
-          <option>57600</option>
-          <option>115200</option>
-        </select>
-                <input type="text" style="flex:1;" #sin>
-                <button mat-raised-button style="margin-right: 1px;margin-left: 1px;" (click)="PrintToConsole(sin)">Send</button>
-                <button mat-raised-button style="margin-right: 1px;" (click)="clearConsole()">Clear</button>
-            </form>
-        </div>
+      <div id="msg"></div>
+      <div>
+        <form style="display: flex;">
+          <select>
+            <option>300</option>
+            <option>600</option>
+            <option>1200</option>
+            <option>2400</option>
+            <option>4800</option>
+            <option selected>9600</option>
+            <option>14400</option>
+            <option>19200</option>
+            <option>28800</option>
+            <option>31250</option>
+            <option>38400</option>
+            <option>57600</option>
+            <option>115200</option>
+          </select>
+          <input type="text" style="flex:1;" #sin>
+          <button mat-raised-button style="margin-right: 1px;margin-left: 1px;"
+            (click)="PrintToConsole(sin)">Send</button>
+          <button mat-raised-button style="margin-right: 1px;" (click)="clearConsole()">Clear</button>
+        </form>
+      </div>
     </div>
-</div>
-<!--/console ui-->
-<div id="opendialog" style="display: none;z-index: 1000;">
+  </div>
+  <!--/console ui-->
+  <div id="opendialog" style="display: none;z-index: 1000;">
     <div id="innerdialog">
-        <div id="top" style="background-color: transparent; width: 100%; height: 120px;border-radius: 5px;">
-            <p style="text-align: center;padding-top: 35px;">Are you sure you want to clear the project?</p>
-        </div>
-        <div class="modal-footer" style="background-color: transparent;">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeProject()">NO</button>
-            <button type="button" class="btn btn-primary" (click)="ClearProject()">YES</button>
-        </div>
+      <div id="top" style="background-color: transparent; width: 100%; height: 120px;border-radius: 5px;">
+        <p style="text-align: center;padding-top: 35px;">Are you sure you want to clear the project?</p>
+      </div>
+      <div class="modal-footer" style="background-color: transparent;">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeProject()">NO</button>
+        <button type="button" class="btn btn-primary" (click)="ClearProject()">YES</button>
+      </div>
     </div>
-</div>
+  </div>
