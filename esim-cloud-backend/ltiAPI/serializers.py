@@ -1,3 +1,4 @@
+from django.utils import tree
 from rest_framework import serializers
 from .models import lticonsumer, ltiSession, Submission
 from saveAPI.serializers import SaveListSerializer
@@ -7,12 +8,17 @@ from django.contrib.auth import get_user_model
 class consumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = lticonsumer
-        fields = ['consumer_key', 'secret_key', 'model_schematic', 'score', 'initial_schematic', 'test_case']
+        fields = ['consumer_key', 'secret_key', 'model_schematic',
+                  'score', 'initial_schematic', 'test_case', 'scored']
+
 
     def create(self, validated_data):
         model_schematic = validated_data.pop("model_schematic")
         initial_schematic = validated_data.pop("initial_schematic")
-        test_case = validated_data.pop("test_case")
+        if validated_data.get("test_case"):
+            test_case = validated_data.pop("test_case")
+        else:
+            test_case = None
         consumer = lticonsumer.objects.create(model_schematic=model_schematic,
                                               initial_schematic=initial_schematic,
                                               test_case=test_case,
@@ -30,10 +36,11 @@ class consumerResponseSerializer(serializers.Serializer):
     config_url = serializers.CharField(max_length=100)
     consumer_key = serializers.CharField(max_length=50)
     secret_key = serializers.CharField(max_length=50)
-    score = serializers.FloatField()
+    score = serializers.FloatField(required=False, allow_null=True)
     initial_schematic = serializers.UUIDField()
     model_schematic = serializers.UUIDField()
-    test_case = serializers.IntegerField()
+    test_case = serializers.IntegerField(required=False, allow_null=True)
+    scored = serializers.BooleanField()
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -69,4 +76,5 @@ class GetSubmissionsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Submission
-        fields = ["schematic", "student", "project", "score", "lms_success", "ltisession"]
+        fields = ["schematic", "student", "project",
+                  "score", "lms_success", "ltisession"]

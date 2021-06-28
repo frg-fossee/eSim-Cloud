@@ -45,7 +45,8 @@ class LTIExist(APIView):
             "score": consumer.score,
             "initial_schematic": init_sch_serialized.data,
             "model_schematic": model_sch_serialized.data,
-            "test_case": consumer.test_case.id
+            "test_case": consumer.test_case.id if consumer.test_case else None,
+            "scored": consumer.scored
         }
         return Response(response_data,
                         status=status.HTTP_200_OK)
@@ -94,7 +95,8 @@ class LTIBuildApp(APIView):
                     "score": serialized.data.get('score'),
                     "initial_schematic": str(serialized.data["initial_schematic"]),
                     "model_schematic": str(serialized.data["model_schematic"]),
-                    "test_case": serialized.data['test_case']
+                    "test_case": serialized.data['test_case'],
+                    "scored": serialized.data['scored']
                 }
                 print("Recieved POST for LTI APP:", response_data)
                 response_serializer = consumerResponseSerializer(

@@ -18,7 +18,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { deleteSchematic } from '../../redux/actions/index'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
 

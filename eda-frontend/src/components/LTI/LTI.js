@@ -6,25 +6,27 @@ import {
     MenuItem,
     Select,
     FormControl,
+    FormControlLabel,
     InputLabel,
     CardMedia,
     CardContent,
     CardActionArea,
     Card,
+    Checkbox,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import queryString from 'query-string'
-import { parseXmlToGraph, GenerateNetList } from './Helper/Testcase'
+// import { parseXmlToGraph, GenerateNetList } from './Helper/Testcase'
 import api from '../../utils/Api'
-import mxGraphFactory from 'mxgraph'
+// import mxGraphFactory from 'mxgraph'
 
 
-const {
-    mxGraph
-} = new mxGraphFactory()
+// const {
+//     mxGraph
+// } = new mxGraphFactory()
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -68,10 +70,11 @@ export default function LTIConfig() {
         score: '',
         initialSchematic: '',
         modelSchematic: '',
-        testCase: ''
+        testCase: '',
+        scored: true
     })
 
-    const { secretKey, consumerKey, configURL, configExists, consumerError, score, initialSchematic, modelSchematic } = ltiDetails
+    const { secretKey, consumerKey, configURL, configExists, score, modelSchematic } = ltiDetails
     const [initial, setInitial] = React.useState('')
     const [history, setHistory] = React.useState('')
     const [historyId, setHistoryId] = React.useState('')
@@ -101,10 +104,10 @@ export default function LTIConfig() {
                     score: res.data.score,
                     configExists: true,
                     initialSchematic: res.data.initial_schematic.save_id,
-                    testCase: res.data.test_case
+                    testCase: res.data.test_case,
+                    scored: res.data.scored
                 })
-                console.log(res.data.test_case)
-                setHistoryId(res.data.test_case)
+            setHistoryId(res.data.test_case)
             setInitial(res.data.initial_schematic)
         }).catch(err => {
             console.log(err)
@@ -112,13 +115,15 @@ export default function LTIConfig() {
                 console.log(res.data)
                 setLTIDetails(
                     {
-                        modelSchematic: res.data
+                        modelSchematic: res.data,
+                        scored: true
                     })
             })
         })
         api.get(`simulation/history/${url.id}`, config).then(res => {
             res.data.map(ele => {
                 ele.simulation_time = new Date(ele.simulation_time)
+                return 0
             })
             setHistory(res.data)
         }).catch(err => {
@@ -128,13 +133,20 @@ export default function LTIConfig() {
 
     // eslint-disable-next-line
     const handleLTIGenerate = () => {
+        var score = ''
+        if (ltiDetails.scored) {
+            score = null
+        } else {
+            score = ltiDetails.score
+        }
         const body = {
             consumer_key: ltiDetails.consumerKey,
             secret_key: ltiDetails.secretKey,
             model_schematic: ltiDetails.modelSchematic.save_id,
-            score: ltiDetails.score,
+            score: score,
             initial_schematic: ltiDetails.initialSchematic,
-            test_case: ltiDetails.testCase
+            test_case: ltiDetails.testCase,
+            scored: ltiDetails.scored
         }
         console.log(body)
         api.post('lti/build/', body)
@@ -143,8 +155,8 @@ export default function LTIConfig() {
                     ...ltiDetails,
                     configURL: res.data.config_url,
                     configExists: true,
-                    consumerError: false,
-                    score: res.data.score
+                    consumerError: '',
+                    score: res.data.score,
                 })
                 return res.data
             })
@@ -162,11 +174,11 @@ export default function LTIConfig() {
                     consumerKey: '',
                     configURL: '',
                     configExists: false,
-                    consumerError: false,
+                    consumerError: '',
                     score: '',
                     initialSchematic: '',
                     modelSchematic: modelSchematic,
-                    testCase: ''
+                    testCase: '',
                 })
                 setHistoryId('')
             })
@@ -189,6 +201,10 @@ export default function LTIConfig() {
         }
     }
 
+    const handleCheckChange = (e) => {
+        setLTIDetails({ ...ltiDetails, scored: e.target.checked })
+    }
+
     const handleChange = (e) => {
         var schematic = null
         schematics.forEach(element => {
@@ -201,7 +217,7 @@ export default function LTIConfig() {
     }
 
     const handleChangeSim = (e) => {
-        setLTIDetails({ ...ltiDetails, testCase: e.target.value})
+        setLTIDetails({ ...ltiDetails, testCase: e.target.value })
         setHistoryId(e.target.value)
     }
 
@@ -248,9 +264,10 @@ export default function LTIConfig() {
                     </Card>}
                 </div>
                 <div style={{ minWidth: "500px", marginLeft: "2%", marginTop: "2%" }}>
+                    {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
                     <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} variant="outlined" />
                     <TextField style={{ marginLeft: "1%" }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists} variant="outlined" />
-                    <TextField style={{ marginLeft: "1%" }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={configExists} variant="outlined" />
+                    <TextField style={{ marginLeft: "1%" }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={configExists || !ltiDetails.scored} variant="outlined" />
                     <FormControl variant="outlined" style={{ marginLeft: "1%" }} className={classes.formControl}>
                         <InputLabel htmlFor="outlined-age-native-simple">Student Schematic</InputLabel>
                         <Select
@@ -278,13 +295,26 @@ export default function LTIConfig() {
                             onChange={handleChangeSim}
                             label="Test Case"
                             className={classes.selectEmpty}
-                            inputProps={{ readOnly: configExists }}
+                            inputProps={{ readOnly: configExists || !ltiDetails.scored }}
                         >
                             {history.map(sim => {
                                 return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
                             })}
                         </Select>}
                     </FormControl>
+                    <FormControlLabel
+                        style={{ marginLeft: "1%" }}
+                        control={
+                            <Checkbox
+                                checked={ltiDetails.scored}
+                                onChange={handleCheckChange}
+                                name="scored"
+                                color="primary"
+                                disabled={ltiDetails.configExists}
+                            />
+                        }
+                        label="Scored?"
+                    />
                     <br />
                     {configURL && <h3 className={classes.config}>{configURL}</h3>}
                     <Button style={{ marginTop: "1%" }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>

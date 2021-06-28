@@ -111,6 +111,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
   const [initalSch, setIntialSch] = React.useState('')
   const [modelSch, setModelSch] = React.useState('')
   const [id, setId] = React.useState('')
+  const [scored, setScored] = React.useState(false)
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -155,6 +156,17 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
   }, [])
 
   useEffect(() => {
+    if (ltiId && id) {
+      api.get(`lti/exist/${id}`)
+        .then(res => {
+          if (res.data.secret_key) {
+            setScored(res.data.scored)
+          }
+        }).catch(err => console.log(err))
+    }
+  }, [ltiId])
+
+  useEffect(() => {
     if (consumerKey) {
       console.log(schSave)
       api.get(`lti/exist/${id}`)
@@ -162,6 +174,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
           if (res.data.secret_key) {
             setIntialSch(res.data.initial_schematic)
             setModelSch(res.data.model_schematic)
+            setScored(res.data.scored)
           }
         }).catch(err => console.log(err))
     }
@@ -568,7 +581,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
         </IconButton>
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
-      {((ltiId && ltiUserId && ltiNonce) || consumerKey) && <Tooltip title="Submit">
+      {((ltiId && ltiUserId && ltiNonce) || consumerKey) && scored && <Tooltip title="Submit">
         <Button size="small" variant="outlined" color="primary" className={classes.button} endIcon={<Icon>send</Icon>}
           onClick={onSubmission} >
           Submit
