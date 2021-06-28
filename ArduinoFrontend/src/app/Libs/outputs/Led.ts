@@ -274,7 +274,7 @@ export class LED extends CircuitElement {
 
       }
     } catch (e) {
-      console.warn(e)
+      console.warn(e);
       return false;
     }
 
