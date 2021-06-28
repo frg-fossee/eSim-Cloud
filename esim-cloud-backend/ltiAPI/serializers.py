@@ -30,7 +30,6 @@ class consumerExistsSerializer(serializers.ModelSerializer):
         model = lticonsumer
         fields = ['consumer_key', 'model_schematic', 'initial_schematic']
 
-
 class consumerResponseSerializer(serializers.Serializer):
     config_url = serializers.CharField(max_length=100)
     consumer_key = serializers.CharField(max_length=50)

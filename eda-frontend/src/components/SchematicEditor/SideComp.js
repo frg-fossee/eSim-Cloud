@@ -49,7 +49,8 @@ export default function SideComp ({ isFavourite = false, favourite, setFavourite
   useEffect(() => {
     // Function call to make components draggable
     AddComponent(component, imageRef.current)
-  }, [imageRef, component])
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     if (snackbarMessage !== null) { setOpenSnackbar(true) }

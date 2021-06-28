@@ -138,7 +138,6 @@ class LTIConfigView(View):
             saved_state = StateSave.objects.get(save_id=save_id)
         except StateSave.DoesNotExist:
             return render(request, 'ltiAPI/denied.html')
-
         if saved_state.shared:
             pass
         else:

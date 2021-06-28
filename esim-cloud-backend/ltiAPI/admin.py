@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import lticonsumer, Submission, ltiSession
 
 
+
 # Register your models here.
 class lticonsumeradmin(admin.ModelAdmin):
     list_display = ['consumer_key', 'secret_key',
