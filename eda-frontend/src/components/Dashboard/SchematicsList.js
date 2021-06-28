@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   Card,
   Grid,
@@ -130,4 +131,8 @@ export default function SchematicsList ({ ltiDetails = null }) {
       </Grid>
     </>
   )
+}
+
+SchematicsList.propTypes = {
+  ltiDetails: PropTypes.string
 }

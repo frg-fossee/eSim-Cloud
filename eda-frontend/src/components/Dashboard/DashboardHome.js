@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import {
   Card,
   Grid,
@@ -84,10 +85,14 @@ export default function DashboardHome ({ ltiDetails = null }) {
         {/* List recent schematics saved by user */}
         <Grid item xs={12}>
           <Card>
-            <ProgressPanel ltiDetails={ltiDetails}/>
+            <ProgressPanel ltiDetails={ltiDetails} />
           </Card>
         </Grid>
       </Grid>
     </>
   )
+}
+
+DashboardHome.propTypes = {
+  ltiDetails: PropTypes.string
 }

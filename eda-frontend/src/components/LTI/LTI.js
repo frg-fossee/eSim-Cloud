@@ -279,7 +279,7 @@ export default function LTIConfig () {
               inputProps={{ readOnly: configExists }}
             >
               {schematics.map(schematic => {
-                return <MenuItem value={schematic.save_id}>{schematic.name}</MenuItem>
+                return <MenuItem key={schematic.save_id} value={schematic.save_id}>{schematic.name}</MenuItem>
               })}
             </Select>
           </FormControl>

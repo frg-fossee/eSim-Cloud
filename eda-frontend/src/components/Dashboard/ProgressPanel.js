@@ -152,3 +152,7 @@ export default function ProgressPanel ({ ltiDetails = null }) {
     </div>
   )
 }
+
+ProgressPanel.propTypes = {
+  ltiDetails: PropTypes.string
+}
