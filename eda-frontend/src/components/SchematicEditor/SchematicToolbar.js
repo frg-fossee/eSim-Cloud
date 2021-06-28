@@ -163,6 +163,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           }
         }).catch(err => console.log(err))
     }
+    // eslint-disable-next-line
   }, [ltiId])
 
   useEffect(() => {
