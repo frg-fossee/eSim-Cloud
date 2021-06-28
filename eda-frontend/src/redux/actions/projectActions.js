@@ -58,7 +58,7 @@ export const fetchProject = () => (dispatch, getState) => {
       }
     )
     .catch((err) => {
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         dispatch({
           type: actions.SET_CURRENT_PROJECT,
           payload: '401'

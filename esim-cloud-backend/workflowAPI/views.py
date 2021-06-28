@@ -1,3 +1,4 @@
+from os import confstr
 import uuid
 from rest_framework.views import APIView
 from .serializers import StatusSerializer, ReportApprovalSerializer, \
@@ -67,6 +68,7 @@ class RetriveProjectsViewSet(APIView):
         if projects == Project.objects.none():
             return Response(status=http_status.HTTP_404_NOT_FOUND)
         else:
+            print(projects)
             serialized = ProjectSerializer(projects, many=True)
             return Response(serialized.data)
 
@@ -212,7 +214,8 @@ class ReportedProjectsView(viewsets.ViewSet):
         except Project.DoesNotExist:
             return Response({'Message': 'No projects found'},
                             status=http_status.HTTP_404_NOT_FOUND)
-        if project.state != State.objects.get(report=True):
+        if project.is_reported is False and project.state != State.objects.get(
+                report=True):
             transition_history = TransitionHistory(project_id=project_id,
                                                    transition_author=request.user,  # noqa
                                                    transition=Transition.objects.get(  # noqa

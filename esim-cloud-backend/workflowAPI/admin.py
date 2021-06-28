@@ -17,7 +17,10 @@ class Transitions(admin.ModelAdmin):
     list_display = ['name', 'from_state', 'to_state']
     fieldsets = (
         ('Details of Transition', {
-            'fields': ('name','from_state', 'to_state','role','restricted_for_creator','only_for_creator')
+            'fields': (
+                'name', 'from_state', 'to_state', 'role',
+                'restricted_for_creator',
+                'only_for_creator')
         }),
         ('Messages for Creator of Project', {
             'classes': ('collapse',),

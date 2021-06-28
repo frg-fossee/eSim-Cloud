@@ -152,6 +152,12 @@
       "to_state": 2,
       "restricted_for_creator": false,
       "only_for_creator": true,
+      "event_creator": "Review in Progress",
+      "history_creator": "Drafted and Sent for Review",
+      "event_reviewer": "Review in progress",
+      "history_reviewer": "Received for Review",
+      "event_other": "Review in progress",
+      "history_other": "Received for Review",
       "role": [1, 2]
     }
   },
@@ -164,6 +170,12 @@
       "to_state": 4,
       "restricted_for_creator": true,
       "only_for_creator": false,
+      "event_creator": null,
+      "history_creator": "Reviewed & Published",
+      "event_reviewer": null,
+      "history_reviewer": "Reviewed & Published",
+      "event_other": null,
+      "history_other": "Reviewed & Published",
       "role": [3, 4]
     }
   },
@@ -176,6 +188,12 @@
       "to_state": 3,
       "restricted_for_creator": false,
       "only_for_creator": false,
+      "event_creator": "Waiting for Report evaluation",
+      "history_creator": "Reported",
+      "event_reviewer": "Waiting for Report evaluation",
+      "history_reviewer": "Reported",
+      "event_other": "Waiting for Report evaluation",
+      "history_other": "Reported",
       "role": [1, 2, 3, 4]
     }
   },
@@ -188,6 +206,12 @@
       "to_state": 1,
       "restricted_for_creator": false,
       "only_for_creator": false,
+      "event_creator": "Revision in progress",
+      "history_creator": "Reverted for Revision",
+      "event_reviewer": "Revision in progress",
+      "history_reviewer": "Reverted for Revision",
+      "event_other": "Revision in progress",
+      "history_other": "Reverted for Revision",
       "role": [1, 2, 3, 4]
     }
   },
@@ -200,6 +224,12 @@
       "to_state": 1,
       "restricted_for_creator": true,
       "only_for_creator": false,
+      "event_creator": "Revision in progress",
+      "history_creator": "Received for revision",
+      "event_reviewer": "Revision in progress",
+      "history_reviewer": "Sent for revision",
+      "event_other": "Revision in progress",
+      "history_other": "Sent for revision",
       "role": [3, 4]
     }
   },
@@ -212,6 +242,12 @@
       "to_state": 4,
       "restricted_for_creator": true,
       "only_for_creator": false,
+      "event_creator": null,
+      "history_creator": "Reviewed & Published",
+      "event_reviewer": null,
+      "history_reviewer": "Reviewed & Published",
+      "event_other": null,
+      "history_other": "Reviewed & Published",
       "role": [3, 4]
     }
   }

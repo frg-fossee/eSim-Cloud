@@ -204,11 +204,10 @@ function ReportComponent (props) {
                     <Grid item xs={6}>
                     </Grid>}
                 </Grid>
-
               </Paper>
             ))}
           </TabPanel>}
-          {stateList && (tab === 1 && props.project.reports.approved[0] || (tab === 0 && reportStatus)) && auth.roles?.is_type_reviewer && auth.user.username !== props.project.details.author_name &&
+          {stateList && ((tab === 1 && props.project.reports.approved[0]) || (tab === 0 && reportStatus)) && auth.roles?.is_type_reviewer && auth.user.username !== props.project.details.author_name &&
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
