@@ -11,9 +11,12 @@ class lticonsumer(models.Model):
     model_schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
                                         related_name="model_schematic")
     score = models.FloatField(null=True, blank=True)
-    initial_schematic = models.ForeignKey(to=StateSave, on_delete=models.SET_NULL,
-                                          null=True, related_name="initial_schematic")
-    test_case = models.ForeignKey(to=simulation, on_delete=models.CASCADE, null=True, blank=True)
+    initial_schematic = models.ForeignKey(to=StateSave,
+                                          on_delete=models.SET_NULL,
+                                          null=True,
+                                          related_name="initial_schematic")
+    test_case = models.ForeignKey(
+        to=simulation, on_delete=models.CASCADE, null=True, blank=True)
     scored = models.BooleanField(null=False)
 
     def __str__(self):

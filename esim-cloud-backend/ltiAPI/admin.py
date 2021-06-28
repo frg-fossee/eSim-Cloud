@@ -14,8 +14,10 @@ class SubmissionAdmin(admin.ModelAdmin):
 
 
 class ltiSessionAdmin(admin.ModelAdmin):
-    list_display = ['user_id', 'lis_result_sourcedid', 'lis_outcome_service_url', 'oauth_nonce',
-                    'oauth_timestamp', 'oauth_consumer_key', 'oauth_signature_method',
+    list_display = ['user_id', 'lis_result_sourcedid',
+                    'lis_outcome_service_url', 'oauth_nonce',
+                    'oauth_timestamp', 'oauth_consumer_key',
+                    'oauth_signature_method',
                     'oauth_version', 'oauth_signature']
 
 

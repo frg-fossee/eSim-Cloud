@@ -10,16 +10,16 @@ import {
   CardMedia,
   CardHeader,
   Tooltip,
-  Snackbar,
+  Snackbar
 } from '@material-ui/core'
 import ScreenShareRoundedIcon from '@material-ui/icons/ScreenShareRounded'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
-import { deleteSchematic } from '../../redux/actions/index'
+import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
-import { fetchSchematics } from '../../redux/actions/index'
+
 import MuiAlert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => ({
@@ -49,15 +49,15 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    maxWidth: 150,
+    maxWidth: 150
   }
 }))
-function Alert(props) {
+function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar({ open, close, sch }) {
+function SimpleSnackbar ({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -94,7 +94,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince(jsonDate) {
+function timeSince (jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -126,7 +126,7 @@ function timeSince(jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate(jsonDate) {
+function getDate (jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -135,7 +135,7 @@ function getDate(jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard({ sch, consKey = null }) {
+export default function SchematicCard ({ sch, consKey = null }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -145,11 +145,11 @@ export default function SchematicCard({ sch, consKey = null }) {
 
   useEffect(() => {
     setLTIDetails({ ...ltiDetails, consumerKey: consKey })
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
   // To handle LTI details
   const [ltiDetails, setLTIDetails] = React.useState({
-    consumerKey: '',
+    consumerKey: ''
   })
   const { consumerKey } = ltiDetails
 

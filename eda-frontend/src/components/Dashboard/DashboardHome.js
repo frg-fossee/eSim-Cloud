@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Card displaying user dashboard home page header.
-function MainCard() {
+function MainCard () {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
 
@@ -54,7 +54,7 @@ function MainCard() {
   )
 }
 
-export default function DashboardHome({ ltiDetails = null }) {
+export default function DashboardHome ({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
 

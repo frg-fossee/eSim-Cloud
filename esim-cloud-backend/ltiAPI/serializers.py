@@ -11,7 +11,6 @@ class consumerSerializer(serializers.ModelSerializer):
         fields = ['consumer_key', 'secret_key', 'model_schematic',
                   'score', 'initial_schematic', 'test_case', 'scored']
 
-
     def create(self, validated_data):
         model_schematic = validated_data.pop("model_schematic")
         initial_schematic = validated_data.pop("initial_schematic")
@@ -20,7 +19,7 @@ class consumerSerializer(serializers.ModelSerializer):
         else:
             test_case = None
         consumer = lticonsumer.objects.create(model_schematic=model_schematic,
-                                              initial_schematic=initial_schematic,
+                                              initial_schematic=initial_schematic,  # noqa
                                               test_case=test_case,
                                               **validated_data)
         return consumer

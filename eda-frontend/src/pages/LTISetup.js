@@ -12,7 +12,6 @@ import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
 import LTIConfig from '../components/LTI/LTI'
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -23,14 +22,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-
-export default function LTISetup() {
+export default function LTISetup () {
   const classes = useStyles()
   // var auth = useSelector(state => state.authReducer)
 
   useEffect(() => {
     document.title = 'LTI - eSim'
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   return (

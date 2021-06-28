@@ -12,7 +12,6 @@ import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
 import SubmissionTable from '../components/LTI/SubmissionTable'
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -23,14 +22,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-
-export default function Submissions() {
+export default function Submissions () {
   const classes = useStyles()
   // var auth = useSelector(state => state.authReducer)
 
   useEffect(() => {
     document.title = 'Submissions - eSim'
-    //eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   return (

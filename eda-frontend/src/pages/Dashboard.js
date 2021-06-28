@@ -12,7 +12,6 @@ import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
 import api from '../utils/Api'
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -58,7 +57,7 @@ export default function Dashboard () {
         <div className={classes.toolbar} />
 
         {/* Subroutes under dashboard section */}
-        {ltiDetails !==null && <Switch>
+        {ltiDetails !== null && <Switch>
           <Route exact path="/dashboard" component={() => <DashboardHome ltiDetails={ltiDetails}/>} />
           <Route exact path="/dashboard/profile" />
           <Route

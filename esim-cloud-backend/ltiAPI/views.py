@@ -1,3 +1,9 @@
+from .serializers import consumerSerializer, consumerResponseSerializer, \
+    SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer
+from .utils import consumers, get_reverse, message_identifier
+from .models import ltiSession, lticonsumer, Submission
+from saveAPI.models import StateSave
+from drf_yasg.utils import swagger_auto_schema
 from django.conf import settings
 from saveAPI.serializers import StateSaveSerializer
 from django.views import View
@@ -8,14 +14,8 @@ from rest_framework.views import APIView
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from pylti.common import LTIException, verify_request_common, post_message, generate_request_xml, \
-    LTIPostMessageException
-from drf_yasg.utils import swagger_auto_schema
-from saveAPI.models import StateSave
-from .models import ltiSession, lticonsumer, Submission
-from .utils import consumers, get_reverse, message_identifier
-from .serializers import consumerSerializer, consumerResponseSerializer, \
-    SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer
+from pylti.common import LTIException, verify_request_common, post_message, \
+    generate_request_xml, LTIPostMessageException
 
 
 def denied(r):
@@ -26,8 +26,9 @@ class LTIExist(APIView):
 
     def get(self, request, save_id):
         try:
-            consumer = lticonsumer.objects.get(Q(model_schematic__save_id=save_id)
-                                               | Q(initial_schematic__save_id=save_id))
+            consumer = lticonsumer.objects.get(
+                Q(model_schematic__save_id=save_id) |
+                Q(initial_schematic__save_id=save_id))
         except lticonsumer.DoesNotExist:
             return Response(data={"error": "LTIConsumer Not found"},
                             status=status.HTTP_404_NOT_FOUND)
@@ -76,7 +77,8 @@ class LTIBuildApp(APIView):
             initial_schematic=request.data['model_schematic']
         ).count()
         if temp > 0:
-            return Response(data={"error": "Model schematic cannot be initial schematic for other LTI apps"},
+            return Response(data={"error": "Model schematic cannot be initial \
+                                  schematic for other LTI apps"},
                             status=status.HTTP_400_BAD_REQUEST)
         if serialized.is_valid():
             serialized.save()
@@ -93,7 +95,8 @@ class LTIBuildApp(APIView):
                     "secret_key": serialized.data.get('secret_key'),
                     "config_url": url,
                     "score": serialized.data.get('score'),
-                    "initial_schematic": str(serialized.data["initial_schematic"]),
+                    "initial_schematic": str(serialized.data[
+                        "initial_schematic"]),
                     "model_schematic": str(serialized.data["model_schematic"]),
                     "test_case": serialized.data['test_case'],
                     "scored": serialized.data['scored']
@@ -168,8 +171,10 @@ class LTIAuthView(APIView):
         headers = request.META
         # Define the redirect url
         host = request.get_host()
-        ltikeys = ['user_id', 'lis_result_sourcedid', 'lis_outcome_service_url', 'oauth_nonce',
-                   'oauth_timestamp', 'oauth_consumer_key', 'oauth_signature_method',
+        ltikeys = ['user_id', 'lis_result_sourcedid',
+                   'lis_outcome_service_url', 'oauth_nonce',
+                   'oauth_timestamp', 'oauth_consumer_key',
+                   'oauth_signature_method',
                    'oauth_version', 'oauth_signature']
         ltidata = {key: params.get(key) for key in ltikeys}
         lti_session = ltiSession.objects.create(**ltidata)
@@ -181,8 +186,10 @@ class LTIAuthView(APIView):
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + str(i.initial_schematic.save_id) \
-                   + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + lti_session.user_id \
+        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + \
+                   str(i.initial_schematic.save_id) \
+                   + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
+                   lti_session.user_id \
                    + "&lti_nonce=" + lti_session.oauth_nonce
         try:
             print("Got verification request")
@@ -235,18 +242,21 @@ class LTIPostGrade(APIView):
                 consumers(), lti_session.oauth_consumer_key,
                 lti_session.lis_outcome_service_url, xml)
             if not post:
-                msg = 'An error occurred while saving your score. Please try again.'
+                msg = 'An error occurred while saving your score.\
+                     Please try again.'
                 raise LTIPostMessageException('Post grade failed')
             else:
                 submission.lms_success = True
                 submission.save()
                 msg = 'Your score was submitted. Great job!'
-                return Response(data={"message": msg}, status=status.HTTP_200_OK)
+                return Response(data={"message": msg},
+                                status=status.HTTP_200_OK)
 
         except LTIException:
             submission.lms_success = False
             submission.save()
-            return Response(data={"message": msg}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(data={"message": msg},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class GetLTISubmission(APIView):

@@ -25,8 +25,8 @@ import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import Button from '@material-ui/core/Button'
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
 import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
 import queryString from 'query-string'
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Notification snackbar to give alert messages
-function SimpleSnackbar({ open, close, message }) {
+function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -89,7 +89,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar({ mobileClose, gridRef }) {
+export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const classes = useStyles()
   const netfile = useSelector(state => state.netlistReducer)
   const auth = useSelector(state => state.authReducer)
@@ -114,13 +114,12 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
   const [scored, setScored] = React.useState(false)
 
   const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event.currentTarget)
   }
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setAnchorEl(null)
   }
-
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
@@ -260,7 +259,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
   }
 
   // Image Export of Schematic Diagram
-  async function exportImage(type) {
+  async function exportImage (type) {
     const svg = document.querySelector('#divGrid > svg').cloneNode(true)
     svg.removeAttribute('style')
     svg.setAttribute('width', gridRef.current.scrollWidth)
@@ -320,7 +319,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
   }
 
   // Download JPEG, PNG exported Image
-  function downloadImage(data, type) {
+  function downloadImage (data, type) {
     var evt = new MouseEvent('click', {
       view: window,
       bubbles: false,
@@ -335,7 +334,7 @@ export default function SchematicToolbar({ mobileClose, gridRef }) {
   }
 
   // Download SVG image
-  function downloadText(data, options) {
+  function downloadText (data, options) {
     const blob = new Blob(data, options)
     const evt = new MouseEvent('click', {
       view: window,

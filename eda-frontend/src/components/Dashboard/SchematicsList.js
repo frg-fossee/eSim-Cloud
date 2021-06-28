@@ -27,7 +27,7 @@ const useStyles = makeStyles({
 })
 
 // Card displaying user my schematics page header.
-function MainCard() {
+function MainCard () {
   const classes = useStyles()
 
   return (
@@ -58,7 +58,7 @@ function MainCard() {
   )
 }
 
-export default function SchematicsList({ ltiDetails = null }) {
+export default function SchematicsList ({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -93,12 +93,12 @@ export default function SchematicsList({ ltiDetails = null }) {
                 var actual = null
                 var flag = null
                 ltiDetails.map(
-                  //eslint-disable-next-line
+                  // eslint-disable-next-line
                   (lti) => {
                     if (lti.model_schematic === sch.save_id || lti.initial_schematic === sch.save_id) {
                       flag = 1
                       actual = lti.consumer_key
-                      //eslint-disable-next-line
+                      // eslint-disable-next-line
                       return
                     }
                   }
@@ -109,8 +109,7 @@ export default function SchematicsList({ ltiDetails = null }) {
                       <SchematicCard sch={sch} consKey={actual} />
                     </Grid>
                   )
-                }
-                else {
+                } else {
                   return (
                     <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
                       <SchematicCard sch={sch} />
