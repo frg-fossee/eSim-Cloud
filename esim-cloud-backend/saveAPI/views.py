@@ -236,7 +236,7 @@ class UserSavesView(APIView):
             owner=self.request.user, is_arduino=False).order_by('-save_time')
         submissions = Submission.objects.filter(student=self.request.user)
         for submission in submissions:
-            saved_state = saved_state.exclude(save_id=submission.schematic.save_id)
+            saved_state = saved_state.exclude(save_id=submission.schematic.save_id)  # noqa
         # try:
         serialized = StateSaveSerializer(saved_state, many=True)
         return Response(serialized.data)

@@ -1,4 +1,5 @@
-from simulationAPI.serializers import TaskSerializer, simulationSerializer, simulationSaveSerializer
+from simulationAPI.serializers import TaskSerializer, \
+    simulationSerializer, simulationSaveSerializer
 from simulationAPI.tasks import process_task
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -33,10 +34,10 @@ def saveNetlistDB(task_id, filepath, request):
         simulation_type = "NgSpice Simulator"
     if request.data.get('save_id', None):
         save_id = request.data['save_id']
-    else: 
+    else:
         save_id = None
     serialized = simulationSaveSerializer(
-        data={"task": task_id, "netlist": temp, "owner": owner, 
+        data={"task": task_id, "netlist": temp, "owner": owner,
               "simulation_type": simulation_type, "schematic": save_id})
     if serialized.is_valid(raise_exception=True):
         serialized.save()
@@ -62,7 +63,8 @@ class NetlistUploader(APIView):
         if serializer.is_valid():
             serializer.save()
             saveNetlistDB(
-                serializer.data['task_id'], serializer.data['file'][0]['file'], request)
+                serializer.data['task_id'],
+                serializer.data['file'][0]['file'], request)
             task_id = serializer.data['task_id']
             celery_task = process_task.apply_async(
                 kwargs={'task_id': str(task_id)}, task_id=str(task_id))
@@ -106,6 +108,7 @@ class SimulationResults(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, save_id):
-        sims = simulation.objects.filter(owner=self.request.user, schematic=save_id)
+        sims = simulation.objects.filter(
+            owner=self.request.user, schematic=save_id)
         serialized = simulationSerializer(sims, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
