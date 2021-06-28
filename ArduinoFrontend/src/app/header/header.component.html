@@ -16,7 +16,7 @@
     <a mat-stroked-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
     <a mat-stroked-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
     <a mat-stroked-button [routerLink]="['/simulator']" style="margin-right: 10px">Editor</a>
-    <a mat-stroked-button (click)="Login()">Login</a>
+    <a mat-stroked-button *ngIf="!username" (click)="Login()">Login</a>
   </div>
   <div class="dropdown my-dropdown" *ngIf="username">
     <div class="w3-dropdown-hover float-right" style="padding-bottom:10px;margin-right: 1em;">
