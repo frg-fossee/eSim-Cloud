@@ -122,6 +122,33 @@ export abstract class UndoUtils {
             return;
         }
 
+        if (ele.event == 'layout' && operation == 'undo') {
+            console.log(ele)
+            let existing = this.getExistingWindowElement(grup, ele)
+
+            UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step })
+            UndoUtils.removeElement(ele).then(res => {
+                UndoUtils.createElement(ele).then((result) => {
+                    // for (let i = 0; i <= ele.step; i++) {
+                    //     console.log('test')
+                    //     let chg = this.undo.pop();
+                    //     let existing = this.getExistingWindowElement(grup, chg)
+                    //     UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: chg.event, step: chg!.step })
+                    //     UndoUtils.removeElement(chg).then(ress => {
+                    //         UndoUtils.createElement(chg);
+                    //     })
+                    // }
+                })
+            })
+            return
+        } else if (ele.event == 'layout' && operation == 'redo') {
+            let existing = this.getExistingWindowElement(grup, ele)
+            UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step })
+            UndoUtils.removeElement(ele).then(res => {
+                UndoUtils.createElement(ele)
+            })
+        }
+
         // Only trigger if wire
         if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
             UndoUtils.createElement(ele);
