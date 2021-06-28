@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   Card,
   Grid,
@@ -58,7 +59,7 @@ function MainCard () {
   )
 }
 
-export default function SchematicsList () {
+export default function SchematicsList ({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -86,15 +87,36 @@ export default function SchematicsList () {
         </Grid>
 
         {/* List all schematics saved by user */}
-        {schematics.length !== 0
+        {(schematics.length !== 0)
           ? <>
             {schematics.map(
               (sch) => {
-                return (
-                  <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-                    <SchematicCard sch={sch} />
-                  </Grid>
+                var actual = null
+                var flag = null
+                ltiDetails.map(
+                  // eslint-disable-next-line
+                  (lti) => {
+                    if (lti.model_schematic === sch.save_id || lti.initial_schematic === sch.save_id) {
+                      flag = 1
+                      actual = lti.consumer_key
+                      // eslint-disable-next-line
+                      return
+                    }
+                  }
                 )
+                if (flag) {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} consKey={actual} />
+                    </Grid>
+                  )
+                } else {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
               }
             )}
           </>
@@ -109,4 +131,8 @@ export default function SchematicsList () {
       </Grid>
     </>
   )
+}
+
+SchematicsList.propTypes = {
+  ltiDetails: PropTypes.string
 }

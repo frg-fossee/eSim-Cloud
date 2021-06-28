@@ -89,12 +89,16 @@ export default function Simulator () {
 
   // Upload the nelist
   function netlistConfig (file) {
+    const token = localStorage.getItem('esim_token')
     const formData = new FormData()
     formData.append('file', file)
     const config = {
       headers: {
         'content-type': 'multipart/form-data'
       }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
     }
     return api.post('simulation/upload', formData, config)
   }
