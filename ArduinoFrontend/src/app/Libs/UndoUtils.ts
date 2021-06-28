@@ -81,6 +81,7 @@ export abstract class UndoUtils {
      */
     static pushChangeToRedo(ele) {
         this.redo.push(ele)
+        console.log(this.redo)
     }
 
     /**
@@ -102,19 +103,23 @@ export abstract class UndoUtils {
         var grup = window.scope[ele.keyName]
         let createdEle = null
         if (operation == 'undo' && ele.event == 'delete') {
-            UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event })
             UndoUtils.createElement(ele).then(res => {
                 if (ele.keyName === 'BreadBoard') {
                     window['DragListeners'] = [];
                     window['DragStopListeners'] = [];
                 }
                 for (let i = 0; i < ele.step; i++) {
-                    UndoUtils.createElement(this.undo.pop())
+                    let chg = this.undo.pop()
+                    UndoUtils.pushChangeToRedo({ keyName: chg.keyName, element: chg.element, event: chg.event, step: ele!.step })
+                    UndoUtils.createElement(chg)
                 }
+                UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event, step: ele!.step })
             })
             return
         } else if (operation == 'redo' && ele.event == 'delete') {
-            UndoUtils.removeElement(ele)
+            window['Selected'] = this.getExistingWindowElement(grup, ele)
+            Workspace.DeleteComponent();
+            return;
         }
 
         // Only trigger if wire
