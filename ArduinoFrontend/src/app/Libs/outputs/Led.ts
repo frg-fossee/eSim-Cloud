@@ -201,7 +201,7 @@ export class LED extends CircuitElement {
         // Calculate voltage of pwm pin
         this.voltage = v / 100;
         // If voltage is greater than 6: make PWM attached false
-        if (this.voltage > 6) {
+        if (this.voltage > 6 || this.voltage < 0) {
           this.pwmAttached = false;
         } else {
           this.pwmAttached = true;
@@ -224,53 +224,58 @@ export class LED extends CircuitElement {
    * @param node The Node which need to be checked
    */
   getRecArduinov2(node: Point) {
-    if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
-      // TODO: Return if arduino is connected to start node
-      return node.connectedTo.start;
-    } else if (node.connectedTo.end.parent.keyName === 'ArduinoUno') {
-      // TODO: Return if arduino is connected to end node
-      return node.connectedTo.end;
-    } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
-      // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
-      return this.getRecArduinoBreadv2(node);
-    } else if (node.connectedTo.end.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.end.gid)) {
-      // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
-      return this.getRecArduinoBreadv2(node);
-    } else if (node.connectedTo.end.parent.keyName === 'Battery9v') {
-      // TODO: Return false if node's end is connected to 9V Battery
-      return false;
-    } else if (node.connectedTo.end.parent.keyName === 'CoinCell') {
-      // TODO: Return false if node's end is connected to Coin Cell
-      return false;
-    } else {
-      // TODO: If nothing matches
-      // IF/ELSE: Determine if start is to be used OR end for further recursion
-      if (node.connectedTo.end.gid !== node.gid) {
-        // Loops through all nodes in parent
-        for (const e in node.connectedTo.end.parent.nodes) {
-          // IF: gid is different && gid not in visited node
-          if (node.connectedTo.end.parent.nodes[e].gid !== node.connectedTo.end.gid
-            && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid)) {
-            // add gid in visited nodes
-            this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid);
-            // call back Arduino Recursive Fn
-            return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e]);
+    try {
+      if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
+        // TODO: Return if arduino is connected to start node
+        return node.connectedTo.start;
+      } else if (node.connectedTo.end.parent.keyName === 'ArduinoUno') {
+        // TODO: Return if arduino is connected to end node
+        return node.connectedTo.end;
+      } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
+        // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
+        return this.getRecArduinoBreadv2(node);
+      } else if (node.connectedTo.end.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.end.gid)) {
+        // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
+        return this.getRecArduinoBreadv2(node);
+      } else if (node.connectedTo.end.parent.keyName === 'Battery9v') {
+        // TODO: Return false if node's end is connected to 9V Battery
+        return false;
+      } else if (node.connectedTo.end.parent.keyName === 'CoinCell') {
+        // TODO: Return false if node's end is connected to Coin Cell
+        return false;
+      } else {
+        // TODO: If nothing matches
+        // IF/ELSE: Determine if start is to be used OR end for further recursion
+        if (node.connectedTo.end.gid !== node.gid) {
+          // Loops through all nodes in parent
+          for (const e in node.connectedTo.end.parent.nodes) {
+            // IF: gid is different && gid not in visited node
+            if (node.connectedTo.end.parent.nodes[e].gid !== node.connectedTo.end.gid
+              && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid)) {
+              // add gid in visited nodes
+              this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid);
+              // call back Arduino Recursive Fn
+              return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e]);
+            }
+          }
+        } else if (node.connectedTo.start.gid !== node.gid) {
+          // Loops through all nodes in parent
+          for (const e in node.connectedTo.start.parent.nodes) {
+            // IF: gid is different && gid not in visited node
+            if (node.connectedTo.start.parent.nodes[e].gid !== node.connectedTo.start.gid
+              && !this.visitedNodesv2.has(node.connectedTo.start.parent.nodes[e].gid)) {
+              // add gid in visited nodes
+              this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid);
+              // call back Arduino Recursive Fn
+              return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e]);
+            }
           }
         }
-      } else if (node.connectedTo.start.gid !== node.gid) {
-        // Loops through all nodes in parent
-        for (const e in node.connectedTo.start.parent.nodes) {
-          // IF: gid is different && gid not in visited node
-          if (node.connectedTo.start.parent.nodes[e].gid !== node.connectedTo.start.gid
-            && !this.visitedNodesv2.has(node.connectedTo.start.parent.nodes[e].gid)) {
-            // add gid in visited nodes
-            this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid);
-            // call back Arduino Recursive Fn
-            return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e]);
-          }
-        }
-      }
 
+      }
+    } catch (e) {
+      console.warn(e)
+      return false;
     }
 
   }
