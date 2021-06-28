@@ -21,6 +21,9 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
+import { useDispatch } from 'react-redux'
+import api from '../../utils/Api'
+
 
 const useStyles = makeStyles((theme) => ({
   media: {
@@ -134,6 +137,7 @@ function getDate(jsonDate) {
   return `${day}-${month}-${year}`
 }
 
+
 // Card displaying overview of onCloud saved schematic.
 export default function SchematicCard({ sch, consKey = null }) {
   const classes = useStyles()
@@ -156,8 +160,84 @@ export default function SchematicCard({ sch, consKey = null }) {
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
+  //To handle sharing of circuit as a LTI producer
+  const [ltiModal, setLTIModal] = React.useState(false)
   const handleSnacClick = () => {
     setSnacOpen(true)
+  }
+  // Api call for getting LTI config url for specified circuit by passing consumer key and secret key
+  const handleLTIGenerate = (consumer_key, secret_key, save_id, score) => {
+    const body = {
+      "consumer_key": consumer_key,
+      "secret_key": secret_key,
+      "save_id": save_id,
+      "score": score,
+    }
+    console.log(body)
+    api.post(`lti/build/`, body)
+      .then(res => {
+        setLTIDetails({
+          ...ltiDetails,
+          configURL: res.data.config_url,
+          configExists: true,
+          consumerError: false,
+          score: res.data.score,
+        })
+        return res.data
+      })
+      .catch((err) => { console.log(err.data)
+        setLTIDetails({ ...ltiDetails, consumerError: "An error was encountered while setting the details!" }) })
+  }
+  const handleOpenLTI = () => {
+    //To-do write a get request to check if it params are already set
+    setLTIModal(true)
+    api.get(`lti/exist/${sch.save_id}`)
+      .then(res => {
+        if (res.data.secret_key) {
+          setLTIDetails(
+            {
+              secretKey: res.data.secret_key,
+              consumerKey: res.data.consumer_key,
+              configURL: res.data.config_url,
+              score: res.data.score,
+              configExists: true
+            })
+        }
+      })
+  }
+  const handleDeleteLTIApp = () => {
+    api.delete(`lti/delete/${sch.save_id}`)
+      .then(res => {
+        setLTIDetails({
+          secretKey: "",
+          consumerKey: "",
+          configURL: "",
+          configExists: false,
+          consumerError: false,
+          score: "",
+        })
+      })
+      .catch(error => console.log(error))
+  }
+  const handleCloseLTI = () => {
+    setLTIModal(false)
+  }
+
+  const handleConsumerKey = (e) => {
+    setLTIDetails({ ...ltiDetails, consumerKey: e.target.value })
+  }
+
+  const handleSecretKey = (e) => {
+    setLTIDetails({ ...ltiDetails, secretKey: e.target.value })
+  }
+
+  const handleScore = (e) => {
+    if (e.target.value > 1 || e.target.value < 0){
+      //To-DO: Show error message
+    }
+    else{
+      setLTIDetails({...ltiDetails, score: e.target.value})
+    }
   }
 
   const handleSnacClose = (event, reason) => {
