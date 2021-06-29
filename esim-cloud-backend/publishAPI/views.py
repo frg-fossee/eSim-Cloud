@@ -188,7 +188,6 @@ class ProjectViewSet(APIView):
             return Response({'done': True})
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
 
 
 class MyProjectViewSet(viewsets.ModelViewSet):

@@ -10,17 +10,17 @@ import TimelineOppositeContent from '@material-ui/lab/TimelineOppositeContent'
 import Typography from '@material-ui/core/Typography'
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
-import { Tooltip } from '@material-ui/core'
-import ImportExportIcon from '@material-ui/icons/ImportExport'
 import {
+  Tooltip,
   Button,
   Dialog,
   DialogContent,
   DialogActions,
   DialogTitle
-}
-  from '@material-ui/core'
-function getDate(jsonDate) {
+} from '@material-ui/core'
+import ImportExportIcon from '@material-ui/icons/ImportExport'
+
+function getDate (jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   var formattedDate
@@ -32,13 +32,12 @@ function getDate(jsonDate) {
   return `${formattedDate}`
 }
 
-function ProjectTimeline({ history, isOwner }) {
+function ProjectTimeline ({ history, isOwner }) {
   const auth = useSelector(state => state.authReducer)
   const [descending, setDescending] = useState(true)
   const [notes, setNotes] = useState(false)
   const [timeline, setTimeline] = useState(history)
   useEffect(() => {
-    console.log(history)
     if (descending) {
       setTimeline(history)
     } else {
@@ -59,7 +58,7 @@ function ProjectTimeline({ history, isOwner }) {
               <>
                 {
                   item.reviewer_notes && <li>
-                    "{item.reviewer_notes}" mentioned at {getDate(item.transition_time)}
+                    &quot;{item.reviewer_notes}&quot; mentioned at {getDate(item.transition_time)}
                   </li>
                 }
               </>

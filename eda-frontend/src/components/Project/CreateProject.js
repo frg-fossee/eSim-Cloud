@@ -61,11 +61,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-function CreateProject() {
+function CreateProject () {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -324,8 +324,6 @@ function CreateProject() {
           </Toolbar>
         </AppBar>
 
-
-
         <Container maxWidth="lg" className={classes.header}>
           <Grid
             container
@@ -400,10 +398,10 @@ function CreateProject() {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                (
-                  <>
-                    <hr />
-                    {((project.details && project.details.can_edit) || !project.details) &&
+                  (
+                    <>
+                      <hr />
+                      {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -420,34 +418,34 @@ function CreateProject() {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      id={index}
-                      label={'Title ' + index}
-                      type="text"
-                      name='name'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.name}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      multiline
-                      id={index}
-                      label={'Text ' + index}
-                      rows={4}
-                      type="text"
-                      name='text'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.text}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                  </>
-                ))}
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        id={index}
+                        label={'Title ' + index}
+                        type="text"
+                        name='name'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.name}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        multiline
+                        id={index}
+                        label={'Text ' + index}
+                        rows={4}
+                        type="text"
+                        name='text'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.text}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                    </>
+                  ))}
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
@@ -463,9 +461,9 @@ function CreateProject() {
                       value={status}
                     >
                       {project.states.map((item, index) =>
-                      (
-                        <MenuItem key={item} value={item}>{item}</MenuItem>
-                      ))}
+                        (
+                          <MenuItem key={item} value={item}>{item}</MenuItem>
+                        ))}
                       <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
                     </Select>
                   </div>
@@ -519,7 +517,7 @@ function CreateProject() {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete the project?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{'Are you sure you want to delete the project?'}</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 You cannot revert this.

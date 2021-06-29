@@ -85,7 +85,7 @@ export const deleteProject = () => (dispatch, getState) => {
     .then(
       (res) => {
         dispatch({
-          type: actions.DELETE_PROJECT,
+          type: actions.DELETE_PROJECT
         })
       }
     )
