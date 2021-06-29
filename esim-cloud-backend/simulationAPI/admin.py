@@ -14,9 +14,9 @@ class runtimStatAdmin(admin.ModelAdmin):
 
     change_list_template = 'admin/runtimeStats.html'
     qty_hierarchy = 'qty'
+
     def has_add_permission(self, request, obj=None):
         return False
-
 
     def changelist_view(self, request, extra_context=None):
         response = super().changelist_view(
@@ -66,13 +66,9 @@ class runtimStatAdmin(admin.ModelAdmin):
                 lim = Limit.objects.all().first()
                 lim.timeLimit = limit
                 lim.save()
-                print('ok')
             else:
-                print('NONE')
                 lim = Limit(timeLimit=limit)
                 lim.save()
-            
-            print(limit)
             response.context_data['TIME_LIMIT'] = limit
         #     return response
         # else:
