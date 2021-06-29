@@ -1,6 +1,5 @@
 from djongo import models
 from django.core.files.storage import FileSystemStorage
-from django.contrib.auth.models import User
 from django.conf import settings
 import uuid
 
@@ -42,14 +41,13 @@ class runtimeStat(models.Model):
     will increase by 1 (simulations)
     """
     exec_time = models.IntegerField(primary_key=True)
-    qty = models.IntegerField(default=0)    
+    qty = models.IntegerField(default=0)
 
     def __str__(self):
         return str(self.exec_time)
 
     def save(self, *args, **kwargs):
         super(runtimeStat, self).save(*args, **kwargs)
-
 
 
 class Limit(models.Model):
