@@ -11,7 +11,8 @@ Tasks cleanup after 3 secs and the process is stopped after 5 seconds.
 """
 
 
-@shared_task(soft_time_limit=3, time_limit=5)
+# @shared_task(soft_time_limit=3, time_limit=5)
+@shared_task
 def process_task(task_id):
     try:
         try:

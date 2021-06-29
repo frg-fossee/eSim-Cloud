@@ -1,5 +1,57 @@
 {% extends "admin/change_list.html" %}
+{% block extrahead %}
+{{ block.super }}
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('myChart').getContext('2d');
+  
+    const chartData = {{ chart_data | safe }};
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: chartData.map(e => {
+          return (String(e.exec_time) + 's')
+        }),
+        datasets: [
+          {
+            label: 'No of Simulations',
+            data: chartData,
+            backgroundColor: 'rgb(121,174,200)',
+          },
+        ],
+      },
+      options: {
+        animation: {
+            duration: 5000,
+        },
+        responsive: true,
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    });
+  });
+  </script>
+{% endblock %}
+
+{% block content %}
+<!-- Render our chart -->
+
+<div style="width: 80%;">
+  <canvas style="margin-bottom: 30px; width: 60%; height: 50%;" id="myChart"></canvas>
+</div>
+<!-- Render the rest of the ChangeList view -->
+{{ block.super }}
+{% endblock %}
 {% block content_title %}
     <h1> Runtime Statistics </h1>
 {% endblock %}
@@ -40,7 +92,7 @@
             <td>
             <strong>
                 <!-- Calculation of the percentage -->
-            {% widthratio row.qty summary_total 100%} 
+            {% widthratio row.qty summary_total 100%}%
             </strong>
             </td>
         </tr>
@@ -55,6 +107,26 @@
 
     </table>
     </div>
+    <br>
+    <br> 
+    {% block RuntimeLimit %}
+    <!-- <li> -->
+        <h1>Simulation Time Limit</h1>
+        <div>
+          <form method="post"> 
+            <label for="limit">Time Limit(s): </label>
+            <input id="limit" type="text" name="limit"value={{ TIME_LIMIT }}> 
+            <input type="submit" value="Update"> 
+          </form>
+        </div>
+    <!-- </li> -->
+    <!-- {{ block.super }} -->
+  {% endblock %}
+    
 {% endblock %}
+
+
+
+
 
 {% block pagination %}{% endblock %}

@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from celery.result import AsyncResult
 import uuid
 import logging
-from .models import runtimeStat
+from .models import runtimeStat, Limit
 import celery.signals
 from celery import current_task
 import time
@@ -32,11 +32,21 @@ class NetlistUploader(APIView):
         logger.info('Got POST for netlist upload: ')
         logger.info(request.data)
         serializer = TaskSerializer(data=request.data, context={'view': self})
+        TIME_LIMIT = 3
+        limits = Limit.objects.all()
+        if limits.exists():
+            TIME_LIMIT = Limit.objects.all()[0].timeLimit
+        # if timeLimit.objects.count() != 0:
+        #     TIME_LIMIT = timeLimit.objects.all()[0]
+        #     print('NOT NONE')
+        # else:
+        #     print('NONE')
         if serializer.is_valid():
             serializer.save()
             task_id = serializer.data['task_id']
             celery_task = process_task.apply_async(
-                kwargs={'task_id': str(task_id)}, task_id=str(task_id))
+                kwargs={'task_id': str(task_id)}, task_id=str(task_id),
+                soft_time_limit=TIME_LIMIT)
             response_data = {
                 'state': celery_task.state,
                 'details': serializer.data,
