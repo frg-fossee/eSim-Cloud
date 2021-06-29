@@ -39,7 +39,8 @@
             <td> {{ row.qty  }} </td>
             <td>
             <strong>
-            {% widthratio row.qty summary_total 100%}
+                <!-- Calculation of the percentage -->
+            {% widthratio row.qty summary_total 100%} 
             </strong>
             </td>
         </tr>

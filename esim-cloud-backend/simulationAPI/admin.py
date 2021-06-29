@@ -34,31 +34,22 @@ class runtimStatAdmin(admin.ModelAdmin):
         )
         response.context_data['summary_total'] = total
 
-        # runtimeBars = qs.annotate(
-        #     period=Trunc(
-        #         'exec_time',
-        #         'qty',
-        #         output_field=IntegerField(),
-        #     ),
-        # ).values('qty')
-        # .annotate(total=Sum('price'))
-        # .order_by('qty')
+        # summary_over_time = qs.annotate(
+        #     period='exec_time'
+        # ).values('qty').annotate('qty').order_by('qty')
 
-        # summary_range = runtimeBars.aggregate(
-        #     low=0,
-        #     high= ('exec_time'),
+        # summary_range = summary_over_time.aggregate(        
+        #     low=min('qty'),
+        #     high=max('qty'),
         # )
         # high = summary_range.get('high', 0)
         # low = summary_range.get('low', 0)
 
-        # response.context_data['runtimeBars'] = [{
-        #     'period': x['period'],
-        #     'total': x['total'] or 0,
-        #     'pct': \
-        #        ((x['total'] or 0) - low) / (high - low) * 100
-        #        if high > low else 0,
-        # } for x in runtimeBars]
-        
+        # response.context_data['summary_over_time'] = list(
+        #     qs
+        #     .values('exec_time', 'qty')
+        #     .order_by('qty')
+        # )
         return response
 
 
