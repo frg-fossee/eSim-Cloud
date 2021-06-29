@@ -12,7 +12,15 @@ import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux'
 import { Tooltip } from '@material-ui/core'
 import ImportExportIcon from '@material-ui/icons/ImportExport'
-function getDate (jsonDate) {
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogTitle
+}
+  from '@material-ui/core'
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   var formattedDate
@@ -24,22 +32,44 @@ function getDate (jsonDate) {
   return `${formattedDate}`
 }
 
-function ProjectTimeline ({ history, isOwner }) {
+function ProjectTimeline({ history, isOwner }) {
   const auth = useSelector(state => state.authReducer)
   const [descending, setDescending] = useState(true)
+  const [notes, setNotes] = useState(false)
   const [timeline, setTimeline] = useState(history)
   useEffect(() => {
+    console.log(history)
     if (descending) {
       setTimeline(history)
     } else {
       setTimeline(history.slice(0).reverse())
     }
-  }, [descending,history])
+  }, [descending, history])
   return (
     <>
+      <Button onClick={() => setNotes(true)}>Show Notes</Button>
       <Tooltip title={`Ordered by: ${descending ? 'Descending' : 'Ascending'}`}>
         <ImportExportIcon style={{ float: 'right' }} onClick={() => setDescending(!descending)} />
       </Tooltip>
+      <Dialog fullWidth={true} maxWidth='sm' open={notes} onClose={() => setNotes(false)}>
+        <DialogTitle>Reviewer Notes List</DialogTitle>
+        <DialogContent>
+          <ol>
+            {history.map((item) => (
+              <>
+                {
+                  item.reviewer_notes && <li>
+                    "{item.reviewer_notes}" mentioned at {getDate(item.transition_time)}
+                  </li>
+                }
+              </>
+            ))}
+          </ol>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setNotes(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
       {!descending ? <Timeline align="right">
         {isOwner
           ? <>
