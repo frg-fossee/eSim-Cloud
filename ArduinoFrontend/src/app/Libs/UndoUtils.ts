@@ -88,6 +88,22 @@ export abstract class UndoUtils {
      * @param ele event snapshot
      */
     static pushChangeToUndo(ele) {
+
+        // This is used to save wires connected to element in case of delete event only
+        if (ele.event === 'delete') {
+            let step = 0;
+            var grup = window.scope[ele.keyName]
+            const temp = this.getExistingWindowElement(grup, ele)
+            for (const e in temp.nodes) {
+                if (temp.nodes[e].connectedTo) {
+                    let wire = temp.nodes[e].connectedTo
+                    UndoUtils.pushChangeToUndo({ keyName: wire.keyName, element: wire.save(), event: 'delete' })
+                    step += 1;
+                }
+            }
+            ele.step = step;
+        }
+
         this.undo.push(ele);
     }
 
@@ -100,14 +116,14 @@ export abstract class UndoUtils {
     static async loadChange(ele, operation) {
 
         var grup = window.scope[ele.keyName]
-        let createdEle = null
+
         if (operation == 'undo' && ele.event == 'delete') {
             UndoUtils.createElement(ele).then(res => {
                 if (ele.keyName === 'BreadBoard') {
                     window['DragListeners'] = [];
                     window['DragStopListeners'] = [];
                 }
-                for (let i = 0; i < ele.step - 1; i++) {
+                for (let i = 0; i < ele.step; i++) {
                     let chg = this.undo.pop()
                     UndoUtils.pushChangeToRedo({ keyName: chg.keyName, element: chg.element, event: chg.event, step: ele!.step })
                     UndoUtils.createElement(chg)
@@ -116,8 +132,9 @@ export abstract class UndoUtils {
             })
             return
         } else if (operation == 'redo' && ele.event == 'delete') {
-            window['Selected'] = this.getExistingWindowElement(grup, ele)
-            Workspace.DeleteComponent();
+            let temp = this.getExistingWindowElement(grup, ele)
+            window['Selected'] = temp;
+            Workspace.DeleteComponent(false);
             return;
         }
 
@@ -156,7 +173,12 @@ export abstract class UndoUtils {
 
         // Only trigger if wire
         if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
+            UndoUtils.pushChangeToUndo(ele)
             UndoUtils.createElement(ele);
+            return
+        } else if (ele.event == 'add' && operation == 'undo' && ele.keyName == 'wires') {
+            UndoUtils.pushChangeToRedo(ele)
+            UndoUtils.removeElement(ele);
             return
         } else if (ele.event == 'wire_color' && operation == 'undo' && ele.keyName == 'wires') {
             const temp = this.getExistingWindowElement(grup, ele)

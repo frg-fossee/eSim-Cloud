@@ -774,7 +774,7 @@ export class Workspace {
   }
 
   /** Function to delete component fro Workspace */
-  static DeleteComponent() {
+  static DeleteComponent(undoReset = true) {
     // Save Dump of current Workspace
     // Check if component is selected
     if (window['Selected']) {
@@ -790,8 +790,12 @@ export class Workspace {
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
 
-      if (!(window.Selected instanceof Wire && !window.Selected.isConnected()))
-        UndoUtils.pushChangeToUndoAndReset({ keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' })
+      if (!(window.Selected instanceof Wire && !window.Selected.isConnected())) {
+        let obj = { keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' }
+        // undoReset ? UndoUtils.pushChangeToUndoAndReset(obj) : UndoUtils.pushChangeToUndo(obj);
+        if (undoReset) UndoUtils.pushChangeToUndoAndReset(obj)
+        else UndoUtils.pushChangeToUndo(obj);
+      }
 
       // If Current Selected item is a Wire which is not Connected from both end
       if (key === 'wires') {
