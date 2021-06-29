@@ -81,7 +81,6 @@ export abstract class UndoUtils {
      */
     static pushChangeToRedo(ele) {
         this.redo.push(ele)
-        console.log(this.redo)
     }
 
     /**
@@ -108,7 +107,7 @@ export abstract class UndoUtils {
                     window['DragListeners'] = [];
                     window['DragStopListeners'] = [];
                 }
-                for (let i = 0; i < ele.step; i++) {
+                for (let i = 0; i < ele.step - 1; i++) {
                     let chg = this.undo.pop()
                     UndoUtils.pushChangeToRedo({ keyName: chg.keyName, element: chg.element, event: chg.event, step: ele!.step })
                     UndoUtils.createElement(chg)
@@ -123,21 +122,18 @@ export abstract class UndoUtils {
         }
 
         if (ele.event == 'layout' && operation == 'undo') {
-            console.log(ele)
             let existing = this.getExistingWindowElement(grup, ele)
-
             UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step })
             UndoUtils.removeElement(ele).then(res => {
-                UndoUtils.createElement(ele).then((result) => {
-                    // for (let i = 0; i <= ele.step; i++) {
-                    //     console.log('test')
-                    //     let chg = this.undo.pop();
-                    //     let existing = this.getExistingWindowElement(grup, chg)
-                    //     UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: chg.event, step: chg!.step })
-                    //     UndoUtils.removeElement(chg).then(ress => {
-                    //         UndoUtils.createElement(chg);
-                    //     })
-                    // }
+                UndoUtils.createElement(ele).then(result => {
+                    for (let i = 0; i < ele.step - 1; i++) {
+                        let chg = this.undo.pop();
+                        let existing = this.getExistingWindowElement(grup, chg)
+                        UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: chg.event, step: chg!.step })
+                        UndoUtils.removeElement(chg).then(ress => {
+                            UndoUtils.createElement(chg);
+                        })
+                    }
                 })
             })
             return
@@ -145,7 +141,16 @@ export abstract class UndoUtils {
             let existing = this.getExistingWindowElement(grup, ele)
             UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step })
             UndoUtils.removeElement(ele).then(res => {
-                UndoUtils.createElement(ele)
+                UndoUtils.createElement(ele).then(result => {
+                    for (let i = 0; i < ele.step - 1; i++) {
+                        let chg = this.redo.pop();
+                        let existing = this.getExistingWindowElement(grup, chg)
+                        UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: chg.event, step: chg!.step })
+                        UndoUtils.removeElement(chg).then(ress => {
+                            UndoUtils.createElement(chg);
+                        })
+                    }
+                })
             })
         }
 
@@ -213,24 +218,6 @@ export abstract class UndoUtils {
                     }
                     else {
                         UndoUtils.createElement(ele).then(createdEle => {
-                            // var existing = this.getExistingWindowElement(grup, ele);
-                            // for (const e in existing.nodes) {
-                            //     if (existing.nodes[e].connectedTo) {
-                            //         let n1 = createdEle['nodes'][e]
-                            //         // existing.nodes[e].connectedTo.connect(n1, true, true)
-                            //         const wire = n1.startNewWire()
-                            //         const ct = existing.nodes[e].connectedTo
-                            //         console.log(ct.start.parent.id === ele.element.id)
-                            //         if (ct.start.parent.id === ele.element.id) {
-                            //             console.log('if')
-                            //             ct.end.connectWire(wire)
-                            //         } else {
-                            //             console.log('else')
-                            //             ct.start.connectWire(wire)
-                            //         }
-
-                            //     }
-                            // }
                             UndoUtils.removeElement(ele).then(done => {
                                 if (ele.keyName === 'BreadBoard') {
                                     window['DragListeners'] = [];
@@ -275,7 +262,7 @@ export abstract class UndoUtils {
 
             if (key == 'wires') {
                 Workspace.LoadWires([ele.element], true, true)
-                return
+                resolve(true);
             }
 
             // Get class from keyname using the map
@@ -295,7 +282,6 @@ export abstract class UndoUtils {
             }
             // Wait until all components are drawn
             const interval = setInterval(() => {
-                console.log('rrrr')
                 if (window.queue === 0) {
                     clearInterval(interval);
                     // start drawing wires
