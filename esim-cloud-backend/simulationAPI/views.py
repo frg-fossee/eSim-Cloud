@@ -9,7 +9,7 @@ from rest_framework.exceptions import ValidationError
 from celery.result import AsyncResult
 import uuid
 import logging
-from .models import runtimeStat, timeLimit
+from .models import runtimeStat, Limit
 import celery.signals
 from celery import current_task
 import time
@@ -33,9 +33,9 @@ class NetlistUploader(APIView):
         logger.info(request.data)
         serializer = TaskSerializer(data=request.data, context={'view': self})
         TIME_LIMIT = 3
-        limits = timeLimit.objects.all()
+        limits = Limit.objects.all()
         if limits.exists():
-            TIME_LIMIT = timeLimit.objects.all()[0].timeLimit
+            TIME_LIMIT = Limit.objects.all()[0].timeLimit
         # if timeLimit.objects.count() != 0:
         #     TIME_LIMIT = timeLimit.objects.all()[0]
         #     print('NOT NONE')

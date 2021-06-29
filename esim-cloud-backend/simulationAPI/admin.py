@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db.models.fields import IntegerField
-from .models import runtimeStat, timeLimit
+from .models import runtimeStat, Limit
 from django.db.models.functions import Trunc
 import json
 from django.core.serializers.json import DjangoJSONEncoder
@@ -51,9 +51,9 @@ class runtimStatAdmin(admin.ModelAdmin):
         TIME_LIMIT page in admin in case there are no changes.
         """
         TIME_LIMIT = 3
-        limits = timeLimit.objects.all()
+        limits = Limit.objects.all()
         if limits.exists():
-            TIME_LIMIT = timeLimit.objects.all()[0].timeLimit
+            TIME_LIMIT = Limit.objects.all()[0].timeLimit
         response.context_data['TIME_LIMIT'] = TIME_LIMIT
         as_json = json.dumps(list(chart_data), cls=DjangoJSONEncoder)
         extra_context = extra_context or {"chart_data": as_json}
@@ -61,15 +61,15 @@ class runtimStatAdmin(admin.ModelAdmin):
 
         if request.method == "POST":
             limit = request.POST.get('limit')
-            limits = timeLimit.objects.all()
+            limits = Limit.objects.all()
             if limits.exists():
-                lim = timeLimit.objects.all().first()
+                lim = Limit.objects.all().first()
                 lim.timeLimit = limit
                 lim.save()
                 print('ok')
             else:
                 print('NONE')
-                lim = timeLimit(timeLimit=limit)
+                lim = Limit(timeLimit=limit)
                 lim.save()
             
             print(limit)
@@ -80,4 +80,4 @@ class runtimStatAdmin(admin.ModelAdmin):
 
 
 admin.site.register(runtimeStat, runtimStatAdmin)
-admin.site.register(timeLimit)
+# admin.site.register(Limit)
