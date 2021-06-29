@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.db.models.fields import IntegerField
-from .models import runtimeStat
+from .models import runtimeStat, timeLimit
 from django.db.models.functions import Trunc
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db.models import Max
 
 
 class runtimStatAdmin(admin.ModelAdmin):
@@ -11,6 +14,9 @@ class runtimStatAdmin(admin.ModelAdmin):
 
     change_list_template = 'admin/runtimeStats.html'
     qty_hierarchy = 'qty'
+    def has_add_permission(self, request, obj=None):
+        return False
+
 
     def changelist_view(self, request, extra_context=None):
         response = super().changelist_view(
@@ -34,23 +40,44 @@ class runtimStatAdmin(admin.ModelAdmin):
         )
         response.context_data['summary_total'] = total
 
-        # summary_over_time = qs.annotate(
-        #     period='exec_time'
-        # ).values('qty').annotate('qty').order_by('qty')
+        chart_data = (
+            runtimeStat.objects
+            .values("exec_time")
+            .annotate(y=Max("qty"))
+            .order_by("exec_time")
+        )
+        """
+        Since 3s is the default time limit, it will be shown in the
+        TIME_LIMIT page in admin in case there are no changes.
+        """
+        TIME_LIMIT = 3
+        limits = timeLimit.objects.all()
+        if limits.exists():
+            TIME_LIMIT = timeLimit.objects.all()[0].timeLimit
+        response.context_data['TIME_LIMIT'] = TIME_LIMIT
+        as_json = json.dumps(list(chart_data), cls=DjangoJSONEncoder)
+        extra_context = extra_context or {"chart_data": as_json}
+        response.context_data.update(extra_context)
 
-        # summary_range = summary_over_time.aggregate(        
-        #     low=min('qty'),
-        #     high=max('qty'),
-        # )
-        # high = summary_range.get('high', 0)
-        # low = summary_range.get('low', 0)
-
-        # response.context_data['summary_over_time'] = list(
-        #     qs
-        #     .values('exec_time', 'qty')
-        #     .order_by('qty')
-        # )
+        if request.method == "POST":
+            limit = request.POST.get('limit')
+            limits = timeLimit.objects.all()
+            if limits.exists():
+                lim = timeLimit.objects.all().first()
+                lim.timeLimit = limit
+                lim.save()
+                print('ok')
+            else:
+                print('NONE')
+                lim = timeLimit(timeLimit=limit)
+                lim.save()
+            
+            print(limit)
+            response.context_data['TIME_LIMIT'] = limit
+        #     return response
+        # else:
         return response
 
 
 admin.site.register(runtimeStat, runtimStatAdmin)
+admin.site.register(timeLimit)

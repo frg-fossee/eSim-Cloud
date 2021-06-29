@@ -49,3 +49,9 @@ class runtimeStat(models.Model):
 
     def save(self, *args, **kwargs):
         super(runtimeStat, self).save(*args, **kwargs)
+
+class timeLimit(models.Model):
+    timeLimit = models.IntegerField()
+
+    def __str__(self):
+        return str(self.timeLimit)
