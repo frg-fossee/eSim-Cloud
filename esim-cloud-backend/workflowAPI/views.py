@@ -52,23 +52,34 @@ class RetriveProjectsViewSet(APIView):
     @swagger_auto_schema(responses={200: ProjectSerializer})
     def get(self, request):
         try:
-            groups = self.request.user.groups.all()
+            groups = self.request.user.groups.filter(customgroup__is_type_reviewer=True)  # noqa
         except:  # noqa
             return Response({'error': 'You are not authorized!'},
                             status=http_status.HTTP_401_UNAUTHORIZED)
         transitions = Transition.objects.filter(
-            role__in=groups, only_for_creator=False)
+            role__in=groups, only_for_creator=False).distinct().exclude(from_state__public=True,  # noqa
+                                                                        from_state__report=False)  # noqa
         projects = Project.objects.none()
         for transition in transitions:
             if transition.from_state.public is False or transition.from_state.report is True:  # noqa
-                project = Project.objects.filter(
-                    state=transition.from_state).exclude(
-                    author=self.request.user)
-                projects = projects | project
+                roles_set = set(transition.role.all())
+                user_roles_set = set(groups)
+                if user_roles_set.intersection(roles_set):
+                    intersection = user_roles_set.intersection(roles_set)
+                    for user_role in intersection:
+                        if user_role.customgroup.is_arduino is False:
+                            project = Project.objects.filter(
+                                state=transition.from_state, is_arduino=False).exclude(  # noqa
+                                author=self.request.user)
+                            projects = projects | project
+                        else:
+                            project = Project.objects.filter(
+                                state=transition.from_state, is_arduino=True).exclude(  # noqa
+                                author=self.request.user)
+                            projects = projects | project
         if projects == Project.objects.none():
             return Response(status=http_status.HTTP_404_NOT_FOUND)
         else:
-            print(projects)
             serialized = ProjectSerializer(projects, many=True)
             return Response(serialized.data)
 
@@ -91,7 +102,7 @@ class ProjectStateView(APIView):
                                 status=http_status.HTTP_404_NOT_FOUND)
             circuit_transition = Transition.objects.filter(
                 from_state=project.state,
-                role__in=self.request.user.groups.all())
+                role__in=self.request.user.groups.all()).distinct()
             states = []
             for transition in circuit_transition:
                 if transition.from_state.public is False or transition.from_state.report is True:  # noqa

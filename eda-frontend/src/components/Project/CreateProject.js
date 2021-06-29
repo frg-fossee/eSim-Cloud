@@ -283,6 +283,7 @@ function CreateProject () {
     })
     setFields([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
     setDeleteDialogue(!deleteDialogue)
+    setOpen(false)
   }
   return (
     <div>

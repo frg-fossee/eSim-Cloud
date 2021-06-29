@@ -58,7 +58,7 @@ function ProjectTimeline ({ history, isOwner }) {
               <>
                 {
                   item.reviewer_notes && <li>
-                    &quot;{item.reviewer_notes}&quot; mentioned at {getDate(item.transition_time)}
+                    &quot;{item.reviewer_notes}&quot; mentioned by {item.transition_author_name} at {getDate(item.transition_time)}
                   </li>
                 }
               </>
