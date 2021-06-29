@@ -72,9 +72,6 @@ function ProjectTimeline ({ history, isOwner }) {
               </TimelineContent>
             </TimelineItem>}
             {timeline[timeline.length - 1] && timeline[timeline.length - 1].transition.event_creator && <TimelineItem>
-              <TimelineOppositeContent>
-                <Typography color="textSecondary">{timeline[0].reviewer_notes}</Typography>
-              </TimelineOppositeContent>
               <TimelineSeparator>
                 <TimelineDot color='primary' />
                 <TimelineConnector />
@@ -149,9 +146,6 @@ function ProjectTimeline ({ history, isOwner }) {
         {isOwner
           ? <>
             {timeline[0] && timeline[0].transition.event_creator && <TimelineItem>
-              <TimelineOppositeContent>
-                <Typography color="textSecondary">{timeline[0].reviewer_notes}</Typography>
-              </TimelineOppositeContent>
               <TimelineSeparator>
                 <TimelineDot color='primary' />
                 <TimelineConnector />

@@ -66,6 +66,33 @@ export const fetchProject = () => (dispatch, getState) => {
       }
     })
 }
+export const deleteProject = () => (dispatch, getState) => {
+  // Get token from localstorage
+  const token = getState().authReducer.token
+  const project_id = getState().saveSchematicReducer.details.project_id
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.delete('/publish/project/' + project_id, config)
+    .then(
+      (res) => {
+        dispatch({
+          type: actions.DELETE_PROJECT,
+        })
+      }
+    )
+    .catch((err) => {
+      console.log(err)
+    })
+}
 export const fetchReports = (projectID) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token

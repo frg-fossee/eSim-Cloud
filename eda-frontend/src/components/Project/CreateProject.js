@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import {
   Button,
-  Dialog,
   Toolbar,
   IconButton,
   Typography,
@@ -17,7 +16,12 @@ import {
   MenuItem,
   InputLabel,
   List,
-  ListItem
+  ListItem,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
 }
   from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
@@ -27,7 +31,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import { makeStyles } from '@material-ui/core/styles'
 import FormControl from '@material-ui/core/FormControl'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeStatus, createProject, getStatus } from '../../redux/actions'
+import { changeStatus, createProject, deleteProject, getStatus } from '../../redux/actions'
 import api from '../../utils/Api'
 import ProjectTimeline from './ProjectTimeline'
 
@@ -57,11 +61,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-function CreateProject () {
+function CreateProject() {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -84,6 +88,8 @@ function CreateProject () {
     })
   const [fields, setFields] = useState([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
   const [changed, setChanged] = useState(0)
+  const [deleteDialogue, setDeleteDialogue] = useState(false)
+
   useEffect(() => {
     if (open && project.details?.project_id) {
       dispatch(getStatus(project.details?.project_id))
@@ -264,6 +270,20 @@ function CreateProject () {
       setChanged(3)
     }
   }
+  const handleDeleteDialogue = () => {
+    setDeleteDialogue(!deleteDialogue)
+  }
+  const deleteProjectFunction = () => {
+    dispatch(deleteProject(project.details.project_id))
+    setDetails({
+      title: '',
+      description: '',
+      active_branch: '',
+      active_version: ''
+    })
+    setFields([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
+    setDeleteDialogue(!deleteDialogue)
+  }
   return (
     <div>
       {(window.location.href.split('?id=')[1] && auth.user?.username === owner) &&
@@ -304,35 +324,7 @@ function CreateProject () {
           </Toolbar>
         </AppBar>
 
-        {versions != null &&
-          ((project.details && project.details.can_edit) || !project.details) &&
-          <Container maxWidth="lg" className={classes.header}>
-            <Grid
-              container
-              spacing={3}
-              direction="row"
-              justify="center"
-              alignItems="flex-start"
-              style={{ backgroundColor: 'white', borderRadius: '5px' }}
-            >
-              <Grid item xs={12} sm={12}>
-                <FormControl className={classes.formControl}>
-                  <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={activeVersion}
-                    onChange={handleActiveVersion}
-                  >
-                    {versions.map(version => {
-                      return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
-                    })}
-                  </Select>
-                </FormControl>
-              </Grid>
-            </Grid>
-          </Container>
-        }
+
 
         <Container maxWidth="lg" className={classes.header}>
           <Grid
@@ -348,6 +340,35 @@ function CreateProject () {
                 <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of variation {project.details.active_branch} saved on {activeSaveDate} at {activeSaveTime} hours</h3>
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
+              {versions != null &&
+                ((project.details && project.details.can_edit) || !project.details) &&
+                <Container maxWidth="lg" className={classes.header}>
+                  <Grid
+                    container
+                    spacing={3}
+                    direction="row"
+                    justify="center"
+                    alignItems="flex-start"
+                    style={{ backgroundColor: 'white', borderRadius: '5px' }}
+                  >
+                    <Grid item xs={12} sm={12}>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={activeVersion}
+                          onChange={handleActiveVersion}
+                        >
+                          {versions.map(version => {
+                            return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                          })}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                </Container>
+              }
               <Paper className={classes.paper}>
 
                 <TextField
@@ -379,10 +400,10 @@ function CreateProject () {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                  (
-                    <>
-                      <hr />
-                      {((project.details && project.details.can_edit) || !project.details) &&
+                (
+                  <>
+                    <hr />
+                    {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -399,34 +420,34 @@ function CreateProject () {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        id={index}
-                        label={'Title ' + index}
-                        type="text"
-                        name='name'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.name}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        multiline
-                        id={index}
-                        label={'Text ' + index}
-                        rows={4}
-                        type="text"
-                        name='text'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.text}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                    </>
-                  ))}
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      id={index}
+                      label={'Title ' + index}
+                      type="text"
+                      name='name'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.name}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      multiline
+                      id={index}
+                      label={'Text ' + index}
+                      rows={4}
+                      type="text"
+                      name='text'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.text}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                  </>
+                ))}
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
@@ -442,9 +463,9 @@ function CreateProject () {
                       value={status}
                     >
                       {project.states.map((item, index) =>
-                        (
-                          <MenuItem key={item} value={item}>{item}</MenuItem>
-                        ))}
+                      (
+                        <MenuItem key={item} value={item}>{item}</MenuItem>
+                      ))}
                       <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
                     </Select>
                   </div>
@@ -491,6 +512,28 @@ function CreateProject () {
               </Paper>
             </Grid>
           </Grid>
+          {project.details && project.details.can_delete && <Button onClick={handleDeleteDialogue} style={{ width: '100%', color: 'white', backgroundColor: 'red', margin: '2% auto auto auto' }}>Delete Project</Button>}
+          <Dialog
+            open={deleteDialogue}
+            onClose={handleDeleteDialogue}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete the project?"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                You cannot revert this.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDeleteDialogue} color="primary">
+                Disagree
+              </Button>
+              <Button onClick={deleteProjectFunction} color="primary" autoFocus>
+                Agree
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
       </Dialog>
     </div>

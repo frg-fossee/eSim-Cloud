@@ -42,6 +42,7 @@ class ProjectViewSet(APIView):
                             status=status.HTTP_404_NOT_FOUND)
         user_roles = self.request.user.groups.all()
         can_edit = False
+        can_delete = False
         if queryset.state.public is False:
             if queryset.author == self.request.user and Permission.objects.filter(  # noqa
                     role__in=user_roles,
@@ -61,6 +62,12 @@ class ProjectViewSet(APIView):
                 can_edit = True
             else:
                 can_edit = False
+            if queryset.author == self.request.user and Permission.objects.filter(  # noqa
+                    role__in=user_roles,
+                    del_own_states=queryset.state).exists():
+                can_delete = True
+            else:
+                can_delete = False
         try:
             histories = TransitionHistorySerializer(
                 TransitionHistory.objects.filter(
@@ -69,6 +76,7 @@ class ProjectViewSet(APIView):
             data = serialized.data.copy()
             data['history'] = histories.data
             data['can_edit'] = can_edit
+            data['can_delete'] = can_delete
             return Response(data)
         except TransitionHistory.DoesNotExist:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -97,6 +105,7 @@ class ProjectViewSet(APIView):
                 project.fields.add(field)
             project.save()
             can_edit = False
+            can_delete = False
             for save_state in save_states:
                 save_state.project = project
                 save_state.shared = True
@@ -107,6 +116,11 @@ class ProjectViewSet(APIView):
                 can_edit = True
             else:
                 can_edit = False
+            if Permission.objects.filter(role__in=user_roles,
+                                         del_own_states=project.state).exists():  # noqa
+                can_delete = True
+            else:
+                can_delete = False
             histories = TransitionHistorySerializer(
                 TransitionHistory.objects.filter(project=project), many=True)
             serialized = ProjectSerializer(project)
@@ -114,9 +128,11 @@ class ProjectViewSet(APIView):
             data['save_id'] = active_state_save.save_id
             data['history'] = histories.data
             data['can_edit'] = can_edit
+            data['can_delete'] = can_delete
             return Response(data)
         else:
             can_edit = False
+            can_delete = False
             if Permission.objects.filter(role__in=user_roles,
                                          edit_own_states=active_state_save.project.state).exists():  # noqa
                 pass
@@ -137,6 +153,11 @@ class ProjectViewSet(APIView):
                 can_edit = True
             else:
                 can_edit = False
+            if Permission.objects.filter(role__in=user_roles,
+                                         del_own_states=active_state_save.project.state).exists():  # noqa
+                can_delete = True
+            else:
+                can_delete = False
             active_state_save.project.fields.clear()
             for field in request.data[1]:
                 field = Field(name=field['name'], text=field['text'])
@@ -151,7 +172,23 @@ class ProjectViewSet(APIView):
             data['save_id'] = active_state_save.save_id
             data['history'] = histories.data
             data['can_edit'] = can_edit
+            data['can_delete'] = can_delete
             return Response(data)
+
+    def delete(self, request, circuit_id):
+        try:
+            project = Project.objects.get(project_id=circuit_id)
+        except Project.DoesNotExist:
+            return Response({'error': 'No circuit there'},
+                            status=status.HTTP_404_NOT_FOUND)
+        if project.author == self.request.user and Permission.objects.filter(
+                         role__in=self.request.user.groups.all(),
+                         del_own_states=project.state).exists():
+            project.delete()
+            return Response({'done': True})
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
 
 
 class MyProjectViewSet(viewsets.ModelViewSet):

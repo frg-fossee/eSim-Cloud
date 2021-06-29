@@ -28,7 +28,7 @@ class StateSave(models.Model):
     branch = models.CharField(max_length=20, null=False)
     is_arduino = models.BooleanField(default=False, null=False)
     esim_libraries = models.ManyToManyField(Library)
-    project = models.ForeignKey(to=Project, on_delete=models.CASCADE,
+    project = models.ForeignKey(to=Project, on_delete=models.SET_NULL,
                                 null=True)
 
     def save(self, *args, **kwargs):
