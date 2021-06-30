@@ -305,12 +305,12 @@ export class BreadBoard extends CircuitElement {
   /**
    * Map of x and nodes with x-coordinates as x
    */
-  public sameXNodes: {[key: string]: Point[]} = {};
+  public sameXNodes: { [key: string]: Point[] } = {};
 
   /**
    * Map of y and nodes with y-coordinates as y
    */
-  public sameYNodes: {[key: string]: Point[]} = {};
+  public sameYNodes: { [key: string]: Point[] } = {};
 
   /**
    * Breadboard constructor
@@ -494,6 +494,8 @@ export class BreadBoard extends CircuitElement {
       tmpar2 = [];
       this.tx = tmpx;
       this.ty = tmpy;
+      // reBuild SameNodeObject after drag stop
+      this.reBuildSameNodes();
     });
   }
   /**
@@ -514,6 +516,24 @@ export class BreadBoard extends CircuitElement {
   }
 
   /**
+   * Re-build sameNode variables
+   */
+  reBuildSameNodes() {
+    this.sameXNodes = {}
+    this.sameYNodes = {}
+    // initialise sameX and sameY node sets
+    for (const node of this.nodes) {
+      // create the set for x
+      this.sameXNodes[node.x] = this.sameXNodes[node.x] || [];
+      this.sameXNodes[node.x].push(node);
+
+      // Create the set for y
+      this.sameYNodes[node.y] = this.sameYNodes[node.y] || [];
+      this.sameYNodes[node.y].push(node);
+    }
+  }
+
+  /**
    * Checks if the point is inside the passed bounding box
    * TODO: move the function to a utils
    * @param boundingBox: Raphael Bounding box object
@@ -522,7 +542,7 @@ export class BreadBoard extends CircuitElement {
    */
   isPointWithinBbox(boundingBox, x, y): boolean {
     return ((x < boundingBox.cx && x > boundingBox.cx - 1.2 * boundingBox.width) &&
-            (y < boundingBox.cy && y > boundingBox.cy - 1.2 * boundingBox.height));
+      (y < boundingBox.cy && y > boundingBox.cy - 1.2 * boundingBox.height));
   }
 
   /**
@@ -531,8 +551,8 @@ export class BreadBoard extends CircuitElement {
    * @param y: y-coordinate
    */
   shortlistNodes(x, y) {
-    const xIndexFrom = _.sortedIndexBy(this.sortedNodes, {x: x - BreadBoard.PROXIMITY_DISTANCE}, 'x');
-    const xIndexTo = _.sortedLastIndexBy(this.sortedNodes, {x: x + BreadBoard.PROXIMITY_DISTANCE}, 'x');
+    const xIndexFrom = _.sortedIndexBy(this.sortedNodes, { x: x - BreadBoard.PROXIMITY_DISTANCE }, 'x');
+    const xIndexTo = _.sortedLastIndexBy(this.sortedNodes, { x: x + BreadBoard.PROXIMITY_DISTANCE }, 'x');
 
     return this.sortedNodes.slice(xIndexFrom, xIndexTo);
   }
