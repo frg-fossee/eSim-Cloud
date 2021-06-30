@@ -519,8 +519,8 @@ export class BreadBoard extends CircuitElement {
    * Re-build sameNode variables
    */
   reBuildSameNodes() {
-    this.sameXNodes = {}
-    this.sameYNodes = {}
+    this.sameXNodes = {};
+    this.sameYNodes = {};
     // initialise sameX and sameY node sets
     for (const node of this.nodes) {
       // create the set for x
