@@ -66,10 +66,9 @@ export const fetchProject = () => (dispatch, getState) => {
       }
     })
 }
-export const deleteProject = () => (dispatch, getState) => {
+export const deleteProject = (project_id) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
-  const project_id = getState().saveSchematicReducer.details.project_id
   // add headers
   const config = {
     headers: {

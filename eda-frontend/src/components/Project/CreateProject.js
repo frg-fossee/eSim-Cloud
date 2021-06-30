@@ -91,6 +91,7 @@ function CreateProject () {
   const [deleteDialogue, setDeleteDialogue] = useState(false)
 
   useEffect(() => {
+    console.log(project.details?.project_id)
     if (open && project.details?.project_id) {
       dispatch(getStatus(project.details?.project_id))
       setStatus(project.details?.status_name)
@@ -98,6 +99,16 @@ function CreateProject () {
     if (project.details) {
       setDetails({ title: project.details.title, description: project.details.description, active_version: project.details.active_version, active_branch: project.details.active_branch })
       setFields(project.details.fields)
+    }
+    if (!project.details) {
+      setDetails({
+        title: '',
+        description: '',
+        active_branch: '',
+        active_version: ''
+      })
+      setActiveVersion('')
+      setFields([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
     }
   }, [open, dispatch, project.details])
   useEffect(() => {
@@ -273,15 +284,9 @@ function CreateProject () {
   const handleDeleteDialogue = () => {
     setDeleteDialogue(!deleteDialogue)
   }
-  const deleteProjectFunction = () => {
-    dispatch(deleteProject(project.details.project_id))
-    setDetails({
-      title: '',
-      description: '',
-      active_branch: '',
-      active_version: ''
-    })
-    setFields([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
+  const deleteProjectFunction = (id) => {
+    console.log(id)
+    dispatch(deleteProject(id))
     setDeleteDialogue(!deleteDialogue)
     setOpen(false)
   }
@@ -528,7 +533,7 @@ function CreateProject () {
               <Button onClick={handleDeleteDialogue} color="primary">
                 Disagree
               </Button>
-              <Button onClick={deleteProjectFunction} color="primary" autoFocus>
+              <Button onClick={() => deleteProjectFunction(project.details.project_id)} color="primary" autoFocus>
                 Agree
               </Button>
             </DialogActions>

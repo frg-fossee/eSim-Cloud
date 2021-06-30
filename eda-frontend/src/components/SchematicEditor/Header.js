@@ -31,7 +31,7 @@ import { deepPurple } from '@material-ui/core/colors'
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle, setSchShared, loadMinUser } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -101,7 +101,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-function Header () {
+function Header (props) {
   const history = useHistory()
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
@@ -192,6 +192,10 @@ function Header () {
 
   useEffect(() => {
     setShared(schSave.isShared)
+    if (history.location.search === '') {
+      dispatch(setSchTitle('Untitled_Schematic'))
+      dispatch(setSchDescription(''))
+    }
   }, [schSave.isShared])
 
   const handleShareChange = (event) => {
@@ -245,7 +249,7 @@ function Header () {
         disableBackdropClick
       >
         <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
-          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large"/><br/>
+          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large" /><br />
           <Typography variant='h5' align='center'>
             {'Login to continue working on the circuit'}
           </Typography>
@@ -281,7 +285,7 @@ function Header () {
         onClose={() => { setLogoutConfirm(false) }}
       >
         <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
-          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large"/><br/>
+          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large" /><br />
           <Typography variant='h5' align='center'>
             {'Are you sure you want to logout?'}
           </Typography>
@@ -320,7 +324,7 @@ function Header () {
           className={classes.toolbarTitle}
         >
           <Link color="inherit" target='_blank' component={RouterLink} to="/">
-          eSim
+            eSim
           </Link>
         </Typography>
 
@@ -343,7 +347,7 @@ function Header () {
                 variant="body2"
                 style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
               >
-              Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
+                Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
               </Typography>
               : <></>
             }
@@ -391,12 +395,12 @@ function Header () {
           <DialogActions>
             {shared === true && document.queryCommandSupported('copy')
               ? <Button onClick={copyToClipboard} color="primary" autoFocus>
-              Copy url
+                Copy url
               </Button>
               : <></>
             }
             <Button onClick={handleShareClose} color="primary" autoFocus>
-            close
+              close
             </Button>
           </DialogActions>
         </Dialog>
@@ -413,7 +417,7 @@ function Header () {
               variant="outlined"
               target="_blank"
             >
-          Login
+              Login
             </Button>
             : (<>
 
@@ -451,7 +455,7 @@ function Header () {
                   to="/dashboard/profile"
                   onClick={handleClose}
                 >
-                My Profile
+                  My Profile
                 </MenuItem>
                 <MenuItem
                   target='_blank'
@@ -459,7 +463,7 @@ function Header () {
                   to="/dashboard/schematics"
                   onClick={handleClose}
                 >
-                My Schematics
+                  My Schematics
                 </MenuItem>
                 <MenuItem
                   target='_blank'
@@ -467,12 +471,12 @@ function Header () {
                   to="/account/change_password"
                   onClick={handleClose}
                 >
-                Change password
+                  Change password
                 </MenuItem>
                 <MenuItem onClick={() => {
                   setLogoutConfirm(true)
                 }}>
-                Logout
+                  Logout
                 </MenuItem>
               </Menu>
             </>
