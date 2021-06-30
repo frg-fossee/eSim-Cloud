@@ -12,13 +12,16 @@ import {
   CardContent,
   CardActionArea,
   Card,
-  Checkbox
+  Checkbox, 
+  Snackbar,
+  IconButton
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import queryString from 'query-string'
+import CloseIcon from '@material-ui/icons/Close'
 // import { parseXmlToGraph, GenerateNetList } from './Helper/Testcase'
 import api from '../../utils/Api'
 // import mxGraphFactory from 'mxgraph'
@@ -54,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig () {
+export default function LTIConfig() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -68,7 +71,7 @@ export default function LTIConfig () {
     score: '',
     initialSchematic: '',
     modelSchematic: '',
-    testCase: '',
+    testCase: null,
     scored: true
   })
 
@@ -76,6 +79,8 @@ export default function LTIConfig () {
   const [initial, setInitial] = React.useState('')
   const [history, setHistory] = React.useState('')
   const [historyId, setHistoryId] = React.useState('')
+  const [update, setUpdate] = React.useState(false)
+  const [submitMessage, setSubmitMessage] = React.useState('')
 
   useEffect(() => {
     dispatch(fetchSchematics())
@@ -130,9 +135,9 @@ export default function LTIConfig () {
   }, [])
 
   // eslint-disable-next-line
-    const handleLTIGenerate = () => {
+  const handleLTIGenerate = () => {
     var score = ''
-    if (ltiDetails.scored) {
+    if (!ltiDetails.scored) {
       score = null
     } else {
       score = ltiDetails.score
@@ -164,6 +169,10 @@ export default function LTIConfig () {
       })
   }
 
+  const handleUpdateClose = () => {
+    setUpdate(false)
+  }
+
   const handleDeleteLTIApp = () => {
     api.delete(`lti/delete/${ltiDetails.modelSchematic.save_id}`)
       .then(res => {
@@ -176,7 +185,7 @@ export default function LTIConfig () {
           score: '',
           initialSchematic: '',
           modelSchematic: modelSchematic,
-          testCase: ''
+          testCase: null
         })
         setHistoryId('')
       })
@@ -219,14 +228,41 @@ export default function LTIConfig () {
     setHistoryId(e.target.value)
   }
 
-  // const handleOnClick = () => {
-  //     var graph = new mxGraph()
-  //     var parser = new DOMParser()
-  //     var xmlDoc = parser.parseFromString(modelSchematic.data_dump, "text/xml")
-  //     parseXmlToGraph(xmlDoc, graph)
-  //     var netlist = GenerateNetList(graph)
-  //     console.log(netlist)
-  // }
+  const handleOnClick = () => {
+    var score = ''
+    if (!ltiDetails.scored) {
+      score = null
+    } else {
+      score = ltiDetails.score
+    }
+    const body = {
+      consumer_key: ltiDetails.consumerKey,
+      secret_key: ltiDetails.secretKey,
+      model_schematic: ltiDetails.modelSchematic.save_id,
+      score: score,
+      initial_schematic: ltiDetails.initialSchematic,
+      test_case: ltiDetails.testCase,
+      scored: ltiDetails.scored
+    }
+    console.log(body)
+    api.post('lti/update/', body)
+      .then(res => {
+        setLTIDetails({
+          ...ltiDetails,
+          configURL: res.data.config_url,
+          configExists: true,
+          consumerError: '',
+          score: res.data.score
+        })
+        setUpdate(true)
+        setSubmitMessage('Updated Successfully')
+        return res.data
+      })
+      .catch((err) => {
+        console.log(err.data)
+        setSubmitMessage('An error was encountered!')
+      })
+  }
 
   return (
     <>
@@ -241,7 +277,7 @@ export default function LTIConfig () {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                                    Model Schematic
+                  Model Schematic
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -255,7 +291,7 @@ export default function LTIConfig () {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                                    Initial Schematic
+                  Initial Schematic
                 </Typography>
               </CardContent>
             </CardActionArea>
@@ -263,9 +299,9 @@ export default function LTIConfig () {
         </div>
         <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
           {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
-          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} variant="outlined" />
-          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} disabled={configExists} variant="outlined" />
-          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={configExists || !ltiDetails.scored} variant="outlined" />
+          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} variant="outlined" />
+          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
+          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
           <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">Student Schematic</InputLabel>
             <Select
@@ -276,7 +312,6 @@ export default function LTIConfig () {
               onChange={handleChange}
               label="Student Schematic"
               className={classes.selectEmpty}
-              inputProps={{ readOnly: configExists }}
             >
               {schematics.map(schematic => {
                 return <MenuItem key={schematic.save_id} value={schematic.save_id}>{schematic.name}</MenuItem>
@@ -293,7 +328,7 @@ export default function LTIConfig () {
               onChange={handleChangeSim}
               label="Test Case"
               className={classes.selectEmpty}
-              inputProps={{ readOnly: configExists || !ltiDetails.scored }}
+              inputProps={{ readOnly: !ltiDetails.scored }}
             >
               {history.map(sim => {
                 return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
@@ -308,46 +343,62 @@ export default function LTIConfig () {
                 onChange={handleCheckChange}
                 name="scored"
                 color="primary"
-                disabled={ltiDetails.configExists}
               />
             }
             label="Scored?"
           />
           <br />
-          {configURL && <h3 className={classes.config}>{configURL}</h3>}
+          {configURL && <h3 className={classes.config}>URL for LTI Access: {configURL}</h3>}
           <Button style={{ marginTop: '1%' }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
-                        Generate LTI config URL
+            Create LTI URL
           </Button>
           {configExists &&
-                        <Button
-                          style={{ marginLeft: '1%', marginTop: '1%' }}
-                          disableElevation
-                          variant="contained"
-                          className={classes.delete}
-                          startIcon={<DeleteIcon />}
-                          onClick={() => handleDeleteLTIApp()}
-                        >
-                            Delete
-                        </Button>}
+            <Button
+              style={{ marginLeft: '1%', marginTop: '1%' }}
+              disableElevation
+              variant="contained"
+              className={classes.delete}
+              startIcon={<DeleteIcon />}
+              onClick={() => handleDeleteLTIApp()}
+            >
+              Delete
+            </Button>}
           {configExists &&
-                        <Button
-                          style={{ marginLeft: '1%', marginTop: '1%' }}
-                          disableElevation
-                          color="primary"
-                          variant="contained"
-                          href={`#/submission?consumer_key=${ltiDetails.consumerKey}`}
-                        >
-                            Submissions
-                        </Button>}
-          {/* <Button
-                        style={{ marginLeft: "1%", marginTop: "1%" }}
-                        disableElevation
-                        color="primary"
-                        variant="contained"
-                        onClick={handleOnClick} >
-                        Generate Netlist for Model Schematic
-                    </Button> */}
+            <Button
+              style={{ marginLeft: '1%', marginTop: '1%' }}
+              disableElevation
+              color="primary"
+              variant="contained"
+              href={`#/submission?consumer_key=${ltiDetails.consumerKey}`}
+            >
+              Submissions
+            </Button>}
+          {configExists && <Button
+            style={{ marginLeft: "1%", marginTop: "1%" }}
+            disableElevation
+            color="primary"
+            variant="contained"
+            onClick={handleOnClick} >
+            Update LTI App
+          </Button>}
         </div>
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left'
+          }}
+          open={update}
+          autoHideDuration={2000}
+          onClose={handleUpdateClose}
+          message={submitMessage}
+          action={
+            <>
+              <IconButton size="small" aria-label="close" color="inherit" onClick={handleUpdateClose}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </>
+          }
+        />
       </>}
     </>
   )
