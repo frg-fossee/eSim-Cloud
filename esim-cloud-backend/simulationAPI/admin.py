@@ -1,10 +1,10 @@
 from django.contrib import admin
-from django.db.models.fields import IntegerField
 from .models import runtimeStat, Limit
-from django.db.models.functions import Trunc
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Max
+from django.http import HttpResponseRedirect
+from .views import TIME_LIMIT as SET_TIME
 
 
 class runtimStatAdmin(admin.ModelAdmin):
@@ -50,7 +50,7 @@ class runtimStatAdmin(admin.ModelAdmin):
         Since 3s is the default time limit, it will be shown in the
         TIME_LIMIT page in admin in case there are no changes.
         """
-        TIME_LIMIT = 3
+        TIME_LIMIT = SET_TIME
         limits = Limit.objects.all()
         if limits.exists():
             TIME_LIMIT = Limit.objects.all()[0].timeLimit
@@ -70,10 +70,11 @@ class runtimStatAdmin(admin.ModelAdmin):
                 lim = Limit(timeLimit=limit)
                 lim.save()
             response.context_data['TIME_LIMIT'] = limit
-        #     return response
-        # else:
+            return HttpResponseRedirect(
+                "/api/admin/simulationAPI/runtimestat/"
+            )
         return response
 
 
 admin.site.register(runtimeStat, runtimStatAdmin)
-# admin.site.register(Limit)
+admin.site.register(Limit)

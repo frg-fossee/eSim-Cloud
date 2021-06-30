@@ -17,6 +17,8 @@ import math
 
 logger = logging.getLogger(__name__)
 
+TIME_LIMIT = 3
+
 
 class NetlistUploader(APIView):
     '''
@@ -32,7 +34,7 @@ class NetlistUploader(APIView):
         logger.info('Got POST for netlist upload: ')
         logger.info(request.data)
         serializer = TaskSerializer(data=request.data, context={'view': self})
-        TIME_LIMIT = 3
+
         limits = Limit.objects.all()
         if limits.exists():
             TIME_LIMIT = Limit.objects.all()[0].timeLimit
