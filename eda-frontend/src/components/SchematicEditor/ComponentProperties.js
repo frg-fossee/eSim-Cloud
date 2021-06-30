@@ -13,30 +13,30 @@ export default function ComponentProperties () {
   const id = useSelector(state => state.componentPropertiesReducer.id)
   var x = useSelector(state => state.componentPropertiesReducer.x) + 50
   var y = useSelector(state => state.componentPropertiesReducer.y)
-  const [height,setHeight] = useState(0)
-  const [width,setWidth]=useState(0)
+  const [height, setHeight] = useState(0)
+  const [width, setWidth] = useState(0)
   const [val, setVal] = useState(properties)
 
   useEffect(() => {
-    if(isOpen){
-      var temp = document.getElementById("properties-modal").clientHeight
-      var temp2 = document.getElementById("properties-modal").clientWidth
-      console.log(screen.width,temp2)
+    if (isOpen) {
+      var temp = document.getElementById('properties-modal').clientHeight
+      var temp2 = document.getElementById('properties-modal').clientWidth
+      console.log(screen.width, temp2)
       console.log(x)
-      if(0.6*screen.height - 260 - y < temp){
-        if(temp+100>=y)
-          y = 100
+      if (0.6 * screen.height - 260 - y < temp) {
+        if (temp + 100 >= y)
+        { y = 100 }
         else
-          y = y - temp
+        { y = y - temp }
       }
-      if(x>screen.width-547){
-        x = screen.width-547
+      if (x > screen.width - 547) {
+        x = screen.width - 547
       }
       console.log(x)
       setHeight(y)
       setWidth(x)
     }
-  },[isOpen])
+  }, [isOpen])
 
   const dispatch = useDispatch()
 
@@ -58,12 +58,12 @@ export default function ComponentProperties () {
 
   return (
     isOpen &&
-    <div id="properties-modal" style={{position:'absolute', left: `${width}px`, top: `${height}px`}}>
-      <Draggable handle=".handle" bounds={{ left:250-x, right:screen.width-550-x, top:100-height, bottom:screen.height-762 }}>
+    <div id="properties-modal" style={{ position: 'absolute', left: `${width}px`, top: `${height}px` }}>
+      <Draggable handle=".handle" bounds={{ left: 250 - x, right: screen.width - 550 - x, top: 100 - height, bottom: screen.height - 762 }}>
         <Paper>
-          <List style={{maxHeight: 500, overflowY:"scroll", overflowX:"hidden"}}>
+          <List style={{ maxHeight: 500, overflowY: 'scroll', overflowX: 'hidden' }}>
             <ListItem className="handle">
-              <ListItemText style={{cursor:"move"}} primary='Component Properties' secondary={properties.NAME} />
+              <ListItemText style={{ cursor: 'move' }} primary='Component Properties' secondary={properties.NAME} />
             </ListItem>
             {
               Object.keys(properties).map((keyName, i) => {
