@@ -4,7 +4,9 @@ import { ZoomAct } from '../../components/SchematicEditor/Helper/ToolbarTools.js
 const InitialState = {
   id: '',
   isPropertiesWindowOpen: false,
-  compProperties: {}
+  compProperties: {},
+  x: 0,
+  y: 0
 }
 
 export default function (state = InitialState, action) {
@@ -14,7 +16,9 @@ export default function (state = InitialState, action) {
         ...state,
         id: action.payload.id,
         isPropertiesWindowOpen: true,
-        compProperties: action.payload.compProperties
+        compProperties: action.payload.compProperties,
+        x: action.payload.x,
+        y: action.payload.y
       }
     }
 
@@ -29,6 +33,13 @@ export default function (state = InitialState, action) {
 
     case actions.CLOSE_COMP_PROPERTIES: {
       ZoomAct()
+      return {
+        ...state,
+        isPropertiesWindowOpen: false
+      }
+    }
+
+    case actions.CLOSE_COMP_PROPERTIES_TEMP: {
       return {
         ...state,
         isPropertiesWindowOpen: false
