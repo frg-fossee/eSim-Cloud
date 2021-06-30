@@ -117,6 +117,9 @@
             Publish circuit</button>
           <button mat-raised-button color="primary" class="col-md-3"
             (click)="ExportCircuit(selected.save_id, selected.offline)">Export Circuit</button>
+          <button mat-raised-button color="primary" class="col-md-3"
+            [routerLink]="['/lti']" [queryParams]="{id: selected.save_id}">Create LTI App</button>
+          <!-- *ngIf="!selected.offline" to be added in prod build -->
         </div>
 
         <div class="act-desc">
@@ -170,3 +173,4 @@
     </div>
   </div>
   <!--/open project-->
+  

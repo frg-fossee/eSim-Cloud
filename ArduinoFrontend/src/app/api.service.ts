@@ -157,4 +157,20 @@ export class ApiService {
   fetchSamples(): Observable<any> {
     return this.http.get('./assets/samples/Samples.json');
   }
+
+  existLTIURL(id: string, token: string) {
+    let config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+    if (token) {
+      config.headers['Authorization'] = `Token ${token}`
+    }
+    return this.http.get(`lti/exist/${id}`, config);
+  }
+
+  saveLTIDetails(id, data) {
+    return this.http.get(`save/${id}`, data);
+  }
 }

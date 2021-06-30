@@ -1,0 +1,31 @@
+.main-form{
+	margin: 10px;
+}
+
+.field-group{
+	width: 100%;
+	padding: 5%;
+}
+
+.field-group > * {
+	width: 100%;
+}
+
+.check-box-spacing {
+	margin-left: 5px;
+	padding-bottom: 10px;
+}
+
+.btn-lti {
+	margin-left: 5px;
+	align-self: center;
+}
+
+.caption {
+	text-align: center;
+}
+
+.image {
+	width: 562px !important;
+	height: 426px !important;
+}

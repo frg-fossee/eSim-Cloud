@@ -1,0 +1,86 @@
+<app-header title="Create LTI App"></app-header>
+<h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 1em;">
+  Get Config URL
+</h3>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 p-1">
+      <img [attr.src]="modelCircuit.base64_image" alt="Loading the image" class="img-thumbnail border border-secondary hover-shadow image"/>
+      <div class="caption">
+        Model Simulation
+      </div>
+    </div>
+    <div class="col-md-6 p-1">
+      <img [attr.src]="studentCircuit.base64_image" alt="Loading the image" class="img-thumbnail border border-secondary hover-shadow image"/>
+      <div class="caption">
+        Student Simulation
+      </div>
+    </div>
+  </div>
+</div>
+<form [formGroup]="service.form" class='main-form' (submit)="onSubmit()">
+  <mat-grid-list cols='2' rowHeight="300px">
+    <mat-grid-tile>
+      <div class="field-group">
+        <input formControlName="modelSchematic" value="{{circuit_id}}" style="display:none"/>
+        <mat-form-field>
+          <input formControlName="consumerKey" matInput placeholder="Consumer Key*"/>
+          <mat-error *ngIf="service.form.controls['consumerKey'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['consumerKey'].errors?.minlength">String should be atleast 2 characters long</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select formControlName="testCase" matInput placeholder="Test Case" (selectionChange)="onTestCaseSelectChanges($event)">
+            <mat-option>
+              None
+            </mat-option>
+            <ng-container *ngFor="let testCase of testCases">
+              <mat-option value="{{testCase.id}}">{{testCase.output}}</mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+        <div class="check-box-spacing">
+          <mat-checkbox formControlName="acceptSubmissions">
+            Accept Submissions
+          </mat-checkbox>
+        </div>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div class="field-group">
+        <mat-form-field>
+          <input formControlName="secretKey" matInput placeholder="Secret Key*" type="password"/>
+          <mat-error *ngIf="service.form.controls['secretKey'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['secretKey'].errors?.minlength">String should be atleast 2 characters long</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select formControlName="initialSchematic" matInput placeholder="Students's Simulation*" (selectionChange)="onStudentSimulationSelectChanges($event)">
+            <mat-option>
+              None
+            </mat-option>
+            <ng-container *ngFor="let circuit of circuits">
+              <mat-option value="{{circuit.save_id}}">{{circuit.name}} {{circuit.save_time}}</mat-option>
+            </ng-container>
+          </mat-select>
+          <mat-error>This field is mandatory</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="score" matInput placeholder="Score*"/>
+          <mat-error *ngIf="service.form.controls['score'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['score'].errors?.min || service.form.controls['score'].errors?.max">Value should be 0 or 1</mat-error>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <div>
+    <a href="configUrl">{{configUrl}}</a>
+  </div>
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 p-2">
+      <button class="btn-lti" mat-raised-button color="primary" type="submit" (click)="onSubmit()" [disabled]="service.form.invalid">Submit</button>
+      <button class="btn-lti" mat-raised-button color="warn" type="reset"  (click)="onClear()">Clear</button>
+      <button class="btn-lti" mat-raised-button color="primary">Submissions</button>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</form>

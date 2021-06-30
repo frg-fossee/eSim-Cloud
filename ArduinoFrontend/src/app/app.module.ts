@@ -9,22 +9,9 @@ import { SimulatorComponent } from './simulator/simulator.component';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
-import {
-  MatDialogModule,
-  MatInputModule,
-  MatButtonModule,
-  MatTableModule,
-  MatRadioModule,
-  MatDividerModule,
-  MatTabsModule,
-  MatSnackBarModule,
-  MatIconModule,
-  MatTooltipModule
-} from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
@@ -38,6 +25,10 @@ import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.compo
 import { ExportJSONDialogComponent } from './export-jsondialog/export-jsondialog.component';
 import { ExitConfirmDialogComponent } from './exit-confirm-dialog/exit-confirm-dialog.component';
 import { OptionModalComponent } from './alert/option-modal/option-modal.component';
+import { MaterialModule } from './material/material.module';
+import { FormsService } from './forms.service';
+import { LTIFormDialogComponent } from './lti-form-dialog/lti-form-dialog.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Monaco OnLoad Function
@@ -73,27 +64,19 @@ const monacoConfig: NgxMonacoEditorConfig = {
     OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
+    LTIFormDialogComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     MonacoEditorModule.forRoot(monacoConfig),
-    BrowserAnimationsModule,
-    MatDialogModule,
-    MatRadioModule,
-    MatDividerModule,
-    MatInputModule,
-    MatButtonModule,
-    MatTableModule,
     HttpClientModule,
-    MatIconModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatSnackBarModule
+    MaterialModule,
+    ReactiveFormsModule,
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, FormsService],
   bootstrap: [AppComponent],
   entryComponents: [
     ViewComponentInfoComponent,

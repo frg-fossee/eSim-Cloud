@@ -5,6 +5,7 @@ import { SimulatorComponent } from './simulator/simulator.component';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import {ViewProjectComponent} from './view-project/view-project.component';
+import { LTIFormDialogComponent } from './lti-form-dialog/lti-form-dialog.component';
 
 const routes: Routes = [
   { path: '', component: FrontPageComponent },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'gallery', component: GalleryComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'simulator', component: SimulatorComponent },
+  { path: 'lti', component: LTIFormDialogComponent },
 ];
 
 @NgModule({
