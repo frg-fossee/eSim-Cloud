@@ -19,13 +19,23 @@
           {
             label: 'No of Simulations',
             data: chartData,
-            backgroundColor: 'rgb(121,174,200)',
+            backgroundColor: chartData.map(e => {
+                var col = 'rgb(121,174,200)'
+                
+                
+                if(e.exec_time >= {{ TIME_LIMIT | safe}}) {
+                    col = 'rgb(190,70,50)'
+                }
+                return col;
+                
+            }),
+            
           },
         ],
       },
       options: {
         animation: {
-            duration: 5000,
+            duration: 3000,
         },
         responsive: true,
         scales: {
