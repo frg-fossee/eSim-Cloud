@@ -23,7 +23,7 @@
                 var col = 'rgb(121,174,200)'
                 
                 
-                if(e.exec_time >= {{ TIME_LIMIT | safe}}) {
+                if(e.exec_time >= {{ TIME_LIMIT | safe}} && {{ TIME_LIMIT | safe}} != 0) {
                     col = 'rgb(190,70,50)'
                 }
                 return col;
@@ -76,7 +76,7 @@
         <tr>
             <th>
             <div class="text">
-                <a href="#">Execution Time</a>
+                <a href="#">Execution Time (in s)</a>
             </div>
             </th>
             <th>
@@ -97,7 +97,7 @@
         <tbody>
         {% for row in summary %}
         <tr class="{% cycle 'row1' 'row2' %}">
-            <td> {{ row.exec_time }} </td>
+            <td> {{ row.exec_time }}s </td>
             <td> {{ row.qty  }} </td>
             <td>
             <strong>

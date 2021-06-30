@@ -17,8 +17,6 @@ import math
 
 logger = logging.getLogger(__name__)
 
-TIME_LIMIT = 3
-
 
 class NetlistUploader(APIView):
     '''
@@ -36,6 +34,7 @@ class NetlistUploader(APIView):
         serializer = TaskSerializer(data=request.data, context={'view': self})
 
         limits = Limit.objects.all()
+        TIME_LIMIT = 0
         if limits.exists():
             TIME_LIMIT = Limit.objects.all()[0].timeLimit
         # if timeLimit.objects.count() != 0:
@@ -46,9 +45,15 @@ class NetlistUploader(APIView):
         if serializer.is_valid():
             serializer.save()
             task_id = serializer.data['task_id']
-            celery_task = process_task.apply_async(
-                kwargs={'task_id': str(task_id)}, task_id=str(task_id),
-                soft_time_limit=TIME_LIMIT)
+            if(TIME_LIMIT == 0):
+                celery_task = process_task.apply_async(
+                    kwargs={'task_id': str(task_id)}, task_id=str(task_id)
+                )
+            else:
+                celery_task = process_task.apply_async(
+                    kwargs={'task_id': str(task_id)}, task_id=str(task_id),
+                    soft_time_limit=TIME_LIMIT)
+
             response_data = {
                 'state': celery_task.state,
                 'details': serializer.data,
