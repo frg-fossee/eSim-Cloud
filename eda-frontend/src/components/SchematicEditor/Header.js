@@ -196,7 +196,7 @@ function Header (props) {
       dispatch(setSchTitle('Untitled_Schematic'))
       dispatch(setSchDescription(''))
     }
-  }, [schSave.isShared])
+  }, [schSave.isShared,history.location.search,dispatch])
 
   const handleShareChange = (event) => {
     setShared(event.target.checked)
@@ -228,7 +228,7 @@ function Header (props) {
   const textAreaRef = React.useRef(null)
 
   function copyToClipboard (e) {
-    textAreaRef.current.select()
+      textAreaRef.current.select()
     document.execCommand('copy')
     e.target.focus()
     setMessage('Copied Successfully!')
