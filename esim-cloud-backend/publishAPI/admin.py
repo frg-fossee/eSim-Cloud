@@ -17,7 +17,7 @@ class ReportAdmin(admin.ModelAdmin):
 class HistoryInline(admin.TabularInline):
     model = TransitionHistory
     readonly_fields = (
-        'id', 'transition_author', 'transition_time', 'from_state', 'to_state')
+        'id', 'transition_author', 'transition_time',)
 
 
 @admin.register(Project)

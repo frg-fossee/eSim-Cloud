@@ -15,14 +15,35 @@ class CircuitStates(admin.ModelAdmin):
 @admin.register(Transition)
 class Transitions(admin.ModelAdmin):
     list_display = ['name', 'from_state', 'to_state']
+    fieldsets = (
+        ('Details of Transition', {
+            'fields': (
+                'name', 'from_state', 'to_state', 'role',
+                'restricted_for_creator',
+                'only_for_creator')
+        }),
+        ('Messages for Creator of Project', {
+            'classes': ('collapse',),
+            'fields': ('event_creator', 'history_creator',),
+        }),
+        ('Messages for Reviewer', {
+            'classes': ('collapse',),
+            'fields': ('event_reviewer', 'history_reviewer',),
+        }),
+        ('Messages for Other Users', {
+            'classes': ('collapse',),
+            'fields': ('event_other', 'history_other',),
+        }),
+    )
 
 
 @admin.register(TransitionHistory)
 class TransitionHistories(admin.ModelAdmin):
     readonly_fields = (
-        'id', 'transition_author', 'transition_time', 'from_state', 'to_state')
-    list_display = ['id', 'transition_author', 'transition_time', 'from_state',
-                    'to_state']
+        'id', 'transition', 'transition_author', 'transition_time',
+        'reviewer_notes', 'is_done_by_reviewer')
+    list_display = ['id', 'transition', 'transition_author',
+                    'transition_time', ]
 
 
 @admin.register(Permission)

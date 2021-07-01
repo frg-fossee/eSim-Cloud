@@ -68,6 +68,7 @@ export const FETCH_OTHER_PROJECTS = 'FETCH_OTHER_PROJECTS'
 
 // Actions for handling Projects
 export const SET_CURRENT_PROJECT = 'SET_CURRENT_PROJECT'
+export const DELETE_PROJECT = 'DELETE_PROJECT'
 export const FETCH_REPORTS = 'FETCH_REPORTS'
 export const RESOLVE_REPORTS = 'RESOLVE_REPORTS'
 export const GET_STATES = 'GET_STATES'

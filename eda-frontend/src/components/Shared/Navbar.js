@@ -195,6 +195,7 @@ export function Header () {
                 to="/projects"
                 component={RouterLink}
                 className={classes.link}
+                style={{ marginRight: '20px' }}
               >
                 Projects
               </Link>

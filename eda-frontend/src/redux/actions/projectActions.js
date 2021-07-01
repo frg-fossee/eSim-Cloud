@@ -58,12 +58,38 @@ export const fetchProject = () => (dispatch, getState) => {
       }
     )
     .catch((err) => {
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         dispatch({
           type: actions.SET_CURRENT_PROJECT,
           payload: '401'
         })
       }
+    })
+}
+export const deleteProject = (project_id) => (dispatch, getState) => {
+  // Get token from localstorage
+  const token = getState().authReducer.token
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  api.delete('/publish/project/' + project_id, config)
+    .then(
+      (res) => {
+        dispatch({
+          type: actions.DELETE_PROJECT
+        })
+      }
+    )
+    .catch((err) => {
+      console.log(err)
     })
 }
 export const fetchReports = (projectID) => (dispatch, getState) => {

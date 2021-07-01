@@ -13,8 +13,7 @@ import {
   Snackbar,
   TextField,
   DialogActions,
-  List,
-  ListItem
+  List
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
@@ -35,6 +34,7 @@ import { ZoomIn, ZoomOut, ZoomAct, GenerateCompList, GenerateNetList } from '../
 import ReportComponent from '../components/Project/ReportComponent'
 import ChangeStatus from '../components/Project/ChangeStatus'
 import { NetlistModal } from '../components/SchematicEditor/ToolbarExtension'
+import ProjectTimeline from '../components/Project/ProjectTimeline'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -62,14 +62,6 @@ const styles = (theme) => ({
 function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-function getDate (jsonDate) {
-  var json = jsonDate
-  var date = new Date(json)
-  const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
-  const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
-  return `${day}-${month}-${year}`
-}
-
 export default function ProjectPage (props) {
   const classes = useStyles()
   const gridRef = React.createRef()
@@ -284,16 +276,7 @@ export default function ProjectPage (props) {
                         <List>
                           <h3>History of this Project</h3>
                           {project.details?.history[0]
-                            ? <>
-                              {project.details.history.slice(0).reverse().map((item, index) => (
-                                <ListItem key={index}>
-                                  <p style={{ margin: '0%' }}>{index + 1}. {item.from_state_name} to {item.to_state_name}
-                                    <br />
-                                    <h5>-On {getDate(item.transition_time)} by {item.transition_author_name}</h5>
-                                    {item.reviewer_notes && <h5>-Notes: {item.reviewer_notes}</h5>}
-                                  </p>
-                                </ListItem>
-                              ))}</>
+                            ? <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === project.details.author_name} />
                             : <h4>No history of this project.</h4>
                           }
                         </List>

@@ -112,6 +112,7 @@ function ReportComponent (props) {
     switch (type) {
       case 'Change State':
         dispatch(approveReports(project_id, reportStatus, status))
+        props.changedStatus()
         handleReportDetailsOpen()
         break
       default:
@@ -203,11 +204,10 @@ function ReportComponent (props) {
                     <Grid item xs={6}>
                     </Grid>}
                 </Grid>
-
               </Paper>
             ))}
           </TabPanel>}
-          {stateList && (tab === 1 && props.project.reports.approved[0]) && auth.roles.is_type_reviewer && auth.user.username !== props.project.details.author_name &&
+          {stateList && ((tab === 1 && props.project.reports.approved[0]) || (tab === 0 && reportStatus)) && auth.roles?.is_type_reviewer && auth.user.username !== props.project.details.author_name &&
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -224,11 +224,11 @@ function ReportComponent (props) {
             </Select>}
         </DialogContent>
         {auth.roles && <DialogActions>
-          {auth.user.username !== props.project.details.author_name && props.project.reports.approved[0] && auth.roles.is_type_reviewer && tab === 1 && <Button onClick={() => {
+          {auth.user.username !== props.project.details.author_name && props.project.reports.approved[0] && auth.roles?.is_type_reviewer && tab === 1 && <Button onClick={() => {
             dispatch(resolveReports(props.project.details.project_id, status))
             handleReportDetailsOpen()
           }}>Resolve All Reports</Button>}
-          {auth.roles.is_type_reviewer && (reportStatus) &&
+          {auth.roles?.is_type_reviewer && (reportStatus) &&
             <Button onClick={() => {
               onClick('Change State')
             }}>Approve Reports</Button>}

@@ -15,6 +15,13 @@ export default function (state = initialState, action) {
         details: action.payload
       }
     }
+    case actions.DELETE_PROJECT: {
+      return {
+        reports: null,
+        details: null,
+        states: null
+      }
+    }
     case actions.FETCH_REPORTS: {
       return {
         ...state,
@@ -27,6 +34,7 @@ export default function (state = initialState, action) {
         reports: null
       }
     }
+
     case actions.GET_STATES: {
       return {
         ...state,
