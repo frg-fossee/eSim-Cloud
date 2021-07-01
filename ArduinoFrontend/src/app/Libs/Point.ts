@@ -1,39 +1,75 @@
 import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
+import { BoundingBox } from './Geometry';
 
+/**
+ * Declare window so that custom created function don't throw error
+ */
 declare var window;
 
 /**
  * Class For Circuit Node ie. Point wires can connect with nodes
  */
 export class Point {
-  // Hide node on creation
+  /**
+   * Hide node on creation
+   */
   static defaultAttr: any = {
     fill: 'rgba(0,0,0,0)',
     stroke: 'rgba(0,0,0,0)'
   };
-  // Show red color with black stroke on hover
+  /**
+   * Show red color with black stroke on hover
+   */
   static nodeAttr: any = {
     fill: 'rgba(255,0,0,1)',
     stroke: 'rgba(0,0,0,1)'
   };
-  body: any; // Body of the Circuit Node
+  /**
+   * Body of the Circuit Node
+   */
+  body: any;
 
-  // Stores the reference of wire which is connected to it
+  /**
+   * Stores the reference of wire which is connected to it
+   */
   connectedTo: Wire = null;
 
-  // Hover callback called on hover over node
+  /**
+   * Is the point soldered with wire.
+   */
+  private soldered = false;
+
+  /**
+   * Hover callback called on hover over node
+   */
   hoverCallback: any = null;
 
-  // Hover Close Callback called if hover is removed
+  /**
+   * Hover Close Callback called if hover is removed
+   */
   hoverCloseCallback: any = null;
 
+  /**
+   * Callback called when we connect wire.
+   */
   connectCallback: any = null;
-
+  /**
+   * The Value of the node
+   */
   value = -1;
+  /**
+   * Value change listener
+   */
   listener: (val: number, calledby: Point, current: Point) => void = null;
+  /**
+   * Graph id used while starting simulation.
+   */
   gid = -1;
+  /**
+   * The Node ID
+   */
   id: number;
   /**
    * Constructor for Circuit Node
@@ -107,32 +143,90 @@ export class Point {
         return;
       }
       if ((window['Selected'] instanceof Wire) && !window.Selected.isConnected()) {
-        // if selected item is wire then connect the wire with the node
-        // console.log([]);
-        if (window.Selected.start === this) { return; }
-        this.connectedTo = window.Selected;
-        window['Selected'].connect(this, true);
-        window.Selected.deselect();
-        if (window['Selected'].start && window['Selected'].end) {
-          window['scope']['wires'].push(window['Selected']);
-        } else {
-          window['showToast']('Wire was not connected properly !');
-        }
+        this.connectWire(window['Selected']);
         window['isSelected'] = false; // deselect object
         window['Selected'] = null;
       } else {
         // if nothing is selected create a new wire object
         window.isSelected = true;
-        const tmp = new Wire(this.canvas, this);
-        this.connectedTo = tmp;
+        const wire = this.startNewWire();
         // select the wire and insert into the scope of circuit
-        window.Selected = tmp;
+        window.Selected = wire;
       }
       if (this.connectCallback) {
         this.connectCallback(this);
       }
     });
 
+  }
+
+  isConnected(): boolean {
+    return !!this.connectedTo;
+  }
+
+  isSoldered(): boolean {
+    return this.soldered;
+  }
+
+  /**
+   * Solders wire to the point
+   * @param wire wire to solder (if existing wire, else pass empty to create a new wire at the node)
+   */
+  solderWire(wire?): Wire {
+    if (!wire) {
+      wire = this.startNewWire();
+    }
+    this.soldered = true;
+    const newClass = `${this.body.node.getAttribute('class')} solder-highlight`;
+    this.body.node.setAttribute('class', newClass);
+    if (this.connectCallback) {
+      this.connectCallback(this);
+    }
+    return wire;
+  }
+
+  /**
+   * Unsolders wire to the point
+   */
+  unsolderWire() {
+    const wire = this.connectedTo;
+    if (wire) {
+      this.setValue(-1, this);
+      wire.delete();
+    }
+    this.soldered = false;
+    const newClass = this.body.node.getAttribute('class').replace(' solder-highlight', '');
+    this.body.node.setAttribute('class', newClass);
+  }
+
+  connectWire(wire) {
+    // if selected item is wire then connect the wire with the node
+    // console.log([]);
+    if (wire.start === this) { return; }
+    this.connectedTo = wire;
+    wire.connect(this, true);
+    wire.deselect();
+    if (wire.start && wire.end) {
+      window['scope']['wires'].push(wire);
+    } else {
+      window['showToast']('Wire was not connected properly !');
+    }
+  }
+
+  /**
+   * Creates and originates new wire at the point
+   */
+  startNewWire() {
+    const wire = new Wire(this.canvas, this);
+    this.connectedTo = wire;
+    return wire;
+  }
+
+  /**
+   * Returns the bounding box of the point
+   */
+  getBoundingBox(): BoundingBox {
+    return BoundingBox.loadFromRaphaelBbox(this.body.getBBox());
   }
 
   /**
@@ -150,6 +244,16 @@ export class Point {
    */
   position() {
     return [this.x + this.half, this.y + this.half];
+  }
+
+  highlight() {
+    const newClass = `${this.body.node.getAttribute('class')} highlight`;
+    this.body.node.setAttribute('class', newClass);
+  }
+
+  undoHighlight() {
+    const newClass = this.body.node.getAttribute('class').replace(' highlight', '');
+    this.body.node.setAttribute('class', newClass);
   }
 
   /**
@@ -173,11 +277,15 @@ export class Point {
   hide() {
     this.body.attr(Point.defaultAttr);
   }
-
+  /**
+   * This will permanently hide the node
+   */
   remainHidden() {
     this.body.hide();
   }
-
+  /**
+   * This will show node if its is permanently hidden
+   */
   remainShow() {
     this.body.show();
   }
@@ -206,6 +314,16 @@ export class Point {
   }
 
   /**
+   * Disconnects the point to wire
+   */
+  disconnect() {
+    this.connectedTo = null;
+    if (this.isSoldered()) {
+      this.unsolderWire();
+    }
+  }
+
+  /**
    * Remove Node from canvas
    */
   remove() {
@@ -216,23 +334,36 @@ export class Point {
       this.parent = null;
     }
   }
+  /**
+   * Adding a Value Change Listener.
+   * @param listener Value Change Listener
+   */
   addValueListener(listener: (val: number, calledby: Point, parent: Point) => void) {
     this.listener = listener;
   }
+  /**
+   * Set the value of a Circuit node.
+   * @param value New Value
+   * @param calledby The node which sets the value
+   */
   setValue(value: number, calledby: Point) {
     this.value = value;
+
     if (calledby && this.listener) {
       this.listener(this.value, calledby, this);
     }
+
     if (isNull(calledby)) {
       calledby = this;
     }
-    // console.log(this.connectedTo);
+    // Propogate the value further
+
     if (this.connectedTo && this.connectedTo.end) {
       if (this.connectedTo.end.gid !== calledby.gid && this.connectedTo.end.gid !== this.gid) {
         this.connectedTo.end.setValue(this.value, this);
       }
     }
+
     if (this.connectedTo && this.connectedTo.start) {
       if (this.connectedTo.start.gid !== calledby.gid && this.connectedTo.start.gid !== this.gid) {
         this.connectedTo.start.setValue(this.value, this);

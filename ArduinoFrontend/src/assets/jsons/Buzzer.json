@@ -50,7 +50,7 @@
   },
   "info": {
     "name": "Piezoelectric Buzzer",
-    "image": "https://cdn.shopify.com/s/files/1/2640/3158/products/Squishy-Circuits_Piezzo-Buzzer.jpg?v=1525723149",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Electromagnetic_buzzer_03.jpg/640px-Electromagnetic_buzzer_03.jpg",
     "Datasheet": "http://www.ti.com/lit/ug/tidu994a/tidu994a.pdf?ts=1588677870521",
     "description": "A piezo buzzer is a type of electronic device that’s used to produce a tone, alarm or sound. It’s lightweight with a simple construction, and it’s typically a low-cost product. Yet at the same time, depending on the piezo ceramic buzzer specifications, it’s also reliable and can be constructed in a wide range of sizes that work across varying frequencies to produce different sound outputs.",
     "properties": {

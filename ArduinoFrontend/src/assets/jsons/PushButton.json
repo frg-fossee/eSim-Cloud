@@ -119,7 +119,7 @@
   "simulation": {},
   "info": {
     "name": "Push Button Switch",
-    "image": "https://www.roboelements.com/wp-content/uploads/2018/01/mini-push-button-switch.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/6/63/Micro_switch.jpg",
     "Datasheet": "https://www.ti.com/lit/ds/symlink/tps3420.pdf?ts=1588677114740",
     "description": "Push-Buttons are normally-open tactile switches. Push buttons allow us to power the circuit or make any particular connection only when we press the button. Simply, it makes the circuit connected when pressed and breaks when released. A push button is also used for triggering of the SCR by gate terminal. These are the most common buttons which we see in our daily life electronic equipment’s.",
     "properties": {

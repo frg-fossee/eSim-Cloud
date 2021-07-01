@@ -23,9 +23,10 @@ import ClearAllIcon from '@material-ui/icons/ClearAll'
 import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutlined'
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
+import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import { Link as RouterLink } from 'react-router-dom'
 
-import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog } from './ToolbarExtension'
+import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
@@ -51,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Notification snackbar to give alert messages
 function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
@@ -95,11 +97,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   const handleClickOpen = () => {
     var compNetlist = GenerateNetList()
+    var printToPlotControlBlock = ''
+    var ctrlblk = netfile.controlBlock.split('\n')
+    for (var line = 0; line < ctrlblk.length; line++) {
+      if (ctrlblk[line].includes('print')) {
+        printToPlotControlBlock += 'plot '
+        var cleanCode = ctrlblk[line].split('print ')[1]
+        cleanCode = cleanCode.split('>')[0]
+        printToPlotControlBlock += cleanCode + '\n'
+      } else {
+        printToPlotControlBlock += ctrlblk[line] + '\n'
+      }
+    }
     var netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
-      netfile.controlBlock + '\n'
+      printToPlotControlBlock + '\n'
     genNetlist(netlist)
     setOpen(true)
   }
@@ -108,7 +122,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setOpen(false)
   }
 
-  // Help dialog window
+  // Control Help dialog window
   const [helpOpen, setHelpOpen] = React.useState(false)
 
   const handleHelpOpen = () => {
@@ -119,13 +133,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setHelpOpen(false)
   }
 
-  // Delete component
+  // Handel Delete component
   const handleDeleteComp = () => {
     DeleteComp()
     dispatch(closeCompProperties())
   }
 
-  // Notification Snackbar
+  // Handel Notification Snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -200,6 +214,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     })
   }
 
+  // Download JPEG, PNG exported Image
   function downloadImage (data, type) {
     var evt = new MouseEvent('click', {
       view: window,
@@ -214,6 +229,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     a.dispatchEvent(evt)
   }
 
+  // Download SVG image
   function downloadText (data, options) {
     const blob = new Blob(data, options)
     const evt = new MouseEvent('click', {
@@ -257,7 +273,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
-  // Save Schematic
+  // Handel Save Schematic onCloud
   const handelSchSave = () => {
     if (auth.isAuthenticated !== true) {
       setMessage('You are not Logged In')
@@ -326,7 +342,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
-  // Help dialog window
+  // Control Help dialog window open and close
   const [schOpen, setSchOpen] = React.useState(false)
 
   const handleSchDialOpen = () => {
@@ -337,9 +353,18 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setSchOpen(false)
   }
 
+  const [libsOpen, setlibsOpen] = React.useState(false)
+
+  const handleLibOpen = () => {
+    setlibsOpen(true)
+  }
+
+  const handleLibClose = () => {
+    setlibsOpen(false)
+  }
+
   return (
     <>
-      {/* <MenuButton title={'File'} iconType={FolderIcon} items={['New', 'Open', 'Save', 'Print', 'Export']} /> */}
       <Tooltip title="New">
         <IconButton color="inherit" className={classes.tools} size="small" target="_blank" component={RouterLink} to="/editor" >
           <CreateNewFolderOutlinedIcon fontSize="small" />
@@ -393,6 +418,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <BugReportOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
+      <Tooltip title="Select Libraries">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleLibOpen}>
+          <LibraryAddRoundedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose}/>
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo">

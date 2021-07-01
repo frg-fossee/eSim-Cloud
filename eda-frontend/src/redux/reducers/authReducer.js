@@ -7,7 +7,10 @@ const initialState = {
   isLoading: false,
   user: null,
   errors: '',
-  regErrors: ''
+  regErrors: '',
+  resetPasswordSuccess: false,
+  resetPasswordError: '',
+  resetPasswordConfirmSuccess: false
 }
 
 export default function (state = initialState, action) {
@@ -21,7 +24,7 @@ export default function (state = initialState, action) {
 
     case actions.DEFAULT_STORE: {
       return {
-        ...state,
+        ...initialState,
         errors: '',
         regErrors: ''
       }
@@ -31,13 +34,14 @@ export default function (state = initialState, action) {
       return {
         ...state,
         isRegistered: true,
-        regErrors: ''
+        regErrors: action.payload.data
       }
     }
 
     case actions.SIGNUP_FAILED: {
       return {
         ...state,
+        isRegistered: false,
         regErrors: action.payload.data
       }
     }
@@ -52,6 +56,7 @@ export default function (state = initialState, action) {
     }
 
     case actions.LOGIN_SUCCESSFUL: {
+      localStorage.setItem('user_id', action.payload.data.user_id)
       localStorage.setItem('esim_token', action.payload.data.auth_token)
       return {
         ...state,
@@ -81,6 +86,38 @@ export default function (state = initialState, action) {
         user: null,
         isAuthenticated: false,
         isLoading: false
+      }
+    }
+
+    case actions.RESET_PASSWORD_SUCCESSFUL: {
+      return {
+        ...state,
+        resetPasswordSuccess: true,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_FAILED: {
+      return {
+        ...state,
+        resetPasswordSuccess: false,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_CONFIRM_SUCCESSFUL: {
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: true,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_CONFIRM_FAILED: {
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: false,
+        resetPasswordError: action.payload.data
       }
     }
 

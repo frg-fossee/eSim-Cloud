@@ -27,7 +27,7 @@
     "simulation": {},
     "info": {
         "name": "PhotoResistor",
-        "image": "https://5.imimg.com/data5/LR/UR/ZM/SELLER-40584703/ldr-photoresistor-photo-light-sensitive-resistor-light-dependent-resistor-500x500.jpg",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/3/33/Photoresistor_2.jpg",
         "description": "Light dependent resistors, LDRs or photoresistors are often used in circuits where it is necessary to detect the presence or the level of light.",
         "Datasheet": "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf",
             "properties": {

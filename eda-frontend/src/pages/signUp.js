@@ -1,3 +1,4 @@
+// User Sign Up / Register page.
 import React, { useState, useEffect } from 'react'
 import {
   Container,
@@ -19,7 +20,8 @@ import Visibility from '@material-ui/icons/Visibility'
 import VisibilityOff from '@material-ui/icons/VisibilityOff'
 import { Link as RouterLink, useHistory } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { signUp, authDefault } from '../redux/actions/index'
+import { signUp, authDefault, googleLogin } from '../redux/actions/index'
+import google from '../static/google.png'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(1)
   },
   submit: {
-    margin: theme.spacing(3, 0, 2)
+    margin: theme.spacing(1.5, 0)
   }
 }))
 
@@ -65,6 +67,17 @@ export default function SignUp () {
   const handleClickShowPassword = () => setShowPassword(!showPassword)
   const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
+  // Function call for google oAuth sign up.
+  const handelGoogleSignup = () => {
+    var host = window.location.protocol + '//' + window.location.host
+    dispatch(googleLogin(host))
+  }
+
+  const handleSignup = (event) => {
+    event.preventDefault()
+    dispatch(signUp(email, username, password, history))
+  }
+
   return (
     <Container component="main" maxWidth="xs">
       <Card className={classes.paper}>
@@ -76,11 +89,20 @@ export default function SignUp () {
           Register | Sign Up
         </Typography>
 
-        <Typography variant="body1" style={{ marginTop: '10px' }} color="error" >
+        {/* Display's error messages while signing in */}
+        <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.isRegistered ? 'secondary' : 'error'}>
           {auth.regErrors}
+          { auth.isRegistered &&
+            <>
+              <br />
+              <Link component={RouterLink} to="/login">
+                {'Back to Login'}
+              </Link>
+            </>
+          }
         </Typography>
 
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSignup} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -124,7 +146,7 @@ export default function SignUp () {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                   >
-                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />}
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
                   </IconButton>
                 </InputAdornment>
               )
@@ -143,20 +165,33 @@ export default function SignUp () {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(signUp(email, username, password, history))}
+            type="submit"
             className={classes.submit}
             disabled={!accept}
           >
             Sign Up
           </Button>
-          <Grid container>
-            <Grid item style={{ marginLeft: 'auto' }} >
-              <Link component={RouterLink} to="/login" variant="body2">
-                {'Already have account? Login'}
-              </Link>
-            </Grid>
-          </Grid>
+          <Typography variant="body2" color="secondary" align="center" >Or</Typography>
+
+          {/* Google oAuth Sign Up option */}
+          <Button
+            fullWidth
+            variant="outlined"
+            color="primary"
+            onClick={handelGoogleSignup}
+            className={classes.submit}
+          >
+            <img alt="G" src={google} height="20" />&emsp; Sign Up With Google
+          </Button>
         </form>
+
+        <Grid container>
+          <Grid item style={{ margin: 'auto' }} >
+            <Link component={RouterLink} to="/login" variant="body2">
+              {'Already have account? Login'}
+            </Link>
+          </Grid>
+        </Grid>
       </Card>
       <Button
         fullWidth

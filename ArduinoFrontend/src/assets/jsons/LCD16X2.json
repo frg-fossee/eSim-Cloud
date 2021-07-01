@@ -4,83 +4,83 @@
     "pointHalf": 3,
     "pins": [
         {
-            "x": 20,
-            "y": 2,
+            "x": 39,
+            "y": 5,
             "name": "GND"
         },
         {
-            "x": 28,
-            "y": 2,
+            "x": 54,
+            "y": 5,
             "name": "VCC"
         },
         {
-            "x": 36,
-            "y": 2,
+            "x": 69,
+            "y": 5,
             "name": "V0"
         },
         {
-            "x": 44,
-            "y": 2,
+            "x": 84,
+            "y": 5,
             "name": "RS"
         },
         {
-            "x": 52,
-            "y": 2,
+            "x": 99,
+            "y": 5,
             "name": "RW"
         },
         {
-            "x": 61,
-            "y": 2,
+            "x": 114,
+            "y": 5,
             "name": "E"
         },
         {
-            "x": 69,
-            "y": 2,
+            "x": 129,
+            "y": 5,
             "name": "DB0"
         },
         {
-            "x": 77,
-            "y": 2,
+            "x": 144,
+            "y": 5,
             "name": "DB1"
         },
         {
-            "x": 85,
-            "y": 2,
+            "x": 159,
+            "y": 5,
             "name": "DB2"
         },
         {
-            "x": 93,
-            "y": 2,
+            "x": 174,
+            "y": 5,
             "name": "DB3"
         },
         {
-            "x": 101,
-            "y": 2,
+            "x": 189,
+            "y": 5,
             "name": "DB4"
         },
         {
-            "x": 109,
-            "y": 2,
+            "x": 204,
+            "y": 5,
             "name": "DB5"
         },
         {
-            "x": 117,
-            "y": 2,
+            "x": 219,
+            "y": 5,
             "name": "DB6"
         },
         {
-            "x": 125,
-            "y": 2,
+            "x": 234,
+            "y": 5,
             "name": "DB7"
         },
         {
-            "x": 133,
-            "y": 2,
+            "x": 249,
+            "y": 5,
             "name": "LED ANODE(+VE)"
         },
         {
-            "x": 141,
-            "y": 2,
+            "x": 264,
+            "y": 5,
             "name": "LED CATHODE(-VE)"
         }
     ],
@@ -88,13 +88,27 @@
         {
             "type": "image",
             "url": "assets/images/components/LCD16X2.svg",
-            "width": 256,
-            "height": 119.5,
+            "width": 476,
+            "height": 210,
             "x": 0,
             "y": 0
         }
     ],
     "simulation": {},
+    "data": {
+        "barColor": "#A0C533",
+        "barGlowColor": "#000000",
+        "columns": 16,
+        "rows": 2,
+        "gridRows": 8,
+        "gridColumns": 5,
+        "gridWidth": 3,
+        "gridHeight": 3,
+        "interSpacing": 5,
+        "intraSpacing": 0.5,
+        "startX": 75,
+        "startY": 78
+    },
     "info": {
         "name": "LCD(16X8)",
         "image": "https://commons.wikimedia.org/wiki/File:16x2_Character_LCD_Display.jpg",

@@ -88,7 +88,7 @@ class NetlistUpload extends Component {
           })
         }
       })
-      .then((res) => {})
+      .then((res) => { })
       .catch(function (error) {
         console.log(error)
       })
@@ -146,12 +146,6 @@ class NetlistUpload extends Component {
         <Grid item xs={12} sm={7}>
           <Paper className={classes.paper}>
             <h2>GRAPH OUTPUT</h2>
-            {/* <Graph
-              labels= {['time', 'V (In)', 'V (OP)']}
-              x={this.state.x_1}
-              y1={this.state.y1_1}
-              y2={this.state.y2_1}
-            /> */}
           </Paper>
         </Grid>
       </>

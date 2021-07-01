@@ -1,14 +1,59 @@
-
+import os
+import shutil
 from djongo import models
 from django.utils.safestring import mark_safe
+from django.contrib.auth import get_user_model
+from django.dispatch import receiver
+from django.db.models.signals import post_delete
+
+
+class LibrarySet(models.Model):
+    user = models.ForeignKey(to=get_user_model(), verbose_name="user",
+                             on_delete=models.CASCADE)
+    default = models.BooleanField(default=False)
+    name = models.CharField(max_length=24, default="default")
+
+    class Meta:
+        unique_together = ('user', 'name')
+
+
+@receiver(post_delete, sender=LibrarySet)
+def library_set_post_delete_receiver(sender, instance: LibrarySet, **kwargs):
+    try:
+        shutil.rmtree(
+            os.path.join(
+                "kicad-symbols/",
+                instance.user.username + '-' + instance.name
+            ))
+    except Exception:
+        pass
 
 
 class Library(models.Model):
+    library_set = models.ForeignKey(
+        LibrarySet, null=True,
+        verbose_name="library_set",
+        on_delete=models.CASCADE
+    )
     library_name = models.CharField(max_length=200)
     saved_on = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.library_name
+
+
+@receiver(post_delete, sender=Library)
+def library_post_save_receiver(sender, instance: Library, **kwargs):
+    try:
+        shutil.rmtree(
+            os.path.join(
+                "kicad-symbols/",
+                instance.library_set.user.username + "-"
+                + instance.library_set.name,
+                "symbol-svgs", instance.library_name[:4]
+            ))
+    except Exception:
+        pass
 
 
 class LibraryComponent(models.Model):
@@ -35,6 +80,16 @@ class LibraryComponent(models.Model):
         return self.name
 
 
+@receiver(post_delete, sender=LibraryComponent)
+def component_post_delete_receiver(
+        sender, instance: LibraryComponent, **kwargs):
+    try:
+        os.remove(instance.thumbnail_path)
+        os.remove(instance.svg_path)
+    except Exception:
+        pass
+
+
 class ComponentAlternate(models.Model):
     part = models.CharField(max_length=1)
     dmg = models.PositiveSmallIntegerField()
@@ -57,3 +112,10 @@ class ComponentAlternate(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class FavouriteComponent(models.Model):
+    owner = models.OneToOneField(to=get_user_model(),
+                                 on_delete=models.CASCADE, null=False)
+    component = models.ManyToManyField(to=LibraryComponent)
+    last_change = models.DateTimeField(auto_now=True)

@@ -22,21 +22,31 @@ import {
   MatDividerModule,
   MatTabsModule,
   MatSnackBarModule,
+  MatIconModule,
+  MatTooltipModule
 } from '@angular/material';
-import {MatTooltipModule} from '@angular/material/tooltip';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
 import { ComponentlistComponent } from './componentlist/componentlist.component';
-import { MatIconModule } from '@angular/material/icon';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { HeaderComponent } from './header/header.component';
 import { ViewProjectComponent } from './view-project/view-project.component';
-import { ProjectComponent } from './project/project.component';
+import { AlertModalComponent } from './alert/alert-modal/alert-modal.component';
+import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.component';
+import { ExportJSONDialogComponent } from './export-jsondialog/export-jsondialog.component';
+import { ExitConfirmDialogComponent } from './exit-confirm-dialog/exit-confirm-dialog.component';
+import { OptionModalComponent } from './alert/option-modal/option-modal.component';
 
+/**
+ * Monaco OnLoad Function
+ */
 export function onMonacoLoad() { }
 
+/**
+ * Monaco editor config for loading js files
+ */
 const monacoConfig: NgxMonacoEditorConfig = {
   baseUrl: './assets',
   defaultOptions: { scrollBeyondLastLine: false },
@@ -58,7 +68,11 @@ const monacoConfig: NgxMonacoEditorConfig = {
     GalleryComponent,
     ViewProjectComponent,
     HeaderComponent,
-    ProjectComponent,
+    AlertModalComponent,
+    ConfirmModalComponent,
+    OptionModalComponent,
+    ExportJSONDialogComponent,
+    ExitConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -81,7 +95,16 @@ const monacoConfig: NgxMonacoEditorConfig = {
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],
-  entryComponents: [ViewComponentInfoComponent, ExportfileComponent, ComponentlistComponent, ProjectComponent],
+  entryComponents: [
+    ViewComponentInfoComponent,
+    ExportfileComponent,
+    ComponentlistComponent,
+    AlertModalComponent,
+    ConfirmModalComponent,
+    OptionModalComponent,
+    ExportJSONDialogComponent,
+    ExitConfirmDialogComponent,
+  ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],

@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Common layout left side pane for Dashboard and Schematic Editor
 export default function LayoutSidebar ({ window, mobileOpen, mobileClose, children }) {
   const classes = useStyles()
 

@@ -1,3 +1,4 @@
+// This is the JavaScript entry point of react application.
 import React from 'react'
 import ReactDOM from 'react-dom'
 import * as serviceWorker from './serviceWorker'

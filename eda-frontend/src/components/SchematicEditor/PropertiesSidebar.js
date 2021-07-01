@@ -51,6 +51,7 @@ const pageLayout = [
   }
 ]
 
+// Display grid size and orientation
 function GridProperties ({ gridRef }) {
   const classes = useStyles()
 
@@ -142,6 +143,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         <div style={isOpen ? { display: 'none' } : {} }>
           <GridProperties gridRef={gridRef} />
 
+          {/* Display component position box */}
           <ListItem>
             <ListItemText primary="Components Position" />
           </ListItem>
@@ -149,6 +151,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             <div className="outline-container" ref={outlineRef} id="outlineContainer" />
           </ListItem>
 
+          {/* Input form field for schematic description */}
           <ListItem>
             <ListItemText primary="Schematic Description" />
           </ListItem>

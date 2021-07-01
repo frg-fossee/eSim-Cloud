@@ -1,3 +1,6 @@
+/**
+ * Environment variable For Production
+ */
 export const environment = {
   production: true,
   API_URL: '../../',

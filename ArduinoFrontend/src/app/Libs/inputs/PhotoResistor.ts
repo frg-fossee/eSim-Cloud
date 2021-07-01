@@ -4,7 +4,13 @@ import { Slider } from './Slider';
  * Class Photoresistor
  */
 export class PhotoResistor extends CircuitElement {
+  /**
+   * Slider to set the value of photo resistor
+   */
   slide: Slider;
+  /**
+   * The Value of the photo resitor
+   */
   valueText: any;
   /**
    * Photoresistor Constructor
@@ -31,6 +37,10 @@ export class PhotoResistor extends CircuitElement {
       title: 'Photo Resistor'
     };
   }
+  /**
+   * Returns a string on the basis of resistance
+   * @param r Resistance
+   */
   getValue(r: number) {
     let tmp = r;
     let suffix = 'Ω';
@@ -69,7 +79,4 @@ export class PhotoResistor extends CircuitElement {
     this.slide = null;
     this.valueText = null;
   }
-  simulate(): void {
-  }
-
 }

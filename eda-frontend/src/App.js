@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { HashRouter, Switch, Route, Redirect } from 'react-router-dom'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
@@ -13,15 +13,26 @@ import Simulator from './pages/Simulator'
 import Gallery from './pages/Gallery'
 import Dashboard from './pages/Dashboard'
 import SignUp from './pages/signUp'
+import ResetPassword from './pages/ResetPassword/Initiation'
+import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
+import ChangePassword from './pages/Account/ChangePassword'
 
+// Controls Private routes, this are accessible for authenticated users.  [ e.g : dashboard ]
+// and restricted routes disabled for authenticated users. [ e.g : login , signup ]
 function PrivateRoute ({ component: Component, ...rest }) {
   const auth = useSelector(state => state.authReducer)
+  const [count, setcount] = useState(0)
   const dispatch = useDispatch()
 
   useEffect(() => dispatch(loadUser()), [dispatch])
+
+  if (count === 0) {
+    setcount(1)
+    dispatch(loadUser())
+  }
 
   return <Route {...rest} render={props => {
     if (auth.isLoading) {
@@ -34,6 +45,7 @@ function PrivateRoute ({ component: Component, ...rest }) {
   }} />
 }
 
+// Public routes accessible to all users. [ e.g. editor, gallery ]
 function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
@@ -55,10 +67,13 @@ function PublicRoute ({ component: Component, restricted, nav, ...rest }) {
 
 function App () {
   return (
+    // Handles Routing for an application
     <HashRouter>
       <Switch>
         <PublicRoute exact path="/login" restricted={true} nav={false} component={Login} />
         <PublicRoute exact path="/signup" restricted={true} nav={false} component={SignUp} />
+        <PublicRoute exact path="/reset-password" restricted={true} nav={false} component={ResetPassword} />
+        <PublicRoute exact path="/password/reset/confirm/:id/:token" restricted={true} nav={false} component={ResetPasswordConfirm} />
         <PublicRoute exact path="/" restricted={false} nav={true} component={Home} />
         {localStorage.getItem('esim_token') !== null
           ? <PublicRoute exact path="/editor" restricted={false} nav={false} component={SchematicEditor} />
@@ -67,6 +82,7 @@ function App () {
         <PublicRoute exact path="/simulator/ngspice" restricted={false} nav={true} component={Simulator} />
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/account/change_password" component={ChangePassword} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>
     </HashRouter>

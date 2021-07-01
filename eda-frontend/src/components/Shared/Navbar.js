@@ -1,5 +1,6 @@
-import React from 'react'
-
+import React, { useEffect } from 'react'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import {
   AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar, Menu, ListItemText,
   Fade,
@@ -7,10 +8,9 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { Link as RouterLink } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import store from '../../redux/store'
-import { logout } from '../../redux/actions/index'
+import { authDefault, loadUser, logout } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -41,10 +41,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// Common navbar for Dashboard, Home, Simulator, Gallery, etc.
 export function Header () {
+  const history = useHistory()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const auth = store.getState().authReducer
+  const dispatch = useDispatch()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -54,8 +57,26 @@ export function Header () {
     setAnchorEl(null)
   }
 
+  useEffect(() => {
+    function checkUserData () {
+      const userToken = localStorage.getItem('esim_token')
+      if (userToken && userToken !== '') {
+        dispatch(loadUser())
+      } else {
+        dispatch(authDefault())
+      }
+    }
+
+    window.addEventListener('storage', checkUserData)
+
+    return () => {
+      window.removeEventListener('storage', checkUserData)
+    }
+  }, [dispatch, history])
+
   return (
     <>
+      {/* Display logo */}
       <IconButton edge="start" className={classes.button} color="primary">
         <Avatar alt="esim logo" src={logo} className={classes.small} />
       </IconButton>
@@ -69,6 +90,8 @@ export function Header () {
           eSim
         </Link>
       </Typography>
+
+      {/* Display relative link to other pages */}
       <nav>
         {
           (auth.isAuthenticated
@@ -158,13 +181,16 @@ export function Header () {
           )
         }
       </nav>
+
+      {/* Display login option or user menu as per authenticated status */}
       {
         (!auth.isAuthenticated ? (<Button
           size="small"
           component={RouterLink}
-          to="/login"
+          to="/login?close=close"
           color="primary"
           variant="outlined"
+          target="_blank"
         >
           Login
         </Button>)
@@ -212,8 +238,15 @@ export function Header () {
               >
                 My Schematics
               </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/account/change_password"
+                onClick={handleClose}
+              >
+                Change password
+              </MenuItem>
               <MenuItem onClick={() => {
-                store.dispatch(logout())
+                store.dispatch(logout(history))
               }}>
                 Logout
               </MenuItem>

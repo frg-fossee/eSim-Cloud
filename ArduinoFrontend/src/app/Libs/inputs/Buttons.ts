@@ -1,10 +1,16 @@
 import { CircuitElement } from '../CircuitElement';
 
+/**
+ * Declare Raphael so that build don't throws error
+ */
 declare var Raphael;
 /**
  * Pushbutton Class
  */
 export class PushButton extends CircuitElement {
+  /**
+   * Map of Pin name to the circuit node
+   */
   pinNamedMap: any = {};
   /**
    * pushbutton constructor
@@ -107,16 +113,16 @@ export class PushButton extends CircuitElement {
     this.elements.unmouseout();
     this.setClickListener(null);
   }
-  simulate(): void {
-  }
-
 }
 
 /**
  * Slideswitch Class
  */
 export class SlideSwitch extends CircuitElement {
-  private flag = true; // if true connected with terminal 1 else connected with terminal 2
+  /**
+   * if true connected with terminal 1 else connected with terminal 2
+   */
+  private flag = true;
   /**
    * Slideswitch constructor
    * @param canvas Raphael Canvas (Paper)
@@ -126,11 +132,10 @@ export class SlideSwitch extends CircuitElement {
   constructor(public canvas: any, x: number, y: number) {
     super('SlideSwitch', x, y, 'SlideSwitch.json', canvas);
   }
+  /**
+   * Initialize Slide Switch
+   */
   init() {
-    // this.nodes[0]
-    console.log(this.nodes[0].label);
-    console.log(this.nodes[1].label);
-    console.log(this.nodes[2].label);
     this.nodes[1].addValueListener((v) => {
       console.log(v);
       if (this.flag) {
@@ -170,6 +175,9 @@ export class SlideSwitch extends CircuitElement {
       title: 'Slide Switch'
     };
   }
+  /**
+   * Called on Start Simulation.
+   */
   initSimulation(): void {
     this.elements.unmousedown();
     this.elements.unclick();
@@ -178,6 +186,9 @@ export class SlideSwitch extends CircuitElement {
     });
     this.nodes[1].setValue(5, null);
   }
+  /**
+   * Called on stop simulation.
+   */
   closeSimulation(): void {
     this.elements.unclick();
     this.setDragListeners();
@@ -185,7 +196,4 @@ export class SlideSwitch extends CircuitElement {
     const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
     this.elements[1].animate(anim);
   }
-  simulate(): void {
-  }
-
 }

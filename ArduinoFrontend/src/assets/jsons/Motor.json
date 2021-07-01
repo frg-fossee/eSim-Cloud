@@ -35,7 +35,7 @@
   "simulation": {},
   "info": {
     "name": "Motor",
-    "image": "https://components101.com/sites/default/files/components/Toy-DC-Motor.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/f/f4/DC_Motor.jpg",
     "description": "A normal DC motor would have only two terminals. Since these terminals are connected together only through a coil they have not polarity. Revering the connection will only reverse the direction of the motor.",
     "properties": {
       "Type": "DC Motor",

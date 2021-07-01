@@ -4,6 +4,7 @@ import api from '../../utils/Api'
 import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
 import { setTitle } from './index'
+import { fetchLibrary, removeLibrary } from './schematicEditorActions'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -32,33 +33,39 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
   })
 }
 
+// Api call to save new schematic or updating saved schematic.
 export const saveSchematic = (title, description, xml, base64) => (dispatch, getState) => {
+  var libraries = []
+  getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
   const body = {
     data_dump: xml,
     base64_image: base64,
     name: title,
-    description: description
+    description: description,
+    esim_libraries: JSON.stringify([...libraries])
   }
 
+  // Get token from localstorage
   const token = getState().authReducer.token
   const schSave = getState().saveSchematicReducer
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
 
   if (schSave.isSaved) {
-    // console.log('Already Saved')
+    //  Updating saved schemaic
     api.post('save/' + schSave.details.save_id, queryString.stringify(body), config)
       .then(
         (res) => {
-          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -67,10 +74,10 @@ export const saveSchematic = (title, description, xml, base64) => (dispatch, get
       )
       .catch((err) => { console.error(err) })
   } else {
+    // saving new schematic
     api.post('save', queryString.stringify(body), config)
       .then(
         (res) => {
-          // console.log(res)
           dispatch({
             type: actions.SET_SCH_SAVED,
             payload: res.data
@@ -81,15 +88,19 @@ export const saveSchematic = (title, description, xml, base64) => (dispatch, get
   }
 }
 
+// Action for Loading on-cloud saved schematics
 export const fetchSchematic = (saveId) => (dispatch, getState) => {
+  // Get token from localstorage
   const token = getState().authReducer.token
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
@@ -98,7 +109,6 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
   api.get('save/' + saveId, config)
     .then(
       (res) => {
-        // console.log('response', res)
         dispatch({
           type: actions.SET_SCH_SAVED,
           payload: res.data
@@ -107,21 +117,28 @@ export const fetchSchematic = (saveId) => (dispatch, getState) => {
         dispatch(setSchDescription(res.data.description))
         dispatch(setSchXmlData(res.data.data_dump))
         renderGalleryXML(res.data.data_dump)
+        if (res.data.esim_libraries.length > 0) {
+          getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
+          res.data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id)))
+        }
       }
     )
     .catch((err) => { console.error(err) })
 }
 
 export const setSchShared = (share) => (dispatch, getState) => {
+  // Get token from localstorage
   const token = getState().authReducer.token
   const schSave = getState().saveSchematicReducer
 
+  // add headers
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   }
 
+  // If token available add to headers
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
@@ -145,6 +162,7 @@ export const setSchShared = (share) => (dispatch, getState) => {
     .catch((err) => { console.error(err) })
 }
 
+// Action for Loading Gallery schematics
 export const loadGallery = (Id) => (dispatch, getState) => {
   var data = GallerySchSample[Id]
 
@@ -159,6 +177,7 @@ export const loadGallery = (Id) => (dispatch, getState) => {
   renderGalleryXML(data.data_dump)
 }
 
+// Action for Loading local exported schematics
 export const openLocalSch = (obj) => (dispatch, getState) => {
   var data = obj
 

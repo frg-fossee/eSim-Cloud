@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to the destination...</title>
+    <script>
+        window.localStorage.setItem('esim_token', '{{ token }}');
+        var redirect_to = window.localStorage.getItem('ard_redurl');
+        if (redirect_to) {
+            window.localStorage.removeItem('ard_redurl');
+            window.open(redirect_to, '_self')
+        } else {
+            window.open('{{url}}', '_self')
+        }
+    </script>
+</head>
+<body></body>
+</html>

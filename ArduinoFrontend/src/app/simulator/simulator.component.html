@@ -1,10 +1,13 @@
 <!-- As a heading -->
 <nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: whitesmoke;height: 50px;">
-  <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-md-block" alt="AOC">
+  <a (click)="exitProject()">
+    <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;"
+      class="d-md-block" alt="AOC">
+  </a>
   <!-- <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span> -->
   <form style="min-width: 300px;">
     <mat-form-field style="width: 100%;">
-      <input matInput [value]="projectTitle"  (focusout)="onFocusOut($event)" class="text-dark">
+      <input matInput [value]="projectTitle" (focusout)="onFocusOut($event)" class="text-dark">
     </mat-form-field>
     <!-- <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
       id="project-title" > -->
@@ -42,12 +45,31 @@
       </li> -->
     </ul>
 
-    <div class="navbar-nav ml-auto" *ngIf="!token">
+    <div class="navbar-nav ml-auto">
+      <a mat-raised-button [href]="window.location.protocol + '//' + window.location.hostname" style="margin-right: 10px;">Home</a>
       <a mat-raised-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
-      <a mat-raised-button (click)="Login()">Login</a>
+      <a mat-raised-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
+      <a mat-raised-button [routerLink]="['/simulator']" style="margin-right: 10px;">Editor</a>
+      <a mat-raised-button  *ngIf="!token" (click)="Login()">Login</a>
+      <div class="dropdown show" *ngIf="token">
+        <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
+          class="d-inline-block align-center" alt="Login Image">
+        <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;"
+          aria-labelledby="dropdownMenuLink">
+          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+          <div class="dropdown-divider"></div>
+          <!-- <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
+          <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i> New</a>
+          <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i> Dashboard</a>
+          <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i> Gallery</a> -->
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
+        </div>
+      </div>
     </div>
 
-    <div class="navbar-nav ml-auto" *ngIf="token">
+    <!-- <div class="navbar-nav ml-auto" *ngIf="token"> -->
       <!--<div class="dropdown my-dropdown" *ngIf="token">
         <div class="w3-dropdown-hover">
           <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
@@ -75,22 +97,8 @@
             </div>
           </div>
         </div>
-      </div>-->
-      <div class="dropdown show" *ngIf="token">
-          <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
-            alt="Login Image">
-        <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;" aria-labelledby="dropdownMenuLink">
-          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i>  Home</a>
-          <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i>  New</a>
-          <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i>  Dashboard</a>
-          <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i>  Gallery</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i>  Logout</a>
-        </div>
-      </div>
-    </div>
+      </div>--> 
+    <!-- </div> -->
 
 
   </div>
@@ -130,11 +138,24 @@
   </div>
   <!--/simulation loading svg-->
 
+  <!-- Import export -->
   <span class="pipe">|</span>
+  <button mat-icon-button matTooltip="Download JSON file" (click)="exportJson()" id="importBtn"
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1">
+    <i style="font-size: 20px;color: black;" class="fa fa-download" id="download_icon"></i>
+  </button>
+
+  <button mat-icon-button matTooltip="Import JSON file"
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1">
+    <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
+    <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+    </label>
+  </button>
+  <span class="pipe">|</span>
+  <!-- Import export -->
 
   <a href="../#/simulator" target="_blank">
-    <button mat-icon-button matTooltip="New Project"
-      style="align-items: center;background: transparent;" class="mt-1">
+    <button mat-icon-button matTooltip="New Project" style="align-items: center;background: transparent;" class="mt-1">
       <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
     </button>
   </a>
@@ -172,6 +193,10 @@
   <button mat-icon-button matTooltip="Zoom out" class="mt-1"
     style="margin-right: 30px;align-items: center;background: transparent;" (click)="zoom(1)"><i
       style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
+
+  <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
+  style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+    style="font-size: 20px;color: black;" [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
@@ -383,19 +408,37 @@
 <!--/toast message-->
 <!--console ui-->
 <div id="console" style="display: none;">
-  <div id="displayheader" style="display: flex; background-color: white; position: relative; width: 100%;">
-    <button class="btn" style="background-color: white;" (click)="closeConsole()"><i
+  <div class="head">
+    <button class="btn" style="background-color: white;" (click)="minimizeConsole()"><i
         [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
-    <button class="btn" style="background-color: white;" (click)="expandConsole()"><i
+    <button class="btn" style="background:transparent" (click)="expandConsole()"><i
         [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
   </div>
-  <div id="msg"></div>
-  <div id="footer" style="display:block;position: relative;">
-    <form style="position: relative; padding: 0px;">
-      <input type="text" style="border-radius: 0px; width: 89.5%;">
-      <button type="button" style="border-color: darkgray; border-radius: 0px;">Send</button>
-      <button type="button" style="border-color: darkgray; border-radius: 0px;" (click)="clearConsole()">Clear</button>
-    </form>
+  <div class="body">
+    <div id="msg"></div>
+    <div>
+      <form style="display: flex;">
+        <select>
+          <option>300</option>
+          <option>600</option>
+          <option>1200</option>
+          <option>2400</option>
+          <option>4800</option>
+          <option selected>9600</option>
+          <option>14400</option>
+          <option>19200</option>
+          <option>28800</option>
+          <option>31250</option>
+          <option>38400</option>
+          <option>57600</option>
+          <option>115200</option>
+        </select>
+        <input type="text" style="flex:1;" #sin>
+        <button mat-raised-button style="margin-right: 1px;margin-left: 1px;"
+          (click)="PrintToConsole(sin)">Send</button>
+        <button mat-raised-button style="margin-right: 1px;" (click)="clearConsole()">Clear</button>
+      </form>
+    </div>
   </div>
 </div>
 <!--/console ui-->

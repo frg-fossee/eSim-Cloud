@@ -26,6 +26,7 @@ const useStyles = makeStyles({
   }
 })
 
+// Card displaying user my schematics page header.
 function MainCard () {
   const classes = useStyles()
 
@@ -84,7 +85,7 @@ export default function SchematicsList () {
           <MainCard />
         </Grid>
 
-        {/* Listing Saved Schematics */}
+        {/* List all schematics saved by user */}
         {schematics.length !== 0
           ? <>
             {schematics.map(

@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
@@ -12,57 +12,145 @@ import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 import { SaveOnline } from '../Libs/SaveOnline';
 import { HttpErrorResponse } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { AlertService } from '../alert/alert-service/alert.service';
+import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
+import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
+import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
+/**
+ * Declare Raphael so that build don't throws error
+ */
 declare var Raphael;
 
-
+/**
+ * Class For Simulator Page (Component)
+ */
 @Component({
   selector: 'app-simulator',
   templateUrl: './simulator.component.html',
   styleUrls: ['./simulator.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class SimulatorComponent implements OnInit {
+export class SimulatorComponent implements OnInit, OnDestroy {
+  /**
+   * Raphael Paper
+   */
   canvas: any;
-  projectId: any = null; // Stores the id of project
-  projectTitle = 'Untitled'; // Stores the title of project
-  description = ''; // Stores the description of project
+  /**
+   * Stores the id of project
+   */
+  projectId: any = null;
+  /**
+   *  Stores the title of project
+   */
+  projectTitle = 'Untitled';
+  /**
+   * Stores the description of project
+   */
+  description = '';
+  /**
+   * Toggle for Property Box
+   */
   showProperty = true;
+  /**
+   * Component Box Object
+   */
   componentsBox = Utils.componentBox;
+  /**
+   * String to Component map
+   */
   components = Utils.components;
-  openCodeEditor = false; // stores the initial status of code editor
-  toggle = true; // Stores toggle status for code editor
-  stoggle = true; // stores toggle status for simulation button
+  /**
+   * stores the initial status of code editor (Open/Closed)
+   */
+  openCodeEditor = false;
+  /**
+   * Stores toggle status for code editor
+   */
+  toggle = true;
+  /**
+   * Stores toggle status for simulation button
+   */
+  stoggle = true;
+  /**
+   * Simulation button toggle for disabling
+   */
   disabled = false;
-  toggle1 = false; // Stores the toggle status for expanding Virtual console
-  atoggle = false; // stores the toggle status for closing/opening Virtual console
+  /**
+   * Stores the toggle status for expanding Virtual console
+   */
+  toggle1 = false;
+  /**
+   * stores the toggle status for closing/opening Virtual console
+   */
+  atoggle = false;
+  /**
+   * Login Token
+   */
   token: string;
+  /**
+   * Username
+   */
   username: string;
-
+  /**
+   * window
+   */
+  window: any;
+  /**
+   * Is autolayout in progress?
+   */
+  isAutoLayoutInProgress = false;
+  /**
+   * Simulator Component constructor
+   * @param aroute Activated Route
+   * @param dialog Material Dialog
+   * @param injector App Injector
+   * @param title Document Title
+   * @param router Router to navigate
+   * @param api API service for api calls
+   */
   constructor(
     private aroute: ActivatedRoute,
     public dialog: MatDialog,
     private injector: Injector,
     private title: Title,
     private router: Router,
-    private api: ApiService
+    private api: ApiService,
+    private alertService: AlertService,
   ) {
+    // Initialize Global Variables
     Workspace.initializeGlobalFunctions();
-    Workspace.injector = this.injector;
   }
   /** Function dynamically creates an SVG tag */
   makeSVGg() {
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    // Set Default Scale and Translation
     el.setAttribute('transform', 'scale(1,1)translate(0,0)');
     return el;
   }
-
+  /**
+   * On Destroy Callback
+   */
+  ngOnDestroy() {
+    // If production remove save before close popup
+    if (environment.production) {
+      window.removeEventListener('beforeunload', Workspace.BeforeUnload);
+    }
+  }
+  /**
+   * On Init Callback
+   */
   ngOnInit() {
+    // Get User Token
     this.token = Login.getToken();
+
+    // if token is valid get User name
     if (this.token) {
       this.api.userInfo(this.token).subscribe((tmp) => {
         this.username = tmp.username;
       }, err => {
         if (err.status === 401) {
+          // Unauthorized clear token
           Login.logout();
         }
         this.token = null;
@@ -70,16 +158,23 @@ export class SimulatorComponent implements OnInit {
       });
     }
 
+    this.projectId = null;
+
+    // Detect change in url Query parameters
     this.aroute.queryParams.subscribe(v => {
+
+      // if project id is present and no query parameter then redirect to dashoard
       if (Object.keys(v).length === 0 && this.projectId) {
         setTimeout(() => this.router.navigate(['dashboard'])
           , 100);
         return;
       }
+      // if gallery query parameter is present
       if (v.gallery) {
         this.OpenGallery(v.gallery);
         return;
       }
+      // if id is present and it is ofline
       if (v.id && v.offline === 'true') {
         // if project id is present then project is read from offline
         this.projectId = parseInt(v.id, 10);
@@ -94,11 +189,15 @@ export class SimulatorComponent implements OnInit {
       }
     });
 
+    // Make a svg g tag
     const gtag = this.makeSVGg();
+    // Create Canvas
     this.canvas = Raphael('holder', '100%', '100%');
+    // insert g tag
     document.querySelector('#holder > svg').appendChild(gtag);
-    this.canvas.canvas = gtag;
+    this.canvas.canvas = gtag; // Change the reference
 
+    // Initialize clobal variables
     Workspace.initalizeGlobalVariables(this.canvas);
 
     /**
@@ -124,11 +223,18 @@ export class SimulatorComponent implements OnInit {
     document.body.addEventListener('keypress', Workspace.keyPress, true);
     document.body.addEventListener('keyup', Workspace.keyUp, true);
 
+    if (environment.production) {
+      // Global function for displaying alert msg during closing and reloading page
+      window.addEventListener('beforeunload', Workspace.BeforeUnload);
+    }
+
     // Initialize Property Box
     Workspace.initProperty(v => {
       this.showProperty = v;
     });
-    // this.StartSimulation();
+
+    // Initializing window
+    this.window = window;
   }
   /**
    * Enable Move on Property Box
@@ -178,12 +284,14 @@ export class SimulatorComponent implements OnInit {
 
     // if status is Stop simulation then console is opened
     if (!this.stoggle) {
+      // Compile code and show loading animation
       sim.style.display = 'block';
       Workspace.CompileCode(this.api, () => {
         this.disabled = false;
         document.getElementById('simload').style.display = 'none';
       });
     } else {
+      // Hide loading animation
       sim.style.display = 'none';
       Workspace.stopSimulation(() => {
         this.disabled = false;
@@ -204,49 +312,58 @@ export class SimulatorComponent implements OnInit {
     elem.classList.toggle('show-code-editor');
     this.toggle = !this.toggle;
     this.openCodeEditor = !this.openCodeEditor;
-    /* var div = document.getElementById('console');
-     //alert(div.style.display);
-     // console.log("meet");
-     if (div.style.display === 'none') {
-       div.style.display = 'block';
-     } else {
-       div.style.display = 'none';
-     }*/
   }
-  /** Function called to close Virtual console */
-  closeConsole() {
-    const close = document.getElementById('console');
-    const ft = document.getElementById('footer');
-    const msg = document.getElementById('msg');
+  /** Function called to Minimize Virtual console */
+  minimizeConsole() {
+    const Console = document.getElementById('console');
+    const close = document.querySelector('#console > .body');
+    if (this.toggle1) {
+      this.toggle1 = !this.toggle1;
+    }
     this.atoggle = !this.atoggle;
     if (this.atoggle) {
-      close.style.height = '30px';
-      msg.style.height = '0px';
-      ft.style.display = 'none';
+      (close as HTMLElement).style.display = 'none';
+      Console.style.height = 'auto';
     } else {
-      msg.style.height = '190px';
-      close.style.height = '30.5%';
-      ft.style.display = 'block';
-
+      (close as HTMLElement).style.display = 'flex';
+      Console.style.height = '30%';
     }
   }
-  /** function called to open Virtual Console */
-    expandConsole() {
-    const msg = document.getElementById('msg');
-    const console = document.getElementById('console');
+  /** function called to Expand Virtual Console */
+  expandConsole() {
+    const Console = document.getElementById('console');
+    if (this.atoggle) {
+      const close = document.querySelector('#console > .body');
+      (close as HTMLElement).style.display = 'flex';
+      this.atoggle = !this.atoggle;
+    }
     this.toggle1 = !this.toggle1;
-    if (this.toggle1 || console.style.top === '495px') {
-      console.style.height = '620px';
-      msg.style.height = '552px';
+    if (this.toggle1) {
+      Console.style.height = 'calc(100% - 110px)';
     } else {
-      console.style.bottom = '23px';
-      console.style.height = '30.5%';
-      msg.style.height = '190px';
+      Console.style.height = '30%';
     }
   }
-
+  /**
+   * Clear Virtual Console
+   */
   clearConsole() {
     Workspace.ClearConsole();
+  }
+  /**
+   * Send Serial data to arduino
+   * @param sin Serial Input Html Element
+   */
+  PrintToConsole(sin: HTMLInputElement) {
+    if (sin.value) {
+      const tmp = sin.value;
+      for (const ard of window['scope']['ArduinoUno']) {
+        if (ard.runner) {
+          ard.runner.serialInput(tmp);
+        }
+      }
+    }
+    sin.value = ''; // Clear input
   }
 
   /**
@@ -288,6 +405,13 @@ export class SimulatorComponent implements OnInit {
       Workspace.zoomOut();
     }
   }
+
+  autoLayout() {
+    // this.isAutoLayoutInProgress = true;
+    LayoutUtils.solveAutoLayout();
+    // this.isAutoLayoutInProgress = false;
+  }
+
   /** Functions opens Info Dailog Box on selecting the component */
   openInfo() {
     const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
@@ -324,15 +448,20 @@ export class SimulatorComponent implements OnInit {
   }
   /** Function saves or updates the project Online */
   SaveProject() {
+    // if Not logged in show message
     if (!(Login.getToken())) {
-      alert('Please Login! Before Login Save the Project Temporary.');
+      AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
       return;
     }
+    // if projet id is uuid (online circuit)
     if (SaveOnline.isUUID(this.projectId)) {
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => alert('Updated'), this.projectId);
+      // Update Project to DB
+      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => AlertService.showAlert('Updated'), this.projectId);
     } else {
+      // Save Project and show alert
       SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
-        alert('Saved');
+        AlertService.showAlert('Saved');
+        // add new quert parameters
         this.router.navigate(
           [],
           {
@@ -351,13 +480,16 @@ export class SimulatorComponent implements OnInit {
   }
   /** Function saves or updates the project offline */
   SaveProjectOff() {
+    // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
-      alert('Project is already Online!');
+      AlertService.showAlert('Project is already Online!');
       return;
     }
+    // Save circuit if id is not presenr
     if (this.projectId) {
       Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
     } else {
+      // save circuit and add query parameters
       Workspace.SaveCircuit(this.projectTitle, this.description, (v) => {
         this.router.navigate(
           [],
@@ -379,12 +511,17 @@ export class SimulatorComponent implements OnInit {
     Workspace.ClearWorkspace();
     this.closeProject();
   }
+  /**
+   * Fetches project from cloud
+   * @param id Project id
+   */
   LoadOnlineProject(id) {
     const token = Login.getToken();
     if (!token) {
-      alert('Please Login');
+      AlertService.showAlert('Please Login');
       return;
     }
+
     this.api.readProject(id, token).subscribe((data: any) => {
       this.projectTitle = data.name;
       this.description = data.description;
@@ -392,11 +529,11 @@ export class SimulatorComponent implements OnInit {
       Workspace.Load(JSON.parse(data.data_dump));
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
-        alert('You are Not Authorized to view this circuit');
+        AlertService.showAlert('You are Not Authorized to view this circuit');
         window.open('../../../', '_self');
         return;
       }
-      alert('Something Went Wrong');
+      AlertService.showAlert('Something Went Wrong');
       console.log(err);
     });
   }
@@ -412,40 +549,106 @@ export class SimulatorComponent implements OnInit {
     this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
     Workspace.Load(data);
   }
+  /**
+   * Close Clear message Dialog
+   */
   closeProject() {
     const closeProject = document.getElementById('opendialog');
     closeProject.style.display = 'none';
   }
+  /**
+   * Open clear project dialog
+   */
   openProject() {
     const openProject = document.getElementById('opendialog');
     openProject.style.display = 'block';
   }
+  /**
+   * Redirect to Login
+   */
   Login() {
     Login.redirectLogin();
   }
+  /**
+   * Logout and clear token
+   */
   Logout() {
     Login.logout();
   }
+  /**
+   * Open Gallery Project
+   * @param index Gallery item index
+   */
   OpenGallery(index: string) {
+    // Show Loading animation
     window['showLoading']();
+    // Get Position
     const i = parseInt(index, 10);
+    // if it is a valid number then proceed
     if (!isNaN(i)) {
+      // Fetch all samples
       this.api.fetchSamples().subscribe(out => {
         if (out[i]) {
+          // set project title
           this.projectTitle = out[i].name;
           this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+          // Set project description
           this.description = out[i].description;
+          // Load the project
           Workspace.Load(JSON.parse(out[i].data_dump));
         } else {
-          alert('No Item Found');
+          AlertService.showAlert('No Item Found');
         }
         window['hideLoading']();
       }, err => {
-        alert('Failed to load From gallery!');
+        console.error(err);
+        AlertService.showAlert('Failed to load From gallery!');
         window['hideLoading']();
       });
     } else {
       window['hideLoading']();
     }
   }
+
+  // Export to a JSON File
+  exportJson() {
+
+    // Check if workspace is empty or not
+    if (Workspace.checkIfWorkspaceEmpty()) {
+      AlertService.showAlert('You have nothing to save!'); // Throw Alert if Workspace is empty
+    } else {
+      // Open File rename dialog
+      const viewref = this.dialog.open(ExportJSONDialogComponent, {
+        width: '600px',
+        data: { description: this.description, title: this.projectTitle }
+      });
+      viewref.afterClosed();
+    }
+  }
+
+  // Import from jSON file
+  importJson(file) {
+    // Read File
+    const fileReader = new FileReader();
+    fileReader.readAsText(file, 'UTF-8');
+    fileReader.onload = (event: Event) => {
+      const data = fileReader.result;
+      // Load the data object and change into workspace
+      this.LoadProject(JSON.parse(data as string));
+    };
+  }
+
+  // Function to Exit Project & go back to mainScreen
+  exitProject() {
+    if (Workspace.checkIfWorkspaceEmpty()) {
+      this.router.navigate(['/']);
+    } else {
+      this.dialog.open(ExitConfirmDialogComponent).afterClosed().subscribe(res => {
+        if (res) {
+          this.router.navigate(['/']);
+        }
+      });
+    }
+  }
+
 }
