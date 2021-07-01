@@ -674,10 +674,11 @@ LibraryRow.propTypes = {
   library: PropTypes.any.isRequired
 }
 
-export function SelectLibrariesModal ({ open, close, auth }) {
+export function SelectLibrariesModal ({ open, close }) {
   const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   var uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
+  const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
   const classes = useStyles()
   const [activeLibraries, setActiveLibraries] = React.useState(allLibraries)
@@ -823,7 +824,7 @@ export function SelectLibrariesModal ({ open, close, auth }) {
           }
         </DialogContentText>
       </DialogContent>
-      {auth && tabValue === 2 &&
+      {auth.isAuthenticated && tabValue === 2 &&
         <DialogActions style={{ display: 'flex', justifyContent: 'center' }}>
           <div>
             {uploadDisable &&
@@ -846,6 +847,5 @@ export function SelectLibrariesModal ({ open, close, auth }) {
 
 SelectLibrariesModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  close: PropTypes.func.isRequired,
-  auth: PropTypes.bool.isRequired
+  close: PropTypes.func.isRequired
 }
