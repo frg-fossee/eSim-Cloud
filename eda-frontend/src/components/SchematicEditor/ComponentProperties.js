@@ -21,18 +21,22 @@ export default function ComponentProperties () {
     if (isOpen) {
       var temp = document.getElementById('properties-modal').clientHeight
       var temp2 = document.getElementById('properties-modal').clientWidth
-      console.log(screen.width, temp2)
+      console.log(window.screen.width, temp2)
       console.log(x)
-      if (0.6 * screen.height - 260 - y < temp) {
-        if (temp + 100 >= y)
-        { y = 100 }
-        else
-        { y = y - temp }
+      if (0.6 * window.screen.height - 260 - y < temp) {
+        if (temp + 100 >= y) { 
+          // eslint-disable-next-line
+          y = 100 
+        }
+        else { 
+          // eslint-disable-next-line
+          y = y - temp 
+        }
       }
-      if (x > screen.width - 547) {
-        x = screen.width - 547
+      if (x > window.screen.width - 547) {
+        // eslint-disable-next-line
+        x = window.screen.width - 547
       }
-      console.log(x)
       setHeight(y)
       setWidth(x)
     }
@@ -59,7 +63,7 @@ export default function ComponentProperties () {
   return (
     isOpen &&
     <div id="properties-modal" style={{ position: 'absolute', left: `${width}px`, top: `${height}px` }}>
-      <Draggable handle=".handle" bounds={{ left: 250 - x, right: screen.width - 550 - x, top: 100 - height, bottom: screen.height - 762 }}>
+      <Draggable handle=".handle" bounds={{ left: 250 - width, right: window.screen.width - 550 - width, top: 100 - height, bottom: window.screen.height - 762 }}>
         <Paper>
           <List style={{ maxHeight: 500, overflowY: 'scroll', overflowX: 'hidden' }}>
             <ListItem className="handle">
