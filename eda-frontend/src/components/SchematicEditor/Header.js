@@ -29,7 +29,7 @@ import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
-
+import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
 
@@ -192,11 +192,15 @@ function Header (props) {
 
   useEffect(() => {
     setShared(schSave.isShared)
+  }, [schSave.isShared])
+
+  useEffect(() => {
     if (history.location.search === '') {
       dispatch(setSchTitle('Untitled_Schematic'))
       dispatch(setSchDescription(''))
+      dispatch({ type: actions.CLEAR_DETAILS })
     }
-  }, [schSave.isShared,history.location.search,dispatch])
+  }, [history.location.search, dispatch])
 
   const handleShareChange = (event) => {
     setShared(event.target.checked)
@@ -228,7 +232,7 @@ function Header (props) {
   const textAreaRef = React.useRef(null)
 
   function copyToClipboard (e) {
-      textAreaRef.current.select()
+    textAreaRef.current.select()
     document.execCommand('copy')
     e.target.focus()
     setMessage('Copied Successfully!')
