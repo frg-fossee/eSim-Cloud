@@ -24,11 +24,11 @@ export default function ComponentProperties () {
       console.log(window.screen.width, temp2)
       console.log(x)
       if (0.6 * window.screen.height - 260 - y < temp) {
-        if (temp + 100 >= y) { 
+        if (temp + 100 >= y) {
           // eslint-disable-next-line
           y = 100 
         }
-        else { 
+        else {
           // eslint-disable-next-line
           y = y - temp 
         }
@@ -65,7 +65,7 @@ export default function ComponentProperties () {
     <div id="properties-modal" style={{ position: 'absolute', left: `${width}px`, top: `${height}px` }}>
       <Draggable handle=".handle" bounds={{ left: 250 - width, right: window.screen.width - 550 - width, top: 100 - height, bottom: window.screen.height - 762 }}>
         <Paper>
-          <List style={{ maxHeight: 500,maxWidth: 270, overflowY: 'scroll', overflowX: 'scroll' }}>
+          <List style={{ maxHeight: 500, maxWidth: 270, overflowY: 'scroll', overflowX: 'scroll' }}>
             <ListItem className="handle">
               <ListItemText style={{ cursor: 'move' }} primary='Component Properties' secondary={properties.NAME} />
             </ListItem>
