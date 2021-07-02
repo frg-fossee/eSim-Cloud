@@ -46,7 +46,7 @@ export function ScrollDialog (txt) {
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title" classes={{ root: "title" }}>Error Details</DialogTitle>
+        <DialogTitle id="scroll-dialog-title" classes={{ root: 'title' }}>Error Details</DialogTitle>
         <DialogContent dividers={scroll === 'paper'}>
           <DialogContentText
             id="scroll-dialog-description"
@@ -70,8 +70,8 @@ export default function Notice ({ status, msg, open, close }) {
   // status = 'success'
   const MAX_CHARS = 180
   const err = ((msg.length) > MAX_CHARS)
-    ? msg.substring(0, MAX_CHARS) + "..." 
-    :msg.substring(0, MAX_CHARS)
+    ? msg.substring(0, MAX_CHARS) + '...'
+    : msg.substring(0, MAX_CHARS)
   if (open === true) {
     switch (status) {
       case 'loading':
