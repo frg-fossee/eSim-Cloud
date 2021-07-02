@@ -52,12 +52,30 @@ export class Wire {
    * @param start Start circuit node of wire
    */
   constructor(public canvas, public start: Point) {
-    this.id = Date.now(); // Generate New id
+    this.id = this.getUniqueId(Date.now());
 
     // insert the position of start node in array
     this.points.push(start.position());
   }
 
+  /**
+   * Recursive function to check if id is already present.
+   * If present then return a new unique id
+   * @param id current id
+   * @returns id number
+   */
+  getUniqueId(id): number {
+    for (const e in window.scope) {
+      if (window.scope.hasOwnProperty(e)) {
+        for (const i in window.scope[e]) {
+          if (window.scope[e][i].id === id) {
+            return this.getUniqueId(Date.now() + Math.floor(Math.random() * 1000000));
+          }
+        }
+      }
+    }
+    return id;
+  }
   /**
    * Creates path element for the wire
    * @param element canvas element
@@ -208,18 +226,18 @@ export class Wire {
    * @param y y position of point to be added
    */
   private drawWire(x?: number, y?: number) {
-      let path = `M${this.points[0][0]},${this.points[0][1]}`;
-      // Draw lines to other points
-      for (let i = 1; i < this.points.length; ++i) {
-        path += `L${this.points[i][0]},${this.points[i][1]}`;
-      }
+    let path = `M${this.points[0][0]},${this.points[0][1]}`;
+    // Draw lines to other points
+    for (let i = 1; i < this.points.length; ++i) {
+      path += `L${this.points[i][0]},${this.points[i][1]}`;
+    }
 
-      if (x && y) {
-        path += `L${x},${y}`;
-      }
+    if (x && y) {
+      path += `L${x},${y}`;
+    }
 
-      // Update path
-      this.updateWirePath(path);
+    // Update path
+    this.updateWirePath(path);
   }
 
   /**
