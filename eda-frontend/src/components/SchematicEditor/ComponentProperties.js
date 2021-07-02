@@ -65,7 +65,7 @@ export default function ComponentProperties () {
     <div id="properties-modal" style={{ position: 'absolute', left: `${width}px`, top: `${height}px` }}>
       <Draggable handle=".handle" bounds={{ left: 250 - width, right: window.screen.width - 550 - width, top: 100 - height, bottom: window.screen.height - 762 }}>
         <Paper>
-          <List style={{ maxHeight: 500, overflowY: 'scroll', overflowX: 'hidden' }}>
+          <List style={{ maxHeight: 500,maxWidth: 270, overflowY: 'scroll', overflowX: 'scroll' }}>
             <ListItem className="handle">
               <ListItemText style={{ cursor: 'move' }} primary='Component Properties' secondary={properties.NAME} />
             </ListItem>
