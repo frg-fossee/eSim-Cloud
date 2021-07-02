@@ -35,7 +35,7 @@ export default function ComponentProperties () {
       }
       if (x > window.screen.width - 547) {
         // eslint-disable-next-line
-        x = window.screen.width - 547
+        x = x - 380
       }
       setHeight(y)
       setWidth(x)
