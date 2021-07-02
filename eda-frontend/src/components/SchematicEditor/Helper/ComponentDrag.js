@@ -144,6 +144,11 @@ export default function LoadGrid (container, sidebar, outline) {
     graph.setDisconnectOnMove(false)
     graph.foldingEnabled = false
 
+    // Disables movement of children cells of a component 
+    graph.isCellMovable = function (cell) {
+      return cell.Component ? true : false
+    }
+
     // Panning handler consumed right click so this must be
     // disabled if right click should stop connection handler.
     graph.panningHandler.isPopupTrigger = function () { return false }
