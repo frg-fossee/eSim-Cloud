@@ -66,9 +66,11 @@ export class Wire {
    */
   getUniqueId(id): number {
     for (const e in window.scope) {
-      for (const i in window.scope[e]) {
-        if (window.scope[e][i].id === id) {
-          return this.getUniqueId(Date.now() + Math.floor(Math.random() * 1000000));
+      if (window.scope.hasOwnProperty(e)) {
+        for (const i in window.scope[e]) {
+          if (window.scope[e][i].id === id) {
+            return this.getUniqueId(Date.now() + Math.floor(Math.random() * 1000000));
+          }
         }
       }
     }
