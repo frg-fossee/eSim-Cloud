@@ -438,7 +438,7 @@ export function GenerateNetList() {
           netlist.nodelist.push(compobj.node2, compobj.node1)
         }
         console.log('component properties', component.properties)
-        if (component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
             k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
 
@@ -516,12 +516,12 @@ export function GenerateNetList() {
           }
         }
 
-        if (component.properties.EXTRA_EXPRESSION.length > 0) {
+        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
           component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
         
-        if (component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
           spiceModels += component.properties.MODEL + '\n'
         }
 
@@ -660,10 +660,10 @@ function annotate(graph) {
           k = k + ' ' + component.properties.VALUE
         }
 
-        if (component.properties.EXTRA_EXPRESSION.length > 0) {
+        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
         }
-        if (component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
         k = k + ' \n'
