@@ -5,15 +5,27 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 p-1">
-      <img [attr.src]="modelCircuit.base64_image" alt="Loading the image" class="img-thumbnail border border-secondary hover-shadow image"/>
       <div class="caption">
         Model Simulation
       </div>
+      <img [attr.src]="modelCircuit.base64_image" alt="Loading the image" class="img-thumbnail border border-secondary image"/>
+      <div class="caption">
+        {{ modelCircuit.name }}
+      </div>
+      <div class="details">
+        {{ modelCircuit.description }}
+      </div>
     </div>
     <div class="col-md-6 p-1">
-      <img [attr.src]="studentCircuit.base64_image" alt="Loading the image" class="img-thumbnail border border-secondary hover-shadow image"/>
       <div class="caption">
         Student Simulation
+      </div>
+      <img [attr.src]="studentCircuit.base64_image" alt="Loading the image" class="img-thumbnail border border-secondary image"/>
+      <div class="caption">
+        {{ studentCircuit.name }}
+      </div>
+      <div class="details">
+        {{ studentCircuit.description }}
       </div>
     </div>
   </div>
@@ -22,19 +34,19 @@
   <mat-grid-list cols='2' rowHeight="300px">
     <mat-grid-tile>
       <div class="field-group">
-        <input formControlName="modelSchematic" value="{{circuit_id}}" style="display:none"/>
+        <input formControlName="model_schematic" value="{{circuit_id}}" style="display:none"/>
         <mat-form-field>
-          <input formControlName="consumerKey" matInput placeholder="Consumer Key*"/>
-          <mat-error *ngIf="service.form.controls['consumerKey'].errors?.required">This field is mandatory</mat-error>
-          <mat-error *ngIf="service.form.controls['consumerKey'].errors?.minlength">String should be atleast 2 characters long</mat-error>
+          <input formControlName="consumer_key" matInput placeholder="Consumer Key*"/>
+          <mat-error *ngIf="service.form.controls['consumer_key'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['consumer_key'].errors?.minlength">String should be atleast 2 characters long</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <mat-select formControlName="testCase" matInput placeholder="Test Case" (selectionChange)="onTestCaseSelectChanges($event)">
+          <mat-select formControlName="test_case" matInput placeholder="Test Case" (selectionChange)="ontestCaseSelectChanges($event)">
             <mat-option>
               None
             </mat-option>
-            <ng-container *ngFor="let testCase of testCases">
-              <mat-option value="{{testCase.id}}">{{testCase.output}}</mat-option>
+            <ng-container *ngFor="let test_case of testCases">
+              <mat-option value="{{test_case.id}}">{{test_case.output}}</mat-option>
             </ng-container>
           </mat-select>
         </mat-form-field>
@@ -48,12 +60,12 @@
     <mat-grid-tile>
       <div class="field-group">
         <mat-form-field>
-          <input formControlName="secretKey" matInput placeholder="Secret Key*" type="password"/>
-          <mat-error *ngIf="service.form.controls['secretKey'].errors?.required">This field is mandatory</mat-error>
-          <mat-error *ngIf="service.form.controls['secretKey'].errors?.minlength">String should be atleast 2 characters long</mat-error>
+          <input formControlName="secret_key" matInput placeholder="Secret Key*" type="password"/>
+          <mat-error *ngIf="service.form.controls['secret_key'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['secret_key'].errors?.minlength">String should be atleast 2 characters long</mat-error>
         </mat-form-field>
         <mat-form-field>
-          <mat-select formControlName="initialSchematic" matInput placeholder="Students's Simulation*" (selectionChange)="onStudentSimulationSelectChanges($event)">
+          <mat-select formControlName="initial_schematic" matInput placeholder="Students's Simulation*" (selectionChange)="onStudentSimulationSelectChanges($event)">
             <mat-option>
               None
             </mat-option>
@@ -71,14 +83,22 @@
       </div>
     </mat-grid-tile>
   </mat-grid-list>
-  <div>
-    <a href="configUrl">{{configUrl}}</a>
+  <div *ngIf="details.configExists">
+    <span>
+      CONFIG URL : 
+    </span>
+    <a href="{{configUrl}}" #URL>{{configUrl}}</a>
+    <button mat-raised-button color="primary" (click)="copyText(URL)">
+      <mat-icon>
+        file_copy
+      </mat-icon>
+    </button>
   </div>
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8 p-2">
       <button class="btn-lti" mat-raised-button color="primary" type="submit" (click)="onSubmit()" [disabled]="service.form.invalid">Submit</button>
-      <button class="btn-lti" mat-raised-button color="warn" type="reset"  (click)="onClear()">Clear</button>
+      <button class="btn-lti" mat-raised-button color="warn" type="reset" (click)="onDelete()" [disabled]="!details.configExists">Delete</button>
       <button class="btn-lti" mat-raised-button color="primary">Submissions</button>
     </div>
     <div class="col-md-2"></div>

@@ -9,39 +9,39 @@ export class FormsService {
   constructor() { }
 
   form: FormGroup = new FormGroup({
-    modelSchematic: new FormControl(''),
-    consumerKey: new FormControl("", [Validators.required, Validators.minLength(2)]),
-    secretKey: new FormControl("", [Validators.required, Validators.minLength(2)]),
+    model_schematic: new FormControl(''),
+    consumer_key: new FormControl("", [Validators.required, Validators.minLength(2)]),
+    secret_key: new FormControl("", [Validators.required, Validators.minLength(2)]),
     score: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(1)]),
-    testCase: new FormControl(''),
-    initialSchematic: new FormControl('', Validators.required),
+    test_case: new FormControl(''),
+    initial_schematic: new FormControl('', Validators.required),
     acceptSubmissions: new FormControl(true)
   })
 
   initialize() {
     this.form.setValue({
-      modelSchematic: '',
-      consumerKey: "",
-      secretKey: "",
+      model_schematic: '',
+      consumer_key: "",
+      secret_key: "",
       score: 0,
-      testCase: '',
-      initialSchematic: '',
+      test_case: '',
+      initial_schematic: '',
       acceptSubmissions: true
     });
   }
 
   getLTIDetails(data) {
+    console.log(data);
     data = {
-      secretKey: '',
-      consumerKey: '',
-      configURL: '',
+      secret_key: '',
+      consumer_key: '',
+      config_url: '',
       configExists: false,
       consumerError: '',
       score: data.score,
-      initialSchematic: data.initialSchematic,
-      modelSchematic: data.modelSchematic,
-      testCase: ''
+      initial_schematic: data.initial_schematic,
+      model_schematic: data.model_schematic,
+      test_case: ''
     }
-    console.log(data);
   }
 }

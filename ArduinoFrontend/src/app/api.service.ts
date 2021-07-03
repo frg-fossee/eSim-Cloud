@@ -159,18 +159,30 @@ export class ApiService {
   }
 
   existLTIURL(id: string, token: string) {
-    let config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    };
-    if (token) {
-      config.headers['Authorization'] = `Token ${token}`
-    }
-    return this.http.get(`lti/exist/${id}`, config);
+    return this.http.get(`${this.url}api/lti/exist/${id}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
   }
 
-  saveLTIDetails(id, data) {
-    return this.http.get(`save/${id}`, data);
+  saveLTIDetails(id: string, token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/build/`, data, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
+  removeLTIDetails(id: string, token: string) {
+    return this.http.delete(`${this.url}api/lti/delete/${id}`, {
+      headers: new HttpHeaders({
+        'Authorization': `Token ${token}`,
+      })
+    });
   }
 }

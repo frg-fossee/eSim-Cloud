@@ -7,16 +7,17 @@ import { SaveOffline } from '../Libs/SaveOffiline';
 import { ActivatedRoute, Router } from '@angular/router';
 
 export interface LTIDetails {
-  secretKey: string;
-  consumerKey: string;
-  configURL: string;
+  secret_key: string;
+  consumer_key: string;
+  config_url: string;
   configExists: boolean;
   consumerError: string;
   score: number;
-  initialSchematic: string;
-  modelSchematic: string;
-  testCase: string;
-  scored: number;
+  initial_schematic: string;
+  model_schematic: string;
+  test_case: string;
+  scored: boolean;
+  acceptSubmissions: boolean;
 }
 
 @Component({
@@ -40,77 +41,134 @@ export class LTIFormDialogComponent implements OnInit {
   circuits: any[];
   offline: any[];
   testCases: any[];
-  configUrl: string = null;
+  configUrl: string = '';
   details: LTIDetails = {
-    secretKey: '',
-    consumerKey: '',
-    configURL: '',
+    secret_key: '',
+    consumer_key: '',
+    config_url: '',
     configExists: false,
     consumerError: '',
     score: 0,
-    initialSchematic: this.circuit_id,
-    modelSchematic: this.circuit_id,
-    testCase: null,
-    scored: 0,
+    initial_schematic: this.circuit_id,
+    model_schematic: this.circuit_id,
+    test_case: null,
+    scored: false,
+    acceptSubmissions: false,
   }
 
   ngOnInit() {
     this.aroute.queryParams.subscribe(v => {
-      // if project id is present and no query parameter then redirect to dashoard
-      // const token = Login.getToken();
-      if (Object.keys(v).length === 0 && this.circuit_id) { // || !token) {
+      // if project id is present and no query parameter then redirect to dashboard
+      const token = Login.getToken();
+      if (Object.keys(v).length === 0 && this.circuit_id || !token) {
         setTimeout(() => this.router.navigate(['dashboard'])
           , 100);
         return;
       }
       this.circuit_id = v.id;
-      // this.api.existLTIURL(this.circuit_id, token).subscribe(res => {
-      //   this.details = {
-      //     ...res['data'],
-      //     configExists: true,
-      //   };
-      //   this.configUrl = this.details.configURL;
-      //   if(this.details.configURL) {
-      //     let data = this.details;
-      //     delete data['configExists'];
-      //     try {
-      //       this.api.saveLTIDetails(this.circuit_id, data).subscribe(res => {
-      //         this.details = {
-      //           ...res['data'],
-      //           configExists: true,
-      //         };
-      //       })
-      //     } catch(err) {
-      //       AlertService.showAlert(err);
-      //     }
-      //   }
-      // })
-      this.readTempItems();
+      this.onClear();
+      this.api.existLTIURL(this.circuit_id, token).subscribe(res => {
+        this.service.form.setValue({
+          consumer_key: res['consumer_key'],
+          secret_key: res['secret_key'],
+          score: res['score'],
+          initial_schematic: res['initial_schematic'],
+          model_schematic: res['model_schematic'],
+          test_case: res['test_case'],
+          acceptSubmissions: false,
+        })
+        this.details = {
+          ...this.service.form.value,
+          scored: res['scored'],
+          config_url: res['config_url'],
+          consumerError: '',
+          configExists: true,
+        };
+        this.configUrl = this.details.config_url;
+        }, err => {
+        console.log(err);
+      })
+    this.readOnCloudItems();
     });
   }
 
-  onTestCaseSelectChanges(event) {
+  ontestCaseSelectChanges(event) {
     console.log(event);
   }
 
   onStudentSimulationSelectChanges(event) {
-    if(event.value) {
-      this.studentCircuit = this.circuits.filter(v => v.id == event.value)[0];
-    }
-    else {
-      this.studentCircuit = this.modelCircuit;
-    }
+    this.studentCircuit = event.value ? this.circuits.filter(v => v.save_id === event.value)[0] : this.modelCircuit;
     console.log(this.studentCircuit);
   }
 
   onSubmit() {
     if(this.service.form.valid) {
-      this.service.form.patchValue({
-        modelSchematic: this.circuit_id,
-        testCase: null,
-      })
-      this.service.getLTIDetails(this.service.form.value)
+      if (this.details.scored) {
+        this.details.score = null;
+      }
+      this.details = {
+        ...this.service.form.value,
+        model_schematic: this.circuit_id,
+        test_case: null,
+        configExists: false,
+        scored: false,
+      }
+      const token = Login.getToken();
+      if(token) {
+        let data = this.details;
+        delete data['configExists']
+        delete data['config_url']
+        delete data['consumerError']
+        delete data['acceptSubmissions']
+        console.log(data);
+        this.api.saveLTIDetails(this.circuit_id, token, data).subscribe(res => {
+            this.details = {
+              ...this.details,
+              config_url: res['config_url'],
+              configExists: true,
+              consumerError: '',
+              score: res['score'],
+              scored: res['scored']
+            }
+            this.configUrl = this.details.config_url;
+            console.log(this.configUrl);
+          }, err => {
+          console.log(err);
+          this.details = {
+            ...this.details,
+            configExists: false,
+            consumerError: 'An error was encountered while setting the details!',
+          }
+        })
+        // this.service.getLTIDetails(this.service.form.value);
+      }
       this.onClear();
+    }
+  }
+
+  copyText(element) {
+  }
+
+  onDelete() {
+    const token = Login.getToken();
+    if(token) {
+      this.api.removeLTIDetails(this.circuit_id, token).subscribe(res => {
+        this.details = {
+          secret_key: '',
+          consumer_key: '',
+          config_url: '',
+          configExists: false,
+          consumerError: '',
+          score: 0,
+          initial_schematic: this.circuit_id,
+          model_schematic: this.circuit_id,
+          test_case: null,
+          scored: false,
+          acceptSubmissions: false,
+        }
+      }, err => {
+        console.log(err);
+      })
     }
   }
 
@@ -126,7 +184,8 @@ export class LTIFormDialogComponent implements OnInit {
     if (token) {
       this.api.listProject(token).subscribe((val: any[]) => {
         this.circuits = val;
-        this.modelCircuit = val.filter(v => v.id === this.circuit_id);
+        this.modelCircuit = val.filter(v => v.save_id === this.circuit_id)[0];
+        this.studentCircuit = this.modelCircuit;
       }, err => console.log(err));
     } else {
       // if no token is present then show this message
@@ -139,7 +198,7 @@ export class LTIFormDialogComponent implements OnInit {
     SaveOffline.ReadALL((v: any[]) => {
       // Map Offline Project to circuits array
       this.circuits = v.map(item => {
-        if(item.id == this.circuit_id) {
+        if(item.id === this.circuit_id) {
           this.modelCircuit = {
             name: item.project.name,
             description: item.project.description,
