@@ -3,6 +3,7 @@
 /* eslint-disable camelcase */
 import mxGraphFactory from 'mxgraph'
 import ComponentParameters from './ComponentParametersData'
+import { rotateCell } from './ToolbarTools'
 const {
   mxConstants
 } = new mxGraphFactory()
@@ -56,7 +57,7 @@ function extractData (xml) {
   }
 }
 
-export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
+export function getSvgMetadata (graph, parent, evt, target, x, y, component, rotation = 0) {
   // calls extractData and other MXGRAPH functions
   // initialize information from the svg meta
   // plots pinnumbers and component labels.
@@ -113,7 +114,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         y,
         width,
         height,
-        'shape=image;fontColor=blue;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
+        'shape=image;fontColor=blue;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25;'
       )
       v1.Component = true
       /* var newsource = path
@@ -182,5 +183,6 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         pins[i].ParentComponent = v1
         pins[i].PinNumber = currentPin.pinNumber
       }
+      if (rotation !== 0) { rotateCell(v1, rotation) }
     })
 }

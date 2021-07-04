@@ -129,7 +129,7 @@ async function loadIntructions (instructions) {
     const componentData = await api.get(url, config)
       .then(res => { return res.data[0] })
     // Add compoennt to graph
-    getSvgMetadata(graph, parent, null, null, instructions.components[i].x / 10, instructions.components[i].y / 10, componentData)
+    getSvgMetadata(graph, parent, null, null, instructions.components[i].x / 10, instructions.components[i].y / 10, componentData, instructions.components[i].rotation)
   }
 }
 
