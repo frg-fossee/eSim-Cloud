@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
+
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
@@ -25,16 +27,17 @@ import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutli
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
+import { RotateLeft } from '@material-ui/icons'
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
 import { Link as RouterLink } from 'react-router-dom'
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
 import { fetchRole } from '../../redux/actions/authActions'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
-import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
-import { RotateLeft } from '@material-ui/icons'
 import CreateProject from '../Project/CreateProject'
+import importSCHFile from './Helper/KiCadFileUtils'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -382,6 +385,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
+  const handleKicadFileUpload = () => {
+    const fileSelector = document.createElement('input')
+    fileSelector.setAttribute('type', 'file')
+    fileSelector.setAttribute('accept', '.sch')
+    fileSelector.click()
+    fileSelector.addEventListener('change', function (event) {
+      var reader = new FileReader()
+      var filename = event.target.files[0].name
+      if (filename.slice(filename.length - 3) === 'sch') {
+        reader.onload = async (e) => {
+          importSCHFile(e.target.result)
+        }
+        reader.readAsText(event.target.files[0])
+      }
+    })
+  }
+
   // Control Help dialog window open and close
   const [schOpen, setSchOpen] = React.useState(false)
 
@@ -465,11 +485,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SimpleSnackbar
-        open={snacOpen}
-        close={handleSnacClose}
-        message={message}
-      />
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+      <Tooltip title="Import KiCad Schematic">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { handleKicadFileUpload(); close() }} >
+          <InsertDriveFileIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
       <span className={classes.pipe}>|</span>
       <Tooltip title="Export (Ctrl + E)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
