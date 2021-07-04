@@ -651,4 +651,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
 
+  submitCircuit() {
+
+  }
 }
