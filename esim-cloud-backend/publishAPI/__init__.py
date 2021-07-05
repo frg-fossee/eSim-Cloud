@@ -1,1 +1,1 @@
-default_app_config = 'publishAPI.apps.PublishapiConfig'
+# default_app_config = 'publishAPI.apps.PublishapiConfig'

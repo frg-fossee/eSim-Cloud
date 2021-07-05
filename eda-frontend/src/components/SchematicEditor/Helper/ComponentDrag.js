@@ -101,15 +101,14 @@ export default function LoadGrid (container, sidebar, outline) {
 
     // Enables rubberband selection
     new mxRubberband(graph)
-
-    // Creates the outline (navigator, overview) for moving
-    // around the graph in the top, right corner of the window.
-    var outln = new mxOutline(graph, outline)
-    // To show the images in the outline, uncomment the following code
-    outln.outline.labelsVisible = true
-    outln.outline.setHtmlLabels(true)
-
-    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+    if(outline !== null)
+    {
+      var outln = new mxOutline(graph, outline)
+      // To show the images in the outline, uncomment the following code
+      outln.outline.labelsVisible = true
+      outln.outline.setHtmlLabels(true)
+  
+      graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
       var cell = evt.getProperty('cell')
       // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
       if (cell !== undefined && cell.CellType === 'Component') {
@@ -136,88 +135,87 @@ export default function LoadGrid (container, sidebar, outline) {
       }
       evt.consume()
     })
-
-    graph.view.scale = 1
-    graph.setPanning(true)
-    graph.setConnectable(true)
-    graph.setConnectableEdges(true)
-    graph.setDisconnectOnMove(false)
-    graph.foldingEnabled = false
-
-    // Disables movement of children cells of a component 
-    graph.isCellMovable = function (cell) {
-      return cell.Component ? true : false
-    }
-
-    // Panning handler consumed right click so this must be
-    // disabled if right click should stop connection handler.
-    graph.panningHandler.isPopupTrigger = function () { return false }
-
-    // Enables return key to stop editing (use shift-enter for newlines)
-    graph.setEnterStopsCellEditing(true)
-
-    // Adds rubberband selection
-    new mxRubberband(graph)
-
-    // Alternative solution for implementing connection points without child cells.
-    // This can be extended as shown in portrefs.html example to allow for per-port
-    // incoming/outgoing direction.
-    graph.getAllConnectionConstraints = function (terminal) {
-      var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null
-
-      if ((geo != null ? !geo.relative : false) && this.getModel().isVertex(terminal.cell) && this.getModel().getChildCount(terminal.cell) === 0) {
-        return [new mxConnectionConstraint(new mxPoint(0, 0.5), false), new mxConnectionConstraint(new mxPoint(1, 0.5), false)]
-      }
-
-      return null
-    }
-
-    // Makes sure non-relative cells can only be connected via constraints
-    graph.connectionHandler.isConnectableCell = function (cell) {
-      if (this.graph.getModel().isEdge(cell)) {
-        return true
-      } else {
-        var geo = (cell != null) ? this.graph.getCellGeometry(cell) : null
-
-        return (geo != null) ? geo.relative : false
-      }
-    }
-    mxEdgeHandler.prototype.isConnectableCell = function (cell) {
-      return graph.connectionHandler.isConnectableCell(cell)
-    }
-
-    // Adds a special tooltip for edges
-    graph.setTooltips(true)
-
-    var getTooltipForCell = graph.getTooltipForCell
-    graph.getTooltipForCell = function (cell) {
-      var tip = ''
-
-      if (cell != null) {
-        var src = this.getModel().getTerminal(cell, true)
-
-        if (src != null) {
-          tip += this.getTooltipForCell(src) + ' '
+  
+      graph.view.scale = 1
+      graph.setPanning(true)
+      graph.setConnectable(true)
+      graph.setConnectableEdges(true)
+      graph.setDisconnectOnMove(false)
+      graph.foldingEnabled = false
+  
+      // Panning handler consumed right click so this must be
+      // disabled if right click should stop connection handler.
+      graph.panningHandler.isPopupTrigger = function () { return false }
+  
+      // Enables return key to stop editing (use shift-enter for newlines)
+      graph.setEnterStopsCellEditing(true)
+  
+      // Adds rubberband selection
+      new mxRubberband(graph)
+  
+      // Alternative solution for implementing connection points without child cells.
+      // This can be extended as shown in portrefs.html example to allow for per-port
+      // incoming/outgoing direction.
+      graph.getAllConnectionConstraints = function (terminal) {
+        var geo = (terminal != null) ? this.getCellGeometry(terminal.cell) : null
+  
+        if ((geo != null ? !geo.relative : false) && this.getModel().isVertex(terminal.cell) && this.getModel().getChildCount(terminal.cell) === 0) {
+          return [new mxConnectionConstraint(new mxPoint(0, 0.5), false), new mxConnectionConstraint(new mxPoint(1, 0.5), false)]
         }
-
-        var parent = this.getModel().getParent(cell)
-
-        if (this.getModel().isVertex(parent)) {
-          tip += this.getTooltipForCell(parent) + '.'
-        }
-
-        tip += getTooltipForCell.apply(this, arguments)
-
-        var trg = this.getModel().getTerminal(cell, false)
-
-        if (trg != null) {
-          tip += ' ' + this.getTooltipForCell(trg)
+  
+        return null
+      }
+  
+      // Makes sure non-relative cells can only be connected via constraints
+      graph.connectionHandler.isConnectableCell = function (cell) {
+        if (this.graph.getModel().isEdge(cell)) {
+          return true
+        } else {
+          var geo = (cell != null) ? this.graph.getCellGeometry(cell) : null
+  
+          return (geo != null) ? geo.relative : false
         }
       }
-
-      return tip
+      mxEdgeHandler.prototype.isConnectableCell = function (cell) {
+        return graph.connectionHandler.isConnectableCell(cell)
+      }
+  
+      // Adds a special tooltip for edges
+      graph.setTooltips(true)
+  
+      var getTooltipForCell = graph.getTooltipForCell
+      graph.getTooltipForCell = function (cell) {
+        var tip = ''
+  
+        if (cell != null) {
+          var src = this.getModel().getTerminal(cell, true)
+  
+          if (src != null) {
+            tip += this.getTooltipForCell(src) + ' '
+          }
+  
+          var parent = this.getModel().getParent(cell)
+  
+          if (this.getModel().isVertex(parent)) {
+            tip += this.getTooltipForCell(parent) + '.'
+          }
+  
+          tip += getTooltipForCell.apply(this, arguments)
+  
+          var trg = this.getModel().getTerminal(cell, false)
+  
+          if (trg != null) {
+            tip += ' ' + this.getTooltipForCell(trg)
+          }
+        }
+  
+        return tip
+      }
+  
     }
-
+    // Creates the outline (navigator, overview) for moving
+    // around the graph in the top, right corner of the window.
+    
     // Switch for black background and bright styles
     var invert = false
 
@@ -271,8 +269,11 @@ export default function LoadGrid (container, sidebar, outline) {
     style.strokeWidth = strokeWidth
 
     // var parent = graph.getDefaultParent()
-
+    if(sidebar !== null)
+    {
+    }
     SideBar(graph, sidebar)
+
     KeyboardShorcuts(graph)
     //NetlistInfoFunct(graph)
     ToolbarTools(graph)

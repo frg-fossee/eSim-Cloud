@@ -10,7 +10,9 @@ import {
   CardMedia,
   CardHeader,
   Tooltip,
-  Snackbar
+  Snackbar,
+  ButtonBase,
+  Chip
 } from '@material-ui/core'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
@@ -19,7 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
 import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
-
+import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
@@ -28,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
   rating: {
     marginTop: theme.spacing(1),
     marginLeft: 'auto'
+  },
+  no: {
+    color: 'red',
+    marginLeft: '10px'
   }
 }))
 function Alert (props) {
@@ -48,16 +54,33 @@ function SimpleSnackbar ({ open, close, sch }) {
       autoHideDuration={6000}
       onClose={close}
     >
-      <Alert icon={false} severity="warning" color="error" style={{ width: '100%' }} action={
-        <>
-          <Button size="small" aria-label="close" color="inherit" onClick={() => { dispatch(deleteSchematic(sch.save_id)) }}>
-            Yes
-          </Button>
-          <Button size="small" aria-label="close" color="inherit" onClick={close}>
-            NO
-          </Button>
-        </>
-      }
+      <Alert
+        icon={false}
+        severity="warning"
+        color="error"
+        style={{ width: '100%' }}
+        action={
+          <>
+            <Button
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => {
+                dispatch(deleteSchematic(sch.save_id))
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={close}
+            >
+              NO
+            </Button>
+          </>
+        }
       >
         {'Delete ' + sch.name + ' ?'}
       </Alert>
@@ -122,63 +145,71 @@ export default function SchematicCard ({ sch }) {
   const handleSnacClick = () => {
     setSnacOpen(true)
   }
-
   const handleSnacClose = (event, reason) => {
     if (reason === 'clickaway') {
       return
     }
     setSnacOpen(false)
   }
+  const clickViewProject = () => {
+    const win = window.open()
+    win.location.href = '/eda/#/project?save_id=' + sch.save_id + '&version=' + sch.project_version + '&branch=' + sch.project_branch + '&project_id=' + sch.project_id
+    win.focus()
+  }
 
   return (
     <>
       {/* User saved Schematic Overview Card */}
+
       <Card>
-        <CardActionArea>
-          <CardHeader
-            title={sch.name}
-            subheader={'Created On ' + getDate(sch.create_time)} /* Display created date */
-          />
-          <CardMedia
-            className={classes.media}
-            image={sch.base64_image}
-            title={sch.name}
-          />
-          <CardContent>
-            <Typography variant="body2" component="p">
-              {sch.description}
-            </Typography>
-            {/* Display updated status */}
-            <Typography variant="body2" color="textSecondary" component="p" style={{ margin: '5px 0px 0px 0px' }}>
-              Updated {timeSince(sch.save_time)} ago...
-            </Typography>
-          </CardContent>
-        </CardActionArea>
+        <ButtonBase
+          target="_blank"
+          component={RouterLink}
+          to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
+          style={{ width: '100%' }}
+        >
+          <CardActionArea>
+            <CardHeader
+              title={sch.name}
+              subheader={'Created On ' + getDate(sch.create_time)}
+              action={sch.project_id && sch.is_reported === true && <Tooltip title='Project is reported!' arrow><ReportProblemIcon style={{ color: 'red' }} /></Tooltip>}
+            />
+            <CardMedia
+              className={classes.media}
+              image={sch.base64_image}
+              title={sch.name}
+            />
+            <CardContent>
+              <Typography variant="body2" component="p">
+                {sch.description}
+              </Typography>
+              {/* Display updated status */}
+              <Typography variant="body2" color="textSecondary" component="p" style={{ margin: '5px 0px 0px 0px' }}>
 
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </ButtonBase>
         <CardActions>
-          <Button
-            target="_blank"
-            component={RouterLink}
-            to={'/editor?id=' + sch.save_id}
-            size="small"
-            color="primary"
-          >
-            Launch in Editor
-          </Button>
-
+          <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
+          {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
-          <Tooltip title='Delete' placement="bottom" arrow>
+          {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>
             <DeleteIcon
-              color='secondary'
+              color="secondary"
               fontSize="small"
-              style={{ marginLeft: 'auto' }}
+              // style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
             />
-          </Tooltip>
+          </Tooltip>}
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
           {/* Display share status */}
-          <Tooltip title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'} placement="bottom" arrow>
+          <Tooltip
+            title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'}
+            placement="bottom"
+            arrow
+          >
             <ShareIcon
               color={!sch.shared ? 'disabled' : 'primary'}
               fontSize="small"
@@ -187,10 +218,12 @@ export default function SchematicCard ({ sch }) {
           </Tooltip>
         </CardActions>
       </Card>
+
     </>
   )
 }
 
 SchematicCard.propTypes = {
-  sch: PropTypes.object
+  sch: PropTypes.object,
+  createCircuit: PropTypes.func
 }

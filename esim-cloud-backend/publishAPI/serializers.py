@@ -1,10 +1,13 @@
+from django.db.models import fields
 from rest_framework import serializers
-from publishAPI.models import CircuitTag, Publish, Circuit
+from .models import CircuitTag, Project, Report, TransitionHistory, Field
 from django.core.files.base import ContentFile
 import base64
 import six
 import uuid
 import imghdr
+from saveAPI.serializers import StateSaveSerializer
+from workflowAPI.models import Transition
 
 
 class Base64ImageField(serializers.ImageField):
@@ -19,7 +22,7 @@ class Base64ImageField(serializers.ImageField):
                 self.fail('invalid_image')
             file_name = str(uuid.uuid4())
             file_extension = imghdr.what(file_name, decoded_file)
-            complete_file_name = "%s.%s" % (file_name, file_extension, )
+            complete_file_name = "%s.%s" % (file_name, file_extension,)
             data = ContentFile(decoded_file, name=complete_file_name)
 
         return super(Base64ImageField, self).to_internal_value(data)
@@ -31,31 +34,78 @@ class CircuitTagSerializer(serializers.ModelSerializer):
         fields = ('tag', 'description', 'id')
 
 
-class CircuitSerializer(serializers.ModelSerializer):
-    base64_image = Base64ImageField(max_length=None, use_url=True)
+class TransitionElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transition
+        fields = '__all__'
+
+
+class TransitionHistorySerializer(serializers.ModelSerializer):
+    transition_author_name = serializers.CharField(
+        read_only=True, source='transition_author.username')
+    from_state_name = serializers.CharField(
+        read_only=True, source='transition.from_state.name')
+    to_state_name = serializers.CharField(
+        read_only=True, source='transition.to_state.name')
+    transition = TransitionElementSerializer()
 
     class Meta:
-        model = Circuit
-        fields = ('circuit_id',
+        model = TransitionHistory
+        fields = ('transition_author_name',
+                  'from_state_name',
+                  'to_state_name',
+                  'transition_time',
+                  'transition',
+                  'reviewer_notes',)
+
+
+class FieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Field
+        fields = ('name', 'text')
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    status_name = serializers.CharField(read_only=True, source='state.name')
+    author_name = serializers.CharField(
+        read_only=True, source='author.username')
+    fields = FieldSerializer(many=True)
+    save_id = serializers.SerializerMethodField()
+    active_save = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Project
+        fields = ('project_id',
                   'title',
-                  'sub_title',
-                  'data_dump',
-                  'author',
                   'description',
-                  'last_updated',
-                  'publish_request_time',
-                  'base64_image'
+                  'status_name',
+                  'author_name',
+                  'is_reported',
+                  'fields',
+                  'active_branch',
+                  'active_version',
+                  'save_id',
+                  'active_save'
                   )
 
+    def get_save_id(self, obj):
+        return obj.statesave_set.first().save_id
 
-class PublishSerializer(serializers.HyperlinkedModelSerializer):
-    tags = CircuitTagSerializer(many=True, read_only=True)
-    circuit = CircuitSerializer(many=False, read_only=True)
+    def get_active_save(self, obj):
+        return StateSaveSerializer(
+            obj.statesave_set.get(save_id=obj.statesave_set.first().save_id,
+                                  branch=obj.active_branch,
+                                  version=obj.active_version)).data
 
+
+class ReportSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Publish
-        fields = ('published',
-                  'reviewed_by',
-                  'circuit',
-                  'tags',
-                  )
+        model = Report
+        fields = ('id', 'report_open', 'report_time',
+                  'description', 'approved')
+
+
+class ReportDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Report
+        fields = ('description',)
