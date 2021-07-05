@@ -496,6 +496,8 @@ export class BreadBoard extends CircuitElement {
       tmpar2 = [];
       this.tx = tmpx;
       this.ty = tmpy;
+      // reBuild SameNodeObject after drag stop
+      this.reBuildSameNodes();
     });
   }
 
@@ -563,6 +565,24 @@ export class BreadBoard extends CircuitElement {
       body,
       title: this.title
     };
+  }
+
+  /**
+   * Re-build sameNode variables
+   */
+  reBuildSameNodes() {
+    this.sameXNodes = {};
+    this.sameYNodes = {};
+    // initialise sameX and sameY node sets
+    for (const node of this.nodes) {
+      // create the set for x
+      this.sameXNodes[node.x] = this.sameXNodes[node.x] || [];
+      this.sameXNodes[node.x].push(node);
+
+      // Create the set for y
+      this.sameYNodes[node.y] = this.sameYNodes[node.y] || [];
+      this.sameYNodes[node.y].push(node);
+    }
   }
 
   /**

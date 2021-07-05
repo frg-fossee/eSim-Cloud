@@ -56,6 +56,8 @@ export abstract class UndoUtils {
      */
     static pushChangeToUndoAndReset(ele) {
 
+        this.redo = []
+
         // This is used to save wires connected to element in case of delete event only
         if (ele.event === 'delete') {
             let step = 0;
@@ -69,9 +71,10 @@ export abstract class UndoUtils {
                 }
             }
             ele.step = step;
+            this.undo.push(ele)
+            return
         }
 
-        this.redo = []
         this.pushChangeToUndo(ele)
     }
 
@@ -88,7 +91,6 @@ export abstract class UndoUtils {
      * @param ele event snapshot
      */
     static pushChangeToUndo(ele) {
-
         // This is used to save wires connected to element in case of delete event only
         if (ele.event === 'delete') {
             let step = 0;
@@ -116,6 +118,20 @@ export abstract class UndoUtils {
     static async loadChange(ele, operation) {
 
         var grup = window.scope[ele.keyName]
+
+        console.log(ele)
+
+
+        if (ele.dragJson) {
+            if (ele.dragJson.dx === 0 && ele.dragJson.dy === 0) {
+                if (operation === 'undo') {
+                    this.workspaceUndo()
+                } else if (operation === 'redo') {
+                    this.workspaceRedo()
+                }
+                return;
+            }
+        }
 
         if (operation == 'undo' && ele.event == 'delete') {
             UndoUtils.createElement(ele).then(res => {
@@ -177,6 +193,7 @@ export abstract class UndoUtils {
             UndoUtils.createElement(ele);
             return
         } else if (ele.event == 'add' && operation == 'undo' && ele.keyName == 'wires') {
+            console.log('aaaa')
             UndoUtils.pushChangeToRedo(ele)
             UndoUtils.removeElement(ele);
             return
@@ -326,7 +343,6 @@ export abstract class UndoUtils {
      */
     static removeElement(ele) {
         return new Promise((resolve, reject) => {
-
             var key = ele.keyName
             var uid = ele.element.id
             var toRem = this.getExistingWindowElement(window.scope['key'], ele);

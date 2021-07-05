@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Hidden, List, ListItem, ListItemText, TextField, MenuItem, TextareaAutosize } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSchDescription } from '../../redux/actions/index'
 
@@ -118,7 +117,6 @@ GridProperties.propTypes = {
 export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const classes = useStyles()
 
-  const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
   const schSave = useSelector(state => state.saveSchematicReducer)
 
   const [description, setDescription] = React.useState(schSave.description)
@@ -140,9 +138,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         <ListItem button divider>
           <h2 style={{ margin: '5px' }}>Properties</h2>
         </ListItem>
-        <div style={isOpen ? { display: 'none' } : {} }>
+        <div>
           <GridProperties gridRef={gridRef} />
-
           {/* Display component position box */}
           <ListItem>
             <ListItemText primary="Components Position" />
@@ -160,8 +157,6 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           </ListItem>
         </div>
       </List>
-
-      <ComponentProperties />
     </>
   )
 }
