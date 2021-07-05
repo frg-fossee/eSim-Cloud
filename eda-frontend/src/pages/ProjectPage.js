@@ -268,11 +268,11 @@ export default function ProjectPage (props) {
                       </Paper>
                     </Grid>
                     <Grid item xs={10}>
-                    <LayoutMain>
-                      <center>
-                        <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
-                      </center>
-                    </LayoutMain>
+                      <LayoutMain>
+                        <center>
+                          <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
+                        </center>
+                      </LayoutMain>
                     </Grid>
                     <ComponentProperties/>
                     <Grid item xs={1} />
