@@ -601,7 +601,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Handles routeLinks
    */
   HandleRouter(callback) {
-    AlertService.showThreeWayConfirm(
+    AlertService.showOptions(
       'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
       () => {
         AlertService.showCustom(
