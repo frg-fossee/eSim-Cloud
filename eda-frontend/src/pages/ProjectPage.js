@@ -16,6 +16,7 @@ import {
   List
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
+import ComponentProperties from '../components/SchematicEditor/ComponentProperties'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
 import LayoutMain from '../components/Shared/LayoutMain'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
@@ -267,8 +268,13 @@ export default function ProjectPage (props) {
                       </Paper>
                     </Grid>
                     <Grid item xs={10}>
-                      <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
+                    <LayoutMain>
+                      <center>
+                        <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
+                      </center>
+                    </LayoutMain>
                     </Grid>
+                    <ComponentProperties/>
                     <Grid item xs={1} />
 
                     <Grid item xs={12} sm={12}>
