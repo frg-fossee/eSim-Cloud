@@ -38,6 +38,7 @@ import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.compo
 import { ExportJSONDialogComponent } from './export-jsondialog/export-jsondialog.component';
 import { ExitConfirmDialogComponent } from './exit-confirm-dialog/exit-confirm-dialog.component';
 import { SaveProjectDialogComponent } from './simulator/save-project-dialog/save-project-dialog.component';
+import { OptionModalComponent } from './alert/option-modal/option-modal.component';
 
 /**
  * Monaco OnLoad Function
@@ -70,6 +71,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     HeaderComponent,
     AlertModalComponent,
     ConfirmModalComponent,
+    OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
     SaveProjectDialogComponent,
@@ -101,6 +103,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     ComponentlistComponent,
     AlertModalComponent,
     ConfirmModalComponent,
+    OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
     SaveProjectDialogComponent,

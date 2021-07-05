@@ -12,7 +12,7 @@ const changePasswordError = (message) => (dispatch) => {
   })
 }
 
-export const changePassword = (oldPassword, newPassword, reNewPassword) => (dispatch, getState) => {
+export const changePassword = (oldPassword, newPassword, reNewPassword, history) => (dispatch, getState) => {
   const body = {
     current_password: oldPassword,
     new_password: newPassword,
@@ -42,7 +42,7 @@ export const changePassword = (oldPassword, newPassword, reNewPassword) => (disp
           }
         })
         setTimeout(() => {
-          window.location.reload()
+          history.push('/dashboard')
         }, 2000)
       }
     })

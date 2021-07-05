@@ -99,23 +99,11 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
-
-    "mongodb": {
-        "ENGINE": 'djongo',
-        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
-        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
-        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-        "HOST": "mongodb",
-        "PORT": 27017,
-        'AUTH_SOURCE': 'admin',
-        'AUTH_MECHANISM': 'SCRAM-SHA-1',
-    }
-
 }
 
 
 DATABASE_ROUTERS = (
-    'simulationAPI.dbrouters.mongoRouter',
+    # 'simulationAPI.dbrouters.mongoRouter',<- to Store models in mongodb
     # 'saveAPI.dbrouters.mongoRouter',<- to Store saveAPI models in mongodb
     # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
 )
@@ -171,7 +159,10 @@ DJOSER = {
     'ACTIVATION_URL': 'api/auth/users/activate/{uid}/{token}',
     'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
     'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy',
-    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'SERIALIZERS': {
+        'token_create': 'authAPI.serializers.TokenCreateSerializer',
+    },
 }
 
 REST_FRAMEWORK = {

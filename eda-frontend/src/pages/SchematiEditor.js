@@ -12,6 +12,7 @@ import SchematicToolbar from '../components/SchematicEditor/SchematicToolbar'
 import RightSidebar from '../components/SchematicEditor/RightSidebar'
 import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
+import ComponentProperties from '../components/SchematicEditor/ComponentProperties'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
 import { fetchSchematic, loadGallery } from '../redux/actions/index'
 import { useDispatch } from 'react-redux'
@@ -57,7 +58,8 @@ export default function SchematiEditor (props) {
         dispatch(fetchSchematic(cktid))
       }
     }
-  }, [compRef, gridRef, outlineRef, props.location, dispatch])
+  // eslint-disable-next-line
+  }, [])
 
   return (
 
@@ -80,6 +82,7 @@ export default function SchematiEditor (props) {
       <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle} >
         <PropertiesSidebar gridRef={gridRef} outlineRef={outlineRef} />
       </RightSidebar>
+      <ComponentProperties/>
     </div>
   )
 }

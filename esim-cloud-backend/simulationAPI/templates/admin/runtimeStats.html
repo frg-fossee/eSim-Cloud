@@ -1,0 +1,142 @@
+{% extends "admin/change_list.html" %}
+{% block extrahead %}
+{{ block.super }}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ctx = document.getElementById('myChart').getContext('2d');
+  
+    const chartData = {{ chart_data | safe }};
+    const chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: chartData.map(e => {
+          return (String(e.exec_time) + 's')
+        }),
+        datasets: [
+          {
+            label: 'No of Simulations',
+            data: chartData,
+            backgroundColor: chartData.map(e => {
+                var col = 'rgb(121,174,200)'
+                
+                
+                if(e.exec_time >= {{ TIME_LIMIT | safe}} && {{ TIME_LIMIT | safe}} != 0) {
+                    col = 'rgb(190,70,50)'
+                }
+                return col;
+                
+            }),
+            
+          },
+        ],
+      },
+      options: {
+        animation: {
+            duration: 3000,
+        },
+        responsive: true,
+        scales: {
+          yAxes: [
+            {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          ],
+        },
+      },
+    });
+  });
+  </script>
+{% endblock %}
+
+{% block content %}
+<!-- Render our chart -->
+
+<div style="width: 80%;">
+  <canvas style="margin-bottom: 30px; width: 60%; height: 50%;" id="myChart"></canvas>
+</div>
+<!-- Render the rest of the ChangeList view -->
+{{ block.super }}
+{% endblock %}
+{% block content_title %}
+    <h1> Runtime Statistics </h1>
+{% endblock %}
+
+{% block result_list %}
+    <!-- Our content goes here... -->
+
+    <div class="results">
+        <table>
+
+        <thead>
+        <tr>
+            <th>
+            <div class="text">
+                <a href="#">Execution Time (in s)</a>
+            </div>
+            </th>
+            <th>
+            <div class="text">
+                <a href="#">Total</a>
+            </div>
+            </th>
+            <th>
+            <div class="text">
+                <a href="#">
+                <strong>%  Of Total Simulations</strong>
+                </a>
+            </div>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for row in summary %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+            <td> {{ row.exec_time }}s </td>
+            <td> {{ row.qty  }} </td>
+            <td>
+            <strong>
+                <!-- Calculation of the percentage -->
+            {% widthratio row.qty summary_total 100%}%
+            </strong>
+            </td>
+        </tr>
+        
+        {% endfor %}
+        <tr style="font-weight:bold; border-top:2px solid #DDDDDD;">
+            <td> Total </td>
+            <td> {{ summary_total }} </td>
+            <td> 100% </td>
+        </tr>
+        </tbody>
+
+    </table>
+    </div>
+    <br>
+    <br> 
+    {% block RuntimeLimit %}
+    <!-- <li> -->
+        <h1>Simulation Time Limit</h1>
+        <div>
+          <form method="post"> 
+            <label for="limit">Time Limit(s): </label>
+            <input id="limit" type="text" name="limit"value={{ TIME_LIMIT }}> 
+            <input type="submit" value="Update"> 
+          </form>
+        </div>
+    <!-- </li> -->
+    <!-- {{ block.super }} -->
+  {% endblock %}
+    
+{% endblock %}
+
+
+
+
+
+{% block pagination %}{% endblock %}

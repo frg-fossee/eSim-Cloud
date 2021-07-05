@@ -19,11 +19,13 @@
       </form>
     </div>-->
   <div class="row" style="margin: 1em">
-    <div class="col-sm-2">
-      <a type="button" class="btn btn-primary mb-3" style="width: 100%;" [routerLink]="['/simulator']">+ New
+    <div class="col-sm-3">
+      <a type="button" class="btn btn-primary mb-3 m-2" [routerLink]="['/simulator']">+ New
         Circuit</a>
+      <label for="importFileBTN" mat-icon-button class="btn btn-primary mb-3 m-2">Import Circuit</label>
+      <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file" (change)="ImportCircuit($event)" hidden/>
     </div>
-    <div class="col-sm-7"></div>
+    <div class="col-sm-6"></div>
     <div class="col-sm-3">
       <form class="form-inline" (submit)="SearchCircuits(searchBox)">
         <div style="flex:1 1 auto;">
@@ -113,6 +115,8 @@
             (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
           <button mat-raised-button class="col-md-3" style="background-color: #26b12d;color: white;" *ngIf="!isProd">
             Publish circuit</button>
+          <button mat-raised-button color="primary" class="col-md-3"
+            (click)="ExportCircuit(selected.save_id, selected.offline)">Export Circuit</button>
         </div>
 
         <div class="act-desc">

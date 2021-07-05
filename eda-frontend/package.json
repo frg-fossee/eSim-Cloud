@@ -16,6 +16,7 @@
     "chartjs-plugin-colorschemes": "^0.4.0",
     "file-saver": "^2.0.2",
     "material-ui-popup-state": "^1.5.4",
+    "multiselect-react-dropdown": "^1.6.11",
     "mxgraph": "^4.1.1",
     "query-string": "^6.12.1",
     "randomstring": "^1.2.1",
@@ -24,6 +25,7 @@
     "react-brace": "^3.6.6",
     "react-chartjs-2": "^2.9.0",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-loader-spinner": "^3.1.14",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
@@ -31,6 +33,7 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "spinners-react": "^1.0.4",
     "typescript": "^3.9.3"
   },
   "scripts": {
