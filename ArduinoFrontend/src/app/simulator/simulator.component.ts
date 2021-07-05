@@ -588,7 +588,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param routeLink route link
    * @param isAbsolute is the link absolute? [pass false if relatives]
    */
-  RouteToFunction(routeLink, isAbsolute=false) {
+  RouteToFunction(routeLink, isAbsolute = false) {
     return () => {
       if (isAbsolute) {
         this.window.location = routeLink;
