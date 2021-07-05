@@ -6,7 +6,6 @@ import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { makeStyles } from '@material-ui/core/styles'
-import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSchDescription, saveSchematic } from '../../redux/actions/index'
 import api from '../../utils/Api'
@@ -128,7 +127,6 @@ GridProperties.propTypes = {
 export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const classes = useStyles()
 
-  const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
   const schSave = useSelector(state => state.saveSchematicReducer)
 
   const [description, setDescription] = React.useState(schSave.description)
@@ -366,9 +364,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         <ListItem button divider>
           <h2 style={{ margin: '5px' }}>Properties</h2>
         </ListItem>
-        <div style={isOpen ? { display: 'none' } : {} }>
+        <div>
           <GridProperties gridRef={gridRef} />
-
           {/* Display component position box */}
           <ListItem>
             <ListItemText primary="Components Position" />
@@ -385,100 +382,6 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             <TextareaAutosize id='Description' label='Description' value={ schSave.description === '' ? description || '' : schSave.description } onChange={getInputValues} rowsMin={6} aria-label='Description' placeholder={'Add Schematic Description'} style={{ width: '100%', minWidth: '234px', maxHeight: '250px' }} />
           </ListItem>
         </div>
-      </List>
-      <ComponentProperties />
-      <List>
-        <ListItem button divider>
-          <h2 style={{ margin: '5px', width: '90%' }}>History</h2>
-          <IconButton
-            className="new-branch"
-            size="small"
-            onClick={handleDialogOpen}
-          >
-            <CreateNewFolderOutlinedIcon fontSize="small" />
-          </IconButton>
-          <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={dialogOpen}>
-            <DialogTitle id="simple-dialog-title">Create new Variation</DialogTitle>
-            <DialogContent>
-              <TextField
-                id="branch-name"
-                label="Variation Name"
-                onChange={handleBranchName}
-                value={branchName}
-                style={{ width: '100%' }}/>
-              <br/>
-              <Button
-                style={{ marginTop: '20px', marginBottom: '10px' }}
-                variant="contained"
-                color="primary"
-                onClick={() => handleBranch(branchName) }>
-                Create Variation
-              </Button>
-            </DialogContent>
-          </Dialog>
-        </ListItem>
-        {(versions && branchOpen && popoverOpen)
-          ? <>
-            {versions.map((branch, index) => {
-              return (
-                <>
-                  <div style={{ display: 'flex' }}>
-                    <ListItem style={{ width: '80%' }} button onClick={() => handleClick(index)}>
-                      <ListItemText primary={'Variation ' + (versions.length - index) + ' : ' + branch[0]} />
-                    </ListItem>
-                    {checkActiveOrProject(branch[0]) &&
-                    <>
-                      <Button key={branch[0]} onClick={(e) => handleClickPopover(e, index)}>
-                        <DeleteIcon />
-                      </Button>
-                      <Popover
-                        open={popoverOpen[index]}
-                        anchorEl={anchorEl}
-                        onClose={() => handleClosePopover(index)}
-                        anchorOrigin={{
-                          vertical: 'bottom',
-                          horizontal: 'center'
-                        }}
-                        transformOrigin={{
-                          vertical: 'top',
-                          horizontal: 'center'
-                        }}
-                      >
-                        <Typography className={classes.typography}>
-                          <b>Are you sure you want to delete variation {branch[0]}?</b>
-                        </Typography>
-                        <Button style={{ marginLeft: '5%', backgroundColor: 'transparent' }} onClick={() => handleDelete(branch[0], index)}>
-                          Delete Variation
-                        </Button>
-                      </Popover>
-                    </>}
-                  </div>
-                  <Collapse in={branchOpen[index]} timeout="auto" unmountOnExit>
-                    {
-                      branch[1].map((version) =>
-                        <VersionComponent
-                          key={version.name}
-                          name={version.name}
-                          date={version.date}
-                          time={version.time}
-                          save_id={version.save_id}
-                          version={version.version}
-                          branch={version.branch}
-                          setVersions={setVersions}
-                          setBranchOpen={setBranchOpen}
-                          projectBranch={projectBranch}
-                          projectVersion={projectVersion} />
-                      )
-                    }
-                  </Collapse>
-                </>
-              )
-            }
-            )
-            }
-          </>
-          : <ListItemText>No History Available</ListItemText>
-        }
       </List>
     </>
   )
