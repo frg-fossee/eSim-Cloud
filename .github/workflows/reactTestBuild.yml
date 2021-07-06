@@ -18,6 +18,7 @@ jobs:
     - name: Install packages,lint,build and Unit testing
       working-directory: ./eda-frontend
       run: |
+        export NODE_OPTIONS=--max_old_space_size=4096
         npm install
         CI=true npm run build
         CI=true npm test

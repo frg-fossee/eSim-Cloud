@@ -9,6 +9,11 @@ from rest_framework.exceptions import ValidationError
 from celery.result import AsyncResult
 import uuid
 import logging
+from .models import runtimeStat, Limit
+import celery.signals
+from celery import current_task
+import time
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +32,28 @@ class NetlistUploader(APIView):
         logger.info('Got POST for netlist upload: ')
         logger.info(request.data)
         serializer = TaskSerializer(data=request.data, context={'view': self})
+
+        limits = Limit.objects.all()
+        TIME_LIMIT = 0
+        if limits.exists():
+            TIME_LIMIT = Limit.objects.all()[0].timeLimit
+        # if timeLimit.objects.count() != 0:
+        #     TIME_LIMIT = timeLimit.objects.all()[0]
+        #     print('NOT NONE')
+        # else:
+        #     print('NONE')
         if serializer.is_valid():
             serializer.save()
             task_id = serializer.data['task_id']
-            celery_task = process_task.apply_async(
-                kwargs={'task_id': str(task_id)}, task_id=str(task_id))
+            if(TIME_LIMIT == 0):
+                celery_task = process_task.apply_async(
+                    kwargs={'task_id': str(task_id)}, task_id=str(task_id)
+                )
+            else:
+                celery_task = process_task.apply_async(
+                    kwargs={'task_id': str(task_id)}, task_id=str(task_id),
+                    soft_time_limit=TIME_LIMIT)
+
             response_data = {
                 'state': celery_task.state,
                 'details': serializer.data,
@@ -63,3 +85,23 @@ class CeleryResultView(APIView):
             return Response(response_data)
         else:
             raise ValidationError('Invalid uuid format')
+
+
+@celery.signals.task_prerun.connect
+def statsd_task_prerun(task_id, **kwargs):
+    current_task.start_time = time.time()
+    print(task_id)
+
+
+@celery.signals.task_postrun.connect
+def statsd_task_postrun(task_id, **kwargs):
+    runtime = time.time() - current_task.start_time
+    runtime = math.ceil(runtime)
+    statObj, created = runtimeStat.objects.get_or_create(exec_time=runtime)
+    statObj.qty += 1
+    statObj.save()
+    # print(statObj)
+    # print(statObj.exec_time)
+    # print(statObj.qty)
+    # print(task_id)
+    print(runtime)

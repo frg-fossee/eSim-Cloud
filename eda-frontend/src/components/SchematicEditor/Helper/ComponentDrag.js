@@ -108,28 +108,6 @@ export default function LoadGrid (container, sidebar, outline) {
       outln.outline.labelsVisible = true
       outln.outline.setHtmlLabels(true)
   
-      graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
-        var cell = evt.getProperty('cell')
-        // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
-        if (cell !== undefined && cell.CellType === 'Component') {
-          store.dispatch({
-            type: actions.GET_COMP_PROPERTIES,
-            payload: {
-              id: cell.id,
-              compProperties: cell.properties
-            }
-          })
-        } else if (cell !== undefined && cell.CellType === 'This is where you say what the vertex is') {
-          store.dispatch({
-            type: actions.CLOSE_COMP_PROPERTIES
-          })
-        } else if (cell === undefined) {
-          store.dispatch({
-            type: actions.CLOSE_COMP_PROPERTIES
-          })
-        }
-        evt.consume()
-      })
   
       graph.view.scale = 1
       graph.setPanning(true)
@@ -208,6 +186,33 @@ export default function LoadGrid (container, sidebar, outline) {
       }
   
     }
+    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+      var cell = evt.getProperty('cell')
+      // mxUtils.alert('Doubleclick: ' + ((cell != null) ? cell.symbol : 'Graph'))
+      if (cell !== undefined && cell.CellType === 'Component') {
+        store.dispatch({
+          type: actions.CLOSE_COMP_PROPERTIES_TEMP
+        })
+        store.dispatch({
+          type: actions.GET_COMP_PROPERTIES,
+          payload: {
+            id: cell.id,
+            compProperties: cell.properties,
+            x: sender.lastEvent.clientX,
+            y: sender.lastEvent.clientY
+          }
+        })
+      } else if (cell !== undefined && cell.CellType === 'This is where you say what the vertex is') {
+        store.dispatch({
+          type: actions.CLOSE_COMP_PROPERTIES
+        })
+      } else if (cell === undefined) {
+        store.dispatch({
+          type: actions.CLOSE_COMP_PROPERTIES
+        })
+      }
+      evt.consume()
+    })
     // Creates the outline (navigator, overview) for moving
     // around the graph in the top, right corner of the window.
     

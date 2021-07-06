@@ -6,7 +6,6 @@ import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { makeStyles } from '@material-ui/core/styles'
-import ComponentProperties from './ComponentProperties'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSchDescription, saveSchematic } from '../../redux/actions/index'
 import api from '../../utils/Api'
@@ -128,7 +127,6 @@ GridProperties.propTypes = {
 export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   const classes = useStyles()
 
-  const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
   const schSave = useSelector(state => state.saveSchematicReducer)
 
   const [description, setDescription] = React.useState(schSave.description)
@@ -366,7 +364,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         <ListItem button divider>
           <h2 style={{ margin: '5px' }}>Properties</h2>
         </ListItem>
-        <div style={isOpen ? { display: 'none' } : {} }>
+        <div>
           <GridProperties gridRef={gridRef} />
 
           {/* Display component position box */}
@@ -386,7 +384,6 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
           </ListItem>
         </div>
       </List>
-      <ComponentProperties />
       <List>
         <ListItem button divider>
           <h2 style={{ margin: '5px', width: '90%' }}>History</h2>
