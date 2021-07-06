@@ -12,7 +12,7 @@ import {
   CardContent,
   CardActionArea,
   Card,
-  Checkbox, 
+  Checkbox,
   Snackbar,
   IconButton
 } from '@material-ui/core'
@@ -110,7 +110,12 @@ export default function LTIConfig() {
           testCase: res.data.test_case,
           scored: res.data.scored
         })
-      setHistoryId(res.data.test_case)
+      if (res.data.test_case === null) {
+        setHistoryId("None")
+      }
+      else {
+        setHistoryId(res.data.test_case)
+      }
       setInitial(res.data.initial_schematic)
     }).catch(err => {
       console.log(err)
@@ -224,7 +229,13 @@ export default function LTIConfig() {
   }
 
   const handleChangeSim = (e) => {
-    setLTIDetails({ ...ltiDetails, testCase: e.target.value })
+    if (e.target.value === "None") {
+      console.log("in if")
+      setLTIDetails({ ...ltiDetails, testCase: null })
+    }
+    else {
+      setLTIDetails({ ...ltiDetails, testCase: e.target.value })
+    }
     setHistoryId(e.target.value)
   }
 
@@ -299,7 +310,7 @@ export default function LTIConfig() {
         </div>
         <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
           {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
-          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} variant="outlined" />
+          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
           <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
@@ -330,6 +341,9 @@ export default function LTIConfig() {
               className={classes.selectEmpty}
               inputProps={{ readOnly: !ltiDetails.scored }}
             >
+              <MenuItem value="None">
+                None
+              </MenuItem>
               {history.map(sim => {
                 return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
               })}

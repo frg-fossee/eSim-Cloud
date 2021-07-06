@@ -124,10 +124,7 @@ class LTIUpdateAPP(APIView):
     @swagger_auto_schema(request_body=consumerSerializer,
                          responses={201: consumerResponseSerializer})
     def post(self, request):
-        temp = request.data
-        if request.data['test_case'] == None:
-            temp.pop('test_case')
-        serialized = consumerSerializer(data=temp)
+        serialized = consumerSerializer(data=request.data)
         try:
             consumer = lticonsumer.objects.get(
                 consumer_key=request.data['consumer_key'])
