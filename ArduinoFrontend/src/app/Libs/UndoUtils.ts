@@ -74,7 +74,7 @@ export abstract class UndoUtils {
             this.undo.push(ele)
             return
         }
-
+        console.log(this.undo)
         this.pushChangeToUndo(ele)
     }
 
@@ -141,7 +141,7 @@ export abstract class UndoUtils {
                 }
                 for (let i = 0; i < ele.step; i++) {
                     let chg = this.undo.pop()
-                    UndoUtils.pushChangeToRedo({ keyName: chg.keyName, element: chg.element, event: chg.event, step: ele!.step })
+                    // UndoUtils.pushChangeToRedo({ keyName: chg.keyName, element: chg.element, event: chg.event, step: ele!.step })
                     UndoUtils.createElement(chg)
                 }
                 UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event, step: ele!.step })
