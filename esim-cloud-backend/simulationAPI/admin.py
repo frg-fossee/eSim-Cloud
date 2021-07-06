@@ -1,9 +1,14 @@
 from django.contrib import admin
-from .models import runtimeStat, Limit
+from .models import runtimeStat, Limit, simulation
 import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Max
 from django.http import HttpResponseRedirect
+
+
+
+class outputAdmin(admin.ModelAdmin):
+    list_display = ['simulation_type', 'task_id', 'owner']
 
 
 class runtimStatAdmin(admin.ModelAdmin):
@@ -76,4 +81,5 @@ class runtimStatAdmin(admin.ModelAdmin):
 
 
 admin.site.register(runtimeStat, runtimStatAdmin)
+admin.site.register(simulation, outputAdmin)
 # admin.site.register(Limit)

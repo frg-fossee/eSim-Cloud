@@ -1,7 +1,10 @@
-from djongo import models
+from django.db import models
+from django.contrib.postgres.fields import JSONField
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from django.contrib.auth import get_user_model
 import uuid
+from saveAPI.models import StateSave
 
 
 class Task(models.Model):
@@ -55,3 +58,16 @@ class Limit(models.Model):
 
     def __str__(self):
         return str(self.timeLimit)
+
+
+class simulation(models.Model):
+    simulation_type = models.CharField(
+        max_length=30, null=True, blank=True)
+    task = models.ForeignKey(to=Task, on_delete=models.CASCADE)
+    simulation_time = models.DateTimeField(auto_now_add=True)
+    schematic = models.ForeignKey(
+        to=StateSave, on_delete=models.CASCADE, null=True, blank=True)
+    owner = models.ForeignKey(
+        to=get_user_model(), null=True, on_delete=models.CASCADE)
+    netlist = models.TextField()
+    result = JSONField(null=True, blank=True)
