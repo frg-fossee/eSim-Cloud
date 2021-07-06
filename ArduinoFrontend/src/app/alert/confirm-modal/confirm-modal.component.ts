@@ -13,8 +13,10 @@ interface ConfirmDialogData {
   message: string;
   yesButtonText?: string;
   noButtonText?: string;
+  cancelButtonText?: string;
   yesFunction: () => any;
   noFunction?: () => any;
+  cancelFunction?: () => any;
 }
 
 /**
@@ -38,8 +40,13 @@ export class ConfirmModalComponent {
     this.dialogRef.close(true);
   }
 
-  onDismiss(): void {
+  onDeny(): void {
     // Close the dialog, return false
     this.dialogRef.close(false);
+  }
+
+  onCancel(): void {
+    // Close the dialog, return null
+    this.dialogRef.close(null);
   }
 }

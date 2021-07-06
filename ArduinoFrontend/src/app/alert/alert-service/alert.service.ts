@@ -70,4 +70,10 @@ export class AlertService {
       }
     });
   }
+
+  static showCustom(component, data, subscriber) {
+    const dialogRef = AlertService.dialog.open(component, { data });
+    dialogRef.afterClosed().subscribe(subscriber);
+  }
+
 }
