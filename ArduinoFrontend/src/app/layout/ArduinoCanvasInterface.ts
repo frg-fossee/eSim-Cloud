@@ -95,6 +95,7 @@ export class LayoutUtils {
      * @param path new path to be assigned
      */
     static updateWirePath(wire: Wire, path: Path): void {
+        // Push dump to Undo stack & Reset
         UndoUtils.pushChangeToUndoAndReset({ keyName: wire.keyName, element: wire.save(), event: 'layout', step: this.problemPathsCount })
         let i = 1;
         const allPoints = path.getAllPoints();

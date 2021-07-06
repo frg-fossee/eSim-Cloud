@@ -312,6 +312,7 @@ export abstract class CircuitElement {
       //   node.remainShow();
       // }
 
+      // Push dump to Undo stack & Reset
       UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } })
       this.tx += fdx;
       this.ty += fdy;

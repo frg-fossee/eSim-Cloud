@@ -314,7 +314,7 @@ export class Wire {
     }
     // set on change listener
     select.onchange = () => {
-      // on change update the color
+      // Push dump to Undo stack & Reset
       UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'wire_color' })
       this.setColor(colors[select.selectedIndex]);
     };
@@ -352,6 +352,7 @@ export class Wire {
     }
     // Update Wire
     this.update();
+    // Push dump to Undo stack, only if pushUndo is false
     !pushUndo ? UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'add' }) : console.log('undo skiped');
   }
 

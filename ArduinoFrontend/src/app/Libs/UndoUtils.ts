@@ -1,8 +1,6 @@
 import { Utils } from "./Utils";
 import { Workspace } from "./Workspace";
 import { isNull } from 'util';
-import { Point } from "./Point";
-import { Wire } from "./Wire";
 
 declare var window;
 
@@ -16,36 +14,31 @@ export abstract class UndoUtils {
      * Boolean to disable undo/redo buttons for some time until circuit is loading
      */
     static enableButtonsBool = true;
-
-    /** --------------------------------------------------------- */
-
     /**
      * Undo Stack
      */
-    static undo = []
-
+    static undo = [];
     /**
      * Redo Stack
     */
-    static redo = []
-
+    static redo = [];
 
     /**
-     * Function for Undo Feature
+     * Call this function to Undo
      */
     static workspaceUndo() {
         if (this.undo.length > 0) {
-            var cng = this.undo.pop();
+            let cng = this.undo.pop();
             this.loadChange(cng, 'undo');
         }
     }
 
     /**
-     * Function for Redo Feature
+     * Call this function to Redo
      */
     static workspaceRedo() {
         if (this.redo.length > 0) {
-            var cng = this.redo.pop();
+            let cng = this.redo.pop();
             this.loadChange(cng, 'redo');
         }
     }
@@ -56,26 +49,27 @@ export abstract class UndoUtils {
      */
     static pushChangeToUndoAndReset(ele) {
 
-        this.redo = []
+        // Empty Redo Stack
+        this.redo = [];
 
         // This is used to save wires connected to element in case of delete event only
         if (ele.event === 'delete') {
             let step = 0;
-            var grup = window.scope[ele.keyName]
-            const temp = this.getExistingWindowElement(grup, ele)
+            let grup = window.scope[ele.keyName];
+            const temp = this.getExistingWindowElement(grup, ele);
             for (const e in temp.nodes) {
                 if (temp.nodes[e].connectedTo) {
-                    let wire = temp.nodes[e].connectedTo
-                    UndoUtils.pushChangeToUndo({ keyName: wire.keyName, element: wire.save(), event: 'delete' })
+                    let wire = temp.nodes[e].connectedTo;
+                    UndoUtils.pushChangeToUndo({ keyName: wire.keyName, element: wire.save(), event: 'delete' });
                     step += 1;
                 }
             }
             ele.step = step;
-            this.undo.push(ele)
-            return
+            this.undo.push(ele);
+            return;
         }
-        console.log(this.undo)
-        this.pushChangeToUndo(ele)
+        // If not delete continue to normal Undo Process
+        this.pushChangeToUndo(ele);
     }
 
     /**
@@ -83,7 +77,7 @@ export abstract class UndoUtils {
      * @param ele event snapshot
      */
     static pushChangeToRedo(ele) {
-        this.redo.push(ele)
+        this.redo.push(ele);
     }
 
     /**
@@ -94,7 +88,7 @@ export abstract class UndoUtils {
         // This is used to save wires connected to element in case of delete event only
         if (ele.event === 'delete') {
             let step = 0;
-            var grup = window.scope[ele.keyName]
+            let grup = window.scope[ele.keyName]
             const temp = this.getExistingWindowElement(grup, ele)
             for (const e in temp.nodes) {
                 if (temp.nodes[e].connectedTo) {
@@ -105,7 +99,7 @@ export abstract class UndoUtils {
             }
             ele.step = step;
         }
-
+        // Push to Undo stack
         this.undo.push(ele);
     }
 
@@ -116,23 +110,22 @@ export abstract class UndoUtils {
      * @returns
      */
     static async loadChange(ele, operation) {
+        // All elements in window.scope with similar
+        let grup = window.scope[ele.keyName];
 
-        var grup = window.scope[ele.keyName]
-
-        console.log(ele)
-
-
+        // Check if dragJson is present, & jump to next operation if both dx & dy are 0
         if (ele.dragJson) {
             if (ele.dragJson.dx === 0 && ele.dragJson.dy === 0) {
                 if (operation === 'undo') {
-                    this.workspaceUndo()
+                    this.workspaceUndo();
                 } else if (operation === 'redo') {
-                    this.workspaceRedo()
+                    this.workspaceRedo();
                 }
                 return;
             }
         }
 
+        // handle Delete events
         if (operation == 'undo' && ele.event == 'delete') {
             UndoUtils.createElement(ele).then(res => {
                 if (ele.keyName === 'BreadBoard') {
@@ -140,20 +133,20 @@ export abstract class UndoUtils {
                     window['DragStopListeners'] = [];
                 }
                 for (let i = 0; i < ele.step; i++) {
-                    let chg = this.undo.pop()
-                    // UndoUtils.pushChangeToRedo({ keyName: chg.keyName, element: chg.element, event: chg.event, step: ele!.step })
-                    UndoUtils.createElement(chg)
+                    let chg = this.undo.pop();
+                    UndoUtils.createElement(chg);
                 }
-                UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event, step: ele!.step })
+                UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event, step: ele!.step });
             })
-            return
+            return;
         } else if (operation == 'redo' && ele.event == 'delete') {
-            let temp = this.getExistingWindowElement(grup, ele)
+            let temp = this.getExistingWindowElement(grup, ele);
             window['Selected'] = temp;
             Workspace.DeleteComponent(false);
             return;
         }
 
+        // handle auto-layout of wires
         if (ele.event == 'layout' && operation == 'undo') {
             let existing = this.getExistingWindowElement(grup, ele)
             UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step })
@@ -187,29 +180,28 @@ export abstract class UndoUtils {
             })
         }
 
-        // Only trigger if wire
+        // handle Wire change events like add & color change
         if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
-            UndoUtils.pushChangeToUndo(ele)
+            UndoUtils.pushChangeToUndo(ele);
             UndoUtils.createElement(ele);
             return
         } else if (ele.event == 'add' && operation == 'undo' && ele.keyName == 'wires') {
-            console.log('aaaa')
-            UndoUtils.pushChangeToRedo(ele)
+            UndoUtils.pushChangeToRedo(ele);
             UndoUtils.removeElement(ele);
             return
         } else if (ele.event == 'wire_color' && operation == 'undo' && ele.keyName == 'wires') {
-            const temp = this.getExistingWindowElement(grup, ele)
-            UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: temp.save(), event: ele.event })
+            const temp = this.getExistingWindowElement(grup, ele);
+            UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: temp.save(), event: ele.event });
             temp.setColor(ele.element.color);
             return
         } else if (ele.event == 'wire_color' && operation == 'redo' && ele.keyName == 'wires') {
             const temp = this.getExistingWindowElement(grup, ele)
-            UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: temp.save(), event: ele.event })
+            UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: temp.save(), event: ele.event });
             temp.setColor(ele.element.color);
             return
         }
 
-        // Only trigger if there is nothing in scope
+        // Only trigger if there is nothing in scope | is empty
         if (grup.length <= 0) {
             window['scope'][ele.keyName] = [];
             if (ele.event == 'add' && operation == 'redo') {
@@ -219,20 +211,22 @@ export abstract class UndoUtils {
                         window['DragStopListeners'] = [];
                     }
                 })
-                UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][0].save(), event: ele.event })
+                UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][0].save(), event: ele.event });
             }
         }
 
-        // Trigger if window.scope is empty
+        // Trigger if window.scope is not empty
         for (const e in grup) {
             if (grup[e].id == ele.element.id) {
                 if (window.scope[ele.keyName][e].load) {
-                    if (operation == 'undo')
-                        UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson })
-
-                    else if (operation == 'redo')
-                        UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson })
-
+                    // Push to Undo/Redo stack
+                    if (operation == 'undo') {
+                        UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson });
+                    }
+                    else if (operation == 'redo') {
+                        UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson });
+                    }
+                    // handle Add events
                     if (ele.event == 'add' && operation == 'undo') {
                         UndoUtils.removeElement(ele)
                         return
@@ -242,22 +236,29 @@ export abstract class UndoUtils {
                         UndoUtils.removeElement(ele)
                     }
                     else if (ele.event == 'drag') {
-                        var existing = this.getExistingWindowElement(grup, ele);
+                        // TODO: handle element Drag events
+                        let existing = this.getExistingWindowElement(grup, ele);
                         if (operation == 'undo') {
-                            if (ele.keyName == 'BreadBoard')
-                                existing.transformBoardPosition(-ele.dragJson.dx, -ele.dragJson.dy)
-                            else
-                                existing.transformPosition(-ele.dragJson.dx, -ele.dragJson.dy)
+                            if (ele.keyName == 'BreadBoard') {
+                                existing.transformBoardPosition(-ele.dragJson.dx, -ele.dragJson.dy);
+                            }
+                            else {
+                                existing.transformPosition(-ele.dragJson.dx, -ele.dragJson.dy);
+                            }
                         } else {
-                            existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy)
+                            existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy);
                         }
                         for (const e in window.scope['wires']) {
                             window.scope['wires'][e].update();
                         }
                     }
                     else {
+                        // TODO: Handle all other events which weren't handled before
+                        // Create Element with dump of ele
                         UndoUtils.createElement(ele).then(createdEle => {
+                            // Remove existing Element
                             UndoUtils.removeElement(ele).then(done => {
+                                // Remove drag listeners if element is a breadboard
                                 if (ele.keyName === 'BreadBoard') {
                                     window['DragListeners'] = [];
                                     window['DragStopListeners'] = [];
@@ -296,11 +297,12 @@ export abstract class UndoUtils {
         return new Promise((resolve, reject) => {
             window.queue = 0;
 
-            var comp = ele.element;
-            var key = ele.keyName
+            let comp = ele.element;
+            let key = ele.keyName
 
             if (key == 'wires') {
                 Workspace.LoadWires([ele.element], true, true)
+                // resolve
                 resolve(true);
             }
 
@@ -323,11 +325,11 @@ export abstract class UndoUtils {
             const interval = setInterval(() => {
                 if (window.queue === 0) {
                     clearInterval(interval);
-                    // start drawing wires
+                    // resolve when done
                     resolve(obj);
-                    // Workspace.LoadWires(data.wires);
                     // Hide loading animation
                 } else {
+                    // resolve anyways
                     resolve(obj)
                 }
             }, 100);
@@ -343,9 +345,10 @@ export abstract class UndoUtils {
      */
     static removeElement(ele) {
         return new Promise((resolve, reject) => {
-            var key = ele.keyName
-            var uid = ele.element.id
-            var toRem = this.getExistingWindowElement(window.scope['key'], ele);
+            let key = ele.keyName
+            let uid = ele.element.id
+            // get existing element that is to be removed
+            let toRem = this.getExistingWindowElement(window.scope['key'], ele);
 
             // If Current Selected item is a Wire which is not Connected from both end
             if (key === 'wires') {
@@ -353,6 +356,7 @@ export abstract class UndoUtils {
                     // Remove and deselect
                     toRem.remove();
                 }
+                // make selected variables null
                 window.Selected = null;
                 window.isSelected = false;
             }

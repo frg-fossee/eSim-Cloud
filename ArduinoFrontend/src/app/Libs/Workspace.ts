@@ -518,6 +518,7 @@ export class Workspace {
     }
     if (event.ctrlKey && (event.key === 'z' || event.key === 'Z') && UndoUtils.enableButtonsBool) {
       // CTRL + z
+      // Call Undo Function
       UndoUtils.workspaceUndo();
     }
   }
@@ -555,6 +556,7 @@ export class Workspace {
       y - offsetY
     );
     window['scope'][classString].push(obj);
+    // Push dump to Undo stack & Reset
     UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() })
   }
   /** Function updates the position of wires */
@@ -792,7 +794,7 @@ export class Workspace {
 
       if (!(window.Selected instanceof Wire && !window.Selected.isConnected())) {
         let obj = { keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' }
-        // undoReset ? UndoUtils.pushChangeToUndoAndReset(obj) : UndoUtils.pushChangeToUndo(obj);
+        // Push dump to Undo stack & Reset if undoReset is true, else just push
         if (undoReset) UndoUtils.pushChangeToUndoAndReset(obj)
         else UndoUtils.pushChangeToUndo(obj);
       }

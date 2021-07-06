@@ -656,6 +656,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Function to enable/disable undo/redo button depending upon undostack
+   * @param type button type
+   * @returns boolean
+   */
   enableButton(type) {
     if (!UndoUtils.enableButtonsBool)
       return true;
@@ -665,10 +670,15 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       return UndoUtils.redo.length <= 0
   }
 
+  /**
+   * Undo Operation
+   */
   undoChange() {
     UndoUtils.workspaceUndo();
   }
-
+  /**
+   * Redo Operation
+   */
   redoChange() {
     UndoUtils.workspaceRedo();
   }
