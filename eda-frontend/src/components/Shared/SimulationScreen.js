@@ -33,7 +33,7 @@ import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
+export default function SimulationScreen ({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -200,18 +200,17 @@ export default function SimulationScreen({ open, close, isResult, simType = 'NgS
               simResultText.push(data[i][0] + ' ' + data[i][1] + ' ' + parseFloat(data[i][2]) + ' ' + postfixUnit + '\n')
             }
             schematic = simResultText
-            addScalesNonGraph(0, schematic, exactDecimalArrayCompare, scalesNonGraphArrayCompare, setScalesNonGraphCompare, setExactDecimalCompare)
+            addScalesNonGraph(0, schematic, exactDecimalArrayCompare, scalesNonGraphCompare, setScalesNonGraphCompare, setExactDecimalCompare)
           }
           setCompareNetlist(element.netlist)
         }
       })
       setComparingSim(schematic)
-      
     } else {
       setCompare(false)
     }
   }
-// DO NOT CHANGE THIS FUNCTION
+  // DO NOT CHANGE THIS FUNCTION
   const toFixed = (x) => {
     var e = 0
     if (Math.abs(x) < 1.0) {
@@ -231,7 +230,7 @@ export default function SimulationScreen({ open, close, isResult, simType = 'NgS
     return x
   }
 
-// DO NOT CHANGE
+  // DO NOT CHANGE
   const decimalCount = (num1, num2) => {
     var difference = toFixed(num1) - toFixed(num2)
     const numStr = toFixed(difference).toString()
@@ -245,7 +244,7 @@ export default function SimulationScreen({ open, close, isResult, simType = 'NgS
     return ['notDecimal', 1]
   }
 
-// DO NOT CHANGE
+  // DO NOT CHANGE
   const decimalCountNonGraph = (num) => {
     const numStr = num.toString()
     if (Math.abs(num) < 1) {
@@ -263,7 +262,7 @@ export default function SimulationScreen({ open, close, isResult, simType = 'NgS
     return ['notDecimal', 1]
   }
 
-// DO NOT CHANGE
+  // DO NOT CHANGE
   const exactDecimalCount = (num) => {
     const numStr = num.toString()
     if (Math.abs(num) < 1) {
@@ -295,7 +294,7 @@ export default function SimulationScreen({ open, close, isResult, simType = 'NgS
     // eslint-disable-next-line
   }, [isResult])
 
-// DO NOT CHANGE
+  // DO NOT CHANGE
   const addScalesNonGraph = (g, data, arr, scale, setScaleFunc, setStateFunc) => {
     data.forEach((line, index) => {
       setScales(g, parseFloat(line.split(' ')[2]), index, scale, setScaleFunc)
@@ -305,7 +304,7 @@ export default function SimulationScreen({ open, close, isResult, simType = 'NgS
     setStateFunc(arr)
   }
 
-  const setScales = (g, val, idx, scale=null, setScaleFunc=null, data=null) => {
+  const setScales = (g, val, idx, scale = null, setScaleFunc = null, data = null) => {
     var countX, countY
     if (g === 1) {
       countX = decimalCount(Math.min(...data.x_points), Math.max(...data.x_points))
@@ -870,12 +869,12 @@ export default function SimulationScreen({ open, close, isResult, simType = 'NgS
                                   <TableRow key={index}>
                                     <TableCell align="center">{line.split('=')[0]}</TableCell>
                                     <TableCell align="center">
-                                    {(line.split(' ')[3] === '\n')
-                                      ? (parseFloat(line.split(' ')[2]))
-                                      : (notation === 'Scientific'
-                                        ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimalCompare[index])).toFixed(precision).toString() + 'e' + ((exactDecimalCompare[index]) >= 0
-                                          ? '+' + (exactDecimalCompare[index]).toString() : exactDecimalCompare[index]).toString())
-                                        : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArrayCompare[index]]).toFixed(precision))}
+                                      {(line.split(' ')[3] === '\n')
+                                        ? (parseFloat(line.split(' ')[2]))
+                                        : (notation === 'Scientific'
+                                          ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimalCompare[index])).toFixed(precision).toString() + 'e' + ((exactDecimalCompare[index]) >= 0
+                                            ? '+' + (exactDecimalCompare[index]).toString() : exactDecimalCompare[index]).toString())
+                                          : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArrayCompare[index]]).toFixed(precision))}
                                     </TableCell>
                                     <TableCell align="center">{(scalesNonGraphArrayCompare[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArrayCompare[index]}{line.split(' ')[3]}</TableCell>
                                   </TableRow>

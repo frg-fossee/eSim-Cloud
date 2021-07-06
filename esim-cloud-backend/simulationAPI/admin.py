@@ -6,7 +6,6 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 
 
-
 class outputAdmin(admin.ModelAdmin):
     list_display = ['simulation_type', 'task_id', 'owner']
 
