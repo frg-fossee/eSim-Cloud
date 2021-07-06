@@ -5,7 +5,8 @@ import {
   Button,
   Typography,
   CardActions,
-  CardContent
+  CardContent,
+  Input
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
@@ -26,7 +27,7 @@ const useStyles = makeStyles({
 })
 
 // Card displaying user my schematics page header.
-function MainCard () {
+function MainCard() {
   const classes = useStyles()
 
   return (
@@ -57,18 +58,35 @@ function MainCard () {
   )
 }
 
-export default function SchematicsList () {
+export default function SchematicsList() {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
-
+  const [saves, setSaves] = React.useState(null)
   const dispatch = useDispatch()
 
   // For Fetching Saved Schematics
   useEffect(() => {
     dispatch(fetchSchematics())
   }, [dispatch])
-
+  const onSearch = (e) => {
+    setSaves(schematics.filter((o) =>
+      Object.keys(o).some((k) => {
+        if ((k === 'name' || k === 'description' || k === 'owner' || k === 'save_time' || k === 'create_time') && String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())) {
+          return String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())
+        }
+      }
+      )
+    ))
+    console.log(schematics.filter((o) =>
+    Object.keys(o).some((k) => {
+      if ((k === 'name' || k === 'description' || k === 'owner' || k === 'save_time' || k === 'create_time') && String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())) {
+        return String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())
+      }
+    }
+    )
+  ))
+  }
   return (
     <>
       <Grid
@@ -83,28 +101,56 @@ export default function SchematicsList () {
         <Grid item xs={12}>
           <MainCard />
         </Grid>
-
+        <Grid item xs={12}>
+          {schematics && <Input style={{ float: 'right' }} onChange={(e) => onSearch(e)} placeholder='Search' /> }
+        </Grid>
         {/* List all schematics saved by user */}
-        {schematics.length !== 0
-          ? <>
-            {schematics.map(
-              (sch) => {
-                return (
-                  <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-                    <SchematicCard sch={sch} />
-                  </Grid>
-                )
-              }
-            )}
-          </>
-          : <Grid item xs={12}>
-            <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
-              <Typography variant="subtitle1" gutterBottom>
-                Hey {auth.user.username} , You dont have any saved schematics...
-              </Typography>
-            </Card>
-          </Grid>
-        }
+        {saves ?
+          <>
+            {saves.length !== 0
+              ? <>
+                {saves.map(
+                  (sch) => {
+                    return (
+                      <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                        <SchematicCard sch={sch} />
+                      </Grid>
+                    )
+                  }
+                )}
+              </>
+              : <Grid item xs={12}>
+                <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Hey {auth.user.username} , You dont have any saved schematics...
+                  </Typography>
+                </Card>
+              </Grid>
+            }
+          </> :
+          <>
+            {schematics.length !== 0
+              ? <>
+                {schematics.map(
+                  (sch) => {
+                    return (
+                      <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                        <SchematicCard sch={sch} />
+                      </Grid>
+                    )
+                  }
+                )}
+              </>
+              : <Grid item xs={12}>
+                <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Hey {auth.user.username} , You dont have any saved schematics...
+                  </Typography>
+                </Card>
+              </Grid>
+            }
+          </>}
+
       </Grid>
     </>
   )
