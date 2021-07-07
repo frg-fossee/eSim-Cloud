@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig() {
+export default function LTIConfig () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -111,9 +111,8 @@ export default function LTIConfig() {
           scored: res.data.scored
         })
       if (res.data.test_case === null) {
-        setHistoryId("None")
-      }
-      else {
+        setHistoryId('None')
+      } else {
         setHistoryId(res.data.test_case)
       }
       setInitial(res.data.initial_schematic)
@@ -229,11 +228,10 @@ export default function LTIConfig() {
   }
 
   const handleChangeSim = (e) => {
-    if (e.target.value === "None") {
-      console.log("in if")
+    if (e.target.value === 'None') {
+      console.log('in if')
       setLTIDetails({ ...ltiDetails, testCase: null })
-    }
-    else {
+    } else {
       setLTIDetails({ ...ltiDetails, testCase: e.target.value })
     }
     setHistoryId(e.target.value)
@@ -388,7 +386,7 @@ export default function LTIConfig() {
               Submissions
             </Button>}
           {configExists && <Button
-            style={{ marginLeft: "1%", marginTop: "1%" }}
+            style={{ marginLeft: '1%', marginTop: '1%' }}
             disableElevation
             color="primary"
             variant="contained"

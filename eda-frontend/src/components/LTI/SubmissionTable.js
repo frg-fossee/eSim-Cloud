@@ -46,7 +46,6 @@ export default function SubmissionTable () {
     api.get(`/lti/submissions/${url.consumer_key}`, config)
       .then(
         (res) => {
-          console.log(res.data)
           for (var i = 0; i < res.data.length; i++) {
             res.data[i].schematic.save_time = new Date(res.data[i].schematic.save_time)
           }
@@ -77,7 +76,7 @@ export default function SubmissionTable () {
               <TableCell align="center">{student.score}</TableCell>
               <TableCell align="center">
                 <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}`}>
-                                    Open Submission
+                  Open Submission
                 </Button>
               </TableCell>
             </TableRow>
