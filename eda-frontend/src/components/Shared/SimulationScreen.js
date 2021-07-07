@@ -33,7 +33,7 @@ import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
+export default function SimulationScreen({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -92,8 +92,8 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
   }
 
   useEffect(() => {
-    console.log(history)
-  }, [history])
+    console.log(comparingSim)
+  }, [comparingSim])
 
   useEffect(() => {
     if (close) {
@@ -117,7 +117,6 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
       } else {
         getUrl = `simulation/history/${simType}`
       }
-      console.log(getUrl)
       if (token) {
         config.headers.Authorization = `Token ${token}`
 
@@ -135,7 +134,6 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
           for (var i = arr.length - 1; i >= 0; i--) {
             res.data.splice(arr[i], 1)
           }
-          console.log(res.data)
           setHistory(res.data)
         }).catch(err => {
           console.log(err)
@@ -528,7 +526,7 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
                         GRAPH OUTPUT
                       </Typography>
                       <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
-                        {!compare && <TextField
+                        <TextField
                           style={{ width: '20%' }}
                           id="xscale"
                           size='small'
@@ -567,8 +565,8 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
                             Pico (p)
                           </option>
 
-                        </TextField>}
-                        {!compare && <TextField
+                        </TextField>
+                        <TextField
                           style={{ width: '20%', marginLeft: '10px' }}
                           id="yscale"
                           size='small'
@@ -607,9 +605,9 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
                             Pico (p)
                           </option>
 
-                        </TextField>}
+                        </TextField>
 
-                        {!compare && <TextField
+                        <TextField
                           style={{ width: '20%', marginLeft: '10px' }}
                           id="precision"
                           size='small'
@@ -632,7 +630,7 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
                             })
                           }
 
-                        </TextField>}
+                        </TextField>
                         {history && <FormControl variant="outlined" size='small' style={{ marginLeft: '1%' }} className={classes.formControl}>
                           <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
                           <Select
@@ -652,7 +650,7 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
                             })}
                           </Select>
                         </FormControl>}
-                        {result.isGraph === 'true' && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
+                        {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
                           Download Graph Output
                         </Button>}
                       </div>
@@ -680,18 +678,18 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
                             <TableBody>
                               <TableRow>
                                 <TableCell>Max value</TableCell>
-                                <TableCell align="center">{Math.max(...result.graph.x_points)} </TableCell>
+                                <TableCell align="center">{(Math.max(...result.graph.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
                                 {
                                   result.graph.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{Math.max(...ele)}</TableCell>
+                                    return <TableCell key={ele} align="center">{(Math.max(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
                                   })}
                               </TableRow>
                               <TableRow>
                                 <TableCell>Min value</TableCell>
-                                <TableCell align="center">{Math.min(...result.graph.x_points)} </TableCell>
+                                <TableCell align="center">{(Math.min(...result.graph.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
                                 {
                                   result.graph.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{Math.min(...ele)}</TableCell>
+                                    return <TableCell key={ele} align="center">{Math.min(...ele) / scales[yscale]}</TableCell>
                                   })}
                               </TableRow>
                             </TableBody>
@@ -712,18 +710,18 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
                             <TableBody>
                               <TableRow>
                                 <TableCell>Max value</TableCell>
-                                <TableCell align="center">{Math.max(...comparingSim.x_points)} </TableCell>
+                                <TableCell align="center">{(Math.max(...comparingSim.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
                                 {
                                   comparingSim.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{Math.max(...ele)}</TableCell>
+                                    return <TableCell key={ele} align="center">{(Math.max(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
                                   })}
                               </TableRow>
                               <TableRow>
                                 <TableCell>Min value</TableCell>
-                                <TableCell align="center">{Math.min(...comparingSim.x_points)} </TableCell>
+                                <TableCell align="center">{(Math.min(...comparingSim.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
                                 {
                                   comparingSim.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{Math.min(...ele)}</TableCell>
+                                    return <TableCell key={ele} align="center">{(Math.min(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
                                   })}
                               </TableRow>
                             </TableBody>

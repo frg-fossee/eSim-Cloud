@@ -152,7 +152,6 @@ class SimulationResultsSimulator(APIView):
 @celery.signals.task_prerun.connect
 def statsd_task_prerun(task_id, **kwargs):
     current_task.start_time = time.time()
-    print(task_id)
 
 
 @celery.signals.task_postrun.connect
@@ -162,4 +161,3 @@ def statsd_task_postrun(task_id, **kwargs):
     statObj, created = runtimeStat.objects.get_or_create(exec_time=runtime)
     statObj.qty += 1
     statObj.save()
-    print(runtime)
