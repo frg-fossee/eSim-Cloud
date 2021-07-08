@@ -387,7 +387,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
       <List>
         <ListItem button divider>
           <h2 style={{ margin: '5px', width: '90%' }}>History</h2>
-          {versions&&<IconButton
+          {versions && <IconButton
             className="new-branch"
             size="small"
             onClick={handleDialogOpen}
