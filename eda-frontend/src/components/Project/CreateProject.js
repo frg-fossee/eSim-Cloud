@@ -54,18 +54,19 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120
+    minWidth: 120,
+    textAlign:'left'
   },
   selectEmpty: {
     marginTop: theme.spacing(2)
   }
 }))
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-function CreateProject () {
+function CreateProject() {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -344,37 +345,8 @@ function CreateProject () {
                 <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of variation {project.details.active_branch} saved on {activeSaveDate} at {activeSaveTime} hours</h3>
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
-              {versions != null &&
-                ((project.details && project.details.can_edit) || !project.details) &&
-                <Container maxWidth="lg" className={classes.header}>
-                  <Grid
-                    container
-                    spacing={3}
-                    direction="row"
-                    justify="center"
-                    alignItems="flex-start"
-                    style={{ backgroundColor: 'white', borderRadius: '5px' }}
-                  >
-                    <Grid item xs={12} sm={12}>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-simple-select-label">Active Version</InputLabel>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          value={activeVersion}
-                          onChange={handleActiveVersion}
-                        >
-                          {versions.map(version => {
-                            return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
-                          })}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                  </Grid>
-                </Container>
-              }
               <Paper className={classes.paper}>
-
+              
                 <TextField
                   color='primary'
                   autoFocus
@@ -404,10 +376,10 @@ function CreateProject () {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                  (
-                    <>
-                      <hr />
-                      {((project.details && project.details.can_edit) || !project.details) &&
+                (
+                  <>
+                    <hr />
+                    {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -424,34 +396,48 @@ function CreateProject () {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        id={index}
-                        label={'Title ' + index}
-                        type="text"
-                        name='name'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.name}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        multiline
-                        id={index}
-                        label={'Text ' + index}
-                        rows={4}
-                        type="text"
-                        name='text'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.text}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                    </>
-                  ))}
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      id={index}
+                      label={'Title ' + index}
+                      type="text"
+                      name='name'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.name}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      multiline
+                      id={index}
+                      label={'Text ' + index}
+                      rows={4}
+                      type="text"
+                      name='text'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.text}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                  </>
+                ))}
+                {versions != null &&
+                ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}> <FormControl  style={{width:'100%'}}className={classes.formControl}>
+                  <InputLabel  id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={activeVersion}
+                    onChange={handleActiveVersion}
+                  >
+                    {versions.map(version => {
+                      return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                    })}
+                  </Select>
+                </FormControl> </Grid> }
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
@@ -467,16 +453,16 @@ function CreateProject () {
                       value={status}
                     >
                       {project.states.map((item, index) =>
-                        (
-                          <MenuItem key={item} value={item}>{item}</MenuItem>
-                        ))}
+                      (
+                        <MenuItem key={item} value={item}>{item}</MenuItem>
+                      ))}
                       <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
                     </Select>
                   </div>
                 }</>}
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={6}>
+            {project.details && <><Grid item xs={6} sm={6}>
               <Paper style={{ paddingTop: '0%', padding: '2%' }}>
                 <List>
                   <h3>List of Approved Reports</h3>
@@ -502,20 +488,23 @@ function CreateProject () {
                 </List>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={6}>
-              <Paper style={{ padding: '2%' }}>
-                <List>
-                  <h3>History of this Project</h3>
-                  {(project.details?.history && project.details?.history[0])
-                    ? <>
-                      <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === owner} />
-                    </>
-                    : <h4>No history of this project.</h4>
-                  }
-                </List>
-              </Paper>
-            </Grid>
+              <Grid item xs={6} sm={6}>
+                <Paper style={{ padding: '2%' }}>
+                  <List>
+                    <h3>History of this Project</h3>
+                    {(project.details?.history && project.details?.history[0])
+                      ? <>
+                        <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === owner} />
+                      </>
+                      : <h4>No history of this project.</h4>
+                    }
+                  </List>
+                </Paper>
+              </Grid></>}
           </Grid>
+          {!project.details && <Button color="primary" style={{ width: '100%', marginTop: '2%' }} variant='contained' onClick={createPub}>
+            Create Project
+          </Button>}
           {project.details && project.details.can_delete && <Button onClick={handleDeleteDialogue} style={{ width: '100%', color: 'white', backgroundColor: 'red', margin: '2% auto auto auto' }}>Delete Project</Button>}
           <Dialog
             open={deleteDialogue}
