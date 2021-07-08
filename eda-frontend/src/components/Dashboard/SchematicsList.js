@@ -6,15 +6,19 @@ import {
   Typography,
   CardActions,
   CardContent,
-  Input
+  Input,
+  IconButton,
+  Popover,
+  Checkbox
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import SchematicCard from './SchematicCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
+import FilterListIcon from '@material-ui/icons/FilterList';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   mainHead: {
     width: '100%',
     backgroundColor: '#404040',
@@ -23,8 +27,11 @@ const useStyles = makeStyles({
   title: {
     fontSize: 14,
     color: '#80ff80'
-  }
-})
+  },
+  typography: {
+    padding: theme.spacing(2),
+  },
+}))
 
 // Card displaying user my schematics page header.
 function MainCard() {
@@ -64,7 +71,8 @@ export default function SchematicsList() {
   const schematics = useSelector(state => state.dashboardReducer.schematics)
   const [saves, setSaves] = React.useState(null)
   const dispatch = useDispatch()
-
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
   // For Fetching Saved Schematics
   useEffect(() => {
     dispatch(fetchSchematics())
@@ -78,14 +86,14 @@ export default function SchematicsList() {
       }
       )
     ))
-    console.log(schematics.filter((o) =>
-    Object.keys(o).some((k) => {
-      if ((k === 'name' || k === 'description' || k === 'owner' || k === 'save_time' || k === 'create_time') && String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())) {
-        return String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())
-      }
+  }
+  const handleFilterOpen = (e) => {
+    if (anchorEl) {
+      setAnchorEl(null)
     }
-    )
-  ))
+    else {
+      setAnchorEl(e.currentTarget)
+    }
   }
   return (
     <>
@@ -102,7 +110,24 @@ export default function SchematicsList() {
           <MainCard />
         </Grid>
         <Grid item xs={12}>
-          {schematics && <Input style={{ float: 'right' }} onChange={(e) => onSearch(e)} placeholder='Search' /> }
+          {schematics && <IconButton onClick={handleFilterOpen} style={{ float: 'right' }} ><FilterListIcon /></IconButton>}
+          {schematics && <Input style={{ float: 'right' }} onChange={(e) => onSearch(e)} placeholder='Search' />}
+          <Popover
+            open={open}
+            onClose={handleFilterOpen}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            anchorEl={anchorEl}
+            style={{width:'200%'}}
+            >
+              <Typography ><Checkbox /> Has a project</Typography>
+          </Popover>
         </Grid>
         {/* List all schematics saved by user */}
         {saves ?

@@ -110,21 +110,6 @@ export default function DashSidebar (props) {
         >
           <ListItemText primary='My Schematics' />
         </ListItem>
-
-        {/* List name of saved schematics */}
-        <List className={classes.nestedSearch} >
-          <InputBase
-            className={classes.input}
-            placeholder="Find your schematic..."
-          />
-        </List>
-        <div className={classes.nested} >
-          {schematics.map((sch) => (
-            <ListItem key={sch.save_id} button>
-              <ListItemText primary={`${sch.name}`} />
-            </ListItem>
-          ))}
-        </div>
         <Divider />
         {auth.roles && auth.roles.is_type_reviewer &&
           <ListItem
