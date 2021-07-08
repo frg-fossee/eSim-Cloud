@@ -487,7 +487,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       </Tooltip>
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <Tooltip title="Import KiCad Schematic">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { handleKicadFileUpload(); close() }} >
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { handleKicadFileUpload() }} >
           <InsertDriveFileIcon fontSize="small" />
         </IconButton>
       </Tooltip>

@@ -176,19 +176,10 @@ export function rotateCell (cell, rot_ang) {
 
 function rotate (rot_ang) {
   var cell = graph.getSelectionCell()
-  rotateCell(cell, rot_ang)
-  // var view = graph.getView()
-  // var state = view.getState(cell, true)
-  // var vHandler = graph.createVertexHandler(state)
-  // if (cell != null) {
-  //   vHandler.rotateCell(cell, parseInt(rot_ang))
-  //   let childCount = cell.getChildCount()
-  //   for(let i = 0; i < childCount; i++) {
-  //     let child = cell.getChildAt(i)
-  //     vHandler.rotateCell(child, parseInt(rot_ang) * (-1))
-  //   }
-  // }
-  // vHandler.destroy()
+  console.log(graph.getDefaultParent())
+  if (cell !== undefined) {
+    rotateCell(cell, rot_ang)
+  }
 }
 
 // ROTATE COMPONENT CLOCKWISE

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import store from '../../../redux/store'
 import api from '../../../utils/Api'
 import { getSvgMetadata } from './SvgParser'
@@ -12,14 +13,19 @@ const orientations = [
 ]
 
 var graph
+var defaultParent
+
+// Scale for the graph
+const defScale = 10
 
 // Graph config
 export default function KiCadFileUtils (grid) {
   graph = grid
+  defaultParent = graph.getDefaultParent()
 }
 
 // Reads Kicad .sch files and returns the schematic as instructions
-function readKicadSchematic (text) {
+const readKicadSchematic = (text) => {
   const textSplit = text.split('\n')
   let i = 0
   const instructions = {}
@@ -54,8 +60,8 @@ function readKicadSchematic (text) {
       case '$Comp':
         i += 1
         component = {}
-        component.library = textSplit[i].split(' ')[1].split(':')[0]
-        component.componentName = textSplit[i].split(' ')[1].split(':')[1]
+        component.library = textSplit[i].split(' ')[1].split(':')[0].trim()
+        component.componentName = textSplit[i].split(' ')[1].split(':')[1].trim()
         i += 2 // skips identifier line
         component.x = parseInt(textSplit[i].split(' ')[1])
         component.y = parseInt(textSplit[i].split(' ')[2])
@@ -89,51 +95,160 @@ function readKicadSchematic (text) {
         instructions.components.push(component)
         break
       case 'Wire':
-        i += 1
-        wire = {}
-        var poss = textSplit[i].split(' ')
-        wire.startx = parseInt(poss[0].split('\t')[1])
-        wire.starty = parseInt(poss[1])
-        wire.endx = parseInt(poss[2])
-        wire.endy = parseInt(poss[3])
-        instructions.wires.push(wire)
+        if (textSplit[i].split(' ')[1] == 'Wire') {
+          i += 1
+          wire = {}
+          var pos = textSplit[i].split(' ')
+          pos = pos.filter(e => e.length !== 0)
+          wire.startx = parseInt(pos[0].split('\t')[1])
+          wire.starty = parseInt(pos[1])
+          wire.endx = parseInt(pos[2])
+          wire.endy = parseInt(pos[3])
+          instructions.wires.push(wire)
+        }
         break
       case 'Connection':
         connection = {}
-        connection.x = textSplit[i].split(' ')[2]
-        connection.y = textSplit[i].split(' ')[3]
+        var pos = textSplit[i].split(' ')
+        pos = pos.filter(e => e.length !== 0)
+        connection.x = pos[1]
+        connection.y = pos[2]
         instructions.connections.push(connection)
         break
       default:
         break
     }
   }
+  instructions.wires = reduceWires([...instructions.wires], [...instructions.connections])
   return instructions
 }
 
-async function loadIntructions (instructions) {
+const loadComponents = async (components, wires) => {
   // API config
   const token = store.getState().authReducer.token
-  const config = { headers: { 'Content-Type': 'application/json' } }
+  var config = { headers: { 'Content-Type': 'application/json' } }
   if (token) { config.headers.Authorization = `Token ${token}` }
 
   // Graph config
-  const parent = graph.getDefaultParent()
+  var parent = graph.getDefaultParent()
+  var model = graph.getModel()
+
+  const insertComponent = async (comp, compData) => {
+    model.beginUpdate()
+    try {
+      getSvgMetadata(graph, parent, null, null, comp.x / defScale,
+        comp.y / defScale, compData, comp.rotation)
+      graph.refresh();
+    } catch (e) { console.log(e) }
+    model.endUpdate()
+    return
+  }
 
   // Load all components
-  for (let i = 0; i < instructions.components.length; i++) {
+  for (let i = 0; i <= components.length; i++) {
     // Get component data
-    const url = `components/?component_library__library_name__icontains=
-      ${instructions.components[i].library}
-      &name__icontains=${instructions.components[i].componentName}`
-    const componentData = await api.get(url, config)
-      .then(res => { return res.data[0] })
-    // Add compoennt to graph
-    getSvgMetadata(graph, parent, null, null, instructions.components[i].x / 10, instructions.components[i].y / 10, componentData, instructions.components[i].rotation)
+    var url
+    if (i !== components.length) {
+      url = `components/?component_library__library_name__icontains=${components[i].library}&name__icontains=${components[i].componentName}`
+    } else {
+      url = `components/?component_library__library_name__icontains=${components[i-1].library}&name__icontains=${components[i-1].componentName}`
+    }
+    await api.get(url, config)
+      .then((res) => {
+        if (i !== components.length) {
+          insertComponent(components[i], res.data[0])
+        } else {
+          console.log('IMMA FAKE')
+        }
+      })
   }
+  joinComponents(components, wires)
+}
+
+const joinComponents = (components, wires) => {
+  const componentCells = []
+  var finalWires = [];
+  components.forEach(comp => {
+    graph.getCells(comp.x / defScale, comp.y / defScale, 100, 100, defaultParent, componentCells)
+  })
+  const checkInBound = (x, y, compMxCell) => {
+    if (compMxCell.geometry.x + compMxCell.geometry.width /2 >= x &&
+      compMxCell.geometry.x - compMxCell.geometry.width/2 <= x &&
+      compMxCell.geometry.y + compMxCell.geometry.height/2 >= y &&
+      compMxCell.geometry.y - compMxCell.geometry.height/2 <= y) {
+      return true
+    } else {
+      return false
+    }
+  }
+ 
+  const findClosestTerminal = (x, y, compCell) => {
+    let minDist = Number.MAX_SAFE_INTEGER
+    let closestTerm = null
+    const compx = compCell.geometry.x - compCell.geometry.width / 2
+    const compy = compCell.geometry.y - compCell.geometry.height / 2
+    for (let i = 0, child = compCell.getChildAt(i); i < compCell.getChildCount(); i++, child = compCell.getChildAt(i)) {
+      if (child.connectable) {
+        console.log(child)
+        let distFrmPnt = Math.pow(x - (compx + child.geometry.x), 2) + Math.pow(y - (compy + child.geometry.y), 2)
+        if (distFrmPnt < minDist) {
+          closestTerm = child
+          minDist = distFrmPnt
+        }
+      }
+    }
+    return closestTerm
+  }
+
+  for (const c in componentCells) {
+    for (const w in wires) {
+      if (wires[w].startTerminal !== undefined && wires[w].endTerminal !== undefined) {
+        finalWires.push(wires[w])
+      } else {
+        const cbs = checkInBound(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])
+        const cbe = checkInBound(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
+        let terminal
+        if (cbs && !wires[w].startTerminal) {
+          // console.log('S', wires[w].startx, wires[w].starty)
+          terminal = findClosestTerminal(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])
+          wires[w].startTerminal = terminal
+        } else if (cbe && !wires[w].endTerminal) {
+          // console.log('E', wires[w].endx, wires[w].endy)
+          terminal = findClosestTerminal(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
+          wires[w].endTerminal = terminal
+        }
+      }
+    }
+  }
+  console.log(finalWires)
+  finalWires.forEach(wire => {
+    var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
+  })
+}
+
+// Reduces the wires and connections
+// TODO Connections
+const reduceWires = (wires, connections) => {
+  for (let i = 0; i < wires.length; i++) {
+    if (wires[i] === undefined) { continue }
+    let wire = wires[i]
+    for (let j = 0; j < wires.length; j++) {
+      if (wires[j] === undefined) { continue }
+      if (wire.endx === wires[j].startx && wire.endy === wires[j].starty) {
+        wires[i].endx = wires[j].endx
+        wires[i].endy = wires[j].endy
+        delete wires[j--]
+        if (i > j + 1) { i-- }
+        j = 0
+      }
+    }
+  }
+  wires = wires.filter(e => e !== null || e !== undefined)
+  return wires
 }
 
 export function importSCHFile (fileContents) {
   const rawInstr = readKicadSchematic(fileContents)
-  loadIntructions(rawInstr)
+  console.log(rawInstr)
+  loadComponents([...rawInstr.components], [...rawInstr.wires])
 }
