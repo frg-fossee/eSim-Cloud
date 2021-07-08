@@ -180,6 +180,13 @@ export abstract class UndoUtils {
             })
         }
 
+        if (ele.event == "breadDrag" && operation == 'undo') {
+            UndoUtils.removeElement(ele).then(res => {
+                UndoUtils.workspaceUndo()
+            })
+            return;
+        }
+
         // handle Wire change events like add & color change
         if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
             UndoUtils.pushChangeToUndo(ele);
@@ -247,6 +254,10 @@ export abstract class UndoUtils {
                             }
                         } else {
                             existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy);
+                            if (ele.keyName != 'BreadBoard') {
+                                Workspace.onDragEvent(existing);
+                                Workspace.onDragStopEvent(existing);
+                            }
                         }
                         for (const e in window.scope['wires']) {
                             window.scope['wires'][e].update();

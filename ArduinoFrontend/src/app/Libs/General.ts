@@ -421,7 +421,7 @@ export class BreadBoard extends CircuitElement {
       const wire = nodeTuple.breadboardNode.solderWire();
       wire.addPoint(nodeTuple.elementNode.x, nodeTuple.elementNode.y);
       // wire.connect(nodeTuple.elementNode, true);
-      nodeTuple.elementNode.connectWire(wire);
+      nodeTuple.elementNode.connectWire(wire, false);
       this.addSolderedNode(nodeTuple.breadboardNode);
     }
 

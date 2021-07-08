@@ -333,7 +333,7 @@ export class Wire {
    * @param t End point / END circuit node
    * @param removeLast remove previously inserted item
    */
-  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false, pushUndo = false) {
+  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false, pushUndo = false, undoEvtType = 'add') {
     // if remove last then pop from array
     if (removeLast && this.points.length > 1) {
       this.points.pop();
@@ -353,7 +353,8 @@ export class Wire {
     // Update Wire
     this.update();
     // Push dump to Undo stack, only if pushUndo is false
-    !pushUndo ? UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: 'add' }) : console.log('undo skiped');
+    !pushUndo ? UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType }) : console.log('undo skiped');
+    undoEvtType == 'breadDrag' ? UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType }) : console.log('undo skiped undoDrag');
   }
 
   /**
