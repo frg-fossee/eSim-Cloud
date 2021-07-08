@@ -638,7 +638,7 @@ export class Workspace {
       // console.log(saveObj);
       // Save or Update Circuit Ofline
       if (toUpdate) {
-        SaveOffline.Update(saveObj);
+        SaveOffline.Update(saveObj, callback);
       } else {
         SaveOffline.Save(saveObj, callback);
       }

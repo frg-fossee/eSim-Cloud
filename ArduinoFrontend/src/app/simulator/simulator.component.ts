@@ -18,6 +18,7 @@ import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
 import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
+import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -381,6 +382,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       el.value = 'Untitled';
     }
     this.projectTitle = el.value;
+    return this.projectTitle;
   }
   /**
    * Function invoked when dbclick is performed on a component inside ComponentList
@@ -484,7 +486,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
   /** Function saves or updates the project offline */
-  SaveProjectOff() {
+  SaveProjectOff(callback = null) {
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
       AlertService.showAlert('Project is already Online!');
@@ -492,7 +494,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
     // Save circuit if id is not presenr
     if (this.projectId) {
-      Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
+      Workspace.SaveCircuit(this.projectTitle, this.description, callback, this.projectId);
     } else {
       // save circuit and add query parameters
       Workspace.SaveCircuit(this.projectTitle, this.description, (v) => {
@@ -508,6 +510,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             queryParamsHandling: 'merge'
           }
         );
+        if (callback) {
+          callback();
+        }
       });
     }
   }
@@ -579,6 +584,57 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   Logout() {
     Login.logout();
+  }
+  RouteToSimulator() {
+    this.window.location = '../#/simulator';
+    this.window.location.reload();
+  }
+  /**
+   * @param routeLink route link
+   * @param isAbsolute is the link absolute? [pass false if relatives]
+   */
+  RouteToFunction(routeLink, isAbsolute = false) {
+    return () => {
+      if (isAbsolute) {
+        this.window.location = routeLink;
+      } else {
+        this.router.navigateByUrl(routeLink);
+      }
+    };
+  }
+  /**
+   * Handles routeLinks
+   */
+  HandleRouter(callback) {
+    AlertService.showOptions(
+      'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
+      () => {
+        AlertService.showCustom(
+          SaveProjectDialogComponent,
+          {
+            onChangeProjectTitle: (e) => {
+              this.projectTitle = e.target.value || '';
+              return this.projectTitle;
+            },
+            projectTitle: this.projectTitle,
+          },
+          (value) => {
+            if (value) {
+              this.SaveProjectOff(() => {
+                callback();
+              });
+            }
+          }
+        );
+      },
+      () => {
+        callback();
+      },
+      () => {},
+      'Save',
+      'Don\'t save',
+      'Cancel'
+    );
   }
   /**
    * Open Gallery Project
