@@ -12,16 +12,7 @@ class consumerSerializer(serializers.ModelSerializer):
                   'score', 'initial_schematic', 'test_case', 'scored']
 
     def create(self, validated_data):
-        model_schematic = validated_data.pop("model_schematic")
-        initial_schematic = validated_data.pop("initial_schematic")
-        if validated_data.get("test_case"):
-            test_case = validated_data.pop("test_case")
-        else:
-            test_case = None
-        consumer = lticonsumer.objects.create(model_schematic=model_schematic,
-                                              initial_schematic=initial_schematic,  # noqa
-                                              test_case=test_case,
-                                              **validated_data)
+        consumer = lticonsumer.objects.create(**validated_data)
         return consumer
 
 
@@ -29,6 +20,7 @@ class consumerExistsSerializer(serializers.ModelSerializer):
     class Meta:
         model = lticonsumer
         fields = ['consumer_key', 'model_schematic', 'initial_schematic']
+
 
 class consumerResponseSerializer(serializers.Serializer):
     config_url = serializers.CharField(max_length=100)
