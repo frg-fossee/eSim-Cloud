@@ -163,7 +163,7 @@ function CreateProject () {
           console.log(err)
         })
     }
-  }, [])
+  }, [open])
   useEffect(() => {
     if (versions && project.details) {
       for (var i = 0; i < versions.length; i++) {
