@@ -146,7 +146,7 @@ export class Workspace {
    */
   static onDragStopEvent(element) {
     for (const fn of window.DragStopListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 
@@ -155,7 +155,7 @@ export class Workspace {
    */
   static onDragEvent(element) {
     for (const fn of window.DragListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 

@@ -207,8 +207,8 @@ export abstract class UndoUtils {
             if (ele.event == 'add' && operation == 'redo') {
                 UndoUtils.createElement(ele).then(done => {
                     if (ele.keyName === 'BreadBoard') {
-                        window['DragListeners'] = [];
-                        window['DragStopListeners'] = [];
+                        // window['DragListeners'].splice(0, 1)
+                        // window['DragStopListeners'].splice(0, 1)
                     }
                 })
                 UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][0].save(), event: ele.event });
@@ -260,8 +260,8 @@ export abstract class UndoUtils {
                             UndoUtils.removeElement(ele).then(done => {
                                 // Remove drag listeners if element is a breadboard
                                 if (ele.keyName === 'BreadBoard') {
-                                    window['DragListeners'] = [];
-                                    window['DragStopListeners'] = [];
+                                    // window['DragListeners'].splice(0, 1)
+                                    // window['DragStopListeners'].splice(0, 1)
                                 }
                             })
                         })
@@ -330,7 +330,7 @@ export abstract class UndoUtils {
                     // Hide loading animation
                 } else {
                     // resolve anyways
-                    resolve(obj)
+                    // resolve(obj)
                 }
             }, 100);
 
@@ -348,7 +348,7 @@ export abstract class UndoUtils {
             let key = ele.keyName
             let uid = ele.element.id
             // get existing element that is to be removed
-            let toRem = this.getExistingWindowElement(window.scope['key'], ele);
+            let toRem = this.getExistingWindowElement(window.scope[key], ele);
 
             // If Current Selected item is a Wire which is not Connected from both end
             if (key === 'wires') {
@@ -359,6 +359,21 @@ export abstract class UndoUtils {
                 // make selected variables null
                 window.Selected = null;
                 window.isSelected = false;
+            }
+            // If BreadBoard remove draglistners too
+            if (key === 'BreadBoard') {
+                for (const i in window['DragListeners']) {
+                    let itrFn = window['DragListeners'][i]
+                    if (itrFn.id === toRem.id) {
+                        window['DragListeners'].splice(i, 1)
+                    }
+                }
+                for (const i in window['DragStopListeners']) {
+                    let itrFn = window['DragStopListeners'][i]
+                    if (itrFn.id === toRem.id) {
+                        window['DragStopListeners'].splice(i, 1)
+                    }
+                }
             }
 
             // get the component keyname
