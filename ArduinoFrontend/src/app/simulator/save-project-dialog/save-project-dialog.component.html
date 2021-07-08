@@ -1,0 +1,12 @@
+<div mat-dialog-content>
+  Project name
+  <form style="min-width: 300px;">
+    <mat-form-field style="width: 100%;">
+      <input matInput [value]="projectTitle" (input)="onChange($event)" class="text-dark">
+    </mat-form-field>
+  </form>
+</div>
+<div class="confirm-buttons" mat-dialog-actions>
+  <button class="response-button" color="success" mat-button (click)="onSave()">Save temporary</button>
+  <button class="response-button" color="primary" mat-button (click)="onCancel()">Cancel</button>
+</div>
