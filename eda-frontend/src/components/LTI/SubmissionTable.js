@@ -76,16 +76,40 @@ export default function SubmissionTable() {
   }, [])
 
   const handleUserSort = () => {
+    setSortOrderTime(0)
     const temp = responseData.slice()
-    if (sortOrderUser !== 1) {
+    if (sortOrderUser === 0) {
       temp.sort((a, b) => a.student.username < b.student.username)
       setSortData(temp)
       setSortOrderUser(1)
     }
-    else {
+    else if (sortOrderUser === 1) {
       temp.sort((a, b) => a.student.username > b.student.username)
       setSortData(temp)
       setSortOrderUser(2)
+    }
+    else {
+      setSortData(responseData)
+      setSortOrderUser(0)
+    }
+  }
+
+  const handleTimeSort = () => {
+    setSortOrderUser(0)
+    const temp = responseData.slice()
+    if (sortOrderTime === 0) {
+      temp.sort((a, b) => a.schematic.save_time - b.schematic.save_time)
+      setSortData(temp)
+      setSortOrderTime(1)
+    }
+    else if (sortOrderTime === 1) {
+      temp.sort((a, b) => b.schematic.save_time - a.schematic.save_time)
+      setSortData(temp)
+      setSortOrderTime(2)
+    }
+    else {
+      setSortData(responseData)
+      setSortOrderTime(0)
     }
   }
 
@@ -95,7 +119,7 @@ export default function SubmissionTable() {
         <TableHead>
           <TableRow>
             <TableCell onClick={handleUserSort}>User {sortOrderUser === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderUser === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
-            <TableCell align="center">Created at</TableCell>
+            <TableCell onClick={handleTimeSort} align="center">Created at {sortOrderTime === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderTime === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
             <TableCell align="center">Score</TableCell>
             <TableCell align="center">Submissions</TableCell>
           </TableRow>

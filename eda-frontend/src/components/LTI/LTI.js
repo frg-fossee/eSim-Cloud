@@ -17,18 +17,17 @@ import {
   IconButton
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import queryString from 'query-string'
 import CloseIcon from '@material-ui/icons/Close'
-// import { parseXmlToGraph, GenerateNetList } from './Helper/Testcase'
+import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 import api from '../../utils/Api'
-// import mxGraphFactory from 'mxgraph'
+import './LTI.css'
 
-// const {
-//     mxGraph
-// } = new mxGraphFactory()
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig () {
+export default function LTIConfig() {
   const classes = useStyles()
   const dispatch = useDispatch()
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -273,6 +272,14 @@ export default function LTIConfig () {
       })
   }
 
+  const handleUrlCopy = () => {
+    var copyText = document.querySelector(".lti-url")
+    console.log(copyText)
+    copyText.select()
+    copyText.setSelectionRange(0, 99999)
+    document.execCommand("copy")
+  }
+
   return (
     <>
       {ltiDetails && <>
@@ -360,8 +367,21 @@ export default function LTIConfig () {
             label="Scored?"
           />
           <br />
-          {configURL && <h3 className={classes.config}>URL for LTI Access: {configURL}</h3>}
-          <Button style={{ marginTop: '1%' }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
+          {configURL && <div style={{ display: 'flex', marginTop: '1%' }}>
+            <h3 className={classes.config} style={{ float: 'left' }}>URL for LTI Access:</h3>
+            <h3 className={classes.config} style={{ float: 'left' }}>
+              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '14px', minWidth: 580, width: 580, maxWidth: 580, border: 'none', backgroundColor: '#f4f6f8' }} />
+            </h3>
+            <Button style={{ float: 'right', height: '50%', marginTop: '0.7%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
+              Copy LTI URL
+            </Button>
+
+          </div>}
+
+          <Button style={{ marginTop: '1%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
+            Return to Dashboard
+          </Button>
+          <Button style={{ marginTop: '1%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
             Create LTI URL
           </Button>
           {configExists &&
