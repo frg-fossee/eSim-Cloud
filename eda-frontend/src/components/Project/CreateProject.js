@@ -346,7 +346,20 @@ function CreateProject() {
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
               <Paper className={classes.paper}>
-              
+              {versions != null &&
+                ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}> <FormControl  style={{width:'100%'}}className={classes.formControl}>
+                  <InputLabel  id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={activeVersion}
+                    onChange={handleActiveVersion}
+                  >
+                    {versions.map(version => {
+                      return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                    })}
+                  </Select>
+                </FormControl> </Grid> }
                 <TextField
                   color='primary'
                   autoFocus
@@ -424,20 +437,7 @@ function CreateProject() {
                     />
                   </>
                 ))}
-                {versions != null &&
-                ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}> <FormControl  style={{width:'100%'}}className={classes.formControl}>
-                  <InputLabel  id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={activeVersion}
-                    onChange={handleActiveVersion}
-                  >
-                    {versions.map(version => {
-                      return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
-                    })}
-                  </Select>
-                </FormControl> </Grid> }
+                
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 {project.details && <>{
