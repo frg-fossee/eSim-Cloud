@@ -367,17 +367,6 @@ export default function LTIConfig() {
             label="Scored?"
           />
           <br />
-          {configURL && <div style={{ display: 'flex', marginTop: '1%' }}>
-            <h3 className={classes.config} style={{ float: 'left' }}>URL for LTI Access:</h3>
-            <h3 className={classes.config} style={{ float: 'left' }}>
-              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '14px', minWidth: 580, width: 580, maxWidth: 580, border: 'none', backgroundColor: '#f4f6f8' }} />
-            </h3>
-            <Button style={{ float: 'right', height: '50%', marginTop: '0.7%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
-              Copy LTI URL
-            </Button>
-
-          </div>}
-
           <Button style={{ marginTop: '1%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
             Return to Dashboard
           </Button>
@@ -413,6 +402,16 @@ export default function LTIConfig() {
             onClick={handleOnClick} >
             Update LTI App
           </Button>}
+          {configURL && <div style={{ display: 'flex', marginTop: '1%' }}>
+            <h3 className={classes.config} style={{ float: 'left' }}>URL for LTI Access:</h3>
+            <h3 className={classes.config} style={{ float: 'left' }}>
+              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '14px', minWidth: 580, width: 580, maxWidth: 580, border: 'none', backgroundColor: '#f4f6f8' }} />
+            </h3>
+            <Button style={{ float: 'right', height: '50%', marginTop: '0.7%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
+              Copy LTI URL
+            </Button>
+
+          </div>}
         </div>
         <Snackbar
           anchorOrigin={{
