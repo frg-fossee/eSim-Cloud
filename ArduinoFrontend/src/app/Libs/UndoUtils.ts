@@ -128,10 +128,10 @@ export abstract class UndoUtils {
         // handle Delete events
         if (operation == 'undo' && ele.event == 'delete') {
             UndoUtils.createElement(ele).then(res => {
-                if (ele.keyName === 'BreadBoard') {
-                    window['DragListeners'] = [];
-                    window['DragStopListeners'] = [];
-                }
+                // if (ele.keyName === 'BreadBoard') {
+                //     window['DragListeners'] = [];
+                //     window['DragStopListeners'] = [];
+                // }
                 for (let i = 0; i < ele.step; i++) {
                     let chg = this.undo.pop();
                     UndoUtils.createElement(chg);

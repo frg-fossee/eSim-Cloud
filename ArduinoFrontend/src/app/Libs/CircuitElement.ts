@@ -387,6 +387,20 @@ export abstract class CircuitElement {
    * Load Circuit Component
    */
   load(data: any): void {
+
+    for (const i in window['DragListeners']) {
+      let itrFn = window['DragListeners'][i]
+      if (itrFn.id === this.id) {
+        window['DragListeners'][i].id = data.id;
+      }
+    }
+    for (const i in window['DragStopListeners']) {
+      let itrFn = window['DragStopListeners'][i]
+      if (itrFn.id === this.id) {
+        window['DragStopListeners'][i].id = data.id;
+      }
+    }
+
     this.id = data.id;
     this.tx = data.tx;
     this.ty = data.ty;
