@@ -235,9 +235,13 @@ const joinComponents = (components, wires) => {
   // console.log(wires)
   model.beginUpdate()
   wires.forEach(wire => {
-    var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
-    console.log(v)
-    v.geometry.points = wire.points.map(p => {return new mxPoint(p.x / defScale, p.y / defScale)})
+    if (wire.startTerminal && wire.endTerminal) {
+      var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
+      console.log(v)
+      if (wire.points) {
+        v.geometry.points = wire.points.map(p => {return new mxPoint(p.x / defScale, p.y / defScale)})
+      }
+    }
   })
   model.endUpdate()
 }

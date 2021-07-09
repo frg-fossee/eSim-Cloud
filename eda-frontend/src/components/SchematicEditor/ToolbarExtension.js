@@ -441,9 +441,10 @@ ImageExportDialog.propTypes = {
 
 // Dialog box to open saved Schematics
 export function OpenSchDialog (props) {
-  const { open, close, openLocal } = props
+  const { open, close, openLocal, openKicad } = props
   const [isLocal, setisLocal] = React.useState(true)
   const [isGallery, setisGallery] = React.useState(false)
+  const [isKicad, setisKicad] = React.useState(false)
   const schSave = useSelector(state => state.saveSchematicReducer)
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -521,72 +522,79 @@ export function OpenSchDialog (props) {
                   </Table>
                 </TableContainer>
               </Grid>
-              : <Grid item xs={12} sm={12}>
-                {/* Listing Saved Schematics */}
-                {schematics.length === 0
-                  ? <Typography variant="subtitle1" gutterBottom>
+              : isKicad
+                ? <center> <Button variant="outlined" fullWidth={true} size="large" onClick={() => { openKicad(); close() }} color="primary">
+                Upload .sch File
+                </Button> </center>
+                : <Grid item xs={12} sm={12}>
+                  {/* Listing Saved Schematics */}
+                  {schematics.length === 0
+                    ? <Typography variant="subtitle1" gutterBottom>
                     Hey {auth.user.username} , You dont have any saved schematics...
-                  </Typography>
-                  : <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
-                    <Table stickyHeader size="small" aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="center">Name</TableCell>
-                          <TableCell align="center">Description</TableCell>
-                          <TableCell align="center">Created</TableCell>
-                          <TableCell align="center">Updated</TableCell>
-                          <TableCell align="center">Launch</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <>
-                          {schematics.map(
-                            (sch) => {
-                              return (
-                                <TableRow key={sch.save_id}>
-                                  <TableCell align="center">{sch.name}</TableCell>
-                                  <TableCell align="center">
-                                    <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
-                                      <span>
-                                        {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
-                                      </span>
-                                    </Tooltip>
-                                  </TableCell>
-                                  <TableCell align="center">{getDate(sch.create_time)}</TableCell>
-                                  <TableCell align="center">{getDate(sch.save_time)}</TableCell>
-                                  <TableCell align="center">
-                                    <Button
-                                      size="small"
-                                      color="primary"
-                                      onClick={() => { dispatch(fetchSchematic(sch.save_id)) }}
-                                      variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
-                                    >
+                    </Typography>
+                    : <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
+                      <Table stickyHeader size="small" aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">Name</TableCell>
+                            <TableCell align="center">Description</TableCell>
+                            <TableCell align="center">Created</TableCell>
+                            <TableCell align="center">Updated</TableCell>
+                            <TableCell align="center">Launch</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <>
+                            {schematics.map(
+                              (sch) => {
+                                return (
+                                  <TableRow key={sch.save_id}>
+                                    <TableCell align="center">{sch.name}</TableCell>
+                                    <TableCell align="center">
+                                      <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
+                                        <span>
+                                          {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
+                                        </span>
+                                      </Tooltip>
+                                    </TableCell>
+                                    <TableCell align="center">{getDate(sch.create_time)}</TableCell>
+                                    <TableCell align="center">{getDate(sch.save_time)}</TableCell>
+                                    <TableCell align="center">
+                                      <Button
+                                        size="small"
+                                        color="primary"
+                                        onClick={() => { dispatch(fetchSchematic(sch.save_id)) }}
+                                        variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
+                                      >
                                       Launch
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            }
-                          )}
-                        </>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                }
-              </Grid>
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              }
+                            )}
+                          </>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  }
+                </Grid>
           }
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
+        <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false); setisKicad(false) }} color="secondary">
           Local
         </Button>
         <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { dispatch(fetchGallery()); setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
         </Button>
+        <Button variant={isKicad ? 'outlined' : 'text'} onClick={() => { setisLocal(false); setisGallery(false); setisKicad(true) }} color="secondary">
+          KiCad
+        </Button>
         {auth.isAuthenticated !== true
           ? <></>
-          : <Button variant={!isGallery & !isLocal ? 'outlined' : 'text'} onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false) }} color="secondary" >
+          : <Button variant={!isGallery & !isLocal & !isKicad ? 'outlined' : 'text'} onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false); setisKicad(false) }} color="secondary" >
             on Cloud
           </Button>
         }
@@ -601,7 +609,8 @@ export function OpenSchDialog (props) {
 OpenSchDialog.propTypes = {
   close: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  openLocal: PropTypes.func.isRequired
+  openLocal: PropTypes.func.isRequired,
+  openKicad: PropTypes.func.isRequired
 }
 
 function SimpleSnackbar ({ open, close, message }) {

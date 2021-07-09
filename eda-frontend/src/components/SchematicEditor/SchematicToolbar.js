@@ -28,7 +28,6 @@ import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import { RotateLeft } from '@material-ui/icons'
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
 import { Link as RouterLink } from 'react-router-dom'
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
 import { fetchRole } from '../../redux/actions/authActions'
@@ -479,18 +478,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} />
+      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} openKicad={handleKicadFileUpload}/>
       <Tooltip title="Save (Ctrl + S)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
-      <Tooltip title="Import KiCad Schematic">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={() => { handleKicadFileUpload() }} >
-          <InsertDriveFileIcon fontSize="small" />
-        </IconButton>
-      </Tooltip>
       <span className={classes.pipe}>|</span>
       <Tooltip title="Export (Ctrl + E)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
