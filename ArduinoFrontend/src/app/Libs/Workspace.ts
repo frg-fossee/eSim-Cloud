@@ -790,16 +790,22 @@ export class Workspace {
 
       // If BreadBoard remove draglistners too
       if (key === 'BreadBoard') {
+        // Search in DragListeners & splice
         for (const i in window['DragListeners']) {
-          let itrFn = window['DragListeners'][i]
-          if (itrFn.id === window['Selected'].id) {
-            window['DragListeners'].splice(i, 1)
+          if (window.DragListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragListeners'].splice(i, 1);
+            }
           }
         }
+        // Search in DragStopListeners & splice
         for (const i in window['DragStopListeners']) {
-          let itrFn = window['DragStopListeners'][i]
-          if (itrFn.id === window['Selected'].id) {
-            window['DragStopListeners'].splice(i, 1)
+          if (window.DragStopListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragStopListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragStopListeners'].splice(i, 1);
+            }
           }
         }
       }
