@@ -25,6 +25,7 @@
     "react-brace": "^3.6.6",
     "react-chartjs-2": "^2.11.2",
     "react-dom": "^16.14.0",
+    "react-draggable": "^4.4.3",
     "react-loader-spinner": "^3.1.14",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.1.2",
@@ -33,6 +34,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "typescript": "^3.9.10"
+    "spinners-react": "^1.0.4",
   },
   "scripts": {
     "start": "react-scripts start",

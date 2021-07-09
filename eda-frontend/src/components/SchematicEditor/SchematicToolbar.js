@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
@@ -27,9 +27,10 @@ import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import { Link as RouterLink } from 'react-router-dom'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
-import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid } from './Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
+import { RotateLeft } from '@material-ui/icons'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -363,6 +364,43 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setlibsOpen(false)
   }
 
+  // Shortcuts that cant be put in Helper/KeyboardShortcuts.js
+  useEffect(() => {
+    function shrtcts (event) {
+      // Save - Ctrl + S
+      if (event.ctrlKey && event.keyCode === 83) {
+        event.preventDefault()
+        handelSchSave()
+      }
+      // Print - Ctrl + P
+      if (event.ctrlKey && event.keyCode === 80) {
+        event.preventDefault()
+        PrintPreview()
+      }
+      // Open dialog - Ctrl + O
+      if (event.ctrlKey && event.keyCode === 79) {
+        event.preventDefault()
+        handleSchDialOpen()
+      }
+      // Export - Ctrl + E / Image Export Ctrl + Shift + E
+      if (event.ctrlKey && event.keyCode === 69) {
+        event.preventDefault()
+        if (event.shiftKey) {
+          handleImgClickOpen()
+        } else {
+          handelLocalSchSave()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', shrtcts)
+
+    return () => {
+      window.addEventListener('keydown', shrtcts)
+    }
+  // eslint-disable-next-line
+  }, [])
+
   return (
     <>
       <Tooltip title="New">
@@ -370,13 +408,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <CreateNewFolderOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Open">
+      <Tooltip title="Open (Ctrl + O)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleSchDialOpen} >
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} />
-      <Tooltip title="Save">
+      <Tooltip title="Save (Ctrl + S)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
@@ -384,18 +422,18 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <span className={classes.pipe}>|</span>
 
-      <Tooltip title="Export">
+      <Tooltip title="Export (Ctrl + E)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
           <SystemUpdateAltOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Image Export">
+      <Tooltip title="Image Export (Ctrl + Shift + E)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleImgClickOpen}>
           <ImageOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <ImageExportDialog open={imgopen} onClose={handleImgClose} />
-      <Tooltip title="Print Preview">
+      <Tooltip title="Print Preview (Ctrl + P)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={PrintPreview}>
           <PrintOutlinedIcon fontSize="small" />
         </IconButton>
@@ -426,46 +464,51 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <SelectLibrariesModal open={libsOpen} close={handleLibClose}/>
       <span className={classes.pipe}>|</span>
 
-      <Tooltip title="Undo">
+      <Tooltip title="Undo (Ctrl + Z)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={Undo}>
           <UndoIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Redo">
+      <Tooltip title="Redo (Ctrl + Shift + Z)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={Redo}>
           <RedoIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Rotate">
+      <Tooltip title="Rotate AntiClockWise (Alt + Left Arrow)">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={RotateACW}>
+          <RotateLeft fontSize="small" />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Rotate ClockWise (Alt + Right Arrow)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={Rotate}>
           <RotateRightIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>
 
-      <Tooltip title="Zoom In">
+      <Tooltip title="Zoom In (Ctrl + +)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomIn}>
           <ZoomInIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Zoom Out">
+      <Tooltip title="Zoom Out (Ctrl + -)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomOut}>
           <ZoomOutIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Default Size">
+      <Tooltip title="Default Size (Ctrl + Y)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomAct}>
           <SettingsOverscanIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <span className={classes.pipe}>|</span>
 
-      <Tooltip title="Delete">
+      <Tooltip title="Delete (Del)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handleDeleteComp}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Clear All">
+      <Tooltip title="Clear All (Shift + Del)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={ClearGrid}>
           <ClearAllIcon fontSize="small" />
         </IconButton>
