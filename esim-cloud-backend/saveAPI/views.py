@@ -50,6 +50,7 @@ class StateSaveView(APIView):
                 queryset.save()
                 response = serializer.data
                 response['duplicate'] = True
+                response['owner'] = queryset.owner.username
                 return Response(response)
             return Response(serializer.errors,
                             status=status.HTTP_400_BAD_REQUEST)

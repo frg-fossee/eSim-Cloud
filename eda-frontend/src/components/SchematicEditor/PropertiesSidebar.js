@@ -387,13 +387,13 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
       <List>
         <ListItem button divider>
           <h2 style={{ margin: '5px', width: '90%' }}>History</h2>
-          <IconButton
+          {versions && <IconButton
             className="new-branch"
             size="small"
             onClick={handleDialogOpen}
           >
             <CreateNewFolderOutlinedIcon fontSize="small" />
-          </IconButton>
+          </IconButton>}
           <Dialog onClose={handleDialogClose} aria-labelledby="simple-dialog-title" open={dialogOpen}>
             <DialogTitle id="simple-dialog-title">Create new Variation</DialogTitle>
             <DialogContent>
