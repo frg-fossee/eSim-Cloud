@@ -6,7 +6,6 @@ import {
   List,
   Typography,
   ListItem,
-  InputBase,
   ListItemText,
   ListItemAvatar
 } from '@material-ui/core'
@@ -48,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
 export default function DashSidebar (props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
-  const schematics = useSelector(state => state.dashboardReducer.schematics)
   const dispatch = useDispatch()
   // For Fetching Saved Schematics
   useEffect(() => {

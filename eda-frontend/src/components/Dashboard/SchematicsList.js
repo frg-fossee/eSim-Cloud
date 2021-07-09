@@ -22,8 +22,8 @@ import { Link as RouterLink } from 'react-router-dom'
 import SchematicCard from './SchematicCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
-import FilterListIcon from '@material-ui/icons/FilterList';
-import PropTypes from 'prop-types';
+import FilterListIcon from '@material-ui/icons/FilterList'
+import PropTypes from 'prop-types'
 const useStyles = makeStyles((theme) => ({
   mainHead: {
     width: '100%',
@@ -35,16 +35,15 @@ const useStyles = makeStyles((theme) => ({
     color: '#80ff80'
   },
   typography: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   popover: {
     paddingRight: '10px'
   }
 }))
 
-
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+function TabPanel (props) {
+  const { children, value, index } = props
 
   return (
     <React.Fragment
@@ -53,18 +52,17 @@ function TabPanel(props) {
         <>{children}</>
       )}
     </React.Fragment>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
+  value: PropTypes.any.isRequired
+}
 
 // Card displaying user my schematics page header.
-function MainCard() {
+function MainCard () {
   const classes = useStyles()
 
   return (
@@ -95,14 +93,14 @@ function MainCard() {
   )
 }
 
-export default function SchematicsList() {
+export default function SchematicsList () {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
   const [saves, setSaves] = React.useState(schematics)
   const dispatch = useDispatch()
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const open = Boolean(anchorEl)
   const [value, setValue] = React.useState(0)
   const [sort, setSort] = React.useState('')
   const [order, setOrder] = React.useState('ascending')
@@ -126,8 +124,7 @@ export default function SchematicsList() {
   const handleFilterOpen = (e) => {
     if (anchorEl) {
       setAnchorEl(null)
-    }
-    else {
+    } else {
       setAnchorEl(e.currentTarget)
     }
   }
@@ -135,22 +132,17 @@ export default function SchematicsList() {
     if (order === 'ascending') {
       if (sorting === 'name') {
         setSaves(saves.sort((a, b) => a.name > b.name))
-      }
-      else if (sorting === 'created_at') {
+      } else if (sorting === 'created_at') {
         setSaves(saves.sort((a, b) => a.create_time > b.create_time))
-      }
-      else if (sorting === 'updated_at') {
+      } else if (sorting === 'updated_at') {
         setSaves(saves.sort((a, b) => a.save_time < b.save_time))
       }
-    }
-    else {
+    } else {
       if (sorting === 'name') {
         setSaves(saves.sort((a, b) => a.name < b.name))
-      }
-      else if (sorting === 'created_at') {
+      } else if (sorting === 'created_at') {
         setSaves(saves.sort((a, b) => a.create_time < b.create_time))
-      }
-      else if (sorting === 'updated_at') {
+      } else if (sorting === 'updated_at') {
         setSaves(saves.sort((a, b) => a.save_time > b.save_time))
       }
     }
@@ -191,11 +183,11 @@ export default function SchematicsList() {
             onClose={handleFilterOpen}
             anchorOrigin={{
               vertical: 'bottom',
-              horizontal: 'center',
+              horizontal: 'center'
             }}
             transformOrigin={{
               vertical: 'top',
-              horizontal: 'center',
+              horizontal: 'center'
             }}
             anchorEl={anchorEl}
           >
@@ -277,7 +269,6 @@ export default function SchematicsList() {
           </Grid>
         </TabPanel>
         {/* List all schematics saved by user */}
-
 
       </Grid>
     </>
