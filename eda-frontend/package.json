@@ -33,7 +33,7 @@
     "redux": "^4.1.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "typescript": "^3.9.10"
+    "typescript": "^3.9.10",
     "spinners-react": "^1.0.4",
   },
   "scripts": {
