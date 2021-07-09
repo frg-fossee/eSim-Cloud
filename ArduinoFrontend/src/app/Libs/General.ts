@@ -380,7 +380,8 @@ export class BreadBoard extends CircuitElement {
   onOtherComponentDrag(element) {
     const bBox = this.elements.getBBox();
     const elementBBox = element.elements.getBBox();
-
+    // Disable Node Bubble on hover
+    Point.showBubbleBool = false;
     this.resetHighlightedPoints();
 
     if (!areBoundingBoxesIntersecting(bBox, elementBBox)) {
@@ -411,6 +412,8 @@ export class BreadBoard extends CircuitElement {
    * Listener to handle when dragging of a component stops
    */
   onOtherComponentDragStop() {
+    // Enable Node Bubble on hover
+    Point.showBubbleBool = true;
     // if no highlighted points when the dragging stops, return
     if (this.highlightedPoints.length === 0) {
       return;

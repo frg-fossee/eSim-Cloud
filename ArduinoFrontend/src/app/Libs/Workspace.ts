@@ -809,6 +809,28 @@ export class Workspace {
         }
       }
 
+      // If BreadBoard remove draglistners too
+      if (key === 'BreadBoard') {
+        // Search in DragListeners & splice
+        for (const i in window['DragListeners']) {
+          if (window.DragListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragListeners'].splice(i, 1);
+            }
+          }
+        }
+        // Search in DragStopListeners & splice
+        for (const i in window['DragStopListeners']) {
+          if (window.DragStopListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragStopListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragStopListeners'].splice(i, 1);
+            }
+          }
+        }
+      }
+
       // get the component keyname
       const items = window.scope[key];
       // Use linear search find the element
