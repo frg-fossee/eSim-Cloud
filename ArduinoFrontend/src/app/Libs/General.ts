@@ -320,8 +320,8 @@ export class BreadBoard extends CircuitElement {
    */
   constructor(public canvas: any, x: number, y: number) {
     super('BreadBoard', x, y, 'Breadboard.json', canvas);
-    this.subsribeToDrag(this.onOtherComponentDrag.bind(this));
-    this.subscribeToDragStop(this.onOtherComponentDragStop.bind(this));
+    this.subsribeToDrag({ id: this.id, fn: this.onOtherComponentDrag.bind(this) });
+    this.subscribeToDragStop({ id: this.id, fn: this.onOtherComponentDragStop.bind(this) });
   }
 
   /**
@@ -379,7 +379,8 @@ export class BreadBoard extends CircuitElement {
   onOtherComponentDrag(element) {
     const bBox = this.elements.getBBox();
     const elementBBox = element.elements.getBBox();
-
+    // Disable Node Bubble on hover
+    Point.showBubbleBool = false;
     this.resetHighlightedPoints();
 
     if (!areBoundingBoxesIntersecting(bBox, elementBBox)) {
@@ -410,6 +411,8 @@ export class BreadBoard extends CircuitElement {
    * Listener to handle when dragging of a component stops
    */
   onOtherComponentDragStop() {
+    // Enable Node Bubble on hover
+    Point.showBubbleBool = true;
     // if no highlighted points when the dragging stops, return
     if (this.highlightedPoints.length === 0) {
       return;
