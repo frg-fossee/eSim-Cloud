@@ -9,7 +9,13 @@ import {
   Input,
   IconButton,
   Popover,
-  Checkbox
+  FormControl,
+  Tabs,
+  Tab,
+  AppBar,
+  Select,
+  MenuItem,
+  InputLabel
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
@@ -17,7 +23,7 @@ import SchematicCard from './SchematicCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import FilterListIcon from '@material-ui/icons/FilterList';
-
+import PropTypes from 'prop-types';
 const useStyles = makeStyles((theme) => ({
   mainHead: {
     width: '100%',
@@ -31,7 +37,31 @@ const useStyles = makeStyles((theme) => ({
   typography: {
     padding: theme.spacing(2),
   },
+  popover: {
+    paddingRight: '10px'
+  }
 }))
+
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <React.Fragment
+    >
+      {value === index && (
+        <>{children}</>
+      )}
+    </React.Fragment>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
 
 // Card displaying user my schematics page header.
 function MainCard() {
@@ -69,14 +99,20 @@ export default function SchematicsList() {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
-  const [saves, setSaves] = React.useState(null)
+  const [saves, setSaves] = React.useState(schematics)
   const dispatch = useDispatch()
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [value, setValue] = React.useState(0)
+  const [sort, setSort] = React.useState('')
+  const [order, setOrder] = React.useState('ascending')
   // For Fetching Saved Schematics
   useEffect(() => {
     dispatch(fetchSchematics())
   }, [dispatch])
+  useEffect(() => {
+    setSaves(schematics)
+  }, [schematics])
   const onSearch = (e) => {
     setSaves(schematics.filter((o) =>
       Object.keys(o).some((k) => {
@@ -95,6 +131,44 @@ export default function SchematicsList() {
       setAnchorEl(e.currentTarget)
     }
   }
+  const sortSaves = (sorting, order) => {
+    if (order === 'ascending') {
+      if (sorting === 'name') {
+        setSaves(saves.sort((a, b) => a.name > b.name))
+      }
+      else if (sorting === 'created_at') {
+        setSaves(saves.sort((a, b) => a.create_time > b.create_time))
+      }
+      else if (sorting === 'updated_at') {
+        setSaves(saves.sort((a, b) => a.save_time < b.save_time))
+      }
+    }
+    else {
+      if (sorting === 'name') {
+        setSaves(saves.sort((a, b) => a.name < b.name))
+      }
+      else if (sorting === 'created_at') {
+        setSaves(saves.sort((a, b) => a.create_time < b.create_time))
+      }
+      else if (sorting === 'updated_at') {
+        setSaves(saves.sort((a, b) => a.save_time > b.save_time))
+      }
+    }
+  }
+  const handleSort = (e) => {
+    sortSaves(e.target.value, order)
+    setSort(e.target.value)
+  }
+  const handleOrder = (e) => {
+    setOrder(e.target.value)
+    if (sort !== '') {
+      sortSaves(sort, e.target.value)
+    }
+  }
+  const handleChange = (event, newValue) =>
+    [
+      setValue(newValue)
+    ]
   return (
     <>
       <Grid
@@ -124,57 +198,86 @@ export default function SchematicsList() {
               horizontal: 'center',
             }}
             anchorEl={anchorEl}
-            style={{width:'200%'}}
-            >
-              <Typography ><Checkbox /> Has a project</Typography>
+          >
+            <FormControl style={{ width: ' 200px', padding: '2%' }}>
+              <InputLabel>Select Sort</InputLabel>
+              <Select className={classes.popover} value={sort} onChange={handleSort} >
+                <MenuItem key='name' value='name'>Name</MenuItem>
+                <MenuItem key='created_at' value='created_at'>Creation Date</MenuItem>
+                <MenuItem key='updated_at' value='updated_at'>Updated Date</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl style={{ width: ' 200px', padding: '2%' }}>
+              <InputLabel>Select Order</InputLabel>
+              <Select className={classes.popover} value={order} onChange={handleOrder} >
+                <MenuItem key='ascending' value='ascending'>Ascending</MenuItem>
+                <MenuItem key='descending' value='descending'>Descending</MenuItem>
+              </Select>
+            </FormControl>
           </Popover>
         </Grid>
+        <AppBar position='static'>
+          <Tabs value={value} onChange={handleChange}>
+            <Tab label='Schematics' />
+            <Tab label='Projects' />
+            <Tab label='LTI Apps' />
+          </Tabs>
+        </AppBar>
+        <TabPanel style={{ width: '100%' }} value={value} index={0}>
+          {saves.filter(x => { return x.project_id == null }).length !== 0
+            ? <>
+              {saves.filter(x => { return x.project_id == null }).map(
+                (sch) => {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
+              )}
+            </>
+            : <Grid item xs={12}>
+              <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Hey {auth.user.username} , You dont have any saved schematics...
+                </Typography>
+              </Card>
+            </Grid>
+          }
+        </TabPanel>
+        <TabPanel style={{ width: '100%' }} value={value} index={1}>
+          {saves.filter(x => { return x.project_id }).length !== 0
+            ? <>
+              {saves.filter(x => { return x.project_id }).map(
+                (sch) => {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
+              )}
+            </>
+            : <Grid item xs={12}>
+              <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Hey {auth.user.username} , You dont have any saved projects...
+                </Typography>
+              </Card>
+            </Grid>
+          }
+        </TabPanel>
+        <TabPanel style={{ width: '100%' }} value={value} index={2}>
+          <Grid item xs={12}>
+            <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+              <Typography variant="subtitle1" gutterBottom>
+                Hey {auth.user.username} , You dont have any saved LTI Apps...
+              </Typography>
+            </Card>
+          </Grid>
+        </TabPanel>
         {/* List all schematics saved by user */}
-        {saves ?
-          <>
-            {saves.length !== 0
-              ? <>
-                {saves.map(
-                  (sch) => {
-                    return (
-                      <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-                        <SchematicCard sch={sch} />
-                      </Grid>
-                    )
-                  }
-                )}
-              </>
-              : <Grid item xs={12}>
-                <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Hey {auth.user.username} , You dont have any saved schematics...
-                  </Typography>
-                </Card>
-              </Grid>
-            }
-          </> :
-          <>
-            {schematics.length !== 0
-              ? <>
-                {schematics.map(
-                  (sch) => {
-                    return (
-                      <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-                        <SchematicCard sch={sch} />
-                      </Grid>
-                    )
-                  }
-                )}
-              </>
-              : <Grid item xs={12}>
-                <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Hey {auth.user.username} , You dont have any saved schematics...
-                  </Typography>
-                </Card>
-              </Grid>
-            }
-          </>}
+
 
       </Grid>
     </>
