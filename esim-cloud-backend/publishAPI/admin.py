@@ -24,6 +24,7 @@ class HistoryInline(admin.TabularInline):
 class CircuitAdmin(admin.ModelAdmin):
     inlines = [HistoryInline, ]
     list_display = ('title',)
+    readonly_fields = ('fields',)
 
 # @admin.register(Publish)
 # class PublishAdmin(admin.ModelAdmin):

@@ -111,7 +111,7 @@ export default function DashSidebar (props) {
           <ListItemText primary='My Schematics' />
         </ListItem>
         <Divider />
-        {auth.roles && auth.roles.is_type_reviewer &&
+        {auth.roles && auth.roles.e_sim_reviewer &&
           <ListItem
             component={RouterLink}
             to="/dashboard/review_projects"
