@@ -145,7 +145,7 @@ export class Workspace {
    */
   static onDragStopEvent(element) {
     for (const fn of window.DragStopListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 
@@ -154,7 +154,7 @@ export class Workspace {
    */
   static onDragEvent(element) {
     for (const fn of window.DragListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 
@@ -785,6 +785,22 @@ export class Workspace {
           window.Selected.remove();
           window.Selected = null;
           window.isSelected = false;
+        }
+      }
+
+      // If BreadBoard remove draglistners too
+      if (key === 'BreadBoard') {
+        for (const i in window['DragListeners']) {
+          let itrFn = window['DragListeners'][i]
+          if (itrFn.id === window['Selected'].id) {
+            window['DragListeners'].splice(i, 1)
+          }
+        }
+        for (const i in window['DragStopListeners']) {
+          let itrFn = window['DragStopListeners'][i]
+          if (itrFn.id === window['Selected'].id) {
+            window['DragStopListeners'].splice(i, 1)
+          }
         }
       }
 

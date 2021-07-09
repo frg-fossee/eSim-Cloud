@@ -320,8 +320,8 @@ export class BreadBoard extends CircuitElement {
    */
   constructor(public canvas: any, x: number, y: number) {
     super('BreadBoard', x, y, 'Breadboard.json', canvas);
-    this.subsribeToDrag(this.onOtherComponentDrag.bind(this));
-    this.subscribeToDragStop(this.onOtherComponentDragStop.bind(this));
+    this.subsribeToDrag({ id: this.id, fn: this.onOtherComponentDrag.bind(this) });
+    this.subscribeToDragStop({ id: this.id, fn: this.onOtherComponentDragStop.bind(this) });
   }
 
   /**
