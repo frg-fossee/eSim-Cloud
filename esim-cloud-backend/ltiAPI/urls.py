@@ -6,6 +6,7 @@ app_name = 'ltiAPI'
 
 urlpatterns = [
     url(r'^build/$', views.LTIBuildApp.as_view(), name="create-lti"),
+    url(r'^update/$', views.LTIUpdateAPP.as_view(), name="create-lti"),
     path('<uuid:save_id>/config.xml/', views.LTIConfigView.as_view(),
          name="config"),
     path('auth/<uuid:save_id>/', views.LTIAuthView.as_view(), name="auth"),

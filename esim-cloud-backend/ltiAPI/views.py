@@ -119,6 +119,57 @@ class LTIBuildApp(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
 
+class LTIUpdateAPP(APIView):
+
+    @swagger_auto_schema(request_body=consumerSerializer,
+                         responses={201: consumerResponseSerializer})
+    def post(self, request):
+        serialized = consumerSerializer(data=request.data)
+        try:
+            consumer = lticonsumer.objects.get(
+                consumer_key=request.data['consumer_key'])
+        except lticonsumer.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        consumer.delete()
+        if serialized.is_valid():
+            serialized.save()
+            save_id = serialized.data.get("initial_schematic")
+            if save_id is not None:
+                save_id = str(save_id)
+                saved_state = StateSave.objects.get(save_id=save_id)
+                saved_state.shared = True
+                saved_state.save()
+                host = request.get_host()
+                url = "http://" + host + "/api/lti/auth/" + save_id + "/"
+                response_data = {
+                    "consumer_key": serialized.data.get('consumer_key'),
+                    "secret_key": serialized.data.get('secret_key'),
+                    "config_url": url,
+                    "score": serialized.data.get('score'),
+                    "initial_schematic": str(serialized.data[
+                        "initial_schematic"]),
+                    "model_schematic": str(serialized.data["model_schematic"]),
+                    "test_case": serialized.data['test_case'],
+                    "scored": serialized.data['scored']
+                }
+                print("Recieved POST for LTI APP:", response_data)
+                response_serializer = consumerResponseSerializer(
+                    data=response_data
+                )
+                if response_serializer.is_valid():
+                    return Response(response_serializer.data,
+                                    status=status.HTTP_201_CREATED)
+                else:
+                    return Response(response_serializer.errors,
+                                    status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"error": "Initial Schematic not provided"},
+                                status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serialized.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
 class LTIDeleteApp(APIView):
 
     def delete(self, request, save_id):
