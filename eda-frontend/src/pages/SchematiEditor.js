@@ -48,27 +48,37 @@ export default function SchematiEditor (props) {
 
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
+      console.log(props.location.search)
       var cktid = query.get('id')
-
+      var version = query.get('version')
+      var branch = query.get('branch')
+      console.log(cktid)
       if (cktid.substr(0, 7) === 'gallery') {
         // Loading Gallery schemaic.
         dispatch(loadGallery(cktid.substr(7, cktid.length)))
       } else {
         // Loading User on-cloud saved schemaic.
-        dispatch(fetchSchematic(cktid))
+        dispatch(fetchSchematic(cktid, version, branch))
       }
     }
   // eslint-disable-next-line
   }, [])
 
   return (
-
     <div className={classes.root}>
-
       <CssBaseline />
 
       {/* Schematic editor header, toolbar and left side pane */}
-      <Layout header={<Header />} resToolbar={<SchematicToolbar gridRef={gridRef} mobileClose={handleDrawerToggle} />} sidebar={<ComponentSidebar compRef={compRef} />} />
+      <Layout
+        header={<Header />}
+        resToolbar={
+          <SchematicToolbar
+            gridRef={gridRef}
+            mobileClose={handleDrawerToggle}
+          />
+        }
+        sidebar={<ComponentSidebar compRef={compRef} />}
+      />
 
       {/* Grid for drawing and designing circuits */}
       <LayoutMain>
@@ -79,7 +89,7 @@ export default function SchematiEditor (props) {
       </LayoutMain>
 
       {/* Schematic editor Right side pane */}
-      <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle} >
+      <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle}>
         <PropertiesSidebar gridRef={gridRef} outlineRef={outlineRef} />
       </RightSidebar>
       <ComponentProperties/>
