@@ -113,6 +113,7 @@ export default function SchematicsList () {
   }, [schematics])
   const onSearch = (e) => {
     setSaves(schematics.filter((o) =>
+    // eslint-disable-next-line
       Object.keys(o).some((k) => {
         if ((k === 'name' || k === 'description' || k === 'owner' || k === 'save_time' || k === 'create_time') && String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())) {
           return String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())
@@ -158,9 +159,9 @@ export default function SchematicsList () {
     }
   }
   const handleChange = (event, newValue) =>
-    [
+    {
       setValue(newValue)
-    ]
+    }
   return (
     <>
       <Grid
@@ -195,8 +196,8 @@ export default function SchematicsList () {
               <InputLabel>Select Sort</InputLabel>
               <Select className={classes.popover} value={sort} onChange={handleSort} >
                 <MenuItem key='name' value='name'>Name</MenuItem>
-                <MenuItem key='created_at' value='created_at'>Creation Date</MenuItem>
-                <MenuItem key='updated_at' value='updated_at'>Updated Date</MenuItem>
+                <MenuItem key='created_at' value='created_at'>Created</MenuItem>
+                <MenuItem key='updated_at' value='updated_at'>Updated</MenuItem>
               </Select>
             </FormControl>
             <FormControl style={{ width: ' 200px', padding: '2%' }}>

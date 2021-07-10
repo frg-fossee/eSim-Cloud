@@ -296,7 +296,7 @@ class UserSavesView(APIView):
     @swagger_auto_schema(responses={200: StateSaveSerializer})
     def get(self, request):
         saved_state = StateSave.objects.filter(
-            owner=self.request.user).order_by(
+            owner=self.request.user,is_arduino=False).order_by(
             "save_id", "-save_time").distinct("save_id")
         try:
             serialized = StateSaveSerializer(saved_state, many=True)

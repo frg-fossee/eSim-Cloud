@@ -4,9 +4,11 @@ from publishAPI.models import Report
 
 
 class UserRoleRetreieveSerializer(serializers.ModelSerializer):
+    e_sim_reviewer = serializers.BooleanField()
+    arduino_reviewer = serializers.BooleanField()
     class Meta:
         model = CustomGroup
-        fields = ['group', 'is_type_reviewer']
+        fields = ['group', 'is_type_reviewer','arduino_reviewer','e_sim_reviewer']
 
 
 class StatusWithNotesSerializer(serializers.ModelSerializer):
