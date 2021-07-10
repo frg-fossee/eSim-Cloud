@@ -730,7 +730,7 @@ export function renderXML() {
   parseXmlToGraph(xmlDoc, graph)
 }
 // Function to Parse XML and Redraw on Grid
-function parseXmlToGraph(xmlDoc, graph) {
+export function parseXmlToGraph(xmlDoc, graph) {
   const cells = xmlDoc.documentElement.children[0].children
   const parent = graph.getDefaultParent()
   var v1
