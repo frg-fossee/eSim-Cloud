@@ -36,8 +36,12 @@ class StateSaveView(APIView):
 
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
+        print("Getting Saved State")
+
         logger.info('Got POST for state save ')
-        esim_libraries = json.loads(request.data.get('esim_libraries'))
+        esim_libraries = None
+        if request.data.get('esim_libraries'):
+            esim_libraries = json.loads(request.data.get('esim_libraries'))
         try:
             queryset = StateSave.objects.get(
                 save_id=request.data.get("save_id", None),
@@ -68,7 +72,8 @@ class StateSaveView(APIView):
                     branch=request.data.get('branch'),
                     version=request.data.get('version'),
                     project=project,
-                    shared=True
+                    shared=True,
+                    is_arduino=True if esim_libraries is None else False,
                 )
             except:  # noqa
                 state_save = StateSave(
@@ -77,12 +82,14 @@ class StateSaveView(APIView):
                     name=request.data.get('name'),
                     owner=request.user,
                     branch=request.data.get('branch'),
-                    version=request.data.get('version')
+                    version=request.data.get('version'),
+                    is_arduino=True if esim_libraries is None else False,
                 )
             if request.data.get('save_id'):
                 state_save.save_id = request.data.get('save_id')
             state_save.base64_image.save(filename, content)
-            state_save.esim_libraries.set(esim_libraries)
+            if esim_libraries:
+                state_save.esim_libraries.set(esim_libraries)
             try:
                 state_save.save()
                 return Response(StateSaveSerializer(state_save).data)
@@ -142,6 +149,7 @@ class StateFetchUpdateView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
             # Verifies owner
             if self.request.user != saved_state.owner and not saved_state.shared:  # noqa
+                print("Here")
                 return Response({'error': 'not the owner and not shared'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             try:
