@@ -33,7 +33,7 @@ import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult, simType = 'NgSpiceSimulator' }) {
+export default function SimulationScreen({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -90,6 +90,10 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
     n: 0.000000001,
     p: 0.000000000001
   }
+
+  useEffect(() => {
+    console.log(history)
+  }, [history])
 
   useEffect(() => {
     console.log(comparingSim)
@@ -127,6 +131,11 @@ export default function SimulationScreen ({ open, close, isResult, simType = 'Ng
             ele.simulation_time = new Date(ele.simulation_time)
             var temp = (ele.result.graph === 'true')
             if (!ele.result.graph || temp !== temp2) {
+              arr.push(index)
+            }
+            console.log('ele.task', ele.task)
+            console.log('taskID', taskId)
+            if (ele.task === taskId) {
               arr.push(index)
             }
             return 0
@@ -924,6 +933,7 @@ SimulationScreen.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
   isResult: PropTypes.bool,
-  simType: PropTypes.string
+  simType: PropTypes.string,
+  taskId: PropTypes.string
   // simResults: PropTypes.object
 }
