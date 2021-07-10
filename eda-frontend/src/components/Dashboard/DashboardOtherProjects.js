@@ -34,8 +34,7 @@ const useStyles = makeStyles({
   }
 })
 
-
-function TabPanel(props) {
+function TabPanel (props) {
   const { children, value, index } = props
 
   return (
@@ -52,7 +51,7 @@ TabPanel.propTypes = {
   index: PropTypes.any.isRequired,
   value: PropTypes.any.isRequired
 }
-function DashboardOtherProjects() {
+function DashboardOtherProjects () {
   const projects = useSelector(state => state.dashboardReducer.otherProjects)
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
@@ -132,7 +131,7 @@ function DashboardOtherProjects() {
           <Card className={classes.mainHead}>
             <CardContent>
               <Typography className={classes.title} gutterBottom>
-                All the prtojects which are pending for a review are Listed Below
+                All the projects which are pending for a review are Listed Below
               </Typography>
               <Typography variant="h5" component="h2">
                 Review Projects
@@ -195,7 +194,7 @@ function DashboardOtherProjects() {
             : <Grid item xs={12}>
               <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
                 <Typography variant="subtitle1" gutterBottom>
-                  Hey {auth.user.username} , You don't have any projects to review...
+                  Hey {auth.user.username} , You don&apos;t have any projects to review...
                 </Typography>
               </Card>
             </Grid>

@@ -158,10 +158,9 @@ export default function SchematicsList () {
       sortSaves(sort, e.target.value)
     }
   }
-  const handleChange = (event, newValue) =>
-    {
-      setValue(newValue)
-    }
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+  }
   return (
     <>
       <Grid

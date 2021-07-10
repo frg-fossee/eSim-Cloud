@@ -1,9 +1,9 @@
-import { 
-  Card, 
-  Grid, 
-  Container, 
-  CssBaseline, 
-  CardContent, 
+import {
+  Card,
+  Grid,
+  Container,
+  CssBaseline,
+  CardContent,
   Typography,
   Select,
   MenuItem,
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Card displaying eSim gallery page header.
-function MainCard() {
+function MainCard () {
   const classes = useStyles()
 
   return (
@@ -62,7 +62,7 @@ function MainCard() {
   )
 }
 
-function PublicProjects(props) {
+function PublicProjects (props) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -177,13 +177,13 @@ function PublicProjects(props) {
           {/* Listing Gallery Schematics */}
           {filteredProjects.map(
             (pub) => {
+              console.log(pub)
               return (
                 <Grid item xs={12} sm={6} lg={4} key={pub.save_id}>
                   <ProjectCard pub={pub} is_review={true} />
                 </Grid>
               )
-            }
-          )}
+            })}
 
         </Grid>
       </Container>
