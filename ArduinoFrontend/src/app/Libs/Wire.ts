@@ -1,5 +1,6 @@
 import { Point } from './Point';
 import _ from 'lodash';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * To prevent window from throwing error
@@ -51,8 +52,12 @@ export class Wire {
    * @param canvas Raphael Canvas / paper
    * @param start Start circuit node of wire
    */
-  constructor(public canvas, public start: Point) {
-    this.id = this.getUniqueId(Date.now());
+  constructor(public canvas, public start: Point, public existingId = null) {
+    if (existingId) {
+      this.id = existingId;
+    } else {
+      this.id = this.getUniqueId(Date.now());
+    }
 
     // insert the position of start node in array
     this.points.push(start.position());
@@ -310,7 +315,8 @@ export class Wire {
     }
     // set on change listener
     select.onchange = () => {
-      // on change update the color
+      // Push dump to Undo stack & Reset
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'wire_color' });
       this.setColor(colors[select.selectedIndex]);
     };
 
@@ -328,7 +334,7 @@ export class Wire {
    * @param t End point / END circuit node
    * @param removeLast remove previously inserted item
    */
-  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false) {
+  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false, pushUndo = false, undoEvtType = 'add') {
     // if remove last then pop from array
     if (removeLast && this.points.length > 1) {
       this.points.pop();
@@ -347,6 +353,13 @@ export class Wire {
     }
     // Update Wire
     this.update();
+    // Push dump to Undo stack, only if pushUndo is false
+    if (!pushUndo) {
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: undoEvtType });
+    }
+    if (undoEvtType === 'breadDrag') {
+      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType });
+    }
   }
 
   /**
@@ -429,6 +442,7 @@ export class Wire {
   save() {
     return {
       // object contains points,color,start point(id,keyname),end point(id,keybame)
+      id: this.id,
       points: this.points,
       color: this.color,
       start: {

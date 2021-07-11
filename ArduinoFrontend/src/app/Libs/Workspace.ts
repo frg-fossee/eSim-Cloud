@@ -6,6 +6,7 @@ import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -515,6 +516,11 @@ export class Workspace {
         window.Selected.togglePerpendicularLine(false);
       }
     }
+    if (event.ctrlKey && (event.key === 'z' || event.key === 'Z') && UndoUtils.enableButtonsBool) {
+      // CTRL + z
+      // Call Undo Function
+      UndoUtils.workspaceUndo();
+    }
   }
   /**
    * Event Listener for zoom in/zoom out on workspace
@@ -550,6 +556,8 @@ export class Workspace {
       y - offsetY
     );
     window['scope'][classString].push(obj);
+    // Push dump to Undo stack & Reset
+    UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
   }
   /** Function updates the position of wires */
   static updateWires() {
@@ -709,7 +717,7 @@ export class Workspace {
 
   }
   /** This function recreates the wire object */
-  static LoadWires(wires: any[]) {
+  static LoadWires(wires: any[], retainId = false, pushUndo = false) {
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -740,11 +748,16 @@ export class Workspace {
       // console.log([start, end]);
       // if both nodes are present then connect those nodes
       if (start && end) {
-        const tmp = new Wire(window.canvas, start);
+        let tmp: any;
+        if (retainId) {
+          tmp = new Wire(window.canvas, start, w.id);
+        } else {
+          tmp = new Wire(window.canvas, start);
+        }
         tmp.load(w);
         start.connectedTo = tmp;
         end.connectedTo = tmp;
-        tmp.connect(end, true, true);
+        tmp.connect(end, true, true, pushUndo);
         window['scope']['wires'].push(tmp);
         tmp.update();
         if (start.connectCallback) {
@@ -762,8 +775,8 @@ export class Workspace {
   }
 
   /** Function to delete component fro Workspace */
-  static DeleteComponent() {
-
+  static DeleteComponent(undoReset = true) {
+    // Save Dump of current Workspace
     // Check if component is selected
     if (window['Selected']) {
       // is selected component is an arduini uno then show confirm message
@@ -777,6 +790,12 @@ export class Workspace {
       // get the component id
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
+
+      if (!(window.Selected instanceof Wire && !window.Selected.isConnected())) {
+        const obj = { keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' };
+        // Push dump to Undo stack & Reset if undoReset is true, else just push
+        if (undoReset) { UndoUtils.pushChangeToUndoAndReset(obj); } else { UndoUtils.pushChangeToUndo(obj); }
+      }
 
       // If Current Selected item is a Wire which is not Connected from both end
       if (key === 'wires') {
@@ -861,6 +880,7 @@ export class Workspace {
 
   /** Function to paste component fro Workspace */
   static pasteComponent() {
+    // Save Dump of current Workspace
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
       const ele = document.getElementById('contextMenu');

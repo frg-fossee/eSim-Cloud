@@ -212,12 +212,12 @@ export class Point {
     this.body.node.setAttribute('class', newClass);
   }
 
-  connectWire(wire) {
+  connectWire(wire, pushToUndo = true) {
     // if selected item is wire then connect the wire with the node
     // console.log([]);
     if (wire.start === this) { return; }
     this.connectedTo = wire;
-    wire.connect(this, true);
+    wire.connect(this, true, false, !pushToUndo, pushToUndo ? 'add' : 'breadDrag');
     wire.deselect();
     if (wire.start && wire.end) {
       window['scope']['wires'].push(wire);
