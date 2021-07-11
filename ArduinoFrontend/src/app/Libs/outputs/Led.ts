@@ -46,6 +46,10 @@ export class LED extends CircuitElement {
    * Pin Name mapped to Pins
    */
   pinNamedMap: any = {};
+  /**
+   * If all nodes of element are connected or not
+   */
+  allNodesConnected = false;
 
   /**
    * LED constructor
@@ -100,7 +104,7 @@ export class LED extends CircuitElement {
     }
     this.prev = val;
     // Run if PWM is not attached
-    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached) {
+    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached && this.allNodesConnected) {
       if (val >= 5) {
         this.anim();
       } else {
@@ -109,7 +113,7 @@ export class LED extends CircuitElement {
       if (val >= 0) {
         this.nodes[1].setValue(val, null);
       }
-    } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached) {
+    } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached && this.allNodesConnected) {
       // TODO: Run if PWM is attached
       /**
        * create color and add alpha to color
@@ -183,6 +187,8 @@ export class LED extends CircuitElement {
    */
   initSimulation(): void {
     this.visitedNodesv2.clear();
+    // Reset allNodesConnected to false
+    this.allNodesConnected = false;
     const pwmPins = [3, 5, 6, 9, 10, 11];
     for (const node of this.nodes) {
       this.pinNamedMap[node.label] = node;
@@ -190,6 +196,14 @@ export class LED extends CircuitElement {
 
     // Determine if Positive terminal of LED is attached to Arduino
     const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE']);
+    // Determine if Negative terminal of LED is attached to Arduino
+    const negativeEnd = this.getRecArduinov2(this.pinNamedMap['NEGATIVE']);
+    // make allNodesConnected boolean true if negative is connected to GND
+    if (negativeEnd && negativeEnd.hasOwnProperty('label')) {
+      if (negativeEnd.label === 'GND') {
+        this.allNodesConnected = true;
+      }
+    }
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd) {
       return;
