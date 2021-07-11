@@ -492,7 +492,7 @@ export class BreadBoard extends CircuitElement {
 
     }, () => {
       // Push dump to Undo stack & Reset
-      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } })
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } });
       for (let i = 0; i < this.nodes.length; ++i) {
         this.nodes[i].move(tmpar2[i][0] + fdx, tmpar2[i][1] + fdy);
         this.nodes[i].remainShow();

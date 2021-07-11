@@ -557,7 +557,7 @@ export class Workspace {
     );
     window['scope'][classString].push(obj);
     // Push dump to Undo stack & Reset
-    UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() })
+    UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
   }
   /** Function updates the position of wires */
   static updateWires() {
@@ -751,8 +751,7 @@ export class Workspace {
         let tmp: any;
         if (retainId) {
           tmp = new Wire(window.canvas, start, w.id);
-        }
-        else {
+        } else {
           tmp = new Wire(window.canvas, start);
         }
         tmp.load(w);
@@ -793,10 +792,9 @@ export class Workspace {
       const key = window.Selected.keyName;
 
       if (!(window.Selected instanceof Wire && !window.Selected.isConnected())) {
-        let obj = { keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' }
+        const obj = { keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' };
         // Push dump to Undo stack & Reset if undoReset is true, else just push
-        if (undoReset) UndoUtils.pushChangeToUndoAndReset(obj)
-        else UndoUtils.pushChangeToUndo(obj);
+        if (undoReset) { UndoUtils.pushChangeToUndoAndReset(obj); } else { UndoUtils.pushChangeToUndo(obj); }
       }
 
       // If Current Selected item is a Wire which is not Connected from both end

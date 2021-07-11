@@ -139,8 +139,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       window.removeEventListener('beforeunload', Workspace.BeforeUnload);
     }
     // Make Redo & Undo Stack empty
-    UndoUtils.redo = []
-    UndoUtils.undo = []
+    UndoUtils.redo = [];
+    UndoUtils.undo = [];
   }
   /**
    * On Init Callback
@@ -630,7 +630,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       () => {
         callback();
       },
-      () => {},
+      () => { },
       'Save',
       'Don\'t save',
       'Cancel'
@@ -718,12 +718,14 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @returns boolean
    */
   enableButton(type) {
-    if (!UndoUtils.enableButtonsBool)
+    if (!UndoUtils.enableButtonsBool) {
       return true;
-    if (type == 'undo')
-      return UndoUtils.undo.length <= 0
-    else if (type == 'redo')
-      return UndoUtils.redo.length <= 0
+    }
+    if (type === 'undo') {
+      return UndoUtils.undo.length <= 0;
+    } else if (type === 'redo') {
+      return UndoUtils.redo.length <= 0;
+    }
   }
 
   /**

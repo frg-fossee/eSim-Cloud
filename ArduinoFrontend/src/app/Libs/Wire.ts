@@ -53,10 +53,11 @@ export class Wire {
    * @param start Start circuit node of wire
    */
   constructor(public canvas, public start: Point, public existingId = null) {
-    if (existingId)
+    if (existingId) {
       this.id = existingId;
-    else
+    } else {
       this.id = this.getUniqueId(Date.now());
+    }
 
     // insert the position of start node in array
     this.points.push(start.position());
@@ -315,7 +316,7 @@ export class Wire {
     // set on change listener
     select.onchange = () => {
       // Push dump to Undo stack & Reset
-      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'wire_color' })
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'wire_color' });
       this.setColor(colors[select.selectedIndex]);
     };
 
@@ -353,8 +354,12 @@ export class Wire {
     // Update Wire
     this.update();
     // Push dump to Undo stack, only if pushUndo is false
-    !pushUndo ? UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType }) : console.log('undo skiped');
-    undoEvtType == 'breadDrag' ? UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType }) : console.log('undo skiped undoDrag');
+    if (!pushUndo) {
+      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType });
+    }
+    if (undoEvtType === 'breadDrag') {
+      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType });
+    }
   }
 
   /**

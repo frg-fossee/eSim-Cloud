@@ -1,5 +1,5 @@
-import { Utils } from "./Utils";
-import { Workspace } from "./Workspace";
+import { Utils } from './Utils';
+import { Workspace } from './Workspace';
 import { isNull } from 'util';
 
 declare var window;
@@ -20,7 +20,7 @@ export abstract class UndoUtils {
     static undo = [];
     /**
      * Redo Stack
-    */
+     */
     static redo = [];
 
     /**
@@ -28,7 +28,7 @@ export abstract class UndoUtils {
      */
     static workspaceUndo() {
         if (this.undo.length > 0) {
-            let cng = this.undo.pop();
+            const cng = this.undo.pop();
             this.loadChange(cng, 'undo');
         }
     }
@@ -38,7 +38,7 @@ export abstract class UndoUtils {
      */
     static workspaceRedo() {
         if (this.redo.length > 0) {
-            let cng = this.redo.pop();
+            const cng = this.redo.pop();
             this.loadChange(cng, 'redo');
         }
     }
@@ -55,11 +55,11 @@ export abstract class UndoUtils {
         // This is used to save wires connected to element in case of delete event only
         if (ele.event === 'delete') {
             let step = 0;
-            let grup = window.scope[ele.keyName];
+            const grup = window.scope[ele.keyName];
             const temp = this.getExistingWindowElement(grup, ele);
             for (const e in temp.nodes) {
                 if (temp.nodes[e].connectedTo) {
-                    let wire = temp.nodes[e].connectedTo;
+                    const wire = temp.nodes[e].connectedTo;
                     UndoUtils.pushChangeToUndo({ keyName: wire.keyName, element: wire.save(), event: 'delete' });
                     step += 1;
                 }
@@ -88,12 +88,12 @@ export abstract class UndoUtils {
         // This is used to save wires connected to element in case of delete event only
         if (ele.event === 'delete') {
             let step = 0;
-            let grup = window.scope[ele.keyName]
-            const temp = this.getExistingWindowElement(grup, ele)
+            const grup = window.scope[ele.keyName];
+            const temp = this.getExistingWindowElement(grup, ele);
             for (const e in temp.nodes) {
                 if (temp.nodes[e].connectedTo) {
-                    let wire = temp.nodes[e].connectedTo
-                    UndoUtils.pushChangeToUndo({ keyName: wire.keyName, element: wire.save(), event: 'delete' })
+                    const wire = temp.nodes[e].connectedTo;
+                    UndoUtils.pushChangeToUndo({ keyName: wire.keyName, element: wire.save(), event: 'delete' });
                     step += 1;
                 }
             }
@@ -107,11 +107,10 @@ export abstract class UndoUtils {
      * Load The Changes, Called after Undo and redo operation to process the event snapshot
      * @param ele event snapshot
      * @param operation undo/redo
-     * @returns
      */
     static async loadChange(ele, operation) {
         // All elements in window.scope with similar
-        let grup = window.scope[ele.keyName];
+        const grup = window.scope[ele.keyName];
 
         // Check if dragJson is present, & jump to next operation if both dx & dy are 0
         if (ele.dragJson) {
@@ -126,144 +125,155 @@ export abstract class UndoUtils {
         }
 
         // handle Delete events
-        if (operation == 'undo' && ele.event == 'delete') {
+        if (operation === 'undo' && ele.event === 'delete') {
             UndoUtils.createElement(ele).then(res => {
                 // if (ele.keyName === 'BreadBoard') {
                 //     window['DragListeners'] = [];
                 //     window['DragStopListeners'] = [];
                 // }
                 for (let i = 0; i < ele.step; i++) {
-                    let chg = this.undo.pop();
+                    const chg = this.undo.pop();
                     UndoUtils.createElement(chg);
                 }
                 UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event, step: ele!.step });
-            })
+            });
             return;
-        } else if (operation == 'redo' && ele.event == 'delete') {
-            let temp = this.getExistingWindowElement(grup, ele);
+        } else if (operation === 'redo' && ele.event === 'delete') {
+            const temp = this.getExistingWindowElement(grup, ele);
             window['Selected'] = temp;
             Workspace.DeleteComponent(false);
             return;
         }
 
         // handle auto-layout of wires
-        if (ele.event == 'layout' && operation == 'undo') {
-            let existing = this.getExistingWindowElement(grup, ele)
-            UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step })
+        if (ele.event === 'layout' && operation === 'undo') {
+            const existing = this.getExistingWindowElement(grup, ele);
+            UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step });
             UndoUtils.removeElement(ele).then(res => {
                 UndoUtils.createElement(ele).then(result => {
                     for (let i = 0; i < ele.step - 1; i++) {
-                        let chg = this.undo.pop();
-                        let existing = this.getExistingWindowElement(grup, chg)
-                        UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: chg.event, step: chg!.step })
+                        const chg = this.undo.pop();
+                        const innerExisting = this.getExistingWindowElement(grup, chg);
+                        const obj = { keyName: innerExisting.keyName, element: innerExisting.save(), event: chg.event, step: chg!.step };
+                        UndoUtils.pushChangeToRedo(obj);
                         UndoUtils.removeElement(chg).then(ress => {
                             UndoUtils.createElement(chg);
-                        })
+                        });
                     }
-                })
-            })
-            return
-        } else if (ele.event == 'layout' && operation == 'redo') {
-            let existing = this.getExistingWindowElement(grup, ele)
-            UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step })
+                });
+            });
+            return;
+        } else if (ele.event === 'layout' && operation === 'redo') {
+            const existing = this.getExistingWindowElement(grup, ele);
+            UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step });
             UndoUtils.removeElement(ele).then(res => {
                 UndoUtils.createElement(ele).then(result => {
                     for (let i = 0; i < ele.step - 1; i++) {
-                        let chg = this.redo.pop();
-                        let existing = this.getExistingWindowElement(grup, chg)
-                        UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: chg.event, step: chg!.step })
+                        const chg = this.redo.pop();
+                        const innerExisting = this.getExistingWindowElement(grup, chg);
+                        const obj = { keyName: innerExisting.keyName, element: innerExisting.save(), event: chg.event, step: chg!.step };
+                        UndoUtils.pushChangeToUndo(obj);
                         UndoUtils.removeElement(chg).then(ress => {
                             UndoUtils.createElement(chg);
-                        })
+                        });
                     }
-                })
-            })
+                });
+            });
         }
 
-        if (ele.event == "breadDrag" && operation == 'undo') {
+        if (ele.event === 'breadDrag' && operation === 'undo') {
             UndoUtils.removeElement(ele).then(res => {
-                UndoUtils.workspaceUndo()
-            })
+                UndoUtils.workspaceUndo();
+            });
             return;
         }
 
         // handle Wire change events like add & color change
-        if (ele.event == 'add' && operation == 'redo' && ele.keyName == 'wires') {
+        if (ele.event === 'add' && operation === 'redo' && ele.keyName === 'wires') {
             UndoUtils.pushChangeToUndo(ele);
             UndoUtils.createElement(ele);
-            return
-        } else if (ele.event == 'add' && operation == 'undo' && ele.keyName == 'wires') {
+            return;
+        } else if (ele.event === 'add' && operation === 'undo' && ele.keyName === 'wires') {
             UndoUtils.pushChangeToRedo(ele);
             UndoUtils.removeElement(ele);
-            return
-        } else if (ele.event == 'wire_color' && operation == 'undo' && ele.keyName == 'wires') {
+            return;
+        } else if (ele.event === 'wire_color' && operation === 'undo' && ele.keyName === 'wires') {
             const temp = this.getExistingWindowElement(grup, ele);
             UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: temp.save(), event: ele.event });
             temp.setColor(ele.element.color);
-            return
-        } else if (ele.event == 'wire_color' && operation == 'redo' && ele.keyName == 'wires') {
-            const temp = this.getExistingWindowElement(grup, ele)
+            return;
+        } else if (ele.event === 'wire_color' && operation === 'redo' && ele.keyName === 'wires') {
+            const temp = this.getExistingWindowElement(grup, ele);
             UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: temp.save(), event: ele.event });
             temp.setColor(ele.element.color);
-            return
+            return;
         }
 
         // Only trigger if there is nothing in scope | is empty
         if (grup.length <= 0) {
             window['scope'][ele.keyName] = [];
-            if (ele.event == 'add' && operation == 'redo') {
+            if (ele.event === 'add' && operation === 'redo') {
                 UndoUtils.createElement(ele).then(done => {
                     if (ele.keyName === 'BreadBoard') {
                         // window['DragListeners'].splice(0, 1)
                         // window['DragStopListeners'].splice(0, 1)
                     }
-                })
+                });
                 UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][0].save(), event: ele.event });
             }
         }
 
         // Trigger if window.scope is not empty
         for (const e in grup) {
-            if (grup[e].id == ele.element.id) {
+            if (grup[e].id === ele.element.id) {
                 if (window.scope[ele.keyName][e].load) {
                     // Push to Undo/Redo stack
-                    if (operation == 'undo') {
-                        UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson });
-                    }
-                    else if (operation == 'redo') {
-                        UndoUtils.pushChangeToUndo({ keyName: ele.keyName, element: window.scope[ele.keyName][e].save(), event: ele.event, dragJson: ele!.dragJson });
+                    if (operation === 'undo') {
+                        const obj = {
+                            keyName: ele.keyName,
+                            element: window.scope[ele.keyName][e].save(),
+                            event: ele.event,
+                            dragJson: ele!.dragJson
+                        };
+                        UndoUtils.pushChangeToRedo(obj);
+                    } else if (operation === 'redo') {
+                        const obj = {
+                            keyName: ele.keyName,
+                            element: window.scope[ele.keyName][e].save(),
+                            event: ele.event,
+                            dragJson: ele!.dragJson
+                        };
+                        UndoUtils.pushChangeToUndo(obj);
                     }
                     // handle Add events
-                    if (ele.event == 'add' && operation == 'undo') {
-                        UndoUtils.removeElement(ele)
-                        return
-                    }
-                    else if (ele.event == 'add' && operation == 'redo') {
-                        UndoUtils.createElement(ele)
-                        UndoUtils.removeElement(ele)
-                    }
-                    else if (ele.event == 'drag') {
+                    if (ele.event === 'add' && operation === 'undo') {
+                        UndoUtils.removeElement(ele);
+                        return;
+                    } else if (ele.event === 'add' && operation === 'redo') {
+                        UndoUtils.createElement(ele);
+                        UndoUtils.removeElement(ele);
+                    } else if (ele.event === 'drag') {
                         // TODO: handle element Drag events
-                        let existing = this.getExistingWindowElement(grup, ele);
-                        if (operation == 'undo') {
-                            if (ele.keyName == 'BreadBoard') {
+                        const existing = this.getExistingWindowElement(grup, ele);
+                        if (operation === 'undo') {
+                            if (ele.keyName === 'BreadBoard') {
                                 existing.transformBoardPosition(-ele.dragJson.dx, -ele.dragJson.dy);
-                            }
-                            else {
+                            } else {
                                 existing.transformPosition(-ele.dragJson.dx, -ele.dragJson.dy);
                             }
                         } else {
                             existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy);
-                            if (ele.keyName != 'BreadBoard') {
+                            if (ele.keyName !== 'BreadBoard') {
                                 Workspace.onDragEvent(existing);
                                 Workspace.onDragStopEvent(existing);
                             }
                         }
-                        for (const e in window.scope['wires']) {
-                            window.scope['wires'][e].update();
+                        for (const ec in window.scope['wires']) {
+                            if (window.scope['wires'].hasOwnProperty(ec)) {
+                                window.scope['wires'][ec].update();
+                            }
                         }
-                    }
-                    else {
+                    } else {
                         // TODO: Handle all other events which weren't handled before
                         // Create Element with dump of ele
                         UndoUtils.createElement(ele).then(createdEle => {
@@ -274,8 +284,8 @@ export abstract class UndoUtils {
                                     // window['DragListeners'].splice(0, 1)
                                     // window['DragStopListeners'].splice(0, 1)
                                 }
-                            })
-                        })
+                            });
+                        });
                     }
 
                 }
@@ -291,9 +301,9 @@ export abstract class UndoUtils {
      */
     static getExistingWindowElement(grup, ele) {
         for (const e in grup) {
-            if (grup[e].id == ele.element.id) {
+            if (grup[e].id === ele.element.id) {
                 if (window.scope[ele.keyName][e].load) {
-                    return window.scope[ele.keyName][e]
+                    return window.scope[ele.keyName][e];
                 }
             }
         }
@@ -308,11 +318,11 @@ export abstract class UndoUtils {
         return new Promise((resolve, reject) => {
             window.queue = 0;
 
-            let comp = ele.element;
-            let key = ele.keyName
+            const comp = ele.element;
+            const key = ele.keyName;
 
-            if (key == 'wires') {
-                Workspace.LoadWires([ele.element], true, true)
+            if (key === 'wires') {
+                Workspace.LoadWires([ele.element], true, true);
                 // resolve
                 resolve(true);
             }
@@ -345,21 +355,21 @@ export abstract class UndoUtils {
                 }
             }, 100);
 
-        })
+        });
     }
 
     /**
-     * Remove and element from workspace using linear search 
+     * Remove and element from workspace using linear search
      * @param key Key of elements to delete
      * @param uid Id of element to delete
      * @returns Promise
      */
     static removeElement(ele) {
         return new Promise((resolve, reject) => {
-            let key = ele.keyName
-            let uid = ele.element.id
+            const key = ele.keyName;
+            const uid = ele.element.id;
             // get existing element that is to be removed
-            let toRem = this.getExistingWindowElement(window.scope[key], ele);
+            const toRem = this.getExistingWindowElement(window.scope[key], ele);
 
             // If Current Selected item is a Wire which is not Connected from both end
             if (key === 'wires') {
@@ -374,15 +384,19 @@ export abstract class UndoUtils {
             // If BreadBoard remove draglistners too
             if (key === 'BreadBoard') {
                 for (const i in window['DragListeners']) {
-                    let itrFn = window['DragListeners'][i]
-                    if (itrFn.id === toRem.id) {
-                        window['DragListeners'].splice(i, 1)
+                    if (window['DragListeners'].hasOwnProperty(i)) {
+                        const itrFn = window['DragListeners'][i];
+                        if (itrFn.id === toRem.id) {
+                            window['DragListeners'].splice(i, 1);
+                        }
                     }
                 }
                 for (const i in window['DragStopListeners']) {
-                    let itrFn = window['DragStopListeners'][i]
-                    if (itrFn.id === toRem.id) {
-                        window['DragStopListeners'].splice(i, 1)
+                    if (window['DragStopListeners'].hasOwnProperty(i)) {
+                        const itrFn = window['DragStopListeners'][i];
+                        if (itrFn.id === toRem.id) {
+                            window['DragStopListeners'].splice(i, 1);
+                        }
                     }
                 }
             }
@@ -416,8 +430,8 @@ export abstract class UndoUtils {
                 }
             }
             window.hideProperties();
-            resolve(true)
-        })
+            resolve(true);
+        });
     }
 
 }

@@ -58,7 +58,7 @@ export class LayoutUtils {
      */
     private static continueSaveLayout(canvas: Canvas): void {
         const problemPaths = LayoutUtils.getSourcesAndDestsToSolve();
-        this.problemPathsCount = problemPaths.length
+        this.problemPathsCount = problemPaths.length;
         for (const path of problemPaths) {
             const [solvedPath, msg] = Utils.getOptimalPath(path.source, path.destination, path.sourceBlock, path.destinationBlock, canvas);
             if (!solvedPath) {
@@ -96,7 +96,7 @@ export class LayoutUtils {
      */
     static updateWirePath(wire: Wire, path: Path): void {
         // Push dump to Undo stack & Reset
-        UndoUtils.pushChangeToUndoAndReset({ keyName: wire.keyName, element: wire.save(), event: 'layout', step: this.problemPathsCount })
+        UndoUtils.pushChangeToUndoAndReset({ keyName: wire.keyName, element: wire.save(), event: 'layout', step: this.problemPathsCount });
         let i = 1;
         const allPoints = path.getAllPoints();
         wire.removeAllMiddlePoints();

@@ -313,7 +313,7 @@ export abstract class CircuitElement {
       // }
 
       // Push dump to Undo stack & Reset
-      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } })
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } });
       this.tx += fdx;
       this.ty += fdy;
       window['onDragStopEvent'](this);
@@ -389,15 +389,19 @@ export abstract class CircuitElement {
   load(data: any): void {
 
     for (const i in window['DragListeners']) {
-      let itrFn = window['DragListeners'][i]
-      if (itrFn.id === this.id) {
-        window['DragListeners'][i].id = data.id;
+      if (window['DragListeners'].hasOwnProperty(i)) {
+        const itrFn = window['DragListeners'][i];
+        if (itrFn.id === this.id) {
+          window['DragListeners'][i].id = data.id;
+        }
       }
     }
     for (const i in window['DragStopListeners']) {
-      let itrFn = window['DragStopListeners'][i]
-      if (itrFn.id === this.id) {
-        window['DragStopListeners'][i].id = data.id;
+      if (window['DragStopListeners'].hasOwnProperty(i)) {
+        const itrFn = window['DragStopListeners'][i];
+        if (itrFn.id === this.id) {
+          window['DragStopListeners'][i].id = data.id;
+        }
       }
     }
 
@@ -453,7 +457,7 @@ export abstract class CircuitElement {
    * @param fdy relative y position to move
    */
   transformPosition(fdx: number, fdy: number): void {
-    let tmpar = [];
+    const tmpar = [];
     this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
 
     for (const node of this.nodes) {
