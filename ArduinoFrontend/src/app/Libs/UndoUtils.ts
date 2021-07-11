@@ -135,7 +135,7 @@ export abstract class UndoUtils {
                     const chg = this.undo.pop();
                     UndoUtils.createElement(chg);
                 }
-                UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event, step: ele!.step });
+                UndoUtils.pushChangeToRedo({ keyName: ele.keyName, element: ele.element, event: ele.event, step: ele.step });
             });
             return;
         } else if (operation === 'redo' && ele.event === 'delete') {
@@ -148,13 +148,13 @@ export abstract class UndoUtils {
         // handle auto-layout of wires
         if (ele.event === 'layout' && operation === 'undo') {
             const existing = this.getExistingWindowElement(grup, ele);
-            UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step });
+            UndoUtils.pushChangeToRedo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele.step });
             UndoUtils.removeElement(ele).then(res => {
                 UndoUtils.createElement(ele).then(result => {
                     for (let i = 0; i < ele.step - 1; i++) {
                         const chg = this.undo.pop();
                         const innerExisting = this.getExistingWindowElement(grup, chg);
-                        const obj = { keyName: innerExisting.keyName, element: innerExisting.save(), event: chg.event, step: chg!.step };
+                        const obj = { keyName: innerExisting.keyName, element: innerExisting.save(), event: chg.event, step: chg.step };
                         UndoUtils.pushChangeToRedo(obj);
                         UndoUtils.removeElement(chg).then(ress => {
                             UndoUtils.createElement(chg);
@@ -165,13 +165,13 @@ export abstract class UndoUtils {
             return;
         } else if (ele.event === 'layout' && operation === 'redo') {
             const existing = this.getExistingWindowElement(grup, ele);
-            UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele!.step });
+            UndoUtils.pushChangeToUndo({ keyName: existing.keyName, element: existing.save(), event: ele.event, step: ele.step });
             UndoUtils.removeElement(ele).then(res => {
                 UndoUtils.createElement(ele).then(result => {
                     for (let i = 0; i < ele.step - 1; i++) {
                         const chg = this.redo.pop();
                         const innerExisting = this.getExistingWindowElement(grup, chg);
-                        const obj = { keyName: innerExisting.keyName, element: innerExisting.save(), event: chg.event, step: chg!.step };
+                        const obj = { keyName: innerExisting.keyName, element: innerExisting.save(), event: chg.event, step: chg.step };
                         UndoUtils.pushChangeToUndo(obj);
                         UndoUtils.removeElement(chg).then(ress => {
                             UndoUtils.createElement(chg);
@@ -233,7 +233,7 @@ export abstract class UndoUtils {
                             keyName: ele.keyName,
                             element: window.scope[ele.keyName][e].save(),
                             event: ele.event,
-                            dragJson: ele!.dragJson
+                            dragJson: ele.dragJson
                         };
                         UndoUtils.pushChangeToRedo(obj);
                     } else if (operation === 'redo') {
@@ -241,7 +241,7 @@ export abstract class UndoUtils {
                             keyName: ele.keyName,
                             element: window.scope[ele.keyName][e].save(),
                             event: ele.event,
-                            dragJson: ele!.dragJson
+                            dragJson: ele.dragJson
                         };
                         UndoUtils.pushChangeToUndo(obj);
                     }

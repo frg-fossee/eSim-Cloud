@@ -355,7 +355,7 @@ export class Wire {
     this.update();
     // Push dump to Undo stack, only if pushUndo is false
     if (!pushUndo) {
-      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType });
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: undoEvtType });
     }
     if (undoEvtType === 'breadDrag') {
       UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType });
