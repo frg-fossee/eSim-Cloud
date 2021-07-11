@@ -152,7 +152,7 @@ export class Potentiometer extends CircuitElement {
       (ev: MouseEvent) => {
         this.rotateDial(center, ev.clientX, ev.clientY);
       });
-
+    console.log('val')
     this.nodes[1].setValue(0, this.nodes[1]);
   }
   /**

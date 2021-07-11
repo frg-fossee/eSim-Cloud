@@ -95,6 +95,7 @@ export class LED extends CircuitElement {
   }
   /** Simulation Logic */
   logic(val: number) {
+    console.log(val)
     if (this.prev === val) {
       return;
     }
@@ -103,6 +104,17 @@ export class LED extends CircuitElement {
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached) {
       if (val >= 5) {
         this.anim();
+      } else if (val > 0 && val < 5) {
+        if (val < 0.1) {
+          this.fillColor('none');
+        } else {
+          const color = `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`;
+          const split = color.split('-');
+          let genColor = 'none';
+          const alpha = (val / 5) * 9;
+          genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`;
+          this.elements[3].attr({ fill: genColor });
+        }
       } else {
         this.fillColor('none');
       }
