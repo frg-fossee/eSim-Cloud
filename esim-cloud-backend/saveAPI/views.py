@@ -43,20 +43,22 @@ class StateSaveView(APIView):
         if request.data.get('esim_libraries'):
             esim_libraries = json.loads(request.data.get('esim_libraries'))
         try:
-            queryset=StateSave.objects.get(
-            save_id=request.data.get("save_id",None),
-            branch=request.data.get("branch"),
-            version=request.data.get("version"))
-            serializer=StateSaveSerializer(data=request.data)
+            queryset = StateSave.objects.get(
+                save_id=request.data.get("save_id", None),
+                branch=request.data.get("branch"),
+                version=request.data.get("version"))
+            serializer = StateSaveSerializer(data=request.data)
             if serializer.is_valid():
                 img = Base64ImageField(max_length=None, use_url=True)
-                filename, content = img.update(request.data.get('base64_image'))
-                queryset.data_dump=request.data.get("data_dump")
+                filename, content = img.update(request.data['base64_image'])
+                queryset.data_dump = request.data.get("data_dump")
                 queryset.save()
                 queryset.base64_image.save(filename, content)
-                return Response(data=serializer.data,status=status.HTTP_200_OK)
+                return Response(data=serializer.data,
+                                status=status.HTTP_200_OK)
             else:
-                return Response(data=serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+                return Response(data=serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
         except StateSave.DoesNotExist:
             try:
                 queryset = StateSave.objects.get(
