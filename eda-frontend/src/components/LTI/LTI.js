@@ -126,7 +126,7 @@ export default function LTIConfig() {
           })
       })
     })
-    api.get(`simulation/history/${url.id}`, config).then(res => {
+    api.get(`simulation/history/${url.id}/${null}`, config).then(res => {
       res.data.map(ele => {
         ele.simulation_time = new Date(ele.simulation_time)
         return 0

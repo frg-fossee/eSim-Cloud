@@ -119,7 +119,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
       if (url.id) {
         getUrl = `simulation/history/${url.id}/${simType}`
       } else {
-        getUrl = `simulation/history/${simType}`
+        getUrl = `simulation/history/simulator/${simType}`
       }
       if (token) {
         config.headers.Authorization = `Token ${token}`

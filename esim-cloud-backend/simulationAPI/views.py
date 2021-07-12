@@ -136,13 +136,18 @@ class SimulationResults(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, save_id, sim):
-        sims = simulation.objects.filter(
-            owner=self.request.user, schematic=save_id, simulation_type=sim)
+        if sim == None:
+            sims = simulation.objects.filter(
+                owner=self.request.user, schematic=save_id)
+        else:
+            sims = simulation.objects.filter(
+                owner=self.request.user, schematic=save_id
+            )
         serialized = simulationSerializer(sims, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
 
 
-class SimulationResultsSimulator(APIView):
+class SimulationResultsFromSimulator(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, sim):
@@ -164,4 +169,3 @@ def statsd_task_postrun(task_id, **kwargs):
     statObj, created = runtimeStat.objects.get_or_create(exec_time=runtime)
     statObj.qty += 1
     statObj.save()
-
