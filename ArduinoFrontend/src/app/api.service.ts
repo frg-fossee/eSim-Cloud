@@ -29,6 +29,8 @@ export class ApiService {
     if (data.description === '') {
       data.description = null;
     }
+    data.branch = 'test';
+    data.version = 'test';
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -56,7 +58,7 @@ export class ApiService {
    * @param token Auth Token
    */
   readProject(id: string, token: string) {
-    return this.http.get(`${this.url}api/save/${id}`, {
+    return this.http.get(`${this.url}api/save/${id}/test/test`, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
@@ -86,7 +88,10 @@ export class ApiService {
    * @param token Auth Token
    */
   updateProject(id: string, data: any, token: string) {
-    return this.http.post(`${this.url}api/save/${id}`, data, {
+    data.save_id = id;
+    data.branch = 'test';
+    data.version = 'test';
+    return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
