@@ -1,3 +1,4 @@
+from re import sub
 import django_filters
 from django_filters import rest_framework as filters
 from saveAPI.serializers import StateSaveSerializer, SaveListSerializer
@@ -9,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
 from saveAPI.models import StateSave
+from ltiAPI.models import Submission
 from rest_framework import viewsets
 import uuid
 from django.contrib.auth import get_user_model
@@ -26,7 +28,7 @@ class StateSaveView(APIView):
     '''
 
     # Permissions should be validated here
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     # parser_classes = (FormParser,)
 
     @swagger_auto_schema(request_body=StateSaveSerializer)
@@ -41,7 +43,7 @@ class StateSaveView(APIView):
             data_dump=request.data.get('data_dump'),
             description=request.data.get('description'),
             name=request.data.get('name'),
-            owner=request.user,
+            owner=request.user if request.user.is_authenticated else None,
             is_arduino=True if esim_libraries is None else False,
         )
         state_save.base64_image.save(filename, content)
@@ -84,11 +86,16 @@ class StateFetchUpdateView(APIView):
                 serialized = StateSaveSerializer(
                     saved_state, context={'request': request})
                 User = get_user_model()
-                owner_name = User.objects.get(
-                    id=serialized.data.get('owner'))
-                data = {}
-                data.update(serialized.data)
-                data['owner'] = owner_name.username
+                try:
+                    owner_name = User.objects.get(
+                        id=serialized.data.get('owner'))
+                    data = {}
+                    data.update(serialized.data)
+                    data['owner'] = owner_name.username
+                except User.DoesNotExist:
+                    data = {}
+                    data.update(serialized.data)
+                    data['owner'] = None
                 return Response(data)
             except Exception:
                 traceback.print_exc()
@@ -227,6 +234,9 @@ class UserSavesView(APIView):
     def get(self, request):
         saved_state = StateSave.objects.filter(
             owner=self.request.user, is_arduino=False).order_by('-save_time')
+        submissions = Submission.objects.filter(student=self.request.user)
+        for submission in submissions:
+            saved_state = saved_state.exclude(save_id=submission.schematic.save_id)  # noqa
         # try:
         serialized = StateSaveSerializer(saved_state, many=True)
         return Response(serialized.data)

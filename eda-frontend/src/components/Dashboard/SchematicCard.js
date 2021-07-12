@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -12,12 +12,13 @@ import {
   Tooltip,
   Snackbar
 } from '@material-ui/core'
+import ScreenShareRoundedIcon from '@material-ui/icons/ScreenShareRounded'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
-import { deleteSchematic } from '../../redux/actions/index'
 import MuiAlert from '@material-ui/lab/Alert'
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +29,26 @@ const useStyles = makeStyles((theme) => ({
   rating: {
     marginTop: theme.spacing(1),
     marginLeft: 'auto'
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3)
+  },
+  config: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1)
+  },
+  delete: {
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    maxWidth: 150
   }
 }))
 function Alert (props) {
@@ -113,10 +134,25 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
+export default function SchematicCard ({ sch, consKey = null }) {
   const classes = useStyles()
+  const dispatch = useDispatch()
 
-  // To handel delete schematic snackbar
+  useEffect(() => {
+    dispatch(fetchSchematics())
+  }, [dispatch])
+
+  useEffect(() => {
+    setLTIDetails({ ...ltiDetails, consumerKey: consKey })
+    // eslint-disable-next-line
+  }, [])
+  // To handle LTI details
+  const [ltiDetails, setLTIDetails] = React.useState({
+    consumerKey: ''
+  })
+  const { consumerKey } = ltiDetails
+
+  // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
   const handleSnacClick = () => {
@@ -159,19 +195,32 @@ export default function SchematicCard ({ sch }) {
           <Button
             target="_blank"
             component={RouterLink}
-            to={'/editor?id=' + sch.save_id}
+            to={consumerKey ? `/editor?id=${sch.save_id}&consumer_key=${consumerKey}` : `/editor?id=${sch.save_id}`}
             size="small"
             color="primary"
           >
             Launch in Editor
           </Button>
-
+          {/* Display create LTI app option */}
+          <Tooltip title='Create LTI app' placement="bottom" arrow>
+            <Button
+              component={RouterLink}
+              color='secondary'
+              style={{ marginLeft: 'auto' }}
+              to={`/lti?id=${sch.save_id}`} >
+              <ScreenShareRoundedIcon />
+            </Button>
+            {/* <ScreenShareIcon
+            color='secondary'
+            fontSize="small"
+            style={{ marginLeft: 'auto' }}
+          /> */}
+          </Tooltip>
           {/* Display delete option */}
           <Tooltip title='Delete' placement="bottom" arrow>
             <DeleteIcon
               color='secondary'
               fontSize="small"
-              style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
             />
           </Tooltip>
@@ -192,5 +241,6 @@ export default function SchematicCard ({ sch }) {
 }
 
 SchematicCard.propTypes = {
-  sch: PropTypes.object
+  sch: PropTypes.object,
+  consKey: PropTypes.string
 }

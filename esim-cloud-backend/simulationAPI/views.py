@@ -6,8 +6,12 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.conf import settings
+import os
 from rest_framework.exceptions import ValidationError
 from celery.result import AsyncResult
+from .models import simulation
+from saveAPI.models import StateSave
 import uuid
 from django.conf import settings
 import os
@@ -28,7 +32,6 @@ def saveNetlistDB(task_id, filepath, request):
     os.chdir(current_dir)
     f = open(filepath, "r")
     temp = f.read()
-    print("request.user", request.user)
     if request.user.is_authenticated:
         owner = request.user.id
     else:
@@ -161,3 +164,4 @@ def statsd_task_postrun(task_id, **kwargs):
     statObj, created = runtimeStat.objects.get_or_create(exec_time=runtime)
     statObj.qty += 1
     statObj.save()
+

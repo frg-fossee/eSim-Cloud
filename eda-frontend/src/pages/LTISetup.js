@@ -1,4 +1,4 @@
-// Main Layout for user dashboard.
+// Main Layout for LTI Setup Page
 import React, { useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { CssBaseline } from '@material-ui/core'
@@ -10,7 +10,7 @@ import LayoutMain from '../components/Shared/LayoutMain'
 import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
 import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
-import api from '../utils/Api'
+import LTIConfig from '../components/LTI/LTI'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,50 +22,34 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Dashboard () {
+export default function LTISetup () {
   const classes = useStyles()
-  const [ltiDetails, setLtiDetails] = React.useState(null)
+  // var auth = useSelector(state => state.authReducer)
 
   useEffect(() => {
-    document.title = 'Dashboard - eSim '
-  })
-
-  useEffect(() => {
-    const token = localStorage.getItem('esim_token')
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.get('lti/exists', config)
-      .then(res => {
-        setLtiDetails(res.data)
-      }).catch(err => console.log(err))
+    document.title = 'LTI - eSim'
+    // eslint-disable-next-line
   }, [])
 
   return (
     <div className={classes.root}>
       <CssBaseline />
 
-      {/* Schematic editor header and left side pane */}
+      {/* Submission page header and left side pane */}
       <Layout resToolbar={<Header />} sidebar={<DashboardSidebar />} />
 
       <LayoutMain>
         <div className={classes.toolbar} />
-
-        {/* Subroutes under dashboard section */}
-        {ltiDetails !== null && <Switch>
-          <Route exact path="/dashboard" component={() => <DashboardHome ltiDetails={ltiDetails}/>} />
+        <Switch>
+          <Route exact path="/dashboard" component={DashboardHome} />
           <Route exact path="/dashboard/profile" />
           <Route
             exact
             path="/dashboard/schematics"
-            component={() => <SchematicsList ltiDetails={ltiDetails}/>}
+            component={SchematicsList}
           />
-        </Switch>}
+        </Switch>
+        <LTIConfig />
       </LayoutMain>
     </div>
   )

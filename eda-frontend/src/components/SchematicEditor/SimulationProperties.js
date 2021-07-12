@@ -16,6 +16,7 @@ import {
   Tooltip,
   IconButton
 } from '@material-ui/core'
+import queryString from 'query-string'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
@@ -518,6 +519,7 @@ export default function SimulationProperties () {
         selectedValueComp = selectedValueDCSweepComp
         break
       case 'Transient':
+        typeSimulation = 'Transient'
         // console.log(transientAnalysisControlLine)
         typeSimulation = 'Transient'
         if (transientAnalysisControlLine.skipInitial === true) uic = 'UIC'
