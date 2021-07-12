@@ -2,6 +2,7 @@ import { Point } from './Point';
 import { Wire } from './Wire';
 import { isNull } from 'util';
 import { BoundingBox } from './Geometry';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * Abstract Class Circuit Elements
@@ -72,6 +73,7 @@ export abstract class CircuitElement {
 
     // if filename is present fetch the file
     if (filename) {
+
       fetch(`./assets/jsons/${filename}`)
         .then(v => v.json())
         .then(obj => {
@@ -151,36 +153,36 @@ export abstract class CircuitElement {
       // Draw image
       if (item.type === 'image') {
         element = canvas.image(
-            item.url,
-            this.x + item.x,
-            this.y + item.y,
-            item.width,
-            item.height
-          );
+          item.url,
+          this.x + item.x,
+          this.y + item.y,
+          item.width,
+          item.height
+        );
       } else if (item.type === 'path') {
         element = this.DrawPath(canvas, item);
       } else if (item.type === 'rectangle') {
         // Draw rectangle
         element = canvas.rect(
-            this.x + item.x,
-            this.y + item.y,
-            item.width,
-            item.height,
-            item.radius || 0
-          ).attr({
-            fill: item.fill || 'none',
-            stroke: item.stroke || 'none'
-          });
+          this.x + item.x,
+          this.y + item.y,
+          item.width,
+          item.height,
+          item.radius || 0
+        ).attr({
+          fill: item.fill || 'none',
+          stroke: item.stroke || 'none'
+        });
       } else if (item.type === 'circle') {
         // Draw a circle
         element = canvas.circle(
-            this.x + item.x,
-            this.y + item.y,
-            item.radius,
-          ).attr({
-            fill: item.fill || 'none',
-            stroke: item.stroke || 'none'
-          });
+          this.x + item.x,
+          this.y + item.y,
+          item.radius,
+        ).attr({
+          fill: item.fill || 'none',
+          stroke: item.stroke || 'none'
+        });
       } else if (item.type === 'polygon') {
         element = this.DrawPolygon(canvas, item);
       }
@@ -205,10 +207,10 @@ export abstract class CircuitElement {
     }
     tmp = tmp.substr(0, tmp.length - 1) + 'z';
     return canvas.path(tmp)
-                  .attr({
-                    fill: item.fill || 'none',
-                    stroke: item.stroke || 'none'
-                  });
+      .attr({
+        fill: item.fill || 'none',
+        stroke: item.stroke || 'none'
+      });
   }
   /**
    * Draw a Path
@@ -232,10 +234,10 @@ export abstract class CircuitElement {
     str = this.calcRelative(str, vertical, canvas);
     str = this.calcRelative(str, sCurve, canvas);
     return canvas.path(str)
-                    .attr({
-                      fill: item.fill || 'none',
-                      stroke: item.stroke || 'none'
-                    });
+      .attr({
+        fill: item.fill || 'none',
+        stroke: item.stroke || 'none'
+      });
   }
   /**
    * Draw path relative to the component
@@ -309,6 +311,9 @@ export abstract class CircuitElement {
       //   node.relativeMove(fdx, fdy);
       //   node.remainShow();
       // }
+
+      // Push dump to Undo stack & Reset
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } });
       this.tx += fdx;
       this.ty += fdy;
       window['onDragStopEvent'](this);
@@ -382,6 +387,24 @@ export abstract class CircuitElement {
    * Load Circuit Component
    */
   load(data: any): void {
+
+    for (const i in window['DragListeners']) {
+      if (window['DragListeners'].hasOwnProperty(i)) {
+        const itrFn = window['DragListeners'][i];
+        if (itrFn.id === this.id) {
+          window['DragListeners'][i].id = data.id;
+        }
+      }
+    }
+    for (const i in window['DragStopListeners']) {
+      if (window['DragStopListeners'].hasOwnProperty(i)) {
+        const itrFn = window['DragStopListeners'][i];
+        if (itrFn.id === this.id) {
+          window['DragStopListeners'][i].id = data.id;
+        }
+      }
+    }
+
     this.id = data.id;
     this.tx = data.tx;
     this.ty = data.ty;
@@ -427,6 +450,28 @@ export abstract class CircuitElement {
    * Return the Name of the component.Can be inheriter to return custom name.
    */
   getName() { return this.title; }
+
+  /**
+   * Function to move/transform an element
+   * @param fdx relative x position to move
+   * @param fdy relative y position to move
+   */
+  transformPosition(fdx: number, fdy: number): void {
+    const tmpar = [];
+    this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
+
+    for (const node of this.nodes) {
+      tmpar.push(
+        [node.x, node.y]
+      );
+    }
+    for (let i = 0; i < this.nodes.length; ++i) {
+      this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+    }
+    this.tx += fdx;
+    this.ty += fdy;
+  }
+
   /**
    * Return the Property of the Circuit Component
    * @returns Object containing component name,id and the html required to be shown on property box

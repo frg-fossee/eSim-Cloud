@@ -27,8 +27,6 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 import api from '../../utils/Api'
 import './LTI.css'
 
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: 300,
@@ -56,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig() {
+export default function LTIConfig () {
   const classes = useStyles()
   const dispatch = useDispatch()
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -126,7 +124,7 @@ export default function LTIConfig() {
           })
       })
     })
-    api.get(`simulation/history/${url.id}`, config).then(res => {
+    api.get(`simulation/history/${url.id}/${null}`, config).then(res => {
       res.data.map(ele => {
         ele.simulation_time = new Date(ele.simulation_time)
         return 0
@@ -273,11 +271,11 @@ export default function LTIConfig() {
   }
 
   const handleUrlCopy = () => {
-    var copyText = document.querySelector(".lti-url")
+    var copyText = document.querySelector('.lti-url')
     console.log(copyText)
     copyText.select()
     copyText.setSelectionRange(0, 99999)
-    document.execCommand("copy")
+    document.execCommand('copy')
   }
 
   return (

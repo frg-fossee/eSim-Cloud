@@ -13,7 +13,15 @@ from celery.result import AsyncResult
 from .models import simulation
 from saveAPI.models import StateSave
 import uuid
+from django.conf import settings
+import os
 import logging
+from .models import runtimeStat, Limit, simulation
+from saveAPI.models import StateSave
+import celery.signals
+from celery import current_task
+import time
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +39,12 @@ def saveNetlistDB(task_id, filepath, request):
     if request.data.get('simulationType', None):
         simulation_type = request.data['simulationType']
     else:
-        simulation_type = "NgSpice Simulator"
+        simulation_type = "NgSpiceSimulator"
     if request.data.get('save_id', None):
-        save_id = request.data['save_id']
+        if 'gallery' in request.data.get('save_id'):
+            save_id = None
+        else:
+            save_id = request.data['save_id']
     else:
         save_id = None
     serialized = simulationSaveSerializer(
@@ -60,14 +71,31 @@ class NetlistUploader(APIView):
         logger.info('Got POST for netlist upload: ')
         logger.info(request.data)
         serializer = TaskSerializer(data=request.data, context={'view': self})
+
+        limits = Limit.objects.all()
+        TIME_LIMIT = 0
+        if limits.exists():
+            TIME_LIMIT = Limit.objects.all()[0].timeLimit
+        # if timeLimit.objects.count() != 0:
+        #     TIME_LIMIT = timeLimit.objects.all()[0]
+        #     print('NOT NONE')
+        # else:
+        #     print('NONE')
         if serializer.is_valid():
             serializer.save()
             saveNetlistDB(
-                serializer.data['task_id'],
-                serializer.data['file'][0]['file'], request)
+                serializer.data['task_id'], serializer.data['file'][0]['file'],
+                request)
             task_id = serializer.data['task_id']
-            celery_task = process_task.apply_async(
-                kwargs={'task_id': str(task_id)}, task_id=str(task_id))
+            if(TIME_LIMIT == 0):
+                celery_task = process_task.apply_async(
+                    kwargs={'task_id': str(task_id)}, task_id=str(task_id)
+                )
+            else:
+                celery_task = process_task.apply_async(
+                    kwargs={'task_id': str(task_id)}, task_id=str(task_id),
+                    soft_time_limit=TIME_LIMIT)
+
             response_data = {
                 'state': celery_task.state,
                 'details': serializer.data,
@@ -107,8 +135,37 @@ class CeleryResultView(APIView):
 class SimulationResults(APIView):
     permission_classes = (IsAuthenticated, )
 
-    def get(self, request, save_id):
-        sims = simulation.objects.filter(
-            owner=self.request.user, schematic=save_id)
+    def get(self, request, save_id, sim):
+        if sim is None:
+            sims = simulation.objects.filter(
+                owner=self.request.user, schematic=save_id)
+        else:
+            sims = simulation.objects.filter(
+                owner=self.request.user, schematic=save_id
+            )
         serialized = simulationSerializer(sims, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
+
+
+class SimulationResultsFromSimulator(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, sim):
+        sims = simulation.objects.filter(
+            owner=self.request.user, simulation_type=sim)
+        serialized = simulationSerializer(sims, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)
+
+
+@celery.signals.task_prerun.connect
+def statsd_task_prerun(task_id, **kwargs):
+    current_task.start_time = time.time()
+
+
+@celery.signals.task_postrun.connect
+def statsd_task_postrun(task_id, **kwargs):
+    runtime = time.time() - current_task.start_time
+    runtime = math.ceil(runtime)
+    statObj, created = runtimeStat.objects.get_or_create(exec_time=runtime)
+    statObj.qty += 1
+    statObj.save()
