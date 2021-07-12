@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function TabPanel (props) {
+function TabPanel(props) {
   const { children, value, index } = props
 
   return (
@@ -62,7 +62,7 @@ TabPanel.propTypes = {
 }
 
 // Card displaying user my schematics page header.
-function MainCard () {
+function MainCard() {
   const classes = useStyles()
 
   return (
@@ -93,7 +93,7 @@ function MainCard () {
   )
 }
 
-export default function SchematicsList () {
+export default function SchematicsList() {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -113,7 +113,7 @@ export default function SchematicsList () {
   }, [schematics])
   const onSearch = (e) => {
     setSaves(schematics.filter((o) =>
-    // eslint-disable-next-line
+      // eslint-disable-next-line
       Object.keys(o).some((k) => {
         if ((k === 'name' || k === 'description' || k === 'owner' || k === 'save_time' || k === 'create_time') && String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())) {
           return String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())
@@ -132,19 +132,19 @@ export default function SchematicsList () {
   const sortSaves = (sorting, order) => {
     if (order === 'ascending') {
       if (sorting === 'name') {
-        setSaves(saves.sort((a, b) => a.name > b.name))
+        setSaves(saves.sort((a, b) => (a.name > b.name) ? 1 : -1))
       } else if (sorting === 'created_at') {
-        setSaves(saves.sort((a, b) => a.create_time > b.create_time))
+        setSaves(saves.sort((a, b) => (a.create_time > b.create_time) ? 1 : -1))
       } else if (sorting === 'updated_at') {
-        setSaves(saves.sort((a, b) => a.save_time < b.save_time))
+        setSaves(saves.sort((a, b) => (a.save_time < b.save_time) ? 1 : -1))
       }
     } else {
       if (sorting === 'name') {
-        setSaves(saves.sort((a, b) => a.name < b.name))
+        setSaves(saves.sort((a, b) => (a.name < b.name) ? 1 : -1))
       } else if (sorting === 'created_at') {
-        setSaves(saves.sort((a, b) => a.create_time < b.create_time))
+        setSaves(saves.sort((a, b) => (a.create_time < b.create_time) ? 1 : -1))
       } else if (sorting === 'updated_at') {
-        setSaves(saves.sort((a, b) => a.save_time > b.save_time))
+        setSaves(saves.sort((a, b) => (a.save_time > b.save_time) ? 1 : -1))
       }
     }
   }
