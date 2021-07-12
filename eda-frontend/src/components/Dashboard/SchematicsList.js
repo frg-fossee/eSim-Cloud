@@ -24,7 +24,6 @@ import SchematicCard from './SchematicCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import FilterListIcon from '@material-ui/icons/FilterList'
-import PropTypes from 'prop-types'
 const useStyles = makeStyles((theme) => ({
   mainHead: {
     width: '100%',
@@ -244,7 +243,7 @@ export default function SchematicsList ({ ltiDetails = null }) {
               {saves.filter(x => { return x.project_id }).map(
                 (sch) => {
 
-        {/* List all schematics saved by user */}
+        /* List all schematics saved by user */
         // {(schematics.length !== 0)
         //   ? <>
         //     {schematics.map(

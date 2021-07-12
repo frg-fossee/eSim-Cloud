@@ -33,7 +33,7 @@ import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
+export default function SimulationScreen({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -655,7 +655,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               None
                             </MenuItem>
                             {history.map(sim => {
-                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
                             })}
                           </Select>
                         </FormControl>}
@@ -826,7 +826,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               None
                             </MenuItem>
                             {history.map(sim => {
-                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
                             })}
                           </Select>
                         </FormControl>}

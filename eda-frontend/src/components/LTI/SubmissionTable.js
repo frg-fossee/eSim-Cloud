@@ -130,7 +130,7 @@ export default function SubmissionTable() {
               <TableCell component="th" scope="row">
                 {student.student.username}
               </TableCell>
-              <TableCell align="center">{student.schematic.save_time.toUTCString()}</TableCell>
+              <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
               <TableCell align="center">{student.score}</TableCell>
               <TableCell align="center">
                 <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}`}>

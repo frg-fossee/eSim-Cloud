@@ -15,7 +15,6 @@ import {
   Chip
 } from '@material-ui/core'
 import ScreenShareRoundedIcon from '@material-ui/icons/ScreenShareRounded'
-import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
@@ -57,12 +56,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 150
   }
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -116,7 +115,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -148,7 +147,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -157,7 +156,7 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch, consKey = null }) {
+export default function SchematicCard({ sch, consKey = null }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -201,7 +200,8 @@ export default function SchematicCard ({ sch, consKey = null }) {
         <ButtonBase
           target="_blank"
           component={RouterLink}
-          to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
+          to={consumerKey ? `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}&consumer_key=${consumerKey}` : `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`}
+          // to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
           style={{ width: '100%' }}
         >
           <CardActionArea>
@@ -229,7 +229,7 @@ export default function SchematicCard ({ sch, consKey = null }) {
         <CardActions>
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
-          <Button
+          {/* <Button
             target="_blank"
             component={RouterLink}
             to={consumerKey ? `/editor?id=${sch.save_id}&consumer_key=${consumerKey}` : `/editor?id=${sch.save_id}`}
@@ -237,21 +237,16 @@ export default function SchematicCard ({ sch, consKey = null }) {
             color="primary"
           >
             Launch in Editor
-          </Button>
-          {/* Display create LTI app option */}
+          </Button> */}
+          {/* Display create LTI app option  */}
           <Tooltip title='Create LTI app' placement="bottom" arrow>
             <Button
               component={RouterLink}
               color='secondary'
               style={{ marginLeft: 'auto' }}
-              to={`/lti?id=${sch.save_id}`} >
+              to={`/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`} >
               <ScreenShareRoundedIcon />
             </Button>
-            {/* <ScreenShareIcon
-            color='secondary'
-            fontSize="small"
-            style={{ marginLeft: 'auto' }}
-          /> */}
           </Tooltip>
           {/* Display delete option */}
           {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>
@@ -264,7 +259,7 @@ export default function SchematicCard ({ sch, consKey = null }) {
           </Tooltip>}
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
-          {/* Display share status */}
+          {/* Display share status 
           <Tooltip
             title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'}
             placement="bottom"
@@ -275,7 +270,7 @@ export default function SchematicCard ({ sch, consKey = null }) {
               fontSize="small"
               style={{ marginRight: '10px' }}
             />
-          </Tooltip>
+          </Tooltip>*/}
         </CardActions>
       </Card>
 

@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
 export default function LTIConfig() {
   const classes = useStyles()
   const dispatch = useDispatch()
-  const schematics = useSelector(state => state.dashboardReducer.schematics)
 
   const [ltiDetails, setLTIDetails] = React.useState({
     secretKey: '',
@@ -78,12 +77,33 @@ export default function LTIConfig() {
   const [initial, setInitial] = React.useState('')
   const [history, setHistory] = React.useState('')
   const [historyId, setHistoryId] = React.useState('')
+  const [schematics, setSchematics] = React.useState([])
   const [update, setUpdate] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
 
   useEffect(() => {
-    dispatch(fetchSchematics())
-  }, [dispatch])
+    var url = queryString.parse(window.location.href.split('lti?')[1])
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get(`save/versions/${url.id}`, config).then(res => {
+      res.data.map(ele => {
+        ele.save_time = new Date(ele.save_time)
+        return 0
+      })
+      console.log(res.data)
+      setSchematics(res.data)
+    }).catch(err => {
+      console.log(err)
+    })
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -117,8 +137,7 @@ export default function LTIConfig() {
       setInitial(res.data.initial_schematic)
     }).catch(err => {
       console.log(err)
-      api.get(`save/${url.id}`, config).then(res => {
-        console.log(res.data)
+      api.get(`save/${url.id}/${url.version}/${url.branch}`, config).then(res => {
         setLTIDetails(
           {
             modelSchematic: res.data,
@@ -330,7 +349,7 @@ export default function LTIConfig() {
               className={classes.selectEmpty}
             >
               {schematics.map(schematic => {
-                return <MenuItem key={schematic.save_id} value={schematic.save_id}>{schematic.name}</MenuItem>
+                return <MenuItem key={schematic.save_id} value={schematic.save_id}>{schematic.name} of branch {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
               })}
             </Select>
           </FormControl>
@@ -350,7 +369,7 @@ export default function LTIConfig() {
                 None
               </MenuItem>
               {history.map(sim => {
-                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
               })}
             </Select>}
           </FormControl>
