@@ -134,6 +134,19 @@
   </div>
   <!--/simulation loading svg-->
 
+  <span class="pipe">|</span>
+
+  <button mat-icon-button matTooltip="Undo" (click)="undoChange()"
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1" [disabled]="enableButton('undo')">
+    <mat-icon style="font-size: 20px;color: black;">undo</mat-icon>
+  </button>
+
+  <button mat-icon-button matTooltip="Redo" (click)="redoChange()"
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1" [disabled]="enableButton('redo')">
+    <!-- <i style="font-size: 20px;color: black;" class="fa fa-repeat"></i> -->
+    <mat-icon style="font-size: 20px;color: black;">redo</mat-icon>
+  </button>
+
   <!-- Import export -->
   <span class="pipe">|</span>
   <button mat-icon-button matTooltip="Download JSON file" (click)="exportJson()" id="importBtn"

@@ -20,10 +20,11 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
+import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText, setNetlist } from '../../redux/actions/index'
 import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
+import queryString from 'query-string'
 import Notice from '../Shared/Notice'
 
 import api from '../../utils/Api'
@@ -94,6 +95,9 @@ export default function SimulationProperties () {
 
   const [controlBlockParam, setControlBlockParam] = useState('')
   const [disabled, setDisabled] = React.useState(false)
+  const [simType, setSimType] = React.useState('')
+  var typeSimulation = ''
+
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
@@ -365,13 +369,23 @@ export default function SimulationProperties () {
 
   // Upload the nelist
   function netlistConfig (file) {
+    const token = localStorage.getItem('esim_token')
+    var url = queryString.parse(window.location.href.split('editor?')[1])
     const formData = new FormData()
+    formData.append('simulationType', typeSimulation)
     formData.append('file', file)
+    if (url.id) {
+      formData.append('save_id', url.id)
+    }
     const config = {
       headers: {
         'content-type': 'multipart/form-data'
       }
     }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    setSimType(typeSimulation)
     return api.post('simulation/upload', formData, config)
   }
 
@@ -416,12 +430,12 @@ export default function SimulationProperties () {
 
                 // labels
                 for (let x = 1; x < lab.length; x++) {
-                //   if (lab[x].includes('#branch')) {
-                //     lab[x] = `I (${lab[x].replace('#branch', '')})`
-                //   }
-                //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
-                //  else {
-                // lab[x] = `V (${lab[x]})`
+                  //   if (lab[x].includes('#branch')) {
+                  //     lab[x] = `I (${lab[x].replace('#branch', '')})`
+                  //   }
+                  //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
+                  //  else {
+                  // lab[x] = `V (${lab[x]})`
 
                   // }
                   simResultGraph.labels.push(lab[x])
@@ -490,12 +504,14 @@ export default function SimulationProperties () {
     switch (type) {
       case 'DcSolver':
         // console.log('To be implemented')
+        typeSimulation = 'DcSolver'
         controlLine = '.op'
 
         dispatch(setResultTitle('DC Solver Output'))
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
+        typeSimulation = 'DcSweep'
         controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
         dispatch(setResultTitle('DC Sweep Output'))
         selectedValue = selectedValueDCSweep
@@ -503,7 +519,7 @@ export default function SimulationProperties () {
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
-
+        typeSimulation = 'Transient'
         if (transientAnalysisControlLine.skipInitial === true) uic = 'UIC'
         controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
 
@@ -513,13 +529,14 @@ export default function SimulationProperties () {
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
+        typeSimulation = 'Ac'
         controlLine = `.ac ${acAnalysisControlLine.input} ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
 
         dispatch(setResultTitle('AC Analysis Output'))
         break
 
       case 'tfAnalysis':
-
+        typeSimulation = 'tfAnalysis'
         selectedValue = selectedValueTFAnal
         if (tfAnalysisControlLine.outputNodes === true) {
           selectedValue.forEach((value, i) => {
@@ -583,6 +600,7 @@ export default function SimulationProperties () {
       controlLine + '\n' +
       controlBlock + '\n'
 
+    dispatch(setNetlist(netlist))
     prepareNetlist(netlist)
 
     // handlesimulateOpen()
@@ -604,8 +622,8 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} task_id={taskId} />
-        <Notice status={status} open={err} msg={errMsg} close={handleErrClose}/>
+        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} taskId={taskId} simType={simType} />
+        <Notice status={status} open={err} msg={errMsg} close={handleErrClose} />
         {/* Simulation modes list */}
         <List>
 
@@ -803,7 +821,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueDCSweep}
                         onRemove={handleRemSelectedValueDCSweep}
                         options={analysisNodeArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -815,7 +833,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueDCSweepComp}
                         onRemove={handleRemSelectedValueDCSweepComp}
                         options={analysisCompArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -907,7 +925,7 @@ export default function SimulationProperties () {
                       <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
                     </ListItem>
                     <ListItem>
-                      { nodeList.forEach((value) => {
+                      {nodeList.forEach((value) => {
                         if (value !== null && value !== '') {
                           analysisNodeArray.push({ key: value })
                         }
@@ -922,7 +940,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueTransientAnal}
                         onRemove={handleRemSelectedValueTransientAnal}
                         options={analysisNodeArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -943,7 +961,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueTransientAnalComp}
                         onRemove={handleRemSelectedValueTransientAnalComp}
                         options={analysisCompArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -1121,18 +1139,18 @@ export default function SimulationProperties () {
                         value={tfAnalysisControlLine.outputNodes}
                         onChange={handleTfAnalysisControlLineNodes}
                         id="outputNodes"
-                        // checked={tfAnalysisControlLine.outputNodes}
+                      // checked={tfAnalysisControlLine.outputNodes}
                       />
                       <span style={{ marginLeft: '10px' }}>Output By Nodes</span>
 
                     </ListItem>
-                    { nodeList.forEach((value) => {
+                    {nodeList.forEach((value) => {
                       if (value !== null && value !== '') {
                         nodeArray.push({ key: value })
                       }
                     })
                     }
-                    { pushZero(nodeArray)}
+                    {pushZero(nodeArray)}
                     <ListItem>
                       <Multiselect
                         style={{ width: '100%' }}
@@ -1144,7 +1162,7 @@ export default function SimulationProperties () {
                         selectionLimit="2"
                         options={nodeArray} displayValue="key"
                         disable={disabled}
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
