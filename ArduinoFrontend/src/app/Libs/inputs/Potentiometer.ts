@@ -76,16 +76,26 @@ export class Potentiometer extends CircuitElement {
     if (ang > 268) {
       ang = 268;
     }
+    let to;
+    let intp = 0;
     // console.log(ang / 268);
-    const to = Math.max(
-      this.nodes[0].value,
-      this.nodes[1].value
-    );
+    if (this.nodes[0].isConnected()) {
+      to = Math.max(
+        this.nodes[0].value,
+        this.nodes[1].value
+      );
+      intp = (ang / 268) * to;
+    } else if (this.nodes[2].isConnected()) {
+      to = Math.max(
+        this.nodes[1].value,
+        this.nodes[2].value
+      );
+      intp = to - ((ang / 268) * to);
+    }
     if (to < 0) {
       window['showToast']('Potentiometer Not Connected');
       return;
     }
-    const intp = (ang / 268) * to;
     this.elements[1].transform(`r${ang}`);
 
     this.nodes[1].setValue(intp, this.nodes[1]);
@@ -152,8 +162,13 @@ export class Potentiometer extends CircuitElement {
       (ev: MouseEvent) => {
         this.rotateDial(center, ev.clientX, ev.clientY);
       });
-    console.log('val')
-    this.nodes[1].setValue(0, this.nodes[1]);
+
+    if (this.nodes[0].isConnected()) {
+      this.nodes[1].setValue(0, this.nodes[1]);
+    }
+    else if (this.nodes[2].isConnected()) {
+      this.nodes[1].setValue(this.nodes[2].value, this.nodes[1]);
+    }
   }
   /**
    * Save the Selected type in database
