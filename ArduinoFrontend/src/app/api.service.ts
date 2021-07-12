@@ -29,8 +29,8 @@ export class ApiService {
     if (data.description === '') {
       data.description = null;
     }
-    data.branch = 'test'
-    data.version = 'test'
+    data.branch = 'test';
+    data.version = 'test';
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -88,9 +88,9 @@ export class ApiService {
    * @param token Auth Token
    */
   updateProject(id: string, data: any, token: string) {
-    data.save_id= id
-    data.branch = 'test'
-    data.version = 'test'
+    data.save_id = id;
+    data.branch = 'test';
+    data.version = 'test';
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

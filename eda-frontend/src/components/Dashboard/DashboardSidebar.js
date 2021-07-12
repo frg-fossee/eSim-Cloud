@@ -6,7 +6,6 @@ import {
   List,
   Typography,
   ListItem,
-  InputBase,
   ListItemText,
   ListItemAvatar
 } from '@material-ui/core'
@@ -48,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
 export default function DashSidebar (props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
-  const schematics = useSelector(state => state.dashboardReducer.schematics)
   const dispatch = useDispatch()
   // For Fetching Saved Schematics
   useEffect(() => {
@@ -110,21 +108,6 @@ export default function DashSidebar (props) {
         >
           <ListItemText primary='My Schematics' />
         </ListItem>
-
-        {/* List name of saved schematics */}
-        <List className={classes.nestedSearch} >
-          <InputBase
-            className={classes.input}
-            placeholder="Find your schematic..."
-          />
-        </List>
-        <div className={classes.nested} >
-          {schematics.map((sch) => (
-            <ListItem key={sch.save_id} button>
-              <ListItemText primary={`${sch.name}`} />
-            </ListItem>
-          ))}
-        </div>
         <Divider />
         {auth.roles && auth.roles.e_sim_reviewer &&
           <ListItem
