@@ -199,11 +199,28 @@ export class LED extends CircuitElement {
     // Determine if Negative terminal of LED is attached to Arduino
     const negativeEnd = this.getRecArduinov2(this.pinNamedMap['NEGATIVE']);
     // make allNodesConnected boolean true if negative is connected to GND
-    if (negativeEnd && negativeEnd.hasOwnProperty('label')) {
-      if (negativeEnd.label === 'GND') {
-        this.allNodesConnected = true;
+    // if (negativeEnd && negativeEnd.hasOwnProperty('label')) {
+    //   if (negativeEnd.label === 'GND') {
+    //     this.allNodesConnected = true;
+    //   }
+    // }
+    console.log(arduinoEnd)
+
+    if (negativeEnd) {
+      if (negativeEnd.hasOwnProperty('label')) {
+        if (negativeEnd.label === 'GND') {
+          this.allNodesConnected = true;
+        }
       }
     }
+    if (arduinoEnd) {
+      if (arduinoEnd.hasOwnProperty('label')) {
+        if (arduinoEnd.label === 'GND') {
+          this.allNodesConnected = true;
+        }
+      }
+    }
+
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd) {
       return;
