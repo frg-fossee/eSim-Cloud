@@ -136,7 +136,7 @@ class SimulationResults(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, save_id, sim):
-        if sim == None:
+        if sim is None:
             sims = simulation.objects.filter(
                 owner=self.request.user, schematic=save_id)
         else:

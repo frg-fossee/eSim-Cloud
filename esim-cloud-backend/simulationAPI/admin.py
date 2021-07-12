@@ -82,4 +82,3 @@ class runtimStatAdmin(admin.ModelAdmin):
 admin.site.register(runtimeStat, runtimStatAdmin)
 admin.site.register(simulation, outputAdmin)
 # admin.site.register(Limit)
-
