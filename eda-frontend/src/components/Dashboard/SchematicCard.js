@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
   no: {
     color: 'red',
     marginLeft: '10px'
+  },
   paper: {
     position: 'absolute',
     width: 400,
@@ -284,6 +285,6 @@ export default function SchematicCard ({ sch, consKey = null }) {
 
 SchematicCard.propTypes = {
   sch: PropTypes.object,
-  createCircuit: PropTypes.func
+  createCircuit: PropTypes.func,
   consKey: PropTypes.string
 }
