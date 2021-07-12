@@ -19,8 +19,6 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchSchematics } from '../../redux/actions/index'
 import queryString from 'query-string'
 import CloseIcon from '@material-ui/icons/Close'
 import TextareaAutosize from '@material-ui/core/TextareaAutosize'
@@ -58,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LTIConfig() {
   const classes = useStyles()
-  const dispatch = useDispatch()
 
   const [ltiDetails, setLTIDetails] = React.useState({
     secretKey: '',
@@ -237,7 +234,7 @@ export default function LTIConfig() {
   const handleChange = (e) => {
     var schematic = null
     schematics.forEach(element => {
-      if (element.save_id === e.target.value) {
+      if (element.version === e.target.value.split('-')[0] && element.branch === e.target.value.split('-')[1]) {
         schematic = element
       }
     })
@@ -349,7 +346,7 @@ export default function LTIConfig() {
               className={classes.selectEmpty}
             >
               {schematics.map(schematic => {
-                return <MenuItem key={schematic.save_id} value={schematic.save_id}>{schematic.name} of branch {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
+                return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of branch {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
               })}
             </Select>
           </FormControl>
