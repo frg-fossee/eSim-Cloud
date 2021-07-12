@@ -73,7 +73,8 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
     if (schSave.isSaved) {
       //  Updating saved schemaic
       body.save_id = schSave.details.save_id
-      body.branch = window.location.href.split('branch=')[1]
+      body.branch = decodeURI(window.location.href.split('branch=')[1])
+      console.log(window.location.href.split('branch=')[1])
       api
         .post('save', queryString.stringify(body), config)
         .then((res) => {
