@@ -82,8 +82,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
 
       // console.log(pinData)
 
-      // Enables moving of vertex labels
-      graph.vertexLabelsMovable = true
+      // Disables moving of vertex labels
+      graph.vertexLabelsMovable = false
 
       // Creates a style with an indicator
       var style = graph.getStylesheet().getDefaultVertexStyle()
@@ -151,8 +151,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       // console.log('v1.properties', v1.properties)
 
       v1.setConnectable(false)
-
-      for (let i = 0; i < pinData.length; i++) {
+      let i = 0
+      for (i = 0; i < pinData.length; i++) {
         currentPin = pinData[i]
         if (currentPin.pinName === 'NC') continue
         // move this to another file

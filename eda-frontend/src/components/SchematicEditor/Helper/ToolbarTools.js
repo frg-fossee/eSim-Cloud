@@ -159,19 +159,30 @@ export function ClearGrid() {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
 }
 
-// ROTATE COMPONENT
-export function Rotate() {
+function rotate (rot_ang) {
   var view = graph.getView()
   var cell = graph.getSelectionCell()
   var state = view.getState(cell, true)
-  // console.log(state)
   var vHandler = graph.createVertexHandler(state)
-  // console.log('Handler')
-  // console.log(vHandler)
   if (cell != null) {
-    vHandler.rotateCell(cell, 90, cell.getParent())
+    vHandler.rotateCell(cell, parseInt(rot_ang))
+    let childCount = cell.getChildCount()
+    for(let i = 0; i < childCount; i++) {
+      let child = cell.getChildAt(i)
+      vHandler.rotateCell(child, parseInt(rot_ang) * (-1))
+    }
   }
   vHandler.destroy()
+}
+
+// ROTATE COMPONENT CLOCKWISE
+export function Rotate() {
+  rotate(90)
+}
+
+// ROTATE COMPONENT Anti-CLOCKWISE
+export function RotateACW() {
+  rotate(-90)
 }
 
 // PRINT PREVIEW OF SCHEMATIC
@@ -301,11 +312,13 @@ function ErcCheckNets() {
     var cell = list[property]
     if (cell.Component === true) {
       for (var child in cell.children) {
-        var childVertex = cell.children[child]
-        if (childVertex.Pin === true && childVertex.edges === null) {
-          graph.getSelectionCell(childVertex)
-          ++PinNC
-          ++errorCount
+        if (child.connectable) {
+          var childVertex = cell.children[child]
+          if (childVertex.Pin === true && childVertex.edges === null) {
+            graph.getSelectionCell(childVertex)
+            ++PinNC
+            ++errorCount
+          }
         }
       }
       ++vertexCount
@@ -380,7 +393,7 @@ export function GenerateNetList() {
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
-            if (pin.vertex === true) {
+            if (pin.vertex === true && pin.connectable) {
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
@@ -425,7 +438,7 @@ export function GenerateNetList() {
           netlist.nodelist.push(compobj.node2, compobj.node1)
         }
         console.log('component properties', component.properties)
-        if (component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
             k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
 
@@ -503,12 +516,12 @@ export function GenerateNetList() {
           }
         }
 
-        if (component.properties.EXTRA_EXPRESSION.length > 0) {
+        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
           component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
         
-        if (component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
           spiceModels += component.properties.MODEL + '\n'
         }
 
@@ -614,7 +627,7 @@ function annotate(graph) {
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
-            if (pin.vertex === true) {
+            if (pin.vertex === true && pin.connectable) {
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
@@ -647,10 +660,10 @@ function annotate(graph) {
           k = k + ' ' + component.properties.VALUE
         }
 
-        if (component.properties.EXTRA_EXPRESSION.length > 0) {
+        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
         }
-        if (component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
         k = k + ' \n'

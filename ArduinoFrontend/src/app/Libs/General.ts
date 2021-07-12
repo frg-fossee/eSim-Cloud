@@ -3,6 +3,7 @@ import { Point } from './Point';
 import { areBoundingBoxesIntersecting } from './RaphaelUtils';
 import _ from 'lodash';
 import { Wire } from './Wire';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -305,12 +306,12 @@ export class BreadBoard extends CircuitElement {
   /**
    * Map of x and nodes with x-coordinates as x
    */
-  public sameXNodes: {[key: string]: Point[]} = {};
+  public sameXNodes: { [key: string]: Point[] } = {};
 
   /**
    * Map of y and nodes with y-coordinates as y
    */
-  public sameYNodes: {[key: string]: Point[]} = {};
+  public sameYNodes: { [key: string]: Point[] } = {};
 
   /**
    * Breadboard constructor
@@ -320,8 +321,8 @@ export class BreadBoard extends CircuitElement {
    */
   constructor(public canvas: any, x: number, y: number) {
     super('BreadBoard', x, y, 'Breadboard.json', canvas);
-    this.subsribeToDrag(this.onOtherComponentDrag.bind(this));
-    this.subscribeToDragStop(this.onOtherComponentDragStop.bind(this));
+    this.subsribeToDrag({ id: this.id, fn: this.onOtherComponentDrag.bind(this) });
+    this.subscribeToDragStop({ id: this.id, fn: this.onOtherComponentDragStop.bind(this) });
   }
 
   /**
@@ -379,7 +380,8 @@ export class BreadBoard extends CircuitElement {
   onOtherComponentDrag(element) {
     const bBox = this.elements.getBBox();
     const elementBBox = element.elements.getBBox();
-
+    // Disable Node Bubble on hover
+    Point.showBubbleBool = false;
     this.resetHighlightedPoints();
 
     if (!areBoundingBoxesIntersecting(bBox, elementBBox)) {
@@ -410,6 +412,8 @@ export class BreadBoard extends CircuitElement {
    * Listener to handle when dragging of a component stops
    */
   onOtherComponentDragStop() {
+    // Enable Node Bubble on hover
+    Point.showBubbleBool = true;
     // if no highlighted points when the dragging stops, return
     if (this.highlightedPoints.length === 0) {
       return;
@@ -420,7 +424,7 @@ export class BreadBoard extends CircuitElement {
       const wire = nodeTuple.breadboardNode.solderWire();
       wire.addPoint(nodeTuple.elementNode.x, nodeTuple.elementNode.y);
       // wire.connect(nodeTuple.elementNode, true);
-      nodeTuple.elementNode.connectWire(wire);
+      nodeTuple.elementNode.connectWire(wire, false);
       this.addSolderedNode(nodeTuple.breadboardNode);
     }
 
@@ -487,6 +491,8 @@ export class BreadBoard extends CircuitElement {
       }
 
     }, () => {
+      // Push dump to Undo stack & Reset
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } });
       for (let i = 0; i < this.nodes.length; ++i) {
         this.nodes[i].move(tmpar2[i][0] + fdx, tmpar2[i][1] + fdy);
         this.nodes[i].remainShow();
@@ -494,8 +500,60 @@ export class BreadBoard extends CircuitElement {
       tmpar2 = [];
       this.tx = tmpx;
       this.ty = tmpy;
+      // reBuild SameNodeObject after drag stop
+      this.reBuildSameNodes();
     });
   }
+
+  /**
+   * Function to move/transform breadboard
+   * @param fdx relative x position to move
+   * @param fdy relative y position to move
+   */
+  transformBoardPosition(fdx: number, fdy: number): void {
+    let tmpar = [];
+    let tmpar2 = [];
+    let tmpx = 0;
+    let tmpy = 0;
+    let ffdx = 0;
+    let ffdy = 0;
+
+    ffdx = 0;
+    ffdy = 0;
+    tmpar = [];
+    tmpar2 = [];
+    for (const node of this.nodes) {
+      tmpar2.push(
+        [node.x, node.y]
+      );
+      node.remainHidden();
+    }
+    for (const node of this.joined) {
+      tmpar.push(
+        [node.x, node.y]
+      );
+      node.remainShow();
+    }
+
+    this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
+    tmpx = this.tx + fdx;
+    tmpy = this.ty + fdy;
+    ffdx = fdx;
+    ffdy = fdy;
+    for (let i = 0; i < this.joined.length; ++i) {
+      this.joined[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+    }
+
+
+    for (let i = 0; i < this.nodes.length; ++i) {
+      this.nodes[i].move(tmpar2[i][0] + ffdx, tmpar2[i][1] + ffdy);
+      this.nodes[i].remainShow();
+    }
+    this.tx = tmpx;
+    this.ty = tmpy;
+
+  }
+
   /**
    * Function provides component details
    * @param keyName Unique Class name
@@ -514,6 +572,24 @@ export class BreadBoard extends CircuitElement {
   }
 
   /**
+   * Re-build sameNode variables
+   */
+  reBuildSameNodes() {
+    this.sameXNodes = {};
+    this.sameYNodes = {};
+    // initialise sameX and sameY node sets
+    for (const node of this.nodes) {
+      // create the set for x
+      this.sameXNodes[node.x] = this.sameXNodes[node.x] || [];
+      this.sameXNodes[node.x].push(node);
+
+      // Create the set for y
+      this.sameYNodes[node.y] = this.sameYNodes[node.y] || [];
+      this.sameYNodes[node.y].push(node);
+    }
+  }
+
+  /**
    * Checks if the point is inside the passed bounding box
    * TODO: move the function to a utils
    * @param boundingBox: Raphael Bounding box object
@@ -522,7 +598,7 @@ export class BreadBoard extends CircuitElement {
    */
   isPointWithinBbox(boundingBox, x, y): boolean {
     return ((x < boundingBox.cx && x > boundingBox.cx - 1.2 * boundingBox.width) &&
-            (y < boundingBox.cy && y > boundingBox.cy - 1.2 * boundingBox.height));
+      (y < boundingBox.cy && y > boundingBox.cy - 1.2 * boundingBox.height));
   }
 
   /**
@@ -531,8 +607,8 @@ export class BreadBoard extends CircuitElement {
    * @param y: y-coordinate
    */
   shortlistNodes(x, y) {
-    const xIndexFrom = _.sortedIndexBy(this.sortedNodes, {x: x - BreadBoard.PROXIMITY_DISTANCE}, 'x');
-    const xIndexTo = _.sortedLastIndexBy(this.sortedNodes, {x: x + BreadBoard.PROXIMITY_DISTANCE}, 'x');
+    const xIndexFrom = _.sortedIndexBy(this.sortedNodes, { x: x - BreadBoard.PROXIMITY_DISTANCE }, 'x');
+    const xIndexTo = _.sortedLastIndexBy(this.sortedNodes, { x: x + BreadBoard.PROXIMITY_DISTANCE }, 'x');
 
     return this.sortedNodes.slice(xIndexFrom, xIndexTo);
   }

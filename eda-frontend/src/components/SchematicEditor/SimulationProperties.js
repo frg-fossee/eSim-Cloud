@@ -21,10 +21,12 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText } from '../../redux/actions/index'
+import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText, setNetlist } from '../../redux/actions/index'
 import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
+import queryString from 'query-string'
+import Notice from '../Shared/Notice'
 
 import api from '../../utils/Api'
 
@@ -57,6 +59,10 @@ export default function SimulationProperties () {
   const classes = useStyles()
   const [nodeList, setNodeList] = useState([])
   const [componentsList, setComponentsList] = useState([])
+  const [errMsg, setErrMsg] = useState('')
+  const [err, setErr] = useState(false)
+  const [status, setStatus] = useState('')
+  const stats = { loading: 'loading', error: 'error', success: 'success' }
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
     parameter: '',
     sweepType: 'Linear',
@@ -90,11 +96,13 @@ export default function SimulationProperties () {
 
   const [controlBlockParam, setControlBlockParam] = useState('')
   const [disabled, setDisabled] = React.useState(false)
+  const [simType, setSimType] = React.useState('')
   var typeSimulation = ''
+
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
   }
-  var analysisNodeArray = []; var analysisCompArray = []; var nodeArray = []
+  const analysisNodeArray = []; const analysisCompArray = []; const nodeArray = []
   const pushZero = (nodeArray) => {
     nodeArray.push({ key: 0 })
   }
@@ -209,7 +217,7 @@ export default function SimulationProperties () {
   let [selectedValueTransientAnalComp, setSelectedValueTransientAnalComp] = React.useState([])
 
   const handleAddSelectedValueDCSweep = (data) => {
-    var f = 0
+    let f = 0
     selectedValueDCSweep.forEach((value, i) => {
       if (value[i] !== undefined) {
         if (value[i].key === data) f = 1
@@ -232,7 +240,7 @@ export default function SimulationProperties () {
     // console.log(selectedValue)
   }
   const handleAddSelectedValueTransientAnal = (data) => {
-    var f = 0
+    let f = 0
     selectedValueTransientAnal.forEach((value, i) => {
       if (value[i] !== undefined) {
         if (value[i].key === data) f = 1
@@ -255,7 +263,7 @@ export default function SimulationProperties () {
     // console.log(selectedValue)
   }
   const handleAddSelectedValueTFAnal = (data) => {
-    var f = 0
+    let f = 0
     selectedValueTFAnal.forEach((value, i) => {
       if (value[i] !== undefined) {
         if (value[i].key === data) f = 1
@@ -278,7 +286,7 @@ export default function SimulationProperties () {
     // console.log(selectedValue)
   }
   const handleAddSelectedValueDCSweepComp = (data) => {
-    var f = 0
+    let f = 0
     selectedValueDCSweepComp.forEach((value, i) => {
       if (value[i] !== undefined) {
         if (value[i].key === data) f = 1
@@ -301,7 +309,7 @@ export default function SimulationProperties () {
     // console.log(selectedValue)
   }
   const handleAddSelectedValueTransientAnalComp = (data) => {
-    var f = 0
+    let f = 0
     selectedValueTransientAnalComp.forEach((value, i) => {
       if (value[i] !== undefined) {
         if (value[i].key === data) f = 1
@@ -323,14 +331,25 @@ export default function SimulationProperties () {
     selectedValueTransientAnalComp = tmp
     // console.log(selectedValue)
   }
-
+  const handleErrOpen = () => {
+    setErr(true)
+  }
+  const handleErrClose = () => {
+    setErr(false)
+  }
+  const handleErrMsg = (msg) => {
+    setErrMsg(msg)
+  }
+  const handleStatus = (status) => {
+    setStatus(status)
+  }
   // Prepare Netlist to file
   const prepareNetlist = (netlist) => {
-    var titleA = netfile.title.split(' ')[1]
-    var myblob = new Blob([netlist], {
+    const titleA = netfile.title.split(' ')[1]
+    const myblob = new Blob([netlist], {
       type: 'text/plain'
     })
-    var file = new File([myblob], `${titleA}.cir`, { type: 'text/plain', lastModified: Date.now() })
+    const file = new File([myblob], `${titleA}.cir`, { type: 'text/plain', lastModified: Date.now() })
     // console.log(file)
     sendNetlist(file)
   }
@@ -354,13 +373,11 @@ export default function SimulationProperties () {
     const token = localStorage.getItem('esim_token')
     var url = queryString.parse(window.location.href.split('editor?')[1])
     const formData = new FormData()
-    formData.append('file', file)
     formData.append('simulationType', typeSimulation)
-    console.log(url.id)
+    formData.append('file', file)
     if (url.id) {
       formData.append('save_id', url.id)
     }
-    console.log(formData)
     const config = {
       headers: {
         'content-type': 'multipart/form-data'
@@ -369,6 +386,7 @@ export default function SimulationProperties () {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
+    setSimType(typeSimulation)
     return api.post('simulation/upload', formData, config)
   }
 
@@ -376,42 +394,55 @@ export default function SimulationProperties () {
 
   // Get the simulation result with task_Id
   function simulationResult (url) {
+    let isError = false
+    let msg
+    let resPending = true // to stop immature opening of simulation screen
     api
       .get(url)
       .then((res) => {
         if (res.data.state === 'PROGRESS' || res.data.state === 'PENDING') {
+          handleStatus(stats.loading)
           setTimeout(simulationResult(url), 1000)
+        } else if (Object.prototype.hasOwnProperty.call(res.data.details, 'fail')) {
+          resPending = false
+          setIsResult(false)
+          console.log('failed notif')
+          console.log(res.data.details)
+          msg = res.data.details.fail.replace("b'", '')
+          isError = true
+          console.log(err)
         } else {
-          var result = res.data.details
+          const result = res.data.details
+          resPending = false
           if (result === null) {
             setIsResult(false)
           } else {
-            var temp = res.data.details.data
-            var data = result.data
+            const temp = res.data.details.data
+            const data = result.data
             // console.log('DATA SIm', data)
             if (res.data.details.graph === 'true') {
-              var simResultGraph = { labels: [], x_points: [], y_points: [] }
+              const simResultGraph = { labels: [], x_points: [], y_points: [] }
               // populate the labels
-              for (var i = 0; i < data.length; i++) {
+              for (let i = 0; i < data.length; i++) {
                 simResultGraph.labels[0] = data[i].labels[0]
-                var lab = data[i].labels
+                const lab = data[i].labels
                 // lab is an array containeing labels names ['time','abc','def']
                 simResultGraph.x_points = data[0].x
 
                 // labels
-                for (var x = 1; x < lab.length; x++) {
-                //   if (lab[x].includes('#branch')) {
-                //     lab[x] = `I (${lab[x].replace('#branch', '')})`
-                //   }
-                //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
-                //  else {
-                // lab[x] = `V (${lab[x]})`
+                for (let x = 1; x < lab.length; x++) {
+                  //   if (lab[x].includes('#branch')) {
+                  //     lab[x] = `I (${lab[x].replace('#branch', '')})`
+                  //   }
+                  //  uncomment below if you want label like V(r1.1) but it will break the graph showing time as well
+                  //  else {
+                  // lab[x] = `V (${lab[x]})`
 
                   // }
                   simResultGraph.labels.push(lab[x])
                 }
                 // populate y_points
-                for (var z = 0; z < data[i].y.length; z++) {
+                for (let z = 0; z < data[i].y.length; z++) {
                   simResultGraph.y_points.push(data[i].y[z])
                 }
               }
@@ -424,7 +455,7 @@ export default function SimulationProperties () {
 
               dispatch(setResultGraph(simResultGraph))
             } else {
-              var simResultText = []
+              const simResultText = []
               for (let i = 0; i < temp.length; i++) {
                 let postfixUnit = ''
                 if (temp[i][0].includes('#branch')) {
@@ -448,18 +479,29 @@ export default function SimulationProperties () {
           }
         }
       })
-      .then((res) => { handlesimulateOpen() })
+      .then((res) => {
+        if (isError === false && resPending === false) {
+          console.log('no error')
+          handleStatus(stats.success)
+          handlesimulateOpen()
+        } else if (resPending === false) {
+          handleStatus(stats.error)
+          handleErrMsg(msg)
+        }
+        handleErrOpen()
+      })
       .catch(function (error) {
         console.log(error)
       })
   }
 
   const startSimulate = (type) => {
-    var compNetlist = GenerateNetList()
-    var controlLine = ''
-    var controlBlock = ''
-    var skipMultiNodeChk = 0
-    var nodes = ''
+    const compNetlist = GenerateNetList()
+    let controlLine = ''
+    let controlBlock = ''
+    let skipMultiNodeChk = 0
+    let nodes = ''
+    let uic = ''
     switch (type) {
       case 'DcSolver':
         // console.log('To be implemented')
@@ -479,7 +521,7 @@ export default function SimulationProperties () {
       case 'Transient':
         typeSimulation = 'Transient'
         // console.log(transientAnalysisControlLine)
-        var uic = ''
+        typeSimulation = 'Transient'
         if (transientAnalysisControlLine.skipInitial === true) uic = 'UIC'
         controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
 
@@ -518,7 +560,7 @@ export default function SimulationProperties () {
         break
     }
     // console.log(selectedValue)
-    var atleastOne = 0
+    let atleastOne = 0
     let cblockline = ''
     // if either the extra expression field or the nodes multi select
     // drop down list in enabled then atleast one value is made non zero
@@ -554,12 +596,13 @@ export default function SimulationProperties () {
     dispatch(setControlBlock(controlBlock))
     // setTimeout(function () { }, 2000)
 
-    var netlist = netfile.title + '\n\n' +
+    const netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
       controlLine + '\n' +
       controlBlock + '\n'
 
+    dispatch(setNetlist(netlist))
     prepareNetlist(netlist)
 
     // handlesimulateOpen()
@@ -581,8 +624,8 @@ export default function SimulationProperties () {
   return (
     <>
       <div className={classes.SimulationOptions}>
-        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} task_id={taskId} />
-
+        <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} taskId={taskId} simType={simType} />
+        <Notice status={status} open={err} msg={errMsg} close={handleErrClose} />
         {/* Simulation modes list */}
         <List>
 
@@ -780,7 +823,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueDCSweep}
                         onRemove={handleRemSelectedValueDCSweep}
                         options={analysisNodeArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -792,7 +835,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueDCSweepComp}
                         onRemove={handleRemSelectedValueDCSweepComp}
                         options={analysisCompArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -884,7 +927,7 @@ export default function SimulationProperties () {
                       <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
                     </ListItem>
                     <ListItem>
-                      { nodeList.forEach((value) => {
+                      {nodeList.forEach((value) => {
                         if (value !== null && value !== '') {
                           analysisNodeArray.push({ key: value })
                         }
@@ -899,7 +942,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueTransientAnal}
                         onRemove={handleRemSelectedValueTransientAnal}
                         options={analysisNodeArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -920,7 +963,7 @@ export default function SimulationProperties () {
                         onSelect={handleAddSelectedValueTransientAnalComp}
                         onRemove={handleRemSelectedValueTransientAnalComp}
                         options={analysisCompArray} displayValue="key"
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
@@ -1098,18 +1141,18 @@ export default function SimulationProperties () {
                         value={tfAnalysisControlLine.outputNodes}
                         onChange={handleTfAnalysisControlLineNodes}
                         id="outputNodes"
-                        // checked={tfAnalysisControlLine.outputNodes}
+                      // checked={tfAnalysisControlLine.outputNodes}
                       />
                       <span style={{ marginLeft: '10px' }}>Output By Nodes</span>
 
                     </ListItem>
-                    { nodeList.forEach((value) => {
+                    {nodeList.forEach((value) => {
                       if (value !== null && value !== '') {
                         nodeArray.push({ key: value })
                       }
                     })
                     }
-                    { pushZero(nodeArray)}
+                    {pushZero(nodeArray)}
                     <ListItem>
                       <Multiselect
                         style={{ width: '100%' }}
@@ -1121,7 +1164,7 @@ export default function SimulationProperties () {
                         selectionLimit="2"
                         options={nodeArray} displayValue="key"
                         disable={disabled}
-                        avoidHighlightFirstOption = "true"
+                        avoidHighlightFirstOption="true"
                       />
                     </ListItem>
                     <ListItem>
