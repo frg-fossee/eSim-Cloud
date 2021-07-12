@@ -38,6 +38,11 @@ import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, open
 import CreateProject from '../Project/CreateProject'
 import importSCHFile from './Helper/KiCadFileUtils'
 
+// Req for Development
+// import CodeIcon from '@material-ui/icons/Code'
+// // eslint-disable-next-line
+// import { dispGraph } from './Helper/ToolbarTools'
+
 const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginLeft: 'auto',
@@ -625,6 +630,11 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         </Tooltip>
       }
 
+      {/* <Tooltip title="Display MxGraph Root">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={ () => dispGraph()}>
+          <CodeIcon fontSize="small" />
+        </IconButton>
+      </Tooltip> */}
     </>
   )
 }

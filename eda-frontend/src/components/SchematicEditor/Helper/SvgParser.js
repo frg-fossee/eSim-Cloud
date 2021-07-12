@@ -64,7 +64,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component, rot
 
   var path = '../' + component.svg_path
 
-  fetch(path)
+  return fetch(path)
     .then(function (response) {
       return response.text()
     })
@@ -184,5 +184,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component, rot
         pins[i].PinNumber = currentPin.pinNumber
       }
       if (rotation !== 0) { rotateCell(v1, rotation) }
+
+      return v1
     })
 }

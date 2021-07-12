@@ -5,7 +5,6 @@ import { getSvgMetadata } from './SvgParser'
 import mxGraphFactory from 'mxgraph'
 const {
   mxPoint
-  // mxEdgeHandler
 } = new mxGraphFactory()
 
 // var edgeHandler
@@ -22,13 +21,12 @@ var graph
 var defaultParent
 
 // Scale for the graph
-const defScale = 10
+const defScale = 5
 
 // Graph config
 export default function KiCadFileUtils (grid) {
   graph = grid
   defaultParent = graph.getDefaultParent()
-  // edgeHandler = new mxEdgeHandler()
 }
 
 // Reads Kicad .sch files and returns the schematic as instructions
@@ -149,31 +147,23 @@ const loadComponents = async (components, wires) => {
   const insertComponent = async (comp, compData) => {
     model.beginUpdate()
     try {
-      getSvgMetadata(graph, parent, null, null, comp.x / defScale,
-        comp.y / defScale, compData, comp.rotation)
+      var compCell = await getSvgMetadata(graph, parent, null, null, comp.x / defScale,
+      comp.y / defScale, compData, comp.rotation)
       graph.refresh();
     } catch (e) { console.log(e) }
     model.endUpdate()
-    return
+    return compCell
   }
 
   // Load all components
-  for (let i = 0; i <= components.length; i++) {
+  for (let i = 0; i < components.length; i++) {
     // Get component data
-    var url
-    if (i !== components.length) {
-      url = `components/?component_library__library_name__icontains=${components[i].library}&name__icontains=${components[i].componentName}`
-    } else {
-      url = `components/?component_library__library_name__icontains=${components[i-1].library}&name__icontains=${components[i-1].componentName}`
-    }
-    await api.get(url, config)
+    var url = `components/?component_library__library_name__icontains=${components[i].library}&name__icontains=${components[i].componentName}`
+    var compCell = await api.get(url, config)
       .then((res) => {
-        if (i !== components.length) {
-          insertComponent(components[i], res.data[0])
-        } else {
-          console.log('IMMA FAKE')
-        }
+        return insertComponent(components[i], res.data[0])
       })
+      components[i].mxCell = compCell
   }
   joinComponents(components, wires)
 }
@@ -187,10 +177,24 @@ const joinComponents = (components, wires) => {
   })
 
   const checkInBound = (x, y, compMxCell) => {
-    if (compMxCell.geometry.x + compMxCell.geometry.width /2 >= x &&
-      compMxCell.geometry.x - compMxCell.geometry.width/2 <= x &&
-      compMxCell.geometry.y + compMxCell.geometry.height/2 >= y &&
-      compMxCell.geometry.y - compMxCell.geometry.height/2 <= y) {
+    let height = compMxCell.geometry.height
+    let width = compMxCell.geometry.width
+    let angle = compMxCell.getStyle().split('rotation=')
+    if (angle[1]) {
+      console.log(angle, '\n', angle[1].split(';'))
+      angle = parseInt(angle[1].split(';')[0])
+      if ((angle / 90) % 2 !== 0) {
+        let t = height
+        height = width
+        width = t
+      }
+      console.log(angle)
+    }
+
+    if (compMxCell.geometry.x + width / 2 >= x &&
+      compMxCell.geometry.x - width / 2 <= x &&
+      compMxCell.geometry.y + height / 2 >= y &&
+      compMxCell.geometry.y - height / 2 <= y) {
       return true
     } else {
       return false

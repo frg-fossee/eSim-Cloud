@@ -47,6 +47,14 @@ export function clearHistory() {
   undoManager.clear()
 }
 
+// Display mxGraph root (For development only)
+// export function dispGraph () {
+//   if (graph) {
+//     console.log('Graph Root', graph.getDefaultParent())
+//     console.log('Current Cell', graph.getSelectionCell())
+//   }
+// }
+
 // Func to check if wire change
 const checkWireChange = (changes) => {
   for (const change of changes) {
