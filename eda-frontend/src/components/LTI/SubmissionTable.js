@@ -77,7 +77,7 @@ export default function SubmissionTable() {
 
   const handleUserSort = () => {
     setSortOrderTime(0)
-    const temp = responseData.slice()
+    var temp = responseData.slice()
     if (sortOrderUser === 0) {
       temp.sort((a, b) => a.student.username < b.student.username)
       setSortData(temp)
@@ -96,14 +96,22 @@ export default function SubmissionTable() {
 
   const handleTimeSort = () => {
     setSortOrderUser(0)
-    const temp = responseData.slice()
+    var temp = responseData.slice()
     if (sortOrderTime === 0) {
-      temp.sort((a, b) => a.schematic.save_time - b.schematic.save_time)
+      temp.sort((a, b) => {
+        if (a.schematic.save_time < b.schematic.save_time) return -1
+        else if (a.schematic.save_time > b.schematic.save_time) return 1
+        return 0
+      })
       setSortData(temp)
       setSortOrderTime(1)
     }
     else if (sortOrderTime === 1) {
-      temp.sort((a, b) => b.schematic.save_time - a.schematic.save_time)
+      temp.sort((a, b) => {
+        if (a.schematic.save_time > b.schematic.save_time) return -1
+        else if (a.schematic.save_time < b.schematic.save_time) return 1
+        return 0
+      })
       setSortData(temp)
       setSortOrderTime(2)
     }
@@ -125,8 +133,8 @@ export default function SubmissionTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {sortData.map((student) => (
-            <TableRow key={student.ltisession.id}>
+          {sortData.map((student) => {
+            return <TableRow key={student.schematic.save_id}>
               <TableCell component="th" scope="row">
                 {student.student.username}
               </TableCell>
@@ -138,7 +146,8 @@ export default function SubmissionTable() {
                 </Button>
               </TableCell>
             </TableRow>
-          ))}
+          }
+          )}
         </TableBody>
       </Table> : <Typography style={{ textAlign: 'center' }}><h1>No submissions for this assignment</h1></Typography>}
     </TableContainer>
