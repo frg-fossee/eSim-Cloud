@@ -6,6 +6,7 @@ import { Utils } from './PathUtils';
 import _ from 'lodash';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { BoundingBox } from '../Libs/Geometry';
+import { UndoUtils } from '../Libs/UndoUtils';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -30,13 +31,17 @@ class PathProblem {
 
 export class LayoutUtils {
     /**
+     * total count of problemPaths while auto Layouting
+     */
+    static problemPathsCount = 0;
+    /**
      * Solves auto layout problem for `Arduino on Cloud` circuits
      */
     static solveAutoLayout() {
         const canvas = LayoutUtils.generateCanvas();
 
         const [isInvalid, overlappingEl1, overlappingEl2] = Utils.isCanvasInvalid(canvas);
-        if  (!isInvalid) {
+        if (!isInvalid) {
             LayoutUtils.continueSaveLayout(canvas);
         } else {
             AlertService.showConfirm(
@@ -53,6 +58,7 @@ export class LayoutUtils {
      */
     private static continueSaveLayout(canvas: Canvas): void {
         const problemPaths = LayoutUtils.getSourcesAndDestsToSolve();
+        this.problemPathsCount = problemPaths.length;
         for (const path of problemPaths) {
             const [solvedPath, msg] = Utils.getOptimalPath(path.source, path.destination, path.sourceBlock, path.destinationBlock, canvas);
             if (!solvedPath) {
@@ -89,6 +95,8 @@ export class LayoutUtils {
      * @param path new path to be assigned
      */
     static updateWirePath(wire: Wire, path: Path): void {
+        // Push dump to Undo stack & Reset
+        UndoUtils.pushChangeToUndoAndReset({ keyName: wire.keyName, element: wire.save(), event: 'layout', step: this.problemPathsCount });
         let i = 1;
         const allPoints = path.getAllPoints();
         wire.removeAllMiddlePoints();

@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
+import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
 /**
@@ -137,6 +138,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (environment.production) {
       window.removeEventListener('beforeunload', Workspace.BeforeUnload);
     }
+    // Make Redo & Undo Stack empty
+    UndoUtils.redo = [];
+    UndoUtils.undo = [];
   }
   /**
    * On Init Callback
@@ -393,6 +397,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param key string
    */
   dragStart(event: DragEvent, key: string) {
+    // Save Dump of current Workspace
     event.dataTransfer.dropEffect = 'copyMove';
     event.dataTransfer.setData('text', key);
   }
@@ -625,7 +630,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       () => {
         callback();
       },
-      () => {},
+      () => { },
       'Save',
       'Don\'t save',
       'Cancel'
@@ -707,4 +712,32 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Function to enable/disable undo/redo button depending upon undostack
+   * @param type button type
+   * @returns boolean
+   */
+  enableButton(type) {
+    if (!UndoUtils.enableButtonsBool) {
+      return true;
+    }
+    if (type === 'undo') {
+      return UndoUtils.undo.length <= 0;
+    } else if (type === 'redo') {
+      return UndoUtils.redo.length <= 0;
+    }
+  }
+
+  /**
+   * Undo Operation
+   */
+  undoChange() {
+    UndoUtils.workspaceUndo();
+  }
+  /**
+   * Redo Operation
+   */
+  redoChange() {
+    UndoUtils.workspaceRedo();
+  }
 }

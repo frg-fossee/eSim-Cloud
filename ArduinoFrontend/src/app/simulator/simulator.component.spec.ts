@@ -1,7 +1,8 @@
 import { HttpClientModule } from '@angular/common/http';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule, MatFormFieldModule, MatTooltipModule } from '@angular/material';
+import { MatDialogModule, MatFormFieldModule, MatIconModule, MatTooltipModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { type } from 'os';
@@ -30,12 +31,13 @@ describe('SimulatorComponent', () => {
                 FormsModule,
                 MonacoEditorModule.forRoot(monacoConfig),
                 MatDialogModule,
-                HttpClientModule
+                HttpClientModule,
             ],
             declarations: [
                 SimulatorComponent,
                 CodeEditorComponent,
-            ]
+            ],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA]
         }).compileComponents();
     });
 
