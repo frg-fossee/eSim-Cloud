@@ -92,14 +92,6 @@ export default function SimulationScreen({ open, close, isResult, taskId, simTyp
   }
 
   useEffect(() => {
-    console.log(history)
-  }, [history])
-
-  useEffect(() => {
-    console.log(comparingSim)
-  }, [comparingSim])
-
-  useEffect(() => {
     if (close) {
       setHistoryId('')
       setCompare(false)
@@ -117,7 +109,7 @@ export default function SimulationScreen({ open, close, isResult, taskId, simTyp
         }
       }
       if (url.id) {
-        getUrl = `simulation/history/${url.id}/${simType}`
+        getUrl = `simulation/history/${url.id}/${url.version}/${url.branch}/${simType}`
       } else {
         getUrl = `simulation/history/simulator/${simType}`
       }
