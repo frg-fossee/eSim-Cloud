@@ -5,7 +5,7 @@ import Editor from '../components/Simulator/Editor'
 import textToFile from '../components/Simulator/textToFile'
 import SimulationScreen from '../components/Shared/SimulationScreen'
 import { useDispatch } from 'react-redux'
-import { setResultGraph, setResultText } from '../redux/actions/index'
+import { setResultGraph, setResultText, setNetlist } from '../redux/actions/index'
 import Notice from '../components/Shared/Notice'
 
 import api from '../utils/Api'
@@ -101,18 +101,23 @@ export default function Simulator () {
 
   function prepareNetlist () {
     const sanatizedText = netlistCodeSanitization(netlistCode)
+    dispatch(setNetlist(sanatizedText))
     const file = textToFile(sanatizedText)
     sendNetlist(file)
   }
 
   // Upload the nelist
   function netlistConfig (file) {
+    const token = localStorage.getItem('esim_token')
     const formData = new FormData()
     formData.append('file', file)
     const config = {
       headers: {
         'content-type': 'multipart/form-data'
       }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
     }
     return api.post('simulation/upload', formData, config)
   }

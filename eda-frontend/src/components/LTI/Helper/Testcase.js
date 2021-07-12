@@ -5,249 +5,18 @@
 import mxGraphFactory from 'mxgraph'
 import store from '../../../redux/store'
 import * as actions from '../../../redux/actions/actions'
-import ComponentParameters from './ComponentParametersData'
+import ComponentParameters from '../../SchematicEditor/Helper/ComponentParametersData'
 var graph
-var undoManager
 
 const {
-  mxPrintPreview,
   mxConstants,
-  mxRectangle,
   mxUtils,
-  mxUndoManager,
   mxEvent,
-  mxCodec,
   mxCell,
   mxMorphing,
   mxPoint
 } = new mxGraphFactory()
 
-export default function ToolbarTools(grid, unredo) {
-  graph = grid
-
-  undoManager = new mxUndoManager()
-  var listener = function (sender, evt) {
-    undoManager.undoableEditHappened(evt.getProperty('edit'))
-  }
-  graph.getModel().addListener(mxEvent.UNDO, listener)
-  graph.getView().addListener(mxEvent.UNDO, listener)
-}
-
-// SAVE
-export function Save() {
-  XMLWireConnections()
-  var enc = new mxCodec(mxUtils.createXmlDocument())
-  var node = enc.encode(graph.getModel())
-  var value = mxUtils.getXml(node)
-  return value
-}
-
-// Function to clear undo/redo history
-export function clearHistory() {
-  undoManager.clear()
-}
-
-// Func to check if wire change
-const checkWireChange = (changes) => {
-  for (const change of changes) {
-    if (change.__proto__.constructor.name === 'mxTerminalChange') { return true }
-  }
-  return false
-}
-
-// UNDO
-export function Undo() {
-  if (undoManager.indexOfNextAdd === 0) {
-    // Nothing to undo
-    return
-  } else if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd - 1].changes)) {
-    // Found Wire
-    undoManager.undo()
-  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length > 1) {
-    // Found Component
-    let undos = 1
-    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
-      if (undoManager.history[i].changes.length === 1
-        || checkWireChange(undoManager.history[i].changes)
-      ) { break }
-    }
-    while(undos !== 0) {
-      undoManager.undo()
-      undos--
-    }
-  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 1) {
-    // Found Rotate/Move
-    let undos = 0
-    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
-      if (undoManager.history[i].changes.length !== 1) { break }
-    }
-    while(undos !== 0) {
-      undoManager.undo()
-      undos--
-    }
-  }
-  else {
-    // Default case !?
-    undoManager.undo()
-  }
-}
-
-// REDO
-export function Redo() {
-  if (undoManager.indexOfNextAdd === undoManager.history.length) {
-    // Nothing to redo
-    return
-  } else if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd].changes)) {
-    // Found Wire
-    undoManager.redo()
-  } else if (
-    undoManager.history[undoManager.indexOfNextAdd].changes.length === 1
-    && undoManager.history[undoManager.indexOfNextAdd].changes[0].__proto__.constructor.name === 'mxChildChange'
-  ) {
-    // Found Component
-    let redos = 1
-    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
-      if (undoManager.history[i].changes.length === 12 ||
-        undoManager.history[i].changes.length === 1 ||
-        checkWireChange(undoManager.history[i].changes)
-      ) { break }
-    }
-    while (redos !== 0) {
-      undoManager.redo()
-      redos--
-    }
-  } else if (undoManager.history[undoManager.indexOfNextAdd].changes.length === 1) {
-    //Found component Rotate/Move
-    let redos = 1;
-    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
-      if (undoManager.history[i].changes.length !== 1 ||
-        undoManager.history[i].changes[0].__proto__.constructor.name === 'mxChildChange'
-      ) { break }
-    }
-    while (redos !== 0) {
-      redos--
-      undoManager.redo()
-    }
-  } else {
-    // Default Case !?
-    undoManager.redo()
-  }
-}
-
-// Zoom IN
-export function ZoomIn() {
-  graph.zoomIn()
-}
-
-// ZOOM OUT
-export function ZoomOut() {
-  graph.zoomOut()
-}
-
-// ZOOM ACTUAL
-export function ZoomAct() {
-  graph.zoomActual()
-}
-
-// DELETE COMPONENT
-export function DeleteComp() {
-  graph.removeCells()
-}
-
-// CLEAR WHOLE GRID
-export function ClearGrid() {
-  graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
-}
-
-function rotate (rot_ang) {
-  var view = graph.getView()
-  var cell = graph.getSelectionCell()
-  var state = view.getState(cell, true)
-  var vHandler = graph.createVertexHandler(state)
-  if (cell != null) {
-    vHandler.rotateCell(cell, parseInt(rot_ang))
-    let childCount = cell.getChildCount()
-    for(let i = 0; i < childCount; i++) {
-      let child = cell.getChildAt(i)
-      vHandler.rotateCell(child, parseInt(rot_ang) * (-1))
-    }
-  }
-  vHandler.destroy()
-}
-
-// ROTATE COMPONENT CLOCKWISE
-export function Rotate() {
-  rotate(90)
-}
-
-// ROTATE COMPONENT Anti-CLOCKWISE
-export function RotateACW() {
-  rotate(-90)
-}
-
-// PRINT PREVIEW OF SCHEMATIC
-export function PrintPreview() {
-  // Matches actual printer paper size and avoids blank pages
-  var scale = 0.8
-  var headerSize = 50
-  var footerSize = 50
-
-  // Applies scale to page
-  var pageFormat = { x: 0, y: 0, width: 1169, height: 827 }
-  var pf = mxRectangle.fromRectangle(pageFormat || mxConstants.PAGE_FORMAT_A4_LANDSCAPE)
-  pf.width = Math.round(pf.width * scale * graph.pageScale)
-  pf.height = Math.round(pf.height * scale * graph.pageScale)
-
-  // Finds top left corner of top left page
-  var bounds = mxRectangle.fromRectangle(graph.getGraphBounds())
-  bounds.x -= graph.view.translate.x * graph.view.scale
-  bounds.y -= graph.view.translate.y * graph.view.scale
-
-  var x0 = Math.floor(bounds.x / pf.width) * pf.width
-  var y0 = Math.floor(bounds.y / pf.height) * pf.height
-
-  var preview = new mxPrintPreview(graph, scale, pf, 0, -x0, -y0)
-  preview.marginTop = headerSize * scale * graph.pageScale
-  preview.marginBottom = footerSize * scale * graph.pageScale
-  preview.autoOrigin = false
-
-  var oldRenderPage = preview.renderPage
-  preview.renderPage = function (w, h, x, y, content, pageNumber) {
-    var div = oldRenderPage.apply(this, arguments)
-
-    var header = document.createElement('div')
-    header.style.position = 'absolute'
-    header.style.boxSizing = 'border-box'
-    header.style.fontFamily = 'Arial,Helvetica'
-    header.style.height = (this.marginTop - 10) + 'px'
-    header.style.textAlign = 'center'
-    header.style.verticalAlign = 'middle'
-    header.style.marginTop = 'auto'
-    header.style.fontSize = '12px'
-    header.style.width = '100%'
-    header.style.fontWeight = '100'
-
-    // Vertical centering for text in header/footer
-    header.style.lineHeight = (this.marginTop - 10) + 'px'
-
-    var footer = header.cloneNode(true)
-    var title = store.getState().saveSchematicReducer.title
-    mxUtils.write(header, title + ' - eSim on Cloud')
-    header.style.borderBottom = '1px solid blue'
-    header.style.top = '0px'
-
-    mxUtils.write(footer, 'Made with Schematic Editor - ' + pageNumber + ' - eSim on Cloud')
-    footer.style.borderTop = '1px solid blue'
-    footer.style.bottom = '0px'
-
-    div.firstChild.appendChild(footer)
-    div.firstChild.appendChild(header)
-
-    return div
-  }
-
-  preview.open()
-}
 
 // ERC CHECK FOR SCHEMATIC
 export function ErcCheck() {
@@ -301,7 +70,7 @@ export function ErcCheck() {
   }
 }
 // ERC Check for Netlist, It also returns a boolean value which is called in the Netlist Generator 
-function ErcCheckNets() {
+function ErcCheckNets(graph) {
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0
@@ -312,13 +81,11 @@ function ErcCheckNets() {
     var cell = list[property]
     if (cell.Component === true) {
       for (var child in cell.children) {
-        if (child.connectable) {
-          var childVertex = cell.children[child]
-          if (childVertex.Pin === true && childVertex.edges === null) {
-            graph.getSelectionCell(childVertex)
-            ++PinNC
-            ++errorCount
-          }
+        var childVertex = cell.children[child]
+        if (childVertex.Pin === true && childVertex.edges === null) {
+          graph.getSelectionCell(childVertex)
+          ++PinNC
+          ++errorCount
         }
       }
       ++vertexCount
@@ -345,7 +112,7 @@ function ErcCheckNets() {
 }
 
 // Function to generate Netlist
-export function GenerateNetList() {
+export function GenerateNetList(graph=graph) {
 
   var r = 1
   var v = 1
@@ -356,7 +123,7 @@ export function GenerateNetList() {
     componentlist: [],
     nodelist: []
   }
-  var erc = ErcCheckNets() // Checking for ERC Failures
+  var erc = ErcCheckNets(graph) // Checking for ERC Failures
   var k = ''
   if (erc === false) {
     alert('ERC check failed')
@@ -393,7 +160,7 @@ export function GenerateNetList() {
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
-            if (pin.vertex === true && pin.connectable) {
+            if (pin.vertex === true) {
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
@@ -438,7 +205,7 @@ export function GenerateNetList() {
           netlist.nodelist.push(compobj.node2, compobj.node1)
         }
         console.log('component properties', component.properties)
-        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL.length > 0) {
             k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
 
@@ -516,12 +283,12 @@ export function GenerateNetList() {
           }
         }
 
-        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
+        if (component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
           component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
         
-        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL.length > 0) {
           spiceModels += component.properties.MODEL + '\n'
         }
 
@@ -627,7 +394,7 @@ function annotate(graph) {
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
-            if (pin.vertex === true && pin.connectable) {
+            if (pin.vertex === true) {
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
@@ -660,10 +427,10 @@ function annotate(graph) {
           k = k + ' ' + component.properties.VALUE
         }
 
-        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
+        if (component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
         }
-        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
+        if (component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
         k = k + ' \n'
@@ -673,7 +440,7 @@ function annotate(graph) {
   return list
 }
 // Returns all the Nodes present in the Schematic, Used for Simulation 
-export function GenerateNodeList() {
+export function GenerateNodeList(graph=graph) {
   var list = annotate(graph)
   var a = []
   // Using a Set to avoid duplicate Nodes 
@@ -700,7 +467,7 @@ export function GenerateNodeList() {
   return netlist
 }
 // Sends a list of components present in the netlist 
-export function GenerateCompList() {
+export function GenerateCompList(graph=graph) {
   var list = annotate(graph)
   var a = []
   var netlist = [] // This will contain the list of Component Prefix
@@ -840,65 +607,3 @@ export function parseXmlToGraph(xmlDoc, graph) {
   }
 }
 
-export function renderGalleryXML(xml) {
-  graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
-  graph.view.refresh()
-  var xmlDoc = mxUtils.parseXml(xml)
-  parseXmlToGraph(xmlDoc, graph)
-}
-// Certain Variables need to be Defined before Saving the Circuit, XML Wire Connections does that 
-function XMLWireConnections() {
-  var erc = true
-  if (erc === false) {
-    alert('ERC check failed')
-  } else {
-    var list = graph.getModel().cells
-    for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
-        mxCell.prototype.ConnectedNode = null
-        var component = list[property]
-
-        if (component.children !== null) {
-          for (var child in component.children) {
-            var pin = component.children[child]
-            if (pin.vertex === true) {
-              try {
-                if (pin.edges !== null || pin.edges.length !== 0) {
-                  for (var wire in pin.edges) {
-                    if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                      if (pin.edges[wire].source.edge === true) {
-                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
-                      } else if (pin.edges[wire].target.edge === true) {
-                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                        pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
-                        pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
-                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
-                      } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
-                      } else {
-                        pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                        pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                        pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
-                      }
-                    }
-                  }
-
-                }
-              } catch (e) { console.log('error') }
-            }
-          }
-
-        }
-
-      }
-    }
-  }
-
-}
