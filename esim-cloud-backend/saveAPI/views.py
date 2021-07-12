@@ -43,58 +43,74 @@ class StateSaveView(APIView):
         if request.data.get('esim_libraries'):
             esim_libraries = json.loads(request.data.get('esim_libraries'))
         try:
-            queryset = StateSave.objects.get(
-                save_id=request.data.get("save_id", None),
-                data_dump=request.data["data_dump"],
-                branch=request.data["branch"])
-            serializer = StateSaveSerializer(data=request.data)
+            queryset=StateSave.objects.get(
+            save_id=request.data.get("save_id",None),
+            branch=request.data.get("branch"),
+            version=request.data.get("version"))
+            serializer=StateSaveSerializer(data=request.data)
             if serializer.is_valid():
-                queryset.name = serializer.data["name"]
-                queryset.description = serializer.data["description"]
+                img = Base64ImageField(max_length=None, use_url=True)
+                filename, content = img.update(request.data.get('base64_image'))
+                queryset.data_dump=request.data.get("data_dump")
                 queryset.save()
-                response = serializer.data
-                response['duplicate'] = True
-                response['owner'] = queryset.owner.username
-                return Response(response)
-            return Response(serializer.errors,
-                            status=status.HTTP_400_BAD_REQUEST)
+                queryset.base64_image.save(filename, content)
+                return Response(data=serializer.data,status=status.HTTP_200_OK)
+            else:
+                return Response(data=serializer.errors,status=status.HTTP_400_BAD_REQUEST)
         except StateSave.DoesNotExist:
-            img = Base64ImageField(max_length=None, use_url=True)
-            filename, content = img.update(request.data['base64_image'])
             try:
-                project = Project.objects.get(
-                    project_id=request.data.get('project_id', None))
-                state_save = StateSave(
-                    data_dump=request.data.get('data_dump'),
-                    description=request.data.get('description'),
-                    name=request.data.get('name'),
-                    owner=request.user,
-                    branch=request.data.get('branch'),
-                    version=request.data.get('version'),
-                    project=project,
-                    shared=True,
-                    is_arduino=True if esim_libraries is None else False,
-                )
-            except:  # noqa
-                state_save = StateSave(
-                    data_dump=request.data.get('data_dump'),
-                    description=request.data.get('description'),
-                    name=request.data.get('name'),
-                    owner=request.user,
-                    branch=request.data.get('branch'),
-                    version=request.data.get('version'),
-                    is_arduino=True if esim_libraries is None else False,
-                )
-            if request.data.get('save_id'):
-                state_save.save_id = request.data.get('save_id')
-            state_save.base64_image.save(filename, content)
-            if esim_libraries:
-                state_save.esim_libraries.set(esim_libraries)
-            try:
-                state_save.save()
-                return Response(StateSaveSerializer(state_save).data)
-            except Exception:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
+                queryset = StateSave.objects.get(
+                    save_id=request.data.get("save_id", None),
+                    data_dump=request.data["data_dump"],
+                    branch=request.data["branch"])
+                serializer = StateSaveSerializer(data=request.data)
+                if serializer.is_valid():
+                    queryset.name = serializer.data["name"]
+                    queryset.description = serializer.data["description"]
+                    queryset.save()
+                    response = serializer.data
+                    response['duplicate'] = True
+                    response['owner'] = queryset.owner.username
+                    return Response(response)
+                return Response(serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
+            except StateSave.DoesNotExist:
+                img = Base64ImageField(max_length=None, use_url=True)
+                filename, content = img.update(request.data['base64_image'])
+                try:
+                    project = Project.objects.get(
+                        project_id=request.data.get('project_id', None))
+                    state_save = StateSave(
+                        data_dump=request.data.get('data_dump'),
+                        description=request.data.get('description'),
+                        name=request.data.get('name'),
+                        owner=request.user,
+                        branch=request.data.get('branch'),
+                        version=request.data.get('version'),
+                        project=project,
+                        shared=True,
+                        is_arduino=True if esim_libraries is None else False,
+                    )
+                except:  # noqa
+                    state_save = StateSave(
+                        data_dump=request.data.get('data_dump'),
+                        description=request.data.get('description'),
+                        name=request.data.get('name'),
+                        owner=request.user,
+                        branch=request.data.get('branch'),
+                        version=request.data.get('version'),
+                        is_arduino=True if esim_libraries is None else False,
+                    )
+                if request.data.get('save_id'):
+                    state_save.save_id = request.data.get('save_id')
+                state_save.base64_image.save(filename, content)
+                if esim_libraries:
+                    state_save.esim_libraries.set(esim_libraries)
+                try:
+                    state_save.save()
+                    return Response(StateSaveSerializer(state_save).data)
+                except Exception:
+                    return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class CopyStateView(APIView):
