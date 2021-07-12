@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable new-cap */
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import store from '../../../redux/store'
 import api from '../../../utils/Api'
 import { getSvgMetadata } from './SvgParser'
@@ -105,24 +107,24 @@ const readKicadSchematic = (text) => {
         instructions.components.push(component)
         break
       case 'Wire':
-        if (splt[1] == 'Wire') {
+        if (splt[1] === 'Wire') {
           i += 1
           wire = {}
-          var pos = textSplit[i].split(' ')
-          pos = pos.filter(e => e.length !== 0)
-          wire.startx = parseInt(pos[0].split('\t')[1])
-          wire.starty = parseInt(pos[1])
-          wire.endx = parseInt(pos[2])
-          wire.endy = parseInt(pos[3])
+          let posWire = textSplit[i].split(' ')
+          posWire = posWire.filter(e => e.length !== 0)
+          wire.startx = parseInt(posWire[0].split('\t')[1])
+          wire.starty = parseInt(posWire[1])
+          wire.endx = parseInt(posWire[2])
+          wire.endy = parseInt(posWire[3])
           instructions.wires.push(wire)
         }
         break
       case 'Connection':
         connection = {}
-        var pos = splt
-        pos = pos.filter(e => e.length !== 0)
-        connection.x = pos[1]
-        connection.y = pos[2]
+        var posConn = splt
+        posConn = posConn.filter(e => e.length !== 0)
+        connection.x = posConn[1]
+        connection.y = posConn[2]
         instructions.connections.push(connection)
         break
       default:
@@ -148,8 +150,8 @@ const loadComponents = async (components, wires) => {
     model.beginUpdate()
     try {
       var compCell = await getSvgMetadata(graph, parent, null, null, comp.x / defScale,
-      comp.y / defScale, compData, comp.rotation)
-      graph.refresh();
+        comp.y / defScale, compData, comp.rotation, true)
+      graph.refresh()
     } catch (e) { console.log(e) }
     model.endUpdate()
     return compCell
@@ -163,7 +165,7 @@ const loadComponents = async (components, wires) => {
       .then((res) => {
         return insertComponent(components[i], res.data[0])
       })
-      components[i].mxCell = compCell
+    components[i].mxCell = compCell
   }
   joinComponents(components, wires)
 }
@@ -173,7 +175,7 @@ const joinComponents = (components, wires) => {
   var model = graph.getModel()
 
   components.forEach(comp => {
-    graph.getCells(comp.x / defScale, comp.y / defScale, 100, 100, defaultParent, componentCells)
+    componentCells.push(comp.mxCell)
   })
 
   const checkInBound = (x, y, compMxCell) => {
@@ -181,20 +183,17 @@ const joinComponents = (components, wires) => {
     let width = compMxCell.geometry.width
     let angle = compMxCell.getStyle().split('rotation=')
     if (angle[1]) {
-      console.log(angle, '\n', angle[1].split(';'))
       angle = parseInt(angle[1].split(';')[0])
       if ((angle / 90) % 2 !== 0) {
-        let t = height
+        const t = height
         height = width
         width = t
       }
-      console.log(angle)
     }
-
-    if (compMxCell.geometry.x + width / 2 >= x &&
-      compMxCell.geometry.x - width / 2 <= x &&
-      compMxCell.geometry.y + height / 2 >= y &&
-      compMxCell.geometry.y - height / 2 <= y) {
+    if (compMxCell.geometry.x + width >= x &&
+      compMxCell.geometry.x <= x &&
+      compMxCell.geometry.y + height >= y &&
+      compMxCell.geometry.y <= y) {
       return true
     } else {
       return false
@@ -204,11 +203,11 @@ const joinComponents = (components, wires) => {
   const findClosestTerminal = (x, y, compCell) => {
     let minDist = Number.MAX_SAFE_INTEGER
     let closestTerm = null
-    const compx = compCell.geometry.x - compCell.geometry.width / 2
-    const compy = compCell.geometry.y - compCell.geometry.height / 2
+    const compx = compCell.geometry.x
+    const compy = compCell.geometry.y
     for (let i = 0, child = compCell.getChildAt(i); i < compCell.getChildCount(); i++, child = compCell.getChildAt(i)) {
       if (child.connectable) {
-        let distFrmPnt = Math.pow(x - (compx + child.geometry.x), 2) + Math.pow(y - (compy + child.geometry.y), 2)
+        const distFrmPnt = Math.pow(x - (compx + child.geometry.x), 2) + Math.pow(y - (compy + child.geometry.y), 2)
         if (distFrmPnt < minDist) {
           closestTerm = child
           minDist = distFrmPnt
@@ -220,15 +219,17 @@ const joinComponents = (components, wires) => {
 
   for (const c in componentCells) {
     for (const w in wires) {
-      if (!wires[w].startTerminal || !wires[w].endTerminal) {
+      let terminal
+      if (!wires[w].startTerminal) {
         const cbStart = checkInBound(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])
-        const cbEnd = checkInBound(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
-        let terminal
-        if (cbStart && !wires[w].startTerminal) {
+        if (cbStart) {
           // console.log('S', wires[w].startx, wires[w].starty)
           terminal = findClosestTerminal(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])
           wires[w].startTerminal = terminal
-        } if (cbEnd && !wires[w].endTerminal) {
+        }
+      } if (!wires[w].endTerminal) {
+        const cbEnd = checkInBound(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
+        if (cbEnd) {
           // console.log('E', wires[w].endx, wires[w].endy)
           terminal = findClosestTerminal(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
           wires[w].endTerminal = terminal
@@ -241,10 +242,10 @@ const joinComponents = (components, wires) => {
   wires.forEach(wire => {
     if (wire.startTerminal && wire.endTerminal) {
       var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
-      console.log(v)
       if (wire.points) {
-        v.geometry.points = wire.points.map(p => {return new mxPoint(p.x / defScale, p.y / defScale)})
+        v.geometry.points = wire.points.map(p => { return new mxPoint(p.x / defScale, p.y / defScale) })
       }
+      wire.mxCell = v
     }
   })
   model.endUpdate()
@@ -259,9 +260,9 @@ const reduceWires = (wires, connections) => {
         if (wires[j] !== undefined) {
           if (wires[i].endx === wires[j].startx && wires[i].endy === wires[j].starty) {
             if (wires[i].points) {
-              wires[i].points.push({'x': wires[i].endx, 'y': wires[i].endy})
+              wires[i].points.push({ x: wires[i].endx, y: wires[i].endy })
             } else {
-              wires[i].points = [{'x': wires[i].endx, 'y': wires[i].endy}]
+              wires[i].points = [{ x: wires[i].endx, y: wires[i].endy }]
             }
             wires[i].endx = wires[j].endx
             wires[i].endy = wires[j].endy

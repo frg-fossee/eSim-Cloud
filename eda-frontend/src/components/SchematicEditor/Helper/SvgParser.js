@@ -57,7 +57,7 @@ function extractData (xml) {
   }
 }
 
-export function getSvgMetadata (graph, parent, evt, target, x, y, component, rotation = 0) {
+export function getSvgMetadata (graph, parent, evt, target, x, y, component, rotation = 0, centerCoords = false) {
   // calls extractData and other MXGRAPH functions
   // initialize information from the svg meta
   // plots pinnumbers and component labels.
@@ -105,6 +105,16 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component, rot
       // make the component images larger by reducing the denominator and smaller by increasing the denominator
       width = width / default_scale
       height = height / default_scale
+
+      if (centerCoords) {
+        if (rotation !== 0 && (rotation / 90) % 2 !== 0) {
+          x = x - height / 2
+          y = y - width / 2
+        } else {
+          x = x - width / 2
+          y = y - height / 2
+        }
+      }
 
       const v1 = graph.insertVertex(
         parent,

@@ -33,6 +33,14 @@ export default function ToolbarTools(grid, unredo) {
   graph.getView().addListener(mxEvent.UNDO, listener)
 }
 
+// Display mxGraph root (For development only)
+export function dispGraph () {
+  if (graph) {
+    console.log('Graph Root', graph.getDefaultParent())
+    console.log('Current Cell', graph.getSelectionCell())
+  }
+}
+
 // SAVE
 export function Save() {
   XMLWireConnections()
@@ -46,14 +54,6 @@ export function Save() {
 export function clearHistory() {
   undoManager.clear()
 }
-
-// Display mxGraph root (For development only)
-// export function dispGraph () {
-//   if (graph) {
-//     console.log('Graph Root', graph.getDefaultParent())
-//     console.log('Current Cell', graph.getSelectionCell())
-//   }
-// }
 
 // Func to check if wire change
 const checkWireChange = (changes) => {
