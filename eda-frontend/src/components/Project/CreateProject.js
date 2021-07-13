@@ -246,7 +246,7 @@ function CreateProject () {
   const clickPreview = () => {
     const win = window.open()
     win.location.href = '/eda/#/project?save_id=' + project.details.save_id + '&version=' + project.details.active_version + '&branch=' + project.details.active_branch + '&project_id=' + project.details.project_id
-    win.focus()
+    win.reload()
   }
   const addField = () => {
     setFields([...fields, { name: '', text: '' }])

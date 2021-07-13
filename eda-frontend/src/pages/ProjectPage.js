@@ -60,10 +60,10 @@ const styles = (theme) => ({
   }
 })
 
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-export default function ProjectPage (props) {
+export default function ProjectPage(props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()
@@ -77,6 +77,7 @@ export default function ProjectPage (props) {
   const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
   const netfile = useSelector((state) => state.netlistReducer)
+  const compProperties = useSelector((state) => state.schematicEditorReducer.components)
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props
     return (
@@ -139,6 +140,9 @@ export default function ProjectPage (props) {
   const changedStatus = () => {
     setStatusChanged(true)
   }
+  // useEffect(() => {
+  //   console.log(project)
+  // }, [project,compProperties])
   useEffect(() => {
     var container = gridRef.current
     LoadGrid(container, null, null)
@@ -154,8 +158,8 @@ export default function ProjectPage (props) {
         // Loading User on-cloud saved schemaic.
         dispatch(fetchSchematic(saveID, version, branch))
       }
+      console.log(GenerateCompList())
     }
-    console.log(GenerateCompList())
     // eslint-disable-next-line
   }, [props.location, dispatch])
   return (
@@ -172,8 +176,9 @@ export default function ProjectPage (props) {
                   <div className={classes.toolbar} />
                   <Typography>
                     {project.details && <h1 style={{ marginBottom: '0' }}>{project.details.title}</h1>}
-                    {project.details && <h4 style={{ marginTop: '0' }}>By: {project.details.author_name} </h4>}
+                    {project.details && <h4 style={{ marginTop: '0', marginBottom: '0' }}>By: {project.details.author_name} </h4>}
                   </Typography>
+                  <hr style={{ marginTop: '0' }} />
                   {project.reports && project.details.is_reported &&
                     <ReportComponent project={project} changedStatus={changedStatus} location={props.location} />
                   }
@@ -185,7 +190,14 @@ export default function ProjectPage (props) {
                     {project.details && project.details?.fields && project.details.fields.map(item => (
                       <p key={item}>
                         <h2 style={{ marginTop: '0' }}>{item.name}</h2>
-                        <h3 style={{ marginTop: '0' }}>{item.text}</h3>
+                        <p style={{ marginTop: '0' }}>
+                          {item.text.split("\n").map((text) => (
+                            <span>
+                              {text}
+                              <br></br>
+                            </span>
+                          ))}
+                        </p>
                       </p>
                     ))}
                   </Typography>
@@ -274,7 +286,7 @@ export default function ProjectPage (props) {
                         </center>
                       </LayoutMain>
                     </Grid>
-                    <ComponentProperties/>
+                    <ComponentProperties />
                     <Grid item xs={1} />
 
                     <Grid item xs={12} sm={12}>
