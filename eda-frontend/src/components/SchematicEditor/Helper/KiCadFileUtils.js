@@ -123,8 +123,8 @@ const readKicadSchematic = (text) => {
         connection = {}
         var posConn = splt
         posConn = posConn.filter(e => e.length !== 0)
-        connection.x = posConn[1]
-        connection.y = posConn[2]
+        connection.x = parseInt(posConn[2])
+        connection.y = parseInt(posConn[3])
         instructions.connections.push(connection)
         break
       default:
@@ -132,11 +132,11 @@ const readKicadSchematic = (text) => {
     }
   }
   instructions.wireSegments = [...instructions.wires]
-  instructions.wires = reduceWires([...instructions.wires], [...instructions.connections])
+  instructions.wires = reduceWires([...instructions.wires])
   return instructions
 }
 
-const loadComponents = async (components, wires) => {
+const loadComponents = async (components, wires, connections) => {
   // API config
   const token = store.getState().authReducer.token
   var config = { headers: { 'Content-Type': 'application/json' } }
@@ -167,16 +167,46 @@ const loadComponents = async (components, wires) => {
       })
     components[i].mxCell = compCell
   }
-  joinComponents(components, wires)
+  joinComponents(components, wires, connections)
 }
 
-const joinComponents = (components, wires) => {
-  const componentCells = []
+const joinComponents = (components, wires, connections) => {
   var model = graph.getModel()
 
-  components.forEach(comp => {
-    componentCells.push(comp.mxCell)
-  })
+  const drawConnection = (wire, source, target, connection) => {
+    if (wire.startTerminal && wire.endTerminal) {
+      model.beginUpdate()
+      console.log(wire.startTerminal, wire.endTerminal)
+      var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
+      if (wire.points) {
+        v.geometry.points = wire.points.map(p => { return new mxPoint(p.x / defScale, p.y / defScale) })
+      }
+      if (source) {
+        v.geometry.sourcePoint = new mxPoint(connection.x / defScale, connection.y / defScale)
+      }
+      if (target) {
+        v.geometry.targetPoint = new mxPoint(connection.x / defScale, connection.y / defScale)
+      }
+      model.endUpdate()
+    }
+    return v
+  }
+
+  const findWire = (w, x, y) => {
+    for (const c in connections) {
+      if (connections[c].x === x && connections[c].y === y) {
+        for (let wi = 0; wi < wires.length && wi !== w; wi++) {
+          if (wires[wi].points) {
+            for (const p in wires[wi].points) {
+              if (wires[wi].points[p].x === connections[c].x && connections[c].y === wires[wi].points[p].y) {
+                return [wires[wi].mxCell, connections[c]]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   const checkInBound = (x, y, compMxCell) => {
     let height = compMxCell.geometry.height
@@ -217,19 +247,22 @@ const joinComponents = (components, wires) => {
     return closestTerm
   }
 
+  const componentCells = []
+  components.forEach(comp => {
+    componentCells.push(comp.mxCell)
+  })
+
   for (const c in componentCells) {
     for (const w in wires) {
       let terminal
       if (!wires[w].startTerminal) {
-        const cbStart = checkInBound(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])
-        if (cbStart) {
+        if (checkInBound(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])) {
           // console.log('S', wires[w].startx, wires[w].starty)
           terminal = findClosestTerminal(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])
           wires[w].startTerminal = terminal
         }
       } if (!wires[w].endTerminal) {
-        const cbEnd = checkInBound(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
-        if (cbEnd) {
+        if (checkInBound(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])) {
           // console.log('E', wires[w].endx, wires[w].endy)
           terminal = findClosestTerminal(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
           wires[w].endTerminal = terminal
@@ -249,15 +282,29 @@ const joinComponents = (components, wires) => {
     }
   })
   model.endUpdate()
+
+  for (const w in wires) {
+    if (!wires[w].startTerminal) {
+      [wires[w].startTerminal, wires[w].connection] = findWire(w, wires[w].startx, wires[w].starty)
+      if (wires[w].endTerminal && wires[w].startTerminal) {
+        wires[w].mxCell = drawConnection(wires[w], true, false, wires[w].connection)
+      }
+    }
+    if (!wires[w].endTerminal) {
+      [wires[w].endTerminal, wires[w].connection] = findWire(w, wires[w].endx, wires[w].endy)
+      if (wires[w].endTerminal && wires[w].startTerminal) {
+        wires[w].mxCell = drawConnection(wires[w], false, true, wires[w].connection)
+      }
+    }
+  }
 }
 
 // Reduces the wires and connections
-// TODO Connections
-const reduceWires = (wires, connections) => {
+const reduceWires = (wires) => {
   for (let i = 0; i < wires.length; i++) {
     if (wires[i] !== undefined) {
       for (let j = 0; j < wires.length; j++) {
-        if (wires[j] !== undefined) {
+        if (wires[j] !== undefined && i !== j) {
           if (wires[i].endx === wires[j].startx && wires[i].endy === wires[j].starty) {
             if (wires[i].points) {
               wires[i].points.push({ x: wires[i].endx, y: wires[i].endy })
@@ -282,5 +329,5 @@ const reduceWires = (wires, connections) => {
 export function importSCHFile (fileContents) {
   const rawInstr = readKicadSchematic(fileContents)
   console.log(rawInstr)
-  loadComponents([...rawInstr.components], [...rawInstr.wires])
+  loadComponents([...rawInstr.components], [...rawInstr.wires], [...rawInstr.connections])
 }
