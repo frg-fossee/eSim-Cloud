@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Notification snackbar to give alert messages
-function SimpleSnackbar ({ open, close, message }) {
+function SimpleSnackbar({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -97,7 +97,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar ({ mobileClose, gridRef }) {
+export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, setLtiSimResult }) {
   const classes = useStyles()
   const netfile = useSelector((state) => state.netlistReducer)
   const auth = useSelector((state) => state.authReducer)
@@ -120,6 +120,17 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const [modelSch, setModelSch] = React.useState('')
   const [id, setId] = React.useState('')
   const [scored, setScored] = React.useState(false)
+
+
+  useEffect(() => {
+    if (ltiSimResult && ltiId) {
+      api.get(`simulation/history/lti/${ltiId}`).then(res => {
+        console.log(res.data)
+      }).catch(err => { console.log(err) })
+      console.log("SIM RESULTS FOUND")
+      setLtiSimResult(false)
+    }
+  }, [ltiSimResult])
 
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -278,7 +289,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Image Export of Schematic Diagram
-  async function exportImage (type) {
+  async function exportImage(type) {
     const svg = document.querySelector('#divGrid > svg').cloneNode(true)
     svg.removeAttribute('style')
     svg.setAttribute('width', gridRef.current.scrollWidth)
@@ -338,7 +349,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Download JPEG, PNG exported Image
-  function downloadImage (data, type) {
+  function downloadImage(data, type) {
     var evt = new MouseEvent('click', {
       view: window,
       bubbles: false,
@@ -353,7 +364,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Download SVG image
-  function downloadText (data, options) {
+  function downloadText(data, options) {
     const blob = new Blob(data, options)
     const evt = new MouseEvent('click', {
       view: window,
@@ -488,7 +499,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   // Shortcuts that cant be put in Helper/KeyboardShortcuts.js
   useEffect(() => {
-    function shrtcts (event) {
+    function shrtcts(event) {
       // Save - Ctrl + S
       if (event.ctrlKey && event.keyCode === 83) {
         event.preventDefault()
@@ -520,7 +531,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     return () => {
       window.addEventListener('keydown', shrtcts)
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   return (
@@ -610,7 +621,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <LibraryAddRoundedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SelectLibrariesModal open={libsOpen} close={handleLibClose}/>
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose} />
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo (Ctrl + Z)">
@@ -708,7 +719,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       >
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
-      {!ltiId && <CreateProject/>}
+      {!ltiId && <CreateProject />}
 
 
       <Snackbar

@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationProperties() {
+export default function SimulationProperties({ltiSimResult, setLtiSimResult}) {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const [taskId, setTaskId] = useState(null)
@@ -480,6 +480,7 @@ export default function SimulationProperties() {
               dispatch(setResultText(simResultText))
             }
             setIsResult(true)
+            setLtiSimResult(true)
           }
         }
       })

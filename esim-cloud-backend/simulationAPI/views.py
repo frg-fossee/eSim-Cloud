@@ -56,7 +56,8 @@ def saveNetlistDB(task_id, filepath, request):
     if serialized.is_valid(raise_exception=True):
         serialized.save()
         if lti_session:
-            lti_session.simulations.add(simulation.objects.get(id=serialized.data['id']))
+            lti_session.simulations.add(
+                simulation.objects.get(id=serialized.data['id']))
         return
     else:
         return Response(serialized.errors)
@@ -163,6 +164,19 @@ class SimulationResultsFromSimulator(APIView):
             owner=self.request.user, simulation_type=sim)
         serialized = simulationSerializer(sims, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
+
+
+class GetLTISimResults(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request, lti_id):
+        try:
+            session = ltiSession.objects.get(id=lti_id)
+            serialized = simulationSerializer(
+                session.simulations.all(), many=True)
+            return Response(serialized.data, status=status.HTTP_200_OK)
+        except ltiSession.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 @ celery.signals.task_prerun.connect
