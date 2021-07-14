@@ -179,8 +179,7 @@ export class Potentiometer extends CircuitElement {
       // TODO : If arduino is connected to Terminal 1 of potentiometer
       // set WIPER value 0
       this.nodes[1].setValue(0, this.nodes[1]);
-    }
-    else if (this.arduinoEndTwo) {
+    } else if (this.arduinoEndTwo) {
       // TODO : If arduino is connected to Terminal 2 of potentiometer
       // set WIPER value as from Terminal 2
       this.nodes[1].setValue(this.nodes[2].value, this.nodes[1]);
