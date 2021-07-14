@@ -47,6 +47,7 @@ def saveNetlistDB(task_id, filepath, request):
                 branch=request.data['branch']).id
     else:
         save_id = None
+    lti_session = None
     if request.data.get('lti_id', None):
         lti_session = ltiSession.objects.get(id=request.data['lti_id'])
     serialized = simulationSaveSerializer(
@@ -54,7 +55,8 @@ def saveNetlistDB(task_id, filepath, request):
               "simulation_type": simulation_type, "schematic": save_id})
     if serialized.is_valid(raise_exception=True):
         serialized.save()
-        lti_session.simulations.add(simulation.objects.get(id=serialized.data['id']))
+        if lti_session:
+            lti_session.simulations.add(simulation.objects.get(id=serialized.data['id']))
         return
     else:
         return Response(serialized.errors)

@@ -708,7 +708,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       >
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
-      {ltiId.length < 0 && <CreateProject/>}
+      {!ltiId && <CreateProject/>}
 
 
       <Snackbar
