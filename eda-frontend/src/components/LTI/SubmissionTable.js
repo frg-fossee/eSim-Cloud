@@ -39,14 +39,18 @@ const sortOrder = {
 
 export default function SubmissionTable() {
   const classes = useStyles()
-  const [responseData, setResponseData] = React.useState(null)
-  const [sortData, setSortData] = React.useState(null)
+  const [responseData, setResponseData] = React.useState([])
+  const [sortData, setSortData] = React.useState([])
   const [sortOrderUser, setSortOrderUser] = React.useState(sortOrder['Unsorted'])
   const [sortOrderTime, setSortOrderTime] = React.useState(sortOrder['Unsorted'])
 
   useEffect(() => {
     setSortData(responseData)
   }, [responseData])
+
+  useEffect(() => {
+    console.log(sortData)
+  }, [sortData])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('submission')[1])
@@ -114,33 +118,35 @@ export default function SubmissionTable() {
   }
 
   return (
-    <TableContainer>
-      {sortData ? <Table className={classes.table} aria-label="submission table">
-        <TableHead>
-          <TableRow>
-            <TableCell onClick={handleUserSort}>User {sortOrderUser === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderUser === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
-            <TableCell onClick={handleTimeSort} align="center">Created at {sortOrderTime === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderTime === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
-            <TableCell align="center">Score</TableCell>
-            <TableCell align="center">Submissions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortData.map((student) => (
-            <TableRow key={student.ltisession.id}>
-              <TableCell component="th" scope="row">
-                {student.student.username}
-              </TableCell>
-              <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
-              <TableCell align="center">{student.score}</TableCell>
-              <TableCell align="center">
-                <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}`}>
-                  Open Submission
-                </Button>
-              </TableCell>
+    <>
+      {sortData.length > 0 ? <TableContainer>
+        <Table className={classes.table} aria-label="submission table">
+          <TableHead>
+            <TableRow>
+              <TableCell onClick={handleUserSort}>User {sortOrderUser === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderUser === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
+              <TableCell onClick={handleTimeSort} align="center">Created at {sortOrderTime === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderTime === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
+              <TableCell align="center">Score</TableCell>
+              <TableCell align="center">Submissions</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table> : <Typography style={{ textAlign: 'center' }}><h1>No submissions for this assignment</h1></Typography>}
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {sortData.map((student) => (
+              <TableRow key={student.ltisession.id}>
+                <TableCell component="th" scope="row">
+                  {student.student.username}
+                </TableCell>
+                <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
+                <TableCell align="center">{student.score}</TableCell>
+                <TableCell align="center">
+                  <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}`}>
+                    Open Submission
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer> : <Typography style={{ textAlign: 'center', fontWeight: 500 }} variant='h2'>No submissions for this assignment</Typography>}
+    </>
   )
 }

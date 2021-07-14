@@ -48,7 +48,7 @@ class StateSaveSerializer(serializers.ModelSerializer):
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time', 'version',
                   'branch', 'is_arduino', 'esim_libraries', 'project_id',
-                  'project_version', 'project_branch', 'is_reported')
+                  'project_version', 'project_branch', 'is_reported', 'id')
 
 
 class SaveListSerializer(serializers.ModelSerializer):
@@ -68,4 +68,4 @@ class SaveListSerializer(serializers.ModelSerializer):
         fields = ('save_time', 'save_id', 'name', 'description',
                   'shared', 'base64_image', 'create_time', 'version',
                   'branch', 'esim_libraries', 'project_id', 'project_version',
-                  'project_branch', 'is_reported')
+                  'project_branch', 'is_reported', 'id')

@@ -7,21 +7,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.conf import settings
-import os
 from rest_framework.exceptions import ValidationError
 from celery.result import AsyncResult
-from .models import simulation
 from saveAPI.models import StateSave
 import uuid
-from django.conf import settings
-import os
-import logging
 from .models import runtimeStat, Limit, simulation
-from saveAPI.models import StateSave
+from ltiAPI.models import ltiSession
 import celery.signals
 from celery import current_task
 import time
 import math
+import os
+import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -49,11 +47,14 @@ def saveNetlistDB(task_id, filepath, request):
                 branch=request.data['branch']).id
     else:
         save_id = None
+    if request.data.get('lti_id', None):
+        lti_session = ltiSession.objects.get(id=request.data['lti_id'])
     serialized = simulationSaveSerializer(
         data={"task": task_id, "netlist": temp, "owner": owner,
               "simulation_type": simulation_type, "schematic": save_id})
     if serialized.is_valid(raise_exception=True):
         serialized.save()
+        lti_session.simulations.add(simulation.objects.get(id=serialized.data['id']))
         return
     else:
         return Response(serialized.errors)

@@ -33,6 +33,7 @@ class ltiSession(models.Model):
     oauth_signature_method = models.CharField(max_length=300)
     oauth_version = models.CharField(max_length=300)
     oauth_signature = models.CharField(max_length=300)
+    simulations = models.ManyToManyField(to=simulation)
 
 
 class Submission(models.Model):

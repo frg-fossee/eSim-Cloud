@@ -74,33 +74,33 @@ export default function LTIConfig() {
   const [initial, setInitial] = React.useState('')
   const [history, setHistory] = React.useState('')
   const [historyId, setHistoryId] = React.useState('')
-  const [schematics, setSchematics] = React.useState([])
+  // const [schematics, setSchematics] = React.useState([])
   const [update, setUpdate] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
 
-  useEffect(() => {
-    var url = queryString.parse(window.location.href.split('lti?')[1])
-    const token = localStorage.getItem('esim_token')
-    const config = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-    if (token) {
-      config.headers.Authorization = `Token ${token}`
-    }
-    api.get(`save/versions/${url.id}`, config).then(res => {
-      res.data.map(ele => {
-        ele.save_time = new Date(ele.save_time)
-        return 0
-      })
-      console.log(res.data)
-      setSchematics(res.data)
-    }).catch(err => {
-      console.log(err)
-    })
-    // eslint-disable-next-line
-  }, [])
+  // useEffect(() => {
+  //   var url = queryString.parse(window.location.href.split('lti?')[1])
+  //   const token = localStorage.getItem('esim_token')
+  //   const config = {
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     }
+  //   }
+  //   if (token) {
+  //     config.headers.Authorization = `Token ${token}`
+  //   }
+  //   api.get(`save/versions/${url.id}`, config).then(res => {
+  //     res.data.map(ele => {
+  //       ele.save_time = new Date(ele.save_time)
+  //       return 0
+  //     })
+  //     console.log(res.data)
+  //     setSchematics(res.data)
+  //   }).catch(err => {
+  //     console.log(err)
+  //   })
+  //   // eslint-disable-next-line
+  // }, [])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -164,9 +164,9 @@ export default function LTIConfig() {
     const body = {
       consumer_key: ltiDetails.consumerKey,
       secret_key: ltiDetails.secretKey,
-      model_schematic: ltiDetails.modelSchematic.save_id,
+      model_schematic: ltiDetails.modelSchematic.id,
       score: score,
-      initial_schematic: ltiDetails.initialSchematic,
+      initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
       scored: ltiDetails.scored
     }
@@ -193,7 +193,7 @@ export default function LTIConfig() {
   }
 
   const handleDeleteLTIApp = () => {
-    api.delete(`lti/delete/${ltiDetails.modelSchematic.save_id}`)
+    api.delete(`lti/delete/${ltiDetails.modelSchematic.id}`)
       .then(res => {
         setLTIDetails({
           secretKey: '',
@@ -231,16 +231,16 @@ export default function LTIConfig() {
     setLTIDetails({ ...ltiDetails, scored: e.target.checked })
   }
 
-  const handleChange = (e) => {
-    var schematic = null
-    schematics.forEach(element => {
-      if (element.version === e.target.value.split('-')[0] && element.branch === e.target.value.split('-')[1]) {
-        schematic = element
-      }
-    })
-    setInitial(schematic)
-    setLTIDetails({ ...ltiDetails, initialSchematic: e.target.value })
-  }
+  // const handleChange = (e) => {
+  //   var schematic = null
+  //   schematics.forEach(element => {
+  //     if (element.version === e.target.value.split('-')[0] && element.branch === e.target.value.split('-')[1]) {
+  //       schematic = element
+  //     }
+  //   })
+  //   setInitial(schematic)
+  //   setLTIDetails({ ...ltiDetails, initialSchematic: e.target.value })
+  // }
 
   const handleChangeSim = (e) => {
     if (e.target.value === 'None') {
@@ -262,9 +262,9 @@ export default function LTIConfig() {
     const body = {
       consumer_key: ltiDetails.consumerKey,
       secret_key: ltiDetails.secretKey,
-      model_schematic: ltiDetails.modelSchematic.save_id,
+      model_schematic: ltiDetails.modelSchematic.id,
       score: score,
-      initial_schematic: ltiDetails.initialSchematic,
+      initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
       scored: ltiDetails.scored
     }
@@ -305,16 +305,16 @@ export default function LTIConfig() {
               <CardMedia
                 className={classes.media}
                 image={ltiDetails.modelSchematic.base64_image}
-                title="Model Schematic"
+                title="Schematic"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Model Schematic
+                  Schematic
                 </Typography>
               </CardContent>
             </CardActionArea>
           </Card>
-          {ltiDetails.initialSchematic && <Card className={classes.root} style={{ marginLeft: '2%' }}>
+          {/* {ltiDetails.initialSchematic && <Card className={classes.root} style={{ marginLeft: '2%' }}>
             <CardActionArea>
               <CardMedia
                 className={classes.media}
@@ -327,14 +327,14 @@ export default function LTIConfig() {
                 </Typography>
               </CardContent>
             </CardActionArea>
-          </Card>}
+          </Card>} */}
         </div>
         <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
           {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
           <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
-          <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
+          {/* <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">Student Schematic</InputLabel>
             <Select
               labelId="demo-simple-select-placeholder-label-label"
@@ -349,7 +349,7 @@ export default function LTIConfig() {
                 return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of branch {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
               })}
             </Select>
-          </FormControl>
+          </FormControl> */}
           <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">Test Case</InputLabel>
             {history && <Select

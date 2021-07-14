@@ -27,8 +27,8 @@ class consumerResponseSerializer(serializers.Serializer):
     consumer_key = serializers.CharField(max_length=50)
     secret_key = serializers.CharField(max_length=50)
     score = serializers.FloatField(required=False, allow_null=True)
-    initial_schematic = serializers.UUIDField()
-    model_schematic = serializers.UUIDField()
+    initial_schematic = serializers.IntegerField()
+    model_schematic = serializers.IntegerField()
     test_case = serializers.IntegerField(required=False, allow_null=True)
     scored = serializers.BooleanField()
 

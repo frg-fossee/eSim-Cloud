@@ -379,6 +379,9 @@ export default function SimulationProperties() {
       formData.append('version', url.version)
       formData.append('branch', url.branch)
     }
+    if (url.lti_nonce){
+      formData.append('lti_id', url.lti_id)
+    }
     const config = {
       headers: {
         'content-type': 'multipart/form-data'

@@ -82,14 +82,13 @@ class LTIBuildApp(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         if serialized.is_valid():
             serialized.save()
-            save_id = serialized.data.get("initial_schematic")
-            if save_id is not None:
-                save_id = str(save_id)
-                saved_state = StateSave.objects.get(save_id=save_id)
+            id = serialized.data.get("initial_schematic")
+            if id is not None:
+                saved_state = StateSave.objects.get(id=id)
                 saved_state.shared = True
                 saved_state.save()
                 host = request.get_host()
-                url = "http://" + host + "/api/lti/auth/" + save_id + "/"
+                url = "http://" + host + "/api/lti/auth/" + str(saved_state.save_id) + "/"
                 response_data = {
                     "consumer_key": serialized.data.get('consumer_key'),
                     "secret_key": serialized.data.get('secret_key'),
@@ -133,14 +132,13 @@ class LTIUpdateAPP(APIView):
         consumer.delete()
         if serialized.is_valid():
             serialized.save()
-            save_id = serialized.data.get("initial_schematic")
-            if save_id is not None:
-                save_id = str(save_id)
-                saved_state = StateSave.objects.get(save_id=save_id)
+            id = serialized.data.get("initial_schematic")
+            if id is not None:
+                saved_state = StateSave.objects.get(id=id)
                 saved_state.shared = True
                 saved_state.save()
                 host = request.get_host()
-                url = "http://" + host + "/api/lti/auth/" + save_id + "/"
+                url = "http://" + host + "/api/lti/auth/" + str(saved_state.save_id) + "/"
                 response_data = {
                     "consumer_key": serialized.data.get('consumer_key'),
                     "secret_key": serialized.data.get('secret_key'),
@@ -172,10 +170,10 @@ class LTIUpdateAPP(APIView):
 
 class LTIDeleteApp(APIView):
 
-    def delete(self, request, save_id):
+    def delete(self, request, id):
         queryset = lticonsumer.objects.all()
         try:
-            consumer = queryset.get(model_schematic=save_id)
+            consumer = queryset.get(model_schematic=id)
             consumer.delete()
             return Response(data={"Message": "Successfully deleted!"},
                             status=status.HTTP_204_NO_CONTENT)
@@ -236,8 +234,11 @@ class LTIAuthView(APIView):
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-        next_url = "http://" + request.get_host() + "/eda/#editor?id=" + \
-                   str(i.initial_schematic.save_id) \
+        print(i.initial_schematic.save_id)
+        next_url = "http://" + host + "/eda/#editor?id=" + \
+                   str(i.initial_schematic.save_id) + "&branch=" \
+                   + str(i.initial_schematic.branch) + "&version=" \
+                   + str(i.initial_schematic.version) \
                    + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
                    lti_session.user_id \
                    + "&lti_nonce=" + lti_session.oauth_nonce
