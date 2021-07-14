@@ -661,7 +661,9 @@ export class BreadBoard extends CircuitElement {
     for (const node of this.nodes) {
       // Add a Node value change listener
       node.addValueListener((value, calledBy, parent) => {
-        if (calledBy.y === parent.y) {
+        let a = calledBy.label
+        let b = parent.label
+        if (calledBy.y === parent.y && (a.charCodeAt(0) != b.charCodeAt(0) || a == b)) {
           return;
         }
         if (node.label === '+' || node.label === '-') {
