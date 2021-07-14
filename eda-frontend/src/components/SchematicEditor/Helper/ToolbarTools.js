@@ -702,27 +702,11 @@ export function GenerateNodeList() {
 // Sends a list of components present in the netlist 
 export function GenerateCompList() {
   var list = annotate(graph)
-  console.log(list)
   var a = []
   var netlist = [] // This will contain the list of Component Prefix
   var k = 'Unitled netlist \n'
-  //   Object.keys(list).forEach(key => {
-  //     console.log(key, list[key]);
-  // });
-  
-  var parent = Object.entries(list['1'])['3'][1].children[0]
-  console.log(parent)
-  const {children} = parent
-  console.log(children)
-  for (var child in parent)
-  {
-    console.log(child)
-  }
-  
-  // console.log(Object.entries(list['1'][3]))
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
-      console.log("andar gaya")
       var compobj = {
         name: '',
         node1: '',
@@ -738,6 +722,22 @@ export function GenerateCompList() {
   }
   return netlist
 }
+// Sends a detailed list of components present in the netlist 
+export function GenerateDetailedCompList() {
+  var list = annotate(graph)
+  var a = []
+  var netlist = [] // This will contain the list of Component Prefix
+  var k = 'Unitled netlist \n'
+  for (var property in list) {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      var component = list[property]
+      netlist.push({name:component.properties.PREFIX,value:component.properties.VALUE,unit:component.properties.VALUE_UNIT})
+    }
+  }
+  return netlist
+}
+
+
 // Function to Render Circuit XML
 export function renderXML() {
   graph.view.refresh()

@@ -31,7 +31,7 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import MuiAlert from '@material-ui/lab/Alert'
-import { ZoomIn, ZoomOut, ZoomAct, GenerateCompList, GenerateNetList } from '../components/SchematicEditor/Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, GenerateDetailedCompList, GenerateNetList } from '../components/SchematicEditor/Helper/ToolbarTools'
 import ReportComponent from '../components/Project/ReportComponent'
 import ChangeStatus from '../components/Project/ChangeStatus'
 import { NetlistModal } from '../components/SchematicEditor/ToolbarExtension'
@@ -39,7 +39,9 @@ import ProjectTimeline from '../components/Project/ProjectTimeline'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    minHeight: '30vh'
+    overflowX: 'visible',
+    overflowY: 'hidden',
+    backgroundColor: '#f4f6f8',
 
   },
   toolbar: {
@@ -74,10 +76,10 @@ export default function ProjectPage(props) {
   const [reportDescription, setDescription] = React.useState(null)
   const [netlist, genNetlist] = React.useState('')
   const [statusChanged, setStatusChanged] = React.useState(false)
+  const [componentsList, setComponentsList] = React.useState(undefined)
   const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
   const netfile = useSelector((state) => state.netlistReducer)
-  const compProperties = useSelector((state) => state.schematicEditorReducer.components)
   const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props
     return (
@@ -136,13 +138,12 @@ export default function ProjectPage(props) {
         break
     }
   }
-
   const changedStatus = () => {
     setStatusChanged(true)
   }
-  // useEffect(() => {
-  //   console.log(project)
-  // }, [project,compProperties])
+  useEffect(() => {
+    console.log(componentsList)
+  }, [componentsList])
   useEffect(() => {
     var container = gridRef.current
     LoadGrid(container, null, null)
@@ -158,38 +159,37 @@ export default function ProjectPage(props) {
         // Loading User on-cloud saved schemaic.
         dispatch(fetchSchematic(saveID, version, branch))
       }
-      console.log(GenerateCompList())
     }
     // eslint-disable-next-line
   }, [props.location, dispatch])
   return (
     <div className={classes.root}>
-      <LayoutMain>
-        {project.details !== '401'
-          ? <>
-            {statusChanged
-              ? <>
-                Status Changed
-              </> : <Grid container>
-                <Grid item xs={1} />
-                <Grid item xs={10}>
-                  <div className={classes.toolbar} />
+      {project.details !== '401'
+        ? <>
+          {statusChanged
+            ? <>
+              Status Changed
+            </> : <Grid container>
+              <Grid item xs={1} />
+              <Grid item xs={10}>
+                {project.reports && project.details.is_reported &&
+                  <ReportComponent project={project} changedStatus={changedStatus} location={props.location} />
+                }
+                {project.details && !project.details?.is_reported && project.details?.author_name !== auth.user?.username &&
+                  <ChangeStatus project={project} changedStatus={changedStatus} />
+                }
+                <Paper style={{ padding: '1%', marginTop: '2%', borderRadius: '12px' }}>
                   <Typography>
-                    {project.details && <h1 style={{ marginBottom: '0' }}>{project.details.title}</h1>}
+                    {project.details && <h1 style={{ marginTop: '0', marginBottom: '0' }}>{project.details.title}</h1>}
                     {project.details && <h4 style={{ marginTop: '0', marginBottom: '0' }}>By: {project.details.author_name} </h4>}
                   </Typography>
                   <hr style={{ marginTop: '0' }} />
-                  {project.reports && project.details.is_reported &&
-                    <ReportComponent project={project} changedStatus={changedStatus} location={props.location} />
-                  }
-                  {project.details && !project.details?.is_reported && project.details?.author_name !== auth.user?.username &&
-                    <ChangeStatus project={project} changedStatus={changedStatus} />
-                  }
+
                   <Typography>
                     <h3>{project.details?.description}</h3>
                     {project.details && project.details?.fields && project.details.fields.map(item => (
                       <p key={item}>
-                        <h2 style={{ marginTop: '0' }}>{item.name}</h2>
+                        <h3 style={{ marginTop: '0', marginBottom: '0' }}>{item.name}:</h3>
                         <p style={{ marginTop: '0' }}>
                           {item.text.split("\n").map((text) => (
                             <span>
@@ -201,7 +201,9 @@ export default function ProjectPage(props) {
                       </p>
                     ))}
                   </Typography>
-
+                  {componentsList && <h2 style={{ marginBottom: '0' }}>Component List:</h2>}
+                  {componentsList && componentsList[0].map((item, i) => (<div>{i + 1}.{item.name}  {item.value}{item.unit}</div>))}
+                  {project.details && <Button onClick={() => setComponentsList([GenerateDetailedCompList()])}>Show component parameters</Button>}
                   <Dialog
                     open={simulateOpen}
                     onClose={handleSimulateOpen}
@@ -234,82 +236,80 @@ export default function ProjectPage(props) {
                       <Button onClick={handleReportOpen}>Cancel</Button>
                     </DialogActions>
                   </Dialog>
+                </Paper>
+                <h1>Circuit Diagram:
+                  {auth.isAuthenticated && <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>}
+                  {auth.isAuthenticated && <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Make copy')}>Make a Copy</Button>}
+                  <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
+                    <PlayCircleOutlineIcon />Simulate
+                  </Button>
+                  <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Generate Netlist')}>Generate Netlist</Button>
+                </h1>
+                <NetlistModal open={netListOpen} close={handleNetlistClick} netlist={netlist} />
+                <Snackbar
+                  open={snackbarOpen}
+                  autoHideDuration={6000}
+                  onClose={() => setSnackbarOpen(false)}
+                >
+                  <Alert onClose={() => setSnackbarOpen(false)} severity="success">
+                    Successfully made a copy!
+                  </Alert>
+                </Snackbar>
+                <Grid container>
+                  <Grid item xs={1}>
+                    <Paper style={{ width: '30px' }}>
+                      <div>
+                        <Tooltip title="Zoom In">
+                          <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomIn}>
+                            <ZoomInIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Tooltip title="Zoom Out">
+                          <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomOut}>
+                            <ZoomOutIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Tooltip title="Default Size">
+                          <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomAct}>
+                            <SettingsOverscanIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </div>
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={10}>
+                    <LayoutMain>
+                      <center>
+                        <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
+                      </center>
+                    </LayoutMain>
+                  </Grid>
+                  <ComponentProperties />
+                  <Grid item xs={1} />
 
-                  <h1>Circuit Diagram:
-                    {auth.isAuthenticated && <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>}
-                    {auth.isAuthenticated && <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Make copy')}>Make a Copy</Button>}
-                    <Button style={{ float: 'right', backgroundColor: 'lightgreen', margin: '.5% .5% 0 0' }} variant="contained" onClick={() => handleSimulateOpen()}>
-                      <PlayCircleOutlineIcon />Simulate
-                    </Button>
-                    <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Generate Netlist')}>Generate Netlist</Button>
-                  </h1>
-                  <NetlistModal open={netListOpen} close={handleNetlistClick} netlist={netlist} />
-                  <Snackbar
-                    open={snackbarOpen}
-                    autoHideDuration={6000}
-                    onClose={() => setSnackbarOpen(false)}
-                  >
-                    <Alert onClose={() => setSnackbarOpen(false)} severity="success">
-                      Successfully made a copy!
-                    </Alert>
-                  </Snackbar>
-                  <Grid container>
-                    <Grid item xs={1}>
-                      <Paper style={{ width: '30px' }}>
-                        <div>
-                          <Tooltip title="Zoom In">
-                            <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomIn}>
-                              <ZoomInIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                        <div>
-                          <Tooltip title="Zoom Out">
-                            <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomOut}>
-                              <ZoomOutIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                        <div>
-                          <Tooltip title="Default Size">
-                            <IconButton color="inherit" className={classes.tools} size="small" onClick={ZoomAct}>
-                              <SettingsOverscanIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      </Paper>
-                    </Grid>
-                    <Grid item xs={10}>
-                      <LayoutMain>
-                        <center>
-                          <div className="grid-container A4-L" ref={gridRef} id="divGrid" />
-                        </center>
-                      </LayoutMain>
-                    </Grid>
-                    <ComponentProperties />
-                    <Grid item xs={1} />
-
-                    <Grid item xs={12} sm={12}>
-                      <Paper style={{ padding: '2%', marginTop: '3%' }}>
-                        <List>
-                          <h3>History of this Project</h3>
-                          {project.details?.history[0]
-                            ? <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === project.details.author_name} />
-                            : <h4>No history of this project.</h4>
-                          }
-                        </List>
-                      </Paper>
-                    </Grid>
+                  <Grid item xs={12} sm={12}>
+                    <Paper style={{ padding: '0 2%', margin: '3% 0', borderRadius: '12px' }}>
+                      <List>
+                        <h3>History of this Project</h3>
+                        {project.details?.history[0]
+                          ? <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === project.details.author_name} />
+                          : <h4>No history of this project.</h4>
+                        }
+                      </List>
+                    </Paper>
                   </Grid>
                 </Grid>
-                <Grid item xs={1} />
-              </Grid>}
-          </>
-          : <>
-            {statusChanged ? <>Status Changed. Wait for it to get back to the status where it is visible for you.</> : <>Not Authorized</>}
-          </>}
-
-      </LayoutMain>
+              </Grid>
+              <Grid item xs={1} />
+            </Grid>}
+        </>
+        : <>
+          {statusChanged ? <>Status Changed. Wait for it to get back to the status where it is visible for you.</> : <>Not Authorized</>}
+        </>}
     </div>
   )
 }
