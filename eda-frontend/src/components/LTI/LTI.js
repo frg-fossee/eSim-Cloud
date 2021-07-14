@@ -71,36 +71,35 @@ export default function LTIConfig() {
   })
 
   const { secretKey, consumerKey, configURL, configExists, score, modelSchematic } = ltiDetails
-  const [initial, setInitial] = React.useState('')
-  const [history, setHistory] = React.useState('')
+  const [schematic, setSchematic] = React.useState('')
+  const [history, setHistory] = React.useState([])
   const [historyId, setHistoryId] = React.useState('')
-  // const [schematics, setSchematics] = React.useState([])
+  const [schematics, setSchematics] = React.useState([])
   const [update, setUpdate] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
 
-  // useEffect(() => {
-  //   var url = queryString.parse(window.location.href.split('lti?')[1])
-  //   const token = localStorage.getItem('esim_token')
-  //   const config = {
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     }
-  //   }
-  //   if (token) {
-  //     config.headers.Authorization = `Token ${token}`
-  //   }
-  //   api.get(`save/versions/${url.id}`, config).then(res => {
-  //     res.data.map(ele => {
-  //       ele.save_time = new Date(ele.save_time)
-  //       return 0
-  //     })
-  //     console.log(res.data)
-  //     setSchematics(res.data)
-  //   }).catch(err => {
-  //     console.log(err)
-  //   })
-  //   // eslint-disable-next-line
-  // }, [])
+  useEffect(() => {
+    var url = queryString.parse(window.location.href.split('lti?')[1])
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get(`save/versions/${url.id}`, config).then(res => {
+      res.data.map(ele => {
+        ele.save_time = new Date(ele.save_time)
+        return 0
+      })
+      setSchematics(res.data)
+    }).catch(err => {
+      console.log(err)
+    })
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -122,16 +121,16 @@ export default function LTIConfig() {
           configURL: res.data.config_url,
           score: res.data.score,
           configExists: true,
-          initialSchematic: res.data.initial_schematic.save_id,
+          initialSchematic: res.data.model_schematic,
           testCase: res.data.test_case,
           scored: res.data.scored
         })
+      setSchematic(`${res.data.model_schematic.version}-${res.data.model_schematic.branch}`)
       if (res.data.test_case === null) {
         setHistoryId('None')
       } else {
         setHistoryId(res.data.test_case)
       }
-      setInitial(res.data.initial_schematic)
     }).catch(err => {
       console.log(err)
       api.get(`save/${url.id}/${url.version}/${url.branch}`, config).then(res => {
@@ -140,9 +139,24 @@ export default function LTIConfig() {
             modelSchematic: res.data,
             scored: true
           })
+        setSchematic(`${res.data.version}-${res.data.branch}`)
       })
     })
-    api.get(`simulation/history/${url.id}/${url.version}/${url.branch}/${null}`, config).then(res => {
+  }, [])
+
+
+  useEffect(() => {
+    var url = queryString.parse(window.location.href.split('lti?')[1])
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get(`simulation/history/${url.id}/${schematic.split('-')[0]}/${schematic.split('-')[1]}/${null}`, config).then(res => {
       res.data.map(ele => {
         ele.simulation_time = new Date(ele.simulation_time)
         return 0
@@ -151,7 +165,7 @@ export default function LTIConfig() {
     }).catch(err => {
       console.log(err)
     })
-  }, [])
+  }, [schematic])
 
   // eslint-disable-next-line
   const handleLTIGenerate = () => {
@@ -231,20 +245,19 @@ export default function LTIConfig() {
     setLTIDetails({ ...ltiDetails, scored: e.target.checked })
   }
 
-  // const handleChange = (e) => {
-  //   var schematic = null
-  //   schematics.forEach(element => {
-  //     if (element.version === e.target.value.split('-')[0] && element.branch === e.target.value.split('-')[1]) {
-  //       schematic = element
-  //     }
-  //   })
-  //   setInitial(schematic)
-  //   setLTIDetails({ ...ltiDetails, initialSchematic: e.target.value })
-  // }
+  const handleChange = (e) => {
+    var schematic = null
+    schematics.forEach(element => {
+      if (element.version === e.target.value.split('-')[0] && element.branch === e.target.value.split('-')[1]) {
+        schematic = element
+      }
+    })
+    setSchematic(e.target.value)
+    setLTIDetails({ ...ltiDetails, modelSchematic: schematic })
+  }
 
   const handleChangeSim = (e) => {
     if (e.target.value === 'None') {
-      console.log('in if')
       setLTIDetails({ ...ltiDetails, testCase: null })
     } else {
       setLTIDetails({ ...ltiDetails, testCase: e.target.value })
@@ -334,22 +347,22 @@ export default function LTIConfig() {
           <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
-          {/* <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
-            <InputLabel htmlFor="outlined-age-native-simple">Student Schematic</InputLabel>
+          <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
+            <InputLabel htmlFor="outlined-age-native-simple">Schematic</InputLabel>
             <Select
               labelId="demo-simple-select-placeholder-label-label"
               id="demo-simple-select-placeholder-label"
-              value={ltiDetails.initialSchematic}
+              value={schematic}
               style={{ minWidth: '300px' }}
               onChange={handleChange}
-              label="Student Schematic"
+              label="Schematic"
               className={classes.selectEmpty}
             >
               {schematics.map(schematic => {
                 return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of branch {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
               })}
             </Select>
-          </FormControl> */}
+          </FormControl>
           <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">Test Case</InputLabel>
             {history && <Select

@@ -136,7 +136,7 @@ class LTIUpdateAPP(APIView):
             if id is not None:
                 saved_state = StateSave.objects.get(id=id)
                 saved_state.shared = True
-                saved_state.save()
+                saved_state.save(update_fields=['shared', ])
                 host = request.get_host()
                 url = "http://" + host + "/api/lti/auth/" + str(saved_state.save_id) + "/"
                 response_data = {
