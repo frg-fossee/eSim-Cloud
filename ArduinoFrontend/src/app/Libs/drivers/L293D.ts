@@ -1,4 +1,5 @@
 import { CircuitElement } from "../CircuitElement";
+import { BreadBoard } from "../General";
 import { ArduinoUno } from "../outputs/Arduino";
 import { Point } from "../Point";
 
@@ -27,6 +28,22 @@ export class L293D extends CircuitElement {
         IN3: -1,
         IN4: -1
     };
+    /**
+     * boolean to store EN1 value
+     */
+    enable1 = false;
+    /**
+     * boolean to store EN2 value
+     */
+    enable2 = false;
+    /**
+     * boolean for GND1
+     */
+    ground1 = false;
+    /**
+     * boolean for GND2
+     */
+    ground2 = false;
 
     /**
      * MotorDriver L293D constructor
@@ -86,6 +103,15 @@ export class L293D extends CircuitElement {
                 this.update();
             }
         });
+
+        this.pinNamedMap['EN2'].addValueListener(v => {
+            console.log(v)
+            if (v > 0) {
+                this.enable2 = true;
+            } else {
+                this.enable2 = false;
+            }
+        });
     }
     /**
      * Simulation Logic For L293D Motor driver
@@ -103,39 +129,67 @@ export class L293D extends CircuitElement {
             }
         }, 100);
 
-        if (this.pinNamedMap['IN1'].value > 0) {
-            this.pinNamedMap['OUT2'].setValue(
-                this.pinNamedMap['VS'].value * (this.speedA / 5),
-                this.pinNamedMap['OUT2']
-            );
-        } else if (this.pinNamedMap['IN2'].value > 0) {
-            this.pinNamedMap['OUT1'].setValue(
-                this.pinNamedMap['VS'].value * (this.speedA / 5),
-                this.pinNamedMap['OUT1']
-            );
+        // If EN2 is HIGH
+        if (this.enable2 && this.ground2) {
+            if (this.pinNamedMap['IN4'].value > 0) {
+                this.pinNamedMap['OUT4'].setValue(this.pinNamedMap['VS'].value * (this.speedB / 5), this.pinNamedMap['OUT4']);
+            }
+            if (this.pinNamedMap['IN3'].value > 0) {
+                this.pinNamedMap['OUT3'].setValue(this.pinNamedMap['VS'].value * (this.speedB / 5), this.pinNamedMap['OUT3']);
+            }
         } else {
-            this.pinNamedMap['OUT1'].setValue(
-                0,
-                this.pinNamedMap['OUT1']
-            );
+            this.pinNamedMap['OUT4'].setValue(0, this.pinNamedMap['OUT4']);
+            this.pinNamedMap['OUT3'].setValue(0, this.pinNamedMap['OUT3']);
         }
 
-        if (this.pinNamedMap['IN3'].value > 0) {
-            this.pinNamedMap['OUT4'].setValue(
-                this.pinNamedMap['VS'].value * (this.speedB / 5),
-                this.pinNamedMap['OUT4']
-            );
-        } else if (this.pinNamedMap['IN4'].value > 0) {
-            this.pinNamedMap['OUT3'].setValue(
-                this.pinNamedMap['VS'].value * (this.speedB / 5),
-                this.pinNamedMap['OUT3']
-            );
+        // If EN1 is HIGH
+        if (this.enable1 && this.ground1) {
+            if (this.pinNamedMap['IN1'].value > 0) {
+                this.pinNamedMap['OUT1'].setValue(this.pinNamedMap['VS'].value * (this.speedB / 5), this.pinNamedMap['OUT1']);
+            }
+            if (this.pinNamedMap['IN3'].value > 0) {
+                this.pinNamedMap['OUT2'].setValue(this.pinNamedMap['VS'].value * (this.speedB / 5), this.pinNamedMap['OUT2']);
+            }
         } else {
-            this.pinNamedMap['OUT3'].setValue(
-                0,
-                this.pinNamedMap['OUT3']
-            );
+            this.pinNamedMap['OUT2'].setValue(0, this.pinNamedMap['OUT2']);
+            this.pinNamedMap['OUT1'].setValue(0, this.pinNamedMap['OUT1']);
+
         }
+
+
+        // if (this.pinNamedMap['IN1'].value > 0) {
+        //     this.pinNamedMap['OUT2'].setValue(
+        //         this.pinNamedMap['VS'].value * (this.speedA / 5),
+        //         this.pinNamedMap['OUT2']
+        //     );
+        // } else if (this.pinNamedMap['IN2'].value > 0) {
+        //     this.pinNamedMap['OUT1'].setValue(
+        //         this.pinNamedMap['VS'].value * (this.speedA / 5),
+        //         this.pinNamedMap['OUT1']
+        //     );
+        // } else {
+        //     this.pinNamedMap['OUT1'].setValue(
+        //         0,
+        //         this.pinNamedMap['OUT1']
+        //     );
+        // }
+
+        // if (this.pinNamedMap['IN3'].value > 0) {
+        //     this.pinNamedMap['OUT4'].setValue(
+        //         this.pinNamedMap['VS'].value * (this.speedB / 5),
+        //         this.pinNamedMap['OUT4']
+        //     );
+        // } else if (this.pinNamedMap['IN4'].value > 0) {
+        //     this.pinNamedMap['OUT3'].setValue(
+        //         this.pinNamedMap['VS'].value * (this.speedB / 5),
+        //         this.pinNamedMap['OUT3']
+        //     );
+        // } else {
+        //     this.pinNamedMap['OUT3'].setValue(
+        //         0,
+        //         this.pinNamedMap['OUT3']
+        //     );
+        // }
     }
     /**
      * Function provides component details
@@ -179,23 +233,57 @@ export class L293D extends CircuitElement {
      * Called on Start Simulation
      */
     initSimulation(): void {
-        const arduinoEnd: any = this.getArduino(this.pinNamedMap['EN2']);
-        if (arduinoEnd) {
-            const arduino = arduinoEnd.parent;
-            (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
-                this.speedA = v / 100;
-                this.update();
-            });
-        }
+        // const arduinoEnd: any = this.getArduino(this.pinNamedMap['EN2']);
+        // if (arduinoEnd) {
+        //     const arduino = arduinoEnd.parent;
+        //     (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
+        //         this.speedA = v / 100;
+        //         this.update();
+        //     });
+        // }
 
-        const arduinoEnd1: any = this.getArduino(this.pinNamedMap['EN1']);
-        if (arduinoEnd1) {
-            const arduino = arduinoEnd1.parent;
-            (arduino as ArduinoUno).addPWM(arduinoEnd1, (v, p) => {
-                this.speedB = v;
-                this.update();
-            });
+        // const arduinoEnd1: any = this.getArduino(this.pinNamedMap['EN1']);
+        // if (arduinoEnd1) {
+        //     const arduino = arduinoEnd1.parent;
+        //     (arduino as ArduinoUno).addPWM(arduinoEnd1, (v, p) => {
+        //         this.speedB = v;
+        //         this.update();
+        //     });
+        // }
+
+        // Check for enable pin value
+        if (this.pinNamedMap['EN2'].value > 0) {
+            // init 2nd side
+            this.enable2 = true;
+
+            const arduinoEnd4 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND4'], 'GND4');
+            const arduinoEnd3 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND3'], 'GND3');
+            if (arduinoEnd4 && arduinoEnd3) {
+                if (arduinoEnd4.label === 'GND' || arduinoEnd3.label === 'GND') {
+                    this.ground2 = true;
+                } else {
+                    console.error('GND is not connected')
+                    window['showToast']('GND is not connected properly!');
+                }
+            }
         }
+        if (this.pinNamedMap['EN1'].value > 0) {
+            // init 1sr side
+            this.enable1 = true;
+
+            const arduinoEnd2 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND2'], 'GND2');
+            const arduinoEnd1 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND1'], 'GND1');
+            if (arduinoEnd2 && arduinoEnd1) {
+                if (arduinoEnd2.label === 'GND' || arduinoEnd1.label === 'GND') {
+                    this.ground1 = true;
+                } else {
+                    console.error('GND is not connected')
+                    window['showToast']('GND is not connected properly!');
+                }
+            }
+        }
+        // run simulation
+        this.update();
 
     }
     /**
@@ -214,6 +302,10 @@ export class L293D extends CircuitElement {
             IN3: -1,
             IN4: -1
         };
+        this.enable1 = false;
+        this.enable2 = false;
+        this.ground1 = false;
+        this.ground2 = false;
     }
 }
 
