@@ -103,10 +103,16 @@ export class LED extends CircuitElement {
       return;
     }
     this.prev = val;
-    // Run if PWM is not attached
+    // TODO: Run if PWM is not attached
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached && this.allNodesConnected) {
       if (val >= 5) {
         this.anim();
+      } else if (val > 0 && val < 5) {
+        if (val < 0.1) {
+          this.fillColor('none');
+        } else {
+          this.glowWithAlpha(val);
+        }
       } else {
         this.fillColor('none');
       }
@@ -115,21 +121,24 @@ export class LED extends CircuitElement {
       }
     } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached && this.allNodesConnected) {
       // TODO: Run if PWM is attached
-      /**
-       * create color and add alpha to color
-       */
-      const color = `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`;
-      const split = color.split('-');
-      let genColor = 'none';
-      const alpha = (this.voltage / 5) * 9;
-      genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`;
-      this.elements[3].attr({ fill: genColor });
+      this.glowWithAlpha(this.voltage);
 
     } else {
       // TODO: Show Toast
       this.handleConnectionError();
       window.showToast('LED is not Connected properly');
     }
+  }
+  /**
+   * create color and add alpha to color
+   */
+  glowWithAlpha(value: number) {
+    const color = `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`;
+    const split = color.split('-');
+    let genColor = 'none';
+    const alpha = (value / 5) * 9;
+    genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`;
+    this.elements[3].attr({ fill: genColor });
   }
   /**
    * Handles connection error
