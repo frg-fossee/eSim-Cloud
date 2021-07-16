@@ -1,6 +1,7 @@
 import { CircuitElement } from '../CircuitElement';
 import { ArduinoUno } from './Arduino';
 import { Point } from '../Point';
+import { BreadBoard } from '../General';
 
 /**
  * Declare Raphael so that build don't throws error
@@ -27,6 +28,16 @@ export class Motor extends CircuitElement {
    * RPM of the motor.
    */
   rpm: any;
+  /**
+   * if PWM is attached
+   */
+  pwmAttached = false;
+  /**
+   * Voltage
+   */
+  voltage = -1;
+
+  prevVoltage = -1;
 
   /**
    * Motor constructor
@@ -43,6 +54,7 @@ export class Motor extends CircuitElement {
   init() {
     // Add value change Listener to circuit node
     this.nodes[0].addValueListener((v, cby, par) => {
+
       if (cby === this.nodes[1]) {
         return;
       }
@@ -52,7 +64,7 @@ export class Motor extends CircuitElement {
       if (v < 0) {
         this.elements[1].stop();
       } else {
-        if (this.rpm) {
+        if (this.rpm && this.voltage !== this.prevVoltage) {
           this.rpm.remove();
           this.rpm = null;
         }
@@ -60,13 +72,16 @@ export class Motor extends CircuitElement {
         if (v === 0) {
           return;
         }
-        // animation caller
-        const anim = Raphael.animation({ transform: `r-360` }, 400 / v);
-        this.elements[1].animate(anim.repeat(Infinity));
-        this.rpm = this.canvas.text(this.x + this.tx, this.y + this.ty - 30, `${1500 * v}RPM\nAntiClockwise`);
-        this.rpm.attr({
-          'font-size': 15,
-        });
+        if (!this.pwmAttached) {
+          this.setAnimation(v, 'AntiClockwise')
+        }
+        else {
+          if (this.voltage !== this.prevVoltage) {
+            console.log('s')
+            this.setAnimation(this.voltage, 'AntiClockwise')
+            this.prevVoltage = this.voltage;
+          }
+        }
       }
     });
     // Add value change Listener to circuit node
@@ -79,7 +94,7 @@ export class Motor extends CircuitElement {
       if (v < 0) {
         this.elements[1].stop();
       } else {
-        if (this.rpm) {
+        if (this.rpm && this.voltage !== this.prevVoltage) {
           this.rpm.remove();
           this.rpm = null;
         }
@@ -87,16 +102,33 @@ export class Motor extends CircuitElement {
         if (v === 0) {
           return;
         }
-        const anim = Raphael.animation({ transform: `r360` }, 400 / v);
-        this.elements[1].animate(anim.repeat(Infinity));
-        // setTimeout(() => this.elements[1].stop(), 3000);
-        this.rpm = this.canvas.text(this.x + this.tx, this.y + this.ty - 30, `${1500 * v}RPM\nClockwise`);
-        this.rpm.attr({
-          'font-size': 15,
-        });
+        if (!this.pwmAttached) {
+          this.setAnimation(v, 'Clockwise')
+        }
+        else {
+          if (this.voltage !== this.prevVoltage && this.voltage <= 6) {
+            this.setAnimation(this.voltage, 'Clockwise')
+            this.prevVoltage = this.voltage;
+          }
+        }
       }
     });
   }
+
+  /**
+   * Use this function to rotate motor
+   * @param volt Voltage Supplied to motor
+   * @param direction Direction to rotate in
+   */
+  setAnimation(volt, direction) {
+    const anim = Raphael.animation({ transform: `r360` }, 400 / volt);
+    this.elements[1].animate(anim.repeat(Infinity));
+    this.rpm = this.canvas.text(this.x + this.tx, this.y + this.ty - 30, `${Math.floor(1500 * volt)}RPM\n${direction}`);
+    this.rpm.attr({
+      'font-size': 15,
+    });
+  }
+
   /**
    * Function provides component details
    * @param keyName Unique Class name
@@ -136,7 +168,49 @@ export class Motor extends CircuitElement {
       x: ok.x + this.tx,
       y: ok.y + this.ty
     });
+
+    // Prep PWM
+    const pwmPins = [3, 5, 6, 9, 10, 11];
+    const arduinoEnd: any = BreadBoard.getRecArduinov2(this.nodes[1], 'Positive');
+    const arduinoEndNegative: any = BreadBoard.getRecArduinov2(this.nodes[0], 'Negative');
+    console.log(arduinoEndNegative)
+    // do not run addPwm if arduino is not connected
+    if (!arduinoEnd || !arduinoEndNegative) {
+      return;
+    }
+    console.log(arduinoEnd)
+    console.log(arduinoEndNegative)
+    // Only add pwm if connected to a pwm pin in arduino
+    if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) !== -1) {
+      // TODO: add PWM if positive is PWM
+      this.addPwmArduino(arduinoEnd.parent, arduinoEnd);
+    } else if (arduinoEndNegative && pwmPins.indexOf(parseInt(arduinoEndNegative.label.substr(1), 10)) !== -1) {
+      // TODO: add PWM if negative is PWM
+      this.addPwmArduino(arduinoEndNegative.parent, arduinoEndNegative);
+    } else {
+      this.pwmAttached = false;
+    }
+
   }
+
+  /**
+   * Use this function to add PWM to any node of Arduino
+   * @param arduino Arduino instance
+   * @param end Node to be enabled with PWM
+   */
+  addPwmArduino(arduino, end) {
+    (arduino as ArduinoUno).addPWM(end, (v, p) => {
+      // Calculate voltage of pwm pin
+      this.voltage = v / 100;
+      // If voltage is greater than 6: make PWM attached false
+      if (this.voltage > 6 || this.voltage < 0) {
+        this.pwmAttached = false;
+      } else {
+        this.pwmAttached = true;
+      }
+    });
+  }
+
   /** Function removes all  animations and callbacks  */
   closeSimulation(): void {
     this.elements[1].stop();
@@ -151,6 +225,8 @@ export class Motor extends CircuitElement {
       this.rpm = null;
     }
     this.setDragListeners();
+
+    this.pwmAttached = false;
   }
 }
 

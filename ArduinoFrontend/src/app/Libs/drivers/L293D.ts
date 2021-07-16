@@ -250,7 +250,6 @@ export class L293D extends CircuitElement {
         //         this.update();
         //     });
         // }
-
         // Check for enable pin value
         if (this.pinNamedMap['EN2'].value > 0) {
             // init 2nd side
@@ -259,7 +258,7 @@ export class L293D extends CircuitElement {
             const arduinoEnd4 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND4'], 'GND4');
             const arduinoEnd3 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND3'], 'GND3');
             if (arduinoEnd4 && arduinoEnd3) {
-                if (arduinoEnd4.label === 'GND' || arduinoEnd3.label === 'GND') {
+                if (arduinoEnd4.parent.keyName === 'ArduinoUno' || arduinoEnd3.parent.keyName === 'ArduinoUno') {
                     this.ground2 = true;
                 } else {
                     console.error('GND is not connected')
@@ -274,7 +273,7 @@ export class L293D extends CircuitElement {
             const arduinoEnd2 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND2'], 'GND2');
             const arduinoEnd1 = BreadBoard.getRecArduinov2(this.pinNamedMap['GND1'], 'GND1');
             if (arduinoEnd2 && arduinoEnd1) {
-                if (arduinoEnd2.label === 'GND' || arduinoEnd1.label === 'GND') {
+                if (arduinoEnd2.parent.keyName === 'ArduinoUno' || arduinoEnd1.parent.keyName === 'ArduinoUno') {
                     this.ground1 = true;
                 } else {
                     console.error('GND is not connected')
@@ -282,6 +281,10 @@ export class L293D extends CircuitElement {
                 }
             }
         }
+
+        // console.log(this.enable2, ' - ', this.enable1)
+        // console.log(this.ground2, ' - ', this.ground1)
+
         // run simulation
         this.update();
 
