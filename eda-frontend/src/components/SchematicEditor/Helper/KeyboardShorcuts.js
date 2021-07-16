@@ -1,6 +1,6 @@
 /* eslint-disable new-cap */
 import MxGraphFactory from 'mxgraph'
-import { Undo, Redo, ZoomIn, ZoomOut, ZoomAct } from './ToolbarTools'
+import { Undo, Redo, ZoomIn, ZoomOut, ZoomAct, DeleteComp, ClearGrid, Rotate, RotateACW } from './ToolbarTools'
 
 const {
   mxKeyHandler,
@@ -19,36 +19,69 @@ export default function KeyboardShortcuts (graph) {
     return null
   }
 
-  // Delete - Del
-  // keyHandler.bindKey(46, function (evt) {
-  //   if (graph.isEnabled()) {
-  //     graph.removeCells()
-  //   }
-  // })
+  // Rotate Alt + (right arrow)
+  keyHandler.bindKey(39, function (evt) {
+    if (graph.isEnabled) {
+      if (evt.altKey) {
+        Rotate()
+      }
+    }
+  })
 
-  // Undo - Ctrl + Z
+  // Rotate Alt + (left Arrow)
+  keyHandler.bindKey(37, function (evt) {
+    if (graph.isEnabled) {
+      if (evt.altKey) {
+        RotateACW()
+      }
+    }
+  })
+
+  // Delete - Del / Clear All - Shift + Del
+  keyHandler.bindKey(46, function (evt) {
+    if (graph.isEnabled()) {
+      if (evt.shiftKey) {
+        ClearGrid()
+      } else {
+        DeleteComp()
+      }
+    }
+  })
+
+  // Undo - Ctrl + Z / Redo - Ctrl + Shift + Z
   keyHandler.bindControlKey(90, function (evt) {
     if (graph.isEnabled()) {
-      Undo()
+      if (evt.ctrlKey && !evt.shiftKey) {
+        Undo()
+      } else if (evt.ctrlKey && evt.shiftKey) {
+        Redo()
+      }
     }
   })
 
-  // Redo - Ctrl + A
-  keyHandler.bindControlKey(65, function (evt) {
+  // Zoom In - Ctrl + +
+  keyHandler.bindControlKey(187, function (evt) {
+    evt.preventDefault()
     if (graph.isEnabled()) {
-      Redo()
+      ZoomIn()
     }
   })
-
-  // Zoom In - Ctrl + I
-  keyHandler.bindControlKey(73, function (evt) {
+  keyHandler.bindControlKey(107, function (evt) {
+    evt.preventDefault()
     if (graph.isEnabled()) {
       ZoomIn()
     }
   })
 
-  // Zoom Out - Ctrl + O
-  keyHandler.bindControlKey(79, function (evt) {
+  // Zoom Out - Ctrl + -
+  keyHandler.bindControlKey(189, function (evt) {
+    evt.preventDefault()
+    if (graph.isEnabled()) {
+      ZoomOut()
+    }
+  })
+  keyHandler.bindControlKey(109, function (evt) {
+    evt.preventDefault()
     if (graph.isEnabled()) {
       ZoomOut()
     }

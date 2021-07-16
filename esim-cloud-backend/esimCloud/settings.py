@@ -98,22 +98,10 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
-
-    "mongodb": {
-        "ENGINE": 'djongo',
-        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
-        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
-        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-        "HOST": "mongodb",
-        "PORT": 27017,
-        'AUTH_SOURCE': 'admin',
-        'AUTH_MECHANISM': 'SCRAM-SHA-1',
-    }
-
 }
 
 DATABASE_ROUTERS = (
-    # 'simulationAPI.dbrouters.mongoRouter',
+    # 'simulationAPI.dbrouters.mongoRouter',<- to Store models in mongodb
     # 'saveAPI.dbrouters.mongoRouter',<- to Store saveAPI models in mongodb
     # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
 )
@@ -192,7 +180,7 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 

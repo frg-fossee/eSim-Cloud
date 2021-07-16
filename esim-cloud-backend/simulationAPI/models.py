@@ -3,10 +3,10 @@ from django.contrib.postgres.fields import JSONField
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from django.contrib.auth import get_user_model
 import uuid
 from saveAPI.models import StateSave
 
-from django.db.models.aggregates import Max
 
 
 class Task(models.Model):
@@ -36,6 +36,30 @@ class spiceFile(models.Model):
 
     def save(self, *args, **kwargs):
         super(spiceFile, self).save(*args, **kwargs)
+
+
+class runtimeStat(models.Model):
+    """
+    Stored number of simulations which fall under and between
+    each second and the last. For e.g. if a simulation take 0.5s
+    to execute then qty field of the row with with exec_time=1
+    will increase by 1 (simulations)
+    """
+    exec_time = models.IntegerField(primary_key=True)
+    qty = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.exec_time)
+
+    def save(self, *args, **kwargs):
+        super(runtimeStat, self).save(*args, **kwargs)
+
+
+class Limit(models.Model):
+    timeLimit = models.IntegerField()
+
+    def __str__(self):
+        return str(self.timeLimit)
 
 
 class simulation(models.Model):
