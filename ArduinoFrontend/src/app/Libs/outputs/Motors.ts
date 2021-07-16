@@ -73,6 +73,10 @@ export class Motor extends CircuitElement {
           return;
         }
         if (!this.pwmAttached) {
+          if (this.rpm) {
+            this.rpm.remove();
+            this.rpm = null;
+          }
           this.setAnimation(v, 'AntiClockwise')
         }
         else {
@@ -103,6 +107,10 @@ export class Motor extends CircuitElement {
           return;
         }
         if (!this.pwmAttached) {
+          if (this.rpm) {
+            this.rpm.remove();
+            this.rpm = null;
+          }
           this.setAnimation(v, 'Clockwise')
         }
         else {
@@ -227,6 +235,8 @@ export class Motor extends CircuitElement {
     this.setDragListeners();
 
     this.pwmAttached = false;
+    this.voltage = -1;
+    this.prevVoltage = -1;
   }
 }
 
