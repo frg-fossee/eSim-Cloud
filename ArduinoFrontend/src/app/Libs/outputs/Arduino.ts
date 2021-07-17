@@ -102,16 +102,19 @@ export class ArduinoUno extends CircuitElement {
     // For Port B D5 - D13 add a input listener
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`D${i + 8}`].addValueListener((v) => {
-        console.log([i, v]);
+        // console.log([i, v]);
         if (isUndefined(this.runner) || isNull(this.runner)) {
           setTimeout(() => {
-            this.pinNameMap[`D${i + 8}`].setValue(v, this.pinNameMap[`D${i + 8}`]);
+            this.pinNameMap[`D${i + 8}`].setValue(1, this.pinNameMap[`D${i + 8}`]);
           }, 300);
           return;
         }
         // Update the value of register only if pin is input
         if (this.runner.portB.pinState(i) === AVR8.PinState.Input) {
           this.runner.portB.setPin(i, v > 0 ? 1 : 0);
+        } else if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
+          // Handle Input PullUp
+          this.runner.portB.setPin(i, v);
         }
       });
     }
@@ -201,7 +204,7 @@ export class ArduinoUno extends CircuitElement {
     if (isNull(this.hex) && isUndefined(this.hex)) {
       return;
     }
-    this.runner = new ArduinoRunner(this.hex);
+    this.runner = new ArduinoRunner(this.hex)
 
     this.runner.portB.addListener((value) => {
       for (let i = 0; i <= 5; ++i) {
@@ -263,6 +266,14 @@ export class ArduinoUno extends CircuitElement {
       this.servos = [];
     }
     this.runner.execute();
+
+    // Handle Input Pull Up on portB
+    for (let i = 0; i <= 5; ++i) {
+      if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
+        this.pinNameMap[`D${i + 8}`].pullUpEnabled = true;
+        this.runner.portB.setPin(i, 1);
+      }
+    }
   }
   /**
    * Remove arduino runner on stop simulation.

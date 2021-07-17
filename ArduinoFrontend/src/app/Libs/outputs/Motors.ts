@@ -81,7 +81,6 @@ export class Motor extends CircuitElement {
         }
         else {
           if (this.voltage !== this.prevVoltage) {
-            console.log('s')
             this.setAnimation(this.voltage, 'AntiClockwise')
             this.prevVoltage = this.voltage;
           }
@@ -181,13 +180,12 @@ export class Motor extends CircuitElement {
     const pwmPins = [3, 5, 6, 9, 10, 11];
     const arduinoEnd: any = BreadBoard.getRecArduinov2(this.nodes[1], 'Positive');
     const arduinoEndNegative: any = BreadBoard.getRecArduinov2(this.nodes[0], 'Negative');
-    console.log(arduinoEndNegative)
+
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd || !arduinoEndNegative) {
       return;
     }
-    console.log(arduinoEnd)
-    console.log(arduinoEndNegative)
+
     // Only add pwm if connected to a pwm pin in arduino
     if (arduinoEnd && pwmPins.indexOf(parseInt(arduinoEnd.label.substr(1), 10)) !== -1) {
       // TODO: add PWM if positive is PWM

@@ -76,6 +76,8 @@ export class Point {
    * The Node ID
    */
   id: number;
+
+  pullUpEnabled = false;
   /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper

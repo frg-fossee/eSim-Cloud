@@ -1,4 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
+import { BreadBoard } from '../General';
 
 /**
  * Declare Raphael so that build don't throws error
@@ -12,6 +13,9 @@ export class PushButton extends CircuitElement {
    * Map of Pin name to the circuit node
    */
   pinNamedMap: any = {};
+
+  terminalParent = {}
+
   /**
    * pushbutton constructor
    * @param canvas Raphael Canvas (Paper)
@@ -66,6 +70,12 @@ export class PushButton extends CircuitElement {
    * Initialize Variable,callback and animation caller when start simulation is pressed
    */
   initSimulation(): void {
+
+    this.terminalParent['terminal1a'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 1a'], 'Terminal 1a');
+    this.terminalParent['terminal1b'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 1b'], 'Terminal 1b');
+    this.terminalParent['terminal2a'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 2a'], 'Terminal 2a');
+    this.terminalParent['terminal2b'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 2b'], 'Terminal 2b');
+
     // console.log(this.pinNamedMap[''])
     this.elements.unmousedown();
     let iniValue = -1;
@@ -74,13 +84,28 @@ export class PushButton extends CircuitElement {
     this.elements[9].mousedown(() => {
       let val = this.pinNamedMap['Terminal 1a'].value;
       if (val > 0) {
+
+        // check if pull up
+        if (this.terminalParent['terminal1a'].pullUpEnabled || this.terminalParent['terminal2a'].pullUpEnabled) {
+          console.log('run pull')
+          val = 0;
+        }
+
         by = 0;
         iniValue = this.pinNamedMap['Terminal 2a'].value;
         this.pinNamedMap['Terminal 2a'].setValue(val, null);
         this.pinNamedMap['Terminal 2b'].setValue(val, null);
       } else {
-        by = 1;
+
         val = this.pinNamedMap['Terminal 2a'].value;
+
+        // check if pull up
+        if (this.terminalParent['terminal2a'].pullUpEnabled || this.terminalParent['terminal1a'].pullUpEnabled) {
+          console.log('run pull')
+          val = 0;
+        }
+
+        by = 1;
         iniValue = this.pinNamedMap['Terminal 1a'].value;
         this.pinNamedMap['Terminal 1a'].setValue(val, null);
         this.pinNamedMap['Terminal 1b'].setValue(val, null);
