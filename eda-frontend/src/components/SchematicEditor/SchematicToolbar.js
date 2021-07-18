@@ -36,7 +36,7 @@ import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibra
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
 import CreateProject from '../Project/CreateProject'
-import importSCHFile from './Helper/KiCadFileUtils'
+import { importSCHFile } from './Helper/KiCadFileUtils'
 
 // Req for Development
 // import CodeIcon from '@material-ui/icons/Code'
