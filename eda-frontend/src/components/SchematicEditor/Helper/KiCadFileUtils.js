@@ -1,6 +1,4 @@
 /* eslint-disable new-cap */
-/* eslint-disable no-unused-vars */
-/* eslint-disable camelcase */
 import store from '../../../redux/store'
 import api from '../../../utils/Api'
 import { getSvgMetadata } from './SvgParser'
@@ -176,7 +174,7 @@ const joinComponents = (components, wires, connections) => {
   const drawConnection = (wire, source, target, connection) => {
     if (wire.startTerminal && wire.endTerminal) {
       model.beginUpdate()
-      console.log(wire.startTerminal, wire.endTerminal)
+      // console.log(wire.startTerminal, wire.endTerminal)
       var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
       if (wire.points) {
         v.geometry.points = wire.points.map(p => { return new mxPoint(p.x / defScale, p.y / defScale) })
@@ -199,13 +197,18 @@ const joinComponents = (components, wires, connections) => {
           if (wires[wi].points) {
             for (const p in wires[wi].points) {
               if (wires[wi].points[p].x === connections[c].x && connections[c].y === wires[wi].points[p].y) {
-                return [wires[wi].mxCell, connections[c]]
+                if (wires[wi].mxCell) {
+                  return [wires[wi].mxCell, connections[c]]
+                } else {
+                  return [null, null]
+                }
               }
             }
           }
         }
       }
     }
+    return [null, null]
   }
 
   const checkInBound = (x, y, compMxCell) => {
@@ -283,17 +286,26 @@ const joinComponents = (components, wires, connections) => {
   })
   model.endUpdate()
 
-  for (const w in wires) {
-    if (!wires[w].startTerminal) {
-      [wires[w].startTerminal, wires[w].connection] = findWire(w, wires[w].startx, wires[w].starty)
-      if (wires[w].endTerminal && wires[w].startTerminal) {
-        wires[w].mxCell = drawConnection(wires[w], true, false, wires[w].connection)
-      }
+  const unconnectedWirePresent = () => {
+    for (const w in wires) {
+      if (!wires[w].mxCell) { return true }
     }
-    if (!wires[w].endTerminal) {
-      [wires[w].endTerminal, wires[w].connection] = findWire(w, wires[w].endx, wires[w].endy)
-      if (wires[w].endTerminal && wires[w].startTerminal) {
-        wires[w].mxCell = drawConnection(wires[w], false, true, wires[w].connection)
+    return false
+  }
+
+  while (unconnectedWirePresent()) {
+    for (const w in wires) {
+      if (!wires[w].startTerminal) {
+        [wires[w].startTerminal, wires[w].connection] = findWire(w, wires[w].startx, wires[w].starty)
+        if (wires[w].endTerminal && wires[w].startTerminal && wires[w].connection) {
+          wires[w].mxCell = drawConnection(wires[w], true, false, wires[w].connection)
+        }
+      }
+      if (!wires[w].endTerminal) {
+        [wires[w].endTerminal, wires[w].connection] = findWire(w, wires[w].endx, wires[w].endy)
+        if (wires[w].endTerminal && wires[w].startTerminal && wires[w].connection) {
+          wires[w].mxCell = drawConnection(wires[w], false, true, wires[w].connection)
+        }
       }
     }
   }
