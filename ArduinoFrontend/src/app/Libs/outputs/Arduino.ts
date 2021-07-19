@@ -130,6 +130,9 @@ export class ArduinoUno extends CircuitElement {
         // Update the value of register only if pin is input
         if (this.runner.portD.pinState(i) === AVR8.PinState.Input) {
           this.runner.portD.setPin(i, v > 0 ? 1 : 0);
+        } else if (this.runner.portD.pinState(i) === AVR8.PinState.InputPullUp) {
+          // Handle Input PullUp
+          this.runner.portD.setPin(i, v);
         }
       });
     }
@@ -267,11 +270,18 @@ export class ArduinoUno extends CircuitElement {
     }
     this.runner.execute();
 
-    // Handle Input Pull Up on portB
+    // Handle Input Pull Up on portB pins
     for (let i = 0; i <= 5; ++i) {
       if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
         this.pinNameMap[`D${i + 8}`].pullUpEnabled = true;
         this.runner.portB.setPin(i, 1);
+      }
+    }
+    // Handle Input Pull Up on portD pins
+    for (let i = 2; i <= 7; ++i) {
+      if (this.runner.portD.pinState(i) === AVR8.PinState.InputPullUp) {
+        this.pinNameMap[`D${i}`].pullUpEnabled = true;
+        this.runner.portD.setPin(i, 1);
       }
     }
   }
