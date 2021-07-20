@@ -41,17 +41,17 @@ export default function SchematiEditor (props) {
 
   useEffect(() => {
     document.title = 'Schematic Editor - eSim '
-    var container = gridRef.current
-    var sidebar = compRef.current
-    var outline = outlineRef.current
+    const container = gridRef.current
+    const sidebar = compRef.current
+    const outline = outlineRef.current
     LoadGrid(container, sidebar, outline)
 
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
       console.log(props.location.search)
-      var cktid = query.get('id')
-      var version = query.get('version')
-      var branch = query.get('branch')
+      const cktid = query.get('id')
+      const version = query.get('version')
+      const branch = query.get('branch')
       console.log(cktid)
       if (cktid.substr(0, 7) === 'gallery') {
         // Loading Gallery schemaic.

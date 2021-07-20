@@ -7,20 +7,18 @@ import { setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'
 import { setSchTitle, setSchDescription, setSchXmlData } from './saveSchematicActions'
 
-
 // Action for Loading Gallery schematics
 export const fetchGallery = () => (dispatch, getState) => {
-    
   const config = {
-      headers: {
+    headers: {
       'Content-Type': 'application/json'
-      }
+    }
   }
-  
+
   api.get('save/gallery', config)
-  .then((res) => {
+    .then((res) => {
       console.log(res.data)
-      var data = res.data
+      const data = res.data
       dispatch({
         type: actions.FETCH_GALLERY,
         payload: data
@@ -29,7 +27,7 @@ export const fetchGallery = () => (dispatch, getState) => {
       dispatch(setSchTitle(data.name))
       dispatch(setSchDescription(data.description))
       dispatch(setSchXmlData(data.data_dump))
-      
+
       renderGalleryXML(data.data_dump)
       if (data.esim_libraries.length > 0) {
         getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
@@ -39,15 +37,12 @@ export const fetchGallery = () => (dispatch, getState) => {
         type: actions.FETCH_GALLERY,
         payload: res.data
       })
-      
-  })
-  .catch((err) => { console.error(err) })
+    })
+    .catch((err) => { console.error(err) })
 }
-
 
 // Api call to delete the schematic in gallery [role required: Staff]
 export const deleteGallerySch = (Id) => (dispatch, getState) => {
-  
   const token = getState().authReducer.token
 
   // add headers
@@ -61,17 +56,14 @@ export const deleteGallerySch = (Id) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-  console.log("deleting ", Id)
+  console.log('deleting ', Id)
   api
-  .delete('save/gallery/' + Id, config)
-  .then(
-    (res) => {
-      console.log('Called delete for: ', res)
-      dispatch(fetchGallery())
-    }
-  )
-  .catch((err) => { console.error(err) })
-
-
+    .delete('save/gallery/' + Id, config)
+    .then(
+      (res) => {
+        console.log('Called delete for: ', res)
+        dispatch(fetchGallery())
+      }
+    )
+    .catch((err) => { console.error(err) })
 }
-

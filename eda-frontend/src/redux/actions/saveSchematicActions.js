@@ -7,7 +7,7 @@ import { setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'
 import randomstring from 'randomstring'
 import { fetchProject } from './projectActions'
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid'
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -38,10 +38,10 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 
 // Api call to save new schematic or updating saved schematic.
 export const saveSchematic = (title, description, xml, base64, newBranch = false, branchName = null, setVersions, versions, branchOpen, setBranchOpen) => (dispatch, getState) => {
-  var libraries = []
+  const libraries = []
   getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
   const project_id = getState().saveSchematicReducer.details.project_id
-  var body = {
+  const body = {
     data_dump: xml,
     base64_image: base64,
     name: title,
@@ -105,8 +105,8 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
     }
   } else {
     console.log('New Branch not Version')
-    var flag = 0
-    for (var i = 0; i < versions.length; i++) {
+    let flag = 0
+    for (let i = 0; i < versions.length; i++) {
       if (branchName === versions[i][0]) { flag = 1 }
     }
     if (!flag) {
@@ -116,9 +116,9 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
       api
         .post('save', queryString.stringify(body), config)
         .then((res) => {
-          var temp = versions
-          var tempBranch = branchOpen
-          var d = new Date(res.data.save_time)
+          const temp = versions
+          const tempBranch = branchOpen
+          const d = new Date(res.data.save_time)
           res.data.date = d.getDate() + '/' + parseInt(d.getMonth() + 1) + '/' + d.getFullYear()
           res.data.time = d.getHours() + ':' + d.getMinutes()
           if (d.getMinutes() < 10) {
@@ -142,7 +142,6 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
 
 // Api call to save the current schematic to gallery [role required: Staff]
 export const saveToGallery = (title, description, xml, base64) => (dispatch, getState) => {
-  
   const token = getState().authReducer.token
 
   // add headers
@@ -159,9 +158,9 @@ export const saveToGallery = (title, description, xml, base64) => (dispatch, get
   console.log(token)
   console.log(config)
 
-  var libraries = []
+  const libraries = []
   getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
-  var body = {
+  const body = {
     data_dump: xml,
     media: base64,
     name: title,
@@ -171,17 +170,15 @@ export const saveToGallery = (title, description, xml, base64) => (dispatch, get
   }
   console.log('successfully saved to gallery')
   console.log(body)
-  
+
   api
-  .post('save/gallery/' + body.save_id, queryString.stringify(body), config)
-  .then(
-    (res) => {
-      console.log(res)
-    }
-  )
-  .catch((err) => { console.error(err) })
-
-
+    .post('save/gallery/' + body.save_id, queryString.stringify(body), config)
+    .then(
+      (res) => {
+        console.log(res)
+      }
+    )
+    .catch((err) => { console.error(err) })
 }
 
 // Action for Loading on-cloud saved schematics
@@ -227,36 +224,33 @@ export const fetchSchematic = (saveId, version, branch) => (dispatch, getState) 
 
 // Action for Loading Gallery schematics
 export const fetchGallerySchematic = (Id) => (dispatch, getState) => {
-  
-      
-    const config = {
-        headers: {
-        'Content-Type': 'application/json'
-        }
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
     }
+  }
 
-    api.get('save/gallery/' + Id, config)
+  api.get('save/gallery/' + Id, config)
     .then((res) => {
-        console.log(res.data)
-        var data = res.data
-        dispatch({
-          type: actions.LOAD_GALLERY_SCH,
-          payload: data
-        })
-        dispatch(setTitle('* ' + data.name))
-        dispatch(setSchTitle(data.name))
-        dispatch(setSchDescription(data.description))
-        dispatch(setSchXmlData(data.data_dump))
-        
-        renderGalleryXML(data.data_dump)
-        if (data.esim_libraries.length > 0) {
-          getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
-          data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id)))
-        }
-        
+      console.log(res.data)
+      const data = res.data
+      dispatch({
+        type: actions.LOAD_GALLERY_SCH,
+        payload: data
+      })
+      dispatch(setTitle('* ' + data.name))
+      dispatch(setSchTitle(data.name))
+      dispatch(setSchDescription(data.description))
+      dispatch(setSchXmlData(data.data_dump))
+
+      renderGalleryXML(data.data_dump)
+      if (data.esim_libraries.length > 0) {
+        getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
+        data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id)))
+      }
     })
     .catch((err) => { console.error(err) })
-  }
+}
 
 export const setSchShared = (share) => (dispatch, getState) => {
   // Get token from localstorage
@@ -275,7 +269,7 @@ export const setSchShared = (share) => (dispatch, getState) => {
     config.headers.Authorization = `Token ${token}`
   }
 
-  var isShared
+  let isShared
   if (share === true) {
     isShared = 'on'
   } else {
@@ -301,7 +295,7 @@ export const setSchShared = (share) => (dispatch, getState) => {
 
 // Action for Loading local exported schematics
 export const openLocalSch = (obj) => (dispatch, getState) => {
-  var data = obj
+  const data = obj
 
   dispatch({ type: actions.CLEAR_DETAILS })
   dispatch(setTitle('* ' + data.title))

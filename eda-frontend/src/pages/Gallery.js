@@ -19,7 +19,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchRole, deleteGallerySch, fetchGallery} from '../redux/actions/index'
+import { fetchRole, deleteGallerySch, fetchGallery } from '../redux/actions/index'
 import SimpleSnackbar from '../components/Shared/Snackbar'
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-
 // Card displaying overview of gallery sample schematics.
 function SchematicCard ({ sch }) {
   const classes = useStyles()
@@ -62,7 +61,7 @@ function SchematicCard ({ sch }) {
       return
     }
     setSnacOpen(false)
-  }  
+  }
   useEffect(() => {
     dispatch(fetchRole())
   }, [dispatch])
@@ -104,7 +103,7 @@ function SchematicCard ({ sch }) {
             Launch in Editor
           </Button>
             {console.log(auth.roles)}
-           {auth.roles && auth.roles.is_type_staff && 
+           {auth.roles && auth.roles.is_type_staff &&
             <Button>
             <Tooltip title="Delete" placement="bottom" arrow>
               <DeleteIcon
@@ -112,7 +111,7 @@ function SchematicCard ({ sch }) {
                 fontSize="small"
                 onClick={() => { handleSnacClick() }}
               />
-            </Tooltip>            
+            </Tooltip>
             </Button>}
             <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteGallerySch} />
         </CardActions>
@@ -153,7 +152,7 @@ export default function Gallery () {
     dispatch(fetchGallery())
     dispatch(fetchRole())
   }, [dispatch])
-  
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -175,7 +174,6 @@ export default function Gallery () {
           {console.log(GallerySchSample)}
           {GallerySchSample.map(
             (sch) => {
-                {console.log('kkc', sch)}
               return (
                 <Grid item xs={12} sm={6} lg={4} key={sch.save_id}>
                   <SchematicCard sch={sch} />

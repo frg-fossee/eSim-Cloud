@@ -2,18 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
-  Snackbar,
+  Snackbar
 } from '@material-ui/core'
 import { useDispatch } from 'react-redux'
 import MuiAlert from '@material-ui/lab/Alert'
-
 
 function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 // Schematic delete snackbar
 
-export default function SimpleSnackbar ({ open, close, sch, confirmation}) {
+export default function SimpleSnackbar ({ open, close, sch, confirmation }) {
   const dispatch = useDispatch()
 
   return (
@@ -63,5 +62,6 @@ export default function SimpleSnackbar ({ open, close, sch, confirmation}) {
 SimpleSnackbar.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
-  sch: PropTypes.object
+  sch: PropTypes.object,
+  confirmation: PropTypes.func
 }

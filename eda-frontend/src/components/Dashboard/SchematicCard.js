@@ -10,7 +10,6 @@ import {
   CardMedia,
   CardHeader,
   Tooltip,
-  Snackbar,
   ButtonBase,
   Chip
 } from '@material-ui/core'
@@ -39,13 +38,13 @@ const useStyles = makeStyles((theme) => ({
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
 function timeSince (jsonDate) {
-  var json = jsonDate
+  const json = jsonDate
 
-  var date = new Date(json)
+  const date = new Date(json)
 
-  var seconds = Math.floor((new Date() - date) / 1000)
+  const seconds = Math.floor((new Date() - date) / 1000)
 
-  var interval = Math.floor(seconds / 31536000)
+  let interval = Math.floor(seconds / 31536000)
 
   if (interval > 1) {
     return interval + ' years'
@@ -71,8 +70,8 @@ function timeSince (jsonDate) {
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
 function getDate (jsonDate) {
-  var json = jsonDate
-  var date = new Date(json)
+  const json = jsonDate
+  const date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
   const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
   return `${day}-${month}-${year}`
@@ -137,7 +136,7 @@ export default function SchematicCard ({ sch }) {
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
-          {!sch.project_id && 
+          {!sch.project_id &&
           <Button>
           <Tooltip title="Delete" placement="bottom" arrow>
             <DeleteIcon

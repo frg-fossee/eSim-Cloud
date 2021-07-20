@@ -52,14 +52,14 @@ const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-var FileSaver = require('file-saver')
+const FileSaver = require('file-saver')
 
 // Dialog box to display generated netlist
 export function NetlistModal ({ open, close, netlist }) {
   const netfile = useSelector(state => state.netlistReducer)
   const createNetlistFile = () => {
-    var titleA = netfile.title.split(' ')[1]
-    var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
+    const titleA = netfile.title.split(' ')[1]
+    const blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, `${titleA}_eSim_on_cloud.cir`)
   }
   return (
@@ -450,8 +450,8 @@ export function OpenSchDialog (props) {
   const schematics = useSelector(state => state.dashboardReducer.schematics)
 
   function getDate (jsonDate) {
-    var json = jsonDate
-    var date = new Date(json)
+    const json = jsonDate
+    const date = new Date(json)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
     const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
     return `${day} ${month} ${hour}:${minute}:${second}`
@@ -733,7 +733,7 @@ LibraryRow.propTypes = {
 export function SelectLibrariesModal ({ open, close }) {
   const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
-  var uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
+  const uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -763,7 +763,7 @@ export function SelectLibrariesModal ({ open, close }) {
 
   useEffect(() => {
     const updateActive = () => {
-      var active = []
+      const active = []
       if (allLibraries !== undefined) {
         allLibraries.forEach((element) => {
           element.active = false
@@ -787,7 +787,7 @@ export function SelectLibrariesModal ({ open, close }) {
 
   const handlFileUpload = (event) => {
     setUploadDisable(true)
-    var files = event.target.files
+    const files = event.target.files
     const formData = new FormData()
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i])

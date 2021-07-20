@@ -13,7 +13,6 @@ class UserCircuits(admin.ModelAdmin):
 
 @admin.register(Gallery)
 class GalleryCircuits(admin.ModelAdmin):
-    # fields = ('name', 'media', 'save_id', 'description', 'data_dump', 'shared', 'is_arduino')
     list_display = ('name', 'image_tag', 'description', 'shared', 'is_arduino')
     list_filter = ('save_time', 'is_arduino')
     search_fields = ('name', 'description')

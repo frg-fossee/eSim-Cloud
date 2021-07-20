@@ -1,7 +1,7 @@
 import * as actions from '../actions/actions'
 
 const InitialState = {
-  schematics: [],
+  schematics: []
 }
 
 export default function (state = InitialState, action) {

@@ -25,7 +25,7 @@ urlpatterns = [
          name="getGallery"),
 
     path('save/gallery/<str:save_id>',
-         saveAPI_views.GalleryFetchSaveDeleteView.as_view(), 
+         saveAPI_views.GalleryFetchSaveDeleteView.as_view(),
          name='fetchGallerySchematic'),
 
     path('save/<uuid:save_id>/<str:version>/<str:branch>',

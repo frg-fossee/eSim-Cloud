@@ -31,7 +31,7 @@ import queryString from 'query-string'
 
 import Graph from './Graph'
 
-var FileSaver = require('file-saver')
+const FileSaver = require('file-saver')
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -108,8 +108,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   }, [close])
   useEffect(() => {
     if (open) {
-      var url = queryString.parse(window.location.href.split('editor?')[1])
-      var getUrl = ''
+      const url = queryString.parse(window.location.href.split('editor?')[1])
+      let getUrl = ''
       const token = localStorage.getItem('esim_token')
       const config = {
         headers: {
@@ -125,11 +125,11 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
         config.headers.Authorization = `Token ${token}`
 
         api.get(getUrl, config).then(res => {
-          var arr = []
-          var temp2 = (result.isGraph === 'true')
+          const arr = []
+          const temp2 = (result.isGraph === 'true')
           res.data.map((ele, index) => {
             ele.simulation_time = new Date(ele.simulation_time)
-            var temp = (ele.result.graph === 'true')
+            const temp = (ele.result.graph === 'true')
             if (!ele.result.graph || temp !== temp2) {
               arr.push(index)
             }
@@ -140,7 +140,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             }
             return 0
           })
-          for (var i = arr.length - 1; i >= 0; i--) {
+          for (let i = arr.length - 1; i >= 0; i--) {
             res.data.splice(arr[i], 1)
           }
           setHistory(res.data)
@@ -154,27 +154,27 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
 
   const handleChangeSim = (e) => {
     setHistoryId(e.target.value)
-    var schematic = []
+    let schematic = []
     if (e.target.value !== '') {
       setCompare(true)
       history.forEach(element => {
-        var data = element.result.data
+        const data = element.result.data
         if (element.id === e.target.value) {
           if (element.result.graph === 'true') {
-            var simResultGraph = { labels: [], x_points: [], y_points: [] }
+            const simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
-            for (var i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
               simResultGraph.labels[0] = data[i].labels[0]
-              var lab = data[i].labels
+              const lab = data[i].labels
               // lab is an array containeing labels names ['time','abc','def']
               simResultGraph.x_points = data[0].x
 
               // labels
-              for (var x = 1; x < lab.length; x++) {
+              for (let x = 1; x < lab.length; x++) {
                 simResultGraph.labels.push(lab[x])
               }
               // populate y_points
-              for (var z = 0; z < data[i].y.length; z++) {
+              for (let z = 0; z < data[i].y.length; z++) {
                 simResultGraph.y_points.push(data[i].y[z])
               }
             }
@@ -185,10 +185,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
               simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
             }
             schematic = simResultGraph
-            var val, idx
+            let val, idx
             setScales(1, val, idx, null, null, schematic)
           } else {
-            var simResultText = []
+            const simResultText = []
             for (let i = 0; i < data.length; i++) {
               let postfixUnit = ''
               if (data[i][0].includes('#branch')) {
@@ -219,7 +219,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   }
   // DO NOT CHANGE THIS FUNCTION
   const toFixed = (x) => {
-    var e = 0
+    let e = 0
     if (Math.abs(x) < 1.0) {
       e = parseInt(x.toString().split('e-')[1])
       if (e) {
@@ -239,7 +239,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
 
   // DO NOT CHANGE
   const decimalCount = (num1, num2) => {
-    var difference = toFixed(num1) - toFixed(num2)
+    const difference = toFixed(num1) - toFixed(num2)
     const numStr = toFixed(difference).toString()
     if (Math.abs(difference) < 1) {
       if (numStr.includes('.')) {
@@ -256,8 +256,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     const numStr = num.toString()
     if (Math.abs(num) < 1) {
       if (numStr.includes('.')) {
-        var afterDeci = numStr.split('.')[1]
-        var count = 0
+        const afterDeci = numStr.split('.')[1]
+        let count = 0
         while (afterDeci[count] === '0') {
           count++
         }
@@ -274,22 +274,22 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     const numStr = num.toString()
     if (Math.abs(num) < 1) {
       if (numStr.includes('.')) {
-        var afterDeci = numStr.split('.')[1]
-        var count = 0
+        const afterDeci = numStr.split('.')[1]
+        let count = 0
         while (afterDeci[count] === '0') {
           count++
         }
         return ['decimal', -1 * (count + 1)] // count + 2 to adjust with the scaling feature. 0.000xyz will become xyz.abc mUnit
       }
     } else {
-      var beforeDeci = numStr.split('.')[0]
+      const beforeDeci = numStr.split('.')[0]
       return ['notDecimal', (beforeDeci.length - 1)]
     }
     return ['notDecimal', 0]
   }
   useEffect(() => {
     if (isResult === true) {
-      var g, val, idx
+      let g, val, idx
       if (result.graph !== {} && result.isGraph !== 'false') {
         g = 1
         setScales(g, val, idx, null, null, result.graph)
@@ -305,14 +305,14 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   const addScalesNonGraph = (g, data, arr, scale, setScaleFunc, setStateFunc) => {
     data.forEach((line, index) => {
       setScales(g, parseFloat(line.split(' ')[2]), index, scale, setScaleFunc)
-      var count = exactDecimalCount(parseFloat(line.split(' ')[2]))
+      const count = exactDecimalCount(parseFloat(line.split(' ')[2]))
       arr.push(count[1])
     })
     setStateFunc(arr)
   }
 
   const setScales = (g, val, idx, scale = null, setScaleFunc = null, data = null) => {
-    var countX, countY
+    let countX, countY
     if (g === 1) {
       countX = decimalCount(Math.min(...data.x_points), Math.max(...data.x_points))
       countY = decimalCount(Math.min(...data.y_points[0]), Math.max(...data.y_points[0]))
@@ -457,18 +457,18 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     setNotation(evt.target.value)
   }
   const generateCSV = () => {
-    var headings = ''
+    let headings = ''
     result.graph.labels.forEach(label => {
       headings = headings + label + ','
     })
 
     headings = headings.slice(0, -1)
     headings += '\n'
-    var downloadString = ''
+    let downloadString = ''
 
-    for (var x = 0; x < result.graph.x_points.length; x++) {
+    for (let x = 0; x < result.graph.x_points.length; x++) {
       downloadString += result.graph.x_points[x]
-      for (var y = 0; y < result.graph.y_points.length; y++) {
+      for (let y = 0; y < result.graph.y_points.length; y++) {
         downloadString = downloadString + ',' + result.graph.y_points[y][x]
       }
       downloadString += '\n'
@@ -478,8 +478,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     return downloadString
   }
   const handleCsvDownload = () => {
-    var downloadString = generateCSV()
-    var blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
+    const downloadString = generateCSV()
+    const blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, 'graph_points_eSim_on_cloud.csv')
   }
 
@@ -525,7 +525,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             </Grid>
 
             {/* Display graph result */}
-            {isResult === true ? <>
+            {isResult === true
+              ? <>
               {
 
                 (result.graph !== {} && result.isGraph === 'true')
@@ -849,9 +850,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                                     {(line.split(' ')[3] === '\n')
                                       ? (parseFloat(line.split(' ')[2]))
                                       : (notation === 'Scientific'
-                                        ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + 'e' + ((exactDecimal[index]) >= 0
-                                          ? '+' + (exactDecimal[index]).toString() : exactDecimal[index]).toString())
-                                        : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}
+                                          ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + 'e' + ((exactDecimal[index]) >= 0
+                                              ? '+' + (exactDecimal[index]).toString()
+                                              : exactDecimal[index]).toString())
+                                          : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}
                                   </TableCell>
                                   <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
                                 </TableRow>
@@ -879,9 +881,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                                       {(line.split(' ')[3] === '\n')
                                         ? (parseFloat(line.split(' ')[2]))
                                         : (notation === 'Scientific'
-                                          ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimalCompare[index])).toFixed(precision).toString() + 'e' + ((exactDecimalCompare[index]) >= 0
-                                            ? '+' + (exactDecimalCompare[index]).toString() : exactDecimalCompare[index]).toString())
-                                          : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArrayCompare[index]]).toFixed(precision))}
+                                            ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimalCompare[index])).toFixed(precision).toString() + 'e' + ((exactDecimalCompare[index]) >= 0
+                                                ? '+' + (exactDecimalCompare[index]).toString()
+                                                : exactDecimalCompare[index]).toString())
+                                            : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArrayCompare[index]]).toFixed(precision))}
                                     </TableCell>
                                     <TableCell align="center">{(scalesNonGraphArrayCompare[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArrayCompare[index]}{line.split(' ')[3]}</TableCell>
                                   </TableRow>
