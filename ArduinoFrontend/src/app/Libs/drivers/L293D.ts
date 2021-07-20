@@ -1,7 +1,6 @@
-import { CircuitElement } from "../CircuitElement";
-import { BreadBoard } from "../General";
-import { ArduinoUno } from "../outputs/Arduino";
-import { Point } from "../Point";
+import { CircuitElement } from '../CircuitElement';
+import { BreadBoard } from '../General';
+import { Point } from '../Point';
 
 /**
  * MotorDriver L293D class
@@ -105,7 +104,6 @@ export class L293D extends CircuitElement {
         });
 
         this.pinNamedMap['EN2'].addValueListener(v => {
-            console.log(v)
             if (v > 0) {
                 this.enable2 = true;
             } else {
@@ -217,7 +215,7 @@ export class L293D extends CircuitElement {
                 if (arduinoEnd4.parent.keyName === 'ArduinoUno' || arduinoEnd3.parent.keyName === 'ArduinoUno') {
                     this.ground2 = true;
                 } else {
-                    console.error('GND is not connected')
+                    console.error('GND is not connected');
                     window['showToast']('GND is not connected properly!');
                 }
             }
@@ -232,7 +230,7 @@ export class L293D extends CircuitElement {
                 if (arduinoEnd2.parent.keyName === 'ArduinoUno' || arduinoEnd1.parent.keyName === 'ArduinoUno') {
                     this.ground1 = true;
                 } else {
-                    console.error('GND is not connected')
+                    console.error('GND is not connected');
                     window['showToast']('GND is not connected properly!');
                 }
             }

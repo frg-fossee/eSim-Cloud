@@ -14,7 +14,7 @@ export class PushButton extends CircuitElement {
    */
   pinNamedMap: any = {};
 
-  terminalParent = {}
+  terminalParent = {};
 
   /**
    * pushbutton constructor
@@ -83,7 +83,6 @@ export class PushButton extends CircuitElement {
     // create mousedown for the button
     this.elements[9].mousedown(() => {
       let val = -1;
-      console.log('11')
       const pullUp = this.terminalParent['terminal1a'].pullUpEnabled || this.terminalParent['terminal1b'].pullUpEnabled
         || this.terminalParent['terminal2a'].pullUpEnabled || this.terminalParent['terminal2b'].pullUpEnabled;
       if (this.pinNamedMap['Terminal 1a'].value > 0) {

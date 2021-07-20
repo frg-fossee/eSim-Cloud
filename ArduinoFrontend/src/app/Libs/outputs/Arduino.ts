@@ -207,7 +207,7 @@ export class ArduinoUno extends CircuitElement {
     if (isNull(this.hex) && isUndefined(this.hex)) {
       return;
     }
-    this.runner = new ArduinoRunner(this.hex)
+    this.runner = new ArduinoRunner(this.hex);
 
     this.runner.portB.addListener((value) => {
       for (let i = 0; i <= 5; ++i) {

@@ -41,6 +41,9 @@ export class Motor extends CircuitElement {
 
   prevVoltage = -1;
 
+  visitedNodesv2 = new Set();
+
+
   /**
    * Motor constructor
    * @param canvas Raphael Canvas (Paper)
@@ -78,11 +81,10 @@ export class Motor extends CircuitElement {
             this.rpm.remove();
             this.rpm = null;
           }
-          this.setAnimation(v, 'AntiClockwise')
-        }
-        else {
+          this.setAnimation(v, 'AntiClockwise');
+        } else {
           if (this.voltage !== this.prevVoltage) {
-            this.setAnimation(this.voltage, 'AntiClockwise')
+            this.setAnimation(this.voltage, 'AntiClockwise');
             this.prevVoltage = this.voltage;
           }
         }
@@ -111,16 +113,15 @@ export class Motor extends CircuitElement {
             this.rpm.remove();
             this.rpm = null;
           }
-          this.setAnimation(v, 'Clockwise')
-        }
-        else {
+          this.setAnimation(v, 'Clockwise');
+        } else {
           if (this.voltage <= 0 && this.rpm) {
             this.rpm.remove();
             this.rpm = null;
             this.prevVoltage = this.voltage;
           }
           if (this.voltage !== this.prevVoltage && this.voltage <= 6) {
-            this.setAnimation(this.voltage, 'Clockwise')
+            this.setAnimation(this.voltage, 'Clockwise');
             this.prevVoltage = this.voltage;
           }
         }
@@ -194,30 +195,27 @@ export class Motor extends CircuitElement {
 
       // Clear visitedNodesv2 set
       BreadBoard.visitedNodesv2.clear();
-      if (posPin.label == "OUT3") {
+      if (posPin.label === 'OUT3') {
         inArduino1 = BreadBoard.getRecArduinov2(posPin.parent.nodes[6], 'IN3');
-      } else if (posPin.label == "OUT4") {
+      } else if (posPin.label === 'OUT4') {
         inArduino1 = BreadBoard.getRecArduinov2(posPin.parent.nodes[1], 'IN4');
-      } else if (posPin.label == "OUT1") {
+      } else if (posPin.label === 'OUT1') {
         inArduino1 = BreadBoard.getRecArduinov2(posPin.parent.nodes[9], 'IN1');
-      } else if (posPin.label == "OUT2") {
+      } else if (posPin.label === 'OUT2') {
         inArduino1 = BreadBoard.getRecArduinov2(posPin.parent.nodes[14], 'IN2');
       }
 
       // Clear visitedNodesv2 set
       BreadBoard.visitedNodesv2.clear();
-      if (negPin.label == "OUT3") {
+      if (negPin.label === 'OUT3') {
         inArduino2 = BreadBoard.getRecArduinov2(negPin.parent.nodes[6], 'IN3');
-      } else if (negPin.label == "OUT4") {
+      } else if (negPin.label === 'OUT4') {
         inArduino2 = BreadBoard.getRecArduinov2(negPin.parent.nodes[1], 'IN4');
-      } else if (negPin.label == "OUT1") {
+      } else if (negPin.label === 'OUT1') {
         inArduino2 = BreadBoard.getRecArduinov2(posPin.parent.nodes[9], 'IN1');
-      } else if (negPin.label == "OUT2") {
+      } else if (negPin.label === 'OUT2') {
         inArduino2 = BreadBoard.getRecArduinov2(posPin.parent.nodes[14], 'IN2');
       }
-
-      console.log(inArduino1)
-      console.log(inArduino2)
 
       if (inArduino1) {
         // TODO: add PWM if PWM pin
@@ -233,7 +231,7 @@ export class Motor extends CircuitElement {
           this.addPwmArduino(inArduino2.parent, inArduino2);
         }
       }
-      return
+      return;
     }
     // Prep PWM
     // BreadBoard.searchElementType = 'Motor'
@@ -370,8 +368,6 @@ export class Motor extends CircuitElement {
     }
 
   }
-
-  visitedNodesv2 = new Set();
 
   /**
    * Recursive Function to handle BreadBoard
