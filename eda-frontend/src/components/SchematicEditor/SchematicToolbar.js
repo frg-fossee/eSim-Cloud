@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
-import { IconButton, Tooltip, Snackbar, Button } from '@material-ui/core'
+import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'

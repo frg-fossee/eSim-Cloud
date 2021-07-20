@@ -18,10 +18,10 @@ import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { useDispatch } from 'react-redux'
 import { deleteSchematic } from '../../redux/actions/index'
-import MuiAlert from '@material-ui/lab/Alert'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
+import SimpleSnackbar from '../Shared/Snackbar'
+
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
@@ -36,63 +36,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '10px'
   }
 }))
-function Alert (props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />
-}
-
-// Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
-  const dispatch = useDispatch()
-
-  return (
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
-      }}
-      open={open}
-      autoHideDuration={6000}
-      onClose={close}
-    >
-      <Alert
-        icon={false}
-        severity="warning"
-        color="error"
-        style={{ width: '100%' }}
-        action={
-          <>
-            <Button
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={() => {
-                dispatch(deleteSchematic(sch.save_id))
-              }}
-            >
-              Yes
-            </Button>
-            <Button
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={close}
-            >
-              NO
-            </Button>
-          </>
-        }
-      >
-        {'Delete ' + sch.name + ' ?'}
-      </Alert>
-    </Snackbar>
-  )
-}
-
-SimpleSnackbar.propTypes = {
-  open: PropTypes.bool,
-  close: PropTypes.func,
-  sch: PropTypes.object
-}
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
 function timeSince (jsonDate) {
@@ -205,7 +148,7 @@ export default function SchematicCard ({ sch }) {
             />
           </Tooltip>
           </Button>}
-          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
+          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteSchematic} />
 
           {/* Display share status */}
           <Tooltip

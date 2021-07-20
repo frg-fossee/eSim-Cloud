@@ -13,15 +13,14 @@ import {
   CardActionArea,
   CardMedia,
   Tooltip,
-  Snackbar
+  ButtonBase
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchRole, deleteGallerySch, fetchGallery} from '../redux/actions/index'
-import MuiAlert from '@material-ui/lab/Alert'
-
+import SimpleSnackbar from '../components/Shared/Snackbar'
 
 const useStyles = makeStyles((theme) => ({
   mainHead: {
@@ -47,58 +46,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Alert (props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />
-}
-
-// Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
-  const dispatch = useDispatch()
-
-  return (
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
-      }}
-      open={open}
-      autoHideDuration={6000}
-      onClose={close}
-    >
-      <Alert
-        icon={false}
-        severity="warning"
-        color="error"
-        style={{ width: '100%' }}
-        action={
-          <>
-            <Button
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={() => {
-                dispatch(deleteGallerySch(sch.save_id))
-              }}
-            >
-              Yes
-            </Button>
-            <Button
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={close}
-            >
-              NO
-            </Button>
-          </>
-        }
-      >
-        {'Delete ' + sch.name + ' ?'}
-      </Alert>
-    </Snackbar>
-  )
-}
-
 
 // Card displaying overview of gallery sample schematics.
 function SchematicCard ({ sch }) {
@@ -123,6 +70,12 @@ function SchematicCard ({ sch }) {
   return (
     <>
       <Card>
+      <ButtonBase
+          target="_blank"
+          component={RouterLink}
+          to={'/editor?id=' + sch.save_id}
+          style={{ width: '100%' }}
+        >
         <CardActionArea>
           <CardMedia
             className={classes.media}
@@ -138,6 +91,7 @@ function SchematicCard ({ sch }) {
             </Typography>
           </CardContent>
         </CardActionArea>
+        </ButtonBase>
 
         <CardActions>
           <Button
@@ -160,7 +114,7 @@ function SchematicCard ({ sch }) {
               />
             </Tooltip>            
             </Button>}
-            <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
+            <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteGallerySch} />
         </CardActions>
       </Card>
     </>
