@@ -162,6 +162,10 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
     }
   }
 
+  const handleSaveForLTI = (version, newSave, save_id) => {
+    setSaveId(save_id)
+  }
+
   const handleChangeSim = (e) => {
     console.log('in here')
     if (e.target.value === null) {
@@ -250,6 +254,8 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
           setSubmitMessage(res.data.message)
         }).catch((err) => {
           console.log(err)
+          setSubmit(true)
+          setSubmitMessage('There was an error while submitting. Please try again later!')
         })
     }
     // eslint-disable-next-line
@@ -261,7 +267,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
     var title = schSave.title
     var description = schSave.description
     exportImage('PNG').then(res => {
-      dispatch(saveSchematic(title, description, xml, res, true, setSaveId))
+      dispatch(saveSchematic(title, description, xml, res, false, null, handleSaveForLTI, true))
     })
   }
 
@@ -713,7 +719,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
           Submit
         </Button>
       </Tooltip>}
-      {consumerKey && <div>
+      {consumerKey && <>
         <Button
           size="small" color="primary"
           aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
@@ -729,7 +735,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
           <MenuItem onClick={() => handleMenuOnClick(modelSch)}>Model Schematic</MenuItem>
           <MenuItem onClick={() => handleMenuOnClick(initalSch)}>Student Schematic </MenuItem>
         </Menu>
-      </div>}
+      </>}
 
       {ltiId && ltiSimHistory && <div><FormControl size='small' style={{ marginLeft: '1%', paddingBottom: '1%' }} className={classes.formControl}>
         <InputLabel htmlFor="outlined-age-native-simple">See simulations</InputLabel>
@@ -742,7 +748,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
           label="Simulations"
           className={classes.selectEmpty}
         >
-          <MenuItem key={null} value={null}>None</MenuItem>
+          <MenuItem key={-1} value="None">None</MenuItem>
           {ltiSimHistory.map(sim => {
             return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
           })}

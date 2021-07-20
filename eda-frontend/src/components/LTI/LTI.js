@@ -344,7 +344,7 @@ export default function LTIConfig() {
         </div>
         <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
           {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
-          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} variant="outlined" />
+          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
           <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
           <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>

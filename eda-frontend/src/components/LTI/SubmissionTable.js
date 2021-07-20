@@ -138,7 +138,7 @@ export default function SubmissionTable() {
                 <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
                 <TableCell align="center">{student.score}</TableCell>
                 <TableCell align="center">
-                  <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}`}>
+                  <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}&version=${student.schematic.version}&branch=${student.schematic.branch}`}>
                     Open Submission
                   </Button>
                 </TableCell>

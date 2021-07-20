@@ -48,7 +48,7 @@ class LTIExist(APIView):
             "model_schematic": model_sch_serialized.data,
             "test_case": consumer.test_case.id if consumer.test_case else None,
             "scored": consumer.scored,
-            "lti_consumer_id": consumer.lti_consumer_id
+            "id": consumer.id
         }
         return Response(response_data,
                         status=status.HTTP_200_OK)
@@ -100,7 +100,7 @@ class LTIBuildApp(APIView):
                     "model_schematic": str(serialized.data["model_schematic"]),
                     "test_case": serialized.data['test_case'],
                     "scored": serialized.data['scored'],
-                    "lti_consumer_id": serialized.data['lti_consumer_id']
+                    "id": serialized.data['id']
                 }
                 print("Recieved POST for LTI APP:", response_data)
                 response_serializer = consumerResponseSerializer(
@@ -231,8 +231,10 @@ class LTIAuthView(APIView):
         print("Got POST for validating LTI consumer")
         try:
             i = lticonsumer.objects.get(consumer_key=request.data.get(
-                'oauth_consumer_key')
+                'oauth_consumer_key'), initial_schematic__save_id=save_id
             )
+            lti_session.lti_consumer = i
+            lti_session.save()
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
@@ -273,8 +275,7 @@ class LTIPostGrade(APIView):
             return Response(data={
                 "error": "No LTI session exists for this ID"
             }, status=status.HTTP_400_BAD_REQUEST)
-        consumer = lticonsumer.objects.get(
-            consumer_key=lti_session.oauth_consumer_key)
+        consumer = lticonsumer.objects.get(id=lti_session.lti_consumer.id)
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
         schematic.save()
