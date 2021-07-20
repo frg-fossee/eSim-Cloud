@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationProperties({ltiSimResult, setLtiSimResult}) {
+export default function SimulationProperties({ ltiSimResult, setLtiSimResult }) {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const [taskId, setTaskId] = useState(null)
@@ -379,7 +379,7 @@ export default function SimulationProperties({ltiSimResult, setLtiSimResult}) {
       formData.append('version', url.version)
       formData.append('branch', url.branch)
     }
-    if (url.lti_nonce){
+    if (url.lti_nonce) {
       formData.append('lti_id', url.lti_id)
     }
     const config = {

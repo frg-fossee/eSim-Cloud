@@ -9,7 +9,7 @@ class consumerSerializer(serializers.ModelSerializer):
     class Meta:
         model = lticonsumer
         fields = ['consumer_key', 'secret_key', 'model_schematic',
-                  'score', 'initial_schematic', 'test_case', 'scored']
+                  'score', 'initial_schematic', 'test_case', 'scored', 'lti_consumer_id']
 
     def create(self, validated_data):
         consumer = lticonsumer.objects.create(**validated_data)
@@ -23,6 +23,7 @@ class consumerExistsSerializer(serializers.ModelSerializer):
 
 
 class consumerResponseSerializer(serializers.Serializer):
+    lti_consumer_id = serializers.UUIDField()
     config_url = serializers.CharField(max_length=100)
     consumer_key = serializers.CharField(max_length=50)
     secret_key = serializers.CharField(max_length=50)

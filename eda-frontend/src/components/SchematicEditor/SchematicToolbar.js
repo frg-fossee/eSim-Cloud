@@ -28,6 +28,12 @@ import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import Button from '@material-ui/core/Button'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
+import {
+  Select,
+  FormControl,
+  FormControlLabel,
+  InputLabel
+} from '@material-ui/core'
 import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
 import queryString from 'query-string'
@@ -120,12 +126,18 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   const [modelSch, setModelSch] = React.useState('')
   const [id, setId] = React.useState('')
   const [scored, setScored] = React.useState(false)
+  const [ltiSimHistory, setLtiSimHistory] = React.useState([])
+  const [activeSimResult, setActiveSimResult] = React.useState(null)
 
 
   useEffect(() => {
     if (ltiSimResult && ltiId) {
       api.get(`simulation/history/lti/${ltiId}`).then(res => {
-        console.log(res.data)
+        res.data.map((ele, index) => {
+          ele.simulation_time = new Date(ele.simulation_time)
+          return 0
+        })
+        setLtiSimHistory(res.data)
       }).catch(err => { console.log(err) })
       console.log("SIM RESULTS FOUND")
       setLtiSimResult(false)
@@ -148,6 +160,16 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
       window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=master'
       window.location.reload()
     }
+  }
+
+  const handleChangeSim = (e) => {
+    console.log('in here')
+    if (e.target.value === null) {
+      setActiveSimResult(null)
+    } else {
+      setActiveSimResult(e.target.value)
+    }
+    setAnchorEl(null)
   }
 
   const handleClickOpen = () => {
@@ -708,6 +730,26 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
           <MenuItem onClick={() => handleMenuOnClick(initalSch)}>Student Schematic </MenuItem>
         </Menu>
       </div>}
+
+      {ltiId && ltiSimHistory && <div><FormControl size='small' style={{ marginLeft: '1%', paddingBottom: '1%' }} className={classes.formControl}>
+        <InputLabel htmlFor="outlined-age-native-simple">See simulations</InputLabel>
+        <Select
+          labelId="demo-simple-select-placeholder-label-label"
+          id="demo-simple-select-placeholder-label"
+          value={activeSimResult}
+          style={{ minWidth: '300px' }}
+          onChange={handleChangeSim}
+          label="Simulations"
+          className={classes.selectEmpty}
+        >
+          <MenuItem key={null} value={null}>None</MenuItem>
+          {ltiSimHistory.map(sim => {
+            return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
+          })}
+        </Select>
+      </FormControl>
+      </div>
+      }
 
       <IconButton
         color="inherit"

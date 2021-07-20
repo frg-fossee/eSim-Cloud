@@ -130,9 +130,12 @@ class CeleryResultView(APIView):
                 'state': celery_result.state,
                 'details': celery_result.info
             }
-            Output = simulation.objects.get(task__task_id=task_id)
-            Output.result = celery_result.info
-            Output.save()
+            try:
+                Output = simulation.objects.get(task__task_id=task_id)
+                Output.result = celery_result.info
+                Output.save()
+            except simulation.DoesNotExist:
+                pass
             return Response(response_data)
         else:
             raise ValidationError('Invalid uuid format')

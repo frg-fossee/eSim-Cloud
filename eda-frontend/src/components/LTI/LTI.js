@@ -359,7 +359,7 @@ export default function LTIConfig() {
               className={classes.selectEmpty}
             >
               {schematics.map(schematic => {
-                return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of branch {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
+                return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of variation {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
               })}
             </Select>
           </FormControl>
