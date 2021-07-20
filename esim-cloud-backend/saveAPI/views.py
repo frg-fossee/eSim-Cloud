@@ -519,18 +519,11 @@ class GalleryFetchSaveDeleteView(APIView):
 
     @swagger_auto_schema(responses={200: GallerySerializer})
     def post(self, request, save_id):
-        print('okKKC')
-        print(self.request.user)
-        for i in self.request.user.groups.all():
-            print(i)
-            print(i.name)
         if not (request.user and request.user.is_authenticated and
                 self.request.user.groups.filter(name='Staff').exists()):
             return Response({'error': 'Not the owner'},
                             status=status.HTTP_401_UNAUTHORIZED)
         saved_state = Gallery()
-        for i in request.data:
-            print(i)
         if not (request.data['data_dump'] and request.data['media'] and
                 request.data['save_id']):
             return Response({'error': 'not a valid POST request'},
@@ -567,7 +560,6 @@ class GalleryFetchSaveDeleteView(APIView):
     @swagger_auto_schema(responses={200: GallerySerializer})
     def delete(self, request, save_id):
         try:
-            
             # verifies: is staff
             if not (request.user and request.user.is_authenticated and
                     self.request.user.groups.filter(name='Staff').exists()):
@@ -579,9 +571,6 @@ class GalleryFetchSaveDeleteView(APIView):
             except Gallery.DoesNotExist:
                 return Response({'error': 'Does not Exist'},
                                 status=status.HTTP_404_NOT_FOUND)
-            
-            print(saved_state)
-            print('TO DELETE')
             saved_state.delete()
             return Response({'done': True})
         except Exception:

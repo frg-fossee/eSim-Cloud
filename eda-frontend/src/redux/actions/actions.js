@@ -54,11 +54,13 @@ export const SET_SCH_DESCRIPTION = 'SET_SCH_DESCRIPTION'
 export const SET_SCH_XML_DATA = 'SET_SCH_XML_DATA'
 export const SET_SCH_SHARED = 'SET_SCH_SHARED'
 export const CLEAR_DETAILS = 'CLEAR_DETAILS'
-export const LOAD_GALLERY = 'LOAD_GALLERY'
 export const LOAD_GALLERY_SCH = 'LOAD_GALLERY_SCH'
 
 // Action for fetching on-cloud saved schematics for authenticated user to display in dashboard
 export const FETCH_SCHEMATICS = 'FETCH_SCHEMATICS'
+
+// Action for fetching on-cloud gallery for everyone 
+export const FETCH_GALLERY = 'FETCH_GALLERY'
 
 // Actions for accounts page
 export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS'

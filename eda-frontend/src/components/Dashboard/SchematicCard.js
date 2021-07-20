@@ -194,14 +194,17 @@ export default function SchematicCard ({ sch }) {
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
-          {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>
+          {!sch.project_id && 
+          <Button>
+          <Tooltip title="Delete" placement="bottom" arrow>
             <DeleteIcon
               color="secondary"
               fontSize="small"
               // style={{ marginLeft: 'auto' }}
               onClick={() => { handleSnacClick() }}
             />
-          </Tooltip>}
+          </Tooltip>
+          </Button>}
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
           {/* Display share status */}

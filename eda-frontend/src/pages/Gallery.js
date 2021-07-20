@@ -11,19 +11,17 @@ import {
   Container,
   CssBaseline,
   CardActionArea,
-  CardMedia
+  CardMedia,
+  Tooltip,
+  Snackbar
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
-// import GallerySchSample from '../utils/GallerySchSample'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchRole, deleteGallerySch} from '../redux/actions/index'
+import { fetchRole, deleteGallerySch, fetchGallery} from '../redux/actions/index'
+import MuiAlert from '@material-ui/lab/Alert'
 
-
-
- 
-import api from '../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   mainHead: {
@@ -49,40 +47,78 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-var images = require.context('../static/gallery', true)
+function Alert (props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
+}
+
+// Schematic delete snackbar
+function SimpleSnackbar ({ open, close, sch }) {
+  const dispatch = useDispatch()
+
+  return (
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center'
+      }}
+      open={open}
+      autoHideDuration={6000}
+      onClose={close}
+    >
+      <Alert
+        icon={false}
+        severity="warning"
+        color="error"
+        style={{ width: '100%' }}
+        action={
+          <>
+            <Button
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={() => {
+                dispatch(deleteGallerySch(sch.save_id))
+              }}
+            >
+              Yes
+            </Button>
+            <Button
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={close}
+            >
+              NO
+            </Button>
+          </>
+        }
+      >
+        {'Delete ' + sch.name + ' ?'}
+      </Alert>
+    </Snackbar>
+  )
+}
+
 
 // Card displaying overview of gallery sample schematics.
 function SchematicCard ({ sch }) {
   const classes = useStyles()
-
-  const [GallerySchSample, setGallerySchSample] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
-  useEffect(() => {
-    
-    const config = {
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    }
-    api.get('save/gallery', config)
-    .then((res) => {
-        console.log(res.data)
-        setGallerySchSample(res.data)
-        setLoading(false)
-    })
-    
-    console.log(GallerySchSample)
-  }, [loading])
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
-  // For Fetching Saved Schematics
+  const [snacOpen, setSnacOpen] = React.useState(false)
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }  
   useEffect(() => {
     dispatch(fetchRole())
   }, [dispatch])
-
-  const handleDeleteGallery = () => {
-    dispatch(deleteGallerySch(sch.save_id))
-  }
 
   return (
     <>
@@ -113,18 +149,18 @@ function SchematicCard ({ sch }) {
           >
             Launch in Editor
           </Button>
-          {/* <Tooltip title="Delete" placement="bottom" arrow> */}
             {console.log(auth.roles)}
            {auth.roles && auth.roles.is_type_staff && 
             <Button>
-            <DeleteIcon
-              color="secondary"
-              fontSize="small"
-              // style={{ marginLeft: 'auto' }}
-              onClick={handleDeleteGallery}
-            />
+            <Tooltip title="Delete" placement="bottom" arrow>
+              <DeleteIcon
+                color="secondary"
+                fontSize="small"
+                onClick={() => { handleSnacClick() }}
+              />
+            </Tooltip>            
             </Button>}
-          {/* </Tooltip> */}
+            <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
         </CardActions>
       </Card>
     </>
@@ -157,26 +193,12 @@ function MainCard () {
 
 export default function Gallery () {
   const classes = useStyles()
-  const [GallerySchSample, setGallerySchSample] = React.useState([])
-  const [loading, setLoading] = React.useState(true)
+  const GallerySchSample = useSelector(state => state.galleryReducer.schematics)
+  const dispatch = useDispatch()
   useEffect(() => {
-    document.title = 'Gallery - eSim '
-    
-    const config = {
-        headers: {
-        'Content-Type': 'application/json'
-        }
-    }
-    api.get('save/gallery', config)
-    .then((res) => {
-        console.log(res.data)
-        setGallerySchSample(res.data)
-        setLoading(false)
-    })
-    
-    console.log(GallerySchSample)
-    // GallerySchSample = gal
-  }, [loading])
+    dispatch(fetchGallery())
+    dispatch(fetchRole())
+  }, [dispatch])
   
   return (
     <div className={classes.root}>
