@@ -117,25 +117,30 @@ export class L293D extends CircuitElement {
      * Simulation Logic For L293D Motor driver
      */
     update() {
-        setTimeout(() => {
-            if (this.pinNamedMap['IN1'].value > 0 && this.pinNamedMap['IN2'].value > 0) {
-                window['showToast']('Both IN1 and IN2 Pins are High!');
-                return;
-            }
+        // setTimeout(() => {
+        //     if (this.pinNamedMap['IN1'].value > 0 && this.pinNamedMap['IN2'].value > 0) {
+        //         window['showToast']('Both IN1 and IN2 Pins are High!');
+        //         return;
+        //     }
 
-            if (this.pinNamedMap['IN3'].value > 0 && this.pinNamedMap['IN4'].value > 0) {
-                window['showToast']('Both IN3 and IN4 Pins are High!');
-                return;
-            }
-        }, 100);
+        //     if (this.pinNamedMap['IN3'].value > 0 && this.pinNamedMap['IN4'].value > 0) {
+        //         window['showToast']('Both IN3 and IN4 Pins are High!');
+        //         return;
+        //     }
+        // }, 100);
 
         // If EN2 is HIGH
         if (this.enable2 && this.ground2) {
             if (this.pinNamedMap['IN4'].value > 0) {
                 this.pinNamedMap['OUT4'].setValue(this.pinNamedMap['VS'].value * (this.speedB / 5), this.pinNamedMap['OUT4']);
+            } else {
+                this.pinNamedMap['OUT4'].setValue(0, this.pinNamedMap['OUT4']);
             }
             if (this.pinNamedMap['IN3'].value > 0) {
                 this.pinNamedMap['OUT3'].setValue(this.pinNamedMap['VS'].value * (this.speedB / 5), this.pinNamedMap['OUT3']);
+            } else {
+                this.pinNamedMap['OUT3'].setValue(0, this.pinNamedMap['OUT3']);
+                this.pinNamedMap['OUT4'].setValue(0, this.pinNamedMap['OUT4']);
             }
         } else {
             this.pinNamedMap['OUT4'].setValue(0, this.pinNamedMap['OUT4']);
@@ -149,47 +154,15 @@ export class L293D extends CircuitElement {
             }
             if (this.pinNamedMap['IN3'].value > 0) {
                 this.pinNamedMap['OUT2'].setValue(this.pinNamedMap['VS'].value * (this.speedB / 5), this.pinNamedMap['OUT2']);
+            } else {
+                this.pinNamedMap['OUT1'].setValue(0, this.pinNamedMap['OUT1']);
+                this.pinNamedMap['OUT2'].setValue(0, this.pinNamedMap['OUT2']);
             }
         } else {
             this.pinNamedMap['OUT2'].setValue(0, this.pinNamedMap['OUT2']);
             this.pinNamedMap['OUT1'].setValue(0, this.pinNamedMap['OUT1']);
 
         }
-
-
-        // if (this.pinNamedMap['IN1'].value > 0) {
-        //     this.pinNamedMap['OUT2'].setValue(
-        //         this.pinNamedMap['VS'].value * (this.speedA / 5),
-        //         this.pinNamedMap['OUT2']
-        //     );
-        // } else if (this.pinNamedMap['IN2'].value > 0) {
-        //     this.pinNamedMap['OUT1'].setValue(
-        //         this.pinNamedMap['VS'].value * (this.speedA / 5),
-        //         this.pinNamedMap['OUT1']
-        //     );
-        // } else {
-        //     this.pinNamedMap['OUT1'].setValue(
-        //         0,
-        //         this.pinNamedMap['OUT1']
-        //     );
-        // }
-
-        // if (this.pinNamedMap['IN3'].value > 0) {
-        //     this.pinNamedMap['OUT4'].setValue(
-        //         this.pinNamedMap['VS'].value * (this.speedB / 5),
-        //         this.pinNamedMap['OUT4']
-        //     );
-        // } else if (this.pinNamedMap['IN4'].value > 0) {
-        //     this.pinNamedMap['OUT3'].setValue(
-        //         this.pinNamedMap['VS'].value * (this.speedB / 5),
-        //         this.pinNamedMap['OUT3']
-        //     );
-        // } else {
-        //     this.pinNamedMap['OUT3'].setValue(
-        //         0,
-        //         this.pinNamedMap['OUT3']
-        //     );
-        // }
     }
     /**
      * Function provides component details
@@ -233,24 +206,7 @@ export class L293D extends CircuitElement {
      * Called on Start Simulation
      */
     initSimulation(): void {
-        // const arduinoEnd: any = this.getArduino(this.pinNamedMap['EN2']);
-        // if (arduinoEnd) {
-        //     const arduino = arduinoEnd.parent;
-        //     (arduino as ArduinoUno).addPWM(arduinoEnd, (v, p) => {
-        //         this.speedA = v / 100;
-        //         this.update();
-        //     });
-        // }
 
-        // const arduinoEnd1: any = this.getArduino(this.pinNamedMap['EN1']);
-        // if (arduinoEnd1) {
-        //     const arduino = arduinoEnd1.parent;
-        //     (arduino as ArduinoUno).addPWM(arduinoEnd1, (v, p) => {
-        //         this.speedB = v;
-        //         this.update();
-        //     });
-        // }
-        // Check for enable pin value
         if (this.pinNamedMap['EN2'].value > 0) {
             // init 2nd side
             this.enable2 = true;
@@ -281,9 +237,6 @@ export class L293D extends CircuitElement {
                 }
             }
         }
-
-        // console.log(this.enable2, ' - ', this.enable1)
-        // console.log(this.ground2, ' - ', this.ground1)
 
         // run simulation
         this.update();
