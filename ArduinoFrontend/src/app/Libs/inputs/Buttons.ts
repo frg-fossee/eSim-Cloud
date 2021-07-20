@@ -82,34 +82,56 @@ export class PushButton extends CircuitElement {
     let by = -1;
     // create mousedown for the button
     this.elements[9].mousedown(() => {
-      let val = this.pinNamedMap['Terminal 1a'].value;
-      if (val > 0) {
-
-        // check if pull up
-        if (this.terminalParent['terminal1a'].pullUpEnabled || this.terminalParent['terminal2a'].pullUpEnabled) {
-          console.log('run pull')
+      let val = -1;
+      console.log('11')
+      const pullUp = this.terminalParent['terminal1a'].pullUpEnabled || this.terminalParent['terminal1b'].pullUpEnabled
+        || this.terminalParent['terminal2a'].pullUpEnabled || this.terminalParent['terminal2b'].pullUpEnabled;
+      if (this.pinNamedMap['Terminal 1a'].value > 0) {
+        val = this.pinNamedMap['Terminal 1a'].value;
+        // TODO: run for 1a
+        if (pullUp) {
           val = 0;
         }
-
         by = 0;
         iniValue = this.pinNamedMap['Terminal 2a'].value;
+        // set value to other pins
         this.pinNamedMap['Terminal 2a'].setValue(val, null);
         this.pinNamedMap['Terminal 2b'].setValue(val, null);
-      } else {
-
-        val = this.pinNamedMap['Terminal 2a'].value;
-
-        // check if pull up
-        if (this.terminalParent['terminal2a'].pullUpEnabled || this.terminalParent['terminal1a'].pullUpEnabled) {
-          console.log('run pull')
+      } else if (this.pinNamedMap['Terminal 1b'].value > 0) {
+        val = this.pinNamedMap['Terminal 1b'].value;
+        // TODO: run for 1b
+        if (pullUp) {
           val = 0;
         }
-
+        by = 0;
+        iniValue = this.pinNamedMap['Terminal 2a'].value;
+        // set value to other pins
+        this.pinNamedMap['Terminal 2a'].setValue(val, null);
+        this.pinNamedMap['Terminal 2b'].setValue(val, null);
+      } else if (this.pinNamedMap['Terminal 2a'].value > 0) {
+        val = this.pinNamedMap['Terminal 2a'].value;
+        // TODO: run for 2a
+        if (pullUp) {
+          val = 0;
+        }
         by = 1;
         iniValue = this.pinNamedMap['Terminal 1a'].value;
+        // set value to other pins
+        this.pinNamedMap['Terminal 1a'].setValue(val, null);
+        this.pinNamedMap['Terminal 1b'].setValue(val, null);
+      } else if (this.pinNamedMap['Terminal 2b'].value > 0) {
+        val = this.pinNamedMap['Terminal 2b'].value;
+        // TODO: run for 2b
+        if (pullUp) {
+          val = 0;
+        }
+        by = 1;
+        iniValue = this.pinNamedMap['Terminal 1a'].value;
+        // set value to other pins
         this.pinNamedMap['Terminal 1a'].setValue(val, null);
         this.pinNamedMap['Terminal 1b'].setValue(val, null);
       }
+
       // console.log(val);
     });
     // Set mouseup listener for the button
