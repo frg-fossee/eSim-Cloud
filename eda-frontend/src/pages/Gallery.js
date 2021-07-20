@@ -15,7 +15,15 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
-import GallerySchSample from '../utils/GallerySchSample'
+// import GallerySchSample from '../utils/GallerySchSample'
+import DeleteIcon from '@material-ui/icons/Delete'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchRole, deleteGallerySch} from '../redux/actions/index'
+
+
+
+ 
+import api from '../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   mainHead: {
@@ -47,11 +55,34 @@ var images = require.context('../static/gallery', true)
 function SchematicCard ({ sch }) {
   const classes = useStyles()
 
+  const [GallerySchSample, setGallerySchSample] = React.useState([])
+  const [loading, setLoading] = React.useState(true)
   useEffect(() => {
-    document.title = 'Gallery - eSim '
-  })
+    
+    const config = {
+        headers: {
+        'Content-Type': 'application/json'
+        }
+    }
+    api.get('save/gallery', config)
+    .then((res) => {
+        console.log(res.data)
+        setGallerySchSample(res.data)
+        setLoading(false)
+    })
+    
+    console.log(GallerySchSample)
+  }, [loading])
+  const auth = useSelector(state => state.authReducer)
+  const dispatch = useDispatch()
+  // For Fetching Saved Schematics
+  useEffect(() => {
+    dispatch(fetchRole())
+  }, [dispatch])
 
-  const imageName = images('./' + sch.media)
+  const handleDeleteGallery = () => {
+    dispatch(deleteGallerySch(sch.save_id))
+  }
 
   return (
     <>
@@ -59,7 +90,7 @@ function SchematicCard ({ sch }) {
         <CardActionArea>
           <CardMedia
             className={classes.media}
-            image={imageName}
+            image={sch.media}
             title={sch.name}
           />
           <CardContent>
@@ -82,6 +113,18 @@ function SchematicCard ({ sch }) {
           >
             Launch in Editor
           </Button>
+          {/* <Tooltip title="Delete" placement="bottom" arrow> */}
+            {console.log(auth.roles)}
+           {auth.roles && auth.roles.is_type_staff && 
+            <Button>
+            <DeleteIcon
+              color="secondary"
+              fontSize="small"
+              // style={{ marginLeft: 'auto' }}
+              onClick={handleDeleteGallery}
+            />
+            </Button>}
+          {/* </Tooltip> */}
         </CardActions>
       </Card>
     </>
@@ -94,6 +137,9 @@ SchematicCard.propTypes = {
 // Card displaying eSim gallery page header.
 function MainCard () {
   const classes = useStyles()
+  useEffect(() => {
+    document.title = 'Gallery - eSim '
+  })
 
   return (
     <Card className={classes.mainHead}>
@@ -111,7 +157,27 @@ function MainCard () {
 
 export default function Gallery () {
   const classes = useStyles()
-
+  const [GallerySchSample, setGallerySchSample] = React.useState([])
+  const [loading, setLoading] = React.useState(true)
+  useEffect(() => {
+    document.title = 'Gallery - eSim '
+    
+    const config = {
+        headers: {
+        'Content-Type': 'application/json'
+        }
+    }
+    api.get('save/gallery', config)
+    .then((res) => {
+        console.log(res.data)
+        setGallerySchSample(res.data)
+        setLoading(false)
+    })
+    
+    console.log(GallerySchSample)
+    // GallerySchSample = gal
+  }, [loading])
+  
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -130,8 +196,10 @@ export default function Gallery () {
           </Grid>
 
           {/* Listing Gallery Schematics */}
+          {console.log(GallerySchSample)}
           {GallerySchSample.map(
             (sch) => {
+                {console.log('kkc', sch)}
               return (
                 <Grid item xs={12} sm={6} lg={4} key={sch.save_id}>
                   <SchematicCard sch={sch} />

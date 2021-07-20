@@ -14,7 +14,7 @@ import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import ComponentProperties from '../components/SchematicEditor/ComponentProperties'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { fetchSchematic, loadGallery } from '../redux/actions/index'
+import { fetchSchematic, fetchGallerySchematic } from '../redux/actions/index'
 import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +55,7 @@ export default function SchematiEditor (props) {
       console.log(cktid)
       if (cktid.substr(0, 7) === 'gallery') {
         // Loading Gallery schemaic.
-        dispatch(loadGallery(cktid.substr(7, cktid.length)))
+        dispatch(fetchGallerySchematic(cktid))
       } else {
         // Loading User on-cloud saved schemaic.
         dispatch(fetchSchematic(cktid, version, branch))

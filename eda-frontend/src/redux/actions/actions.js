@@ -55,6 +55,7 @@ export const SET_SCH_XML_DATA = 'SET_SCH_XML_DATA'
 export const SET_SCH_SHARED = 'SET_SCH_SHARED'
 export const CLEAR_DETAILS = 'CLEAR_DETAILS'
 export const LOAD_GALLERY = 'LOAD_GALLERY'
+export const LOAD_GALLERY_SCH = 'LOAD_GALLERY_SCH'
 
 // Action for fetching on-cloud saved schematics for authenticated user to display in dashboard
 export const FETCH_SCHEMATICS = 'FETCH_SCHEMATICS'

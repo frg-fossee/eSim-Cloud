@@ -2,12 +2,13 @@
 import * as actions from './actions'
 import queryString from 'query-string'
 import api from '../../utils/Api'
-import GallerySchSample from '../../utils/GallerySchSample'
+// import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
 import { setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'
 import randomstring from 'randomstring'
 import { fetchProject } from './projectActions'
+import { v4 as uuidv4 } from 'uuid';
 
 export const setSchTitle = (title) => (dispatch) => {
   dispatch({
@@ -140,6 +141,80 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
   }
 }
 
+// Api call to save the current schematic to gallery [role required: Staff]
+export const saveToGallery = (title, description, xml, base64) => (dispatch, getState) => {
+  
+  const token = getState().authReducer.token
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  }
+  console.log(token)
+  console.log(config)
+
+  var libraries = []
+  getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
+  var body = {
+    data_dump: xml,
+    media: base64,
+    name: title,
+    description: description,
+    esim_libraries: JSON.stringify([...libraries]),
+    save_id: 'gallery' + uuidv4()
+  }
+  console.log('successfully saved to gallery')
+  console.log(body)
+  
+  api
+  .post('save/gallery/' + body.save_id, queryString.stringify(body), config)
+  .then(
+    (res) => {
+      console.log(res)
+    }
+  )
+  .catch((err) => { console.error(err) })
+
+
+}
+
+// Api call to delete the schematic in gallery [role required: Staff]
+export const deleteGallerySch = (Id) => (dispatch, getState) => {
+  
+    const token = getState().authReducer.token
+  
+    // add headers
+    const config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+  
+    // If token available add to headers
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    console.log("deleting ", Id)
+    api
+    .delete('save/gallery/' + Id, config)
+    .then(
+      (res) => {
+        console.log(res)
+      }
+    )
+    .catch((err) => { console.error(err) })
+  
+  
+  }
+
+
 // Action for Loading on-cloud saved schematics
 export const fetchSchematic = (saveId, version, branch) => (dispatch, getState) => {
   // Get token from localstorage
@@ -181,6 +256,70 @@ export const fetchSchematic = (saveId, version, branch) => (dispatch, getState) 
     .catch((err) => { console.error(err) })
 }
 
+// Action for Loading Gallery schematics
+export const fetchGallerySchematic = (Id) => (dispatch, getState) => {
+  
+      
+    const config = {
+        headers: {
+        'Content-Type': 'application/json'
+        }
+    }
+
+    api.get('save/gallery/' + Id, config)
+    .then((res) => {
+        console.log(res.data)
+        var data = res.data
+        dispatch({
+          type: actions.LOAD_GALLERY_SCH,
+          payload: data
+        })
+        dispatch(setTitle('* ' + data.name))
+        dispatch(setSchTitle(data.name))
+        dispatch(setSchDescription(data.description))
+        dispatch(setSchXmlData(data.data_dump))
+        
+        renderGalleryXML(data.data_dump)
+        if (data.esim_libraries.length > 0) {
+          getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
+          data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id)))
+        }
+        
+    })
+    .catch((err) => { console.error(err) })
+  }
+
+// Action for Loading Gallery schematics
+export const loadGallery = () => (dispatch, getState) => {
+    
+  const config = {
+      headers: {
+      'Content-Type': 'application/json'
+      }
+  }
+  api.get('save/gallery', config)
+  .then((res) => {
+      console.log(res.data)
+      var data = res.data
+      dispatch({
+        type: actions.LOAD_GALLERY,
+        payload: data
+      })
+      dispatch(setTitle('* ' + data.name))
+      dispatch(setSchTitle(data.name))
+      dispatch(setSchDescription(data.description))
+      dispatch(setSchXmlData(data.data_dump))
+      
+      renderGalleryXML(data.data_dump)
+      if (data.esim_libraries.length > 0) {
+        getState().schematicEditorReducer.libraries.forEach(e => dispatch(removeLibrary(e.id)))
+        data.esim_libraries.forEach(e => dispatch(fetchLibrary(e.id)))
+      }
+      
+  })
+  .catch((err) => { console.error(err) })
+}
+
 export const setSchShared = (share) => (dispatch, getState) => {
   // Get token from localstorage
   const token = getState().authReducer.token
@@ -220,21 +359,6 @@ export const setSchShared = (share) => (dispatch, getState) => {
     .catch((err) => {
       console.error(err)
     })
-}
-
-// Action for Loading Gallery schematics
-export const loadGallery = (Id) => (dispatch, getState) => {
-  var data = GallerySchSample[Id]
-
-  dispatch({
-    type: actions.LOAD_GALLERY,
-    payload: data
-  })
-  dispatch(setTitle('* ' + data.name))
-  dispatch(setSchTitle(data.name))
-  dispatch(setSchDescription(data.description))
-  dispatch(setSchXmlData(data.data_dump))
-  renderGalleryXML(data.data_dump)
 }
 
 // Action for Loading local exported schematics

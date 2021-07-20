@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
-import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
+import { IconButton, Tooltip, Snackbar, Button } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
@@ -26,11 +26,13 @@ import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import { Link as RouterLink } from 'react-router-dom'
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate';
+import { fetchRole } from '../../redux/actions/authActions'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
+import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
 import { RotateLeft } from '@material-ui/icons'
 import CreateProject from '../Project/CreateProject'
 
@@ -98,7 +100,9 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const schSave = useSelector((state) => state.saveSchematicReducer)
 
   const dispatch = useDispatch()
-
+  useEffect(() => {
+    dispatch(fetchRole())
+  }, [dispatch])
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
@@ -302,6 +306,24 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         dispatch(saveSchematic(title, description, xml, res, false, null, handleSave))
       })
       setMessage('Saved Successfully')
+      handleSnacClick()
+    }
+  }
+
+  // Handle Save to Gallery
+  const handleGalSave = () => {
+    if (auth.isAuthenticated !== true) {
+        setMessage('You are not Logged In')
+        handleSnacClick()
+    } else {
+      var xml = Save()
+      dispatch(setSchXmlData(xml))
+      var title = schSave.title
+      var description = schSave.description
+      exportImage('PNG').then((res) => {
+        dispatch(saveToGallery(title, description, xml, res))
+      })
+      setMessage('Saved To Gallery Successfully')
       handleSnacClick()
     }
   }
@@ -580,6 +602,15 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
       <CreateProject/>
+      { auth.roles && auth.roles.is_type_staff &&
+        <Tooltip title="Add to Gallery">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
+        <AddPhotoAlternateIcon fontSize="medium" />
+        </IconButton>
+        </Tooltip>
+      }
+      
+
 
     </>
   )
