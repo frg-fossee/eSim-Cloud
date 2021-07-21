@@ -52,7 +52,10 @@ class StateSaveSerializer(serializers.ModelSerializer):
 
     def get_lti_id(self, obj):
         ltis = obj.model_schematic.all()
-        return ltis[0].id
+        if ltis.exists():
+            return ltis[0].id
+        else: 
+            return None
         
 
 
@@ -78,4 +81,7 @@ class SaveListSerializer(serializers.ModelSerializer):
 
     def get_lti_id(self, obj):
         ltis = obj.model_schematic.all()
-        return ltis[0].id
+        if ltis.exists():
+            return ltis[0].id
+        else: 
+            return None

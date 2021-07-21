@@ -737,7 +737,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
         </Menu>
       </>}
 
-      {ltiId && ltiSimHistory && <div><FormControl size='small' style={{ marginLeft: '1%', paddingBottom: '1%' }} className={classes.formControl}>
+      {(ltiId && ltiUserId && ltiNonce) && ltiSimHistory && <div><FormControl size='small' style={{ marginLeft: '1%', paddingBottom: '1%' }} className={classes.formControl}>
         <InputLabel htmlFor="outlined-age-native-simple">See simulations</InputLabel>
         <Select
           labelId="demo-simple-select-placeholder-label-label"

@@ -156,7 +156,7 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch, consKey = null }) {
+export default function SchematicCard ({ sch }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -164,15 +164,6 @@ export default function SchematicCard ({ sch, consKey = null }) {
     dispatch(fetchSchematics())
   }, [dispatch])
 
-  useEffect(() => {
-    setLTIDetails({ ...ltiDetails, consumerKey: consKey })
-    // eslint-disable-next-line
-  }, [])
-  // To handle LTI details
-  const [ltiDetails, setLTIDetails] = React.useState({
-    consumerKey: ''
-  })
-  const { consumerKey } = ltiDetails
 
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
@@ -200,7 +191,7 @@ export default function SchematicCard ({ sch, consKey = null }) {
         <ButtonBase
           target="_blank"
           component={RouterLink}
-          to={consumerKey ? `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}&consumer_key=${consumerKey}` : `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`}
+          to={sch.lti_id ? `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}&lti_id=${sch.lti_id}` : `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`}
           // to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
           style={{ width: '100%' }}
         >
@@ -229,21 +220,13 @@ export default function SchematicCard ({ sch, consKey = null }) {
         <CardActions>
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
-          {/* <Button
-            target="_blank"
-            component={RouterLink}
-            to={consumerKey ? `/editor?id=${sch.save_id}&consumer_key=${consumerKey}` : `/editor?id=${sch.save_id}`}
-            size="small"
-            color="primary"
-          >
-            Launch in Editor
-          </Button> */}
+          {sch.lti_id && <Chip variant='outlined' clickable={false} label='LTI' />}
           {/* Display create LTI app option  */}
           <Tooltip title='Create LTI app' placement="bottom" arrow>
             <Button
               component={RouterLink}
               color='secondary'
-              style={{ marginLeft: 'auto' }}
+              // style={{ marginLeft: 'auto' }}
               to={`/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`} >
               <ScreenShareRoundedIcon />
             </Button>
