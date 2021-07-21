@@ -84,8 +84,8 @@ const readKicadSchematic = (text) => {
         }
         i += 2 // skips identifier line
         splt = textSplit[i].split(' ')
-        component.x = parseInt(splt[1])
-        component.y = parseInt(splt[2])
+        component.x = parseInt(splt[1]) / defScale
+        component.y = parseInt(splt[2]) / defScale
         i++
         // skips F command lines
         do {
@@ -121,10 +121,10 @@ const readKicadSchematic = (text) => {
           wire = {}
           let posWire = textSplit[i].split(' ')
           posWire = posWire.filter(e => e.length !== 0)
-          wire.startx = parseInt(posWire[0].split('\t')[1])
-          wire.starty = parseInt(posWire[1])
-          wire.endx = parseInt(posWire[2])
-          wire.endy = parseInt(posWire[3])
+          wire.startx = parseInt(posWire[0].split('\t')[1]) / defScale
+          wire.starty = parseInt(posWire[1]) / defScale
+          wire.endx = parseInt(posWire[2]) / defScale
+          wire.endy = parseInt(posWire[3]) / defScale
           instructions.wires.push(wire)
         }
         break
@@ -132,8 +132,8 @@ const readKicadSchematic = (text) => {
         connection = {}
         var posConn = splt
         posConn = posConn.filter(e => e.length !== 0)
-        connection.x = parseInt(posConn[2])
-        connection.y = parseInt(posConn[3])
+        connection.x = parseInt(posConn[2]) / defScale
+        connection.y = parseInt(posConn[3]) / defScale
         instructions.connections.push(connection)
         break
       default:
@@ -158,8 +158,8 @@ const loadComponents = async (components, wires, connections) => {
   const insertComponent = async (comp, compData) => {
     model.beginUpdate()
     try {
-      var compCell = await getSvgMetadata(graph, parent, null, null, comp.x / defScale,
-        comp.y / defScale, compData, comp.rotation, true)
+      var compCell = await getSvgMetadata(graph, parent, null, null, comp.x,
+        comp.y, compData, comp.rotation, true)
       graph.refresh()
     } catch (e) { console.log(e) }
     model.endUpdate()
@@ -208,13 +208,13 @@ const joinComponents = (components, wires, connections) => {
       // console.log(wire.startTerminal, wire.endTerminal)
       var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
       if (wire.points) {
-        v.geometry.points = wire.points.map(p => { return new mxPoint(p.x / defScale, p.y / defScale) })
+        v.geometry.points = wire.points.map(p => { return new mxPoint(p.x, p.y) })
       }
       if (source) {
-        v.geometry.sourcePoint = new mxPoint(connection.x / defScale, connection.y / defScale)
+        v.geometry.sourcePoint = new mxPoint(connection.x, connection.y)
       }
       if (target) {
-        v.geometry.targetPoint = new mxPoint(connection.x / defScale, connection.y / defScale)
+        v.geometry.targetPoint = new mxPoint(connection.x, connection.y)
       }
       model.endUpdate()
     }
@@ -296,15 +296,15 @@ const joinComponents = (components, wires, connections) => {
     for (const w in wires) {
       let terminal
       if (!wires[w].startTerminal) {
-        if (checkInBound(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])) {
+        if (checkInBound(wires[w].startx, wires[w].starty, componentCells[c])) {
           // console.log('S', wires[w].startx, wires[w].starty)
-          terminal = findClosestTerminal(wires[w].startx / defScale, wires[w].starty / defScale, componentCells[c])
+          terminal = findClosestTerminal(wires[w].startx, wires[w].starty, componentCells[c])
           wires[w].startTerminal = terminal
         }
       } if (!wires[w].endTerminal) {
-        if (checkInBound(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])) {
+        if (checkInBound(wires[w].endx, wires[w].endy, componentCells[c])) {
           // console.log('E', wires[w].endx, wires[w].endy)
-          terminal = findClosestTerminal(wires[w].endx / defScale, wires[w].endy / defScale, componentCells[c])
+          terminal = findClosestTerminal(wires[w].endx, wires[w].endy, componentCells[c])
           wires[w].endTerminal = terminal
         }
       }
@@ -316,7 +316,7 @@ const joinComponents = (components, wires, connections) => {
     if (wire.startTerminal && wire.endTerminal) {
       var v = graph.insertEdge(defaultParent, null, null, wire.startTerminal, wire.endTerminal)
       if (wire.points) {
-        v.geometry.points = wire.points.map(p => { return new mxPoint(p.x / defScale, p.y / defScale) })
+        v.geometry.points = wire.points.map(p => { return new mxPoint(p.x, p.y) })
       }
       wire.mxCell = v
     }
