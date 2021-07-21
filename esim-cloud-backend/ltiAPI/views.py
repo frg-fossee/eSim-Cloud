@@ -89,7 +89,8 @@ class LTIBuildApp(APIView):
                 saved_state.shared = True
                 saved_state.save()
                 host = request.get_host()
-                url = "http://" + host + "/api/lti/auth/" + str(saved_state.save_id) + "/"
+                url = "http://" + host + "/api/lti/auth/" + \
+                    str(saved_state.save_id) + "/"
                 response_data = {
                     "consumer_key": serialized.data.get('consumer_key'),
                     "secret_key": serialized.data.get('secret_key'),
@@ -140,7 +141,8 @@ class LTIUpdateAPP(APIView):
                 saved_state.shared = True
                 saved_state.save(update_fields=['shared', ])
                 host = request.get_host()
-                url = "http://" + host + "/api/lti/auth/" + str(saved_state.save_id) + "/"
+                url = "http://" + host + "/api/lti/auth/" + \
+                    str(saved_state.save_id) + "/"
                 response_data = {
                     "consumer_key": serialized.data.get('consumer_key'),
                     "secret_key": serialized.data.get('secret_key'),

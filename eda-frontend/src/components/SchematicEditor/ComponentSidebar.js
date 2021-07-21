@@ -54,7 +54,7 @@ const searchOptions = {
 
 const searchOptionsList = ['NAME', 'KEYWORD', 'DESCRIPTION', 'COMPONENT_LIBRARY', 'PREFIX']
 
-export default function ComponentSidebar({ compRef, ltiSimResult, setLtiSimResult }) {
+export default function ComponentSidebar ({ compRef, ltiSimResult, setLtiSimResult }) {
   const classes = useStyles()
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)

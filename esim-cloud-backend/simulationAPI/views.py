@@ -43,7 +43,8 @@ def saveNetlistDB(task_id, filepath, request):
             save_id = None
         else:
             save_id = StateSave.objects.get(
-                save_id=request.data['save_id'], version=request.data['version'],
+                save_id=request.data['save_id'], 
+                version=request.data['version'],
                 branch=request.data['branch']).id
     else:
         save_id = None
@@ -145,7 +146,7 @@ class SimulationResults(APIView):
     permission_classes = (IsAuthenticated, )
 
     def get(self, request, save_id, sim, version, branch):
-        if sim == None:
+        if sim is None:
             sims = simulation.objects.filter(
                 owner=self.request.user, schematic__save_id=save_id,
                 schematic__version=version, schematic__branch=branch

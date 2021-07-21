@@ -31,18 +31,17 @@ const useStyles = makeStyles({
 })
 
 const sortOrder = {
-  'Unsorted': 0,
-  'Ascending': 1,
-  'Descending': 2
+  Unsorted: 0,
+  Ascending: 1,
+  Descending: 2
 }
 
-
-export default function SubmissionTable() {
+export default function SubmissionTable () {
   const classes = useStyles()
   const [responseData, setResponseData] = React.useState([])
   const [sortData, setSortData] = React.useState([])
-  const [sortOrderUser, setSortOrderUser] = React.useState(sortOrder['Unsorted'])
-  const [sortOrderTime, setSortOrderTime] = React.useState(sortOrder['Unsorted'])
+  const [sortOrderUser, setSortOrderUser] = React.useState(sortOrder.Unsorted)
+  const [sortOrderTime, setSortOrderTime] = React.useState(sortOrder.Unsorted)
 
   useEffect(() => {
     setSortData(responseData)
@@ -86,13 +85,11 @@ export default function SubmissionTable() {
       temp.sort((a, b) => a.student.username < b.student.username)
       setSortData(temp)
       setSortOrderUser(1)
-    }
-    else if (sortOrderUser === 1) {
+    } else if (sortOrderUser === 1) {
       temp.sort((a, b) => a.student.username > b.student.username)
       setSortData(temp)
       setSortOrderUser(2)
-    }
-    else {
+    } else {
       setSortData(responseData)
       setSortOrderUser(0)
     }
@@ -105,13 +102,11 @@ export default function SubmissionTable() {
       temp.sort((a, b) => a.schematic.save_time - b.schematic.save_time)
       setSortData(temp)
       setSortOrderTime(1)
-    }
-    else if (sortOrderTime === 1) {
+    } else if (sortOrderTime === 1) {
       temp.sort((a, b) => b.schematic.save_time - a.schematic.save_time)
       setSortData(temp)
       setSortOrderTime(2)
-    }
-    else {
+    } else {
       setSortData(responseData)
       setSortOrderTime(0)
     }

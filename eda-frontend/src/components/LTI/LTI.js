@@ -25,8 +25,6 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 import api from '../../utils/Api'
 import './LTI.css'
 
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: 300,
@@ -54,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig() {
+export default function LTIConfig () {
   const classes = useStyles()
 
   const [ltiDetails, setLTIDetails] = React.useState({
@@ -143,7 +141,6 @@ export default function LTIConfig() {
       })
     })
   }, [])
-
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -302,11 +299,11 @@ export default function LTIConfig() {
   }
 
   const handleUrlCopy = () => {
-    var copyText = document.querySelector(".lti-url")
+    var copyText = document.querySelector('.lti-url')
     console.log(copyText)
     copyText.select()
     copyText.setSelectionRange(0, 99999)
-    document.execCommand("copy")
+    document.execCommand('copy')
   }
 
   return (

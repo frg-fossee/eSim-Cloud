@@ -81,7 +81,7 @@ export default function SchematiEditor (props) {
           />
         }
         sidebar={<ComponentSidebar compRef={compRef} ltiSimResult={ltiSimResult}
-        setLtiSimResult={setLtiSimResult}/>}
+          setLtiSimResult={setLtiSimResult}/>}
       />
 
       {/* Grid for drawing and designing circuits */}

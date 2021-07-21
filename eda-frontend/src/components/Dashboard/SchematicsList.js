@@ -242,32 +242,31 @@ export default function SchematicsList ({ ltiDetails = null }) {
             ? <>
               {saves.filter(x => { return x.project_id }).map(
                 (sch) => {
-
-        /* List all schematics saved by user */
-        // {(schematics.length !== 0)
-        //   ? <>
-        //     {schematics.map(
-        //       (sch) => {
-        //         var actual = null
-        //         var flag = null
-        //         ltiDetails.map(
-        //           // eslint-disable-next-line
-        //           (lti) => {
-        //             if (lti.model_schematic === sch.save_id || lti.initial_schematic === sch.save_id) {
-        //               flag = 1
-        //               actual = lti.consumer_key
-        //               // eslint-disable-next-line
-        //               return
-        //             }
-        //           }
-        //         )
-        //         if (flag) {
-        //           return (
-        //             <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-        //               <SchematicCard sch={sch} consKey={actual} />
-        //             </Grid>
-        //           )
-        //         } else {
+                  /* List all schematics saved by user */
+                  // {(schematics.length !== 0)
+                  //   ? <>
+                  //     {schematics.map(
+                  //       (sch) => {
+                  //         var actual = null
+                  //         var flag = null
+                  //         ltiDetails.map(
+                  //           // eslint-disable-next-line
+                  //           (lti) => {
+                  //             if (lti.model_schematic === sch.save_id || lti.initial_schematic === sch.save_id) {
+                  //               flag = 1
+                  //               actual = lti.consumer_key
+                  //               // eslint-disable-next-line
+                  //               return
+                  //             }
+                  //           }
+                  //         )
+                  //         if (flag) {
+                  //           return (
+                  //             <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                  //               <SchematicCard sch={sch} consKey={actual} />
+                  //             </Grid>
+                  //           )
+                  //         } else {
                   return (
                     <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
                       <SchematicCard sch={sch} />
@@ -287,7 +286,7 @@ export default function SchematicsList ({ ltiDetails = null }) {
         </TabPanel>
         <TabPanel style={{ width: '100%' }} value={value} index={2}>
           <Grid item xs={12}>
-              {/* }
+            {/* }
             )}
           </>
           : <Grid item xs={12}> */}

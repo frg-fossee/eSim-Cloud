@@ -2,7 +2,13 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
-import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
+import {
+  IconButton, Tooltip, Snackbar,
+  Select,
+  FormControl,
+  FormControlLabel,
+  InputLabel
+} from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
@@ -28,12 +34,7 @@ import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import Button from '@material-ui/core/Button'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-import {
-  Select,
-  FormControl,
-  FormControlLabel,
-  InputLabel
-} from '@material-ui/core'
+
 import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
 import queryString from 'query-string'
@@ -68,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Notification snackbar to give alert messages
-function SimpleSnackbar({ open, close, message }) {
+function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -103,7 +104,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, setLtiSimResult }) {
+export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, setLtiSimResult }) {
   const classes = useStyles()
   const netfile = useSelector((state) => state.netlistReducer)
   const auth = useSelector((state) => state.authReducer)
@@ -129,7 +130,6 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   const [ltiSimHistory, setLtiSimHistory] = React.useState([])
   const [activeSimResult, setActiveSimResult] = React.useState(null)
 
-
   useEffect(() => {
     if (ltiSimResult && ltiId) {
       api.get(`simulation/history/lti/${ltiId}`).then(res => {
@@ -139,7 +139,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
         })
         setLtiSimHistory(res.data)
       }).catch(err => { console.log(err) })
-      console.log("SIM RESULTS FOUND")
+      console.log('SIM RESULTS FOUND')
       setLtiSimResult(false)
     }
   }, [ltiSimResult])
@@ -317,7 +317,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   }
 
   // Image Export of Schematic Diagram
-  async function exportImage(type) {
+  async function exportImage (type) {
     const svg = document.querySelector('#divGrid > svg').cloneNode(true)
     svg.removeAttribute('style')
     svg.setAttribute('width', gridRef.current.scrollWidth)
@@ -377,7 +377,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   }
 
   // Download JPEG, PNG exported Image
-  function downloadImage(data, type) {
+  function downloadImage (data, type) {
     var evt = new MouseEvent('click', {
       view: window,
       bubbles: false,
@@ -392,7 +392,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   }
 
   // Download SVG image
-  function downloadText(data, options) {
+  function downloadText (data, options) {
     const blob = new Blob(data, options)
     const evt = new MouseEvent('click', {
       view: window,
@@ -527,7 +527,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
 
   // Shortcuts that cant be put in Helper/KeyboardShortcuts.js
   useEffect(() => {
-    function shrtcts(event) {
+    function shrtcts (event) {
       // Save - Ctrl + S
       if (event.ctrlKey && event.keyCode === 83) {
         event.preventDefault()
@@ -768,7 +768,6 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
       {!ltiId && <CreateProject />}
-
 
       <Snackbar
         anchorOrigin={{
