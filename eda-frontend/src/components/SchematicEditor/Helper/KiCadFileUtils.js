@@ -1,4 +1,5 @@
 /* eslint-disable new-cap */
+/* eslint-disable no-unused-vars */
 import store from '../../../redux/store'
 import api from '../../../utils/Api'
 import { getSvgMetadata } from './SvgParser'
@@ -38,6 +39,9 @@ const readKicadSchematic = (text) => {
   // Metadata and description of the schematic
   for (i = 0; i < textSplit.length; i++) {
     var brk = false
+    if (i === 0) {
+      var versionNum = parseInt(textSplit[i].split(' ')[4])
+    }
     var splt = textSplit[i].split(' ')
     switch (splt[0]) {
       case '$Descr':
@@ -69,8 +73,15 @@ const readKicadSchematic = (text) => {
         i += 1
         component = {}
         splt = textSplit[i].split(' ')
-        component.library = splt[1].split(':')[0].trim()
-        component.componentName = splt[1].split(':')[1].trim()
+        if (splt[1].indexOf(':') !== -1) {
+          component.library = splt[1].split(':')[0].trim().toLowerCase()
+          component.componentName = splt[1].split(':')[1].trim().toLowerCase()
+        } else if (splt[1].indexOf('_') !== -1) {
+          component.componentName = splt[1].split('_')[0].toLowerCase()
+          component.library = splt[1].split('_')[1].toLowerCase()
+        } else {
+          component.componentName = splt[1].toLowerCase()
+        }
         i += 2 // skips identifier line
         splt = textSplit[i].split(' ')
         component.x = parseInt(splt[1])
@@ -155,13 +166,33 @@ const loadComponents = async (components, wires, connections) => {
     return compCell
   }
 
+  const findApprComp = (compDataList, key) => {
+    console.log(key)
+    for (let i = 0; i < compDataList.length; i++) {
+      // console.log(compDataList[i].name)
+      if (compDataList[i].name.toLowerCase() === key.toLowerCase()) {
+        console.log(compDataList[i])
+        return compDataList[i]
+      }
+    }
+    return compDataList[0]
+  }
+
   // Load all components
   for (let i = 0; i < components.length; i++) {
     // Get component data
-    var url = `components/?component_library__library_name__icontains=${components[i].library}&name__icontains=${components[i].componentName}`
+    var url
+    if (components[i].componentName && components[i].library) {
+      url = `components/?component_library__library_name__icontains=${components[i].library}&name__icontains=${components[i].componentName}`
+    } else if (!components[i].library) {
+      url = `components/?name__icontains=${components[i].componentName}`
+    }
     var compCell = await api.get(url, config)
       .then((res) => {
-        return insertComponent(components[i], res.data[0])
+        if (res.data) {
+          const compData = findApprComp(res.data, components[i].componentName)
+          return insertComponent(components[i], compData)
+        } else return null
       })
     components[i].mxCell = compCell
   }
@@ -194,6 +225,12 @@ const joinComponents = (components, wires, connections) => {
     for (const c in connections) {
       if (connections[c].x === x && connections[c].y === y) {
         for (let wi = 0; wi < wires.length && wi !== w; wi++) {
+          if (wires[wi].startx === connections[c].x && wires[wi].starty === connections[c].y) {
+            if (wires[wi].mxCell) { return [wires[wi].mxCell, connections[c]] }
+          }
+          if (wires[wi].endx === connections[c].x && wires[wi].endy === connections[c].y) {
+            if (wires[wi].mxCell) { return [wires[wi].mxCell, connections[c]] }
+          }
           if (wires[wi].points) {
             for (const p in wires[wi].points) {
               if (wires[wi].points[p].x === connections[c].x && connections[c].y === wires[wi].points[p].y) {
@@ -252,7 +289,7 @@ const joinComponents = (components, wires, connections) => {
 
   const componentCells = []
   components.forEach(comp => {
-    componentCells.push(comp.mxCell)
+    if (comp.mxCell) { componentCells.push(comp.mxCell) }
   })
 
   for (const c in componentCells) {
@@ -293,22 +330,22 @@ const joinComponents = (components, wires, connections) => {
     return false
   }
 
-  while (unconnectedWirePresent()) {
-    for (const w in wires) {
-      if (!wires[w].startTerminal) {
-        [wires[w].startTerminal, wires[w].connection] = findWire(w, wires[w].startx, wires[w].starty)
-        if (wires[w].endTerminal && wires[w].startTerminal && wires[w].connection) {
-          wires[w].mxCell = drawConnection(wires[w], true, false, wires[w].connection)
-        }
+  // while (unconnectedWirePresent()) {
+  for (const w in wires) {
+    if (!wires[w].startTerminal) {
+      [wires[w].startTerminal, wires[w].connection] = findWire(w, wires[w].startx, wires[w].starty)
+      if (wires[w].endTerminal && wires[w].startTerminal && wires[w].connection) {
+        wires[w].mxCell = drawConnection(wires[w], true, false, wires[w].connection)
       }
-      if (!wires[w].endTerminal) {
-        [wires[w].endTerminal, wires[w].connection] = findWire(w, wires[w].endx, wires[w].endy)
-        if (wires[w].endTerminal && wires[w].startTerminal && wires[w].connection) {
-          wires[w].mxCell = drawConnection(wires[w], false, true, wires[w].connection)
-        }
+    }
+    if (!wires[w].endTerminal) {
+      [wires[w].endTerminal, wires[w].connection] = findWire(w, wires[w].endx, wires[w].endy)
+      if (wires[w].endTerminal && wires[w].startTerminal && wires[w].connection) {
+        wires[w].mxCell = drawConnection(wires[w], false, true, wires[w].connection)
       }
     }
   }
+  // }
 }
 
 // Reduces the wires and connections
