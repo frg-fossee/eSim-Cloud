@@ -38,9 +38,13 @@ export class Motor extends CircuitElement {
    * Voltage
    */
   voltage = -1;
-
+  /**
+   * Previous voltage
+   */
   prevVoltage = -1;
-
+  /**
+   * set of Visited nodes
+   */
   visitedNodesv2 = new Set();
 
 
@@ -69,22 +73,28 @@ export class Motor extends CircuitElement {
         this.elements[1].stop();
       } else {
         if (this.rpm && this.voltage !== this.prevVoltage) {
+          // TODO: remove animation
           this.rpm.remove();
           this.rpm = null;
         }
+        // stop animation
         this.elements[1].stop();
         if (v === 0) {
           return;
         }
         if (!this.pwmAttached) {
+          // TODO: create animation using v if pwm is not attached
           if (this.rpm) {
+            // TODO: remove animation
             this.rpm.remove();
             this.rpm = null;
           }
           this.setAnimation(v, 'AntiClockwise');
         } else {
+          // TODO: create animation using voltage if pwm is attached
           if (this.voltage !== this.prevVoltage) {
             this.setAnimation(this.voltage, 'AntiClockwise');
+            // update previous voltage variable
             this.prevVoltage = this.voltage;
           }
         }
@@ -101,27 +111,34 @@ export class Motor extends CircuitElement {
         this.elements[1].stop();
       } else {
         if (this.rpm && this.voltage !== this.prevVoltage) {
+          // TODO: remove animation
           this.rpm.remove();
           this.rpm = null;
         }
+        // stop animation
         this.elements[1].stop();
         if (v === 0) {
           return;
         }
         if (!this.pwmAttached) {
+          // TODO: create animation using v if pwm is not attached
           if (this.rpm) {
+            // TODO: remove animation
             this.rpm.remove();
             this.rpm = null;
           }
           this.setAnimation(v, 'Clockwise');
         } else {
+          // TODO: create animation using voltage if pwm is attached
           if (this.voltage <= 0 && this.rpm) {
             this.rpm.remove();
             this.rpm = null;
+            // update previous voltage variable
             this.prevVoltage = this.voltage;
           }
           if (this.voltage !== this.prevVoltage && this.voltage <= 6) {
             this.setAnimation(this.voltage, 'Clockwise');
+            // update previous voltage variable
             this.prevVoltage = this.voltage;
           }
         }
@@ -183,18 +200,23 @@ export class Motor extends CircuitElement {
       y: ok.y + this.ty
     });
 
+    // determine recursively if positive pin is connected to L293D driver
     const posPin = this.getRecArduinov2(this.nodes[1], 'Positive');
+    // determine recursively if negative pin is connected to L293D driver
     const negPin = this.getRecArduinov2(this.nodes[0], 'Negative');
 
     // Arduino pins that support PWM
     const pwmPins = [3, 5, 6, 9, 10, 11];
 
+    // if negPin or posPin are connected to L293D
     if (negPin || posPin) {
+
       let inArduino1;
       let inArduino2;
 
       // Clear visitedNodesv2 set
       BreadBoard.visitedNodesv2.clear();
+      // determine if OUT pins are connected to Arduino or not to positive
       if (posPin.label === 'OUT3') {
         inArduino1 = BreadBoard.getRecArduinov2(posPin.parent.nodes[6], 'IN3');
       } else if (posPin.label === 'OUT4') {
@@ -207,6 +229,7 @@ export class Motor extends CircuitElement {
 
       // Clear visitedNodesv2 set
       BreadBoard.visitedNodesv2.clear();
+      // determine if OUT pins are connected to Arduino or not to negative
       if (negPin.label === 'OUT3') {
         inArduino2 = BreadBoard.getRecArduinov2(negPin.parent.nodes[6], 'IN3');
       } else if (negPin.label === 'OUT4') {
@@ -231,10 +254,11 @@ export class Motor extends CircuitElement {
           this.addPwmArduino(inArduino2.parent, inArduino2);
         }
       }
+      // return to stop the function here
       return;
     }
     // Prep PWM
-    // BreadBoard.searchElementType = 'Motor'
+
     const arduinoEnd: any = BreadBoard.getRecArduinov2(this.nodes[1], 'Positive');
     const arduinoEndNegative: any = BreadBoard.getRecArduinov2(this.nodes[0], 'Negative');
 
@@ -294,21 +318,22 @@ export class Motor extends CircuitElement {
     this.pwmAttached = false;
     this.voltage = -1;
     this.prevVoltage = -1;
+    this.visitedNodesv2.clear();
   }
 
   /**
-   * Returns node connected to arduino
+   * Returns node connected to L293D
    * @param node node to start search on
    * @param startedOn label of node search started on
-   * @returns Arduino connected Node
+   * @returns L293D connected Node
    */
   getRecArduinov2(node: Point, startedOn: string) {
     try {
       if (node.connectedTo.start.parent.keyName === 'L293D') {
-        // TODO: Return if arduino is connected to start node
+        // TODO: Return if L293D is connected to start node
         return node.connectedTo.start;
       } else if (node.connectedTo.end.parent.keyName === 'L293D') {
-        // TODO: Return if arduino is connected to end node
+        // TODO: Return if L293D is connected to end node
         return node.connectedTo.end;
       } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
         // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
@@ -342,7 +367,7 @@ export class Motor extends CircuitElement {
               && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid) && node.connectedTo.end.parent.nodes[e].isConnected()) {
               // add gid in visited nodes
               this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid);
-              // call back Arduino Recursive Fn
+              // call back L293D Recursive Fn
               return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e], startedOn);
             }
           }
@@ -355,7 +380,7 @@ export class Motor extends CircuitElement {
               && node.connectedTo.start.parent.nodes[e].isConnected()) {
               // add gid in visited nodes
               this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid);
-              // call back Arduino Recursive Fn
+              // call back L293D Recursive Fn
               return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e], startedOn);
             }
           }

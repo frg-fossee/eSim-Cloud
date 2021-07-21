@@ -272,18 +272,25 @@ export class ArduinoUno extends CircuitElement {
 
     // Handle Input Pull Up on portB pins
     for (let i = 0; i <= 5; ++i) {
+      // check if pin state is inputPullUp
       if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
+        // set pullUpEnabled boolean to true
         this.pinNameMap[`D${i + 8}`].pullUpEnabled = true;
+        // set pin value to 1 by default
         this.runner.portB.setPin(i, 1);
       }
     }
     // Handle Input Pull Up on portD pins
     for (let i = 2; i <= 7; ++i) {
+      // check if pin state is inputPullUp
       if (this.runner.portD.pinState(i) === AVR8.PinState.InputPullUp) {
+        // set pullUpEnabled boolean to true
         this.pinNameMap[`D${i}`].pullUpEnabled = true;
+        // set pin value to 1 by default
         this.runner.portD.setPin(i, 1);
       }
     }
+
   }
   /**
    * Remove arduino runner on stop simulation.
