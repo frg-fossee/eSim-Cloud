@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 import * as actions from './actions'
 import api from '../../utils/Api'
-// import GallerySchSample from '../../utils/GallerySchSample'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
 import { setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'

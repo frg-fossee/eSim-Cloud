@@ -36,14 +36,6 @@ export default function (state = initialState, action) {
       }
     }
 
-    case actions.LOAD_GALLERY_SCH: {
-      return {
-        ...state,
-        isSaved: null,
-        isShared: null,
-        details: action.payload
-      }
-    }
 
     case actions.SET_SCH_TITLE: {
       return {

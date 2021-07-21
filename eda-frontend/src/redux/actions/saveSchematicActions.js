@@ -3,7 +3,7 @@ import * as actions from './actions'
 import queryString from 'query-string'
 import api from '../../utils/Api'
 import { renderGalleryXML } from '../../components/SchematicEditor/Helper/ToolbarTools'
-import { setTitle } from './index'
+import { fetchGallery, setTitle } from './index'
 import { fetchLibrary, removeLibrary } from './schematicEditorActions'
 import randomstring from 'randomstring'
 import { fetchProject } from './projectActions'
@@ -234,10 +234,6 @@ export const fetchGallerySchematic = (Id) => (dispatch, getState) => {
     .then((res) => {
       console.log(res.data)
       const data = res.data
-      dispatch({
-        type: actions.LOAD_GALLERY_SCH,
-        payload: data
-      })
       dispatch(setTitle('* ' + data.name))
       dispatch(setSchTitle(data.name))
       dispatch(setSchDescription(data.description))

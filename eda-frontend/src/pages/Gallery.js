@@ -146,7 +146,7 @@ function MainCard () {
 
 export default function Gallery () {
   const classes = useStyles()
-  const GallerySchSample = useSelector(state => state.galleryReducer.schematics)
+  const gallerySchSample = useSelector(state => state.galleryReducer.schematics)
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(fetchGallery())
@@ -171,8 +171,8 @@ export default function Gallery () {
           </Grid>
 
           {/* Listing Gallery Schematics */}
-          {console.log(GallerySchSample)}
-          {GallerySchSample.map(
+          {console.log(gallerySchSample)}
+          {gallerySchSample.map(
             (sch) => {
               return (
                 <Grid item xs={12} sm={6} lg={4} key={sch.save_id}>

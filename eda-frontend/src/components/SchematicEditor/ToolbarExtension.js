@@ -38,8 +38,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents } from '../../redux/actions/index'
-import GallerySchSample from '../../utils/GallerySchSample'
+import { fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents, fetchGallery } from '../../redux/actions/index'
 import { blue } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
 import Tabs from '@material-ui/core/Tabs'
@@ -448,7 +447,8 @@ export function OpenSchDialog (props) {
   const schSave = useSelector(state => state.saveSchematicReducer)
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
-
+  const gallerySchSample = useSelector(state => state.galleryReducer.schematics)
+  const dispatch = useDispatch()
   function getDate (jsonDate) {
     const json = jsonDate
     const date = new Date(json)
@@ -457,7 +457,6 @@ export function OpenSchDialog (props) {
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
-  const dispatch = useDispatch()
 
   return (
     <Dialog
@@ -492,7 +491,7 @@ export function OpenSchDialog (props) {
                     </TableHead>
                     <TableBody>
                       <>
-                        {GallerySchSample.map(
+                        {gallerySchSample.map(
                           (sch) => {
                             return (
                               <TableRow key={sch.save_id}>
@@ -508,7 +507,7 @@ export function OpenSchDialog (props) {
                                   <Button
                                     size="small"
                                     color="primary"
-                                    onClick={() => { dispatch(fetchGallerySchematic(sch.save_id.substr(7, sch.save_id.length))) }}
+                                    onClick={() => { dispatch(fetchGallerySchematic(sch.save_id)) }}
                                     variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
                                   >
                                     Launch
@@ -583,7 +582,7 @@ export function OpenSchDialog (props) {
         <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
           Local
         </Button>
-        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
+        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { dispatch(fetchGallery());setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
         </Button>
         {auth.isAuthenticated !== true
