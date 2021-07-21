@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   List,
   Checkbox,
@@ -1288,4 +1289,9 @@ export default function SimulationProperties ({ ltiSimResult, setLtiSimResult })
       </div>
     </>
   )
+}
+
+SimulationProperties.propTypes = {
+  ltiSimResult: PropTypes.string,
+  setLtiSimResult: PropTypes.string
 }

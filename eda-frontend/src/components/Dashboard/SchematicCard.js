@@ -164,7 +164,6 @@ export default function SchematicCard ({ sch }) {
     dispatch(fetchSchematics())
   }, [dispatch])
 
-
   // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 

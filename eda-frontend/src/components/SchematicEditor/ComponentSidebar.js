@@ -421,5 +421,7 @@ export default function ComponentSidebar ({ compRef, ltiSimResult, setLtiSimResu
 }
 
 ComponentSidebar.propTypes = {
-  compRef: PropTypes.object.isRequired
+  compRef: PropTypes.object.isRequired,
+  ltiSimResult: PropTypes.string,
+  setLtiSimResult: PropTypes.string
 }

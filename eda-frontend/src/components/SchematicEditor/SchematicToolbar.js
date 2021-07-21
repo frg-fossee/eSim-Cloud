@@ -6,7 +6,6 @@ import {
   IconButton, Tooltip, Snackbar,
   Select,
   FormControl,
-  FormControlLabel,
   InputLabel
 } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
@@ -792,5 +791,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
 
 SchematicToolbar.propTypes = {
   mobileClose: PropTypes.func,
-  gridRef: PropTypes.object.isRequired
+  gridRef: PropTypes.object.isRequired,
+  ltiSimResult: PropTypes.string,
+  setLtiSimResult: PropTypes.string
 }
