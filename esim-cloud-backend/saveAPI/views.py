@@ -519,8 +519,16 @@ class GalleryFetchSaveDeleteView(APIView):
 
     @swagger_auto_schema(responses={200: GallerySerializer})
     def post(self, request, save_id):
-        if not (request.user and request.user.is_authenticated and
-                self.request.user.groups.filter(name='Staff').exists()):
+
+        # Checking user roles
+        userRoles = self.request.user.groups.all()
+        staff = False
+        for userRole in userRoles:
+            if (self.request.user and self.request.user.is_authenticated and
+                    userRole.customgroup and
+                    userRole.customgroup.is_type_staff):
+                staff = True
+        if not staff:
             return Response({'error': 'Not the owner'},
                             status=status.HTTP_401_UNAUTHORIZED)
         saved_state = Gallery()
@@ -529,6 +537,7 @@ class GalleryFetchSaveDeleteView(APIView):
             return Response({'error': 'not a valid POST request'},
                             status=status.HTTP_406_NOT_ACCEPTABLE)
 
+        # saves to gallery
         try:
             if 'save_id' in request.data:
                 saved_state.save_id = request.data['save_id']
@@ -560,11 +569,18 @@ class GalleryFetchSaveDeleteView(APIView):
     @swagger_auto_schema(responses={200: GallerySerializer})
     def delete(self, request, save_id):
         try:
-            # verifies: is staff
-            if not (request.user and request.user.is_authenticated and
-                    self.request.user.groups.filter(name='Staff').exists()):
+            # Checking user roles
+            userRoles = self.request.user.groups.all()
+            staff = False
+            for userRole in userRoles:
+                if (self.request.user and self.request.user.is_authenticated
+                    and userRole.customgroup and
+                        userRole.customgroup.is_type_staff):
+                    staff = True
+            if not staff:
                 return Response({'error': 'Not the owner'},
                                 status=status.HTTP_401_UNAUTHORIZED)
+            # Deltes from gallery
             try:
                 saved_state = Gallery.objects.get(
                     save_id=save_id)
