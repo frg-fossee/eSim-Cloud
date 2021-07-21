@@ -7,6 +7,10 @@ from .models import lticonsumer, Submission, ltiSession
 class lticonsumeradmin(admin.ModelAdmin):
     list_display = ['consumer_key', 'secret_key',
                     'model_schematic', 'score', 'initial_schematic']
+    readonly_fields = ['id',]
+    
+    def id(self, obj):
+        return obj.id
 
 
 class SubmissionAdmin(admin.ModelAdmin):
