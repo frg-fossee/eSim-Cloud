@@ -113,7 +113,7 @@ export default function SchematicsList ({ ltiDetails = null }) {
   }, [schematics])
   const onSearch = (e) => {
     setSaves(schematics.filter((o) =>
-    // eslint-disable-next-line
+      // eslint-disable-next-line
       Object.keys(o).some((k) => {
         if ((k === 'name' || k === 'description' || k === 'owner' || k === 'save_time' || k === 'create_time') && String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())) {
           return String(o[k]).toLowerCase().includes(e.target.value.toLowerCase())
@@ -132,19 +132,19 @@ export default function SchematicsList ({ ltiDetails = null }) {
   const sortSaves = (sorting, order) => {
     if (order === 'ascending') {
       if (sorting === 'name') {
-        setSaves(saves.sort((a, b) => a.name > b.name))
+        setSaves(saves.sort((a, b) => (a.name > b.name) ? 1 : -1))
       } else if (sorting === 'created_at') {
-        setSaves(saves.sort((a, b) => a.create_time > b.create_time))
+        setSaves(saves.sort((a, b) => (a.create_time > b.create_time) ? 1 : -1))
       } else if (sorting === 'updated_at') {
-        setSaves(saves.sort((a, b) => a.save_time < b.save_time))
+        setSaves(saves.sort((a, b) => (a.save_time < b.save_time) ? 1 : -1))
       }
     } else {
       if (sorting === 'name') {
-        setSaves(saves.sort((a, b) => a.name < b.name))
+        setSaves(saves.sort((a, b) => (a.name < b.name) ? 1 : -1))
       } else if (sorting === 'created_at') {
-        setSaves(saves.sort((a, b) => a.create_time < b.create_time))
+        setSaves(saves.sort((a, b) => (a.create_time < b.create_time) ? 1 : -1))
       } else if (sorting === 'updated_at') {
-        setSaves(saves.sort((a, b) => a.save_time > b.save_time))
+        setSaves(saves.sort((a, b) => (a.save_time > b.save_time) ? 1 : -1))
       }
     }
   }
