@@ -43,7 +43,7 @@ def saveNetlistDB(task_id, filepath, request):
             save_id = None
         else:
             save_id = StateSave.objects.get(
-                save_id=request.data['save_id'], 
+                save_id=request.data['save_id'],
                 version=request.data['version'],
                 branch=request.data['branch']).id
     else:

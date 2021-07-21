@@ -48,15 +48,16 @@ class StateSaveSerializer(serializers.ModelSerializer):
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time', 'version',
                   'branch', 'is_arduino', 'esim_libraries', 'project_id',
-                  'project_version', 'project_branch', 'is_reported', 'id', 'lti_id')
+                  'project_version', 'project_branch', 'is_reported', 
+                  'id', 'lti_id')
 
     def get_lti_id(self, obj):
         ltis = obj.model_schematic.all()
         if ltis.exists():
             return ltis[0].id
-        else: 
+        else:
             return None
-        
+
 
 
 class SaveListSerializer(serializers.ModelSerializer):
@@ -83,5 +84,5 @@ class SaveListSerializer(serializers.ModelSerializer):
         ltis = obj.model_schematic.all()
         if ltis.exists():
             return ltis[0].id
-        else: 
+        else:
             return None
