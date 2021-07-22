@@ -181,6 +181,11 @@ export default function SchematicCard ({ sch }) {
     win.location.href = '/eda/#/project?save_id=' + sch.save_id + '&version=' + sch.project_version + '&branch=' + sch.project_branch + '&project_id=' + sch.project_id
     win.focus()
   }
+  
+  const clickViewLTI = () => {
+    const win = window.open()
+    win.location.href = `/eda/#/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`
+  }
 
   return (
     <>
@@ -219,9 +224,9 @@ export default function SchematicCard ({ sch }) {
         <CardActions>
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
-          {sch.lti_id && <Chip variant='outlined' clickable={false} label='LTI' />}
+          {sch.lti_id && <Chip variant='outlined' clickable={true} onClick={clickViewLTI} label='LTI' />}
           {/* Display create LTI app option  */}
-          <Tooltip title='Create LTI app' placement="bottom" arrow>
+          {!sch.lti_id && <Tooltip title='Create LTI app' placement="bottom" arrow>
             <Button
               component={RouterLink}
               color='secondary'
@@ -229,7 +234,7 @@ export default function SchematicCard ({ sch }) {
               to={`/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`} >
               <ScreenShareRoundedIcon />
             </Button>
-          </Tooltip>
+          </Tooltip>}
           {/* Display delete option */}
           {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>
             <DeleteIcon
