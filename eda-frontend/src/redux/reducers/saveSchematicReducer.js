@@ -36,7 +36,6 @@ export default function (state = initialState, action) {
       }
     }
 
-
     case actions.SET_SCH_TITLE: {
       return {
         ...state,
