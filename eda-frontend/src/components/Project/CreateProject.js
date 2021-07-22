@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
   Button,
   Toolbar,
@@ -21,9 +21,10 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
 }
   from '@material-ui/core'
+import { Multiselect } from 'multiselect-react-dropdown'
 import CloseIcon from '@material-ui/icons/Close'
 import PostAddIcon from '@material-ui/icons/PostAdd'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
@@ -34,6 +35,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus, createProject, deleteProject, getStatus } from '../../redux/actions'
 import api from '../../utils/Api'
 import ProjectTimeline from './ProjectTimeline'
+import ProjectSimulationParameters from './ProjectSimulationParameters'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -49,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#fff'
   },
   formControl: {
@@ -62,11 +64,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-function CreateProject () {
+function CreateProject() {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -90,9 +92,38 @@ function CreateProject () {
   const [fields, setFields] = useState([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
   const [changed, setChanged] = useState(0)
   const [deleteDialogue, setDeleteDialogue] = useState(false)
+  const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
+    parameter: '',
+    sweepType: 'Linear',
+    start: '',
+    stop: '',
+    step: '',
+    parameter2: '',
+    start2: '',
+    stop2: '',
+    step2: ''
+  })
+  const [transientAnalysisControlLine, setTransientAnalysisControlLine] = useState({
+    start: '',
+    stop: '',
+    step: '',
+    skipInitial: false
+  })
 
+  const [acAnalysisControlLine, setAcAnalysisControlLine] = useState({
+    input: 'dec',
+    start: '',
+    stop: '',
+    pointsBydecade: ''
+  })
+
+  const [tfAnalysisControlLine, setTfAnalysisControlLine] = useState({
+    outputNodes: false,
+    outputVoltageSource: '',
+    inputVoltageSource: ''
+  })
+  const [selectedSimulation, setSelectedSimulation] = useState('')
   useEffect(() => {
-    console.log(project.details?.project_id)
     if (open && project.details?.project_id) {
       dispatch(getStatus(project.details?.project_id))
       setStatus(project.details?.status_name)
@@ -100,6 +131,18 @@ function CreateProject () {
     if (project.details) {
       setDetails({ title: project.details.title, description: project.details.description, active_version: project.details.active_version, active_branch: project.details.active_branch })
       setFields(project.details.fields)
+      if (project.details.dc_sweep) {
+        setDcSweepControlLine(project.details.dc_sweep)
+      }
+      if (project.details.transient_analysis) {
+        setTransientAnalysisControlLine(project.details.transient_analysis)
+      }
+      if (project.details.tf_analysis) {
+        setTfAnalysisControlLine(project.details.tf_analysis)
+      }
+      if (project.details.ac_analysis) {
+        setAcAnalysisControlLine(project.details.ac_analysis)
+      }
     }
     if (!project.details) {
       setDetails({
@@ -224,21 +267,20 @@ function CreateProject () {
     setOpen(!open)
   }
   const createPub = () => {
-    dispatch(createProject(save_id, [details, fields]))
+    dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
   }
   const clickChange = () => {
-    console.log(changed)
     if (changed === 1) {
-      dispatch(createProject(save_id, [details, fields, '']))
+      dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
     } else if (changed === 2) {
       if (status !== project.details.status_name) {
         dispatch(changeStatus(project.details.project_id, status, ''))
       }
     } else if (changed === 3) {
       if (status !== project.details.status_name) {
-        dispatch(createProject(save_id, [details, fields, status]))
+        dispatch(createProject(save_id, [details, fields, status, dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
       } else {
-        dispatch(createProject(save_id, [details, fields, '']))
+        dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
       }
     }
     setChanged(0)
@@ -291,6 +333,9 @@ function CreateProject () {
     setDeleteDialogue(!deleteDialogue)
     setOpen(false)
   }
+  useEffect(() => {
+    console.log(selectedSimulation)
+  }, [selectedSimulation])
   return (
     <div>
       {(window.location.href.split('?id=')[1] && auth.user?.username === owner) &&
@@ -340,26 +385,28 @@ function CreateProject () {
             alignItems="flex-start"
           >
             <Grid item xs={12} sm={12}>
+
               {project.details && <Paper style={{ padding: '.2% 0%', marginBottom: '1%' }}>
                 <h3 style={{ textAlign: 'center' }}>Status of the project: {project.details.status_name}  </h3>
                 <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of variation {project.details.active_branch} saved on {activeSaveDate} at {activeSaveTime} hours</h3>
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
               <Paper className={classes.paper}>
+                <h2 style={{ color: 'black' }}>Project Details</h2>
                 {versions != null &&
-                ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}> <FormControl style={{ width: '100%' }}className={classes.formControl}>
-                  <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={activeVersion}
-                    onChange={handleActiveVersion}
-                  >
-                    {versions.map(version => {
-                      return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
-                    })}
-                  </Select>
-                </FormControl> </Grid> }
+                  ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}> <FormControl style={{ width: '100%' }} className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={activeVersion}
+                      onChange={handleActiveVersion}
+                    >
+                      {versions.map(version => {
+                        return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                      })}
+                    </Select>
+                  </FormControl> </Grid>}
                 <TextField
                   color='primary'
                   autoFocus
@@ -389,10 +436,10 @@ function CreateProject () {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                  (
-                    <>
-                      <hr />
-                      {((project.details && project.details.can_edit) || !project.details) &&
+                (
+                  <>
+                    <hr />
+                    {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -409,37 +456,65 @@ function CreateProject () {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        id={index}
-                        label={'Title ' + index}
-                        type="text"
-                        name='name'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.name}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                      <TextField
-                        color='primary'
-                        margin="dense"
-                        multiline
-                        id={index}
-                        label={'Text ' + index}
-                        rows={4}
-                        type="text"
-                        name='text'
-                        disabled={project.details && !project.details.can_edit}
-                        value={item.text}
-                        onChange={changeFieldText}
-                        fullWidth
-                      />
-                    </>
-                  ))}
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      id={index}
+                      label={'Title ' + index}
+                      type="text"
+                      name='name'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.name}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                    <TextField
+                      color='primary'
+                      margin="dense"
+                      multiline
+                      id={index}
+                      label={'Text ' + index}
+                      rows={4}
+                      type="text"
+                      name='text'
+                      disabled={project.details && !project.details.can_edit}
+                      value={item.text}
+                      onChange={changeFieldText}
+                      fullWidth
+                    />
+                  </>
+                ))}
 
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
+                <h2 style={{ color: 'black' }}>Simulation Parameters</h2>
+                <div>
+                  <FormControl className={classes.formControl} style={{width:'100%'}}>
+                    <InputLabel id="demo-simple-select-label">Select simulation mode parameters to enter:</InputLabel>
+                    <Select
+                      style={{ width: '50%' }}
+                      onChange={(e) => setSelectedSimulation(e.target.value)}
+                      value={selectedSimulation}>
+                      <MenuItem value="DC Sweep">DC Sweep</MenuItem>
+                      <MenuItem value="Transient Analysis">Transient Analysis</MenuItem>
+                      <MenuItem value="Transfer Function Analysis">Transfer Function Analysis</MenuItem>
+                      <MenuItem value="AC Analysis">AC Analysis</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <ProjectSimulationParameters
+                  dcSweepcontrolLine={dcSweepcontrolLine}
+                  setDcSweepControlLine={setDcSweepControlLine}
+                  transientAnalysisControlLine={transientAnalysisControlLine}
+                  setTransientAnalysisControlLine={setTransientAnalysisControlLine}
+                  acAnalysisControlLine={acAnalysisControlLine}
+                  setAcAnalysisControlLine={setAcAnalysisControlLine}
+                  tfAnalysisControlLine={tfAnalysisControlLine}
+                  setTfAnalysisControlLine={setTfAnalysisControlLine}
+                  changed={changed}
+                  setChanged={setChanged}
+                  selectedSimulation={selectedSimulation}
+                />
                 {project.details && <>{
                   project.states &&
                   <div style={{ textAlign: 'left' }}>
@@ -453,9 +528,9 @@ function CreateProject () {
                       value={status}
                     >
                       {project.states.map((item, index) =>
-                        (
-                          <MenuItem key={item} value={item}>{item}</MenuItem>
-                        ))}
+                      (
+                        <MenuItem key={item} value={item}>{item}</MenuItem>
+                      ))}
                       <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
                     </Select>
                   </div>
@@ -488,19 +563,19 @@ function CreateProject () {
                 </List>
               </Paper>
             </Grid>
-            <Grid item xs={6} sm={6}>
-              <Paper style={{ padding: '2%' }}>
-                <List>
-                  <h3>History of this Project</h3>
-                  {(project.details?.history && project.details?.history[0])
-                    ? <>
-                      <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === owner} />
-                    </>
-                    : <h4>No history of this project.</h4>
-                  }
-                </List>
-              </Paper>
-            </Grid></>}
+              <Grid item xs={6} sm={6}>
+                <Paper style={{ padding: '2%' }}>
+                  <List>
+                    <h3>History of this Project</h3>
+                    {(project.details?.history && project.details?.history[0])
+                      ? <>
+                        <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === owner} />
+                      </>
+                      : <h4>No history of this project.</h4>
+                    }
+                  </List>
+                </Paper>
+              </Grid></>}
           </Grid>
           {!project.details && <Button color="primary" style={{ width: '100%', marginTop: '2%' }} variant='contained' onClick={createPub}>
             Create Project
