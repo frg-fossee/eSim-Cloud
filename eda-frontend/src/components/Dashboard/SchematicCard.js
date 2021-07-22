@@ -137,13 +137,12 @@ export default function SchematicCard ({ sch }) {
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
           {/* Display delete option */}
           {!sch.project_id &&
-          <Button>
+          <Button onClick={() => { handleSnacClick() }}>
           <Tooltip title="Delete" placement="bottom" arrow>
             <DeleteIcon
               color="secondary"
               fontSize="small"
               // style={{ marginLeft: 'auto' }}
-              onClick={() => { handleSnacClick() }}
             />
           </Tooltip>
           </Button>}

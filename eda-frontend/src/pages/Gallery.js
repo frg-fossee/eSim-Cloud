@@ -104,12 +104,11 @@ function SchematicCard ({ sch }) {
           </Button>
             {console.log(auth.roles)}
            {auth.roles && auth.roles.is_type_staff &&
-            <Button>
+            <Button onClick={() => { handleSnacClick() }}>
             <Tooltip title="Delete" placement="bottom" arrow>
               <DeleteIcon
                 color="secondary"
                 fontSize="small"
-                onClick={() => { handleSnacClick() }}
               />
             </Tooltip>
             </Button>}
