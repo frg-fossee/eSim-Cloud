@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function TabPanel (props) {
+function TabPanel(props) {
   const { children, value, index } = props
 
   return (
@@ -62,7 +62,7 @@ TabPanel.propTypes = {
 }
 
 // Card displaying user my schematics page header.
-function MainCard () {
+function MainCard() {
   const classes = useStyles()
 
   return (
@@ -93,7 +93,7 @@ function MainCard () {
   )
 }
 
-export default function SchematicsList ({ ltiDetails = null }) {
+export default function SchematicsList({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -216,9 +216,9 @@ export default function SchematicsList ({ ltiDetails = null }) {
           </Tabs>
         </AppBar>
         <TabPanel style={{ width: '100%' }} value={value} index={0}>
-          {saves.filter(x => { return x.project_id == null }).length !== 0
+          {saves.filter(x => { return (x.project_id == null && x.lti_id == null) }).length !== 0
             ? <>
-              {saves.filter(x => { return x.project_id == null }).map(
+              {saves.filter(x => { return (x.project_id == null && x.lti_id == null) }).map(
                 (sch) => {
                   return (
                     <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
@@ -242,31 +242,6 @@ export default function SchematicsList ({ ltiDetails = null }) {
             ? <>
               {saves.filter(x => { return x.project_id }).map(
                 (sch) => {
-                  /* List all schematics saved by user */
-                  // {(schematics.length !== 0)
-                  //   ? <>
-                  //     {schematics.map(
-                  //       (sch) => {
-                  //         var actual = null
-                  //         var flag = null
-                  //         ltiDetails.map(
-                  //           // eslint-disable-next-line
-                  //           (lti) => {
-                  //             if (lti.model_schematic === sch.save_id || lti.initial_schematic === sch.save_id) {
-                  //               flag = 1
-                  //               actual = lti.consumer_key
-                  //               // eslint-disable-next-line
-                  //               return
-                  //             }
-                  //           }
-                  //         )
-                  //         if (flag) {
-                  //           return (
-                  //             <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-                  //               <SchematicCard sch={sch} consKey={actual} />
-                  //             </Grid>
-                  //           )
-                  //         } else {
                   return (
                     <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
                       <SchematicCard sch={sch} />
@@ -285,17 +260,26 @@ export default function SchematicsList ({ ltiDetails = null }) {
           }
         </TabPanel>
         <TabPanel style={{ width: '100%' }} value={value} index={2}>
-          <Grid item xs={12}>
-            {/* }
-            )}
-          </>
-          : <Grid item xs={12}> */}
-            <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
-              <Typography variant="subtitle1" gutterBottom>
-                Hey {auth.user.username} , You dont have any saved LTI Apps...
-              </Typography>
-            </Card>
-          </Grid>
+          {saves.filter(x => { return x.lti_id }).length !== 0
+            ? <>
+              {saves.filter(x => { return x.lti_id }).map(
+                (sch) => {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
+              )}
+            </>
+            : <Grid item xs={12}>
+              <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Hey {auth.user.username} , You dont have any saved projects...
+                </Typography>
+              </Card>
+            </Grid>
+          }
         </TabPanel>
         {/* List all schematics saved by user */}
 
