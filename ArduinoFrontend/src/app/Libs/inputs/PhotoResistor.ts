@@ -12,6 +12,11 @@ export class PhotoResistor extends CircuitElement {
    * The Value of the photo resitor
    */
   valueText: any;
+
+  maxVal = 1000;
+
+  minVal = 10;
+
   /**
    * Photoresistor Constructor
    * @param canvas Raphael canvas
@@ -42,32 +47,62 @@ export class PhotoResistor extends CircuitElement {
    * @param r Resistance
    */
   getValue(r: number) {
-    let tmp = r;
-    let suffix = 'Ω';
-    if (tmp > 1000) {
-      tmp /= 1000;
-      suffix = 'K' + suffix;
-    }
-    return `${Math.round((tmp) * 100) / 100}${suffix}`;
+    // let tmp = r;
+    // let suffix = 'Ω';
+    // if (tmp > 1000) {
+    //   tmp /= 1000;
+    //   suffix = 'K' + suffix;
+    // }
+    return `${Math.round((r) * 100) / 100} lum`;
   }
   /**
    * Initialize Variable and callback when start simulation is pressed
    */
   initSimulation(): void {
-    this.valueText = this.canvas.text(this.x + this.tx + 120, this.y + this.ty - 40, '90.25KΩ');
+    this.valueText = this.canvas.text(this.x + this.tx + 120, this.y + this.ty - 40, `${this.maxVal / 2} lum`);
     this.valueText.attr({
       'font-size': 15
     });
     this.slide = new Slider(this.canvas, this.x + this.tx, this.y + this.ty - 10);
     this.slide.setGradient('#69644b', '#ffd500');
+    let enable1 = this.nodes[1].value > this.nodes[0].value ? true : false;
+
+    if (enable1) {
+      let lum = (1 - (this.maxVal / 2)) * this.maxVal;
+      let incoming = this.nodes[1].value;
+      let val = incoming / (lum + 1);
+      this.nodes[0].setValue(val, null);
+    } else {
+      let lum = (1 - (this.maxVal / 2)) * this.maxVal;
+      let incoming = this.nodes[0].value;
+      let val = incoming / (lum + 1);
+      this.nodes[1].setValue(val, null);
+    }
+
     this.slide.setValueChangeListener((v) => {
-      const tmp = (1 - v) * 179500 + 500; // Temperature
-      // console.log(tmp);
-      // console.log([tmp, (tmp + 50) / 100]);
-      // this.nodes[1].setValue((tmp + 50) / 100, null);
-      this.valueText.attr({
-        text: this.getValue(tmp)
-      });
+
+      let lum = (1 - v) * this.maxVal;
+      if (enable1) {
+
+        let incoming = this.nodes[1].value;
+        let val = incoming / (lum + 1);
+        this.nodes[0].setValue(val, null);
+        this.valueText.attr({
+          text: this.getValue(this.maxVal - lum)
+        });
+
+      } else {
+        let incoming = this.nodes[0].value;
+
+        let val = incoming / (lum + 1);
+        console.log(val)
+        this.nodes[1].setValue(val, null);
+        this.valueText.attr({
+          text: this.getValue(this.maxVal - lum)
+        });
+
+      }
+
     });
   }
   /** Function removes all  animations and callbacks  */

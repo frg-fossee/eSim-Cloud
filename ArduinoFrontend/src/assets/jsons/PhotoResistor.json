@@ -3,13 +3,13 @@
     "className": "PhotoResistor",
     "pins": [
         {
-            "x": 9,
-            "y": 92,
+            "x": 13,
+            "y": 56,
             "name": "Terminal 1"
         },
         {
-            "x": 27,
-            "y": 92,
+            "x": 28,
+            "y": 56,
             "name": "Terminal 2"
         }
     ],
@@ -18,8 +18,8 @@
         {
             "type": "image",
             "url": "assets/images/components/PhotoResistor.svg",
-            "width": 44,
-            "height": 100,
+            "width": 50,
+            "height": 60,
             "x": 0,
             "y": 0
         }
@@ -30,7 +30,7 @@
         "image": "https://upload.wikimedia.org/wikipedia/commons/3/33/Photoresistor_2.jpg",
         "description": "Light dependent resistors, LDRs or photoresistors are often used in circuits where it is necessary to detect the presence or the level of light.",
         "Datasheet": "https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/SEN-09088.pdf",
-            "properties": {
+        "properties": {
             "Max power dissipation": "200mW",
             "Max voltage": "200V (@0lux)",
             "Peak wavelength": "600nm",
