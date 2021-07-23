@@ -42,6 +42,7 @@ class StateSaveSerializer(serializers.ModelSerializer):
     is_reported = serializers.BooleanField(read_only=True,
                                            source='project.is_reported')
     lti_id = serializers.SerializerMethodField()
+
     class Meta:
         model = StateSave
 
@@ -57,7 +58,6 @@ class StateSaveSerializer(serializers.ModelSerializer):
             return ltis[0].id
         else:
             return None
-
 
 
 class SaveListSerializer(serializers.ModelSerializer):

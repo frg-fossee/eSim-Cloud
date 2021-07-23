@@ -135,14 +135,17 @@ class LTIUpdateAPP(APIView):
             consumer.consumer_key = serialized.data.get('consumer_key')
             consumer.secret_key = serialized.data.get('secret_key')
             consumer.score = serialized.data.get('score')
-            consumer.model_schematic = StateSave.objects.get(id=serialized.data.get('model_schematic'))
-            consumer.initial_schematic = StateSave.objects.get(id=serialized.data.get('initial_schematic'))
+            consumer.model_schematic = StateSave.objects.get(
+                id=serialized.data.get('model_schematic'))
+            consumer.initial_schematic = StateSave.objects.get(
+                id=serialized.data.get('initial_schematic'))
             consumer.test_case = serialized.data.get('test_case')
             consumer.scored = serialized.data.get('scored')
             consumer.save()
             return Response(serialized.data, status=status.HTTP_200_OK)
         else:
-            return Response(serialized.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serialized.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class LTIDeleteApp(APIView):
