@@ -65,7 +65,8 @@ export default function LTIConfig () {
     initialSchematic: '',
     modelSchematic: '',
     testCase: null,
-    scored: true
+    scored: true,
+    id: ''
   })
 
   const { secretKey, consumerKey, configURL, configExists, score, modelSchematic } = ltiDetails
@@ -121,7 +122,8 @@ export default function LTIConfig () {
           configExists: true,
           initialSchematic: res.data.model_schematic,
           testCase: res.data.test_case,
-          scored: res.data.scored
+          scored: res.data.scored,
+          id: res.data.id
         })
       setSchematic(`${res.data.model_schematic.version}-${res.data.model_schematic.branch}`)
       if (res.data.test_case === null) {
@@ -189,7 +191,8 @@ export default function LTIConfig () {
           configURL: res.data.config_url,
           configExists: true,
           consumerError: '',
-          score: res.data.score
+          score: res.data.score,
+          id: res.data.id
         })
         return res.data
       })
@@ -215,7 +218,8 @@ export default function LTIConfig () {
           score: '',
           initialSchematic: '',
           modelSchematic: modelSchematic,
-          testCase: null
+          testCase: null,
+          id: ''
         })
         setHistoryId('')
       })
@@ -276,7 +280,8 @@ export default function LTIConfig () {
       score: score,
       initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
-      scored: ltiDetails.scored
+      scored: ltiDetails.scored,
+      id: ltiDetails.id
     }
     console.log(body)
     api.post('lti/update/', body)

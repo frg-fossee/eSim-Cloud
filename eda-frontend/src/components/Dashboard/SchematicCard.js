@@ -12,9 +12,11 @@ import {
   Tooltip,
   Snackbar,
   ButtonBase,
-  Chip
+  Chip,
+  IconButton
 } from '@material-ui/core'
 import ScreenShareRoundedIcon from '@material-ui/icons/ScreenShareRounded'
+import ShareIcon from '@material-ui/icons/Share';
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
@@ -56,12 +58,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 150
   }
 }))
-function Alert (props) {
+function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
+function SimpleSnackbar({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -115,7 +117,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince (jsonDate) {
+function timeSince(jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -147,7 +149,7 @@ function timeSince (jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate (jsonDate) {
+function getDate(jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -156,7 +158,7 @@ function getDate (jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard ({ sch }) {
+export default function SchematicCard({ sch }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
@@ -181,7 +183,7 @@ export default function SchematicCard ({ sch }) {
     win.location.href = '/eda/#/project?save_id=' + sch.save_id + '&version=' + sch.project_version + '&branch=' + sch.project_branch + '&project_id=' + sch.project_id
     win.focus()
   }
-  
+
   const clickViewLTI = () => {
     const win = window.open()
     win.location.href = `/eda/#/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`
@@ -227,13 +229,14 @@ export default function SchematicCard ({ sch }) {
           {sch.lti_id && <Chip variant='outlined' clickable={true} onClick={clickViewLTI} label='LTI' />}
           {/* Display create LTI app option  */}
           {!sch.lti_id && <Tooltip title='Create LTI app' placement="bottom" arrow>
-            <Button
+            <IconButton
               component={RouterLink}
               color='secondary'
               // style={{ marginLeft: 'auto' }}
+              // fontSize="small"
               to={`/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`} >
-              <ScreenShareRoundedIcon />
-            </Button>
+              <ScreenShareRoundedIcon fontSize="small" />
+            </IconButton>
           </Tooltip>}
           {/* Display delete option */}
           {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>
@@ -246,7 +249,7 @@ export default function SchematicCard ({ sch }) {
           </Tooltip>}
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
 
-          {/* Display share status
+          {/* Display share status */}
           <Tooltip
             title={!sch.shared ? 'SHARE OFF' : 'SHARE ON'}
             placement="bottom"
@@ -257,7 +260,7 @@ export default function SchematicCard ({ sch }) {
               fontSize="small"
               style={{ marginRight: '10px' }}
             />
-          </Tooltip> */}
+          </Tooltip>
         </CardActions>
       </Card>
 
