@@ -167,11 +167,9 @@ const loadComponents = async (components, wires, connections) => {
   }
 
   const findApprComp = (compDataList, key) => {
-    console.log(key)
     for (let i = 0; i < compDataList.length; i++) {
       // console.log(compDataList[i].name)
       if (compDataList[i].name.toLowerCase() === key.toLowerCase()) {
-        console.log(compDataList[i])
         return compDataList[i]
       }
     }
@@ -377,6 +375,6 @@ const reduceWires = (wires) => {
 
 export function importSCHFile (fileContents) {
   const rawInstr = readKicadSchematic(fileContents)
-  console.log(rawInstr)
+  // console.log(rawInstr)
   loadComponents([...rawInstr.components], [...rawInstr.wires], [...rawInstr.connections])
 }
