@@ -71,6 +71,12 @@ export class Motor extends CircuitElement {
       this.dirn = -1;
       if (v < 0) {
         this.elements[1].stop();
+      } else if (v === 0) {
+        if (this.rpm && !this.pwmAttached) {
+          this.rpm.remove();
+          this.rpm = null;
+        }
+        this.elements[1].stop();
       } else {
         if (this.rpm && this.voltage !== this.prevVoltage) {
           // TODO: remove animation
