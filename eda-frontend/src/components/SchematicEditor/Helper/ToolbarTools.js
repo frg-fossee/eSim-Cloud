@@ -716,7 +716,7 @@ function annotate(graph) {
       }
     }
   }
-  var NODE_SETS = {}
+  var NODE_SETS = []
     // DFS _________
     console.log('dfs init')
     var ptr = 1
@@ -728,77 +728,74 @@ function annotate(graph) {
             mxCell.prototype.ConnectedNode = null
             var component = list[property]
             if (component.children !== null) {
-                // pins
-                for (var child in component.children) {
-                    
-                    var pin = component.children[child];
-                    console.log(pin)
-                    
-                    if (pin != null &&  pin.vertex === true && pin.connectable) {
-                        if (pin.edges !== null || pin.edges.length !== 0) 
-                            console.log("outgoing: ", pin.ParentComponent)
-                            if(mp[(pin.id)] === 1){                                
-                                continue                      
-                            } 
-                            var stk = new Stack()
-                            var cur_node
-                            var cur_set = []
-                            var contains_gnd = 0
-                            console.log('pushing node id into map', pin.id)                            
-                            
-                            stk.push(pin)      
-                            console.log('exploring connected nodes of', pin)                    
-                            while(!stk.isEmpty()){
-                                // console.log('case')
-                                
-                                cur_node = stk.peek()
-                                stk.pop();
-                                mp[cur_node.id] = 1
-                                // console.log('pushing node into current set: ', cur_node)
-                                // mp[cur_node.id] = 1
-                                cur_set.push(cur_node)
-                                stk.print()
-                                // if(!mp[(cur_node.id)]){
-                                    // mp[cur_node.id] = 1
-                                    // console.log('Just found', cur_node)
-                                    // console.log('Attached wires: '+ ptr, cur_node.edges)
-                                    for (var wire in cur_node.edges) {
-
-                                        if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
-                                            if(cur_node.edges[wire].target.ParentComponent.symbol === 'PWR'){
-                                                contains_gnd = 1
-                                            }
-                                            if(cur_node.edges[wire].target.vertex === true){
-                                                if(!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)){
-                                                    stk.push(cur_node.edges[wire].target)
-                                                }
-                                            }
-                                            else if(cur_node.edges[wire].source.vertex === true){
-                                                if(!mp[(cur_node.edges[wire].source.id)] && (cur_node.edges[wire].source.id !== cur_node.id)){
-                                                    stk.push(cur_node.edges[wire].source)
-                                                }
-                                            }
-
-                                        }
-                                    }
-                                // }
-                                // ptr++;
-                                // if(ptr > 50) break; 
-                                if(contains_gnd === 1){
-                                    for(var x in cur_set)
-                                        NODE_SETS[0].add(cur_set[x])
+              // pins
+              for (var child in component.children) {
+                  var pin = component.children[child];
+                  // console.log(pin)
+                  
+                  if (pin != null &&  pin.vertex === true && pin.connectable) {
+                    if (pin.edges !== null || pin.edges.length !== 0) {
+                      // console.log("outgoing: ", pin.ParentComponent)
+                      if(mp[(pin.id)] === 1){                                
+                          continue                      
+                      }
+                      var stk = new Stack()
+                      var cur_node
+                      var cur_set = []
+                      var contains_gnd = 0
+                      // console.log('pushing node id into map', pin.id)                            
+                      
+                      stk.push(pin)      
+                      console.log('exploring connected nodes of', pin)                    
+                      while(!stk.isEmpty()){
+                          // console.log('case')
+                          
+                          cur_node = stk.peek()
+                          stk.pop();
+                          mp[cur_node.id] = 1
+                          // console.log('pushing node into current set: ', cur_node)
+                          // mp[cur_node.id] = 1
+                          cur_set.push(cur_node)
+                          stk.print()
+                          // if(!mp[(cur_node.id)]){
+                          // mp[cur_node.id] = 1
+                          // console.log('Just found', cur_node)
+                          // console.log('Attached wires: '+ ptr, cur_node.edges)
+                          for (var wire in cur_node.edges) {
+                            console.log(cur_node.edges[wire])
+                            if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
+                              if (cur_node.edges[wire].target.ParentComponent !== null) {
+                                if(cur_node.edges[wire].target.ParentComponent.symbol === 'PWR'){
+                                    contains_gnd = 1
                                 }
-                                else{
-                                    NODE_SETS[ptr] = cur_set
-                                    ptr++; 
+                              }
+                              if(cur_node.edges[wire].target.vertex == true){
+                                if (!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)){
+                                  stk.push(cur_node.edges[wire].target)
                                 }
-                                             
-                                console.log("Set of nodes at same pot:", cur_set)   
-                                
-                            }                        
+                              }
+                              if(cur_node.edges[wire].source.vertex == true){
+                                if(!mp[(cur_node.edges[wire].source.id)] && (cur_node.edges[wire].source.id !== cur_node.id)){
+                                    stk.push(cur_node.edges[wire].source)
+                                }
+                              }
+                            }
+                          }
+                          // }
+                          // ptr++;
+                          // if(ptr > 50) break; 
+                        if(contains_gnd === 1){
+                            for(var x in cur_set)
+                                NODE_SETS[0].add(cur_set[x])
+                        }
+                          console.log("Set of nodes at same pot:", cur_set)   
+                      }
+                    } 
+                    if (!contains_gnd){
+                        NODE_SETS.push(new Set(cur_set))
                     }
-                    
-                }                
+                  }
+              }
             }
         }
     }
