@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationProperties() {
+export default function SimulationProperties () {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const [taskId, setTaskId] = useState(null)
@@ -353,7 +353,7 @@ export default function SimulationProperties() {
     sendNetlist(file)
   }
 
-  function sendNetlist(file) {
+  function sendNetlist (file) {
     setIsResult(false)
     netlistConfig(file)
       .then((response) => {
@@ -368,7 +368,7 @@ export default function SimulationProperties() {
   }
 
   // Upload the nelist
-  function netlistConfig(file) {
+  function netlistConfig (file) {
     const token = localStorage.getItem('esim_token')
     var url = queryString.parse(window.location.href.split('editor?')[1])
     const formData = new FormData()
@@ -394,7 +394,7 @@ export default function SimulationProperties() {
   const [isResult, setIsResult] = useState(false)
 
   // Get the simulation result with task_Id
-  function simulationResult(url) {
+  function simulationResult (url) {
     let isError = false
     let msg
     let resPending = true // to stop immature opening of simulation screen
