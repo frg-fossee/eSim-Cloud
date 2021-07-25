@@ -3,6 +3,7 @@ from .serializers import consumerSerializer, consumerResponseSerializer, \
 from .utils import consumers, get_reverse, message_identifier
 from .models import ltiSession, lticonsumer, Submission
 from saveAPI.models import StateSave
+from simulationAPI.models import simulation
 from drf_yasg.utils import swagger_auto_schema
 from django.conf import settings
 from saveAPI.serializers import StateSaveSerializer
@@ -132,6 +133,11 @@ class LTIUpdateAPP(APIView):
         except lticonsumer.DoesNotExist:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         if serialized.is_valid():
+            try:
+                sim = simulation.objects.get(
+                    id=serialized.data.get('test_case'))
+            except simulation.DoesNotExist:
+                sim = None
             consumer.consumer_key = serialized.data.get('consumer_key')
             consumer.secret_key = serialized.data.get('secret_key')
             consumer.score = serialized.data.get('score')
@@ -139,7 +145,7 @@ class LTIUpdateAPP(APIView):
                 id=serialized.data.get('model_schematic'))
             consumer.initial_schematic = StateSave.objects.get(
                 id=serialized.data.get('initial_schematic'))
-            consumer.test_case = serialized.data.get('test_case')
+            consumer.test_case = sim
             consumer.scored = serialized.data.get('scored')
             consumer.save()
             return Response(serialized.data, status=status.HTTP_200_OK)
