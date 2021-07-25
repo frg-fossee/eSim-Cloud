@@ -160,6 +160,7 @@ export function ClearGrid() {
 }
 
 function rotate (rot_ang) {
+    console.log(graph.getDefaultParent())
   var view = graph.getView()
   var cell = graph.getSelectionCell()
   var state = view.getState(cell, true)
@@ -561,6 +562,50 @@ export function GenerateNetList() {
   return netobj
 }
 // Function to Annotate, TODO! It needs some polishing 
+class Stack {
+    constructor(){
+        this.data = [];
+        this.top = 0;
+    }
+    push(element) {
+      this.data[this.top] = element;
+      this.top = this.top + 1;
+    }
+   length() {
+      return this.top;
+   }
+   peek() {
+      return this.data[this.top-1];
+   }
+   isEmpty() {
+     return this.top === 0;
+   }
+   pop() {
+    if( this.isEmpty() === false ) {
+       this.top = this.top -1;
+       return this.data.pop(); // removes the last element
+     }
+   }
+   print() {
+      var top = this.top - 1; // because top points to index where new    element to be inserted
+      // console.log('printing working')
+      // console.log(this.data)
+      while(top >= 0) { // print upto 0th index
+          console.log(this.data[top]);
+           top--;
+      }
+    }
+    reverse() {
+       this._reverse(this.top - 1 );
+    }
+    _reverse(index) {
+       if(index != 0) {
+          this._reverse(index-1);
+       }
+       console.log(this.data[index]);
+    }
+}
+
 function annotate(graph) {
 
   var r = 1
@@ -581,6 +626,7 @@ function annotate(graph) {
   if (erc === false) {
     alert('ERC check failed')
   } else {
+    
     for (var property in list) {
       if (list[property].Component === true && list[property].symbol !== 'PWR') {
         var compobj = {
@@ -623,7 +669,6 @@ function annotate(graph) {
           component.properties.PREFIX = component.value
           ++w
         }
-
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
@@ -634,6 +679,7 @@ function annotate(graph) {
                     if (pin.edges[wire].source.edge === true) {
                       // Not Performing any Action for Pin to Wire Connections 
                     } else if (pin.edges[wire].target.edge === true) {
+                        console.log('check here')
                       // Not Performing any Action for Pin to Wire Connections 
                     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                       pin.edges[wire].node = 0
@@ -670,6 +716,95 @@ function annotate(graph) {
       }
     }
   }
+  var NODE_SETS = {}
+    // DFS _________
+    console.log('dfs init')
+    var ptr = 1
+    var mp = Array(5000).fill(0)
+    NODE_SETS[0] = new Set() // Defining ground
+    var count_ = new Map()
+    for(var property in list){
+        if(list[property].Component === true && list[property].symbol !== 'PWR'){
+            mxCell.prototype.ConnectedNode = null
+            var component = list[property]
+            if (component.children !== null) {
+                // pins
+                for (var child in component.children) {
+                    
+                    var pin = component.children[child];
+                    console.log(pin)
+                    
+                    if (pin != null &&  pin.vertex === true && pin.connectable) {
+                        if (pin.edges !== null || pin.edges.length !== 0) 
+                            console.log("outgoing: ", pin.ParentComponent)
+                            if(mp[(pin.id)] === 1){                                
+                                continue                      
+                            } 
+                            var stk = new Stack()
+                            var cur_node
+                            var cur_set = []
+                            var contains_gnd = 0
+                            console.log('pushing node id into map', pin.id)                            
+                            
+                            stk.push(pin)      
+                            console.log('exploring connected nodes of', pin)                    
+                            while(!stk.isEmpty()){
+                                // console.log('case')
+                                
+                                cur_node = stk.peek()
+                                stk.pop();
+                                mp[cur_node.id] = 1
+                                // console.log('pushing node into current set: ', cur_node)
+                                // mp[cur_node.id] = 1
+                                cur_set.push(cur_node)
+                                stk.print()
+                                // if(!mp[(cur_node.id)]){
+                                    // mp[cur_node.id] = 1
+                                    // console.log('Just found', cur_node)
+                                    // console.log('Attached wires: '+ ptr, cur_node.edges)
+                                    for (var wire in cur_node.edges) {
+
+                                        if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
+                                            if(cur_node.edges[wire].target.ParentComponent.symbol === 'PWR'){
+                                                contains_gnd = 1
+                                            }
+                                            if(cur_node.edges[wire].target.vertex === true){
+                                                if(!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)){
+                                                    stk.push(cur_node.edges[wire].target)
+                                                }
+                                            }
+                                            else if(cur_node.edges[wire].source.vertex === true){
+                                                if(!mp[(cur_node.edges[wire].source.id)] && (cur_node.edges[wire].source.id !== cur_node.id)){
+                                                    stk.push(cur_node.edges[wire].source)
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                // }
+                                // ptr++;
+                                // if(ptr > 50) break; 
+                                if(contains_gnd === 1){
+                                    for(var x in cur_set)
+                                        NODE_SETS[0].add(cur_set[x])
+                                }
+                                else{
+                                    NODE_SETS[ptr] = cur_set
+                                    ptr++; 
+                                }
+                                             
+                                console.log("Set of nodes at same pot:", cur_set)   
+                                
+                            }                        
+                    }
+                    
+                }                
+            }
+        }
+    }
+    console.log('dfs end')
+    console.log("Results: ", NODE_SETS)
+
   return list
 }
 // Returns all the Nodes present in the Schematic, Used for Simulation 
