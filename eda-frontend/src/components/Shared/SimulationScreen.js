@@ -33,7 +33,7 @@ import Graph from './Graph'
 
 var FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function SimulationScreen ({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
+export default function SimulationScreen({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
   const stitle = useSelector((state) => state.netlistReducer.title)
@@ -117,9 +117,9 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
         }
       }
       if (url.id) {
-        getUrl = `simulation/history/${url.id}/${simType}`
+        getUrl = `simulation/history/${url.id}/${url.version}/${url.branch}/${simType}`
       } else {
-        getUrl = `simulation/history/${simType}`
+        getUrl = `simulation/history/simulator/${simType}`
       }
       if (token) {
         config.headers.Authorization = `Token ${token}`
@@ -129,12 +129,15 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
           var temp2 = (result.isGraph === 'true')
           res.data.map((ele, index) => {
             ele.simulation_time = new Date(ele.simulation_time)
-            var temp = (ele.result.graph === 'true')
-            if (!ele.result.graph || temp !== temp2) {
+            if (ele.result === null) {
               arr.push(index)
             }
-            console.log('ele.task', ele.task)
-            console.log('taskID', taskId)
+            else {
+              var temp = (ele.result.graph === 'true')
+              if (!ele.result.graph || temp !== temp2) {
+                arr.push(index)
+              }
+            }
             if (ele.task === taskId) {
               arr.push(index)
             }
