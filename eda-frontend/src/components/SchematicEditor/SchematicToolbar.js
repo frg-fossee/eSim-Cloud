@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Notification snackbar to give alert messages
-function SimpleSnackbar({ open, close, message }) {
+function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -103,7 +103,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, setLtiSimResult }) {
+export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, setLtiSimResult }) {
   const classes = useStyles()
   const netfile = useSelector((state) => state.netlistReducer)
   const auth = useSelector((state) => state.authReducer)
@@ -317,7 +317,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   }
 
   // Image Export of Schematic Diagram
-  async function exportImage(type) {
+  async function exportImage (type) {
     const svg = document.querySelector('#divGrid > svg').cloneNode(true)
     svg.removeAttribute('style')
     svg.setAttribute('width', gridRef.current.scrollWidth)
@@ -377,7 +377,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   }
 
   // Download JPEG, PNG exported Image
-  function downloadImage(data, type) {
+  function downloadImage (data, type) {
     var evt = new MouseEvent('click', {
       view: window,
       bubbles: false,
@@ -392,7 +392,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
   }
 
   // Download SVG image
-  function downloadText(data, options) {
+  function downloadText (data, options) {
     const blob = new Blob(data, options)
     const evt = new MouseEvent('click', {
       view: window,
@@ -527,7 +527,7 @@ export default function SchematicToolbar({ mobileClose, gridRef, ltiSimResult, s
 
   // Shortcuts that cant be put in Helper/KeyboardShortcuts.js
   useEffect(() => {
-    function shrtcts(event) {
+    function shrtcts (event) {
       // Save - Ctrl + S
       if (event.ctrlKey && event.keyCode === 83) {
         event.preventDefault()

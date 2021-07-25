@@ -16,7 +16,7 @@ import {
   IconButton
 } from '@material-ui/core'
 import ScreenShareRoundedIcon from '@material-ui/icons/ScreenShareRounded'
-import ShareIcon from '@material-ui/icons/Share';
+import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
 import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
@@ -58,12 +58,12 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 150
   }
 }))
-function Alert(props) {
+function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
 
 // Schematic delete snackbar
-function SimpleSnackbar({ open, close, sch }) {
+function SimpleSnackbar ({ open, close, sch }) {
   const dispatch = useDispatch()
 
   return (
@@ -117,7 +117,7 @@ SimpleSnackbar.propTypes = {
 }
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
-function timeSince(jsonDate) {
+function timeSince (jsonDate) {
   var json = jsonDate
 
   var date = new Date(json)
@@ -149,7 +149,7 @@ function timeSince(jsonDate) {
 }
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
-function getDate(jsonDate) {
+function getDate (jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
@@ -158,7 +158,7 @@ function getDate(jsonDate) {
 }
 
 // Card displaying overview of onCloud saved schematic.
-export default function SchematicCard({ sch }) {
+export default function SchematicCard ({ sch }) {
   const classes = useStyles()
   const dispatch = useDispatch()
 
