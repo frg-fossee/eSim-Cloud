@@ -375,6 +375,8 @@ export default function SimulationProperties(props) {
     formData.append('file', file)
     if (url.id) {
       formData.append('save_id', url.id)
+      formData.append('version', url.version)
+      formData.append('branch', url.branch)
     }
     const config = {
       headers: {

@@ -117,9 +117,9 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
         }
       }
       if (url.id) {
-        getUrl = `simulation/history/${url.id}/${simType}`
+        getUrl = `simulation/history/${url.id}/${url.version}/${url.branch}/${simType}`
       } else {
-        getUrl = `simulation/history/${simType}`
+        getUrl = `simulation/history/simulator/${simType}`
       }
       if (token) {
         config.headers.Authorization = `Token ${token}`
@@ -129,12 +129,14 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
           var temp2 = (result.isGraph === 'true')
           res.data.map((ele, index) => {
             ele.simulation_time = new Date(ele.simulation_time)
-            var temp = (ele.result.graph === 'true')
-            if (!ele.result.graph || temp !== temp2) {
+            if (ele.result === null) {
               arr.push(index)
+            } else {
+              var temp = (ele.result.graph === 'true')
+              if (!ele.result.graph || temp !== temp2) {
+                arr.push(index)
+              }
             }
-            console.log('ele.task', ele.task)
-            console.log('taskID', taskId)
             if (ele.task === taskId) {
               arr.push(index)
             }
