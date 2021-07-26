@@ -1,0 +1,44 @@
+{
+    "name": "Thermistor",
+    "className": "Thermistor",
+    "pins": [
+        {
+            "x": 6,
+            "y": 86,
+            "name": "Terminal 1"
+        },
+        {
+            "x": 24,
+            "y": 86,
+            "name": "Terminal 2"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/Thermistor.svg",
+            "width": 38,
+            "height": 88,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {},
+    "info": {
+        "name": "Thermistor",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/NTC_bead.jpg/400px-NTC_bead.jpg",
+        "description": "Thermistor is an electronic component used to calculate the temperature.This is a type of resistor whose resistance varies with change in temperature.",
+        "Datasheet": "https://components101.com/sites/default/files/component_datasheet/NTC%20Thermistor%20datasheet.pdf",
+        "properties": {
+            "Max power dissipation": "200mW",
+            "Max voltage": "200V (@0lux)",
+            "Peak wavelength": "600nm",
+            "Min. resistance @ 10lux": "1.8kΩ(@ 10lux)",
+            "Max. resistance @ 10lux": "4.5kΩ(@ 10lux)",
+            "Typ. resistance @ 100lux": "0.7kΩ(@ 100lux)",
+            "Dark resistance after 1 sec ": "0.03MΩ",
+            "Dark resistance after 5 sec": "0.25MΩ"
+        }
+    }
+}
