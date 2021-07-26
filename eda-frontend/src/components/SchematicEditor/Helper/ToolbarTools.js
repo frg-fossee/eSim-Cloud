@@ -160,11 +160,12 @@ export function ClearGrid() {
 }
 
 function rotate (rot_ang) {
-    console.log(graph.getDefaultParent())
+  console.log(graph.getDefaultParent())
   var view = graph.getView()
   var cell = graph.getSelectionCell()
   var state = view.getState(cell, true)
   var vHandler = graph.createVertexHandler(state)
+  console.log(cell)
   if (cell != null) {
     vHandler.rotateCell(cell, parseInt(rot_ang))
     let childCount = cell.getChildCount()
@@ -781,23 +782,24 @@ function annotate(graph) {
                               }
                               // Checking for wires which are connected to another wire(s)
                               var conn_vertices = [];
-                              if (cur_node.edges[wire].edges) {
+                              if (cur_node.edges[wire].edges && cur_node.edges[wire].edges.length > 0) {
                                 for (const ed in cur_node.edges[wire].edges) {
                                   if (!mp[cur_node.edges[wire].edges[ed].id]) {
-                                    conn_vertices.push(...traverseWire(cur_node.edges[wire].edges[ed], mp))
+                                    conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].edges[ed], mp))
                                   }
                                 }
                               }
                               if (cur_node.edges[wire].source.edge == true) {
                                 if (!mp[(cur_node.edges[wire].source.id)] && (cur_node.edges[wire].source.id !== cur_node.id)) {
-                                  conn_vertices.push(...traverseWire(cur_node.edges[wire].source, mp))
+                                  conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].source, mp))
                                 }
                               }
                               if (cur_node.edges[wire].target.edge == true) {
                                 if (!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)) {
-                                  conn_vertices.push(...traverseWire(cur_node.edges[wire].target, mp))
+                                  conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].target, mp))
                                 }
                               }
+                              console.log("CONN EDGES", conn_vertices)
                               conn_vertices.forEach((elem) => {
                                 stk.push(elem)
                               })
@@ -899,14 +901,12 @@ function annotate(graph) {
                 if (pin.edges !== null || pin.edges.length !== 0) {
                 // Search for pin in NODE_SET:
                 // assign: pin.edges[wire].node= "NODE" + $indexOfSet
-                console.log("node search in pot list begins!")
+                // console.log("node search in pot list begins!")
                 NODE_SETS.forEach((e, i) => {
-                  var temp_set = e.items;
                   var done = 0
                   e.forEach((vertex) => {
-                    
                     if (vertex.id == pin.id && done === 0) {
-                      console.log("FOUND THE NODE POTENTIAL!!")
+                      // console.log("FOUND THE NODE POTENTIAL!!")
                       if (i === 0) {
                         pin.edges[wire].node = 0
                         pin.ConnectedNode = 0
@@ -917,7 +917,7 @@ function annotate(graph) {
                         pin.edges[wire].value = pin.edges[wire].node
                       }
                       done = 1
-                      console.log("VALUE SET TO ", pin.edges[wire].ConnectedNode)
+                      // console.log("VALUE SET TO ", pin.edges[wire].ConnectedNode)
                     }
                     // else{
                     //   console.log("COULDN'T FIND THE NODE!!!!!")
@@ -958,22 +958,23 @@ function annotate(graph) {
 
 function traverseWire(edge, vis) {
   var ans = []
+  vis[edge.id] = 1
   if (edge.target.vertex == true || edge.source.vertex == true) {
-    if (edge.target.vertex == true) { ans.push(edge.target.vertex) }
-    if (edge.target.soource == true) { ans.push(edge.target.vertex) }
+    if (edge.target.vertex == true) { ans.push(edge.target) }
+    if (edge.source.vertex == true) { ans.push(edge.source) }
     return ans;
   } else {
     vis[parseInt(edge.id)] = true
     if (edge.edges && edge.edges.length > 0) {
       edge.edges.forEach((elem) => {
-        ans.push(traverseWire(elem, vis))
+        ans = ans.concat(traverseWire(elem, vis))
       })
     } else {
       if (edge.source.edge == true && !vis[edge.source.id]) {
-        ans.push(...traverseWire(edge.source, vis))
+        ans = ans.concat(traverseWire(edge.source, vis))
       }
       if (edge.target.edge == true && !vis[edge.target.id]) {
-        ans.push(...traverseWire(edge.target, vis))
+        ans = ans.concat(traverseWire(edge.target, vis))
       }
     }
     return ans
