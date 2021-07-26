@@ -89,7 +89,6 @@ export class Thermistor extends CircuitElement {
     if (enable1) {
       // calculate voltage value
       const incoming = this.nodes[1].value;
-      console.log(incoming)
       // calculate output voltage
       const val = (lum / this.maxVal) * incoming;
       // set output voltage
@@ -101,7 +100,6 @@ export class Thermistor extends CircuitElement {
     } else {
       // calculate voltage value
       const incoming = this.nodes[0].value;
-      console.log(incoming)
       // calculate output voltage
       const val = (lum / this.maxVal) * incoming;
       // set output voltage
