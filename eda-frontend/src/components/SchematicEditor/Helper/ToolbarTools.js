@@ -363,6 +363,91 @@ export function GenerateNetList() {
     alert('ERC check failed')
   } else {
     var list = annotate(graph) // Fetching all the Cells on the GRID
+     // DFS _________
+     var NODE_SETS = []
+     console.log('dfs init')
+     var ptr = 1
+     var mp = Array(5000).fill(0)
+     NODE_SETS[0] = new Set() // Defining ground
+     for(var property in list){
+         if(list[property].Component !== true && list[property].edge === true) console.log("FOUND NON-Property", list[property])
+         if(list[property].Component === true && list[property].symbol !== 'PWR'){
+             mxCell.prototype.ConnectedNode = null
+             var component = list[property]
+             if (component.children !== null) {
+               // pins
+               for (var child in component.children) {
+                   var pin = component.children[child];
+                   // console.log(pin)
+                   
+                   if (pin != null &&  pin.vertex === true && pin.connectable) {
+                     if (pin.edges !== null || pin.edges.length !== 0) {
+                       // console.log("outgoing: ", pin.ParentComponent)
+                       if(mp[(pin.id)] === 1){                                
+                           continue                      
+                       }
+                       var stk = new Stack()
+                       var cur_node
+                       var cur_set = []
+                       var contains_gnd = 0
+                       // console.log('pushing node id into map', pin.id)                            
+                       
+                       stk.push(pin)      
+                       console.log('exploring connected nodes of', pin)                    
+                       while(!stk.isEmpty()){
+                           // console.log('case')
+                           
+                           cur_node = stk.peek()
+                           stk.pop();
+                           mp[cur_node.id] = 1
+                           // console.log('pushing node into current set: ', cur_node)
+                           // mp[cur_node.id] = 1
+                           cur_set.push(cur_node)
+                           stk.print()
+                           // if(!mp[(cur_node.id)]){
+                           // mp[cur_node.id] = 1
+                           // console.log('Just found', cur_node)
+                           // console.log('Attached wires: '+ ptr, cur_node.edges)
+                           for (var wire in cur_node.edges) {
+                             console.log(cur_node.edges[wire])
+                             if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
+                               if (cur_node.edges[wire].target.ParentComponent !== null) {
+                                 if(cur_node.edges[wire].target.ParentComponent.symbol === 'PWR'){
+                                     contains_gnd = 1
+                                 }
+                               }
+                               if(cur_node.edges[wire].target.vertex == true){
+                                 if (!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)){
+                                   stk.push(cur_node.edges[wire].target)
+                                 }
+                               }
+                               if(cur_node.edges[wire].source.vertex == true){
+                                 if(!mp[(cur_node.edges[wire].source.id)] && (cur_node.edges[wire].source.id !== cur_node.id)){
+                                     stk.push(cur_node.edges[wire].source)
+                                 }
+                               }
+                             }
+                           }
+                           // }
+                           // ptr++;
+                           // if(ptr > 50) break; 
+                         if(contains_gnd === 1){
+                             for(var x in cur_set)
+                                 NODE_SETS[0].add(cur_set[x])
+                         }
+                           console.log("Set of nodes at same pot:", cur_set)   
+                       }
+                     } 
+                     if (!contains_gnd){
+                         NODE_SETS.push(new Set(cur_set))
+                     }
+                   }
+               }
+             }
+         }
+     }
+     console.log('dfs end')
+     console.log("Results: ", NODE_SETS)
     for (var property in list) {
       if (list[property].Component === true && list[property].symbol !== 'PWR') {
         var compobj = {
@@ -396,37 +481,61 @@ export function GenerateNetList() {
             var pin = component.children[child]
             if (pin.vertex === true && pin.connectable) {
               if (pin.edges !== null || pin.edges.length !== 0) {
-                for (var wire in pin.edges) {
-                  if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                    // Wire to Pin Connection 
-                    if (pin.edges[wire].source.edge === true) {
-                      pin.edges[wire].node = pin.edges[wire].source.node
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      // Pin to Wire Connection 
-                    } else if (pin.edges[wire].target.edge === true) {
-                      pin.edges[wire].node = pin.edges[wire].target.node
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
-                      pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
-                      // Souce or Target is Ground 
-                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                      pin.edges[wire].node = 0
-                      pin.edges[wire].value = 0
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      // Pin to Pin Connection, Setting the Source to be the Node Value 
-                    } else {
-                      pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      pin.edges[wire].value = pin.edges[wire].node
+                console.log("node search in pot list begins!")
+                NODE_SETS.forEach((e, i) => {
+                  var temp_set = e.items;
+                  console.log("Executing this part")
+                  console.log(temp_set)
+                  e.forEach((vertex) => {
+                    if (vertex.id == pin.id) {
+                      console.log("FOUND THE NODE POTENTIAL!!")
+                      if (i === 0) {
+                        pin.edges[wire].node = 0
+                        pin.ConnectedNode = 0
+                        pin.edges[wire].value = pin.edges[wire].node
+
+                      } else {
+                        pin.edges[wire].node = "COM." + i.toString()
+                        pin.ConnectedNode = 'COM.' + i.toString() + pin.edges[wire].source.value
+                        pin.edges[wire].value = pin.edges[wire].node
+                      }
                     }
-                    pin.edges[wire].value = pin.edges[wire].node
-                  }
-                }
+                    else{
+                      console.log("COULDN'T FIND THE NODE!!!!!")
+                    }
+                  })
+                })
+                // for (var wire in pin.edges) {
+                //   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
+                //     // Wire to Pin Connection 
+                //     if (pin.edges[wire].source.edge === true) {
+                //       pin.edges[wire].node = pin.edges[wire].source.node
+                //       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                //       pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                //       // Pin to Wire Connection 
+                //     } else if (pin.edges[wire].target.edge === true) {
+                //       pin.edges[wire].node = pin.edges[wire].target.node
+                //       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                //       pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                //       pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
+                //       pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
+                //       // Souce or Target is Ground 
+                //     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                //       pin.edges[wire].node = 0
+                //       pin.edges[wire].value = 0
+                //       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                //       pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                //       // Pin to Pin Connection, Setting the Source to be the Node Value 
+                //     } else {
+                //       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                //       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                //       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                //       pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                //       pin.edges[wire].value = pin.edges[wire].node
+                //     }
+                //     pin.edges[wire].value = pin.edges[wire].node
+                //   }
+                // }
                 k = k + ' ' + pin.edges[0].node
               }
             }
@@ -627,103 +736,103 @@ function annotate(graph) {
     alert('ERC check failed')
   } else {
     
-    for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
-        var compobj = {
-          name: '',
-          node1: '',
-          node2: '',
-          magnitude: ''
-        }
-        mxCell.prototype.ConnectedNode = null
-        var component = list[property]
-        if (component.symbol === 'R') {
-          k = k + component.symbol + r.toString()
-          component.value = component.symbol + r.toString()
-          component.properties.PREFIX = component.value
+    // for (var property in list) {
+    //   if (list[property].Component === true && list[property].symbol !== 'PWR') {
+    //     var compobj = {
+    //       name: '',
+    //       node1: '',
+    //       node2: '',
+    //       magnitude: ''
+    //     }
+    //     mxCell.prototype.ConnectedNode = null
+    //     var component = list[property]
+    //     if (component.symbol === 'R') {
+    //       k = k + component.symbol + r.toString()
+    //       component.value = component.symbol + r.toString()
+    //       component.properties.PREFIX = component.value
 
-          ++r
-        } else if (component.symbol === 'V') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++v
-        } else if (component.symbol === 'C') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++c
-        } else if (component.symbol === 'D') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++d
-        } else if (component.symbol === 'Q') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++q
-        } else {
-          k = k + component.symbol + c.toString()
-          component.value = component.symbol + c.toString()
-          component.properties.PREFIX = component.value
-          ++w
-        }
-        if (component.children !== null) {
-          for (var child in component.children) {
-            var pin = component.children[child]
-            if (pin.vertex === true && pin.connectable) {
-              if (pin.edges !== null || pin.edges.length !== 0) {
-                for (var wire in pin.edges) {
-                  if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                    if (pin.edges[wire].source.edge === true) {
-                      // Not Performing any Action for Pin to Wire Connections 
-                    } else if (pin.edges[wire].target.edge === true) {
-                        console.log('check here')
-                      // Not Performing any Action for Pin to Wire Connections 
-                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                      pin.edges[wire].node = 0
-                      pin.edges[wire].value = 0
-                    } else {
-                      pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.edges[wire].value = pin.edges[wire].node
-                    }
-                  }
-                }
-                k = k + ' ' + pin.edges[0].node
-              }
-            }
-          }
-          compobj.name = component.symbol
-          compobj.node1 = component.children[0].edges[0].node
-          compobj.node2 = component.children[1].edges[0].node
-          compobj.magnitude = 10
-          netlist.componentlist.push(component.properties.PREFIX)
-          netlist.nodelist.push(compobj.node2, compobj.node1)
-        }
-        if (component.properties.VALUE !== undefined) {
-          k = k + ' ' + component.properties.VALUE
-        }
+    //       ++r
+    //     } else if (component.symbol === 'V') {
+    //       k = k + component.symbol + v.toString()
+    //       component.value = component.symbol + v.toString()
+    //       component.properties.PREFIX = component.value
+    //       ++v
+    //     } else if (component.symbol === 'C') {
+    //       k = k + component.symbol + v.toString()
+    //       component.value = component.symbol + v.toString()
+    //       component.properties.PREFIX = component.value
+    //       ++c
+    //     } else if (component.symbol === 'D') {
+    //       k = k + component.symbol + v.toString()
+    //       component.value = component.symbol + v.toString()
+    //       component.properties.PREFIX = component.value
+    //       ++d
+    //     } else if (component.symbol === 'Q') {
+    //       k = k + component.symbol + v.toString()
+    //       component.value = component.symbol + v.toString()
+    //       component.properties.PREFIX = component.value
+    //       ++q
+    //     } else {
+    //       k = k + component.symbol + c.toString()
+    //       component.value = component.symbol + c.toString()
+    //       component.properties.PREFIX = component.value
+    //       ++w
+    //     }
+    //     if (component.children !== null) {
+    //       for (var child in component.children) {
+    //         var pin = component.children[child]
+    //         if (pin.vertex === true && pin.connectable) {
+    //           if (pin.edges !== null || pin.edges.length !== 0) {
+    //             for (var wire in pin.edges) {
+    //               if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
+    //                 if (pin.edges[wire].source.edge === true) {
+    //                   // Not Performing any Action for Pin to Wire Connections 
+    //                 } else if (pin.edges[wire].target.edge === true) {
+    //                     console.log('check here')
+    //                   // Not Performing any Action for Pin to Wire Connections 
+    //                 } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+    //                   pin.edges[wire].node = 0
+    //                   pin.edges[wire].value = 0
+    //                 } else {
+    //                   pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+    //                   pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+    //                   pin.edges[wire].value = pin.edges[wire].node
+    //                 }
+    //               }
+    //             }
+    //             k = k + ' ' + pin.edges[0].node
+    //           }
+    //         }
+    //       }
+    //       compobj.name = component.symbol
+    //       compobj.node1 = component.children[0].edges[0].node
+    //       compobj.node2 = component.children[1].edges[0].node
+    //       compobj.magnitude = 10
+    //       netlist.componentlist.push(component.properties.PREFIX)
+    //       netlist.nodelist.push(compobj.node2, compobj.node1)
+    //     }
+    //     if (component.properties.VALUE !== undefined) {
+    //       k = k + ' ' + component.properties.VALUE
+    //     }
 
-        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
-          k = k + ' ' + component.properties.EXTRA_EXPRESSION
-        }
-        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
-          k = k + ' ' + component.properties.MODEL.split(' ')[1]
-        }
-        k = k + ' \n'
-      }
-    }
-  }
-  var NODE_SETS = []
+    //     if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
+    //       k = k + ' ' + component.properties.EXTRA_EXPRESSION
+    //     }
+    //     if (component.properties.MODEL && component.properties.MODEL.length > 0) {
+    //       k = k + ' ' + component.properties.MODEL.split(' ')[1]
+    //     }
+    //     k = k + ' \n'
+    //   }
+    // }
+  
     // DFS _________
+    var NODE_SETS = []
     console.log('dfs init')
     var ptr = 1
     var mp = Array(5000).fill(0)
     NODE_SETS[0] = new Set() // Defining ground
-    var count_ = new Map()
     for(var property in list){
+        if(list[property].Component !== true && list[property].edge === true) console.log("FOUND NON-Property", list[property])
         if(list[property].Component === true && list[property].symbol !== 'PWR'){
             mxCell.prototype.ConnectedNode = null
             var component = list[property]
@@ -801,6 +910,115 @@ function annotate(graph) {
     }
     console.log('dfs end')
     console.log("Results: ", NODE_SETS)
+    for (var property in list) {
+        if (list[property].Component === true && list[property].symbol !== 'PWR') {
+          var compobj = {
+            name: '',
+            node1: '',
+            node2: '',
+            magnitude: ''
+          }
+          mxCell.prototype.ConnectedNode = null
+          var component = list[property]
+          if (component.symbol === 'R') {
+            k = k + component.symbol + r.toString()
+            component.value = component.symbol + r.toString()
+            component.properties.PREFIX = component.value
+  
+            ++r
+          } else if (component.symbol === 'V') {
+            k = k + component.symbol + v.toString()
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++v
+          } else if (component.symbol === 'C') {
+            k = k + component.symbol + v.toString()
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++c
+          } else if (component.symbol === 'D') {
+            k = k + component.symbol + v.toString()
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++d
+          } else if (component.symbol === 'Q') {
+            k = k + component.symbol + v.toString()
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++q
+          } else {
+            k = k + component.symbol + c.toString()
+            component.value = component.symbol + c.toString()
+            component.properties.PREFIX = component.value
+            ++w
+          }
+          if (component.children !== null) {
+            for (var child in component.children) {
+              var pin = component.children[child]
+              if (pin.vertex === true && pin.connectable) {
+                if (pin.edges !== null || pin.edges.length !== 0) {
+                  // Search for pin in NODE_SET:
+                  // assign: pin.edges[wire].node= "NODE" + $indexOfSet
+                  NODE_SETS.forEach((e, i) => {
+                    var temp_set = e.items;
+                    for (const vertex in temp_set) {
+                      if (temp_set[vertex].id == pin.id) {
+                        if (i === 0) {
+                          pin.edges[wire].node = 0
+                          pin.ConnectedNode = 0
+                          pin.edges[wire].value = pin.edges[wire].node
+  
+                        } else {
+                          pin.edges[wire].node = "COM." + i
+                          pin.ConnectedNode = 'COM.' + i + pin.edges[wire].source.value
+                          pin.edges[wire].value = pin.edges[wire].node
+                        }
+                      }
+                    }
+                  })
+                  // else: default action:
+                  // for (var wire in pin.edges) {
+                  //   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
+                  //     if (pin.edges[wire].source.edge === true) {
+                  //       // Not Performing any Action for Pin to Wire Connections 
+                  //     } else if (pin.edges[wire].target.edge === true) {
+                  //         console.log('check here')
+                  //       // Not Performing any Action for Pin to Wire Connections 
+                  //     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                  //       pin.edges[wire].node = 0
+                  //       pin.edges[wire].value = 0
+                  //     } else {
+                  //       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                  //       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                  //       pin.edges[wire].value = pin.edges[wire].node
+                  //     }
+                  //   }
+                  // }
+                  k = k + ' ' + pin.edges[0].node
+                }
+              }
+            }
+            compobj.name = component.symbol
+            compobj.node1 = component.children[0].edges[0].node
+            compobj.node2 = component.children[1].edges[0].node
+            compobj.magnitude = 10
+            netlist.componentlist.push(component.properties.PREFIX)
+            netlist.nodelist.push(compobj.node2, compobj.node1)
+          }
+          if (component.properties.VALUE !== undefined) {
+            k = k + ' ' + component.properties.VALUE
+          }
+  
+          if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
+            k = k + ' ' + component.properties.EXTRA_EXPRESSION
+          }
+          if (component.properties.MODEL && component.properties.MODEL.length > 0) {
+            k = k + ' ' + component.properties.MODEL.split(' ')[1]
+          }
+          k = k + ' \n'
+        }
+      }
+    }
 
   return list
 }
