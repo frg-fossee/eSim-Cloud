@@ -2,7 +2,12 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
-import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
+import {
+  IconButton, Tooltip, Snackbar,
+  Select,
+  FormControl,
+  InputLabel
+} from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline'
@@ -25,7 +30,13 @@ import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutli
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
+import Button from '@material-ui/core/Button'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+
+import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
+import queryString from 'query-string'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
@@ -33,6 +44,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
 import { RotateLeft } from '@material-ui/icons'
 import CreateProject from '../Project/CreateProject'
+import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -91,7 +103,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-export default function SchematicToolbar ({ mobileClose, gridRef }) {
+export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, setLtiSimResult }) {
   const classes = useStyles()
   const netfile = useSelector((state) => state.netlistReducer)
   const auth = useSelector((state) => state.authReducer)
@@ -102,6 +114,43 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
+  const [ltiId, setLtiId] = React.useState('')
+  const [ltiUserId, setLtiUserId] = React.useState('')
+  const [ltiNonce, setLtiNonce] = React.useState('')
+  const [submit, setSubmit] = React.useState(false)
+  const [submitMessage, setSubmitMessage] = React.useState('')
+  const [saveId, setSaveId] = React.useState(null)
+  const [consumerKey, setConsumerKey] = React.useState('')
+  const [anchorEl, setAnchorEl] = React.useState(null)
+  const [initalSch, setIntialSch] = React.useState('')
+  const [modelSch, setModelSch] = React.useState('')
+  const [id, setId] = React.useState('')
+  const [scored, setScored] = React.useState(false)
+  const [ltiSimHistory, setLtiSimHistory] = React.useState([])
+  const [activeSimResult, setActiveSimResult] = React.useState(null)
+
+  useEffect(() => {
+    if (ltiSimResult && ltiId) {
+      api.get(`simulation/history/lti/${ltiId}`).then(res => {
+        res.data.map((ele, index) => {
+          ele.simulation_time = new Date(ele.simulation_time)
+          return 0
+        })
+        setLtiSimHistory(res.data)
+      }).catch(err => { console.log(err) })
+      console.log('SIM RESULTS FOUND')
+      setLtiSimResult(false)
+    }
+    // eslint-disable-next-line
+  }, [ltiSimResult])
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
 
   const handleSave = (version, newSave, save_id) => {
     if (!newSave) {
@@ -111,6 +160,20 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=master'
       window.location.reload()
     }
+  }
+
+  const handleSaveForLTI = (version, newSave, save_id) => {
+    setSaveId(save_id)
+  }
+
+  const handleChangeSim = (e) => {
+    console.log('in here')
+    if (e.target.value === null) {
+      setActiveSimResult(null)
+    } else {
+      setActiveSimResult(e.target.value)
+    }
+    setAnchorEl(null)
   }
 
   const handleClickOpen = () => {
@@ -134,6 +197,82 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       printToPlotControlBlock + '\n'
     genNetlist(netlist)
     setOpen(true)
+  }
+
+  useEffect(() => {
+    var url = queryString.parse(window.location.href.split('editor')[1])
+    setLtiId(url.lti_id)
+    setLtiNonce(url.lti_nonce)
+    setLtiUserId(url.lti_user_id)
+    setConsumerKey(url.consumer_key)
+    setId(url.id)
+    // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
+    if (ltiId && id) {
+      api.get(`lti/exist/${id}`)
+        .then(res => {
+          if (res.data.secret_key) {
+            setScored(res.data.scored)
+          }
+        }).catch(err => console.log(err))
+    }
+    // eslint-disable-next-line
+  }, [ltiId])
+
+  useEffect(() => {
+    if (consumerKey) {
+      console.log(schSave)
+      api.get(`lti/exist/${id}`)
+        .then(res => {
+          if (res.data.secret_key) {
+            setIntialSch(res.data.initial_schematic)
+            setModelSch(res.data.model_schematic)
+            setScored(res.data.scored)
+          }
+        }).catch(err => console.log(err))
+    }
+    // eslint-disable-next-line
+  }, [consumerKey])
+
+  useEffect(() => {
+    if (saveId !== null) {
+      const body = {
+        schematic: saveId,
+        ltisession: {
+          id: ltiId,
+          user_id: ltiUserId,
+          oauth_nonce: ltiNonce
+        }
+      }
+      console.log(body)
+      api.post('lti/submit/', body)
+        .then(res => {
+          console.log(res.data)
+          setSubmit(true)
+          setSubmitMessage(res.data.message)
+        }).catch((err) => {
+          console.log(err)
+          setSubmit(true)
+          setSubmitMessage('There was an error while submitting. Please try again later!')
+        })
+    }
+    // eslint-disable-next-line
+  }, [saveId])
+
+  const onSubmission = () => {
+    var xml = Save()
+    dispatch(setSchXmlData(xml))
+    var title = schSave.title
+    var description = schSave.description
+    exportImage('PNG').then(res => {
+      dispatch(saveSchematic(title, description, xml, res, false, null, handleSaveForLTI, true))
+    })
+  }
+
+  const handleSubmitClose = () => {
+    setSubmit(false)
   }
 
   const handleClose = () => {
@@ -170,6 +309,11 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       return
     }
     setSnacOpen(false)
+  }
+
+  const handleMenuOnClick = (e) => {
+    window.location.href = `/eda/#/editor?id=${e}&consumer_key=${consumerKey}`
+    window.location.reload()
   }
 
   // Image Export of Schematic Diagram
@@ -415,7 +559,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     return () => {
       window.addEventListener('keydown', shrtcts)
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   return (
@@ -505,7 +649,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <LibraryAddRoundedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SelectLibrariesModal open={libsOpen} close={handleLibClose}/>
+      <SelectLibrariesModal open={libsOpen} close={handleLibClose} />
       <span className={classes.pipe}>|</span>
 
       <Tooltip title="Undo (Ctrl + Z)">
@@ -569,6 +713,50 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
       <span className={classes.pipe}>|</span>
+      {((ltiId && ltiUserId && ltiNonce) || consumerKey) && scored && <Tooltip title="Submit">
+        <Button size="small" variant="outlined" color="primary" className={classes.button} endIcon={<Icon>send</Icon>}
+          onClick={onSubmission} >
+          Submit
+        </Button>
+      </Tooltip>}
+      {consumerKey && <>
+        <Button
+          size="small" color="primary"
+          aria-controls="simple-menu" aria-haspopup="true" onClick={handleMenuClick}>
+          See schematics
+        </Button>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={() => handleMenuOnClick(modelSch)}>Model Schematic</MenuItem>
+          <MenuItem onClick={() => handleMenuOnClick(initalSch)}>Student Schematic </MenuItem>
+        </Menu>
+      </>}
+
+      {(ltiId && ltiUserId && ltiNonce) && ltiSimHistory && <div><FormControl size='small' style={{ marginLeft: '1%', paddingBottom: '1%' }} className={classes.formControl}>
+        <InputLabel htmlFor="outlined-age-native-simple">See simulations</InputLabel>
+        <Select
+          labelId="demo-simple-select-placeholder-label-label"
+          id="demo-simple-select-placeholder-label"
+          value={activeSimResult}
+          style={{ minWidth: '300px' }}
+          onChange={handleChangeSim}
+          label="Simulations"
+          className={classes.selectEmpty}
+        >
+          <MenuItem key={-1} value="None">None</MenuItem>
+          {ltiSimHistory.map(sim => {
+            return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
+          })}
+        </Select>
+      </FormControl>
+      </div>
+      }
+
       <IconButton
         color="inherit"
         aria-label="open drawer"
@@ -579,13 +767,32 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       >
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
-      <CreateProject/>
+      {!ltiId && <CreateProject />}
 
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        open={submit}
+        autoHideDuration={2000}
+        onClose={handleSubmitClose}
+        message={submitMessage}
+        action={
+          <>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleSubmitClose}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </>
+        }
+      />
     </>
   )
 }
 
 SchematicToolbar.propTypes = {
   mobileClose: PropTypes.func,
-  gridRef: PropTypes.object.isRequired
+  gridRef: PropTypes.object.isRequired,
+  ltiSimResult: PropTypes.string,
+  setLtiSimResult: PropTypes.string
 }

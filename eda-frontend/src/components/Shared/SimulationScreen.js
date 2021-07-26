@@ -92,14 +92,6 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   }
 
   useEffect(() => {
-    console.log(history)
-  }, [history])
-
-  useEffect(() => {
-    console.log(comparingSim)
-  }, [comparingSim])
-
-  useEffect(() => {
     if (close) {
       setHistoryId('')
       setCompare(false)
@@ -657,7 +649,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               None
                             </MenuItem>
                             {history.map(sim => {
-                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
                             })}
                           </Select>
                         </FormControl>}
@@ -828,7 +820,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               None
                             </MenuItem>
                             {history.map(sim => {
-                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
                             })}
                           </Select>
                         </FormControl>}

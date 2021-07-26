@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   List,
   Checkbox,
@@ -16,6 +17,7 @@ import {
   Tooltip,
   IconButton
 } from '@material-ui/core'
+import queryString from 'query-string'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { makeStyles } from '@material-ui/core/styles'
@@ -24,7 +26,6 @@ import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setRes
 import { GenerateNetList, GenerateNodeList, GenerateCompList } from './Helper/ToolbarTools'
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
-import queryString from 'query-string'
 import Notice from '../Shared/Notice'
 
 import api from '../../utils/Api'
@@ -50,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationProperties () {
+export default function SimulationProperties ({ ltiSimResult, setLtiSimResult }) {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const [taskId, setTaskId] = useState(null)
@@ -379,6 +380,9 @@ export default function SimulationProperties () {
       formData.append('version', url.version)
       formData.append('branch', url.branch)
     }
+    if (url.lti_nonce) {
+      formData.append('lti_id', url.lti_id)
+    }
     const config = {
       headers: {
         'content-type': 'multipart/form-data'
@@ -477,6 +481,7 @@ export default function SimulationProperties () {
               dispatch(setResultText(simResultText))
             }
             setIsResult(true)
+            setLtiSimResult(true)
           }
         }
       })
@@ -520,6 +525,7 @@ export default function SimulationProperties () {
         selectedValueComp = selectedValueDCSweepComp
         break
       case 'Transient':
+        typeSimulation = 'Transient'
         // console.log(transientAnalysisControlLine)
         typeSimulation = 'Transient'
         if (transientAnalysisControlLine.skipInitial === true) uic = 'UIC'
@@ -1283,4 +1289,9 @@ export default function SimulationProperties () {
       </div>
     </>
   )
+}
+
+SimulationProperties.propTypes = {
+  ltiSimResult: PropTypes.string,
+  setLtiSimResult: PropTypes.string
 }

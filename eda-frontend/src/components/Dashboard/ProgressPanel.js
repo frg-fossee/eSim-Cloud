@@ -49,7 +49,7 @@ function a11yProps (index) {
   }
 }
 
-export default function ProgressPanel () {
+export default function ProgressPanel ({ ltiDetails = null }) {
   const classes = useStyles()
   const [value, setValue] = React.useState(0)
 
@@ -95,11 +95,37 @@ export default function ProgressPanel () {
           >
             {schematics.slice(0, 4).map(
               (sch) => {
-                return (
-                  <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
-                    <SchematicCard sch={sch} />
-                  </Grid>
+                var actual = null
+                var flag = null
+                ltiDetails.map(
+                  // eslint-disable-next-line
+                  (lti) => {
+                    if (lti.model_schematic === sch.save_id || lti.initial_schematic === sch.save_id) {
+                      flag = 1
+                      actual = lti.consumer_key
+                      // eslint-disable-next-line
+                      return
+                    }
+                  }
                 )
+                if (flag) {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} consKey={actual} />
+                    </Grid>
+                  )
+                } else {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
+                // return (
+                //   <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                //     <SchematicCard sch={sch} />
+                //   </Grid>
+                // )
               }
             )}
           </Grid>
@@ -125,4 +151,8 @@ export default function ProgressPanel () {
       </TabPanel> */}
     </div>
   )
+}
+
+ProgressPanel.propTypes = {
+  ltiDetails: PropTypes.string
 }

@@ -41,6 +41,7 @@ class StateSaveSerializer(serializers.ModelSerializer):
                                            source='project.active_branch')
     is_reported = serializers.BooleanField(read_only=True,
                                            source='project.is_reported')
+    lti_id = serializers.SerializerMethodField()
 
     class Meta:
         model = StateSave
@@ -48,7 +49,15 @@ class StateSaveSerializer(serializers.ModelSerializer):
         fields = ('save_time', 'save_id', 'data_dump', 'name', 'description',
                   'owner', 'shared', 'base64_image', 'create_time', 'version',
                   'branch', 'is_arduino', 'esim_libraries', 'project_id',
-                  'project_version', 'project_branch', 'is_reported')
+                  'project_version', 'project_branch', 'is_reported',
+                  'id', 'lti_id')
+
+    def get_lti_id(self, obj):
+        ltis = obj.model_schematic.all()
+        if ltis.exists():
+            return ltis[0].id
+        else:
+            return None
 
 
 class SaveListSerializer(serializers.ModelSerializer):
@@ -62,10 +71,18 @@ class SaveListSerializer(serializers.ModelSerializer):
                                            source='project.active_branch')
     is_reported = serializers.BooleanField(read_only=True,
                                            source='project.is_reported')
+    lti_id = serializers.SerializerMethodField()
 
     class Meta:
         model = StateSave
         fields = ('save_time', 'save_id', 'name', 'description',
                   'shared', 'base64_image', 'create_time', 'version',
                   'branch', 'esim_libraries', 'project_id', 'project_version',
-                  'project_branch', 'is_reported')
+                  'project_branch', 'is_reported', 'id', 'lti_id')
+
+    def get_lti_id(self, obj):
+        ltis = obj.model_schematic.all()
+        if ltis.exists():
+            return ltis[0].id
+        else:
+            return None

@@ -10,8 +10,8 @@ python manage.py makemigrations saveAPI
 python manage.py migrate saveAPI
 python manage.py makemigrations simulationAPI
 python manage.py migrate simulationAPI
-python manage.py makemigrations libAPI
-python manage.py migrate libAPI
+python manage.py makemigrations ltiAPI
+python manage.py migrate ltiAPI
 python manage.py makemigrations
 python manage.py migrate
 python manage.py collectstatic --noinput

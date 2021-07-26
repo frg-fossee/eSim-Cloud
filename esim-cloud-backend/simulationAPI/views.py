@@ -12,12 +12,14 @@ from celery.result import AsyncResult
 from saveAPI.models import StateSave
 import uuid
 from .models import runtimeStat, Limit, simulation
+from ltiAPI.models import ltiSession
 import celery.signals
 from celery import current_task
 import time
 import math
 import os
 import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -46,11 +48,17 @@ def saveNetlistDB(task_id, filepath, request):
                 branch=request.data['branch']).id
     else:
         save_id = None
+    lti_session = None
+    if request.data.get('lti_id', None):
+        lti_session = ltiSession.objects.get(id=request.data['lti_id'])
     serialized = simulationSaveSerializer(
         data={"task": task_id, "netlist": temp, "owner": owner,
               "simulation_type": simulation_type, "schematic": save_id})
     if serialized.is_valid(raise_exception=True):
         serialized.save()
+        if lti_session:
+            lti_session.simulations.add(
+                simulation.objects.get(id=serialized.data['id']))
         return
     else:
         return Response(serialized.errors)
@@ -162,12 +170,25 @@ class SimulationResultsFromSimulator(APIView):
         return Response(serialized.data, status=status.HTTP_200_OK)
 
 
-@celery.signals.task_prerun.connect
+class GetLTISimResults(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request, lti_id):
+        try:
+            session = ltiSession.objects.get(id=lti_id)
+            serialized = simulationSerializer(
+                session.simulations.all(), many=True)
+            return Response(serialized.data, status=status.HTTP_200_OK)
+        except ltiSession.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+@ celery.signals.task_prerun.connect
 def statsd_task_prerun(task_id, **kwargs):
     current_task.start_time = time.time()
 
 
-@celery.signals.task_postrun.connect
+@ celery.signals.task_postrun.connect
 def statsd_task_postrun(task_id, **kwargs):
     runtime = time.time() - current_task.start_time
     runtime = math.ceil(runtime)

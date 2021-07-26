@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
   Card,
   Grid,
@@ -23,7 +24,6 @@ import SchematicCard from './SchematicCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchSchematics } from '../../redux/actions/index'
 import FilterListIcon from '@material-ui/icons/FilterList'
-import PropTypes from 'prop-types'
 const useStyles = makeStyles((theme) => ({
   mainHead: {
     width: '100%',
@@ -93,7 +93,7 @@ function MainCard () {
   )
 }
 
-export default function SchematicsList () {
+export default function SchematicsList ({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
@@ -216,9 +216,9 @@ export default function SchematicsList () {
           </Tabs>
         </AppBar>
         <TabPanel style={{ width: '100%' }} value={value} index={0}>
-          {saves.filter(x => { return x.project_id == null }).length !== 0
+          {saves.filter(x => { return (x.project_id == null && x.lti_id == null) }).length !== 0
             ? <>
-              {saves.filter(x => { return x.project_id == null }).map(
+              {saves.filter(x => { return (x.project_id == null && x.lti_id == null) }).map(
                 (sch) => {
                   return (
                     <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
@@ -260,17 +260,34 @@ export default function SchematicsList () {
           }
         </TabPanel>
         <TabPanel style={{ width: '100%' }} value={value} index={2}>
-          <Grid item xs={12}>
-            <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
-              <Typography variant="subtitle1" gutterBottom>
-                Hey {auth.user.username} , You dont have any saved LTI Apps...
-              </Typography>
-            </Card>
-          </Grid>
+          {saves.filter(x => { return x.lti_id }).length !== 0
+            ? <>
+              {saves.filter(x => { return x.lti_id }).map(
+                (sch) => {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
+              )}
+            </>
+            : <Grid item xs={12}>
+              <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Hey {auth.user.username} , You dont have any saved projects...
+                </Typography>
+              </Card>
+            </Grid>
+          }
         </TabPanel>
         {/* List all schematics saved by user */}
 
       </Grid>
     </>
   )
+}
+
+SchematicsList.propTypes = {
+  ltiDetails: PropTypes.string
 }
