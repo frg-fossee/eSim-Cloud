@@ -14,9 +14,7 @@ import {
   TextField,
   DialogActions,
   List,
-  Box
 } from '@material-ui/core'
-import PropTypes from 'prop-types';
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ComponentProperties from '../components/SchematicEditor/ComponentProperties'
 import MuiDialogTitle from '@material-ui/core/DialogTitle'
@@ -220,8 +218,8 @@ export default function ProjectPage(props) {
                         {project.details && <SimulationProperties 
                         dcSweepcontrolLine={project.details.dc_sweep} 
                         transientAnalysisControlLine={project.details.transient_analysis}
-                        acAnalysisControlLine={project.details.tf_analysis}
-                        tfAnalysisControlLine={project.details.ac_analysis}
+                        acAnalysisControlLine={project.details.ac_analysis}
+                        tfAnalysisControlLine={project.details.tf_analysis}
                         />}
                       </DialogContent>
                     </Dialog>

@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Button,
   Toolbar,
@@ -24,7 +24,6 @@ import {
   DialogTitle,
 }
   from '@material-ui/core'
-import { Multiselect } from 'multiselect-react-dropdown'
 import CloseIcon from '@material-ui/icons/Close'
 import PostAddIcon from '@material-ui/icons/PostAdd'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
@@ -129,6 +128,7 @@ function CreateProject() {
       setStatus(project.details?.status_name)
     }
     if (project.details) {
+      console.log(project.details)
       setDetails({ title: project.details.title, description: project.details.description, active_version: project.details.active_version, active_branch: project.details.active_branch })
       setFields(project.details.fields)
       if (project.details.dc_sweep) {
@@ -200,7 +200,6 @@ function CreateProject() {
           for (var j = 0; j < versionsArray.length; j++) {
             versionsTemp = versionsTemp.concat(versionsArray[j][1])
           }
-          console.log(versionsTemp)
           setVersions(versionsTemp)
         })
         .catch((err) => {
@@ -267,23 +266,27 @@ function CreateProject() {
     setOpen(!open)
   }
   const createPub = () => {
-    dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+    if (details.title !== '' && details.description !== '' && activeVersion !== '') {
+      dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+    }
   }
   const clickChange = () => {
-    if (changed === 1) {
-      dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
-    } else if (changed === 2) {
-      if (status !== project.details.status_name) {
-        dispatch(changeStatus(project.details.project_id, status, ''))
-      }
-    } else if (changed === 3) {
-      if (status !== project.details.status_name) {
-        dispatch(createProject(save_id, [details, fields, status, dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
-      } else {
+    if (details.title !== '' && details.description !== '' && activeVersion !== '') {
+      if (changed === 1) {
         dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+      } else if (changed === 2) {
+        if (status !== project.details.status_name) {
+          dispatch(changeStatus(project.details.project_id, status, ''))
+        }
+      } else if (changed === 3) {
+        if (status !== project.details.status_name) {
+          dispatch(createProject(save_id, [details, fields, status, dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+        } else {
+          dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+        }
       }
+      setChanged(0)
     }
-    setChanged(0)
   }
   const clickPreview = () => {
     const win = window.open()
@@ -333,9 +336,6 @@ function CreateProject() {
     setDeleteDialogue(!deleteDialogue)
     setOpen(false)
   }
-  useEffect(() => {
-    console.log(selectedSimulation)
-  }, [selectedSimulation])
   return (
     <div>
       {(window.location.href.split('?id=')[1] && auth.user?.username === owner) &&
@@ -394,19 +394,23 @@ function CreateProject() {
               <Paper className={classes.paper}>
                 <h2 style={{ color: 'black' }}>Project Details</h2>
                 {versions != null &&
-                  ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}> <FormControl style={{ width: '100%' }} className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={activeVersion}
-                      onChange={handleActiveVersion}
-                    >
-                      {versions.map(version => {
-                        return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
-                      })}
-                    </Select>
-                  </FormControl> </Grid>}
+                  ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}>
+                    <FormControl
+                      style={{ width: '100%' }}
+                      className={classes.formControl}
+                      error={!activeVersion}>
+                      <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={activeVersion}
+                        onChange={handleActiveVersion}
+                      >
+                        {versions.map(version => {
+                          return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                        })}
+                      </Select>
+                    </FormControl> </Grid>}
                 <TextField
                   color='primary'
                   autoFocus
@@ -418,6 +422,7 @@ function CreateProject() {
                   fullWidth
                   disabled={project.details && !project.details.can_edit}
                   value={details.title}
+                  error={!details.title}
                   onChange={changeFieldText}
 
                 />
@@ -432,6 +437,7 @@ function CreateProject() {
                   type="text"
                   disabled={project.details && !project.details.can_edit}
                   value={details.description}
+                  error={!details.description}
                   onChange={changeFieldText}
                   fullWidth
                 />
@@ -489,7 +495,7 @@ function CreateProject() {
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
                 <h2 style={{ color: 'black' }}>Simulation Parameters</h2>
                 <div>
-                  <FormControl className={classes.formControl} style={{width:'100%'}}>
+                  <FormControl className={classes.formControl} style={{ width: '100%' }}>
                     <InputLabel id="demo-simple-select-label">Select simulation mode parameters to enter:</InputLabel>
                     <Select
                       style={{ width: '50%' }}

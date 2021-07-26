@@ -10,7 +10,6 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   Typography,
-  Select,
   Divider,
   Popover,
   Tooltip,
@@ -716,7 +715,6 @@ export default function SimulationProperties(props) {
                           native: true
                         }}
                       >
-
                         {
                           componentsList.map((value, i) => {
                             if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
@@ -920,6 +918,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <Checkbox id="skipInitial" label="Use Initial Conditions" size='small' variant="outlined"
                         value={transientAnalysisControlLine.skipInitial}
+                        checked={transientAnalysisControlLine.skipInitial}
                         onChange={handleTransientAnalysisControlLineUIC}
                       />
                       <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
@@ -1137,6 +1136,7 @@ export default function SimulationProperties(props) {
                         type="checkbox"
                         name="Between Nodes"
                         value={tfAnalysisControlLine.outputNodes}
+                        checked={tfAnalysisControlLine.outputNodes}
                         onChange={handleTfAnalysisControlLineNodes}
                         id="outputNodes"
                       // checked={tfAnalysisControlLine.outputNodes}

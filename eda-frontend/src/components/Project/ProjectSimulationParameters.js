@@ -1,9 +1,6 @@
-import React, { useState ,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
-  Tabs,
-  Tab,
-  AppBar,
   Box,
   Typography,
   TextField,
@@ -41,7 +38,6 @@ TabPanel.propTypes = {
 };
 
 function ProjectSimulationParameters(props) {
-  const [value, setValue] = useState(5)
   const [componentsList, setComponentsList] = useState([])
   const [disabled, setDisabled] = React.useState(false)
 
@@ -125,19 +121,6 @@ function ProjectSimulationParameters(props) {
     }
     setDisabled(props.tfAnalysisControlLine.outputNodes)
   }
-
-  const onTabChange = (e, newValue) => {
-    if (value === 5) {
-      try {
-        setComponentsList(['', ...GenerateCompList()])
-
-      } catch (err) {
-        setComponentsList([])
-        alert('Circuit not complete. Please Check Connectons.')
-      }
-    }
-    setValue(newValue)
-  }
   useEffect(() => {
     if (props.selectedSimulation !== '') {
       try {
@@ -151,16 +134,9 @@ function ProjectSimulationParameters(props) {
   }, [props.selectedSimulation])
   return (
     <>
-      <AppBar position="static">
-        {/* <Tabs value={value} onChange={onTabChange}>
-          {props.selectedSimulations.includes('DC Sweep') && <Tab label='DC Sweep' />}
-          {props.selectedSimulations.includes('Transient Analysis') && <Tab label='Transient Analysis'></Tab>}
-          {props.selectedSimulations.includes('Transfer Function Analysis') && <Tab label='Transfer Function Analysis'></Tab>}
-          {props.selectedSimulations.includes('AC Analysis') && <Tab label='AC Analysis' ></Tab>}
-        </Tabs> */}
-      </AppBar>
       <TabPanel value={props.selectedSimulation} index={'DC Sweep'} >
         <List style={{ color: 'black' }}>
+          <h3 style={{marginTop:'0'}}>DC Sweep</h3>
           <ListItem>
             <TextField
               style={{ width: '100%' }}
@@ -175,7 +151,6 @@ function ProjectSimulationParameters(props) {
                 native: true
               }}
             >
-
               {
                 componentsList.map((value, i) => {
                   if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
@@ -266,11 +241,10 @@ function ProjectSimulationParameters(props) {
 
           </ListItem>
         </List>
-
-
       </TabPanel>
       <TabPanel value={props.selectedSimulation} index={'Transient Analysis'} >
         <List style={{ color: 'black' }}>
+          <h3 style={{marginTop:'0'}}>Transient Analysis</h3>
           <ListItem>
             <TextField id="start" label="Start Time" size='small' variant="outlined"
               value={props.transientAnalysisControlLine.start}
@@ -295,6 +269,7 @@ function ProjectSimulationParameters(props) {
           <ListItem>
             <Checkbox id="skipInitial" label="Use Initial Conditions" size='small' variant="outlined"
               value={props.transientAnalysisControlLine.skipInitial}
+              checked={props.transientAnalysisControlLine.skipInitial}
               onChange={handleTransientAnalysisControlLineUIC}
             />
             <span style={{ marginLeft: '10px' }}>Use Initial Conditions</span>
@@ -303,11 +278,13 @@ function ProjectSimulationParameters(props) {
       </TabPanel>
       <TabPanel value={props.selectedSimulation} index={'Transfer Function Analysis'} >
         <List style={{ color: 'black' }}>
+          <h3 style={{marginTop:'0'}}>Transfer Function Analysis</h3>
           <ListItem>
             <input
               type="checkbox"
               name="Between Nodes"
               value={props.tfAnalysisControlLine.outputNodes}
+              checked={props.tfAnalysisControlLine.outputNodes}
               onChange={handleTfAnalysisControlLineNodes}
               id="outputNodes"
             // checked={tfAnalysisControlLine.outputNodes}
@@ -379,6 +356,7 @@ function ProjectSimulationParameters(props) {
       </TabPanel>
       <TabPanel value={props.selectedSimulation} index={'AC Analysis'} >
         <List style={{ color: 'black' }}>
+          <h3 style={{marginTop:'0'}}>AC Analysis</h3>
           <ListItem>
             <TextField
               style={{ width: '100%' }}
