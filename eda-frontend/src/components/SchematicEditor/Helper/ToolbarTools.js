@@ -607,6 +607,31 @@ class Stack {
     }
 }
 
+function traverseWire(edge, vis) {
+  var ans = []
+  vis[edge.id] = 1
+  if (edge.target.vertex == true || edge.source.vertex == true) {
+    if (edge.target.vertex == true) { ans.push(edge.target) }
+    if (edge.source.vertex == true) { ans.push(edge.source) }
+    return ans;
+  } else {
+    vis[parseInt(edge.id)] = true
+    if (edge.edges && edge.edges.length > 0) {
+      edge.edges.forEach((elem) => {
+        ans = ans.concat(traverseWire(elem, vis))
+      })
+    } else {
+      if (edge.source.edge == true && !vis[edge.source.id]) {
+        ans = ans.concat(traverseWire(edge.source, vis))
+      }
+      if (edge.target.edge == true && !vis[edge.target.id]) {
+        ans = ans.concat(traverseWire(edge.target, vis))
+      }
+    }
+    return ans
+  }
+}
+
 function annotate(graph) {
 
   var r = 1
@@ -627,96 +652,6 @@ function annotate(graph) {
   if (erc === false) {
     alert('ERC check failed')
   } else {
-    
-    // for (var property in list) {
-    //   if (list[property].Component === true && list[property].symbol !== 'PWR') {
-    //     var compobj = {
-    //       name: '',
-    //       node1: '',
-    //       node2: '',
-    //       magnitude: ''
-    //     }
-    //     mxCell.prototype.ConnectedNode = null
-    //     var component = list[property]
-    //     if (component.symbol === 'R') {
-    //       k = k + component.symbol + r.toString()
-    //       component.value = component.symbol + r.toString()
-    //       component.properties.PREFIX = component.value
-
-    //       ++r
-    //     } else if (component.symbol === 'V') {
-    //       k = k + component.symbol + v.toString()
-    //       component.value = component.symbol + v.toString()
-    //       component.properties.PREFIX = component.value
-    //       ++v
-    //     } else if (component.symbol === 'C') {
-    //       k = k + component.symbol + v.toString()
-    //       component.value = component.symbol + v.toString()
-    //       component.properties.PREFIX = component.value
-    //       ++c
-    //     } else if (component.symbol === 'D') {
-    //       k = k + component.symbol + v.toString()
-    //       component.value = component.symbol + v.toString()
-    //       component.properties.PREFIX = component.value
-    //       ++d
-    //     } else if (component.symbol === 'Q') {
-    //       k = k + component.symbol + v.toString()
-    //       component.value = component.symbol + v.toString()
-    //       component.properties.PREFIX = component.value
-    //       ++q
-    //     } else {
-    //       k = k + component.symbol + c.toString()
-    //       component.value = component.symbol + c.toString()
-    //       component.properties.PREFIX = component.value
-    //       ++w
-    //     }
-    //     if (component.children !== null) {
-    //       for (var child in component.children) {
-    //         var pin = component.children[child]
-    //         if (pin.vertex === true && pin.connectable) {
-    //           if (pin.edges !== null || pin.edges.length !== 0) {
-    //             for (var wire in pin.edges) {
-    //               if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-    //                 if (pin.edges[wire].source.edge === true) {
-    //                   // Not Performing any Action for Pin to Wire Connections 
-    //                 } else if (pin.edges[wire].target.edge === true) {
-    //                     console.log('check here')
-    //                   // Not Performing any Action for Pin to Wire Connections 
-    //                 } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-    //                   pin.edges[wire].node = 0
-    //                   pin.edges[wire].value = 0
-    //                 } else {
-    //                   pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-    //                   pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-    //                   pin.edges[wire].value = pin.edges[wire].node
-    //                 }
-    //               }
-    //             }
-    //             k = k + ' ' + pin.edges[0].node
-    //           }
-    //         }
-    //       }
-    //       compobj.name = component.symbol
-    //       compobj.node1 = component.children[0].edges[0].node
-    //       compobj.node2 = component.children[1].edges[0].node
-    //       compobj.magnitude = 10
-    //       netlist.componentlist.push(component.properties.PREFIX)
-    //       netlist.nodelist.push(compobj.node2, compobj.node1)
-    //     }
-    //     if (component.properties.VALUE !== undefined) {
-    //       k = k + ' ' + component.properties.VALUE
-    //     }
-
-    //     if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
-    //       k = k + ' ' + component.properties.EXTRA_EXPRESSION
-    //     }
-    //     if (component.properties.MODEL && component.properties.MODEL.length > 0) {
-    //       k = k + ' ' + component.properties.MODEL.split(' ')[1]
-    //     }
-    //     k = k + ' \n'
-    //   }
-    // }
-  
     // DFS _________
     var NODE_SETS = []
     console.log('dfs init')
@@ -732,36 +667,25 @@ function annotate(graph) {
               // pins
               for (var child in component.children) {
                   var pin = component.children[child];
-                  // console.log(pin)
                   
                   if (pin != null &&  pin.vertex === true && pin.connectable) {
                     if (pin.edges !== null || pin.edges.length !== 0) {
-                      // console.log("outgoing: ", pin.ParentComponent)
                       if(mp[(pin.id)] === 1){                                
                           continue                      
                       }
                       var stk = new Stack()
                       var cur_node
                       var cur_set = []
-                      var contains_gnd = 0
-                      // console.log('pushing node id into map', pin.id)                            
+                      var contains_gnd = 0                     
                       
                       stk.push(pin)      
                       console.log('exploring connected nodes of', pin)                    
                       while(!stk.isEmpty()){
-                          // console.log('case')
-                          
                           cur_node = stk.peek()
                           stk.pop();
                           mp[cur_node.id] = 1
-                          // console.log('pushing node into current set: ', cur_node)
-                          // mp[cur_node.id] = 1
                           cur_set.push(cur_node)
                           stk.print()
-                          // if(!mp[(cur_node.id)]){
-                          // mp[cur_node.id] = 1
-                          // console.log('Just found', cur_node)
-                          // console.log('Attached wires: '+ ptr, cur_node.edges)
                           for (var wire in cur_node.edges) {
                             console.log(cur_node.edges[wire])
                             if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
@@ -780,7 +704,8 @@ function annotate(graph) {
                                     stk.push(cur_node.edges[wire].source)
                                 }
                               }
-                              // Checking for wires which are connected to another wire(s)
+                              // Checking for wires which are connected to another wire(s), Comment out 
+                              // the if conditions below if edge connections malfunction
                               var conn_vertices = [];
                               if (cur_node.edges[wire].edges && cur_node.edges[wire].edges.length > 0) {
                                 for (const ed in cur_node.edges[wire].edges) {
@@ -805,9 +730,6 @@ function annotate(graph) {
                               })
                             }
                           }
-                          // }
-                          // ptr++;
-                          // if(ptr > 50) break; 
                         if(contains_gnd === 1){
                             for(var x in cur_set)
                                 NODE_SETS[0].add(cur_set[x])
@@ -824,45 +746,6 @@ function annotate(graph) {
         }
     }
     console.log('dfs end')
-    console.log("Results: ", NODE_SETS)
-    //   // change the hardcoded values to increase number of elements support in graph
-    // console.log("Edge Processing Initiated")
-    // for(var property in list){
-    //   if(list[property].edge === true){
-    //       mxCell.prototype.ConnectedNode = null
-    //       var edge = list[property]
-    //       if(edge.source !== null && edge.target !== null){
-    //         var vis = Array(5000).fill(0)
-    //         var toLink = fun(edge, vis);  // set of node.id
-    //         console.log("connected nodes by edges: ", toLink)
-    //         var linkedSets = []
-    //         NODE_SETS.forEach((e) => {
-    //           var intersect = new Set([...e].filter(i => ttoLink.has(i.id)));
-    //           if (intersect.size > 0) {
-    //             toLink.forEach(item => {
-    //               e.add(item)
-    //             })
-    //           }
-    //         })
-    //         var final_set = []
-    //         linkedSets.forEach(e => {
-    //           NODE_SETS[e].forEach(x => {
-    //             final_set.push(x)
-    //           })
-    //         })
-    //         console.log("final_set: ", final_set)
-    //         linkedSets.forEach(e => {
-    //           NODE_SETS[e] = new Set(final_set)
-    //         })  
-    //         console.log("NODE_SETS: ", NODE_SETS)          
-    //       }
-    //       else{
-    //         console.log('edge found but null source or target', edge)
-    //       }
-    //   }
-    // }
-    // console.log('dfs for Edges ended')
-
     console.log("Results after considering edges: ", NODE_SETS)
     for (var property in list) {
         if (list[property].Component === true && list[property].symbol !== 'PWR') {
@@ -871,7 +754,6 @@ function annotate(graph) {
           if (component.symbol === 'R') {
             component.value = component.symbol + r.toString()
             component.properties.PREFIX = component.value
-
             ++r
           } else if (component.symbol === 'V') {
             component.value = component.symbol + v.toString()
@@ -919,145 +801,61 @@ function annotate(graph) {
                       done = 1
                       // console.log("VALUE SET TO ", pin.edges[wire].ConnectedNode)
                     }
-                    // else{
-                    //   console.log("COULDN'T FIND THE NODE!!!!!")
-                    // }
                   })
                 })
-                  // else: default action:
-                  // for (var wire in pin.edges) {
-                  //   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                  //     if (pin.edges[wire].source.edge === true) {
-                  //       // Not Performing any Action for Pin to Wire Connections 
-                  //     } else if (pin.edges[wire].target.edge === true) {
-                  //         console.log('check here')
-                  //       // Not Performing any Action for Pin to Wire Connections 
-                  //     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                  //       pin.edges[wire].node = 0
-                  //       pin.edges[wire].value = 0
-                  //     } else {
-                  //       pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                  //       pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                  //       pin.edges[wire].value = pin.edges[wire].node
-                  //     }
-                  //   }
-                  // }
                 k = k + ' ' + pin.edges[0].node
                 }
               }
             }
         }
       }
-    }
-
-    
+    } 
   }
-
   return list
 }
 
-function traverseWire(edge, vis) {
-  var ans = []
-  vis[edge.id] = 1
-  if (edge.target.vertex == true || edge.source.vertex == true) {
-    if (edge.target.vertex == true) { ans.push(edge.target) }
-    if (edge.source.vertex == true) { ans.push(edge.source) }
-    return ans;
-  } else {
-    vis[parseInt(edge.id)] = true
-    if (edge.edges && edge.edges.length > 0) {
-      edge.edges.forEach((elem) => {
-        ans = ans.concat(traverseWire(elem, vis))
-      })
-    } else {
-      if (edge.source.edge == true && !vis[edge.source.id]) {
-        ans = ans.concat(traverseWire(edge.source, vis))
-      }
-      if (edge.target.edge == true && !vis[edge.target.id]) {
-        ans = ans.concat(traverseWire(edge.target, vis))
-      }
-    }
-    return ans
-  }
-}
-
-// export function fun(edge, vis){
-//   var ans = new Set() // stores node ids
-//   vis[edge.id] = 1
-//   if (edge.source !== null && edge.target !== null) {
-//     if (edge.source.vertex === true) {
-//       ans.add(edge.source.id)
-//     }
-//     else if(edge.source.edge === true && vis[edge.source.edge.id] !== true ){
-//       var tmp = fun(edge.source, vis)
-//       tmp.forEach(e => {
-//         ans.add(e)
-//       })
-//     }
-//     if(edge.target.vertex === true){
-//       ans.add(edge.target.id)
-//     }
-//     else if(edge.target.edge === true && vis[edge.target.edge.id] !== true ){
-//       var tmp = fun(edge.target, vis)
-//       tmp.forEach(e => {
-//         ans.add(e)
-//       })
-//     }    
-//   }
-//   else{
-//     console.log("no source or target found. Terminating...")
-//   }
-//   return ans
-// }
 // Returns all the Nodes present in the Schematic, Used for Simulation 
 export function GenerateNodeList() {
   var list = annotate(graph)
-  var a = []
   // Using a Set to avoid duplicate Nodes 
-  var netlist = new Set()
-  var k = 'Unitled netlist \n'
+  var nodelist = new Set()
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
-      var compobj = {
-        name: '',
-        node1: '',
-        node2: '',
-        magnitude: ''
-      }
       // Fetching all the nodes 
       var component = list[property]
       if (component.children !== null) {
-        compobj.name = component.symbol
-        compobj.node1 = component.children[0].edges[0].node
-        compobj.node2 = component.children[1].edges[0].node
-        netlist.add(compobj.node1, compobj.node2)
+        for(var child in component.children){
+            nodelist.add(component.children[child].edges[0].node)
+        }        
       }
     }
   }
-  return netlist
+  return nodelist
 }
 // Sends a list of components present in the netlist 
 export function GenerateCompList() {
   var list = annotate(graph)
   var a = []
-  var netlist = [] // This will contain the list of Component Prefix
+  var complist = [] // This will contain the list of Component Prefix
   var k = 'Unitled netlist \n'
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
       var compobj = {
         name: '',
-        node1: '',
-        node2: '',
         magnitude: ''
       }
       var component = list[property]
       compobj.name = component.symbol
-      compobj.node1 = component.children[0].edges[0].node
-      compobj.node2 = component.children[1].edges[0].node
-      netlist.push(component.properties.PREFIX)
+      var nodeNumber = 0
+      for(var child in component.children){
+          nodeNumber++
+          compobj['node' + nodeNumber.toString()] = component.children[child].edges[0].node
+      }
+      console.log('COMPOBJ after complist generations', compobj)
+      complist.push(component.properties.PREFIX)
     }
   }
-  return netlist
+  return complist
 }
 // Function to Render Circuit XML
 export function renderXML() {
