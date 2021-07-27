@@ -354,9 +354,9 @@ export function GenerateNetList() {
   var c = 1
   var n = 1
   var spiceModels = ''
-  var netlist = {
+  var compDetails = {
     componentlist: [],
-    nodelist: []
+    nodelist: new Set()
   }
   var erc = ErcCheckNets() // Checking for ERC Failures
   var k = ''
@@ -368,8 +368,6 @@ export function GenerateNetList() {
       if (list[property].Component === true && list[property].symbol !== 'PWR') {
         var compobj = {
           name: '',
-          node1: '',
-          node2: '',
           magnitude: ''
         }
         // mxCell.prototype.ConnectedNode = null
@@ -433,11 +431,15 @@ export function GenerateNetList() {
             }
           }
           compobj.name = component.symbol
-          compobj.node1 = component.children[0].edges[0].node
-          compobj.node2 = component.children[1].edges[0].node
           compobj.magnitude = 10
-          netlist.componentlist.push(component.properties.PREFIX)
-          netlist.nodelist.push(compobj.node2, compobj.node1)
+          var nodeNumber = 0
+          for(var child in component.children){
+              nodeNumber++
+              compobj['node' + nodeNumber.toString()] = component.children[child].edges[0].node
+              compDetails.nodelist.add(component.children[child].edges[0].node)
+          }
+          compDetails.componentlist.push(component.properties.PREFIX)
+          console.log("compDetails", compDetails)
         }
         console.log('component properties', component.properties)
         if (component.properties.MODEL && component.properties.MODEL.length > 0) {
@@ -555,7 +557,6 @@ export function GenerateNetList() {
     })
     morph.startAnimation()
   }
-  var a = new Set(netlist.nodelist)
   var netobj = {
     models: spiceModels,
     main: k
@@ -643,10 +644,6 @@ function annotate(graph) {
   var w = 1
   var list = graph.getModel().cells
   var n = 1
-  var netlist = {
-    componentlist: [],
-    nodelist: []
-  }
   var erc = true
   var k = ''
   if (erc === false) {
@@ -837,7 +834,6 @@ export function GenerateCompList() {
   var list = annotate(graph)
   var a = []
   var complist = [] // This will contain the list of Component Prefix
-  var k = 'Unitled netlist \n'
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
       var compobj = {
@@ -851,7 +847,6 @@ export function GenerateCompList() {
           nodeNumber++
           compobj['node' + nodeNumber.toString()] = component.children[child].edges[0].node
       }
-      console.log('COMPOBJ after complist generations', compobj)
       complist.push(component.properties.PREFIX)
     }
   }
