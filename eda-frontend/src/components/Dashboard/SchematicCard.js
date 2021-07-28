@@ -197,7 +197,7 @@ export default function SchematicCard ({ sch }) {
         <ButtonBase
           target="_blank"
           component={RouterLink}
-          to={sch.lti_id ? `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}&lti_id=${sch.lti_id}` : `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`}
+          to={sch.lti_id ? `/editor?id=${sch.save_id}&version=${sch.version}&lti_id=${sch.lti_id}&branch=${sch.branch}` : `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`}
           // to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
           style={{ width: '100%' }}
         >

@@ -1,10 +1,9 @@
-from os import read
 from rest_framework import serializers
-from rest_framework.fields import ListField
 from saveAPI.models import StateSave
 from libAPI.models import Library
 from libAPI.serializers import LibrarySerializer
 from django.core.files.base import ContentFile
+from ltiAPI.models import lticonsumer
 import base64
 import six
 import uuid
@@ -53,7 +52,8 @@ class StateSaveSerializer(serializers.ModelSerializer):
                   'id', 'lti_id')
 
     def get_lti_id(self, obj):
-        ltis = obj.model_schematic.all()
+        save_id = obj.save_id
+        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
         if ltis.exists():
             return ltis[0].id
         else:
@@ -81,7 +81,8 @@ class SaveListSerializer(serializers.ModelSerializer):
                   'project_branch', 'is_reported', 'id', 'lti_id')
 
     def get_lti_id(self, obj):
-        ltis = obj.model_schematic.all()
+        save_id = obj.save_id
+        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
         if ltis.exists():
             return ltis[0].id
         else:

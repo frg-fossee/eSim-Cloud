@@ -464,7 +464,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
                           setVersions={setVersions}
                           setBranchOpen={setBranchOpen}
                           projectBranch={projectBranch}
-                          projectVersion={projectVersion} />
+                          projectVersion={projectVersion}
+                          ltiId={version.lti_id} />
                       )
                     }
                   </Collapse>

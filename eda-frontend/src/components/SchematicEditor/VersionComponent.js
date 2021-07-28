@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, IconButton } from '@material-ui/core'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import PropTypes from 'prop-types'
@@ -24,7 +24,8 @@ export default function VersionComponent ({
   setVersions,
   setBranchOpen,
   projectBranch,
-  projectVersion
+  projectVersion,
+  ltiId
 }) {
   const classes = useStyles()
 
@@ -44,7 +45,12 @@ export default function VersionComponent ({
 
   const handleClick = (e) => {
     e.preventDefault()
-    window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=' + branch
+    if (!ltiId){
+      window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=' + branch
+    }
+    else{
+      window.location = '#/editor?id=' + save_id + '&version=' + version + '&lti_id=' + ltiId +'&branch=' + branch
+    }
     window.location.reload()
   }
 
