@@ -101,7 +101,7 @@ export default function SimulationProperties (props) {
   const [controlBlockParam, setControlBlockParam] = useState('')
   const [disabled, setDisabled] = React.useState(false)
   const [simType, setSimType] = React.useState('')
-  var typeSimulation = ''
+  let typeSimulation = ''
 
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
@@ -375,7 +375,7 @@ export default function SimulationProperties (props) {
   // Upload the nelist
   function netlistConfig (file) {
     const token = localStorage.getItem('esim_token')
-    var url = queryString.parse(window.location.href.split('editor?')[1])
+    const url = queryString.parse(window.location.href.split('editor?')[1])
     const formData = new FormData()
     formData.append('simulationType', typeSimulation)
     formData.append('file', file)

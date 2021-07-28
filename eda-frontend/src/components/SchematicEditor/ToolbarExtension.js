@@ -38,8 +38,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents } from '../../redux/actions/index'
-import GallerySchSample from '../../utils/GallerySchSample'
+import { fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents, fetchGallery } from '../../redux/actions/index'
 import { blue } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
 import Tabs from '@material-ui/core/Tabs'
@@ -52,14 +51,14 @@ const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-var FileSaver = require('file-saver')
+const FileSaver = require('file-saver')
 
 // Dialog box to display generated netlist
 export function NetlistModal ({ open, close, netlist }) {
   const netfile = useSelector(state => state.netlistReducer)
   const createNetlistFile = () => {
-    var titleA = netfile.title.split(' ')[1]
-    var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
+    const titleA = netfile.title.split(' ')[1]
+    const blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, `${titleA}_eSim_on_cloud.cir`)
   }
   return (
@@ -448,16 +447,16 @@ export function OpenSchDialog (props) {
   const schSave = useSelector(state => state.saveSchematicReducer)
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
-
+  const gallerySchSample = useSelector(state => state.galleryReducer.schematics)
+  const dispatch = useDispatch()
   function getDate (jsonDate) {
-    var json = jsonDate
-    var date = new Date(json)
+    const json = jsonDate
+    const date = new Date(json)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
     const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
-  const dispatch = useDispatch()
 
   return (
     <Dialog
@@ -492,7 +491,7 @@ export function OpenSchDialog (props) {
                     </TableHead>
                     <TableBody>
                       <>
-                        {GallerySchSample.map(
+                        {gallerySchSample.map(
                           (sch) => {
                             return (
                               <TableRow key={sch.save_id}>
@@ -508,7 +507,7 @@ export function OpenSchDialog (props) {
                                   <Button
                                     size="small"
                                     color="primary"
-                                    onClick={() => { dispatch(loadGallery(sch.save_id.substr(7, sch.save_id.length))) }}
+                                    onClick={() => { dispatch(fetchGallerySchematic(sch.save_id)) }}
                                     variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
                                   >
                                     Launch
@@ -583,7 +582,7 @@ export function OpenSchDialog (props) {
         <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
           Local
         </Button>
-        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
+        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { dispatch(fetchGallery());setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
         </Button>
         {auth.isAuthenticated !== true
@@ -733,7 +732,7 @@ LibraryRow.propTypes = {
 export function SelectLibrariesModal ({ open, close }) {
   const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
-  var uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
+  const uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -763,7 +762,7 @@ export function SelectLibrariesModal ({ open, close }) {
 
   useEffect(() => {
     const updateActive = () => {
-      var active = []
+      const active = []
       if (allLibraries !== undefined) {
         allLibraries.forEach((element) => {
           element.active = false
@@ -787,7 +786,7 @@ export function SelectLibrariesModal ({ open, close }) {
 
   const handlFileUpload = (event) => {
     setUploadDisable(true)
-    var files = event.target.files
+    const files = event.target.files
     const formData = new FormData()
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i])

@@ -24,7 +24,7 @@ import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { fetchSchematic, loadGallery, reportProject, makeCopy } from '../redux/actions/index'
+import { fetchSchematic, fetchGallerySchematic, reportProject, makeCopy } from '../redux/actions/index'
 import { useDispatch, useSelector } from 'react-redux'
 import SimulationProperties from '../components/SchematicEditor/SimulationProperties'
 import ZoomInIcon from '@material-ui/icons/ZoomIn'
@@ -154,7 +154,7 @@ export default function ProjectPage (props) {
       var branch = query.get('branch')
       if (saveID.substr(0, 7) === 'gallery') {
         // Loading Gallery schemaic.
-        dispatch(loadGallery(saveID.substr(7, saveID.length)))
+        dispatch(fetchGallerySchematic(saveID))
       } else {
         // Loading User on-cloud saved schemaic.
         dispatch(fetchSchematic(saveID, version, branch))

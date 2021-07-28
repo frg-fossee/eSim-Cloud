@@ -26,11 +26,13 @@ import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import { Link as RouterLink } from 'react-router-dom'
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
+import { fetchRole } from '../../redux/actions/authActions'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
+import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
 import { RotateLeft } from '@material-ui/icons'
 import CreateProject from '../Project/CreateProject'
 
@@ -98,7 +100,9 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   const schSave = useSelector((state) => state.saveSchematicReducer)
 
   const dispatch = useDispatch()
-
+  useEffect(() => {
+    dispatch(fetchRole())
+  }, [dispatch])
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
@@ -114,20 +118,20 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   const handleClickOpen = () => {
-    var compNetlist = GenerateNetList()
-    var printToPlotControlBlock = ''
-    var ctrlblk = netfile.controlBlock.split('\n')
-    for (var line = 0; line < ctrlblk.length; line++) {
+    const compNetlist = GenerateNetList()
+    let printToPlotControlBlock = ''
+    const ctrlblk = netfile.controlBlock.split('\n')
+    for (let line = 0; line < ctrlblk.length; line++) {
       if (ctrlblk[line].includes('print')) {
         printToPlotControlBlock += 'plot '
-        var cleanCode = ctrlblk[line].split('print ')[1]
+        let cleanCode = ctrlblk[line].split('print ')[1]
         cleanCode = cleanCode.split('>')[0]
         printToPlotControlBlock += cleanCode + '\n'
       } else {
         printToPlotControlBlock += ctrlblk[line] + '\n'
       }
     }
-    var netlist = netfile.title + '\n\n' +
+    const netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
@@ -183,8 +187,8 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     canvas.height = gridRef.current.scrollHeight
     canvas.style.width = canvas.width + 'px'
     canvas.style.height = canvas.height + 'px'
-    var images = svg.getElementsByTagName('image')
-    for (var image of images) {
+    const images = svg.getElementsByTagName('image')
+    for (const image of images) {
       const data = await fetch(image.getAttribute('xlink:href')).then((v) => {
         return v.text()
       })
@@ -194,7 +198,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         'data:image/svg+xml;base64,' + window.btoa(data)
       )
     }
-    var ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d')
     ctx.mozImageSmoothingEnabled = true
     ctx.webkitImageSmoothingEnabled = true
     ctx.msImageSmoothingEnabled = true
@@ -203,13 +207,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
     return new Promise((resolve) => {
       if (type === 'SVG') {
-        var svgdata = new XMLSerializer().serializeToString(svg)
+        const svgdata = new XMLSerializer().serializeToString(svg)
         resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata)
         return
       }
-      var v = Canvg.fromString(ctx, svg.outerHTML)
+      const v = Canvg.fromString(ctx, svg.outerHTML)
       v.render().then(() => {
-        var image = ''
+        let image = ''
         if (type === 'JPG') {
           const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height)
           for (let i = 0; i < imgdata.data.length; i += 4) {
@@ -234,12 +238,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   // Download JPEG, PNG exported Image
   function downloadImage (data, type) {
-    var evt = new MouseEvent('click', {
+    const evt = new MouseEvent('click', {
       view: window,
       bubbles: false,
       cancelable: true
     })
-    var a = document.createElement('a')
+    const a = document.createElement('a')
     const ext = type === 'PNG' ? '.png' : '.jpg'
     a.setAttribute('download', schSave.title + '_eSim_on_cloud' + ext)
     a.setAttribute('href', data)
@@ -294,10 +298,10 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       setMessage('You are not Logged In')
       handleSnacClick()
     } else {
-      var xml = Save()
+      const xml = Save()
       dispatch(setSchXmlData(xml))
-      var title = schSave.title
-      var description = schSave.description
+      const title = schSave.title
+      const description = schSave.description
       exportImage('PNG').then((res) => {
         dispatch(saveSchematic(title, description, xml, res, false, null, handleSave))
       })
@@ -306,13 +310,31 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
+  // Handle Save to Gallery
+  const handleGalSave = () => {
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else {
+      const xml = Save()
+      dispatch(setSchXmlData(xml))
+      const title = schSave.title
+      const description = schSave.description
+      exportImage('PNG').then((res) => {
+        dispatch(saveToGallery(title, description, xml, res))
+      })
+      setMessage('Saved To Gallery Successfully')
+      handleSnacClick()
+    }
+  }
+
   // Save Schematics Locally
   const handelLocalSchSave = () => {
-    var saveLocalData = {}
+    const saveLocalData = {}
     saveLocalData.data_dump = Save()
     saveLocalData.title = schSave.title
     saveLocalData.description = schSave.description
-    var json = JSON.stringify(saveLocalData)
+    const json = JSON.stringify(saveLocalData)
     const blob = new Blob([json], { type: 'octet/stream' })
     const evt = new MouseEvent('click', {
       view: window,
@@ -329,14 +351,14 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   // Open Locally Saved Schematic
   const handelLocalSchOpen = () => {
-    var obj = {}
+    let obj = {}
     const fileSelector = document.createElement('input')
     fileSelector.setAttribute('type', 'file')
     fileSelector.setAttribute('accept', 'application/JSON')
     fileSelector.click()
     fileSelector.addEventListener('change', function (event) {
-      var reader = new FileReader()
-      var filename = event.target.files[0].name
+      const reader = new FileReader()
+      const filename = event.target.files[0].name
       if (filename.slice(filename.length - 4) === 'json') {
         reader.onload = onReaderLoad
         reader.readAsText(event.target.files[0])
@@ -580,6 +602,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         <AddBoxOutlinedIcon fontSize="small" />
       </IconButton>
       <CreateProject/>
+      { auth.roles && auth.roles.is_type_staff &&
+        <Tooltip title="Add to Gallery">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
+        <AddPhotoAlternateIcon fontSize="medium" />
+        </IconButton>
+        </Tooltip>
+      }
 
     </>
   )
