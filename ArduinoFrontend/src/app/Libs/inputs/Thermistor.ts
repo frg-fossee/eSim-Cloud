@@ -13,8 +13,8 @@ export class Thermistor extends CircuitElement {
    */
   valueText: any;
 
-  min = 0;
-  maxVal = 1000
+  min = -100;
+  maxVal = 500
   /**
    * Photoresistor Constructor
    * @param canvas Raphael canvas
@@ -84,29 +84,42 @@ export class Thermistor extends CircuitElement {
      */
   changeVal(enable1, v) {
     // calculate lumens according slider
-    const lum = (v) * this.maxVal;
+    const temp = (v) * this.maxVal;
+    /**
+     * 0/273 - 32650.80 - R1
+     * 25/298 - 10000 - R2
+     */
+    const beta = Math.log(32650.80 / 10000) / ((1 / 273) - (1 / 298))
+    let pow = beta * ((1 / (273 + temp)) - (1 / 298))
+    let r = 10000 * Math.pow(2.718, pow);
     // if enable1 is true
     if (enable1) {
       // calculate voltage value
       const incoming = this.nodes[1].value;
       // calculate output voltage
-      const val = (lum / this.maxVal) * incoming;
+      const val = (temp / this.maxVal) * incoming;
+
+      let Vout = (incoming * r) / (10000 + r);
+
       // set output voltage
-      this.nodes[0].setValue(val, null);
+      this.nodes[0].setValue(incoming - Vout, null);
       // update text
       this.valueText.attr({
-        text: this.getValue(lum)
+        text: this.getValue(temp)
       });
     } else {
       // calculate voltage value
       const incoming = this.nodes[0].value;
       // calculate output voltage
-      const val = (lum / this.maxVal) * incoming;
+      const val = (temp / this.maxVal) * incoming;
+
+      let Vout = (incoming * r) / (10000 + r);
+
       // set output voltage
-      this.nodes[1].setValue(val, null);
+      this.nodes[1].setValue(incoming - Vout, null);
       // update text
       this.valueText.attr({
-        text: this.getValue(lum)
+        text: this.getValue(temp)
       });
 
     }
