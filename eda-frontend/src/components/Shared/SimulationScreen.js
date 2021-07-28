@@ -129,15 +129,14 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
           const temp2 = (result.isGraph === 'true')
           res.data.map((ele, index) => {
             ele.simulation_time = new Date(ele.simulation_time)
-            const temp = (ele.result.graph === 'true')
-            if (!ele.result.graph || temp !== temp2) {
-              arr.push(index)
-            } else {
-              var temp = (ele.result.graph === 'true')
-              if (!ele.result.graph || temp !== temp2) {
+            if (ele.result === null) {
                 arr.push(index)
+              } else {
+                var temp = (ele.result.graph === 'true')
+                if (!ele.result.graph || temp !== temp2) {
+                  arr.push(index)
+                }
               }
-            }
             if (ele.task === taskId) {
               arr.push(index)
             }
