@@ -844,6 +844,7 @@ export class BreadBoard extends CircuitElement {
    * Called on Stop Simulation is pressed
    */
   closeSimulation(): void {
+    BreadBoard.visitedNodesv2.clear();
   }
 
 }

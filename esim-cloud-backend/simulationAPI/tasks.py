@@ -41,6 +41,4 @@ def process_task(task_id):
             raise Ignore()
     except SoftTimeLimitExceeded:
         output = {'fail': "time limit exceeded"}
-        print('tle')
-        print(output)
         return output
