@@ -73,7 +73,7 @@ export default function SimulationProperties(props) {
     step2: ''
   })
   const [transientAnalysisControlLine, setTransientAnalysisControlLine] = useState(props.transientAnalysisControlLine ? props.transientAnalysisControlLine : {
-    start: '',
+    start: '0',
     stop: '',
     step: '',
     skipInitial: false
@@ -86,7 +86,7 @@ export default function SimulationProperties(props) {
     pointsBydecade: ''
   })
 
-  const [tfAnalysisControlLine, setTfAnalysisControlLine] = useState( props.tfAnalysisControlLine ? props.tfAnalysisControlLine : {
+  const [tfAnalysisControlLine, setTfAnalysisControlLine] = useState(props.tfAnalysisControlLine ? props.tfAnalysisControlLine : {
     outputNodes: false,
     outputVoltageSource: '',
     inputVoltageSource: ''
@@ -512,48 +512,66 @@ export default function SimulationProperties(props) {
         break
       case 'DcSweep':
         // console.log(dcSweepcontrolLine)
-        typeSimulation = 'DcSweep'
-        controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
-        dispatch(setResultTitle('DC Sweep Output'))
-        selectedValue = selectedValueDCSweep
-        selectedValueComp = selectedValueDCSweepComp
+        if (dcSweepcontrolLine.parameter !== '' && dcSweepcontrolLine.start !== '' && dcSweepcontrolLine.stop !== '' && dcSweepcontrolLine.step !== '') {
+          typeSimulation = 'DcSweep'
+          controlLine = `.dc ${dcSweepcontrolLine.parameter} ${dcSweepcontrolLine.start} ${dcSweepcontrolLine.stop} ${dcSweepcontrolLine.step} ${dcSweepcontrolLine.parameter2} ${dcSweepcontrolLine.start2} ${dcSweepcontrolLine.stop2} ${dcSweepcontrolLine.step2}`
+          dispatch(setResultTitle('DC Sweep Output'))
+          selectedValue = selectedValueDCSweep
+          selectedValueComp = selectedValueDCSweepComp
+        }
+        else {
+          return
+        }
         break
       case 'Transient':
         // console.log(transientAnalysisControlLine)
-        typeSimulation = 'Transient'
-        if (transientAnalysisControlLine.skipInitial === true) uic = 'UIC'
-        controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
-
-        dispatch(setResultTitle('Transient Analysis Output'))
-        selectedValue = selectedValueTransientAnal
-        selectedValueComp = selectedValueTransientAnalComp
+        if (transientAnalysisControlLine.step !== '' && transientAnalysisControlLine.start !== '' && transientAnalysisControlLine.start !== '') {
+          typeSimulation = 'Transient'
+          if (transientAnalysisControlLine.skipInitial === true) uic = 'UIC'
+          controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start} ${uic}`
+          dispatch(setResultTitle('Transient Analysis Output'))
+          selectedValue = selectedValueTransientAnal
+          selectedValueComp = selectedValueTransientAnalComp
+        }
+        else {
+          return
+        }
         break
       case 'Ac':
         // console.log(acAnalysisControlLine)
-        typeSimulation = 'Ac'
-        controlLine = `.ac ${acAnalysisControlLine.input} ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
-
-        dispatch(setResultTitle('AC Analysis Output'))
+        if (acAnalysisControlLine.input !== '' && acAnalysisControlLine.pointsBydecade !== '' && acAnalysisControlLine.start !== '' && acAnalysisControlLine.stop !== '') {
+          typeSimulation = 'Ac'
+          controlLine = `.ac ${acAnalysisControlLine.input} ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+          dispatch(setResultTitle('AC Analysis Output'))
+        }
+        else {
+          return
+        }
         break
 
       case 'tfAnalysis':
-        typeSimulation = 'tfAnalysis'
-        selectedValue = selectedValueTFAnal
-        if (tfAnalysisControlLine.outputNodes === true) {
-          selectedValue.forEach((value, i) => {
-            if (value[i] !== undefined) {
-              nodes = nodes + ' ' + String(value[i].key)
-            }
-          })
-          nodes = 'V(' + nodes + ')'
-        } else {
-          nodes = `I(${tfAnalysisControlLine.outputVoltageSource})`
-        }
-        console.log(tfAnalysisControlLine.outputNodes)
-        controlLine = `.tf ${nodes} ${tfAnalysisControlLine.inputVoltageSource}`
+        if (tfAnalysisControlLine.inputVoltageSource !== '') {
+          typeSimulation = 'tfAnalysis'
+          selectedValue = selectedValueTFAnal
+          if (tfAnalysisControlLine.outputNodes === true) {
+            selectedValue.forEach((value, i) => {
+              if (value[i] !== undefined) {
+                nodes = nodes + ' ' + String(value[i].key)
+              }
+            })
+            nodes = 'V(' + nodes + ')'
+          } else {
+            nodes = `I(${tfAnalysisControlLine.outputVoltageSource})`
+          }
+          console.log(tfAnalysisControlLine.outputNodes)
+          controlLine = `.tf ${nodes} ${tfAnalysisControlLine.inputVoltageSource}`
 
-        dispatch(setResultTitle('Transfer Function Analysis Output'))
-        skipMultiNodeChk = 1
+          dispatch(setResultTitle('Transfer Function Analysis Output'))
+          skipMultiNodeChk = 1
+        }
+        else {
+          return
+        }
         break
       default:
         break
@@ -712,6 +730,7 @@ export default function SimulationProperties(props) {
                         select
                         label="Select Component"
                         value={dcSweepcontrolLine.parameter}
+                        error={!dcSweepcontrolLine.parameter}
                         onChange={handleDcSweepControlLine}
                         SelectProps={{
                           native: true
@@ -736,6 +755,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="start" label="Start Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.start}
+                        error={!dcSweepcontrolLine.start}
                         onChange={handleDcSweepControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>V</span>
@@ -743,6 +763,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="stop" label="Stop Voltage" size='small' variant="outlined"
                         value={dcSweepcontrolLine.stop}
+                        error={!dcSweepcontrolLine.stop}
                         onChange={handleDcSweepControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>V</span>
@@ -750,6 +771,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="step" label="Step" size='small' variant="outlined"
                         value={dcSweepcontrolLine.step}
+                        error={!dcSweepcontrolLine.step}
                         onChange={handleDcSweepControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>V</span>
@@ -899,6 +921,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="start" label="Start Time" size='small' variant="outlined"
                         value={transientAnalysisControlLine.start}
+                        error={!transientAnalysisControlLine.start}
                         onChange={handleTransientAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>S</span>
@@ -906,6 +929,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="stop" label="Stop Time" size='small' variant="outlined"
                         value={transientAnalysisControlLine.stop}
+                        error={!transientAnalysisControlLine.stop}
                         onChange={handleTransientAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>S</span>
@@ -913,6 +937,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="step" label="Time Step" size='small' variant="outlined"
                         value={transientAnalysisControlLine.step}
+                        error={!transientAnalysisControlLine.step}
                         onChange={handleTransientAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>S</span>
@@ -1055,12 +1080,14 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="pointsBydecade" label="Points/ Decade" size='small' variant="outlined"
                         value={acAnalysisControlLine.pointsBydecade}
+                        error={!acAnalysisControlLine.pointsBydecade}
                         onChange={handleAcAnalysisControlLine}
                       />
                     </ListItem>
                     <ListItem>
                       <TextField id="start" label="Start Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.start}
+                        error={!acAnalysisControlLine.start}
                         onChange={handleAcAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>Hz</span>
@@ -1068,6 +1095,7 @@ export default function SimulationProperties(props) {
                     <ListItem>
                       <TextField id="stop" label="Stop Frequency" size='small' variant="outlined"
                         value={acAnalysisControlLine.stop}
+                        error={!acAnalysisControlLine.stop}
                         onChange={handleAcAnalysisControlLine}
                       />
                       <span style={{ marginLeft: '10px' }}>Hz</span>
@@ -1141,7 +1169,6 @@ export default function SimulationProperties(props) {
                         checked={tfAnalysisControlLine.outputNodes}
                         onChange={handleTfAnalysisControlLineNodes}
                         id="outputNodes"
-                      // checked={tfAnalysisControlLine.outputNodes}
                       />
                       <span style={{ marginLeft: '10px' }}>Output By Nodes</span>
 
@@ -1207,12 +1234,12 @@ export default function SimulationProperties(props) {
                         select
                         label="Input Voltage SRC"
                         value={tfAnalysisControlLine.inputVoltageSource}
+                        error={!tfAnalysisControlLine.inputVoltageSource}
                         onChange={handleTfAnalysisControlLine}
                         SelectProps={{
                           native: true
                         }}
                       >
-
                         {
                           componentsList.map((value, i) => {
                             if (value.charAt(0) === 'V' || value.charAt(0) === 'v' || value.charAt(0) === 'I' || value.charAt(0) === 'i' || value === '') {
