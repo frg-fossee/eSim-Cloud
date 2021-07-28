@@ -1,3 +1,4 @@
+import traceback
 from .serializers import consumerSerializer, consumerResponseSerializer, \
     SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer
 from .utils import consumers, get_reverse, message_identifier
@@ -249,6 +250,7 @@ class LTIAuthView(APIView):
             # grade = LTIPostGrade(params, request)
             return HttpResponseRedirect(next_url)
         except LTIException:
+            traceback.print_exc()
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
 
