@@ -56,7 +56,7 @@ export class ViewComponentInfoComponent implements OnInit {
       this.noData = false;
 
       if (this.data.innerHTMLContent) {
-        document.getElementById("dynamic-content").innerHTML = this.data.innerHTMLContent;
+        document.getElementById('dynamic-content').innerHTML = this.data.innerHTMLContent;
       }
 
     } else {
