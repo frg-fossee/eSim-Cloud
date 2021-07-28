@@ -11,16 +11,16 @@ export default function ComponentProperties () {
   const properties = useSelector(state => state.componentPropertiesReducer.compProperties)
   const isOpen = useSelector(state => state.componentPropertiesReducer.isPropertiesWindowOpen)
   const id = useSelector(state => state.componentPropertiesReducer.id)
-  var x = useSelector(state => state.componentPropertiesReducer.x) + 50
-  var y = useSelector(state => state.componentPropertiesReducer.y)
+  let x = useSelector(state => state.componentPropertiesReducer.x) + 50
+  let y = useSelector(state => state.componentPropertiesReducer.y)
   const [height, setHeight] = useState(0)
   const [width, setWidth] = useState(0)
   const [val, setVal] = useState(properties)
 
   useEffect(() => {
     if (isOpen) {
-      var temp = document.getElementById('properties-modal').clientHeight
-      var temp2 = document.getElementById('properties-modal').clientWidth
+      const temp = document.getElementById('properties-modal').clientHeight
+      const temp2 = document.getElementById('properties-modal').clientWidth
       console.log(window.screen.width, temp2)
       console.log(x)
       if (0.6 * window.screen.height - 260 - y < temp) {

@@ -25,3 +25,9 @@ sleep 1m
 
 echo 'Applying Database Migrations'
 docker-compose -f docker-compose.dev.yml --env-file .env run --rm django /bin/sh migrations.sh
+
+echo 'Copying Pre-Defined eSim-Gallery'
+if [ ! -d esim-cloud-backend/file_storage ]; then
+    mkdir esim-cloud-backend/file_storage
+fi
+cp esim-cloud-backend/workflowAPI/fixtures/circuit_images_esim esim-cloud-backend/file_storage -r

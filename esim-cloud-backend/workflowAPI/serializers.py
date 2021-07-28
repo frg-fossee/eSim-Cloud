@@ -10,7 +10,7 @@ class UserRoleRetreieveSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomGroup
         fields = ['group', 'is_type_reviewer', 'arduino_reviewer',
-                  'e_sim_reviewer']
+                  'e_sim_reviewer', 'is_type_staff']
 
 
 class StatusWithNotesSerializer(serializers.ModelSerializer):
