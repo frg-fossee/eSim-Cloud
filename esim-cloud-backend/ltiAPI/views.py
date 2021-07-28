@@ -205,6 +205,17 @@ class LTIAuthView(APIView):
         headers = request.META
         # Define the redirect url
         host = request.get_host()
+        _ = headers.pop('HTTP_COOKIE', None)
+        if 'HTTP_SEC_FETCH_DEST' not in headers:
+            headers['HTTP_SEC_FETCH_DEST'] = 'iframe'
+        if 'HTTP_SEC_FETCH_MODE' not in headers:
+            headers['HTTP_SEC_FETCH_MODE'] = 'navigate'
+        if 'HTTP_SEC_FETCH_SITE' not in headers:
+            headers['HTTP_SEC_FETCH_SITE'] = 'cross-site'
+        print("params:", params)
+        print("headers:", headers)
+        print("host:", host)
+        print("url:", url)
         ltikeys = ['user_id', 'lis_result_sourcedid',
                    'lis_outcome_service_url', 'oauth_nonce',
                    'oauth_timestamp', 'oauth_consumer_key',
