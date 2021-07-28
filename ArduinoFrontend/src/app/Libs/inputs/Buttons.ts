@@ -1,4 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
+import { BreadBoard } from '../General';
 
 /**
  * Declare Raphael so that build don't throws error
@@ -12,6 +13,11 @@ export class PushButton extends CircuitElement {
    * Map of Pin name to the circuit node
    */
   pinNamedMap: any = {};
+  /**
+   * Object of terminals and their respective arduino pin
+   */
+  terminalParent = {};
+
   /**
    * pushbutton constructor
    * @param canvas Raphael Canvas (Paper)
@@ -66,25 +72,75 @@ export class PushButton extends CircuitElement {
    * Initialize Variable,callback and animation caller when start simulation is pressed
    */
   initSimulation(): void {
+
+    // Determine Arduino connected ends for all terminals of push button
+    this.terminalParent['terminal1a'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 1a'], 'Terminal 1a');
+    this.terminalParent['terminal1b'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 1b'], 'Terminal 1b');
+    this.terminalParent['terminal2a'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 2a'], 'Terminal 2a');
+    this.terminalParent['terminal2b'] = BreadBoard.getRecArduinov2(this.pinNamedMap['Terminal 2b'], 'Terminal 2b');
+
     // console.log(this.pinNamedMap[''])
     this.elements.unmousedown();
     let iniValue = -1;
     let by = -1;
     // create mousedown for the button
     this.elements[9].mousedown(() => {
-      let val = this.pinNamedMap['Terminal 1a'].value;
-      if (val > 0) {
+      let val = -1;
+
+      // set value only if any pin have inputPullUpEnabled
+      const pullUp = this.terminalParent['terminal1a'].pullUpEnabled || this.terminalParent['terminal1b'].pullUpEnabled
+        || this.terminalParent['terminal2a'].pullUpEnabled || this.terminalParent['terminal2b'].pullUpEnabled;
+
+      if (this.pinNamedMap['Terminal 1a'].value > 0) {
+        val = this.pinNamedMap['Terminal 1a'].value;
+        // TODO: run for 1a
+        if (pullUp) {
+          // TODO: If pullUp enabled set val to zero
+          val = 0;
+        }
         by = 0;
         iniValue = this.pinNamedMap['Terminal 2a'].value;
+        // set value to other pins
         this.pinNamedMap['Terminal 2a'].setValue(val, null);
         this.pinNamedMap['Terminal 2b'].setValue(val, null);
-      } else {
-        by = 1;
+      } else if (this.pinNamedMap['Terminal 1b'].value > 0) {
+        val = this.pinNamedMap['Terminal 1b'].value;
+        // TODO: run for 1b
+        if (pullUp) {
+          // TODO: If pullUp enabled set val to zero
+          val = 0;
+        }
+        by = 0;
+        iniValue = this.pinNamedMap['Terminal 2a'].value;
+        // set value to other pins
+        this.pinNamedMap['Terminal 2a'].setValue(val, null);
+        this.pinNamedMap['Terminal 2b'].setValue(val, null);
+      } else if (this.pinNamedMap['Terminal 2a'].value > 0) {
         val = this.pinNamedMap['Terminal 2a'].value;
+        // TODO: run for 2a
+        if (pullUp) {
+          // TODO: If pullUp enabled set val to zero
+          val = 0;
+        }
+        by = 1;
         iniValue = this.pinNamedMap['Terminal 1a'].value;
+        // set value to other pins
+        this.pinNamedMap['Terminal 1a'].setValue(val, null);
+        this.pinNamedMap['Terminal 1b'].setValue(val, null);
+      } else if (this.pinNamedMap['Terminal 2b'].value > 0) {
+        val = this.pinNamedMap['Terminal 2b'].value;
+        // TODO: run for 2b
+        if (pullUp) {
+          // TODO: If pullUp enabled set val to zero
+          val = 0;
+        }
+        by = 1;
+        iniValue = this.pinNamedMap['Terminal 1a'].value;
+        // set value to other pins
         this.pinNamedMap['Terminal 1a'].setValue(val, null);
         this.pinNamedMap['Terminal 1b'].setValue(val, null);
       }
+
       // console.log(val);
     });
     // Set mouseup listener for the button

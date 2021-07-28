@@ -29,6 +29,7 @@ class RetriveUserRoleView(APIView):
         reviewer = False
         e_sim_reviewer = False
         arduino_reviewer = False
+        staff = False
         for userRole in userRoles:
             data.append(userRole.name)
             if userRole.customgroup is not None and userRole.customgroup.is_type_reviewer:  # noqa
@@ -37,10 +38,14 @@ class RetriveUserRoleView(APIView):
                     arduino_reviewer = True
                 else:
                     e_sim_reviewer = True
+            if userRole.customgroup is not None and userRole.customgroup.is_type_staff:  # noqa
+                staff = True
+
         serializer = UserRoleRetreieveSerializer(
             data={"group": data, "is_type_reviewer": reviewer,
                   "e_sim_reviewer": e_sim_reviewer,
-                  "arduino_reviewer": arduino_reviewer})
+                  "arduino_reviewer": arduino_reviewer,
+                  "is_type_staff": staff})
         try:
             serializer.is_valid()
             return Response(serializer.data)

@@ -128,7 +128,7 @@ export default function ComponentSidebar ({ compRef }) {
     timeoutId.current = setTimeout(() => {
       // call api here
       setLoading(true)
-      var config = {}
+      let config = {}
       const token = localStorage.getItem('esim_token')
       if (token && token !== undefined) {
         config = {
@@ -351,8 +351,8 @@ export default function ComponentSidebar ({ compRef }) {
                 </ListItem>
                 <Divider />
                 { libraries.sort(function (a, b) {
-                  var textA = a.library_name.toUpperCase()
-                  var textB = b.library_name.toUpperCase()
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
                 }).filter((library) => {
                   if (library.default) { return 1 }
@@ -368,8 +368,8 @@ export default function ComponentSidebar ({ compRef }) {
                   <span className={classes.head}>ADDITIONAL</span>
                 </ListItem>
                 { libraries.sort(function (a, b) {
-                  var textA = a.library_name.toUpperCase()
-                  var textB = b.library_name.toUpperCase()
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
                 }).filter((library) => {
                   if (library.additional) { return 1 }
@@ -385,8 +385,8 @@ export default function ComponentSidebar ({ compRef }) {
                   <span className={classes.head}>UPLOADED</span>
                 </ListItem>
                 { libraries.sort(function (a, b) {
-                  var textA = a.library_name.toUpperCase()
-                  var textB = b.library_name.toUpperCase()
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
                 }).filter((library) => {
                   if (!library.default && !library.additional) { return 1 }

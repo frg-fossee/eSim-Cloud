@@ -102,16 +102,19 @@ export class ArduinoUno extends CircuitElement {
     // For Port B D5 - D13 add a input listener
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`D${i + 8}`].addValueListener((v) => {
-        console.log([i, v]);
+        // console.log([i, v]);
         if (isUndefined(this.runner) || isNull(this.runner)) {
           setTimeout(() => {
-            this.pinNameMap[`D${i + 8}`].setValue(v, this.pinNameMap[`D${i + 8}`]);
+            this.pinNameMap[`D${i + 8}`].setValue(1, this.pinNameMap[`D${i + 8}`]);
           }, 300);
           return;
         }
         // Update the value of register only if pin is input
         if (this.runner.portB.pinState(i) === AVR8.PinState.Input) {
           this.runner.portB.setPin(i, v > 0 ? 1 : 0);
+        } else if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
+          // Handle Input PullUp
+          this.runner.portB.setPin(i, v);
         }
       });
     }
@@ -127,6 +130,9 @@ export class ArduinoUno extends CircuitElement {
         // Update the value of register only if pin is input
         if (this.runner.portD.pinState(i) === AVR8.PinState.Input) {
           this.runner.portD.setPin(i, v > 0 ? 1 : 0);
+        } else if (this.runner.portD.pinState(i) === AVR8.PinState.InputPullUp) {
+          // Handle Input PullUp
+          this.runner.portD.setPin(i, v);
         }
       });
     }
@@ -263,6 +269,28 @@ export class ArduinoUno extends CircuitElement {
       this.servos = [];
     }
     this.runner.execute();
+
+    // Handle Input Pull Up on portB pins
+    for (let i = 0; i <= 5; ++i) {
+      // check if pin state is inputPullUp
+      if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
+        // set pullUpEnabled boolean to true
+        this.pinNameMap[`D${i + 8}`].pullUpEnabled = true;
+        // set pin value to 1 by default
+        this.runner.portB.setPin(i, 1);
+      }
+    }
+    // Handle Input Pull Up on portD pins
+    for (let i = 2; i <= 7; ++i) {
+      // check if pin state is inputPullUp
+      if (this.runner.portD.pinState(i) === AVR8.PinState.InputPullUp) {
+        // set pullUpEnabled boolean to true
+        this.pinNameMap[`D${i}`].pullUpEnabled = true;
+        // set pin value to 1 by default
+        this.runner.portD.setPin(i, 1);
+      }
+    }
+
   }
   /**
    * Remove arduino runner on stop simulation.

@@ -5,6 +5,7 @@ from django.conf import settings
 import uuid
 from libAPI.models import Library
 from publishAPI.models import Project
+from django.utils.safestring import mark_safe
 
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
@@ -33,6 +34,32 @@ class StateSave(models.Model):
 
     def save(self, *args, **kwargs):
         super(StateSave, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Gallery(models.Model):
+    id = models.AutoField(primary_key=True)
+    save_id = models.CharField(unique=True, max_length=500, null=False)
+    data_dump = models.TextField(null=False)
+    name = models.CharField(max_length=100, default="Untitled")
+    description = models.CharField(max_length=1000)
+    media = models.ImageField(
+        upload_to='circuit_images_esim', storage=file_storage, null=True)
+    shared = models.BooleanField(default=True)
+    save_time = models.DateTimeField(auto_now=True)
+    is_arduino = models.BooleanField(default=False, null=False)
+    esim_libraries = models.ManyToManyField(Library)
+
+    # For Django Admin Panel
+    def image_tag(self):
+        print(file_storage)
+        if self.media:
+            return mark_safe('<img src="%s" style="width: 45px; height:45px;" />' % self.media.url)  # noqa
+        else:
+            return 'No Image Found'
+    image_tag.short_description = 'Image'
 
     def __str__(self):
         return self.name

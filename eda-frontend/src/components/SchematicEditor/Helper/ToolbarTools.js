@@ -71,7 +71,7 @@ export function Undo() {
         || checkWireChange(undoManager.history[i].changes)
       ) { break }
     }
-    while(undos !== 0) {
+    while (undos !== 0) {
       undoManager.undo()
       undos--
     }
@@ -81,7 +81,7 @@ export function Undo() {
     for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
       if (undoManager.history[i].changes.length !== 1) { break }
     }
-    while(undos !== 0) {
+    while (undos !== 0) {
       undoManager.undo()
       undos--
     }
@@ -159,7 +159,7 @@ export function ClearGrid() {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
 }
 
-function rotate (rot_ang) {
+function rotate(rot_ang) {
   var view = graph.getView()
   var cell = graph.getSelectionCell()
   var state = view.getState(cell, true)
@@ -167,7 +167,7 @@ function rotate (rot_ang) {
   if (cell != null) {
     vHandler.rotateCell(cell, parseInt(rot_ang))
     let childCount = cell.getChildCount()
-    for(let i = 0; i < childCount; i++) {
+    for (let i = 0; i < childCount; i++) {
       let child = cell.getChildAt(i)
       vHandler.rotateCell(child, parseInt(rot_ang) * (-1))
     }
@@ -439,7 +439,7 @@ export function GenerateNetList() {
         }
         console.log('component properties', component.properties)
         if (component.properties.MODEL && component.properties.MODEL.length > 0) {
-            k = k + ' ' + component.properties.MODEL.split(' ')[1]
+          k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
 
         if (component.properties.PREFIX.charAt(0) === 'V' || component.properties.PREFIX.charAt(0) === 'v' || component.properties.PREFIX.charAt(0) === 'I' || component.properties.PREFIX.charAt(0) === 'i') {
@@ -461,55 +461,55 @@ export function GenerateNetList() {
               component.value = component.value + '\n' + component.properties.VALUE
             }
           }
-        }else if(component.properties.PREFIX.charAt(0) === 'C' || component.properties.PREFIX.charAt(0) === 'c'){
-            k = k + ' ' + component.properties.VALUE
-            if(component.properties.IC != 0){
-                k = k + ' IC=' + component.properties.IC
-            }
-            component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'L' || component.properties.PREFIX.charAt(0) === 'l'){
-            k = k + ' ' + component.properties.VALUE
-            if(component.properties.IC != 0){
-                k = k + ' IC=' + component.properties.IC
-            }
-            if(component.properties.DTEMP != 27){
-                k = k + ' dtemp=' + component.properties.DTEMP
-            }            
-            component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'M' || component.properties.PREFIX.charAt(0) === 'm'){
-            // k = k + ' ' + component.properties.VALUE   
-            if(component.properties.MULTIPLICITY_PARAMETER != 1){
-                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
-            }
-            if(component.properties.DTEMP != 27){
-                k = k + ' dtemp=' + component.properties.DTEMP
-            }            
-            // component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'Q' || component.properties.PREFIX.charAt(0) === 'q'){
-            // k = k + ' ' + component.properties.VALUE
-            if(component.properties.MULTIPLICITY_PARAMETER != 1){
-                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
-            }
-            if(component.properties.DTEMP != 27){
-                k = k + ' dtemp=' + component.properties.DTEMP
-            }            
-            // component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'R' || component.properties.PREFIX.charAt(0) === 'r'){
-            k = k + ' ' + component.properties.VALUE
-            if(component.properties.SHEET_RESISTANCE != 0){
-                k = k + ' RSH=' + component.properties.SHEET_RESISTANCE
-            }
-            if(component.properties.FIRST_ORDER_TEMPERATURE_COEFF != 0){
-                k = k + ' tc1=' + component.properties.FIRST_ORDER_TEMPERATURE_COEFF
-            }
-            if(component.properties.SECOND_ORDER_TEMPERATURE_COEFF != 0){
-                k = k + ' tc2=' + component.properties.SECOND_ORDER_TEMPERATURE_COEFF
-            }
-            if(component.properties.PARAMETER_MEASUREMENT_TEMPERATURE != 27){
-                k = k + ' TNOM=' + component.properties.PARAMETER_MEASUREMENT_TEMPERATURE
-            }
-            component.value = component.value + '\n' + component.properties.VALUE
-        }else {
+        } else if (component.properties.PREFIX.charAt(0) === 'C' || component.properties.PREFIX.charAt(0) === 'c') {
+          k = k + ' ' + component.properties.VALUE
+          if (component.properties.IC != 0) {
+            k = k + ' IC=' + component.properties.IC
+          }
+          component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'L' || component.properties.PREFIX.charAt(0) === 'l') {
+          k = k + ' ' + component.properties.VALUE
+          if (component.properties.IC != 0) {
+            k = k + ' IC=' + component.properties.IC
+          }
+          if (component.properties.DTEMP != 27) {
+            k = k + ' dtemp=' + component.properties.DTEMP
+          }
+          component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'M' || component.properties.PREFIX.charAt(0) === 'm') {
+          // k = k + ' ' + component.properties.VALUE   
+          if (component.properties.MULTIPLICITY_PARAMETER != 1) {
+            k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+          }
+          if (component.properties.DTEMP != 27) {
+            k = k + ' dtemp=' + component.properties.DTEMP
+          }
+          // component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'Q' || component.properties.PREFIX.charAt(0) === 'q') {
+          // k = k + ' ' + component.properties.VALUE
+          if (component.properties.MULTIPLICITY_PARAMETER != 1) {
+            k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+          }
+          if (component.properties.DTEMP != 27) {
+            k = k + ' dtemp=' + component.properties.DTEMP
+          }
+          // component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'R' || component.properties.PREFIX.charAt(0) === 'r') {
+          k = k + ' ' + component.properties.VALUE
+          if (component.properties.SHEET_RESISTANCE != 0) {
+            k = k + ' RSH=' + component.properties.SHEET_RESISTANCE
+          }
+          if (component.properties.FIRST_ORDER_TEMPERATURE_COEFF != 0) {
+            k = k + ' tc1=' + component.properties.FIRST_ORDER_TEMPERATURE_COEFF
+          }
+          if (component.properties.SECOND_ORDER_TEMPERATURE_COEFF != 0) {
+            k = k + ' tc2=' + component.properties.SECOND_ORDER_TEMPERATURE_COEFF
+          }
+          if (component.properties.PARAMETER_MEASUREMENT_TEMPERATURE != 27) {
+            k = k + ' TNOM=' + component.properties.PARAMETER_MEASUREMENT_TEMPERATURE
+          }
+          component.value = component.value + '\n' + component.properties.VALUE
+        } else {
           if (component.properties.VALUE !== undefined) {
             k = k + ' ' + component.properties.VALUE
             component.value = component.value + '\n' + component.properties.VALUE
@@ -520,7 +520,7 @@ export function GenerateNetList() {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
           component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
-        
+
         if (component.properties.MODEL && component.properties.MODEL.length > 0) {
           spiceModels += component.properties.MODEL + '\n'
         }
@@ -722,6 +722,22 @@ export function GenerateCompList() {
   }
   return netlist
 }
+// Sends a detailed list of components present in the netlist 
+export function GenerateDetailedCompList() {
+  var list = annotate(graph)
+  var a = []
+  var netlist = [] // This will contain the list of Component Prefix
+  var k = 'Unitled netlist \n'
+  for (var property in list) {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      var component = list[property]
+      netlist.push({name:component.properties.PREFIX,value:component.properties.VALUE,unit:component.properties.VALUE_UNIT})
+    }
+  }
+  return netlist
+}
+
+
 // Function to Render Circuit XML
 export function renderXML() {
   graph.view.refresh()
