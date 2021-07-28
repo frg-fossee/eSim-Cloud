@@ -21,7 +21,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle
 }
   from '@material-ui/core'
 import CloseIcon from '@material-ui/icons/Close'
@@ -63,11 +63,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Transition = React.forwardRef(function Transition(props, ref) {
+const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-function CreateProject() {
+function CreateProject () {
   const [open, setOpen] = useState(false)
   const classes = useStyles()
   const dispatch = useDispatch()
@@ -395,22 +395,22 @@ function CreateProject() {
                 <h2 style={{ color: 'black' }}>Project Details</h2>
                 {versions != null &&
                   ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}>
-                    <FormControl
-                      style={{ width: '100%' }}
-                      className={classes.formControl}
-                      error={!activeVersion}>
-                      <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={activeVersion}
-                        onChange={handleActiveVersion}
-                      >
-                        {versions.map(version => {
-                          return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
-                        })}
-                      </Select>
-                    </FormControl> </Grid>}
+                  <FormControl
+                    style={{ width: '100%' }}
+                    className={classes.formControl}
+                    error={!activeVersion}>
+                    <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={activeVersion}
+                      onChange={handleActiveVersion}
+                    >
+                      {versions.map(version => {
+                        return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                      })}
+                    </Select>
+                  </FormControl> </Grid>}
                 <TextField
                   color='primary'
                   autoFocus
@@ -442,10 +442,10 @@ function CreateProject() {
                   fullWidth
                 />
                 {fields && fields.map((item, index) =>
-                (
-                  <>
-                    <hr />
-                    {((project.details && project.details.can_edit) || !project.details) &&
+                  (
+                    <>
+                      <hr />
+                      {((project.details && project.details.can_edit) || !project.details) &&
                       <>
                         <Tooltip title="Delete Field">
                           <IconButton style={{ float: 'right' }} onClick={() => onRemove(index)}>
@@ -462,34 +462,34 @@ function CreateProject() {
                           </Tooltip>
                         </IconButton>}
                       </>}
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      id={index}
-                      label={'Title ' + index}
-                      type="text"
-                      name='name'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.name}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                    <TextField
-                      color='primary'
-                      margin="dense"
-                      multiline
-                      id={index}
-                      label={'Text ' + index}
-                      rows={4}
-                      type="text"
-                      name='text'
-                      disabled={project.details && !project.details.can_edit}
-                      value={item.text}
-                      onChange={changeFieldText}
-                      fullWidth
-                    />
-                  </>
-                ))}
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        id={index}
+                        label={'Title ' + index}
+                        type="text"
+                        name='name'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.name}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                      <TextField
+                        color='primary'
+                        margin="dense"
+                        multiline
+                        id={index}
+                        label={'Text ' + index}
+                        rows={4}
+                        type="text"
+                        name='text'
+                        disabled={project.details && !project.details.can_edit}
+                        value={item.text}
+                        onChange={changeFieldText}
+                        fullWidth
+                      />
+                    </>
+                  ))}
 
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
@@ -534,9 +534,9 @@ function CreateProject() {
                       value={status}
                     >
                       {project.states.map((item, index) =>
-                      (
-                        <MenuItem key={item} value={item}>{item}</MenuItem>
-                      ))}
+                        (
+                          <MenuItem key={item} value={item}>{item}</MenuItem>
+                        ))}
                       <MenuItem key={project.details.status_name} value={project.details.status_name}>{project.details.status_name}</MenuItem>
                     </Select>
                   </div>
@@ -569,19 +569,19 @@ function CreateProject() {
                 </List>
               </Paper>
             </Grid>
-              <Grid item xs={6} sm={6}>
-                <Paper style={{ padding: '2%' }}>
-                  <List>
-                    <h3>History of this Project</h3>
-                    {(project.details?.history && project.details?.history[0])
-                      ? <>
-                        <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === owner} />
-                      </>
-                      : <h4>No history of this project.</h4>
-                    }
-                  </List>
-                </Paper>
-              </Grid></>}
+            <Grid item xs={6} sm={6}>
+              <Paper style={{ padding: '2%' }}>
+                <List>
+                  <h3>History of this Project</h3>
+                  {(project.details?.history && project.details?.history[0])
+                    ? <>
+                      <ProjectTimeline history={project.details.history.slice(0).reverse()} isOwner={auth.user?.username === owner} />
+                    </>
+                    : <h4>No history of this project.</h4>
+                  }
+                </List>
+              </Paper>
+            </Grid></>}
           </Grid>
           {!project.details && <Button color="primary" style={{ width: '100%', marginTop: '2%' }} variant='contained' onClick={createPub}>
             Create Project

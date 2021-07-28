@@ -20,7 +20,7 @@ import {
 } from '@material-ui/core'
 import ImportExportIcon from '@material-ui/icons/ImportExport'
 
-function getDate(jsonDate) {
+function getDate (jsonDate) {
   var json = jsonDate
   var date = new Date(json)
   var formattedDate
@@ -32,7 +32,7 @@ function getDate(jsonDate) {
   return `${formattedDate}`
 }
 
-function ProjectTimeline({ history, isOwner }) {
+function ProjectTimeline ({ history, isOwner }) {
   const auth = useSelector(state => state.authReducer)
   const [descending, setDescending] = useState(true)
   const [notes, setNotes] = useState(false)

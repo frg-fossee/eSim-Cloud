@@ -10,32 +10,35 @@ import imghdr
 from saveAPI.serializers import StateSaveSerializer
 from workflowAPI.models import Transition
 
+
 class DCSweepSerializer(serializers.ModelSerializer):
     class Meta:
         model = DCSweepParameters
-        fields='__all__'
+        fields = '__all__'
+
     def create(self, validated_data):
         return DCSweepParameters.objects.create(**validated_data)
+
     def update(self, instance, validated_data):
         return super().update(instance, validated_data)
+
+
 class TransientAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = TransientAnalysisParameters
-        fields='__all__'
-
+        fields = '__all__'
 
 
 class ACAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = ACAnalysisParameters
-        fields='__all__'
-
+        fields = '__all__'
 
 
 class TFAnalysisSerializer(serializers.ModelSerializer):
     class Meta:
         model = TFAnalysisParameters
-        fields='__all__'
+        fields = '__all__'
 
 
 class Base64ImageField(serializers.ImageField):
@@ -104,6 +107,7 @@ class ProjectSerializer(serializers.ModelSerializer):
     transient_analysis = TransientAnalysisSerializer()
     tf_analysis = TFAnalysisSerializer()
     ac_analysis = ACAnalysisSerializer()
+
     class Meta:
         model = Project
         fields = ('project_id',
@@ -122,6 +126,7 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'tf_analysis',
                   'ac_analysis',
                   )
+
     def get_save_id(self, obj):
         return obj.statesave_set.first().save_id
 
@@ -130,8 +135,6 @@ class ProjectSerializer(serializers.ModelSerializer):
             obj.statesave_set.get(save_id=obj.statesave_set.first().save_id,
                                   branch=obj.active_branch,
                                   version=obj.active_version)).data
-
-
 
 
 class ReportSerializer(serializers.ModelSerializer):
@@ -145,5 +148,3 @@ class ReportDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Report
         fields = ('description',)
-
-

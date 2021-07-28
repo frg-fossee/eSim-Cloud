@@ -13,7 +13,7 @@ import {
   Snackbar,
   TextField,
   DialogActions,
-  List,
+  List
 } from '@material-ui/core'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import ComponentProperties from '../components/SchematicEditor/ComponentProperties'
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     overflowX: 'visible',
     overflowY: 'hidden',
-    backgroundColor: '#f4f6f8',
+    backgroundColor: '#f4f6f8'
 
   },
   toolbar: {
@@ -62,10 +62,10 @@ const styles = (theme) => ({
   }
 })
 
-function Alert(props) {
+function Alert (props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />
 }
-export default function ProjectPage(props) {
+export default function ProjectPage (props) {
   const classes = useStyles()
   const gridRef = React.createRef()
   const dispatch = useDispatch()
@@ -162,7 +162,7 @@ export default function ProjectPage(props) {
     }
     setTimeout(() => {
       setComponentsList([GenerateDetailedCompList()])
-    }, 2000);
+    }, 2000)
     // eslint-disable-next-line
   }, [props.location, dispatch])
   return (
@@ -193,13 +193,13 @@ export default function ProjectPage(props) {
                     <Typography>
                       <h3>{project.details?.description}</h3>
                       {componentsList && <h2 style={{ marginBottom: '0' }}>Component List:</h2>}
-                      {componentsList && componentsList[0].map((item, i) => (<div>{i + 1}.{item.name}  {item.value}{item.unit}</div>))}
+                      {componentsList && componentsList[0].map((item, i) => (<div key={i}>{i + 1}.{item.name}  {item.value}{item.unit}</div>))}
                       {project.details && project.details?.fields && project.details.fields.map(item => (
                         <p key={item}>
                           <h3 style={{ marginTop: '0', marginBottom: '0' }}>{item.name}:</h3>
                           <p style={{ marginTop: '0' }}>
-                            {item.text.split("\n").map((text) => (
-                              <span>
+                            {item.text.split('\n').map((text) => (
+                              <span key={text}>
                                 {text}
                                 <br></br>
                               </span>
@@ -215,11 +215,11 @@ export default function ProjectPage(props) {
                     >
                       <DialogTitle onClose={handleSimulateOpen}>Simulate Circuit</DialogTitle>
                       <DialogContent style={{ padding: '3%' }}>
-                        {project.details && <SimulationProperties 
-                        dcSweepcontrolLine={project.details.dc_sweep} 
-                        transientAnalysisControlLine={project.details.transient_analysis}
-                        acAnalysisControlLine={project.details.ac_analysis}
-                        tfAnalysisControlLine={project.details.tf_analysis}
+                        {project.details && <SimulationProperties
+                          dcSweepcontrolLine={project.details.dc_sweep}
+                          transientAnalysisControlLine={project.details.transient_analysis}
+                          acAnalysisControlLine={project.details.ac_analysis}
+                          tfAnalysisControlLine={project.details.tf_analysis}
                         />}
                       </DialogContent>
                     </Dialog>

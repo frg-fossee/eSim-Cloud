@@ -13,10 +13,12 @@ import {
   Divider,
   Popover,
   Tooltip,
+  Snackbar,
   IconButton
 } from '@material-ui/core'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import MuiAlert from '@material-ui/lab/Alert'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText, setNetlist } from '../../redux/actions/index'
@@ -25,7 +27,7 @@ import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
 import queryString from 'query-string'
 import Notice from '../Shared/Notice'
-
+import PropTypes from 'prop-types'
 import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -49,7 +51,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function SimulationProperties(props) {
+function Alert (props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />
+}
+export default function SimulationProperties (props) {
   const netfile = useSelector(state => state.netlistReducer)
   const isSimRes = useSelector(state => state.simulationReducer.isSimRes)
   const [taskId, setTaskId] = useState(null)
@@ -59,6 +64,7 @@ export default function SimulationProperties(props) {
   const [componentsList, setComponentsList] = useState([])
   const [errMsg, setErrMsg] = useState('')
   const [err, setErr] = useState(false)
+  const [needParameters, setNeedParameters] = useState(false)
   const [status, setStatus] = useState('')
   const stats = { loading: 'loading', error: 'error', success: 'success' }
   const [dcSweepcontrolLine, setDcSweepControlLine] = useState(props.dcSweepcontrolLine ? props.dcSweepcontrolLine : {
@@ -352,7 +358,7 @@ export default function SimulationProperties(props) {
     sendNetlist(file)
   }
 
-  function sendNetlist(file) {
+  function sendNetlist (file) {
     setIsResult(false)
     netlistConfig(file)
       .then((response) => {
@@ -367,7 +373,7 @@ export default function SimulationProperties(props) {
   }
 
   // Upload the nelist
-  function netlistConfig(file) {
+  function netlistConfig (file) {
     const token = localStorage.getItem('esim_token')
     var url = queryString.parse(window.location.href.split('editor?')[1])
     const formData = new FormData()
@@ -393,7 +399,7 @@ export default function SimulationProperties(props) {
   const [isResult, setIsResult] = useState(false)
 
   // Get the simulation result with task_Id
-  function simulationResult(url) {
+  function simulationResult (url) {
     let isError = false
     let msg
     let resPending = true // to stop immature opening of simulation screen
@@ -518,8 +524,8 @@ export default function SimulationProperties(props) {
           dispatch(setResultTitle('DC Sweep Output'))
           selectedValue = selectedValueDCSweep
           selectedValueComp = selectedValueDCSweepComp
-        }
-        else {
+        } else {
+          setNeedParameters(true)
           return
         }
         break
@@ -532,8 +538,8 @@ export default function SimulationProperties(props) {
           dispatch(setResultTitle('Transient Analysis Output'))
           selectedValue = selectedValueTransientAnal
           selectedValueComp = selectedValueTransientAnalComp
-        }
-        else {
+        } else {
+          setNeedParameters(true)
           return
         }
         break
@@ -543,12 +549,11 @@ export default function SimulationProperties(props) {
           typeSimulation = 'Ac'
           controlLine = `.ac ${acAnalysisControlLine.input} ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
           dispatch(setResultTitle('AC Analysis Output'))
-        }
-        else {
+        } else {
+          setNeedParameters(true)
           return
         }
         break
-
       case 'tfAnalysis':
         if (tfAnalysisControlLine.inputVoltageSource !== '') {
           typeSimulation = 'tfAnalysis'
@@ -568,8 +573,8 @@ export default function SimulationProperties(props) {
 
           dispatch(setResultTitle('Transfer Function Analysis Output'))
           skipMultiNodeChk = 1
-        }
-        else {
+        } else {
+          setNeedParameters(true)
           return
         }
         break
@@ -641,11 +646,19 @@ export default function SimulationProperties(props) {
   return (
     <>
       <div className={classes.SimulationOptions}>
+        <Snackbar
+          open={needParameters}
+          autoHideDuration={6000}
+          onClose={() => setNeedParameters(false)}
+        >
+          <Alert onClose={() => setNeedParameters(false)} severity="error">
+            Please enter the necessary parameters!
+          </Alert>
+        </Snackbar>
         <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} taskId={taskId} simType={simType} />
         <Notice status={status} open={err} msg={errMsg} close={handleErrClose} />
         {/* Simulation modes list */}
         <List>
-
           {/* DC Solver */}
           <ListItem className={classes.simulationOptions} divider>
             <div className={classes.propertiesBox}>
@@ -1310,4 +1323,11 @@ export default function SimulationProperties(props) {
       </div>
     </>
   )
+}
+
+SimulationProperties.propTypes = {
+  dcSweepcontrolLine: PropTypes.object,
+  transientAnalysisControlLine: PropTypes.object,
+  acAnalysisControlLine: PropTypes.object,
+  tfAnalysisControlLine: PropTypes.object
 }

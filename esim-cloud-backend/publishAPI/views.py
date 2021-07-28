@@ -1,11 +1,15 @@
 from rest_framework import permissions
-from publishAPI.serializers import CircuitTagSerializer, ProjectSerializer,  \
-    TransitionHistorySerializer, DCSweepSerializer, TransientAnalysisSerializer, ACAnalysisSerializer, TFAnalysisSerializer  # noqa
+from publishAPI.serializers import CircuitTagSerializer, ProjectSerializer, \
+    TransitionHistorySerializer, DCSweepSerializer, \
+    TransientAnalysisSerializer, ACAnalysisSerializer, \
+    TFAnalysisSerializer  # noqa
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, \
     AllowAny, DjangoModelPermissions  # noqa
 from rest_framework.parsers import JSONParser, MultiPartParser
 from workflowAPI.models import Permission
-from publishAPI.models import ACAnalysisParameters, CircuitTag, DCSweepParameters, Project, Field, TFAnalysisParameters, TransientAnalysisParameters, TransitionHistory
+from publishAPI.models import ACAnalysisParameters, CircuitTag, \
+    DCSweepParameters, Project, Field, TFAnalysisParameters, \
+    TransientAnalysisParameters, TransitionHistory
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, \
     IsAuthenticated, AllowAny, \
     DjangoModelPermissions  # noqa
@@ -49,7 +53,6 @@ class ProjectViewSet(APIView):
                     view_own_states=queryset.state).exists():
                 pass
             elif queryset.author != self.request.user and Permission.objects.filter(  # noqa
-                    # noqa
                     role__in=user_roles,
                     view_other_states=queryset.state).exists():
                 pass
@@ -99,16 +102,17 @@ class ProjectViewSet(APIView):
                               active_branch=request.data[0]['active_branch'],
                               active_version=request.data[0]['active_version'],
                               )
-            dc_sweep = DCSweepParameters(parameter=request.data[3]['parameter'],
-                                         sweepType=request.data[3]['sweepType'],
-                                         start=request.data[3]['start'],
-                                         stop=request.data[3]['stop'],
-                                         step=request.data[3]['step'],
-                                         parameter2=request.data[3]['parameter2'],
-                                         start2=request.data[3]['start2'],
-                                         step2=request.data[3]['step2'],
-                                         stop2=request.data[3]['stop2'],
-                                         )
+            dc_sweep = DCSweepParameters(
+                parameter=request.data[3]['parameter'],
+                sweepType=request.data[3]['sweepType'],
+                start=request.data[3]['start'],
+                stop=request.data[3]['stop'],
+                step=request.data[3]['step'],
+                parameter2=request.data[3]['parameter2'],
+                start2=request.data[3]['start2'],
+                step2=request.data[3]['step2'],
+                stop2=request.data[3]['stop2'],
+                )
             transient_analysis = TransientAnalysisParameters(
                 start=request.data[4]['start'],
                 stop=request.data[4]['stop'],
@@ -181,16 +185,17 @@ class ProjectViewSet(APIView):
                 'active_branch']
             active_state_save.project.active_version = request.data[0][
                 'active_version']
-            dc_sweep = DCSweepParameters(parameter=request.data[3]['parameter'],
-                                         sweepType=request.data[3]['sweepType'],
-                                         start=request.data[3]['start'],
-                                         stop=request.data[3]['stop'],
-                                         step=request.data[3]['step'],
-                                         parameter2=request.data[3]['parameter2'],
-                                         start2=request.data[3]['start2'],
-                                         step2=request.data[3]['step2'],
-                                         stop2=request.data[3]['stop2'],
-                                         )
+            dc_sweep = DCSweepParameters(
+                parameter=request.data[3]['parameter'],
+                sweepType=request.data[3]['sweepType'],
+                start=request.data[3]['start'],
+                stop=request.data[3]['stop'],
+                step=request.data[3]['step'],
+                parameter2=request.data[3]['parameter2'],
+                start2=request.data[3]['start2'],
+                step2=request.data[3]['step2'],
+                stop2=request.data[3]['stop2'],
+                )
             transient_analysis = TransientAnalysisParameters(
                 start=request.data[4]['start'],
                 stop=request.data[4]['stop'],

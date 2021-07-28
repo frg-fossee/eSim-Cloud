@@ -11,8 +11,8 @@ import {
 } from '@material-ui/core'
 import { GenerateCompList } from '../SchematicEditor/Helper/ToolbarTools'
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+function TabPanel (props) {
+  const { children, value, index, ...other } = props
 
   return (
     <div
@@ -28,19 +28,18 @@ function TabPanel(props) {
         </Box>
       )}
     </div>
-  );
+  )
 }
 
 TabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
+  value: PropTypes.any.isRequired
+}
 
-function ProjectSimulationParameters(props) {
+function ProjectSimulationParameters (props) {
   const [componentsList, setComponentsList] = useState([])
   const [disabled, setDisabled] = React.useState(false)
-
 
   const handleDcSweepControlLine = (evt) => {
     const value = evt.target.value
@@ -125,7 +124,6 @@ function ProjectSimulationParameters(props) {
     if (props.selectedSimulation !== '') {
       try {
         setComponentsList(['', ...GenerateCompList()])
-
       } catch (err) {
         setComponentsList([])
         alert('Circuit not complete. Please Check Connectons.')
@@ -136,7 +134,7 @@ function ProjectSimulationParameters(props) {
     <>
       <TabPanel value={props.selectedSimulation} index={'DC Sweep'} >
         <List style={{ color: 'black' }}>
-          <h3 style={{marginTop:'0'}}>DC Sweep</h3>
+          <h3 style={{ marginTop: '0' }}>DC Sweep</h3>
           <ListItem>
             <TextField
               style={{ width: '100%' }}
@@ -244,7 +242,7 @@ function ProjectSimulationParameters(props) {
       </TabPanel>
       <TabPanel value={props.selectedSimulation} index={'Transient Analysis'} >
         <List style={{ color: 'black' }}>
-          <h3 style={{marginTop:'0'}}>Transient Analysis</h3>
+          <h3 style={{ marginTop: '0' }}>Transient Analysis</h3>
           <ListItem>
             <TextField id="start" label="Start Time" size='small' variant="outlined"
               value={props.transientAnalysisControlLine.start}
@@ -278,7 +276,7 @@ function ProjectSimulationParameters(props) {
       </TabPanel>
       <TabPanel value={props.selectedSimulation} index={'Transfer Function Analysis'} >
         <List style={{ color: 'black' }}>
-          <h3 style={{marginTop:'0'}}>Transfer Function Analysis</h3>
+          <h3 style={{ marginTop: '0' }}>Transfer Function Analysis</h3>
           <ListItem>
             <input
               type="checkbox"
@@ -356,7 +354,7 @@ function ProjectSimulationParameters(props) {
       </TabPanel>
       <TabPanel value={props.selectedSimulation} index={'AC Analysis'} >
         <List style={{ color: 'black' }}>
-          <h3 style={{marginTop:'0'}}>AC Analysis</h3>
+          <h3 style={{ marginTop: '0' }}>AC Analysis</h3>
           <ListItem>
             <TextField
               style={{ width: '100%' }}
@@ -410,4 +408,17 @@ function ProjectSimulationParameters(props) {
   )
 }
 
+ProjectSimulationParameters.propTypes = {
+  dcSweepcontrolLine: PropTypes.object,
+  transientAnalysisControlLine: PropTypes.object,
+  acAnalysisControlLine: PropTypes.object,
+  tfAnalysisControlLine: PropTypes.object,
+  setDcSweepControlLine: PropTypes.func,
+  setTransientAnalysisControlLine: PropTypes.func,
+  setAcAnalysisControlLine: PropTypes.func,
+  setTfAnalysisControlLine: PropTypes.func,
+  setChanged: PropTypes.func,
+  selectedSimulation: PropTypes.string,
+  changed: PropTypes.bool
+}
 export default ProjectSimulationParameters
