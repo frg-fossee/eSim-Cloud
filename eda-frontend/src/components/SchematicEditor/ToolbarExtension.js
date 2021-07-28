@@ -457,7 +457,6 @@ export function OpenSchDialog (props) {
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
-
   return (
     <Dialog
       open={open}
@@ -582,7 +581,7 @@ export function OpenSchDialog (props) {
         <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
           Local
         </Button>
-        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { dispatch(fetchGallery());setisLocal(false); setisGallery(true) }} color="secondary">
+        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { dispatch(fetchGallery()); setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
         </Button>
         {auth.isAuthenticated !== true

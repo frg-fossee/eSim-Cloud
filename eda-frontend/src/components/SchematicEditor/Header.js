@@ -484,7 +484,7 @@ function Header (props) {
                 </MenuItem>
               </Menu>
             </>
-              )
+            )
           )
         }
       </Toolbar>
