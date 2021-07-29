@@ -29,7 +29,7 @@ export class Utils {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
       ['SlideSwitch', 'MQ2', 'TMP36'],
-      ['PotentioMeter'/*, 'PhotoResistor'*/, 'Thermistor']
+      ['PotentioMeter', 'PhotoResistor', 'Thermistor']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row

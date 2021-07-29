@@ -221,8 +221,8 @@ function Header (props) {
 
   // handel display format of last saved status
   function getDate (jsonDate) {
-    var json = jsonDate
-    var date = new Date(json)
+    const json = jsonDate
+    const date = new Date(json)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
     const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
     return `${day} ${month} ${hour}:${minute}:${second}`

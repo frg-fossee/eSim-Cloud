@@ -19,3 +19,4 @@ python manage.py loaddata initial_setup
 python manage.py createsuperuser_noinput --username=admin --password=admin
 python manage.py load_default_libs --username=admin --location=kicad-symbols/default/ --default
 python manage.py load_default_libs --username=admin --location=kicad-symbols/additional/
+python manage.py loaddata gallery_setup

@@ -11,11 +11,16 @@ import {
   Container,
   CssBaseline,
   CardActionArea,
-  CardMedia
+  CardMedia,
+  Tooltip,
+  ButtonBase
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
-import GallerySchSample from '../utils/GallerySchSample'
+import DeleteIcon from '@material-ui/icons/Delete'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchRole, deleteGallerySch, fetchGallery } from '../redux/actions/index'
+import SimpleSnackbar from '../components/Shared/Snackbar'
 
 const useStyles = makeStyles((theme) => ({
   mainHead: {
@@ -41,36 +46,51 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-var images = require.context('../static/gallery', true)
-
 // Card displaying overview of gallery sample schematics.
 function SchematicCard ({ sch }) {
   const classes = useStyles()
+  const auth = useSelector(state => state.authReducer)
+  const dispatch = useDispatch()
+  const [snacOpen, setSnacOpen] = React.useState(false)
 
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
   useEffect(() => {
-    document.title = 'Gallery - eSim '
-  })
-
-  const imageName = images('./' + sch.media)
+    dispatch(fetchRole())
+  }, [dispatch])
 
   return (
     <>
       <Card>
-        <CardActionArea>
-          <CardMedia
-            className={classes.media}
-            image={imageName}
-            title={sch.name}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {sch.name}
-            </Typography>
-            <Typography variant="body2" component="p">
-              {sch.description}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
+        <ButtonBase
+          target="_blank"
+          component={RouterLink}
+          to={'/editor?id=' + sch.save_id}
+          style={{ width: '100%' }}
+        >
+          <CardActionArea>
+            <CardMedia
+              className={classes.media}
+              image={sch.media}
+              title={sch.name}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                {sch.name}
+              </Typography>
+              <Typography variant="body2" component="p">
+                {sch.description}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </ButtonBase>
 
         <CardActions>
           <Button
@@ -82,6 +102,17 @@ function SchematicCard ({ sch }) {
           >
             Launch in Editor
           </Button>
+          {console.log(auth.roles)}
+          {auth.roles && auth.roles.is_type_staff &&
+            <Button onClick={() => { handleSnacClick() }}>
+              <Tooltip title="Delete" placement="bottom" arrow>
+                <DeleteIcon
+                  color="secondary"
+                  fontSize="small"
+                />
+              </Tooltip>
+            </Button>}
+          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteGallerySch} />
         </CardActions>
       </Card>
     </>
@@ -94,6 +125,9 @@ SchematicCard.propTypes = {
 // Card displaying eSim gallery page header.
 function MainCard () {
   const classes = useStyles()
+  useEffect(() => {
+    document.title = 'Gallery - eSim '
+  })
 
   return (
     <Card className={classes.mainHead}>
@@ -111,6 +145,12 @@ function MainCard () {
 
 export default function Gallery () {
   const classes = useStyles()
+  const gallerySchSample = useSelector(state => state.galleryReducer.schematics)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(fetchGallery())
+    dispatch(fetchRole())
+  }, [dispatch])
 
   return (
     <div className={classes.root}>
@@ -130,7 +170,8 @@ export default function Gallery () {
           </Grid>
 
           {/* Listing Gallery Schematics */}
-          {GallerySchSample.map(
+          {console.log(gallerySchSample)}
+          {gallerySchSample.map(
             (sch) => {
               return (
                 <Grid item xs={12} sm={6} lg={4} key={sch.save_id}>
