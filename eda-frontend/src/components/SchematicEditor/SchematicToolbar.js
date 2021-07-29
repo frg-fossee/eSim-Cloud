@@ -604,9 +604,9 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <CreateProject/>
       { auth.roles && auth.roles.is_type_staff &&
         <Tooltip title="Add to Gallery">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
-        <AddPhotoAlternateIcon fontSize="medium" />
-        </IconButton>
+          <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
+            <AddPhotoAlternateIcon fontSize="medium" />
+          </IconButton>
         </Tooltip>
       }
 
