@@ -1,0 +1,40 @@
+{
+    "name": "Thermistor",
+    "className": "Thermistor",
+    "pins": [
+        {
+            "x": 6,
+            "y": 86,
+            "name": "Terminal 1"
+        },
+        {
+            "x": 24,
+            "y": 86,
+            "name": "Terminal 2"
+        }
+    ],
+    "pointHalf": 4,
+    "draw": [
+        {
+            "type": "image",
+            "url": "assets/images/components/Thermistor.svg",
+            "width": 38,
+            "height": 88,
+            "x": 0,
+            "y": 0
+        }
+    ],
+    "simulation": {},
+    "info": {
+        "name": "Thermistor",
+        "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/NTC_bead.jpg/400px-NTC_bead.jpg",
+        "description": "Thermistor is an electronic component used to calculate the temperature.This is a type of resistor whose resistance varies with change in temperature.",
+        "Datasheet": "https://components101.com/sites/default/files/component_datasheet/NTC%20Thermistor%20datasheet.pdf",
+        "properties": {
+            "Minimum Temprature": "0 degree C",
+            "Maximum Temprature": "1000 degree C",
+            "Voltage Range": "0V-6V"
+        },
+        "innerHTMLContent": "<br> <h4>Formula:</h4> <b>Beta:</b> ß = ln(R1/R2)/((1/T1)-(1/T2)) <br> <b>Internal Resistance:</b> Rt = 10000 * e<sup>ß*( (<sup>1</sup>/<sub>T1</sub>)-(<sup>1</sup>/<sub>T2</sub>) )</sup> <br> <b>Voltage Out:</b> V<sub>out</sub> = (Rs / (Rs + Rt)) * V<sub>in</sub> <br> <h4>References</h4> <b>Thermistors - NTC & PTC:</b> <a href='https://www.youtube.com/watch?v=nXmkkyw8v5A' target='_blank' rel='noopener noreferrer'>Video</a> <br> <b>Voltage out formula:</b> <a href='https://www.petervis.com/electronics%20guides/calculators/thermistor/thermistor.html' target='_blank' rel='noopener noreferrer'>Document</a> <br> <h4>Resistance vs Temprature chart</h4> <img src='https://www.arroyoinstruments.com/images/cms/sized/Thermistor%20RT%20Chart.gif' alt='' style='width:100%;'> "
+    }
+}
