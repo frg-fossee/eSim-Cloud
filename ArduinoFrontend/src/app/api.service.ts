@@ -162,4 +162,15 @@ export class ApiService {
   fetchSamples(): Observable<any> {
     return this.http.get('./assets/samples/Samples.json');
   }
+
+  listAllVersions(id, token): Observable<any> {
+    return this.http.get(`${this.url}api/save/versions/${id}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    })
+  }
+
 }
