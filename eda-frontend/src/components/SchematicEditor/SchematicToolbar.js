@@ -35,6 +35,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
 import { RotateLeft } from '@material-ui/icons'
 import CreateProject from '../Project/CreateProject'
+import Notice from '../Shared/Notice'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -106,6 +107,14 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
+  const [shortCircuit, setshortCircuit] = React.useState(false)
+
+  const handleShortClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setshortCircuit(false)
+  }
 
   const handleSave = (version, newSave, save_id) => {
     if (!newSave) {
@@ -136,6 +145,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
       printToPlotControlBlock + '\n'
+
+    const checkNetlist = (netlist) => {
+      console.log(netlist)
+      netlist = netlist.split('\n')
+      for (let line = 0; line < netlist.length; line++) {
+        const splitLine = netlist[line].split(' ')
+        // Works only for components with 2 nodes
+        // For multiple nodes all nodes need to be checked with each other
+        if (splitLine[1] === splitLine[2] && splitLine.length >= 2) {
+          setshortCircuit(true)
+          return
+        }
+      }
+      setshortCircuit(false)
+    }
+
+    checkNetlist(compNetlist.main)
     genNetlist(netlist)
     setOpen(true)
   }
@@ -442,6 +468,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   return (
     <>
+      <SimpleSnackbar
+        message={'Possible short-circuit detected. Please recheck'}
+        open={shortCircuit}
+        close={handleShortClose}
+      />
+
       <Tooltip title="New">
         <IconButton
           color="inherit"
@@ -604,9 +636,9 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <CreateProject/>
       { auth.roles && auth.roles.is_type_staff &&
         <Tooltip title="Add to Gallery">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
-        <AddPhotoAlternateIcon fontSize="medium" />
-        </IconButton>
+          <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
+            <AddPhotoAlternateIcon fontSize="medium" />
+          </IconButton>
         </Tooltip>
       }
 

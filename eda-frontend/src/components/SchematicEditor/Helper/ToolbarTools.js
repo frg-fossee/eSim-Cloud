@@ -439,9 +439,9 @@ export function GenerateNetList() {
               compDetails.nodelist.add(component.children[child].edges[0].node)
           }
           compDetails.componentlist.push(component.properties.PREFIX)
-          console.log("compDetails", compDetails)
+          // console.log("compDetails", compDetails)
         }
-        console.log('component properties', component.properties)
+        // console.log('component properties', component.properties)
         if (component.properties.MODEL && component.properties.MODEL.length > 0) {
             k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
@@ -651,12 +651,11 @@ function annotate(graph) {
   } else {
     // DFS _________
     var NODE_SETS = []
-    console.log('dfs init')
+    // console.log('dfs init')
     var ptr = 1
     var mp = Array(5000).fill(0)
     NODE_SETS[0] = new Set() // Defining ground
     for(var property in list){
-        if(list[property].Component !== true && list[property].edge === true) console.log("FOUND NON-Property", list[property])
         if(list[property].Component === true && list[property].symbol !== 'PWR'){
             mxCell.prototype.ConnectedNode = null
             var component = list[property]
@@ -676,7 +675,7 @@ function annotate(graph) {
                       var contains_gnd = 0                     
                       
                       stk.push(pin)      
-                      console.log('exploring connected nodes of', pin)                    
+                      // console.log('exploring connected nodes of', pin)                    
                       while(!stk.isEmpty()){
                           cur_node = stk.peek()
                           stk.pop();
@@ -721,7 +720,7 @@ function annotate(graph) {
                                   conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].target, mp))
                                 }
                               }
-                              console.log("CONN EDGES", conn_vertices)
+                              // console.log("CONN EDGES", conn_vertices)
                               conn_vertices.forEach((elem) => {
                                 stk.push(elem)
                               })
@@ -731,7 +730,7 @@ function annotate(graph) {
                             for(var x in cur_set)
                                 NODE_SETS[0].add(cur_set[x])
                         }
-                          console.log("Set of nodes at same pot:", cur_set)   
+                          // console.log("Set of nodes at same pot:", cur_set)   
                       }
                     } 
                     if (!contains_gnd){
@@ -742,8 +741,8 @@ function annotate(graph) {
             }
         }
     }
-    console.log('dfs end')
-    console.log("Results after considering edges: ", NODE_SETS)
+    // console.log('dfs end')
+    // console.log("Results after considering edges: ", NODE_SETS)
     for (var property in list) {
         if (list[property].Component === true && list[property].symbol !== 'PWR') {
           mxCell.prototype.ConnectedNode = null
@@ -780,12 +779,10 @@ function annotate(graph) {
                 if (pin.edges !== null || pin.edges.length !== 0) {
                 // Search for pin in NODE_SET:
                 // assign: pin.edges[wire].node= "NODE" + $indexOfSet
-                // console.log("node search in pot list begins!")
                 NODE_SETS.forEach((e, i) => {
                   var done = 0
                   e.forEach((vertex) => {
                     if (vertex.id == pin.id && done === 0) {
-                      // console.log("FOUND THE NODE POTENTIAL!!")
                       if (i === 0) {
                         pin.edges[wire].node = 0
                         pin.ConnectedNode = 0
