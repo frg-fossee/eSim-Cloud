@@ -157,6 +157,7 @@ export class DHT11 extends CircuitElement {
     });
 
     this.setValue(0.925);
+    
   }
 
   /** remove slider and text */

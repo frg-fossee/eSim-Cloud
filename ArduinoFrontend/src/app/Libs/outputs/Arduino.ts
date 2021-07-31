@@ -55,7 +55,7 @@ export class ArduinoUno extends CircuitElement {
    * @param y Y Position
    */
   constructor(public canvas: any, x: number, y: number) {
-    
+
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
     // Logic to Create Name of an  arduino
     let start = window['scope']['ArduinoUno'].length + 1;
@@ -77,12 +77,17 @@ export class ArduinoUno extends CircuitElement {
     // Add a Analog value change Listener to the circuit nodes
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`A${i}`].addValueListener((val) => {
+        console.log(val);
         if (isUndefined(this.runner) || isNull(this.runner)) {
           setTimeout(() => {
-            this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val));
+            // this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val))
+            this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val))
+
           }, 300);
         } else {
-          this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val));
+          // this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val))
+          this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val))
+
         }
       });
     }
@@ -119,6 +124,7 @@ export class ArduinoUno extends CircuitElement {
     // Handle Input For Port D D2 - D7
     for (let i = 2; i <= 7; ++i) {
       this.pinNameMap[`D${i}`].addValueListener((v) => {
+        console.log(v);
         if (isUndefined(this.runner) || isNull(this.runner)) {
           setTimeout(() => {
             this.pinNameMap[`D${i}`].setValue(v, this.pinNameMap[`D${i}`]);
@@ -220,7 +226,7 @@ export class ArduinoUno extends CircuitElement {
       }
     });
     this.runner.portC.addListener((value) => {
-      console.log(value);
+      // console.log(value);
     });
 
     this.runner.portD.addListener((value) => {
@@ -249,6 +255,7 @@ export class ArduinoUno extends CircuitElement {
     });
 
     this.runner.usart.onByteTransmit = (value) => {
+      //  console.log(value);
       /// TODO: Show On Console
       myOutput.textContent += String.fromCharCode(value);
     };
@@ -332,4 +339,5 @@ export class ArduinoUno extends CircuitElement {
       }
     }
   }
+
 }

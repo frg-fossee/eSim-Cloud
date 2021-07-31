@@ -95,6 +95,7 @@ export class LED extends CircuitElement {
   }
   /** Simulation Logic */
   logic(val: number) {
+    console.log(val);
     if (this.prev === val) {
       return;
     }
@@ -185,11 +186,13 @@ export class LED extends CircuitElement {
     this.visitedNodesv2.clear();
     const pwmPins = [3, 5, 6, 9, 10, 11];
     for (const node of this.nodes) {
+      // console.log(node)
       this.pinNamedMap[node.label] = node;
     }
 
     // Determine if Positive terminal of LED is attached to Arduino
     const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE']);
+    console.log(arduinoEnd);
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd) {
       return;
@@ -224,6 +227,7 @@ export class LED extends CircuitElement {
    * @param node The Node which need to be checked
    */
   getRecArduinov2(node: Point) {
+    console.log(node)
     try {
       if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
         // TODO: Return if arduino is connected to start node

@@ -78,7 +78,7 @@ export abstract class CircuitElement {
         .then(v => v.json())
         .then(obj => {
           // get the title
-          console.log(obj);
+          // console.log(obj);
           this.title = obj.name;
 
           this.pointHalf = obj.pointHalf;
@@ -132,7 +132,7 @@ export abstract class CircuitElement {
    */
   DrawNodes(canvas: any, pinData: any, pointHalf: number) {
 
-    console.log(pinData);
+    // console.log(pinData);
     for (const pin of pinData) {
       this.nodes.push(
         new Point(
