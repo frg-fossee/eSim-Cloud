@@ -35,7 +35,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
 import { RotateLeft } from '@material-ui/icons'
 import CreateProject from '../Project/CreateProject'
-import Notice from '../Shared/Notice'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
