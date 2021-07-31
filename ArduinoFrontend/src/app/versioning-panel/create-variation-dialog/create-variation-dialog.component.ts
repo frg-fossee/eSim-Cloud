@@ -8,7 +8,7 @@ import { FormControl } from '@angular/forms';
 })
 export class CreateVariationDialogComponent implements OnInit {
 
-  var_name = new FormControl();
+  var_name = new FormControl('');
 
   constructor() { }
 
