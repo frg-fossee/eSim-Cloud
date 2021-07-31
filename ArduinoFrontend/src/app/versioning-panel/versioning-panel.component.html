@@ -1,0 +1,24 @@
+<br>
+<div>
+
+  <div style="display: flex; justify-content: space-between; margin: 0 12px;">
+    <h4 style="text-align:center; text-align:left;">History</h4>
+    <mat-icon style="cursor:pointer;" (click)="createBranch()">create_new_folder</mat-icon>
+  </div>
+
+  <mat-accordion>
+
+    <mat-expansion-panel *ngFor="let branch of branches">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{branch.name}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div *ngFor="let version of branch.versions">
+        <p>{{version.name}}</p>
+      </div>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+
+</div>
