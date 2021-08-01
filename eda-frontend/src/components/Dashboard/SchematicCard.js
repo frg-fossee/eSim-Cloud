@@ -138,13 +138,13 @@ export default function SchematicCard ({ sch }) {
           {/* Display delete option */}
           {!sch.project_id &&
           <Button onClick={() => { handleSnacClick() }}>
-          <Tooltip title="Delete" placement="bottom" arrow>
-            <DeleteIcon
-              color="secondary"
-              fontSize="small"
+            <Tooltip title="Delete" placement="bottom" arrow>
+              <DeleteIcon
+                color="secondary"
+                fontSize="small"
               // style={{ marginLeft: 'auto' }}
-            />
-          </Tooltip>
+              />
+            </Tooltip>
           </Button>}
           <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteSchematic} />
 
