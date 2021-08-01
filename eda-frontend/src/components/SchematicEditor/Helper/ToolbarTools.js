@@ -33,6 +33,14 @@ export default function ToolbarTools(grid, unredo) {
   graph.getView().addListener(mxEvent.UNDO, listener)
 }
 
+// Display mxGraph root (For development only)
+export function dispGraph () {
+  if (graph) {
+    console.log('Graph Root', graph.getDefaultParent())
+    console.log('Current Cell', graph.getSelectionCell())
+  }
+}
+
 // SAVE
 export function Save() {
   XMLWireConnections()
@@ -159,9 +167,8 @@ export function ClearGrid() {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
 }
 
-function rotate (rot_ang) {
+export function rotateCell (cell, rot_ang) {
   var view = graph.getView()
-  var cell = graph.getSelectionCell()
   var state = view.getState(cell, true)
   var vHandler = graph.createVertexHandler(state)
   if (cell != null) {
@@ -173,6 +180,14 @@ function rotate (rot_ang) {
     }
   }
   vHandler.destroy()
+}
+
+function rotate (rot_ang) {
+  var cell = graph.getSelectionCell()
+  console.log(graph.getDefaultParent())
+  if (cell !== undefined) {
+    rotateCell(cell, rot_ang)
+  }
 }
 
 // ROTATE COMPONENT CLOCKWISE
