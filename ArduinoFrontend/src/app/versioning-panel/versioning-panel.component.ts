@@ -12,8 +12,7 @@ import { CreateVariationDialogComponent } from './create-variation-dialog/create
 })
 export class VersioningPanelComponent implements OnInit {
 
-  branches = [
-  ]
+  branches = [];
 
   constructor(
     private _dialog: MatDialog,
@@ -27,6 +26,8 @@ export class VersioningPanelComponent implements OnInit {
 
         console.log('--->', v);
         for (const e in v) {
+          let date_obj = new Date(v[e].save_time)
+          v[e].formated_save_time = `${date_obj.getDate()}/${date_obj.getMonth()}/${date_obj.getFullYear()} ${date_obj.getHours()}:${date_obj.getMinutes()}`
           let found = false;
           // check if already avail
           for (const i in this.branches) {
@@ -52,6 +53,16 @@ export class VersioningPanelComponent implements OnInit {
 
   createBranch() {
     this._dialog.open(CreateVariationDialogComponent)
+  }
+
+  deleteVariation(variation) {
+
+  }
+
+  deleteBranch(branch) {
+    this.api.deleteBranch(branch.versions[0].save_id, branch.name, Login.getToken()).subscribe(result => {
+      console.log(result);
+    })
   }
 
 }

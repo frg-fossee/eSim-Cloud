@@ -8,15 +8,17 @@
 
   <mat-accordion>
 
-    <mat-expansion-panel *ngFor="let branch of branches">
+    <mat-expansion-panel *ngFor="let branch of branches" hideToggle>
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{branch.name}}
         </mat-panel-title>
+        <mat-icon (click)="deleteBranch(branch)">delete</mat-icon>
       </mat-expansion-panel-header>
-      <div *ngFor="let version of branch.versions">
-        <p>{{version.name}} - {{version.save_time}}</p>
+      <div *ngFor="let version of branch.versions" style="display:flex;">
+        <p>{{version.name}} <br> {{version.formated_save_time}}</p>
       </div>
+      <mat-icon (click)="deleteVariation(version)">delete_outline</mat-icon>
     </mat-expansion-panel>
 
   </mat-accordion>

@@ -169,4 +169,14 @@ export class ApiService {
     })
   }
 
+  deleteBranch(id, branch, token) {
+    return this.http.delete(`${this.url}api/save/versions/${id}/${branch}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    })
+  }
+
 }
