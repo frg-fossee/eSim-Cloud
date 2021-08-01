@@ -462,11 +462,17 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
     // if projet id is uuid (online circuit)
     if (SaveOnline.isUUID(this.projectId)) {
-      // Update Project to DB
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => AlertService.showAlert('Updated'), this.projectId);
+      this.aroute.queryParams.subscribe(params => {
+        const branch = params.branch;
+        const version = params.version;
+        // Update Project to DB
+        SaveOnline.Save(this.projectTitle, this.description, this.api, branch, makeid(20), (_) => AlertService.showAlert('Updated'), this.projectId);
+      })
     } else {
+      const branch = 'master';
+      const version_id = makeid(20);
       // Save Project and show alert
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, branch, version_id, (out) => {
         AlertService.showAlert('Saved');
         // add new quert parameters
         this.router.navigate(
@@ -477,12 +483,24 @@ export class SimulatorComponent implements OnInit, OnDestroy {
               id: out.save_id,
               online: true,
               offline: null,
-              gallery: null
+              gallery: null,
+              version: version_id,
+              branch
             },
             queryParamsHandling: 'merge'
           }
         );
       });
+    }
+    function makeid(length) {
+      var result = '';
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() *
+          charactersLength));
+      }
+      return result;
     }
   }
   /** Function saves or updates the project offline */
@@ -531,12 +549,15 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       AlertService.showAlert('Please Login');
       return;
     }
-
-    this.api.readProject(id, token).subscribe((data: any) => {
-      this.projectTitle = data.name;
-      this.description = data.description;
-      this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
-      Workspace.Load(JSON.parse(data.data_dump));
+    this.aroute.queryParams.subscribe(params => {
+      const branch = params.branch;
+      const version = params.version;
+      this.api.readProject(id, branch, version, token).subscribe((data: any) => {
+        this.projectTitle = data.name;
+        this.description = data.description;
+        this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+        Workspace.Load(JSON.parse(data.data_dump));
+      })
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
         AlertService.showAlert('You are Not Authorized to view this circuit');

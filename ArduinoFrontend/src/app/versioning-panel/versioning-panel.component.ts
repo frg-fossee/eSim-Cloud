@@ -13,8 +13,6 @@ import { CreateVariationDialogComponent } from './create-variation-dialog/create
 export class VersioningPanelComponent implements OnInit {
 
   branches = [
-    { name: 'branch1', versions: [{ name: 'one' }, { name: 'two' }] },
-    { name: 'branch2', versions: [{ name: 'one' }] }
   ]
 
   constructor(
@@ -40,7 +38,7 @@ export class VersioningPanelComponent implements OnInit {
           if (found) {
             continue;
           } else {
-            let obj = { name: v[e].name, versions: [v[e]] }
+            let obj = { name: v[e].branch, versions: [v[e]] }
             this.branches.push(obj);
           }
         }

@@ -407,7 +407,7 @@ export class DashboardComponent implements OnInit {
         AlertService.showAlert('Please Login');
         return;
       }
-      this.api.readProject(id, token).subscribe(
+      this.api.readProject(id, 'test', 'test', token).subscribe(
         data => {
           // Converting data to required format
           const obj = JSON.parse(data['data_dump']);

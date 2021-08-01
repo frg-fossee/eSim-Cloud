@@ -32,7 +32,7 @@ export class SaveOnline {
    * @param callback Callback when save/update is done
    * @param id Project ID
    */
-  static Save(name: string = '', description: string = '', api: ApiService, callback: (data: any) => void = null, id: string = null) {
+  static Save(name: string = '', description: string = '', api: ApiService, branch, version, callback: (data: any) => void = null, id: string = null) {
     // Get Token
     const token = Login.getToken();
     if (token) {
@@ -48,6 +48,8 @@ export class SaveOnline {
         is_arduino: true,
         description,
         name,
+        branch,
+        version
       };
       // Data Dump will contain Workspace Data and Circuit data
       const dataDump = {
@@ -132,7 +134,7 @@ export class SaveOnline {
       // Converting data to required format
       const saveObj = ConvertJSONFormat.convertToOnlineFormat(data);
       if (toUpdate) {
-        api.readProject(id, token).subscribe(() => {
+        api.readProject(id, token, 'test', 'test').subscribe(() => {
           // if exists then update the project
           api.updateProject(id, saveObj, token).subscribe(out => {
             if (callback) {
