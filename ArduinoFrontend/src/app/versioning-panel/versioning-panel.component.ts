@@ -56,13 +56,19 @@ export class VersioningPanelComponent implements OnInit {
   }
 
   deleteVariation(variation) {
-
+    this.api.deleteVariation(variation.save_id, variation.branch, variation.version, Login.getToken()).subscribe((result) => {
+      console.log(result);
+    })
   }
 
   deleteBranch(branch) {
     this.api.deleteBranch(branch.versions[0].save_id, branch.name, Login.getToken()).subscribe(result => {
       console.log(result);
     })
+  }
+
+  switchVersion(version) {
+    console.log(version)
   }
 
 }

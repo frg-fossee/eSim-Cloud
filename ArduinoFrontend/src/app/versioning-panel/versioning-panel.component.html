@@ -15,10 +15,11 @@
         </mat-panel-title>
         <mat-icon (click)="deleteBranch(branch)">delete</mat-icon>
       </mat-expansion-panel-header>
-      <div *ngFor="let version of branch.versions" style="display:flex;">
+      <div *ngFor="let version of branch.versions" style="display:flex;" (click)="switchVersion(version)">
         <p>{{version.name}} <br> {{version.formated_save_time}}</p>
+        <span style="flex: 1;"></span>
+        <mat-icon (click)="deleteVariation(version)">delete_outline</mat-icon>
       </div>
-      <mat-icon (click)="deleteVariation(version)">delete_outline</mat-icon>
     </mat-expansion-panel>
 
   </mat-accordion>

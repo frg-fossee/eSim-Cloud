@@ -179,4 +179,14 @@ export class ApiService {
     })
   }
 
+  deleteVariation(id, branch, version, token) {
+    return this.http.delete(`${this.url}api/save/versions/${version}/${id}/${branch}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    })
+  }
+
 }
