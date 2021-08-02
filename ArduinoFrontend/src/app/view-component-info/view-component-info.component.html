@@ -2,11 +2,14 @@
 <div mat-dialog-content>
   <img src={{data.image}} alt={{data.name}} style="max-width: 100%;">
   {{data.description}}
+  <p style="margin:0;" id="dynamic-content"></p>
   <br>
-  <a mat-raised-button href="{{data.Datasheet}}" target="_blank" style="color: royalblue;" *ngIf="data.Datasheet">Datasheet</a>
+  <a mat-raised-button href="{{data.Datasheet}}" target="_blank" style="color: royalblue;"
+    *ngIf="data.Datasheet">Datasheet</a>
   <h5 style="margin-top: 30px;">Specification</h5>
 
-  <table mat-table [dataSource]="tableData" class="mat-elevation-z8" style="width: 100%;margin-top: 8px;margin-bottom: 30px;">
+  <table mat-table [dataSource]="tableData" class="mat-elevation-z8"
+    style="width: 100%;margin-top: 8px;margin-bottom: 30px;">
     <ng-container [matColumnDef]="column" *ngFor="let column of columns">
       <th mat-header-cell *matHeaderCellDef> {{column}} </th>
       <td mat-cell *matCellDef="let element"> {{element[column]}} </td>

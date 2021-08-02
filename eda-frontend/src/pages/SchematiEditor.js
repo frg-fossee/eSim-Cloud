@@ -62,7 +62,7 @@ export default function SchematiEditor (props) {
       }
     }
   // eslint-disable-next-line
-  }, [])
+  }, [props.location])
 
   return (
     <div className={classes.root}>
