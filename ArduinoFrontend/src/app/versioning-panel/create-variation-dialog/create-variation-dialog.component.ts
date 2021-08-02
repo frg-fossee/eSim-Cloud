@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { MatDialogRef } from '@angular/material';
 
 @Component({
   selector: 'app-create-variation-dialog',
@@ -10,13 +11,14 @@ export class CreateVariationDialogComponent implements OnInit {
 
   var_name = new FormControl('');
 
-  constructor() { }
+  constructor(private _dialogRef: MatDialogRef<CreateVariationDialogComponent>) { }
 
   ngOnInit() {
   }
 
   createVariation() {
     console.log(this.var_name.value);
+    this._dialogRef.close(this.var_name.value);
   }
 
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 import { CreateVariationDialogComponent } from './create-variation-dialog/create-variation-dialog.component';
@@ -12,12 +12,15 @@ import { CreateVariationDialogComponent } from './create-variation-dialog/create
 })
 export class VersioningPanelComponent implements OnInit {
 
+  @Output() onCreateNewBranch = new EventEmitter();
+
   branches = [];
 
   constructor(
     private _dialog: MatDialog,
     private api: ApiService,
-    private aroute: ActivatedRoute
+    private aroute: ActivatedRoute,
+    private _router: Router
   ) {
     this.aroute.queryParams.subscribe(params => {
       const token = Login.getToken();
@@ -44,6 +47,20 @@ export class VersioningPanelComponent implements OnInit {
           }
         }
 
+        for (const e in this.branches) {
+          this.branches[e].versions.sort((a, b) => {
+            let date1 = new Date(a.save_time);
+            let date2 = new Date(b.save_time);
+            if (date1 > date2) {
+              return -1;
+            } else if (date1 < date2) {
+              return 1;
+            } else {
+              return 0;
+            }
+          })
+        }
+
       })
     })
   }
@@ -52,7 +69,12 @@ export class VersioningPanelComponent implements OnInit {
   }
 
   createBranch() {
-    this._dialog.open(CreateVariationDialogComponent)
+    this._dialog.open(CreateVariationDialogComponent).afterClosed().subscribe((val: any) => {
+      console.log(val);
+      if (val) {
+        this.onCreateNewBranch.emit(val);
+      }
+    })
   }
 
   deleteVariation(variation) {
@@ -67,8 +89,10 @@ export class VersioningPanelComponent implements OnInit {
     })
   }
 
-  switchVersion(version) {
-    console.log(version)
+  switchVersion(variation) {
+    this._router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
+      this._router.navigate(['/simulator'], { queryParams: { id: variation.save_id, version: variation.version, branch: variation.branch } })
+    );
   }
 
 }

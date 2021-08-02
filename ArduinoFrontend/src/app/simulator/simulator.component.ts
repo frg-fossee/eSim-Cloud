@@ -761,4 +761,42 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   redoChange() {
     UndoUtils.workspaceRedo();
   }
+
+  createNewBranch(branchName) {
+    console.log(branchName)
+    const branch = branchName;
+    const version_id = this.getRandomString(20);
+    // Save Project and show alert
+    SaveOnline.Save(this.projectTitle, this.description, this.api, branch, version_id, (out) => {
+      AlertService.showAlert('Saved');
+      // add new quert parameters
+      this.router.navigate(
+        [],
+        {
+          relativeTo: this.aroute,
+          queryParams: {
+            id: out.save_id,
+            online: true,
+            offline: null,
+            gallery: null,
+            version: version_id,
+            branch
+          },
+          queryParamsHandling: 'merge'
+        }
+      );
+    }, this.projectId);
+  }
+
+  getRandomString(length) {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
+  }
+
 }
