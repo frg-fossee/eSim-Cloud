@@ -8,17 +8,20 @@
 
   <mat-accordion>
 
-    <mat-expansion-panel *ngFor="let branch of branches" hideToggle>
+    <mat-expansion-panel *ngFor="let branch of branches;let i = index" hideToggle [expanded]="step === i"
+      (opened)="setStep(i)" class="version-panel-class">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{branch.name}}
         </mat-panel-title>
-        <mat-icon (click)="deleteBranch(branch)">delete</mat-icon>
+        <mat-icon (click)="deleteBranch(branch)" *ngIf="branchName != branch.name">delete</mat-icon>
       </mat-expansion-panel-header>
-      <div *ngFor="let version of branch.versions" style="display:flex;" (click)="switchVersion(version)">
+      <div *ngFor="let version of branch.versions" style="display:flex;" (click)="switchVersion(version)"
+        [ngClass]="{'var-selected':(version.version==versionId && branchName == version.branch)}" class="version-list">
         <p>{{version.name}} <br> {{version.formated_save_time}}</p>
         <span style="flex: 1;"></span>
-        <mat-icon (click)="deleteVariation(version)">delete_outline</mat-icon>
+        <mat-icon *ngIf="version.version!=versionId || branchName != version.branch" (click)="deleteVariation(version)">
+          delete_outline</mat-icon>
       </div>
     </mat-expansion-panel>
 

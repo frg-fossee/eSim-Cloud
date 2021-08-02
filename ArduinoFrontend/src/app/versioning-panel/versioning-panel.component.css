@@ -1,0 +1,10 @@
+.var-selected {
+    background-color: #dddddd;
+}
+
+.version-list {
+    padding: 6px 24px;
+}
+.version-list p {
+    margin: 0;
+}
