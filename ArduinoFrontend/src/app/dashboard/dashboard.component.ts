@@ -105,12 +105,25 @@ export class DashboardComponent implements OnInit {
     // if token is present get the list of project created by a user
     if (token) {
       this.api.listProject(token).subscribe((val: any[]) => {
-        this.online = val;
+        this.online = this.filterOnlineProjects(val);
       }, err => console.log(err));
     } else {
       // if no token is present then show this message
       this.onCloudMessage = 'Please Login to See Circuit';
     }
+  }
+
+  filterOnlineProjects(val) {
+    let projects = [];
+    let added = [];
+    for (const e in val) {
+      if (!added.includes(val[e].save_id)) {
+        added.push(val[e].save_id);
+        projects.push(val[e])
+      }
+    }
+    console.log(val)
+    return projects;
   }
 
   /**

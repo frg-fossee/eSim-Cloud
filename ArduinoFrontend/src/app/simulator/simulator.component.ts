@@ -464,9 +464,30 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (SaveOnline.isUUID(this.projectId)) {
       this.aroute.queryParams.subscribe(params => {
         const branch = params.branch;
-        const version = params.version;
+        const version_id = params.version;
+        const newVersionId = makeid(20);
         // Update Project to DB
-        SaveOnline.Save(this.projectTitle, this.description, this.api, branch, makeid(20), (_) => AlertService.showAlert('Updated'), this.projectId);
+        SaveOnline.Save(this.projectTitle, this.description, this.api, branch, newVersionId, (out) => {
+          AlertService.showAlert('Updated')
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            // add new quert parameters
+            this.router.navigate(
+              ['/simulator'],
+              {
+                relativeTo: this.aroute,
+                queryParams: {
+                  id: out.save_id,
+                  online: true,
+                  offline: null,
+                  gallery: null,
+                  version: newVersionId,
+                  branch
+                },
+                queryParamsHandling: 'merge'
+              }
+            );
+          });
+        }, this.projectId);
       })
     } else {
       const branch = 'master';
@@ -768,7 +789,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     const version_id = obj.version;
     // Save Project and show alert
     SaveOnline.Save(this.projectTitle, this.description, this.api, branch, version_id, (out) => {
-      AlertService.showAlert('Saved');
+      AlertService.showAlert('Created new branch');
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
         // add new quert parameters
         this.router.navigate(
