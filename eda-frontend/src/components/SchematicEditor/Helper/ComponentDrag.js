@@ -12,6 +12,7 @@ import dot from '../../../static/dot.gif'
 import ToolbarTools from './ToolbarTools.js'
 import KeyboardShorcuts from './KeyboardShorcuts.js'
 import { SideBar } from './SideBar.js'
+import KiCadFileUtils from './KiCadFileUtils'
 
 var graph
 
@@ -277,6 +278,7 @@ export default function LoadGrid (container, sidebar, outline) {
     KeyboardShorcuts(graph)
     //NetlistInfoFunct(graph)
     ToolbarTools(graph)
+    KiCadFileUtils(graph)
 
     store.subscribe(() => {
       var id = store.getState().componentPropertiesReducer.id

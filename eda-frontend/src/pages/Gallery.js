@@ -69,27 +69,27 @@ function SchematicCard ({ sch }) {
   return (
     <>
       <Card>
-      <ButtonBase
+        <ButtonBase
           target="_blank"
           component={RouterLink}
           to={'/editor?id=' + sch.save_id}
           style={{ width: '100%' }}
         >
-        <CardActionArea>
-          <CardMedia
-            className={classes.media}
-            image={sch.media}
-            title={sch.name}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="h2">
-              {sch.name}
-            </Typography>
-            <Typography variant="body2" component="p">
-              {sch.description}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
+          <CardActionArea>
+            <CardMedia
+              className={classes.media}
+              image={sch.media}
+              title={sch.name}
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                {sch.name}
+              </Typography>
+              <Typography variant="body2" component="p">
+                {sch.description}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
         </ButtonBase>
 
         <CardActions>
@@ -102,17 +102,17 @@ function SchematicCard ({ sch }) {
           >
             Launch in Editor
           </Button>
-            {console.log(auth.roles)}
-           {auth.roles && auth.roles.is_type_staff &&
+          {console.log(auth.roles)}
+          {auth.roles && auth.roles.is_type_staff &&
             <Button onClick={() => { handleSnacClick() }}>
-            <Tooltip title="Delete" placement="bottom" arrow>
-              <DeleteIcon
-                color="secondary"
-                fontSize="small"
-              />
-            </Tooltip>
+              <Tooltip title="Delete" placement="bottom" arrow>
+                <DeleteIcon
+                  color="secondary"
+                  fontSize="small"
+                />
+              </Tooltip>
             </Button>}
-            <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteGallerySch} />
+          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteGallerySch} />
         </CardActions>
       </Card>
     </>

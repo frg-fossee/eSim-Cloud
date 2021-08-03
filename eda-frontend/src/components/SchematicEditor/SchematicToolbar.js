@@ -1,7 +1,9 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
+
 import { IconButton, Tooltip, Snackbar } from '@material-ui/core'
 import AddBoxOutlinedIcon from '@material-ui/icons/AddBoxOutlined'
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline'
@@ -25,16 +27,21 @@ import CreateNewFolderOutlinedIcon from '@material-ui/icons/CreateNewFolderOutli
 import ImageOutlinedIcon from '@material-ui/icons/ImageOutlined'
 import SystemUpdateAltOutlinedIcon from '@material-ui/icons/SystemUpdateAltOutlined'
 import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
+import { RotateLeft } from '@material-ui/icons'
 import { Link as RouterLink } from 'react-router-dom'
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
 import { fetchRole } from '../../redux/actions/authActions'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
-import { useSelector, useDispatch } from 'react-redux'
 import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
-import { RotateLeft } from '@material-ui/icons'
 import CreateProject from '../Project/CreateProject'
+import { importSCHFile } from './Helper/KiCadFileUtils'
+
+// Req for Development
+// import CodeIcon from '@material-ui/icons/Code'
+// // eslint-disable-next-line
+// import { dispGraph } from './Helper/ToolbarTools'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -106,6 +113,14 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
+  const [shortCircuit, setshortCircuit] = React.useState(false)
+
+  const handleShortClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setshortCircuit(false)
+  }
 
   const handleSave = (version, newSave, save_id) => {
     if (!newSave) {
@@ -136,6 +151,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
       printToPlotControlBlock + '\n'
+
+    const checkNetlist = (netlist) => {
+      console.log(netlist)
+      netlist = netlist.split('\n')
+      for (let line = 0; line < netlist.length; line++) {
+        const splitLine = netlist[line].split(' ')
+        // Works only for components with 2 nodes
+        // For multiple nodes all nodes need to be checked with each other
+        if (splitLine[1] === splitLine[2] && splitLine.length >= 2) {
+          setshortCircuit(true)
+          return
+        }
+      }
+      setshortCircuit(false)
+    }
+
+    checkNetlist(compNetlist.main)
     genNetlist(netlist)
     setOpen(true)
   }
@@ -382,6 +414,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
+  const handleKicadFileUpload = () => {
+    const fileSelector = document.createElement('input')
+    fileSelector.setAttribute('type', 'file')
+    fileSelector.setAttribute('accept', '.sch')
+    fileSelector.click()
+    fileSelector.addEventListener('change', function (event) {
+      var reader = new FileReader()
+      var filename = event.target.files[0].name
+      if (filename.slice(filename.length - 3) === 'sch') {
+        reader.onload = async (e) => {
+          importSCHFile(e.target.result)
+        }
+        reader.readAsText(event.target.files[0])
+      }
+    })
+  }
+
   // Control Help dialog window open and close
   const [schOpen, setSchOpen] = React.useState(false)
 
@@ -442,6 +491,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
 
   return (
     <>
+      <SimpleSnackbar
+        message={'Possible short-circuit detected. Please recheck'}
+        open={shortCircuit}
+        close={handleShortClose}
+      />
+
       <Tooltip title="New">
         <IconButton
           color="inherit"
@@ -459,17 +514,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} />
+      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} openKicad={handleKicadFileUpload}/>
       <Tooltip title="Save (Ctrl + S)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SimpleSnackbar
-        open={snacOpen}
-        close={handleSnacClose}
-        message={message}
-      />
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <span className={classes.pipe}>|</span>
       <Tooltip title="Export (Ctrl + E)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
@@ -604,12 +655,17 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       <CreateProject/>
       { auth.roles && auth.roles.is_type_staff &&
         <Tooltip title="Add to Gallery">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
-        <AddPhotoAlternateIcon fontSize="medium" />
-        </IconButton>
+          <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
+            <AddPhotoAlternateIcon fontSize="medium" />
+          </IconButton>
         </Tooltip>
       }
 
+      {/* <Tooltip title="Display MxGraph Root">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={ () => dispGraph()}>
+          <CodeIcon fontSize="small" />
+        </IconButton>
+      </Tooltip> */}
     </>
   )
 }
