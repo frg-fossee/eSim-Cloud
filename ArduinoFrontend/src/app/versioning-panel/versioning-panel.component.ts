@@ -1,10 +1,14 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { MatAccordion, MatDialog } from '@angular/material';
+import { MatAccordion, MatDialog, MatMenuTrigger } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 import { CreateVariationDialogComponent } from './create-variation-dialog/create-variation-dialog.component';
 
+export class DeleteObj {
+  type: string;
+  data: any;
+}
 @Component({
   selector: 'app-versioning-panel',
   templateUrl: './versioning-panel.component.html',
@@ -14,19 +18,21 @@ export class VersioningPanelComponent implements OnInit {
 
   @Output() onCreateNewBranch = new EventEmitter();
   @ViewChild(MatAccordion) accordion: MatAccordion;
+  @ViewChild('deleteMenuTrigger') deleteMenuTrigger: MatMenuTrigger;
 
-  branches = [
-  ];
+  branches = [];
   step = 0;
   id: string;
   versionId: string;
   branchName: string;
+  bannerMsg = 'Are you sure you want to delete this version?';
+  toDeleteObj: DeleteObj;
 
   constructor(
     private _dialog: MatDialog,
     private api: ApiService,
     private aroute: ActivatedRoute,
-    private _router: Router
+    private _router: Router,
   ) {
 
   }
@@ -40,17 +46,11 @@ export class VersioningPanelComponent implements OnInit {
       this.versionId = params.version;
       this.branchName = params.branch;
       this.api.listAllVersions(this.id, token).subscribe((v) => {
-
         console.log('--->', v);
-        let stepIndex = 0;
         for (const e in v) {
           let date_obj = new Date(v[e].save_time)
           v[e].formated_save_time = `${date_obj.getDate()}/${date_obj.getMonth()}/${date_obj.getFullYear()} ${date_obj.getHours()}:${date_obj.getMinutes()}`
           let found = false;
-
-          if (this.versionId == v[e].version) {
-            this.step = stepIndex;
-          }
 
           // check if already avail
           for (const i in this.branches) {
@@ -65,9 +65,9 @@ export class VersioningPanelComponent implements OnInit {
             let obj = { name: v[e].branch, versions: [v[e]] }
             this.branches.push(obj);
           }
-          stepIndex++;
         }
 
+        // Sort versions in branch
         for (const e in this.branches) {
           this.branches[e].versions.sort((a, b) => {
             let date1 = new Date(a.save_time);
@@ -80,6 +80,26 @@ export class VersioningPanelComponent implements OnInit {
               return 0;
             }
           })
+        }
+        // Sort branches
+        this.branches.sort((a, b) => {
+          let branch1Last = new Date(a.versions[a.versions.length - 1].save_time)
+          let branch2Last = new Date(b.versions[b.versions.length - 1].save_time)
+          if (branch1Last < branch2Last) {
+            return 1;
+          } else if (branch1Last > branch2Last) {
+            return -1;
+          } else {
+            return 0;
+          }
+        })
+
+        for (let i = 0; i < this.branches.length; i++) {
+          for (const x in this.branches[i].versions) {
+            if (this.versionId == this.branches[i].versions[x].version && this.branchName === this.branches[i].name) {
+              this.step = i;
+            }
+          }
         }
 
       })
@@ -108,14 +128,29 @@ export class VersioningPanelComponent implements OnInit {
     })
   }
 
-  switchVersion(variation) {
-    this._router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
-      this._router.navigate(['/simulator'], { queryParams: { id: variation.save_id, version: variation.version, branch: variation.branch } })
-    );
+  switchVersion(variation, event: Event) {
+    if (event.target != document.getElementById(variation.version)) {
+      this._router.navigateByUrl('/', { skipLocationChange: true }).then(() =>
+        this._router.navigate(['/simulator'], { queryParams: { id: variation.save_id, version: variation.version, branch: variation.branch } })
+      );
+    }
   }
 
   setStep(index) {
     this.step = index;
+  }
+
+  delete(type, data) {
+    this.toDeleteObj = { type, data };
+    this.deleteMenuTrigger.openMenu();
+  }
+
+  confirmDelete() {
+    if (this.toDeleteObj.type == 'branch') {
+      this.deleteBranch(this.toDeleteObj.data);
+    } else if (this.toDeleteObj.type == 'version') {
+      this.deleteVariation(this.toDeleteObj.data);
+    }
   }
 
 }

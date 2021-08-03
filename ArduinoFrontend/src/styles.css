@@ -85,3 +85,8 @@ button:hover {
 .version-panel-class .mat-expansion-panel-body {
   padding: 0 !important;
 }
+
+.mat-menu-panel {
+  max-width: unset !important;
+  margin: 12px !important;
+}

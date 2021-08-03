@@ -14,13 +14,15 @@
         <mat-panel-title>
           {{branch.name}}
         </mat-panel-title>
-        <mat-icon (click)="deleteBranch(branch)" *ngIf="branchName != branch.name">delete</mat-icon>
+        <mat-icon [matMenuTriggerFor]="deleteMenu" #deleteMenuTrigger="matMenuTrigger" (click)="delete('branch',branch)"
+          *ngIf="branchName != branch.name">delete</mat-icon>
       </mat-expansion-panel-header>
-      <div *ngFor="let version of branch.versions" style="display:flex;" (click)="switchVersion(version)"
+      <div *ngFor="let version of branch.versions" style="display:flex;" (click)="switchVersion(version,$event)"
         [ngClass]="{'var-selected':(version.version==versionId && branchName == version.branch)}" class="version-list">
         <p>{{version.name}} <br> {{version.formated_save_time}}</p>
         <span style="flex: 1;"></span>
-        <mat-icon *ngIf="version.version!=versionId || branchName != version.branch" (click)="deleteVariation(version)">
+        <mat-icon *ngIf="version.version!=versionId || branchName != version.branch" [matMenuTriggerFor]="deleteMenu"
+          #deleteMenuTrigger="matMenuTrigger" (click)="delete('version',version)" id="{{version.version}}">
           delete_outline</mat-icon>
       </div>
     </mat-expansion-panel>
@@ -28,3 +30,10 @@
   </mat-accordion>
 
 </div>
+
+<mat-menu #deleteMenu="matMenu" xPosition="before" yPosition="below">
+  <div class="menu">
+    <p><b>{{bannerMsg}}</b></p>
+    <button mat-flat-button (click)="confirmDelete()">Confirm</button>
+  </div>
+</mat-menu>

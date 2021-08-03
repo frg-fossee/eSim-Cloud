@@ -24,7 +24,8 @@ import {
   MatSnackBarModule,
   MatIconModule,
   MatTooltipModule,
-  MatExpansionModule
+  MatExpansionModule,
+  MatMenuModule
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -100,6 +101,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MatSnackBarModule,
     MatExpansionModule,
     ReactiveFormsModule,
+    MatMenuModule
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
