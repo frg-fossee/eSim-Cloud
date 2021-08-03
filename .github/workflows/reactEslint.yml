@@ -3,8 +3,6 @@ name: ESLint eda-frontend
 on:
   push:
     paths: [ 'eda-frontend/**' ]
-  pull_request:
-    paths: [ 'eda-frontend/**' ]
 
 jobs:
   eslint:
