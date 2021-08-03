@@ -317,7 +317,7 @@ export function ErcCheck() {
   }
 }
 // ERC Check for Netlist, It also returns a boolean value which is called in the Netlist Generator 
-function ErcCheckNets() {
+export function ErcCheckNets() {
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0
