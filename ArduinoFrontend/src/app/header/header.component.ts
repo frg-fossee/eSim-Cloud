@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Login } from '../Libs/Login';
 import { ApiService } from '../api.service';
+import { environment } from 'src/environments/environment';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Class For Header Component (DO Eager Loading)
@@ -39,26 +41,24 @@ export class HeaderComponent implements OnInit {
    * Constructor for Header
    * @param api API Service
    */
-  constructor(private api: ApiService) { }
+  constructor(
+    private api: ApiService,
+    private aroute: ActivatedRoute) { }
   /**
    * On Init
    */
   ngOnInit() {
-    // Get Login Token
-    this.token = Login.getToken();
-
-    // If token is available then get username
-    if (this.token) {
-      this.api.userInfo(this.token).subscribe((v) => {
-        this.username = v.username;
-      }, (err) => {
-        // console.log(err.status)
-        console.log(err);
-        // if (err.status === 401) {
-        Login.logout();
-        // }
+    // In Angular  Development Mode.
+    if (environment.production == false) {
+      this.aroute.queryParams.subscribe((paramData: any) => {
+        if (paramData.token != null) {
+          localStorage.setItem('esim_token', paramData.token);
+          this.userInfo();
+        }
       });
+    } else {
     }
+    this.userInfo();
     // Initializing window
     this.window = window;
   }
@@ -73,5 +73,24 @@ export class HeaderComponent implements OnInit {
    */
   Logout() {
     Login.logout();
+  }
+  /**
+   * Getting User Information.
+   */
+  userInfo() {
+    // Get Login Token
+    this.token = Login.getToken();
+    // If token is available then get username
+    if (this.token) {
+      this.api.userInfo(this.token).subscribe((v) => {
+        this.username = v.username;
+      }, (err) => {
+        // console.log(err.status)
+        console.log(err);
+        // if (err.status === 401) {
+        Login.logout();
+        // }
+      });
+    }
   }
 }
