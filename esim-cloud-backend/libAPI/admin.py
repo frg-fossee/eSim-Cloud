@@ -86,7 +86,7 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
 
         # If the library set is being changed
         else:
-            user = (LibrarySet.objects.get(id = obj.pk)).user
+            user = (LibrarySet.objects.get(id=obj.pk)).user
             obj.user = user
             obj.save()
 
