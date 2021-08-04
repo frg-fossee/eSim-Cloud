@@ -76,6 +76,12 @@ export default function LTIConfig () {
   const [schematics, setSchematics] = React.useState([])
   const [update, setUpdate] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
+  const [activeSim, setActiveSim] = React.useState(null)
+  const [simParam, setSimParam] = React.useState(null)
+
+  useEffect(() => {
+    console.log(activeSim)
+  }, [activeSim])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -262,8 +268,14 @@ export default function LTIConfig () {
       setLTIDetails({ ...ltiDetails, testCase: null })
     } else {
       setLTIDetails({ ...ltiDetails, testCase: e.target.value })
+      var temp = history.find(ele => ele.id === e.target.value)
+      setActiveSim(temp)
     }
     setHistoryId(e.target.value)
+  }
+
+  const handleSimParamChange = (e) => {
+    setSimParam(e.target.value)
   }
 
   const handleOnClick = () => {
@@ -343,29 +355,31 @@ export default function LTIConfig () {
               </CardContent>
             </CardActionArea>
           </Card>} */}
+          <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
+            {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
+            <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} variant="outlined" />
+            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
+            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
+            <FormControl variant="outlined" style={{ marginTop: '1%' }} className={classes.formControl}>
+              <InputLabel htmlFor="outlined-age-native-simple">Schematic</InputLabel>
+              <Select
+                labelId="demo-simple-select-placeholder-label-label"
+                id="demo-simple-select-placeholder-label"
+                value={schematic}
+                style={{ minWidth: '300px' }}
+                onChange={handleChange}
+                label="Schematic"
+                className={classes.selectEmpty}
+              >
+                {schematics.map(schematic => {
+                  return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of variation {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </div>
         </div>
-        <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
-          {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
-          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} variant="outlined" />
-          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
-          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
-          <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
-            <InputLabel htmlFor="outlined-age-native-simple">Schematic</InputLabel>
-            <Select
-              labelId="demo-simple-select-placeholder-label-label"
-              id="demo-simple-select-placeholder-label"
-              value={schematic}
-              style={{ minWidth: '300px' }}
-              onChange={handleChange}
-              label="Schematic"
-              className={classes.selectEmpty}
-            >
-              {schematics.map(schematic => {
-                return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of variation {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
-          <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
+        <div>
+          <FormControl variant="outlined" style={{ marginLeft: '2%', marginTop: '2%' }} className={classes.formControl}>
             <InputLabel htmlFor="outlined-age-native-simple">Test Case</InputLabel>
             {history && <Select
               labelId="select-simulation-history"
@@ -385,8 +399,28 @@ export default function LTIConfig () {
               })}
             </Select>}
           </FormControl>
+          {activeSim && <FormControl variant="outlined" style={{ marginLeft: '2%', marginTop: '2%' }} className={classes.formControl}>
+            <InputLabel htmlFor="outlined-age-native-simple">Comparison Parameter</InputLabel>
+            {history && <Select
+              labelId="select-comparison-parameter"
+              id="select-comp-param"
+              value={simParam}
+              style={{ minWidth: '300px' }}
+              onChange={handleSimParamChange}
+              label="Comparison Parameter"
+              className={classes.selectEmpty}
+              inputProps={{ readOnly: !ltiDetails.scored }}
+            >
+              <MenuItem value="None">
+                None
+              </MenuItem>
+              {activeSim.result.data.map(params => {
+                return <MenuItem key={params[0]} value={params[0]}>{params[0]}</MenuItem>
+              })}
+            </Select>}
+          </FormControl>}
           <FormControlLabel
-            style={{ marginLeft: '1%' }}
+            style={{ marginLeft: '2%', marginTop: '2%' }}
             control={
               <Checkbox
                 checked={ltiDetails.scored}
@@ -398,7 +432,7 @@ export default function LTIConfig () {
             label="Scored?"
           />
           <br />
-          <Button style={{ marginTop: '1%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
+          <Button style={{ marginTop: '1%', marginLeft: '2%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
             Return to Dashboard
           </Button>
           <Button style={{ marginTop: '1%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
@@ -433,12 +467,12 @@ export default function LTIConfig () {
             onClick={handleOnClick} >
             Update LTI App
           </Button>}
-          {configURL && <div style={{ display: 'flex', marginTop: '1%' }}>
+          {configURL && <div style={{ display: 'flex', marginTop: '1%', marginLeft: '2%' }}>
             <h3 className={classes.config} style={{ float: 'left' }}>URL for LTI Access:</h3>
             <h3 className={classes.config} style={{ float: 'left' }}>
-              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '14px', minWidth: 580, width: 580, maxWidth: 580, border: 'none', backgroundColor: '#f4f6f8' }} />
+              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '14px', width: 580, maxWidth: 580, border: 'none', backgroundColor: '#f4f6f8' }} />
             </h3>
-            <Button style={{ float: 'right', height: '50%', marginTop: '0.7%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
+            <Button style={{ float: 'right', height: '50%', marginTop: '0.5%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
               Copy LTI URL
             </Button>
 
