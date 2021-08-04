@@ -1,0 +1,16 @@
+<div class="graph-container" cdkDrag>
+  <div class="p-1">
+    <button mat-mini-fab color="primary" class='dragger align-right' cdkDragHandle>
+      <i class='fas fa-arrows-alt'></i>
+    </button>
+  </div>
+  <div *ngIf="!simulationStatus" class="alternate-simulation-text">
+    Start the simulation to visualize
+  </div>
+  <cdk-virtual-scroll-viewport *ngIf="simulationStatus" itemSize="25" minBufferPx="200" maxBufferPx="400"
+    class="example-viewport">
+    <div *cdkVirtualFor="let node of nodes" class="example-item">
+      <app-graph [id]="node"></app-graph>
+    </div>
+  </cdk-virtual-scroll-viewport>
+</div>
