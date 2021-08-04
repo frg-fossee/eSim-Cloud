@@ -21,8 +21,6 @@ import { Link as RouterLink } from 'react-router-dom'
 import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
-import MuiAlert from '@material-ui/lab/Alert'
-import { deleteSchematic } from '../../redux/actions/index'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import SimpleSnackbar from '../Shared/Snackbar'
 

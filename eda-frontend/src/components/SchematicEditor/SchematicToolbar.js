@@ -38,7 +38,6 @@ import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
 import queryString from 'query-string'
 import { RotateLeft } from '@material-ui/icons'
-import { Link as RouterLink } from 'react-router-dom'
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
 import { fetchRole } from '../../redux/actions/authActions'
 
@@ -160,6 +159,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
 
   const handleMenuClose = () => {
     setAnchorEl(null)
+  }
   const [shortCircuit, setshortCircuit] = React.useState(false)
 
   const handleShortClose = (event, reason) => {
@@ -656,7 +656,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} openKicad={handleKicadFileUpload}/>
+      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} openKicad={handleKicadFileUpload} />
       <Tooltip title="Save (Ctrl + S)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
           <SaveOutlinedIcon fontSize="small" />
@@ -857,7 +857,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
           </>
         }
       />
-      { auth.roles && auth.roles.is_type_staff &&
+      {auth.roles && auth.roles.is_type_staff &&
         <Tooltip title="Add to Gallery">
           <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
             <AddPhotoAlternateIcon fontSize="medium" />

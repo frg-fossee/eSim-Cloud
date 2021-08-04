@@ -527,7 +527,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                     ? <Grid item xs={12} sm={12}>
                       <Paper className={classes.paper}>
                         <Typography variant="h4" align="center" gutterBottom>
-                        GRAPH OUTPUT
+                          GRAPH OUTPUT
                         </Typography>
                         <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
                           <TextField
@@ -544,29 +544,29 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                             }}
                           >
                             <option value='G'>
-                            Giga (G)
+                              Giga (G)
                             </option>
                             <option value='M'>
-                            Mega (MEG)
+                              Mega (MEG)
                             </option>
                             <option value='K'>
-                            Kilo (K)
+                              Kilo (K)
                             </option>
                             <option value='si'>
-                            SI UNIT
+                              SI UNIT
                             </option>
 
                             <option value='m'>
-                            Milli (m)
+                              Milli (m)
                             </option>
                             <option value='u'>
-                            Micro (u)
+                              Micro (u)
                             </option>
                             <option value='n'>
-                            Nano (n)
+                              Nano (n)
                             </option>
                             <option value='p'>
-                            Pico (p)
+                              Pico (p)
                             </option>
 
                           </TextField>
@@ -584,29 +584,29 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                             }}
                           >
                             <option value='G'>
-                            Giga (G)
+                              Giga (G)
                             </option>
                             <option value='M'>
-                            Mega (MEG)
+                              Mega (MEG)
                             </option>
                             <option value='K'>
-                            Kilo (K)
+                              Kilo (K)
                             </option>
                             <option value='si'>
-                            SI UNIT
+                              SI UNIT
                             </option>
 
                             <option value='m'>
-                            Milli (m)
+                              Milli (m)
                             </option>
                             <option value='u'>
-                            Micro (u)
+                              Micro (u)
                             </option>
                             <option value='n'>
-                            Nano (n)
+                              Nano (n)
                             </option>
                             <option value='p'>
-                            Pico (p)
+                              Pico (p)
                             </option>
 
                           </TextField>
@@ -647,15 +647,15 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               className={classes.selectEmpty}
                             >
                               <MenuItem value="">
-                              None
-                            </MenuItem>
-                            {history.map(sim => {
-                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
-                            })}
-                          </Select>
-                        </FormControl>}
-                        {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
-                          Download Graph Output
+                                None
+                              </MenuItem>
+                              {history.map(sim => {
+                                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
+                              })}
+                            </Select>
+                          </FormControl>}
+                          {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
+                            Download Graph Output
                           </Button>}
                         </div>
                         {!compare && <Graph
@@ -758,7 +758,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                     ? <Grid item xs={12} sm={12}>
                       <Paper className={classes.paper}>
                         <Typography variant="h4" align="center" gutterBottom>
-                        OUTPUT
+                          OUTPUT
                         </Typography>
                         <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
                           <TextField
@@ -775,10 +775,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                             }}
                           >
                             <option value='Engineering'>
-                            Engineering Notation
+                              Engineering Notation
                             </option>
                             <option value='Scientific'>
-                            Scientific Notation
+                              Scientific Notation
                             </option>
                           </TextField>
 
@@ -818,37 +818,22 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               className={classes.selectEmpty}
                             >
                               <MenuItem value="">
-                              None
-                            </MenuItem>
-                            {history.map(sim => {
-                              return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
-                            })}
-                          </Select>
-                        </FormControl>}
-                      </div>
-                      <div style={{ display: 'flex' }}>
-                        <TableContainer component={Paper} style={{ float: 'left' }}>
-                          <Table className={classes.table} aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell align="center">Node/Branch</TableCell>
-                                <TableCell align="center">Value</TableCell>
-                                <TableCell align="center">Unit</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {result.text.map((line, index) => (
-                                <TableRow key={index}>
-                                  <TableCell align="center">{line.split('=')[0]}</TableCell>
-                                  <TableCell align="center">
-                                    {(line.split(' ')[3] === '\n')
-                                      ? (parseFloat(line.split(' ')[2]))
-                                      : (notation === 'Scientific'
-                                        ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + 'e' + ((exactDecimal[index]) >= 0
-                                          ? '+' + (exactDecimal[index]).toString() : exactDecimal[index]).toString())
-                                        : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}
-                                  </TableCell>
-                                  <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
+                                None
+                              </MenuItem>
+                              {history.map(sim => {
+                                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
+                              })}
+                            </Select>
+                          </FormControl>}
+                        </div>
+                        <div style={{ display: 'flex' }}>
+                          <TableContainer component={Paper} style={{ float: 'left' }}>
+                            <Table className={classes.table} aria-label="simple table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell align="center">Node/Branch</TableCell>
+                                  <TableCell align="center">Value</TableCell>
+                                  <TableCell align="center">Unit</TableCell>
                                 </TableRow>
                               </TableHead>
                               <TableBody>
@@ -868,7 +853,6 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                                   </TableRow>
                                 ))
                                 }
-
                               </TableBody>
                             </Table>
                           </TableContainer>
