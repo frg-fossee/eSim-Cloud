@@ -1,5 +1,8 @@
+from os import makedirs, read
+from django.db.models import fields
 from rest_framework import serializers
-from saveAPI.models import StateSave
+from rest_framework.fields import ListField
+from saveAPI.models import StateSave, Gallery
 from libAPI.models import Library
 from libAPI.serializers import LibrarySerializer
 from django.core.files.base import ContentFile
@@ -87,3 +90,16 @@ class SaveListSerializer(serializers.ModelSerializer):
             return ltis[0].id
         else:
             return None
+
+
+class GallerySerializer(serializers.ModelSerializer):
+
+    media = Base64ImageField(max_length=None, use_url=True)
+    esim_libraries = LibrarySerializer(many=True, required=False)
+
+    class Meta:
+        model = Gallery
+        fields = (
+            'save_id', 'data_dump', 'name',
+            'description', 'media', 'shared', 'esim_libraries'
+            )

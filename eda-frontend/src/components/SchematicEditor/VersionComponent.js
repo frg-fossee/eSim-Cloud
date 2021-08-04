@@ -79,9 +79,9 @@ export default function VersionComponent ({
         )
         .then((resp) => {
           console.log(resp.data)
-          var versionsAccordingFreq = {}
+          const versionsAccordingFreq = {}
           resp.data.forEach((value) => {
-            var d = new Date(value.save_time)
+            const d = new Date(value.save_time)
             value.date =
               d.getDate() + '/' + parseInt(d.getMonth() + 1) + '/' + d.getFullYear()
             value.time = d.getHours() + ':' + d.getMinutes()
@@ -91,8 +91,8 @@ export default function VersionComponent ({
             versionsAccordingFreq[value.branch] ? versionsAccordingFreq[value.branch].push(value) : versionsAccordingFreq[value.branch] = [value]
           })
           setVersions(Object.entries(versionsAccordingFreq).reverse())
-          var temp = []
-          for (var i = 0; i < Object.entries(versionsAccordingFreq).length; i++) {
+          const temp = []
+          for (let i = 0; i < Object.entries(versionsAccordingFreq).length; i++) {
             console.log(Object.entries(versionsAccordingFreq)[0])
             if (decodeURI(window.location.href.split('branch=')[1]) === Object.entries(versionsAccordingFreq)[i][0]) { temp.push(true) } else { temp.push(false) }
           }

@@ -128,7 +128,7 @@ export default function ComponentSidebar ({ compRef, ltiSimResult, setLtiSimResu
     timeoutId.current = setTimeout(() => {
       // call api here
       setLoading(true)
-      var config = {}
+      let config = {}
       const token = localStorage.getItem('esim_token')
       if (token && token !== undefined) {
         config = {
@@ -343,61 +343,61 @@ export default function ComponentSidebar ({ compRef, ltiSimResult, setLtiSimResu
               </>
             }
             {searchText.length === 0 &&
-              <>
-                <div style={!def ? { display: 'none' } : {}}>
-                  <Divider />
-                  <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
-                    <span>DEFAULT</span>
-                  </ListItem>
-                  <Divider />
-                  {libraries.sort(function (a, b) {
-                    var textA = a.library_name.toUpperCase()
-                    var textB = b.library_name.toUpperCase()
-                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-                  }).filter((library) => {
-                    if (library.default) { return 1 }
-                    return 0
-                  }).map(
-                    (library) => {
-                      return (libraryDropDown(library))
-                    }
-                  )}
-                </div>
-                <div style={!additional ? { display: 'none' } : {}}>
-                  <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
-                    <span className={classes.head}>ADDITIONAL</span>
-                  </ListItem>
-                  {libraries.sort(function (a, b) {
-                    var textA = a.library_name.toUpperCase()
-                    var textB = b.library_name.toUpperCase()
-                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-                  }).filter((library) => {
-                    if (library.additional) { return 1 }
-                    return 0
-                  }).map(
-                    (library) => {
-                      return (libraryDropDown(library))
-                    }
-                  )}
-                </div>
-                <div style={!uploaded ? { display: 'none' } : {}}>
-                  <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
-                    <span className={classes.head}>UPLOADED</span>
-                  </ListItem>
-                  {libraries.sort(function (a, b) {
-                    var textA = a.library_name.toUpperCase()
-                    var textB = b.library_name.toUpperCase()
-                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
-                  }).filter((library) => {
-                    if (!library.default && !library.additional) { return 1 }
-                    return 0
-                  }).map(
-                    (library) => {
-                      return (libraryDropDown(library))
-                    }
-                  )}
-                </div>
-              </>
+            <>
+              <div style={!def ? { display: 'none' } : {}}>
+                <Divider />
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
+                  <span>DEFAULT</span>
+                </ListItem>
+                <Divider />
+                { libraries.sort(function (a, b) {
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
+                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+                }).filter((library) => {
+                  if (library.default) { return 1 }
+                  return 0
+                }).map(
+                  (library) => {
+                    return (libraryDropDown(library))
+                  }
+                )}
+              </div>
+              <div style={!additional ? { display: 'none' } : {}}>
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
+                  <span className={classes.head}>ADDITIONAL</span>
+                </ListItem>
+                { libraries.sort(function (a, b) {
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
+                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+                }).filter((library) => {
+                  if (library.additional) { return 1 }
+                  return 0
+                }).map(
+                  (library) => {
+                    return (libraryDropDown(library))
+                  }
+                )}
+              </div>
+              <div style={!uploaded ? { display: 'none' } : {}}>
+                <ListItem dense divider style={{ backgroundColor: '#e8e8e8' }}>
+                  <span className={classes.head}>UPLOADED</span>
+                </ListItem>
+                { libraries.sort(function (a, b) {
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
+                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
+                }).filter((library) => {
+                  if (!library.default && !library.additional) { return 1 }
+                  return 0
+                }).map(
+                  (library) => {
+                    return (libraryDropDown(library))
+                  }
+                )}
+              </div>
+            </>
             }
           </div>
         </List>

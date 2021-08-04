@@ -10,7 +10,6 @@ import {
   CardMedia,
   CardHeader,
   Tooltip,
-  Snackbar,
   ButtonBase,
   Chip,
   IconButton
@@ -23,7 +22,10 @@ import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
 import DeleteIcon from '@material-ui/icons/Delete'
 import { useDispatch } from 'react-redux'
 import MuiAlert from '@material-ui/lab/Alert'
+import { deleteSchematic } from '../../redux/actions/index'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
+import SimpleSnackbar from '../Shared/Snackbar'
+
 const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
@@ -58,73 +60,16 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 150
   }
 }))
-function Alert (props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />
-}
-
-// Schematic delete snackbar
-function SimpleSnackbar ({ open, close, sch }) {
-  const dispatch = useDispatch()
-
-  return (
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
-      }}
-      open={open}
-      autoHideDuration={6000}
-      onClose={close}
-    >
-      <Alert
-        icon={false}
-        severity="warning"
-        color="error"
-        style={{ width: '100%' }}
-        action={
-          <>
-            <Button
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={() => {
-                dispatch(deleteSchematic(sch.save_id))
-              }}
-            >
-              Yes
-            </Button>
-            <Button
-              size="small"
-              aria-label="close"
-              color="inherit"
-              onClick={close}
-            >
-              NO
-            </Button>
-          </>
-        }
-      >
-        {'Delete ' + sch.name + ' ?'}
-      </Alert>
-    </Snackbar>
-  )
-}
-
-SimpleSnackbar.propTypes = {
-  open: PropTypes.bool,
-  close: PropTypes.func,
-  sch: PropTypes.object
-}
 
 // Display schematic updated status (e.g : updated 2 hours ago...)
 function timeSince (jsonDate) {
-  var json = jsonDate
+  const json = jsonDate
 
-  var date = new Date(json)
+  const date = new Date(json)
 
-  var seconds = Math.floor((new Date() - date) / 1000)
+  const seconds = Math.floor((new Date() - date) / 1000)
 
-  var interval = Math.floor(seconds / 31536000)
+  let interval = Math.floor(seconds / 31536000)
 
   if (interval > 1) {
     return interval + ' years'
@@ -150,8 +95,8 @@ function timeSince (jsonDate) {
 
 // Display schematic created date (e.g : Created On 29 Jun 2020)
 function getDate (jsonDate) {
-  var json = jsonDate
-  var date = new Date(json)
+  const json = jsonDate
+  const date = new Date(json)
   const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'short', day: '2-digit' })
   const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(date)
   return `${day}-${month}-${year}`
@@ -239,15 +184,17 @@ export default function SchematicCard ({ sch }) {
             </IconButton>
           </Tooltip>}
           {/* Display delete option */}
-          {!sch.project_id && <Tooltip title="Delete" placement="bottom" arrow>
-            <DeleteIcon
-              color="secondary"
-              fontSize="small"
+          {!sch.project_id &&
+          <Button onClick={() => { handleSnacClick() }}>
+            <Tooltip title="Delete" placement="bottom" arrow>
+              <DeleteIcon
+                color="secondary"
+                fontSize="small"
               // style={{ marginLeft: 'auto' }}
-              onClick={() => { handleSnacClick() }}
-            />
-          </Tooltip>}
-          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} />
+              />
+            </Tooltip>
+          </Button>}
+          <SimpleSnackbar open={snacOpen} close={handleSnacClose} sch={sch} confirmation={deleteSchematic} />
 
           {/* Display share status */}
           <Tooltip

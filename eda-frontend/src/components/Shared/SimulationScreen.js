@@ -31,7 +31,7 @@ import queryString from 'query-string'
 
 import Graph from './Graph'
 
-var FileSaver = require('file-saver')
+const FileSaver = require('file-saver')
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -100,8 +100,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   }, [close])
   useEffect(() => {
     if (open) {
-      var url = queryString.parse(window.location.href.split('editor?')[1])
-      var getUrl = ''
+      const url = queryString.parse(window.location.href.split('editor?')[1])
+      let getUrl = ''
       const token = localStorage.getItem('esim_token')
       const config = {
         headers: {
@@ -117,8 +117,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
         config.headers.Authorization = `Token ${token}`
 
         api.get(getUrl, config).then(res => {
-          var arr = []
-          var temp2 = (result.isGraph === 'true')
+          const arr = []
+          const temp2 = (result.isGraph === 'true')
           res.data.map((ele, index) => {
             ele.simulation_time = new Date(ele.simulation_time)
             if (ele.result === null) {
@@ -134,7 +134,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             }
             return 0
           })
-          for (var i = arr.length - 1; i >= 0; i--) {
+          for (let i = arr.length - 1; i >= 0; i--) {
             res.data.splice(arr[i], 1)
           }
           setHistory(res.data)
@@ -148,27 +148,27 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
 
   const handleChangeSim = (e) => {
     setHistoryId(e.target.value)
-    var schematic = []
+    let schematic = []
     if (e.target.value !== '') {
       setCompare(true)
       history.forEach(element => {
-        var data = element.result.data
+        const data = element.result.data
         if (element.id === e.target.value) {
           if (element.result.graph === 'true') {
-            var simResultGraph = { labels: [], x_points: [], y_points: [] }
+            const simResultGraph = { labels: [], x_points: [], y_points: [] }
             // populate the labels
-            for (var i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
               simResultGraph.labels[0] = data[i].labels[0]
-              var lab = data[i].labels
+              const lab = data[i].labels
               // lab is an array containeing labels names ['time','abc','def']
               simResultGraph.x_points = data[0].x
 
               // labels
-              for (var x = 1; x < lab.length; x++) {
+              for (let x = 1; x < lab.length; x++) {
                 simResultGraph.labels.push(lab[x])
               }
               // populate y_points
-              for (var z = 0; z < data[i].y.length; z++) {
+              for (let z = 0; z < data[i].y.length; z++) {
                 simResultGraph.y_points.push(data[i].y[z])
               }
             }
@@ -179,10 +179,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
               simResultGraph.y_points[i1] = simResultGraph.y_points[i1].map(d => parseFloat(d))
             }
             schematic = simResultGraph
-            var val, idx
+            let val, idx
             setScales(1, val, idx, null, null, schematic)
           } else {
-            var simResultText = []
+            const simResultText = []
             for (let i = 0; i < data.length; i++) {
               let postfixUnit = ''
               if (data[i][0].includes('#branch')) {
@@ -213,7 +213,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   }
   // DO NOT CHANGE THIS FUNCTION
   const toFixed = (x) => {
-    var e = 0
+    let e = 0
     if (Math.abs(x) < 1.0) {
       e = parseInt(x.toString().split('e-')[1])
       if (e) {
@@ -233,7 +233,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
 
   // DO NOT CHANGE
   const decimalCount = (num1, num2) => {
-    var difference = toFixed(num1) - toFixed(num2)
+    const difference = toFixed(num1) - toFixed(num2)
     const numStr = toFixed(difference).toString()
     if (Math.abs(difference) < 1) {
       if (numStr.includes('.')) {
@@ -250,8 +250,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     const numStr = num.toString()
     if (Math.abs(num) < 1) {
       if (numStr.includes('.')) {
-        var afterDeci = numStr.split('.')[1]
-        var count = 0
+        const afterDeci = numStr.split('.')[1]
+        let count = 0
         while (afterDeci[count] === '0') {
           count++
         }
@@ -268,22 +268,22 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     const numStr = num.toString()
     if (Math.abs(num) < 1) {
       if (numStr.includes('.')) {
-        var afterDeci = numStr.split('.')[1]
-        var count = 0
+        const afterDeci = numStr.split('.')[1]
+        let count = 0
         while (afterDeci[count] === '0') {
           count++
         }
         return ['decimal', -1 * (count + 1)] // count + 2 to adjust with the scaling feature. 0.000xyz will become xyz.abc mUnit
       }
     } else {
-      var beforeDeci = numStr.split('.')[0]
+      const beforeDeci = numStr.split('.')[0]
       return ['notDecimal', (beforeDeci.length - 1)]
     }
     return ['notDecimal', 0]
   }
   useEffect(() => {
     if (isResult === true) {
-      var g, val, idx
+      let g, val, idx
       if (result.graph !== {} && result.isGraph !== 'false') {
         g = 1
         setScales(g, val, idx, null, null, result.graph)
@@ -299,14 +299,14 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   const addScalesNonGraph = (g, data, arr, scale, setScaleFunc, setStateFunc) => {
     data.forEach((line, index) => {
       setScales(g, parseFloat(line.split(' ')[2]), index, scale, setScaleFunc)
-      var count = exactDecimalCount(parseFloat(line.split(' ')[2]))
+      const count = exactDecimalCount(parseFloat(line.split(' ')[2]))
       arr.push(count[1])
     })
     setStateFunc(arr)
   }
 
   const setScales = (g, val, idx, scale = null, setScaleFunc = null, data = null) => {
-    var countX, countY
+    let countX, countY
     if (g === 1) {
       countX = decimalCount(Math.min(...data.x_points), Math.max(...data.x_points))
       countY = decimalCount(Math.min(...data.y_points[0]), Math.max(...data.y_points[0]))
@@ -451,18 +451,18 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     setNotation(evt.target.value)
   }
   const generateCSV = () => {
-    var headings = ''
+    let headings = ''
     result.graph.labels.forEach(label => {
       headings = headings + label + ','
     })
 
     headings = headings.slice(0, -1)
     headings += '\n'
-    var downloadString = ''
+    let downloadString = ''
 
-    for (var x = 0; x < result.graph.x_points.length; x++) {
+    for (let x = 0; x < result.graph.x_points.length; x++) {
       downloadString += result.graph.x_points[x]
-      for (var y = 0; y < result.graph.y_points.length; y++) {
+      for (let y = 0; y < result.graph.y_points.length; y++) {
         downloadString = downloadString + ',' + result.graph.y_points[y][x]
       }
       downloadString += '\n'
@@ -472,8 +472,8 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     return downloadString
   }
   const handleCsvDownload = () => {
-    var downloadString = generateCSV()
-    var blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
+    const downloadString = generateCSV()
+    const blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, 'graph_points_eSim_on_cloud.csv')
   }
 
@@ -519,133 +519,134 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             </Grid>
 
             {/* Display graph result */}
-            {isResult === true ? <>
-              {
+            {isResult === true
+              ? <>
+                {
 
-                (result.graph !== {} && result.isGraph === 'true')
-                  ? <Grid item xs={12} sm={12}>
-                    <Paper className={classes.paper}>
-                      <Typography variant="h4" align="center" gutterBottom>
+                  (result.graph !== {} && result.isGraph === 'true')
+                    ? <Grid item xs={12} sm={12}>
+                      <Paper className={classes.paper}>
+                        <Typography variant="h4" align="center" gutterBottom>
                         GRAPH OUTPUT
-                      </Typography>
-                      <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
-                        <TextField
-                          style={{ width: '20%' }}
-                          id="xscale"
-                          size='small'
-                          variant="outlined"
-                          select
-                          label="Select X Axis Scale"
-                          value={xscale}
-                          onChange={handleXScale}
-                          SelectProps={{
-                            native: true
-                          }}
-                        >
-                          <option value='G'>
-                            Giga (G)
-                          </option>
-                          <option value='M'>
-                            Mega (MEG)
-                          </option>
-                          <option value='K'>
-                            Kilo (K)
-                          </option>
-                          <option value='si'>
-                            SI UNIT
-                          </option>
-
-                          <option value='m'>
-                            Milli (m)
-                          </option>
-                          <option value='u'>
-                            Micro (u)
-                          </option>
-                          <option value='n'>
-                            Nano (n)
-                          </option>
-                          <option value='p'>
-                            Pico (p)
-                          </option>
-
-                        </TextField>
-                        <TextField
-                          style={{ width: '20%', marginLeft: '10px' }}
-                          id="yscale"
-                          size='small'
-                          variant="outlined"
-                          select
-                          label="Select Y Axis Scale"
-                          value={yscale}
-                          onChange={handleYScale}
-                          SelectProps={{
-                            native: true
-                          }}
-                        >
-                          <option value='G'>
-                            Giga (G)
-                          </option>
-                          <option value='M'>
-                            Mega (MEG)
-                          </option>
-                          <option value='K'>
-                            Kilo (K)
-                          </option>
-                          <option value='si'>
-                            SI UNIT
-                          </option>
-
-                          <option value='m'>
-                            Milli (m)
-                          </option>
-                          <option value='u'>
-                            Micro (u)
-                          </option>
-                          <option value='n'>
-                            Nano (n)
-                          </option>
-                          <option value='p'>
-                            Pico (p)
-                          </option>
-
-                        </TextField>
-
-                        <TextField
-                          style={{ width: '20%', marginLeft: '10px' }}
-                          id="precision"
-                          size='small'
-                          variant="outlined"
-                          select
-                          label="Select Precision"
-                          value={precision}
-                          onChange={handlePrecision}
-                          SelectProps={{
-                            native: true
-                          }}
-                        >
-                          {
-                            precisionArr.map((d, i) => {
-                              return (
-                                <option key={i} value={d}>
-                                  {d}
-                                </option>
-                              )
-                            })
-                          }
-
-                        </TextField>
-                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: '1%' }} className={classes.formControl}>
-                          <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
-                          <Select
-                            labelId="select-simulation-history"
-                            id="select-sim"
-                            value={historyId}
-                            style={{ minWidth: '300px' }}
-                            onChange={handleChangeSim}
-                            label="Compare simulation"
-                            className={classes.selectEmpty}
+                        </Typography>
+                        <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
+                          <TextField
+                            style={{ width: '20%' }}
+                            id="xscale"
+                            size='small'
+                            variant="outlined"
+                            select
+                            label="Select X Axis Scale"
+                            value={xscale}
+                            onChange={handleXScale}
+                            SelectProps={{
+                              native: true
+                            }}
                           >
-                            <MenuItem value="">
+                            <option value='G'>
+                            Giga (G)
+                            </option>
+                            <option value='M'>
+                            Mega (MEG)
+                            </option>
+                            <option value='K'>
+                            Kilo (K)
+                            </option>
+                            <option value='si'>
+                            SI UNIT
+                            </option>
+
+                            <option value='m'>
+                            Milli (m)
+                            </option>
+                            <option value='u'>
+                            Micro (u)
+                            </option>
+                            <option value='n'>
+                            Nano (n)
+                            </option>
+                            <option value='p'>
+                            Pico (p)
+                            </option>
+
+                          </TextField>
+                          <TextField
+                            style={{ width: '20%', marginLeft: '10px' }}
+                            id="yscale"
+                            size='small'
+                            variant="outlined"
+                            select
+                            label="Select Y Axis Scale"
+                            value={yscale}
+                            onChange={handleYScale}
+                            SelectProps={{
+                              native: true
+                            }}
+                          >
+                            <option value='G'>
+                            Giga (G)
+                            </option>
+                            <option value='M'>
+                            Mega (MEG)
+                            </option>
+                            <option value='K'>
+                            Kilo (K)
+                            </option>
+                            <option value='si'>
+                            SI UNIT
+                            </option>
+
+                            <option value='m'>
+                            Milli (m)
+                            </option>
+                            <option value='u'>
+                            Micro (u)
+                            </option>
+                            <option value='n'>
+                            Nano (n)
+                            </option>
+                            <option value='p'>
+                            Pico (p)
+                            </option>
+
+                          </TextField>
+
+                          <TextField
+                            style={{ width: '20%', marginLeft: '10px' }}
+                            id="precision"
+                            size='small'
+                            variant="outlined"
+                            select
+                            label="Select Precision"
+                            value={precision}
+                            onChange={handlePrecision}
+                            SelectProps={{
+                              native: true
+                            }}
+                          >
+                            {
+                              precisionArr.map((d, i) => {
+                                return (
+                                  <option key={i} value={d}>
+                                    {d}
+                                  </option>
+                                )
+                              })
+                            }
+
+                          </TextField>
+                          {history && <FormControl variant="outlined" size='small' style={{ marginLeft: '1%' }} className={classes.formControl}>
+                            <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
+                            <Select
+                              labelId="select-simulation-history"
+                              id="select-sim"
+                              value={historyId}
+                              style={{ minWidth: '300px' }}
+                              onChange={handleChangeSim}
+                              label="Compare simulation"
+                              className={classes.selectEmpty}
+                            >
+                              <MenuItem value="">
                               None
                             </MenuItem>
                             {history.map(sim => {
@@ -655,168 +656,168 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                         </FormControl>}
                         {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
                           Download Graph Output
-                        </Button>}
-                      </div>
-                      {!compare && <Graph
-                        labels={result.graph.labels}
-                        x={result.graph.x_points}
-                        y={result.graph.y_points}
-                        xscale={xscale}
-                        yscale={yscale}
-                        precision={precision}
-                      />}
-                      {compare && comparingSim && <div style={{ display: 'flex' }}>
-                        <TableContainer component={Paper} style={{ float: 'left' }}>
-                          <Table className={classes.table} aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell></TableCell>
-                                {
-                                  result.graph.labels.map(ele => {
-                                    return <TableCell key={ele} align="center">{ele}</TableCell>
-                                  })
-                                }
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              <TableRow>
-                                <TableCell>Max value</TableCell>
-                                <TableCell align="center">{(Math.max(...result.graph.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
-                                {
-                                  result.graph.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{(Math.max(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
-                                  })}
-                              </TableRow>
-                              <TableRow>
-                                <TableCell>Min value</TableCell>
-                                <TableCell align="center">{(Math.min(...result.graph.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
-                                {
-                                  result.graph.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{Math.min(...ele) / scales[yscale]}</TableCell>
-                                  })}
-                              </TableRow>
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                        <TableContainer component={Paper} style={{ float: 'right', marginLeft: '2%' }}>
-                          <Table className={classes.table} aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell></TableCell>
-                                {
-                                  comparingSim.labels.map(ele => {
-                                    return <TableCell key={ele} align="center">{ele}</TableCell>
-                                  })
-                                }
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              <TableRow>
-                                <TableCell>Max value</TableCell>
-                                <TableCell align="center">{(Math.max(...comparingSim.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
-                                {
-                                  comparingSim.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{(Math.max(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
-                                  })}
-                              </TableRow>
-                              <TableRow>
-                                <TableCell>Min value</TableCell>
-                                <TableCell align="center">{(Math.min(...comparingSim.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
-                                {
-                                  comparingSim.y_points.map(ele => {
-                                    return <TableCell key={ele} align="center">{(Math.min(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
-                                  })}
-                              </TableRow>
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </div>}
-                    </Paper>
-                    <Paper className={classes.paper}>
-                      {compare && <div style={{ display: 'flex', textAlign: 'left' }}>
-                        <div style={{ width: '50%' }}>
-                          <h2 style={{ marginLeft: '30%' }}>Current Netlist</h2>
-                          <div>{netlist.split('\n').map((i, key) => {
-                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
-                          })}</div>
+                          </Button>}
                         </div>
-                        <div style={{ width: '50%' }}>
-                          <h2 style={{ marginLeft: '30%' }}>Compared Netlist</h2>
-                          <div>{compareNetlist.split('\n').map((i, key) => {
-                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
-                          })}</div>
-                        </div>
-                      </div>}
-                    </Paper>
-                  </Grid>
-                  : (result.isGraph === 'true') ? <span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span> : <span></span>
-              }
+                        {!compare && <Graph
+                          labels={result.graph.labels}
+                          x={result.graph.x_points}
+                          y={result.graph.y_points}
+                          xscale={xscale}
+                          yscale={yscale}
+                          precision={precision}
+                        />}
+                        {compare && comparingSim && <div style={{ display: 'flex' }}>
+                          <TableContainer component={Paper} style={{ float: 'left' }}>
+                            <Table className={classes.table} aria-label="simple table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell></TableCell>
+                                  {
+                                    result.graph.labels.map(ele => {
+                                      return <TableCell key={ele} align="center">{ele}</TableCell>
+                                    })
+                                  }
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                <TableRow>
+                                  <TableCell>Max value</TableCell>
+                                  <TableCell align="center">{(Math.max(...result.graph.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
+                                  {
+                                    result.graph.y_points.map(ele => {
+                                      return <TableCell key={ele} align="center">{(Math.max(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
+                                    })}
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell>Min value</TableCell>
+                                  <TableCell align="center">{(Math.min(...result.graph.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
+                                  {
+                                    result.graph.y_points.map(ele => {
+                                      return <TableCell key={ele} align="center">{Math.min(...ele) / scales[yscale]}</TableCell>
+                                    })}
+                                </TableRow>
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          <TableContainer component={Paper} style={{ float: 'right', marginLeft: '2%' }}>
+                            <Table className={classes.table} aria-label="simple table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell></TableCell>
+                                  {
+                                    comparingSim.labels.map(ele => {
+                                      return <TableCell key={ele} align="center">{ele}</TableCell>
+                                    })
+                                  }
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                <TableRow>
+                                  <TableCell>Max value</TableCell>
+                                  <TableCell align="center">{(Math.max(...comparingSim.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
+                                  {
+                                    comparingSim.y_points.map(ele => {
+                                      return <TableCell key={ele} align="center">{(Math.max(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
+                                    })}
+                                </TableRow>
+                                <TableRow>
+                                  <TableCell>Min value</TableCell>
+                                  <TableCell align="center">{(Math.min(...comparingSim.x_points) / scales[xscale]).toFixed(precision)} </TableCell>
+                                  {
+                                    comparingSim.y_points.map(ele => {
+                                      return <TableCell key={ele} align="center">{(Math.min(...ele) / scales[yscale]).toFixed(precision)}</TableCell>
+                                    })}
+                                </TableRow>
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </div>}
+                      </Paper>
+                      <Paper className={classes.paper}>
+                        {compare && <div style={{ display: 'flex', textAlign: 'left' }}>
+                          <div style={{ width: '50%' }}>
+                            <h2 style={{ marginLeft: '30%' }}>Current Netlist</h2>
+                            <div>{netlist.split('\n').map((i, key) => {
+                              return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
+                            })}</div>
+                          </div>
+                          <div style={{ width: '50%' }}>
+                            <h2 style={{ marginLeft: '30%' }}>Compared Netlist</h2>
+                            <div>{compareNetlist.split('\n').map((i, key) => {
+                              return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
+                            })}</div>
+                          </div>
+                        </div>}
+                      </Paper>
+                    </Grid>
+                    : (result.isGraph === 'true') ? <span>SOMETHING WENT WRONG PLEASE CHECK THE SIMULATION PARAMETERS.</span> : <span></span>
+                }
 
-              {
-                (result.isGraph === 'false')
-                  ? <Grid item xs={12} sm={12}>
-                    <Paper className={classes.paper}>
-                      <Typography variant="h4" align="center" gutterBottom>
+                {
+                  (result.isGraph === 'false')
+                    ? <Grid item xs={12} sm={12}>
+                      <Paper className={classes.paper}>
+                        <Typography variant="h4" align="center" gutterBottom>
                         OUTPUT
-                      </Typography>
-                      <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
-                        <TextField
-                          style={{ width: '20%' }}
-                          id="notation"
-                          size='small'
-                          variant="outlined"
-                          select
-                          label="Select Notation"
-                          value={notation}
-                          onChange={handleNotation}
-                          SelectProps={{
-                            native: true
-                          }}
-                        >
-                          <option value='Engineering'>
-                            Engineering Notation
-                          </option>
-                          <option value='Scientific'>
-                            Scientific Notation
-                          </option>
-                        </TextField>
-
-                        <TextField
-                          style={{ width: '20%', marginLeft: '10px' }}
-                          id="precision"
-                          size='small'
-                          variant="outlined"
-                          select
-                          label="Select Precision"
-                          value={precision}
-                          onChange={handlePrecision}
-                          SelectProps={{
-                            native: true
-                          }}
-                        >
-                          {
-                            precisionArr.map((d, i) => {
-                              return (
-                                <option key={i} value={d}>
-                                  {d}
-                                </option>
-                              )
-                            })
-                          }
-
-                        </TextField>
-                        {history && <FormControl variant="outlined" size='small' style={{ marginLeft: '1%' }} className={classes.formControl}>
-                          <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
-                          <Select
-                            labelId="select-simulation-history"
-                            id="select-sim"
-                            value={historyId}
-                            style={{ minWidth: '300px' }}
-                            onChange={handleChangeSim}
-                            label="Compare simulation"
-                            className={classes.selectEmpty}
+                        </Typography>
+                        <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
+                          <TextField
+                            style={{ width: '20%' }}
+                            id="notation"
+                            size='small'
+                            variant="outlined"
+                            select
+                            label="Select Notation"
+                            value={notation}
+                            onChange={handleNotation}
+                            SelectProps={{
+                              native: true
+                            }}
                           >
-                            <MenuItem value="">
+                            <option value='Engineering'>
+                            Engineering Notation
+                            </option>
+                            <option value='Scientific'>
+                            Scientific Notation
+                            </option>
+                          </TextField>
+
+                          <TextField
+                            style={{ width: '20%', marginLeft: '10px' }}
+                            id="precision"
+                            size='small'
+                            variant="outlined"
+                            select
+                            label="Select Precision"
+                            value={precision}
+                            onChange={handlePrecision}
+                            SelectProps={{
+                              native: true
+                            }}
+                          >
+                            {
+                              precisionArr.map((d, i) => {
+                                return (
+                                  <option key={i} value={d}>
+                                    {d}
+                                  </option>
+                                )
+                              })
+                            }
+
+                          </TextField>
+                          {history && <FormControl variant="outlined" size='small' style={{ marginLeft: '1%' }} className={classes.formControl}>
+                            <InputLabel htmlFor="outlined-age-native-simple">Compare simulation</InputLabel>
+                            <Select
+                              labelId="select-simulation-history"
+                              id="select-sim"
+                              value={historyId}
+                              style={{ minWidth: '300px' }}
+                              onChange={handleChangeSim}
+                              label="Compare simulation"
+                              className={classes.selectEmpty}
+                            >
+                              <MenuItem value="">
                               None
                             </MenuItem>
                             {history.map(sim => {
@@ -849,65 +850,82 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                                   </TableCell>
                                   <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
                                 </TableRow>
-                              ))
-                              }
-
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                        {compare && <TableContainer component={Paper} style={{ float: 'right', marginLeft: '2%' }}>
-                          <Table className={classes.table} aria-label="simple table">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell align="center">Node/Branch</TableCell>
-                                <TableCell align="center">Value</TableCell>
-                                <TableCell align="center">Unit</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {comparingSim.map((line, index) => {
-                                return (
+                              </TableHead>
+                              <TableBody>
+                                {result.text.map((line, index) => (
                                   <TableRow key={index}>
                                     <TableCell align="center">{line.split('=')[0]}</TableCell>
                                     <TableCell align="center">
                                       {(line.split(' ')[3] === '\n')
                                         ? (parseFloat(line.split(' ')[2]))
                                         : (notation === 'Scientific'
-                                          ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimalCompare[index])).toFixed(precision).toString() + 'e' + ((exactDecimalCompare[index]) >= 0
-                                            ? '+' + (exactDecimalCompare[index]).toString() : exactDecimalCompare[index]).toString())
-                                          : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArrayCompare[index]]).toFixed(precision))}
+                                          ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimal[index])).toFixed(precision).toString() + 'e' + ((exactDecimal[index]) >= 0
+                                            ? '+' + (exactDecimal[index]).toString()
+                                            : exactDecimal[index]).toString())
+                                          : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArray[index]]).toFixed(precision))}
                                     </TableCell>
-                                    <TableCell align="center">{(scalesNonGraphArrayCompare[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArrayCompare[index]}{line.split(' ')[3]}</TableCell>
+                                    <TableCell align="center">{(scalesNonGraphArray[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArray[index]}{line.split(' ')[3]}</TableCell>
                                   </TableRow>
-                                )
-                              })
-                              }
+                                ))
+                                }
 
-                            </TableBody>
-                          </Table>
-                        </TableContainer>}
-                      </div>
-                    </Paper>
-                    <Paper className={classes.paper}>
-                      {compare && <div style={{ display: 'flex', textAlign: 'left' }}>
-                        <div style={{ width: '50%' }}>
-                          <h2 style={{ marginLeft: '30%' }}>Current Netlist</h2>
-                          <div>{netlist.split('\n').map((i, key) => {
-                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
-                          })}</div>
-                        </div>
-                        <div style={{ width: '50%' }}>
-                          <h2 style={{ marginLeft: '30%' }}>Compared Netlist</h2>
-                          <div>{compareNetlist.split('\n').map((i, key) => {
-                            return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
-                          })}</div>
-                        </div>
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                          {compare && <TableContainer component={Paper} style={{ float: 'right', marginLeft: '2%' }}>
+                            <Table className={classes.table} aria-label="simple table">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell align="center">Node/Branch</TableCell>
+                                  <TableCell align="center">Value</TableCell>
+                                  <TableCell align="center">Unit</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {comparingSim.map((line, index) => {
+                                  return (
+                                    <TableRow key={index}>
+                                      <TableCell align="center">{line.split('=')[0]}</TableCell>
+                                      <TableCell align="center">
+                                        {(line.split(' ')[3] === '\n')
+                                          ? (parseFloat(line.split(' ')[2]))
+                                          : (notation === 'Scientific'
+                                            ? ((parseFloat(line.split(' ')[2]) / Math.pow(10, exactDecimalCompare[index])).toFixed(precision).toString() + 'e' + ((exactDecimalCompare[index]) >= 0
+                                              ? '+' + (exactDecimalCompare[index]).toString()
+                                              : exactDecimalCompare[index]).toString())
+                                            : (parseFloat(line.split(' ')[2]) / scales[scalesNonGraphArrayCompare[index]]).toFixed(precision))}
+                                      </TableCell>
+                                      <TableCell align="center">{(scalesNonGraphArrayCompare[index] === 'si' || notation === 'Scientific' || line.split(' ')[3] === '\n') ? '' : scalesNonGraphArrayCompare[index]}{line.split(' ')[3]}</TableCell>
+                                    </TableRow>
+                                  )
+                                })
+                                }
 
-                      </div>}
-                    </Paper>
-                  </Grid>
-                  : <span></span>
-              }</>
+                              </TableBody>
+                            </Table>
+                          </TableContainer>}
+                        </div>
+                      </Paper>
+                      <Paper className={classes.paper}>
+                        {compare && <div style={{ display: 'flex', textAlign: 'left' }}>
+                          <div style={{ width: '50%' }}>
+                            <h2 style={{ marginLeft: '30%' }}>Current Netlist</h2>
+                            <div>{netlist.split('\n').map((i, key) => {
+                              return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
+                            })}</div>
+                          </div>
+                          <div style={{ width: '50%' }}>
+                            <h2 style={{ marginLeft: '30%' }}>Compared Netlist</h2>
+                            <div>{compareNetlist.split('\n').map((i, key) => {
+                              return <h3 style={{ marginLeft: '30%' }} key={key}>{i}</h3>
+                            })}</div>
+                          </div>
+
+                        </div>}
+                      </Paper>
+                    </Grid>
+                    : <span></span>
+                }</>
               : <Grid item xs={12} sm={12}>
                 <Paper className={classes.paper}>
                   <Typography variant="h6" align="center" gutterBottom>

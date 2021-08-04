@@ -1,24 +1,47 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 18.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg4700" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:cc="http://creativecommons.org/ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" sodipodi:docname="Photoresistor.svg" inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 67 159"
-	 enable-background="new 0 0 67 159" xml:space="preserve">
-<g id="layer1" inkscape:label="Layer 1" inkscape:groupmode="layer">
-	<g id="g5277">
-		
-			<path id="path3198" inkscape:connector-curvature="0" sodipodi:nodetypes="csssssc" fill="none" stroke="#8C8C8C" stroke-width="2.1819" stroke-linecap="round" stroke-miterlimit="10" d="
-			M18.6,157.9l-1-93.3C17.5,56.1,9.4,44,9.4,30.8C9.4,17.5,19.5,4.6,32,4.6S54.6,16,54.6,30.7s-8.3,24.1-8.2,33.9l0.5,93.6"/>
-		<ellipse id="ellipse3204" fill="#AA5A24" cx="33.1" cy="30.3" rx="33.1" ry="30.3"/>
-		<ellipse id="ellipse3206" fill="#DBDDAF" cx="33.1" cy="30.3" rx="28.8" ry="25.8"/>
-		<ellipse id="circle3208" fill="#CECCB3" cx="10.8" cy="30.2" rx="2.9" ry="3"/>
-		<ellipse id="circle3210" fill="#CECCB3" cx="55.4" cy="30.4" rx="2.9" ry="3"/>
-		
-			<path id="path3212" inkscape:connector-curvature="0" fill="none" stroke="#B4622B" stroke-width="1.5624" stroke-miterlimit="10" d="
-			M48,51.9c0-2.1-1.6-3.8-3.6-3.8H20.8c-2,0-3.6-1.7-3.6-3.8c0-2.1,1.6-3.8,3.6-3.8h23.7c2,0,3.6-1.7,3.6-3.8c0-2.1-1.6-3.8-3.6-3.8
-			H20.8c-2,0-3.6-1.7-3.6-3.8c0-2.1,1.6-3.8,3.6-3.8h23.7c2,0,3.6-1.7,3.6-3.8s-1.6-3.8-3.6-3.8H20.8c-2,0-3.6-1.7-3.6-3.8
-			s1.6-3.8,3.6-3.8h23.7c2,0,3.6-1.7,3.6-3.8"/>
-	</g>
-</g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 224 218.13">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: gray;
+        stroke-width: 0.5px;
+      }
+
+      .cls-1, .cls-3 {
+        stroke: #666;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2 {
+        fill: #ffe083;
+        stroke: #c1272d;
+        stroke-width: 8px;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke-width: 7px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="Layer_1-2" data-name="Layer 1">
+      <g>
+        <g>
+          <g>
+            <g>
+              <rect class="cls-1" x="72.48" y="133.88" width="17" height="69"/>
+              <rect class="cls-1" x="134.48" y="133.88" width="17" height="69"/>
+            </g>
+            <path class="cls-2" d="M220,69.26c0,23.62-13,44.93-33.83,60-2.58,1.86-5.28,3.63-8.09,5.28H45.92c-2.81-1.65-5.52-3.42-8.1-5.29C17,114.18,4,92.88,4,69.26s13-44.93,33.82-60c2.58-1.87,5.29-3.64,8.1-5.3H178.08q4.21,2.49,8.09,5.29C207,24.33,220,45.63,220,69.26Z"/>
+          </g>
+          <path class="cls-3" d="M50,6.88c-.36,1.54-.72,7.09-1.08,8.63a6.82,6.82,0,0,0,6.64,8.37H170.14A6.81,6.81,0,0,1,177,30.7v8.36a6.81,6.81,0,0,1-6.81,6.82H51.77A6.82,6.82,0,0,0,45,52.7v6.36a6.82,6.82,0,0,0,6.82,6.82H173.14A6.81,6.81,0,0,1,180,72.7V84.06a6.81,6.81,0,0,1-6.81,6.82H50.77A6.82,6.82,0,0,0,44,97.7v9.36a6.82,6.82,0,0,0,6.82,6.82H169.1a6.81,6.81,0,0,1,6.74,7.78l-.89,9.22"/>
+        </g>
+        <path class="cls-1" d="M143.55,217.88h-1.14a2.43,2.43,0,0,1-2.43-2.43l-1-12.57h8l-1,12.57A2.43,2.43,0,0,1,143.55,217.88Z"/>
+        <path class="cls-1" d="M81.55,217.88H80.41A2.43,2.43,0,0,1,78,215.45l-1-12.57h8l-1,12.57A2.43,2.43,0,0,1,81.55,217.88Z"/>
+      </g>
+    </g>
+  </g>
 </svg>

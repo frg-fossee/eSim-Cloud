@@ -165,9 +165,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             setProjectBranch(resp.data[0].project_branch)
             setProjectVersion(resp.data[0].project_version)
           }
-          var versionsAccordingFreq = {}
+          const versionsAccordingFreq = {}
           resp.data.forEach((value) => {
-            var d = new Date(value.save_time)
+            const d = new Date(value.save_time)
             value.full_time = d
             value.date =
               d.getDate() + '/' + parseInt(d.getMonth() + 1) + '/' + d.getFullYear()
@@ -177,8 +177,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             }
             versionsAccordingFreq[value.branch] ? versionsAccordingFreq[value.branch].push(value) : versionsAccordingFreq[value.branch] = [value]
           })
-          var versionsArray = Object.entries(versionsAccordingFreq)
-          for (var i = 0; i < versionsArray.length; i++) {
+          const versionsArray = Object.entries(versionsAccordingFreq)
+          for (let i = 0; i < versionsArray.length; i++) {
             versionsArray[i][1].sort((a, b) => {
               return b.full_time - a.full_time
             })
@@ -187,11 +187,11 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
             return b[1][b[1].length - 1].full_time - a[1][a[1].length - 1].full_time
           })
           setVersions(versionsArray)
-          var temp = []
-          for (var j = 0; j < versionsArray.length; j++) {
+          const temp = []
+          for (let j = 0; j < versionsArray.length; j++) {
             if (decodeURI(window.location.href.split('branch=')[1]) === versionsArray[j][0]) { temp.push(true) } else { temp.push(false) }
           }
-          var popoverTemp = new Array(versionsArray.length)
+          const popoverTemp = new Array(versionsArray.length)
           popoverTemp.fill(false)
           setPopoverOpen(popoverTemp)
           setBranchOpen(temp)
@@ -219,8 +219,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     canvas.height = gridRef.current.scrollHeight
     canvas.style.width = canvas.width + 'px'
     canvas.style.height = canvas.height + 'px'
-    var images = svg.getElementsByTagName('image')
-    for (var image of images) {
+    const images = svg.getElementsByTagName('image')
+    for (const image of images) {
       const data = await fetch(image.getAttribute('xlink:href')).then((v) => {
         return v.text()
       })
@@ -230,7 +230,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
         'data:image/svg+xml;base64,' + window.btoa(data)
       )
     }
-    var ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d')
     ctx.mozImageSmoothingEnabled = true
     ctx.webkitImageSmoothingEnabled = true
     ctx.msImageSmoothingEnabled = true
@@ -239,13 +239,13 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
     return new Promise((resolve) => {
       if (type === 'SVG') {
-        var svgdata = new XMLSerializer().serializeToString(svg)
+        const svgdata = new XMLSerializer().serializeToString(svg)
         resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata)
         return
       }
-      var v = Canvg.fromString(ctx, svg.outerHTML)
+      const v = Canvg.fromString(ctx, svg.outerHTML)
       v.render().then(() => {
-        var image = ''
+        let image = ''
         if (type === 'JPG') {
           const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height)
           for (let i = 0; i < imgdata.data.length; i += 4) {
@@ -279,9 +279,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
 
   const handleClick = (index) => {
     console.log(index)
-    var left = branchOpen.slice(0, index)
-    var right = branchOpen.slice(index + 1)
-    var temp = !branchOpen[index]
+    let left = branchOpen.slice(0, index)
+    const right = branchOpen.slice(index + 1)
+    const temp = !branchOpen[index]
     left.push(temp)
     left = left.concat(right)
     console.log(left)
@@ -289,7 +289,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
   }
 
   const handleDelete = (branchName, index) => {
-    var temp = popoverOpen
+    const temp = popoverOpen
     temp.fill(false)
     setPopoverOpen(temp)
     const config = {
@@ -304,7 +304,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     const saveId = window.location.href.split('id=')[1].substr(0, 36)
     api.delete(`/save/versions/${saveId}/${branchName}`, config).then(resp => {
       const temp = versions.filter(version => version[0] !== branchName)
-      var tempBranch = branchOpen
+      const tempBranch = branchOpen
       tempBranch.splice(index, 1)
       setBranchOpen(tempBranch)
       setVersions(temp)
@@ -317,9 +317,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
 
   const handleClickPopover = (e, index) => {
     setAnchorEl(e.currentTarget)
-    var left = popoverOpen.slice(0, index)
-    var right = popoverOpen.slice(index + 1)
-    var temp = !popoverOpen[index]
+    let left = popoverOpen.slice(0, index)
+    const right = popoverOpen.slice(index + 1)
+    const temp = !popoverOpen[index]
     left.push(temp)
     left = left.concat(right)
     setPopoverOpen(left)
@@ -327,9 +327,9 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
 
   const handleClosePopover = (index) => {
     setAnchorEl(null)
-    var left = popoverOpen.slice(0, index)
-    var right = popoverOpen.slice(index + 1)
-    var temp = !popoverOpen[index]
+    let left = popoverOpen.slice(0, index)
+    const right = popoverOpen.slice(index + 1)
+    const temp = !popoverOpen[index]
     left.push(temp)
     left = left.concat(right)
     setPopoverOpen(left)

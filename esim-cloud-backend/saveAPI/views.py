@@ -1,15 +1,17 @@
+# from django.core.files.base import File
 import django_filters
 from django_filters import rest_framework as filters
-from .serializers import StateSaveSerializer, SaveListSerializer
+from .serializers import StateSaveSerializer, SaveListSerializer, \
+    GallerySerializer
 from .serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import ListAPIView
+# from rest_framework.generics import ListAPIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .models import StateSave
+from .models import StateSave, Gallery
 from workflowAPI.models import Permission
 from publishAPI.models import Project
 from ltiAPI.models import Submission
@@ -469,3 +471,131 @@ class DeleteCircuit(APIView):
         except StateSave.DoesNotExist:
             return Response({"error": "circuit not found"},
                             status=status.HTTP_404_NOT_FOUND)
+
+
+class GalleryView(APIView):
+    """
+    Esim Gallery
+
+    """
+    permission_classes = (AllowAny,)
+    parser_classes = (FormParser, JSONParser)
+    methods = ['GET']
+
+    @swagger_auto_schema(responses={200: GallerySerializer})
+    def get(self, request):
+
+        galleryset = Gallery.objects.all()
+        try:
+            serialized = GallerySerializer(galleryset, many=True)
+            return Response(serialized.data)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GalleryFetchSaveDeleteView(APIView):
+
+    """
+    Returns Saved data for given save id,
+    Only staff can add / delete it
+    THIS WILL ESCAPE DOUBLE QUOTES
+
+    """
+    # permission_classes = (AllowAny,)
+    parser_classes = (FormParser, JSONParser)
+    methods = ['GET']
+
+    @swagger_auto_schema(responses={200: GallerySerializer})
+    def get(self, request, save_id):
+
+        try:
+            saved_state = Gallery.objects.get(
+                save_id=save_id)
+        except Gallery.DoesNotExist:
+            return Response({'error': 'Does not Exist'},
+                            status=status.HTTP_404_NOT_FOUND)
+        try:
+            serialized = GallerySerializer(
+                saved_state, context={'request': request})
+            data = {}
+            data.update(serialized.data)
+            return Response(data)
+        except Exception:
+            traceback.print_exc()
+            return Response({'error': 'Not Able To Serialize'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(responses={200: GallerySerializer})
+    def post(self, request, save_id):
+
+        # Checking user roles
+        userRoles = self.request.user.groups.all()
+        staff = False
+        for userRole in userRoles:
+            if (self.request.user and self.request.user.is_authenticated and
+                    userRole.customgroup and
+                    userRole.customgroup.is_type_staff):
+                staff = True
+        if not staff:
+            return Response({'error': 'Not the owner'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        saved_state = Gallery()
+        if not (request.data['data_dump'] and request.data['media'] and
+                request.data['save_id']):
+            return Response({'error': 'not a valid POST request'},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        # saves to gallery
+        try:
+            if 'save_id' in request.data:
+                saved_state.save_id = request.data['save_id']
+            if 'is_arduino' in request.data:
+                saved_state.is_arduino = request.data['is_arduino']
+            if 'data_dump' in request.data:
+                saved_state.data_dump = request.data['data_dump']
+            if 'shared' in request.data:
+                saved_state.shared = bool(request.data['shared'])
+            if 'name' in request.data:
+                saved_state.name = request.data['name']
+            if 'description' in request.data:
+                saved_state.description = request.data['description']
+            if 'media' in request.data:
+                img = Base64ImageField(max_length=None, use_url=True)
+                filename, content = img.update(
+                    request.data['media'])
+                saved_state.media.save(filename, content)
+            if 'esim_libraries' in request.data:
+                esim_libraries = json.loads(
+                    request.data.get('esim_libraries'))
+                saved_state.esim_libraries.set(esim_libraries)
+            saved_state.save()
+            serialized = GallerySerializer(saved_state)
+            return Response(serialized.data)
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @swagger_auto_schema(responses={200: GallerySerializer})
+    def delete(self, request, save_id):
+        try:
+            # Checking user roles
+            userRoles = self.request.user.groups.all()
+            staff = False
+            for userRole in userRoles:
+                if (self.request.user and self.request.user.is_authenticated
+                    and userRole.customgroup and
+                        userRole.customgroup.is_type_staff):
+                    staff = True
+            if not staff:
+                return Response({'error': 'Not the owner'},
+                                status=status.HTTP_401_UNAUTHORIZED)
+            # Deltes from gallery
+            try:
+                saved_state = Gallery.objects.get(
+                    save_id=save_id)
+            except Gallery.DoesNotExist:
+                return Response({'error': 'Does not Exist'},
+                                status=status.HTTP_404_NOT_FOUND)
+            saved_state.delete()
+            return Response({'done': True})
+        except Exception:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)

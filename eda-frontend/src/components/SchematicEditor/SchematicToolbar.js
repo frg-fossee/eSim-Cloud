@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import PropTypes from 'prop-types'
 import Canvg from 'canvg'
 import {
@@ -33,18 +34,25 @@ import LibraryAddRoundedIcon from '@material-ui/icons/LibraryAddRounded'
 import Button from '@material-ui/core/Button'
 import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
-
 import Icon from '@material-ui/core/Icon'
 import { Link as RouterLink } from 'react-router-dom'
 import queryString from 'query-string'
+import { RotateLeft } from '@material-ui/icons'
+import { Link as RouterLink } from 'react-router-dom'
+import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
+import { fetchRole } from '../../redux/actions/authActions'
 
 import { NetlistModal, HelpScreen, ImageExportDialog, OpenSchDialog, SelectLibrariesModal } from './ToolbarExtension'
 import { ZoomIn, ZoomOut, ZoomAct, DeleteComp, PrintPreview, ErcCheck, Rotate, GenerateNetList, Undo, Redo, Save, ClearGrid, RotateACW } from './Helper/ToolbarTools'
-import { useSelector, useDispatch } from 'react-redux'
-import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch } from '../../redux/actions/index'
-import { RotateLeft } from '@material-ui/icons'
+import { toggleSimulate, closeCompProperties, setSchXmlData, saveSchematic, openLocalSch, saveToGallery } from '../../redux/actions/index'
 import CreateProject from '../Project/CreateProject'
 import api from '../../utils/Api'
+import { importSCHFile } from './Helper/KiCadFileUtils'
+
+// Req for Development
+// import CodeIcon from '@material-ui/icons/Code'
+// // eslint-disable-next-line
+// import { dispGraph } from './Helper/ToolbarTools'
 
 const useStyles = makeStyles((theme) => ({
   menuButton: {
@@ -110,7 +118,9 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
   const schSave = useSelector((state) => state.saveSchematicReducer)
 
   const dispatch = useDispatch()
-
+  useEffect(() => {
+    dispatch(fetchRole())
+  }, [dispatch])
   // Netlist Modal Control
   const [open, setOpen] = React.useState(false)
   const [netlist, genNetlist] = React.useState('')
@@ -150,6 +160,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
 
   const handleMenuClose = () => {
     setAnchorEl(null)
+  const [shortCircuit, setshortCircuit] = React.useState(false)
+
+  const handleShortClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setshortCircuit(false)
   }
 
   const handleSave = (version, newSave, save_id) => {
@@ -177,24 +194,41 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
   }
 
   const handleClickOpen = () => {
-    var compNetlist = GenerateNetList()
-    var printToPlotControlBlock = ''
-    var ctrlblk = netfile.controlBlock.split('\n')
-    for (var line = 0; line < ctrlblk.length; line++) {
+    const compNetlist = GenerateNetList()
+    let printToPlotControlBlock = ''
+    const ctrlblk = netfile.controlBlock.split('\n')
+    for (let line = 0; line < ctrlblk.length; line++) {
       if (ctrlblk[line].includes('print')) {
         printToPlotControlBlock += 'plot '
-        var cleanCode = ctrlblk[line].split('print ')[1]
+        let cleanCode = ctrlblk[line].split('print ')[1]
         cleanCode = cleanCode.split('>')[0]
         printToPlotControlBlock += cleanCode + '\n'
       } else {
         printToPlotControlBlock += ctrlblk[line] + '\n'
       }
     }
-    var netlist = netfile.title + '\n\n' +
+    const netlist = netfile.title + '\n\n' +
       compNetlist.models + '\n' +
       compNetlist.main + '\n' +
       netfile.controlLine + '\n' +
       printToPlotControlBlock + '\n'
+
+    const checkNetlist = (netlist) => {
+      console.log(netlist)
+      netlist = netlist.split('\n')
+      for (let line = 0; line < netlist.length; line++) {
+        const splitLine = netlist[line].split(' ')
+        // Works only for components with 2 nodes
+        // For multiple nodes all nodes need to be checked with each other
+        if (splitLine[1] === splitLine[2] && splitLine.length >= 2) {
+          setshortCircuit(true)
+          return
+        }
+      }
+      setshortCircuit(false)
+    }
+
+    checkNetlist(compNetlist.main)
     genNetlist(netlist)
     setOpen(true)
   }
@@ -327,8 +361,8 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
     canvas.height = gridRef.current.scrollHeight
     canvas.style.width = canvas.width + 'px'
     canvas.style.height = canvas.height + 'px'
-    var images = svg.getElementsByTagName('image')
-    for (var image of images) {
+    const images = svg.getElementsByTagName('image')
+    for (const image of images) {
       const data = await fetch(image.getAttribute('xlink:href')).then((v) => {
         return v.text()
       })
@@ -338,7 +372,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
         'data:image/svg+xml;base64,' + window.btoa(data)
       )
     }
-    var ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d')
     ctx.mozImageSmoothingEnabled = true
     ctx.webkitImageSmoothingEnabled = true
     ctx.msImageSmoothingEnabled = true
@@ -347,13 +381,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
     ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
     return new Promise((resolve) => {
       if (type === 'SVG') {
-        var svgdata = new XMLSerializer().serializeToString(svg)
+        const svgdata = new XMLSerializer().serializeToString(svg)
         resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata)
         return
       }
-      var v = Canvg.fromString(ctx, svg.outerHTML)
+      const v = Canvg.fromString(ctx, svg.outerHTML)
       v.render().then(() => {
-        var image = ''
+        let image = ''
         if (type === 'JPG') {
           const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height)
           for (let i = 0; i < imgdata.data.length; i += 4) {
@@ -378,12 +412,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
 
   // Download JPEG, PNG exported Image
   function downloadImage (data, type) {
-    var evt = new MouseEvent('click', {
+    const evt = new MouseEvent('click', {
       view: window,
       bubbles: false,
       cancelable: true
     })
-    var a = document.createElement('a')
+    const a = document.createElement('a')
     const ext = type === 'PNG' ? '.png' : '.jpg'
     a.setAttribute('download', schSave.title + '_eSim_on_cloud' + ext)
     a.setAttribute('href', data)
@@ -438,10 +472,10 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
       setMessage('You are not Logged In')
       handleSnacClick()
     } else {
-      var xml = Save()
+      const xml = Save()
       dispatch(setSchXmlData(xml))
-      var title = schSave.title
-      var description = schSave.description
+      const title = schSave.title
+      const description = schSave.description
       exportImage('PNG').then((res) => {
         dispatch(saveSchematic(title, description, xml, res, false, null, handleSave))
       })
@@ -450,13 +484,31 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
     }
   }
 
+  // Handle Save to Gallery
+  const handleGalSave = () => {
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else {
+      const xml = Save()
+      dispatch(setSchXmlData(xml))
+      const title = schSave.title
+      const description = schSave.description
+      exportImage('PNG').then((res) => {
+        dispatch(saveToGallery(title, description, xml, res))
+      })
+      setMessage('Saved To Gallery Successfully')
+      handleSnacClick()
+    }
+  }
+
   // Save Schematics Locally
   const handelLocalSchSave = () => {
-    var saveLocalData = {}
+    const saveLocalData = {}
     saveLocalData.data_dump = Save()
     saveLocalData.title = schSave.title
     saveLocalData.description = schSave.description
-    var json = JSON.stringify(saveLocalData)
+    const json = JSON.stringify(saveLocalData)
     const blob = new Blob([json], { type: 'octet/stream' })
     const evt = new MouseEvent('click', {
       view: window,
@@ -473,14 +525,14 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
 
   // Open Locally Saved Schematic
   const handelLocalSchOpen = () => {
-    var obj = {}
+    let obj = {}
     const fileSelector = document.createElement('input')
     fileSelector.setAttribute('type', 'file')
     fileSelector.setAttribute('accept', 'application/JSON')
     fileSelector.click()
     fileSelector.addEventListener('change', function (event) {
-      var reader = new FileReader()
-      var filename = event.target.files[0].name
+      const reader = new FileReader()
+      const filename = event.target.files[0].name
       if (filename.slice(filename.length - 4) === 'json') {
         reader.onload = onReaderLoad
         reader.readAsText(event.target.files[0])
@@ -502,6 +554,23 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
         dispatch(openLocalSch(obj))
       }
     }
+  }
+
+  const handleKicadFileUpload = () => {
+    const fileSelector = document.createElement('input')
+    fileSelector.setAttribute('type', 'file')
+    fileSelector.setAttribute('accept', '.sch')
+    fileSelector.click()
+    fileSelector.addEventListener('change', function (event) {
+      var reader = new FileReader()
+      var filename = event.target.files[0].name
+      if (filename.slice(filename.length - 3) === 'sch') {
+        reader.onload = async (e) => {
+          importSCHFile(e.target.result)
+        }
+        reader.readAsText(event.target.files[0])
+      }
+    })
   }
 
   // Control Help dialog window open and close
@@ -564,6 +633,12 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
 
   return (
     <>
+      <SimpleSnackbar
+        message={'Possible short-circuit detected. Please recheck'}
+        open={shortCircuit}
+        close={handleShortClose}
+      />
+
       <Tooltip title="New">
         <IconButton
           color="inherit"
@@ -581,17 +656,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} />
+      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} openKicad={handleKicadFileUpload}/>
       <Tooltip title="Save (Ctrl + S)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <SimpleSnackbar
-        open={snacOpen}
-        close={handleSnacClose}
-        message={message}
-      />
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <span className={classes.pipe}>|</span>
       <Tooltip title="Export (Ctrl + E)">
         <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
@@ -786,6 +857,19 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
           </>
         }
       />
+      { auth.roles && auth.roles.is_type_staff &&
+        <Tooltip title="Add to Gallery">
+          <IconButton color="inherit" className={classes.tools} size="small" onClick={handleGalSave}>
+            <AddPhotoAlternateIcon fontSize="medium" />
+          </IconButton>
+        </Tooltip>
+      }
+
+      {/* <Tooltip title="Display MxGraph Root">
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={ () => dispGraph()}>
+          <CodeIcon fontSize="small" />
+        </IconButton>
+      </Tooltip> */}
     </>
   )
 }
