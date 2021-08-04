@@ -88,7 +88,7 @@ class StateSaveView(APIView):
                         data_dump=request.data.get('data_dump'),
                         description=request.data.get('description'),
                         name=request.data.get('name'),
-                        owner=request.user if request.user.is_authenticated else None,
+                        owner=request.user if request.user.is_authenticated else None,  # noqa
                         branch=request.data.get('branch'),
                         version=request.data.get('version'),
                         project=project,
@@ -100,7 +100,7 @@ class StateSaveView(APIView):
                         data_dump=request.data.get('data_dump'),
                         description=request.data.get('description'),
                         name=request.data.get('name'),
-                        owner=request.user if request.user.is_authenticated else None,
+                        owner=request.user if request.user.is_authenticated else None,  # noqa
                         branch=request.data.get('branch'),
                         version=request.data.get('version'),
                         is_arduino=True if esim_libraries is None else False,
