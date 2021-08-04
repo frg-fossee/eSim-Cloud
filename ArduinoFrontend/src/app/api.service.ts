@@ -44,9 +44,9 @@ export class ApiService {
   listProject(token) {
     return this.http.get(`${this.url}api/save/arduino/list`, {
       headers: new HttpHeaders({
-        //'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        //'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
