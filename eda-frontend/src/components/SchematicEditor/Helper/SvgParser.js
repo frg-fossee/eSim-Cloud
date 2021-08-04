@@ -3,6 +3,7 @@
 /* eslint-disable camelcase */
 import mxGraphFactory from 'mxgraph'
 import ComponentParameters from './ComponentParametersData'
+import { rotateCell } from './ToolbarTools'
 const {
   mxConstants
 } = new mxGraphFactory()
@@ -56,14 +57,14 @@ function extractData (xml) {
   }
 }
 
-export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
+export function getSvgMetadata (graph, parent, evt, target, x, y, component, rotation = 0, centerCoords = false) {
   // calls extractData and other MXGRAPH functions
   // initialize information from the svg meta
   // plots pinnumbers and component labels.
 
   var path = '../' + component.svg_path
 
-  fetch(path)
+  return fetch(path)
     .then(function (response) {
       return response.text()
     })
@@ -82,8 +83,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
 
       // console.log(pinData)
 
-      // Enables moving of vertex labels
-      graph.vertexLabelsMovable = true
+      // Disables moving of vertex labels
+      graph.vertexLabelsMovable = false
 
       // Creates a style with an indicator
       var style = graph.getStylesheet().getDefaultVertexStyle()
@@ -105,6 +106,16 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       width = width / default_scale
       height = height / default_scale
 
+      if (centerCoords) {
+        if (rotation !== 0 && (rotation / 90) % 2 !== 0) {
+          x = x - height / 2
+          y = y - width / 2
+        } else {
+          x = x - width / 2
+          y = y - height / 2
+        }
+      }
+
       const v1 = graph.insertVertex(
         parent,
         null,
@@ -113,7 +124,7 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         y,
         width,
         height,
-        'shape=image;fontColor=blue;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25'
+        'shape=image;fontColor=blue;image=' + path + ';imageVerticalAlign=bottom;verticalAlign=bottom;imageAlign=bottom;align=bottom;spacingLeft=25;'
       )
       v1.Component = true
       /* var newsource = path
@@ -151,8 +162,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
       // console.log('v1.properties', v1.properties)
 
       v1.setConnectable(false)
-
-      for (let i = 0; i < pinData.length; i++) {
+      let i = 0
+      for (i = 0; i < pinData.length; i++) {
         currentPin = pinData[i]
         if (currentPin.pinName === 'NC') continue
         // move this to another file
@@ -182,5 +193,8 @@ export function getSvgMetadata (graph, parent, evt, target, x, y, component) {
         pins[i].ParentComponent = v1
         pins[i].PinNumber = currentPin.pinNumber
       }
+      if (rotation !== 0) { rotateCell(v1, rotation) }
+
+      return v1
     })
 }

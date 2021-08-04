@@ -37,6 +37,7 @@ import { AlertModalComponent } from './alert/alert-modal/alert-modal.component';
 import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.component';
 import { ExportJSONDialogComponent } from './export-jsondialog/export-jsondialog.component';
 import { ExitConfirmDialogComponent } from './exit-confirm-dialog/exit-confirm-dialog.component';
+import { SaveProjectDialogComponent } from './simulator/save-project-dialog/save-project-dialog.component';
 import { OptionModalComponent } from './alert/option-modal/option-modal.component';
 
 /**
@@ -73,6 +74,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
+    SaveProjectDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -104,6 +106,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
+    SaveProjectDialogComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

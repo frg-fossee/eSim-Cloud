@@ -6,7 +6,6 @@ import {
   List,
   Typography,
   ListItem,
-  InputBase,
   ListItemText,
   ListItemAvatar
 } from '@material-ui/core'
@@ -14,8 +13,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchSchematics } from '../../redux/actions/index'
-
+import { fetchSchematics, fetchOtherProjects, fetchRole } from '../../redux/actions/index'
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     minHeight: '45px'
@@ -49,13 +47,12 @@ const useStyles = makeStyles((theme) => ({
 export default function DashSidebar (props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
-  const schematics = useSelector(state => state.dashboardReducer.schematics)
-
   const dispatch = useDispatch()
-
   // For Fetching Saved Schematics
   useEffect(() => {
     dispatch(fetchSchematics())
+    dispatch(fetchOtherProjects())
+    dispatch(fetchRole())
   }, [dispatch])
 
   return (
@@ -87,7 +84,7 @@ export default function DashSidebar (props) {
                   variant="body2"
                   color="textSecondary"
                 >
-                  Contributor
+                  {auth.roles !== null && auth.roles.group.map((value, key) => (<h3 key={value}>{value}</h3>))}
                 </Typography>
               </React.Fragment>
             }
@@ -101,7 +98,7 @@ export default function DashSidebar (props) {
           button
           divider
         >
-          <ListItemText primary='My Profile'/>
+          <ListItemText primary='My Profile' />
         </ListItem>
         <ListItem
           component={RouterLink}
@@ -109,24 +106,19 @@ export default function DashSidebar (props) {
           className={classes.sideItem}
           button
         >
-          <ListItemText primary='My Schematics'/>
+          <ListItemText primary='My Schematics' />
         </ListItem>
-
-        {/* List name of saved schematics */}
-        <List className={classes.nestedSearch} >
-          <InputBase
-            className={classes.input}
-            placeholder="Find your schematic..."
-          />
-        </List>
-        <div className={classes.nested} >
-          {schematics.map((sch) => (
-            <ListItem key={sch.save_id} button>
-              <ListItemText primary={`${sch.name}`} />
-            </ListItem>
-          ))}
-        </div>
         <Divider />
+        {auth.roles && auth.roles.e_sim_reviewer &&
+          <ListItem
+            component={RouterLink}
+            to="/dashboard/review_projects"
+            className={classes.sideItem}
+            button
+          >
+            <ListItemText primary='Review Projects' />
+          </ListItem>}
+
       </List>
     </>
   )

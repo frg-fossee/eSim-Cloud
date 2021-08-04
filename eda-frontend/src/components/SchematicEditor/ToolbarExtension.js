@@ -38,8 +38,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, loadGallery, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents } from '../../redux/actions/index'
-import GallerySchSample from '../../utils/GallerySchSample'
+import { fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents, fetchGallery } from '../../redux/actions/index'
 import { blue } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
 import Tabs from '@material-ui/core/Tabs'
@@ -52,14 +51,14 @@ const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-var FileSaver = require('file-saver')
+const FileSaver = require('file-saver')
 
 // Dialog box to display generated netlist
 export function NetlistModal ({ open, close, netlist }) {
   const netfile = useSelector(state => state.netlistReducer)
   const createNetlistFile = () => {
-    var titleA = netfile.title.split(' ')[1]
-    var blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
+    const titleA = netfile.title.split(' ')[1]
+    const blob = new Blob([netlist], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, `${titleA}_eSim_on_cloud.cir`)
   }
   return (
@@ -175,21 +174,21 @@ export function HelpScreen ({ open, close }) {
                     REDO
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    Ctrl + A
+                    Ctrl + Shift + Z
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>
                     ZOOM IN
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    Ctrl + I
+                    Ctrl + +
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>
                     ZOOM OUT
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
-                    Ctrl + O
+                    Ctrl + -
                   </Typography>
                   <Divider />
                   <Typography variant="h6" align='left' gutterBottom>
@@ -197,6 +196,62 @@ export function HelpScreen ({ open, close }) {
                   </Typography>
                   <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
                     Ctrl + Y
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Save Circuit
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + S
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Print Circuit
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + P
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Open Dialog
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + O
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Export as JSON
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + E
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Export as Image
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Ctrl + Shift + E
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Rotate Component Clockwise
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Alt + Right Arrow
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Rotate Component Anti-Clockwise
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Alt + Left Arrow
+                  </Typography>
+                  <Divider />
+                  <Typography variant="h6" align='left' gutterBottom>
+                    Clear All
+                  </Typography>
+                  <Typography variant="subtitle1" align='left' style={{ color: '#b3b3b3' }} gutterBottom>
+                    Shift + Del
                   </Typography>
                 </fieldset>
               </Paper>
@@ -386,22 +441,22 @@ ImageExportDialog.propTypes = {
 
 // Dialog box to open saved Schematics
 export function OpenSchDialog (props) {
-  const { open, close, openLocal } = props
+  const { open, close, openLocal, openKicad } = props
   const [isLocal, setisLocal] = React.useState(true)
   const [isGallery, setisGallery] = React.useState(false)
+  const [isKicad, setisKicad] = React.useState(false)
   const schSave = useSelector(state => state.saveSchematicReducer)
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)
-
+  const gallerySchSample = useSelector(state => state.galleryReducer.schematics)
+  const dispatch = useDispatch()
   function getDate (jsonDate) {
-    var json = jsonDate
-    var date = new Date(json)
+    const json = jsonDate
+    const date = new Date(json)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
     const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
-
-  const dispatch = useDispatch()
 
   return (
     <Dialog
@@ -436,7 +491,7 @@ export function OpenSchDialog (props) {
                     </TableHead>
                     <TableBody>
                       <>
-                        {GallerySchSample.map(
+                        {gallerySchSample.map(
                           (sch) => {
                             return (
                               <TableRow key={sch.save_id}>
@@ -452,7 +507,7 @@ export function OpenSchDialog (props) {
                                   <Button
                                     size="small"
                                     color="primary"
-                                    onClick={() => { dispatch(loadGallery(sch.save_id.substr(7, sch.save_id.length))) }}
+                                    onClick={() => { dispatch(fetchGallerySchematic(sch.save_id)) }}
                                     variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
                                   >
                                     Launch
@@ -467,72 +522,79 @@ export function OpenSchDialog (props) {
                   </Table>
                 </TableContainer>
               </Grid>
-              : <Grid item xs={12} sm={12}>
-                {/* Listing Saved Schematics */}
-                {schematics.length === 0
-                  ? <Typography variant="subtitle1" gutterBottom>
+              : isKicad
+                ? <center> <Button variant="outlined" fullWidth={true} size="large" onClick={() => { openKicad(); close() }} color="primary">
+                Upload .sch File
+                </Button> </center>
+                : <Grid item xs={12} sm={12}>
+                  {/* Listing Saved Schematics */}
+                  {schematics.length === 0
+                    ? <Typography variant="subtitle1" gutterBottom>
                     Hey {auth.user.username} , You dont have any saved schematics...
-                  </Typography>
-                  : <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
-                    <Table stickyHeader size="small" aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell align="center">Name</TableCell>
-                          <TableCell align="center">Description</TableCell>
-                          <TableCell align="center">Created</TableCell>
-                          <TableCell align="center">Updated</TableCell>
-                          <TableCell align="center">Launch</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <>
-                          {schematics.map(
-                            (sch) => {
-                              return (
-                                <TableRow key={sch.save_id}>
-                                  <TableCell align="center">{sch.name}</TableCell>
-                                  <TableCell align="center">
-                                    <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
-                                      <span>
-                                        {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
-                                      </span>
-                                    </Tooltip>
-                                  </TableCell>
-                                  <TableCell align="center">{getDate(sch.create_time)}</TableCell>
-                                  <TableCell align="center">{getDate(sch.save_time)}</TableCell>
-                                  <TableCell align="center">
-                                    <Button
-                                      size="small"
-                                      color="primary"
-                                      onClick={() => { dispatch(fetchSchematic(sch.save_id)) }}
-                                      variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
-                                    >
+                    </Typography>
+                    : <TableContainer component={Paper} style={{ maxHeight: '45vh' }}>
+                      <Table stickyHeader size="small" aria-label="simple table">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell align="center">Name</TableCell>
+                            <TableCell align="center">Description</TableCell>
+                            <TableCell align="center">Created</TableCell>
+                            <TableCell align="center">Updated</TableCell>
+                            <TableCell align="center">Launch</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          <>
+                            {schematics.map(
+                              (sch) => {
+                                return (
+                                  <TableRow key={sch.save_id}>
+                                    <TableCell align="center">{sch.name}</TableCell>
+                                    <TableCell align="center">
+                                      <Tooltip title={sch.description !== null ? sch.description : 'No description'} >
+                                        <span>
+                                          {sch.description !== null ? sch.description.slice(0, 30) + (sch.description.length < 30 ? '' : '...') : '-'}
+                                        </span>
+                                      </Tooltip>
+                                    </TableCell>
+                                    <TableCell align="center">{getDate(sch.create_time)}</TableCell>
+                                    <TableCell align="center">{getDate(sch.save_time)}</TableCell>
+                                    <TableCell align="center">
+                                      <Button
+                                        size="small"
+                                        color="primary"
+                                        onClick={() => { dispatch(fetchSchematic(sch.save_id)) }}
+                                        variant={schSave.details.save_id === undefined ? 'outlined' : schSave.details.save_id !== sch.save_id ? 'outlined' : 'contained'}
+                                      >
                                       Launch
-                                    </Button>
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            }
-                          )}
-                        </>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                }
-              </Grid>
+                                      </Button>
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              }
+                            )}
+                          </>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  }
+                </Grid>
           }
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false) }} color="secondary">
+        <Button variant={isLocal ? 'outlined' : 'text'} onClick={() => { setisLocal(true); setisGallery(false); setisKicad(false) }} color="secondary">
           Local
         </Button>
-        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { setisLocal(false); setisGallery(true) }} color="secondary">
+        <Button variant={isGallery ? 'outlined' : 'text'} onClick={() => { dispatch(fetchGallery()); setisLocal(false); setisGallery(true) }} color="secondary">
           Gallery
+        </Button>
+        <Button variant={isKicad ? 'outlined' : 'text'} onClick={() => { setisLocal(false); setisGallery(false); setisKicad(true) }} color="secondary">
+          KiCad
         </Button>
         {auth.isAuthenticated !== true
           ? <></>
-          : <Button variant={!isGallery & !isLocal ? 'outlined' : 'text'} onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false) }} color="secondary" >
+          : <Button variant={!isGallery & !isLocal & !isKicad ? 'outlined' : 'text'} onClick={() => { dispatch(fetchSchematics()); setisLocal(false); setisGallery(false); setisKicad(false) }} color="secondary" >
             on Cloud
           </Button>
         }
@@ -547,7 +609,8 @@ export function OpenSchDialog (props) {
 OpenSchDialog.propTypes = {
   close: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  openLocal: PropTypes.func.isRequired
+  openLocal: PropTypes.func.isRequired,
+  openKicad: PropTypes.func.isRequired
 }
 
 function SimpleSnackbar ({ open, close, message }) {
@@ -677,7 +740,7 @@ LibraryRow.propTypes = {
 export function SelectLibrariesModal ({ open, close }) {
   const allLibraries = useSelector(state => state.schematicEditorReducer.allLibraries)
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
-  var uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
+  const uploadSuccess = useSelector(state => state.schematicEditorReducer.uploadSuccess)
   const auth = useSelector(state => state.authReducer)
   const dispatch = useDispatch()
   const classes = useStyles()
@@ -707,7 +770,7 @@ export function SelectLibrariesModal ({ open, close }) {
 
   useEffect(() => {
     const updateActive = () => {
-      var active = []
+      const active = []
       if (allLibraries !== undefined) {
         allLibraries.forEach((element) => {
           element.active = false
@@ -731,7 +794,7 @@ export function SelectLibrariesModal ({ open, close }) {
 
   const handlFileUpload = (event) => {
     setUploadDisable(true)
-    var files = event.target.files
+    const files = event.target.files
     const formData = new FormData()
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i])
