@@ -153,7 +153,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       printToPlotControlBlock + '\n'
 
     const checkNetlist = (netlist) => {
-      console.log(netlist)
       netlist = netlist.split('\n')
       for (let line = 0; line < netlist.length; line++) {
         const splitLine = netlist[line].split(' ')

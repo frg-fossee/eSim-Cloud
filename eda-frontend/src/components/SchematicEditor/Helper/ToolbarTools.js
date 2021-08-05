@@ -838,7 +838,6 @@ export function GenerateNodeList() {
       }
     }
   }
-  console.log(nodelist)
   return nodelist
 }
 // Sends a list of components present in the netlist 
