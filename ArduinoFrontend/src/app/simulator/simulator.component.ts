@@ -98,6 +98,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * window
    */
   window: any;
+
+  currentDataDump: string;
   /**
    * Is autolayout in progress?
    */
@@ -469,6 +471,29 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         // Update Project to DB
         SaveOnline.Save(this.projectTitle, this.description, this.api, branch, newVersionId, (out) => {
           AlertService.showAlert('Updated')
+          if (out['duplicate']) {
+
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              // add new quert parameters
+              this.router.navigate(
+                ['/simulator'],
+                {
+                  relativeTo: this.aroute,
+                  queryParams: {
+                    id: out.save_id,
+                    online: true,
+                    offline: null,
+                    gallery: null,
+                    version: version_id,
+                    branch
+                  },
+                  queryParamsHandling: 'merge'
+                }
+              );
+            });
+
+            return;
+          }
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             // add new quert parameters
             this.router.navigate(
@@ -487,7 +512,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
               }
             );
           });
-        }, this.projectId);
+        }, this.projectId, this.currentDataDump);
       })
     } else {
       const branch = 'master';
@@ -577,6 +602,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.projectTitle = data.name;
         this.description = data.description;
         this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+        this.currentDataDump = data.data_dump.toString();
         Workspace.Load(JSON.parse(data.data_dump));
       })
     }, (err: HttpErrorResponse) => {

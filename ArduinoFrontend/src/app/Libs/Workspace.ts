@@ -709,7 +709,7 @@ export class Workspace {
       if (window.queue === 0) {
         clearInterval(interval);
         // start drawing wires
-        Workspace.LoadWires(data.wires);
+        Workspace.LoadWires(data.wires, true);
         // Hide loading animation
         window.hideLoading();
       }

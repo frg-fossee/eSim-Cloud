@@ -12,7 +12,7 @@
       (opened)="setStep(i)" class="version-panel-class">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{branch.name}}
+          Variation {{branches.length-i}}: {{branch.name}}
         </mat-panel-title>
         <mat-icon [matMenuTriggerFor]="deleteMenu" #deleteMenuTrigger="matMenuTrigger" (click)="delete('branch',branch)"
           *ngIf="branchName != branch.name">delete</mat-icon>

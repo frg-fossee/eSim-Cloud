@@ -32,7 +32,7 @@ export class SaveOnline {
    * @param callback Callback when save/update is done
    * @param id Project ID
    */
-  static Save(name: string = '', description: string = '', api: ApiService, branch, version, callback: (data: any) => void = null, id: string = null) {
+  static Save(name: string = '', description: string = '', api: ApiService, branch, version, callback: (data: any) => void = null, id: string = null, datadump: string = null) {
     // Get Token
     const token = Login.getToken();
     if (token) {
@@ -82,6 +82,11 @@ export class SaveOnline {
 
         // if update then update the project
         if (toUpdate) {
+          // console.log(saveObj.data_dump.toString());
+          // console.log(datadump);
+          // if(saveObj.data_dump.toString() == datadump){
+
+          // }
           api.updateProject(id, saveObj, token).subscribe(out => {
             if (callback) {
               callback(out);
