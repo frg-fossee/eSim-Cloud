@@ -59,39 +59,43 @@ export class VersioningPanelComponent implements OnInit {
     const token = Login.getToken();
     this.api.listAllVersions(this.id, token).subscribe((v) => {
       for (const e in v) {
-        const dateObj = new Date(v[e].save_time);
-        v[e].formated_save_time = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()}
+        if (v.hasOwnProperty(e)) {
+          const dateObj = new Date(v[e].save_time);
+          v[e].formated_save_time = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()}
         ${dateObj.getHours()}:${dateObj.getMinutes()}`;
-        let found = false;
+          let found = false;
 
-        // check if already avail
-        for (const i in this.branches) {
-          if (this.branches[i].name === v[e].branch) {
-            this.branches[i].versions.push(v[e]);
-            found = true;
+          // check if already avail
+          for (const i in this.branches) {
+            if (this.branches[i].name === v[e].branch) {
+              this.branches[i].versions.push(v[e]);
+              found = true;
+            }
           }
-        }
-        if (found) {
-          continue;
-        } else {
-          const obj = { name: v[e].branch, versions: [v[e]] };
-          this.branches.push(obj);
+          if (found) {
+            continue;
+          } else {
+            const obj = { name: v[e].branch, versions: [v[e]] };
+            this.branches.push(obj);
+          }
         }
       }
 
       // Sort versions in branch
       for (const e in this.branches) {
-        this.branches[e].versions.sort((a, b) => {
-          const date1 = new Date(a.save_time);
-          const date2 = new Date(b.save_time);
-          if (date1 > date2) {
-            return -1;
-          } else if (date1 < date2) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
+        if (this.branches.hasOwnProperty(e)) {
+          this.branches[e].versions.sort((a, b) => {
+            const date1 = new Date(a.save_time);
+            const date2 = new Date(b.save_time);
+            if (date1 > date2) {
+              return -1;
+            } else if (date1 < date2) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+        }
       }
       // Sort branches
       this.branches.sort((a, b) => {
