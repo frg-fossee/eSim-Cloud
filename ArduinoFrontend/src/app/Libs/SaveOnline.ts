@@ -32,7 +32,7 @@ export class SaveOnline {
    * @param callback Callback when save/update is done
    * @param id Project ID
    */
-  static Save(name: string = '', description: string = '', api: ApiService, branch, version, callback: (data: any) => void = null, id: string = null, datadump: string = null) {
+  static Save(name = '', description = '', api: ApiService, branch, version, callback: (data: any) => void = null, id: string = null) {
     // Get Token
     const token = Login.getToken();
     if (token) {

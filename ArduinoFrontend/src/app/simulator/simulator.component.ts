@@ -98,8 +98,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * window
    */
   window: any;
-
-  currentDataDump: string;
   /**
    * Is autolayout in progress?
    */
@@ -466,11 +464,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (SaveOnline.isUUID(this.projectId)) {
       this.aroute.queryParams.subscribe(params => {
         const branch = params.branch;
-        const version_id = params.version;
-        const newVersionId = makeid(20);
+        const versionId = params.version;
+        const newVersionId = this.getRandomString(20);
         // Update Project to DB
         SaveOnline.Save(this.projectTitle, this.description, this.api, branch, newVersionId, (out) => {
-          AlertService.showAlert('Updated')
+          AlertService.showAlert('Updated');
           if (out['duplicate']) {
 
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
@@ -484,7 +482,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
                     online: true,
                     offline: null,
                     gallery: null,
-                    version: version_id,
+                    version: versionId,
                     branch
                   },
                   queryParamsHandling: 'merge'
@@ -512,13 +510,13 @@ export class SimulatorComponent implements OnInit, OnDestroy {
               }
             );
           });
-        }, this.projectId, this.currentDataDump);
-      })
+        }, this.projectId);
+      });
     } else {
       const branch = 'master';
-      const version_id = makeid(20);
+      const versionId = this.getRandomString(20);
       // Save Project and show alert
-      SaveOnline.Save(this.projectTitle, this.description, this.api, branch, version_id, (out) => {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
         AlertService.showAlert('Saved');
         // add new quert parameters
         this.router.navigate(
@@ -530,23 +528,13 @@ export class SimulatorComponent implements OnInit, OnDestroy {
               online: true,
               offline: null,
               gallery: null,
-              version: version_id,
+              version: versionId,
               branch
             },
             queryParamsHandling: 'merge'
           }
         );
       });
-    }
-    function makeid(length) {
-      var result = '';
-      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      var charactersLength = characters.length;
-      for (var i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() *
-          charactersLength));
-      }
-      return result;
     }
   }
   /** Function saves or updates the project offline */
@@ -602,9 +590,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.projectTitle = data.name;
         this.description = data.description;
         this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
-        this.currentDataDump = data.data_dump.toString();
         Workspace.Load(JSON.parse(data.data_dump));
-      })
+      });
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
         AlertService.showAlert('You are Not Authorized to view this circuit');
@@ -810,11 +797,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
 
   createNewBranch(obj) {
-    console.log(obj)
     const branch = obj.branch;
-    const version_id = obj.version;
+    const versionId = obj.version;
     // Save Project and show alert
-    SaveOnline.Save(this.projectTitle, this.description, this.api, branch, version_id, (out) => {
+    SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
       AlertService.showAlert('Created new branch');
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
         // add new quert parameters
@@ -827,21 +813,21 @@ export class SimulatorComponent implements OnInit, OnDestroy {
               online: true,
               offline: null,
               gallery: null,
-              version: version_id,
+              version: versionId,
               branch
             },
             queryParamsHandling: 'merge'
           }
         );
-      })
+      });
     }, this.projectId);
   }
 
   getRandomString(length) {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
       result += characters.charAt(Math.floor(Math.random() *
         charactersLength));
     }

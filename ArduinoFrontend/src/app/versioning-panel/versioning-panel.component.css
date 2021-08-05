@@ -25,3 +25,7 @@
     line-height: 1.5;
     letter-spacing: 0.00938em;
 }
+
+#msg_text {
+    margin: 12px;
+}

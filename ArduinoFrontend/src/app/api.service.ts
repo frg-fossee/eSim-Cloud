@@ -166,7 +166,7 @@ export class ApiService {
         Authorization: `Token ${token}`,
         'Access-Control-Allow-Origin': '*',
       })
-    })
+    });
   }
 
   deleteBranch(id, branch, token) {
@@ -176,7 +176,7 @@ export class ApiService {
         Authorization: `Token ${token}`,
         'Access-Control-Allow-Origin': '*',
       })
-    })
+    });
   }
 
   deleteVariation(id, branch, version, token) {
@@ -186,7 +186,7 @@ export class ApiService {
         Authorization: `Token ${token}`,
         'Access-Control-Allow-Origin': '*',
       })
-    })
+    });
   }
 
 }

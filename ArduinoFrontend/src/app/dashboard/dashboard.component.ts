@@ -114,15 +114,14 @@ export class DashboardComponent implements OnInit {
   }
 
   filterOnlineProjects(val) {
-    let projects = [];
-    let added = [];
+    const projects = [];
+    const added = [];
     for (const e in val) {
       if (!added.includes(val[e].save_id)) {
         added.push(val[e].save_id);
-        projects.push(val[e])
+        projects.push(val[e]);
       }
     }
-    console.log(val)
     return projects;
   }
 

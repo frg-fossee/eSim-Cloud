@@ -6,6 +6,8 @@
     <mat-icon style="cursor:pointer;" (click)="createBranch()">create_new_folder</mat-icon>
   </div>
 
+  <p id="msg_text" style="display:none;"></p>
+
   <mat-accordion>
 
     <mat-expansion-panel *ngFor="let branch of branches;let i = index" hideToggle [expanded]="step === i"
@@ -34,6 +36,6 @@
 <mat-menu #deleteMenu="matMenu" xPosition="before" yPosition="below">
   <div class="menu">
     <p><b>{{bannerMsg}}</b></p>
-    <button mat-flat-button (click)="confirmDelete()">Confirm</button>
+    <button mat-raised-button (click)="confirmDelete()">Confirm</button>
   </div>
 </mat-menu>

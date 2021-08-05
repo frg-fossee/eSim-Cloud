@@ -9,16 +9,16 @@ import { MatDialogRef } from '@angular/material';
 })
 export class CreateVariationDialogComponent implements OnInit {
 
-  var_name = new FormControl('');
+  variationName = new FormControl('');
 
-  constructor(private _dialogRef: MatDialogRef<CreateVariationDialogComponent>) { }
+  constructor(private dialogRef: MatDialogRef<CreateVariationDialogComponent>) { }
 
   ngOnInit() {
   }
 
   createVariation() {
-    console.log(this.var_name.value);
-    this._dialogRef.close(this.var_name.value);
+    console.log(this.variationName.value);
+    this.dialogRef.close(this.variationName.value);
   }
 
 }
