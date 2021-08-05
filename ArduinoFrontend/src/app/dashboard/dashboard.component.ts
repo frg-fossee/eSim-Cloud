@@ -407,7 +407,8 @@ export class DashboardComponent implements OnInit {
    * @param id Project id
    * @param offline Is Offline Circuit
    */
-  ExportCircuit(id, offline) {
+  ExportCircuit(selected, offline) {
+    let id = selected.save_id;
     if (offline) {
       if (typeof id !== 'number') {
         id = Date.now();
@@ -419,7 +420,7 @@ export class DashboardComponent implements OnInit {
         AlertService.showAlert('Please Login');
         return;
       }
-      this.api.readProject(id, 'test', 'test', token).subscribe(
+      this.api.readProject(id, selected.branch, selected.version, token).subscribe(
         data => {
           // Converting data to required format
           const obj = JSON.parse(data['data_dump']);

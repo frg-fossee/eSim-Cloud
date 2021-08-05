@@ -118,7 +118,7 @@
           <button mat-raised-button class="col-md-3" style="background-color: #26b12d;color: white;" *ngIf="!isProd">
             Publish circuit</button>
           <button mat-raised-button color="primary" class="col-md-3"
-            (click)="ExportCircuit(selected.save_id, selected.offline)">Export Circuit</button>
+            (click)="ExportCircuit(selected, selected.offline)">Export Circuit</button>
         </div>
 
         <div class="act-desc">

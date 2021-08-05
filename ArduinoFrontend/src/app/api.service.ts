@@ -55,8 +55,8 @@ export class ApiService {
    * @param id Read Project ID
    * @param token Auth Token
    */
-  readProject(id: string, version: string, branch: string, token: string) {
-    return this.http.get(`${this.url}api/save/${id}/${branch}/${version}`, {
+  readProject(id: string, branch: string, version: string, token: string) {
+    return this.http.get(`${this.url}api/save/${id}/${version}/${branch}`, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,

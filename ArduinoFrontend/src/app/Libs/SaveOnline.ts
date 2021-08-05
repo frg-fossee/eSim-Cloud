@@ -139,7 +139,7 @@ export class SaveOnline {
       // Converting data to required format
       const saveObj = ConvertJSONFormat.convertToOnlineFormat(data);
       if (toUpdate) {
-        api.readProject(id, token, 'test', 'test').subscribe(() => {
+        api.readProject(id, 'master', this.getRandomString(20), token).subscribe(() => {
           // if exists then update the project
           api.updateProject(id, saveObj, token).subscribe(out => {
             if (callback) {
@@ -202,5 +202,17 @@ export class SaveOnline {
       AlertService.showAlert(message);
     });
   }
+
+  static getRandomString(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
+  }
+
 }
 
