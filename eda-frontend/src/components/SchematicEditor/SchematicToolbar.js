@@ -187,13 +187,13 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     setHelpOpen(false)
   }
 
-  // Handel Delete component
+  // handle Delete component
   const handleDeleteComp = () => {
     DeleteComp()
     dispatch(closeCompProperties())
   }
 
-  // Handel Notification Snackbar
+  // handle Notification Snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -324,8 +324,8 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
     }
   }
 
-  // Handel Save Schematic onCloud
-  const handelSchSave = () => {
+  // handle Save Schematic onCloud
+  const handleSchSave = () => {
     if (auth.isAuthenticated !== true) {
       setMessage('You are not Logged In')
       handleSnacClick()
@@ -361,7 +361,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Save Schematics Locally
-  const handelLocalSchSave = () => {
+  const handleLocalSchSave = () => {
     const saveLocalData = {}
     saveLocalData.data_dump = Save()
     saveLocalData.title = schSave.title
@@ -382,7 +382,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
   }
 
   // Open Locally Saved Schematic
-  const handelLocalSchOpen = () => {
+  const handleLocalSchOpen = () => {
     let obj = {}
     const fileSelector = document.createElement('input')
     fileSelector.setAttribute('type', 'file')
@@ -458,7 +458,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
       // Save - Ctrl + S
       if (event.ctrlKey && event.keyCode === 83) {
         event.preventDefault()
-        handelSchSave()
+        handleSchSave()
       }
       // Print - Ctrl + P
       if (event.ctrlKey && event.keyCode === 80) {
@@ -476,7 +476,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
         if (event.shiftKey) {
           handleImgClickOpen()
         } else {
-          handelLocalSchSave()
+          handleLocalSchSave()
         }
       }
     }
@@ -514,16 +514,16 @@ export default function SchematicToolbar ({ mobileClose, gridRef }) {
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>
-      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handelLocalSchOpen} openKicad={handleKicadFileUpload}/>
+      <OpenSchDialog open={schOpen} close={handleSchDialClose} openLocal={handleLocalSchOpen} openKicad={handleKicadFileUpload}/>
       <Tooltip title="Save (Ctrl + S)">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelSchSave} >
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleSchSave} >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
       <span className={classes.pipe}>|</span>
       <Tooltip title="Export (Ctrl + E)">
-        <IconButton color="inherit" className={classes.tools} size="small" onClick={handelLocalSchSave}>
+        <IconButton color="inherit" className={classes.tools} size="small" onClick={handleLocalSchSave}>
           <SystemUpdateAltOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>

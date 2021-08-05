@@ -81,7 +81,7 @@ function getDate (jsonDate) {
 export default function SchematicCard ({ sch }) {
   const classes = useStyles()
 
-  // To handel delete schematic snackbar
+  // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
   const handleSnacClick = () => {
