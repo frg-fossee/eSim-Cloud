@@ -14,7 +14,9 @@ import {
   Card,
   Checkbox,
   Snackbar,
-  IconButton
+  IconButton,
+  Chip,
+  Input
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
@@ -52,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig () {
+export default function LTIConfig() {
   const classes = useStyles()
 
   const [ltiDetails, setLTIDetails] = React.useState({
@@ -77,7 +79,7 @@ export default function LTIConfig () {
   const [update, setUpdate] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
   const [activeSim, setActiveSim] = React.useState(null)
-  const [simParam, setSimParam] = React.useState(null)
+  const [simParam, setSimParam] = React.useState([])
 
   useEffect(() => {
     console.log(activeSim)
@@ -274,9 +276,9 @@ export default function LTIConfig () {
     setHistoryId(e.target.value)
   }
 
-  const handleSimParamChange = (e) => {
-    setSimParam(e.target.value)
-  }
+  const handleSimParamChange = (event) => {
+    setSimParam(event.target.value);
+  };
 
   const handleOnClick = () => {
     var score = ''
@@ -357,10 +359,10 @@ export default function LTIConfig () {
           </Card>} */}
           <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
             {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
-            <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} variant="outlined" />
-            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
-            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
-            <FormControl variant="outlined" style={{ marginTop: '1%' }} className={classes.formControl}>
+            <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} />
+            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} />
+            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} />
+            <FormControl style={{ marginTop: '1%' }} className={classes.formControl}>
               <InputLabel htmlFor="outlined-age-native-simple">Schematic</InputLabel>
               <Select
                 labelId="demo-simple-select-placeholder-label-label"
@@ -376,82 +378,74 @@ export default function LTIConfig () {
                 })}
               </Select>
             </FormControl>
+            <FormControl style={{ marginLeft: '2%', marginTop: '1%' }} className={classes.formControl}>
+              <InputLabel htmlFor="outlined-age-native-simple">Test Case</InputLabel>
+              {history && <Select
+                labelId="select-simulation-history"
+                id="select-sim"
+                value={historyId}
+                style={{ minWidth: '300px' }}
+                onChange={handleChangeSim}
+                label="Test Case"
+                className={classes.selectEmpty}
+                inputProps={{ readOnly: !ltiDetails.scored }}
+              >
+                <MenuItem value="None">
+                  None
+                </MenuItem>
+                {history.map(sim => {
+                  return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
+                })}
+              </Select>}
+            </FormControl>
+            <br />
+            {activeSim && <FormControl style={{ marginTop: '1%', minWidth: 200 }} className={classes.formControl}>
+              <InputLabel id="demo-mutiple-chip-label">Comparison Parameter</InputLabel>
+              {history && <Select
+                labelId="select-comparison-parameter"
+                id="demo-mutiple-chip"
+                multiple
+                value={simParam}
+                onChange={handleSimParamChange}
+                input={<Input id="select-multiple-chip" />}
+                inputProps={{ readOnly: !ltiDetails.scored }}
+                renderValue={(selected) => (
+                  <div className={classes.chips}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} className={classes.chip} />
+                    ))}
+                  </div>
+                )}
+              >
+                {activeSim.result.data.map(params => {
+                  return <MenuItem key={params[0]} value={params[0]}>{params[0]}</MenuItem>
+                })}
+              </Select>}
+            </FormControl>}
+            <FormControlLabel
+              style={{ marginLeft: '1%', marginTop: '2%' }}
+              control={
+                <Checkbox
+                  checked={ltiDetails.scored}
+                  onChange={handleCheckChange}
+                  name="scored"
+                  color="primary"
+                />
+              }
+              label="Scored?"
+            />
           </div>
         </div>
         <div>
-          <FormControl variant="outlined" style={{ marginLeft: '2%', marginTop: '2%' }} className={classes.formControl}>
-            <InputLabel htmlFor="outlined-age-native-simple">Test Case</InputLabel>
-            {history && <Select
-              labelId="select-simulation-history"
-              id="select-sim"
-              value={historyId}
-              style={{ minWidth: '300px' }}
-              onChange={handleChangeSim}
-              label="Test Case"
-              className={classes.selectEmpty}
-              inputProps={{ readOnly: !ltiDetails.scored }}
-            >
-              <MenuItem value="None">
-                None
-              </MenuItem>
-              {history.map(sim => {
-                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
-              })}
-            </Select>}
-          </FormControl>
-          {activeSim && <FormControl variant="outlined" style={{ marginLeft: '2%', marginTop: '2%' }} className={classes.formControl}>
-            <InputLabel htmlFor="outlined-age-native-simple">Comparison Parameter</InputLabel>
-            {history && <Select
-              labelId="select-comparison-parameter"
-              id="select-comp-param"
-              value={simParam}
-              style={{ minWidth: '300px' }}
-              onChange={handleSimParamChange}
-              label="Comparison Parameter"
-              className={classes.selectEmpty}
-              inputProps={{ readOnly: !ltiDetails.scored }}
-            >
-              <MenuItem value="All">
-                All
-              </MenuItem>
-              {activeSim.result.data.map(params => {
-                return <MenuItem key={params[0]} value={params[0]}>{params[0]}</MenuItem>
-              })}
-            </Select>}
-          </FormControl>}
-          <FormControlLabel
-            style={{ marginLeft: '2%', marginTop: '2%' }}
-            control={
-              <Checkbox
-                checked={ltiDetails.scored}
-                onChange={handleCheckChange}
-                name="scored"
-                color="primary"
-              />
-            }
-            label="Scored?"
-          />
-          <br />
-          <Button style={{ marginTop: '1%', marginLeft: '2%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
+          <Button style={{ marginTop: '1%', marginLeft: '2%', minWidth: 300 }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
             Return to Dashboard
           </Button>
-          <Button style={{ marginTop: '1%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
+          <Button style={{ marginTop: '1%', marginLeft: '1%', minWidth: 300 }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
             Create LTI URL
           </Button>
           {configExists &&
             <Button
-              style={{ marginLeft: '1%', marginTop: '1%' }}
-              disableElevation
-              variant="contained"
-              className={classes.delete}
-              startIcon={<DeleteIcon />}
-              onClick={() => handleDeleteLTIApp()}
-            >
-              Delete
-            </Button>}
-          {configExists &&
-            <Button
-              style={{ marginLeft: '1%', marginTop: '1%' }}
+              style={{ marginLeft: '1%', marginTop: '1%', minWidth: 300 }}
               disableElevation
               color="primary"
               variant="contained"
@@ -460,19 +454,30 @@ export default function LTIConfig () {
               Submissions
             </Button>}
           {configExists && <Button
-            style={{ marginLeft: '1%', marginTop: '1%' }}
+            style={{ marginLeft: '1%', marginTop: '1%', minWidth: 297 }}
             disableElevation
             color="primary"
             variant="contained"
             onClick={handleOnClick} >
             Update LTI App
           </Button>}
+          {configExists &&
+            <Button
+              style={{ marginLeft: '1%', marginTop: '1%', minWidth: 300 }}
+              disableElevation
+              variant="contained"
+              className={classes.delete}
+              startIcon={<DeleteIcon />}
+              onClick={() => handleDeleteLTIApp()}
+            >
+              Delete
+            </Button>}
           {configURL && <div style={{ display: 'flex', marginTop: '1%', marginLeft: '2%' }}>
-            <h3 className={classes.config} style={{ float: 'left' }}>URL for LTI Access:</h3>
+            <h3 className={classes.config} style={{ float: 'left', marginTop: '1.1%' }}>URL for LTI Access:</h3>
             <h3 className={classes.config} style={{ float: 'left' }}>
-              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '14px', width: 580, maxWidth: 580, border: 'none', backgroundColor: '#f4f6f8' }} />
+              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '18px', width: 1200, maxWidth: 1200, border: 'none' }} />
             </h3>
-            <Button style={{ float: 'right', height: '50%', marginTop: '0.5%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
+            <Button style={{ float: 'right', height: '50%', marginTop: '0.7%', marginLeft: '1%', minWidth: 200 }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
               Copy LTI URL
             </Button>
 
