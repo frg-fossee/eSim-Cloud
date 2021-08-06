@@ -466,7 +466,7 @@ export default function SimulationProperties (props) {
               dispatch(setResultText(simResultText))
             }
             setIsResult(true)
-            setLtiSimResult(true)
+            props.setLtiSimResult(true)
           }
         }
       })
