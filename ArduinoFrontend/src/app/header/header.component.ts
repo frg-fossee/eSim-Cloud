@@ -48,16 +48,6 @@ export class HeaderComponent implements OnInit {
    * On Init
    */
   ngOnInit() {
-    // In Angular  Development Mode.
-    if (environment.production === false) {
-      this.aroute.queryParams.subscribe((paramData: any) => {
-        if (paramData.token != null) {
-          localStorage.setItem('esim_token', paramData.token);
-          this.userInfo();
-        }
-      });
-    } else {
-    }
     this.userInfo();
     // Initializing window
     this.window = window;

@@ -33,9 +33,9 @@ export class ApiService {
     data.version = 'test';
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -60,9 +60,9 @@ export class ApiService {
   readProject(id: string, token: string) {
     return this.http.get(`${this.url}api/save/${id}/test/test`, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -150,9 +150,9 @@ export class ApiService {
     const state = on ? 'on' : 'off';
     return this.http.post(`${this.url}api/save/${id}/sharing/${state}`, {}, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }

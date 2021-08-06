@@ -91,19 +91,34 @@ export class DashboardComponent implements OnInit {
    * On Init Dashboard Page
    */
   ngOnInit() {
-    this.readTempItems();
-    this.readOnCloudItems();
+    // In Angular  Development Mode.
+    if (environment.production === false) {
+      this.aroute.queryParams.subscribe((paramData: any) => {
+        if (paramData.token != null) {
+          localStorage.setItem('esim_token', paramData.token);
+          // this.userInfo();
+          this.readTempItems();
+          this.readOnCloudItems();
+        }
+      });
+    } else {
+      this.readTempItems();
+      this.readOnCloudItems();
+    }
+
   }
 
   /**
    * Read the online saved circuits.
    */
-   readOnCloudItems() {
+  readOnCloudItems() {
     // Get Login token
     const token = Login.getToken();
+
     // if token is present get the list of project created by a user
     if (token) {
       this.api.listProject(token).subscribe((val: any[]) => {
+        console.log(val);
         this.online = val;
       }, err => console.log(err));
     } else {
@@ -411,10 +426,10 @@ export class DashboardComponent implements OnInit {
           // Converting data to required format
           const obj = JSON.parse(data['data_dump']);
           const project = {
-              name: data['name'],
-              description: data['description'],
-              image: data['base64_image'],
-              created_at: data['create_time'],
+            name: data['name'],
+            description: data['description'],
+            image: data['base64_image'],
+            created_at: data['create_time'],
           };
           obj['id'] = id;
           obj['project'] = project;
@@ -477,26 +492,26 @@ export class DashboardComponent implements OnInit {
         this.readOnCloudItems();
       }, SaveOnline.isUUID(fileData.id));
     },
-    () => {
-      if (!(fileData.id) || typeof fileData.id !== 'number') {
-        fileData.id = Date.now();
-        SaveOffline.Save(fileData, (_) => {
-          this.readTempItems();
-        });
-      } else {
-        SaveOffline.Read(fileData.id, (data) => {
-          if (data) {
-            SaveOffline.Update(fileData, (_) => {
-              this.readTempItems();
-            });
-          } else {
-            SaveOffline.Save(fileData, (_) => {
-              this.readTempItems();
-            });
-          }
-        });
-      }
-    },
-    () => {}, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
+      () => {
+        if (!(fileData.id) || typeof fileData.id !== 'number') {
+          fileData.id = Date.now();
+          SaveOffline.Save(fileData, (_) => {
+            this.readTempItems();
+          });
+        } else {
+          SaveOffline.Read(fileData.id, (data) => {
+            if (data) {
+              SaveOffline.Update(fileData, (_) => {
+                this.readTempItems();
+              });
+            } else {
+              SaveOffline.Save(fileData, (_) => {
+                this.readTempItems();
+              });
+            }
+          });
+        }
+      },
+      () => { }, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
   }
 }
