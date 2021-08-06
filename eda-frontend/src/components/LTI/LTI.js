@@ -411,8 +411,8 @@ export default function LTIConfig () {
               className={classes.selectEmpty}
               inputProps={{ readOnly: !ltiDetails.scored }}
             >
-              <MenuItem value="None">
-                None
+              <MenuItem value="All">
+                All
               </MenuItem>
               {activeSim.result.data.map(params => {
                 return <MenuItem key={params[0]} value={params[0]}>{params[0]}</MenuItem>
