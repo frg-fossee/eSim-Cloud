@@ -10,13 +10,7 @@
             "media": "circuit_images_esim/dd07da32-60d2-4f4a-b121-2b177ac06ad5.png",
             "shared": true,
             "save_time": "2021-07-21T14:54:10.407Z",
-            "is_arduino": false,
-            "esim_libraries": [
-                1,
-                2,
-                3,
-                4
-            ]
+            "is_arduino": false
         }
     },
     {
@@ -30,13 +24,7 @@
             "media": "circuit_images_esim/66bc19c5-9780-430e-85b3-c68435edc829.png",
             "shared": true,
             "save_time": "2021-07-21T14:54:37.432Z",
-            "is_arduino": false,
-            "esim_libraries": [
-                1,
-                2,
-                3,
-                4
-            ]
+            "is_arduino": false
         }
     },
     {
@@ -50,13 +38,7 @@
         "media": "circuit_images_esim/8479bce0-da97-4bdd-852b-15b5f471802a.png",
         "shared": true,
         "save_time": "2021-07-21T14:55:24.111Z",
-        "is_arduino": false,
-        "esim_libraries": [
-            1,
-            2,
-            3,
-            4
-        ]
+        "is_arduino": false
     }
     },
     {
@@ -70,13 +52,7 @@
         "media": "circuit_images_esim/72d77d05-d683-4d00-ae36-ba924de7eb9b.png",
         "shared": true,
         "save_time": "2021-07-21T14:55:30.354Z",
-        "is_arduino": false,
-        "esim_libraries": [
-            1,
-            2,
-            3,
-            4
-        ]
+        "is_arduino": false
     }
     },
     {
@@ -90,13 +66,7 @@
         "media": "circuit_images_esim/63c65de8-dd49-42c2-9cb7-9cec86fbd544.png",
         "shared": true,
         "save_time": "2021-07-21T14:55:37.104Z",
-        "is_arduino": false,
-        "esim_libraries": [
-            1,
-            2,
-            3,
-            4
-        ]
+        "is_arduino": false
     }
     },
     {
@@ -110,13 +80,7 @@
         "media": "circuit_images_esim/a2cd6a0f-ae51-4542-9ac7-461cea9be73e.png",
         "shared": true,
         "save_time": "2021-07-21T14:55:57.688Z",
-        "is_arduino": false,
-        "esim_libraries": [
-            1,
-            2,
-            3,
-            4
-        ]
+        "is_arduino": false
     }
     },
     {
@@ -130,13 +94,7 @@
         "media": "circuit_images_esim/b506a969-d68a-48c2-9675-4d93dd1cbc59.png",
         "shared": true,
         "save_time": "2021-07-21T14:56:26.988Z",
-        "is_arduino": false,
-        "esim_libraries": [
-            1,
-            2,
-            3,
-            4
-        ]
+        "is_arduino": false
     }
     }
 ]

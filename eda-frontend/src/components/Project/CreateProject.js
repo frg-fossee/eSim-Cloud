@@ -34,6 +34,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { changeStatus, createProject, deleteProject, getStatus } from '../../redux/actions'
 import api from '../../utils/Api'
 import ProjectTimeline from './ProjectTimeline'
+import ProjectSimulationParameters from './ProjectSimulationParameters'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -49,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: 'left',
     color: '#fff'
   },
   formControl: {
@@ -90,16 +91,58 @@ function CreateProject () {
   const [fields, setFields] = useState([{ name: 'Procedure', text: '' }, { name: 'Observation', text: '' }, { name: 'Conclusion', text: '' }])
   const [changed, setChanged] = useState(0)
   const [deleteDialogue, setDeleteDialogue] = useState(false)
+  const [dcSweepcontrolLine, setDcSweepControlLine] = useState({
+    parameter: '',
+    sweepType: 'Linear',
+    start: '',
+    stop: '',
+    step: '',
+    parameter2: '',
+    start2: '',
+    stop2: '',
+    step2: ''
+  })
+  const [transientAnalysisControlLine, setTransientAnalysisControlLine] = useState({
+    start: '',
+    stop: '',
+    step: '',
+    skipInitial: false
+  })
 
+  const [acAnalysisControlLine, setAcAnalysisControlLine] = useState({
+    input: 'dec',
+    start: '',
+    stop: '',
+    pointsBydecade: ''
+  })
+
+  const [tfAnalysisControlLine, setTfAnalysisControlLine] = useState({
+    outputNodes: false,
+    outputVoltageSource: '',
+    inputVoltageSource: ''
+  })
+  const [selectedSimulation, setSelectedSimulation] = useState('')
   useEffect(() => {
-    console.log(project.details?.project_id)
     if (open && project.details?.project_id) {
       dispatch(getStatus(project.details?.project_id))
       setStatus(project.details?.status_name)
     }
     if (project.details) {
+      console.log(project.details)
       setDetails({ title: project.details.title, description: project.details.description, active_version: project.details.active_version, active_branch: project.details.active_branch })
       setFields(project.details.fields)
+      if (project.details.dc_sweep) {
+        setDcSweepControlLine(project.details.dc_sweep)
+      }
+      if (project.details.transient_analysis) {
+        setTransientAnalysisControlLine(project.details.transient_analysis)
+      }
+      if (project.details.tf_analysis) {
+        setTfAnalysisControlLine(project.details.tf_analysis)
+      }
+      if (project.details.ac_analysis) {
+        setAcAnalysisControlLine(project.details.ac_analysis)
+      }
     }
     if (!project.details) {
       setDetails({
@@ -157,7 +200,6 @@ function CreateProject () {
           for (var j = 0; j < versionsArray.length; j++) {
             versionsTemp = versionsTemp.concat(versionsArray[j][1])
           }
-          console.log(versionsTemp)
           setVersions(versionsTemp)
         })
         .catch((err) => {
@@ -224,24 +266,27 @@ function CreateProject () {
     setOpen(!open)
   }
   const createPub = () => {
-    dispatch(createProject(save_id, [details, fields]))
+    if (details.title !== '' && details.description !== '' && activeVersion !== '') {
+      dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+    }
   }
   const clickChange = () => {
-    console.log(changed)
-    if (changed === 1) {
-      dispatch(createProject(save_id, [details, fields, '']))
-    } else if (changed === 2) {
-      if (status !== project.details.status_name) {
-        dispatch(changeStatus(project.details.project_id, status, ''))
+    if (details.title !== '' && details.description !== '' && activeVersion !== '') {
+      if (changed === 1) {
+        dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+      } else if (changed === 2) {
+        if (status !== project.details.status_name) {
+          dispatch(changeStatus(project.details.project_id, status, ''))
+        }
+      } else if (changed === 3) {
+        if (status !== project.details.status_name) {
+          dispatch(createProject(save_id, [details, fields, status, dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+        } else {
+          dispatch(createProject(save_id, [details, fields, '', dcSweepcontrolLine, transientAnalysisControlLine, acAnalysisControlLine, tfAnalysisControlLine]))
+        }
       }
-    } else if (changed === 3) {
-      if (status !== project.details.status_name) {
-        dispatch(createProject(save_id, [details, fields, status]))
-      } else {
-        dispatch(createProject(save_id, [details, fields, '']))
-      }
+      setChanged(0)
     }
-    setChanged(0)
   }
   const clickPreview = () => {
     const win = window.open()
@@ -340,26 +385,32 @@ function CreateProject () {
             alignItems="flex-start"
           >
             <Grid item xs={12} sm={12}>
+
               {project.details && <Paper style={{ padding: '.2% 0%', marginBottom: '1%' }}>
                 <h3 style={{ textAlign: 'center' }}>Status of the project: {project.details.status_name}  </h3>
                 <h3 style={{ textAlign: 'center' }}>Active Version: {activeName} of variation {project.details.active_branch} saved on {activeSaveDate} at {activeSaveTime} hours</h3>
                 {project.details.history && project.details.history.slice(0).reverse()[0]?.reviewer_notes && <h4 style={{ textAlign: 'center' }}>Reviewer Notes: {project.details.history.slice(0).reverse()[0]?.reviewer_notes}</h4>}
               </Paper>}
               <Paper className={classes.paper}>
+                <h2 style={{ color: 'black' }}>Project Details</h2>
                 {versions != null &&
-                ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}> <FormControl style={{ width: '100%' }}className={classes.formControl}>
-                  <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={activeVersion}
-                    onChange={handleActiveVersion}
-                  >
-                    {versions.map(version => {
-                      return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
-                    })}
-                  </Select>
-                </FormControl> </Grid> }
+                  ((project.details && project.details.can_edit) || !project.details) && <Grid item xs={12} sm={12}>
+                  <FormControl
+                    style={{ width: '100%' }}
+                    className={classes.formControl}
+                    error={!activeVersion}>
+                    <InputLabel id="demo-simple-select-label">Select the version you want to use for your project.</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={activeVersion}
+                      onChange={handleActiveVersion}
+                    >
+                      {versions.map(version => {
+                        return <MenuItem key={version.version} value={`${version.version}-${version.branch}`}>Version {version.name} from variation {version.branch} saved on {version.date} at {version.time}</MenuItem>
+                      })}
+                    </Select>
+                  </FormControl> </Grid>}
                 <TextField
                   color='primary'
                   autoFocus
@@ -371,6 +422,7 @@ function CreateProject () {
                   fullWidth
                   disabled={project.details && !project.details.can_edit}
                   value={details.title}
+                  error={!details.title}
                   onChange={changeFieldText}
 
                 />
@@ -385,6 +437,7 @@ function CreateProject () {
                   type="text"
                   disabled={project.details && !project.details.can_edit}
                   value={details.description}
+                  error={!details.description}
                   onChange={changeFieldText}
                   fullWidth
                 />
@@ -440,6 +493,34 @@ function CreateProject () {
 
                 <br />
                 {((project.states && project.details) || !project.details) && <Button onClick={addField}>+ Add Field</Button>}
+                <h2 style={{ color: 'black' }}>Simulation Parameters</h2>
+                <div>
+                  <FormControl className={classes.formControl} style={{ width: '100%' }}>
+                    <InputLabel id="demo-simple-select-label">Select simulation mode parameters to enter:</InputLabel>
+                    <Select
+                      style={{ width: '50%' }}
+                      onChange={(e) => setSelectedSimulation(e.target.value)}
+                      value={selectedSimulation}>
+                      <MenuItem value="DC Sweep">DC Sweep</MenuItem>
+                      <MenuItem value="Transient Analysis">Transient Analysis</MenuItem>
+                      <MenuItem value="Transfer Function Analysis">Transfer Function Analysis</MenuItem>
+                      <MenuItem value="AC Analysis">AC Analysis</MenuItem>
+                    </Select>
+                  </FormControl>
+                </div>
+                <ProjectSimulationParameters
+                  dcSweepcontrolLine={dcSweepcontrolLine}
+                  setDcSweepControlLine={setDcSweepControlLine}
+                  transientAnalysisControlLine={transientAnalysisControlLine}
+                  setTransientAnalysisControlLine={setTransientAnalysisControlLine}
+                  acAnalysisControlLine={acAnalysisControlLine}
+                  setAcAnalysisControlLine={setAcAnalysisControlLine}
+                  tfAnalysisControlLine={tfAnalysisControlLine}
+                  setTfAnalysisControlLine={setTfAnalysisControlLine}
+                  changed={changed}
+                  setChanged={setChanged}
+                  selectedSimulation={selectedSimulation}
+                />
                 {project.details && <>{
                   project.states &&
                   <div style={{ textAlign: 'left' }}>
