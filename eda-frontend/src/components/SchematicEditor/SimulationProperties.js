@@ -28,7 +28,6 @@ import { GenerateNetList, GenerateNodeList, GenerateCompList, ErcCheckNets } fro
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
 import Notice from '../Shared/Notice'
-import PropTypes from 'prop-types'
 import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
