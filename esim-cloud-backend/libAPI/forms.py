@@ -13,6 +13,7 @@ class LibrarySetForm(forms.ModelForm):
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['user'].widget.attrs['disabled'] = True
+            self.fields['user'].required = False
             self.fields['name'].widget.attrs['readonly'] = True
 
     class Meta:

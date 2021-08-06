@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SimulationScreen ({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
-  const stitle = useSelector((state) => state.netlistReducer.title)
+  const stitle = useSelector((state) => state.saveSchematicReducer.title)
   const netlist = useSelector((state) => state.netlistReducer.netlist)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
@@ -513,7 +513,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                   {result.title}
                 </Typography>
                 <Typography variant="h5" align="center" component="p" gutterBottom>
-                  Simulation Result for {stitle} *
+                  Simulation Result for {stitle}
                 </Typography>
               </Paper>
             </Grid>

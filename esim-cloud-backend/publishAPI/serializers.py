@@ -1,6 +1,7 @@
+from django.db import models
 from django.db.models import fields
 from rest_framework import serializers
-from .models import CircuitTag, Project, Report, TransitionHistory, Field
+from .models import *
 from django.core.files.base import ContentFile
 import base64
 import six
@@ -8,6 +9,36 @@ import uuid
 import imghdr
 from saveAPI.serializers import StateSaveSerializer
 from workflowAPI.models import Transition
+
+
+class DCSweepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DCSweepParameters
+        fields = '__all__'
+
+    def create(self, validated_data):
+        return DCSweepParameters.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
+
+
+class TransientAnalysisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransientAnalysisParameters
+        fields = '__all__'
+
+
+class ACAnalysisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ACAnalysisParameters
+        fields = '__all__'
+
+
+class TFAnalysisSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TFAnalysisParameters
+        fields = '__all__'
 
 
 class Base64ImageField(serializers.ImageField):
@@ -72,6 +103,10 @@ class ProjectSerializer(serializers.ModelSerializer):
     fields = FieldSerializer(many=True)
     save_id = serializers.SerializerMethodField()
     active_save = serializers.SerializerMethodField()
+    dc_sweep = DCSweepSerializer()
+    transient_analysis = TransientAnalysisSerializer()
+    tf_analysis = TFAnalysisSerializer()
+    ac_analysis = ACAnalysisSerializer()
 
     class Meta:
         model = Project
@@ -85,7 +120,11 @@ class ProjectSerializer(serializers.ModelSerializer):
                   'active_branch',
                   'active_version',
                   'save_id',
-                  'active_save'
+                  'active_save',
+                  'dc_sweep',
+                  'transient_analysis',
+                  'tf_analysis',
+                  'ac_analysis',
                   )
 
     def get_save_id(self, obj):
