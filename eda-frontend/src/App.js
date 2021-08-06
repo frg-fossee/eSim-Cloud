@@ -17,6 +17,8 @@ import SignUp from './pages/signUp'
 import ResetPassword from './pages/ResetPassword/Initiation'
 import ResetPasswordConfirm from './pages/ResetPassword/Confirmation'
 import ChangePassword from './pages/Account/ChangePassword'
+import Submissions from './pages/SubmissionPage'
+import LTISetup from './pages/LTISetup'
 import { useSelector, useDispatch } from 'react-redux'
 import { loadUser } from './redux/actions/index'
 import ProjectPage from './pages/ProjectPage'
@@ -86,6 +88,8 @@ function App () {
         <PublicRoute exact path="/gallery" restricted={false} nav={true} component={Gallery} />
         <PublicRoute exact path="/projects" restricted={false} nav={true} component={PublicProjects} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/submission" component={Submissions} />
+        <PrivateRoute path="/lti" component = {LTISetup} />
         <PrivateRoute path="/account/change_password" component={ChangePassword} />
         <PublicRoute restricted={false} nav={true} component={NotFound} />
       </Switch>

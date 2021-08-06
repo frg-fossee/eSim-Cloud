@@ -24,7 +24,8 @@ export default function VersionComponent ({
   setVersions,
   setBranchOpen,
   projectBranch,
-  projectVersion
+  projectVersion,
+  ltiId
 }) {
   const classes = useStyles()
 
@@ -44,7 +45,11 @@ export default function VersionComponent ({
 
   const handleClick = (e) => {
     e.preventDefault()
-    window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=' + branch
+    if (!ltiId) {
+      window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=' + branch
+    } else {
+      window.location = '#/editor?id=' + save_id + '&version=' + version + '&lti_id=' + ltiId + '&branch=' + branch
+    }
     window.location.reload()
   }
 
@@ -156,5 +161,6 @@ VersionComponent.propTypes = {
   setVersions: PropTypes.func,
   setBranchOpen: PropTypes.func,
   projectBranch: PropTypes.string,
-  projectVersion: PropTypes.string
+  projectVersion: PropTypes.string,
+  ltiId: PropTypes.string
 }

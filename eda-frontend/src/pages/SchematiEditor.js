@@ -34,6 +34,7 @@ export default function SchematiEditor (props) {
   const outlineRef = React.createRef()
   const dispatch = useDispatch()
   const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [ltiSimResult, setLtiSimResult] = React.useState(false)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -74,10 +75,13 @@ export default function SchematiEditor (props) {
         resToolbar={
           <SchematicToolbar
             gridRef={gridRef}
+            ltiSimResult={ltiSimResult}
+            setLtiSimResult={setLtiSimResult}
             mobileClose={handleDrawerToggle}
           />
         }
-        sidebar={<ComponentSidebar compRef={compRef} />}
+        sidebar={<ComponentSidebar compRef={compRef} ltiSimResult={ltiSimResult}
+          setLtiSimResult={setLtiSimResult}/>}
       />
 
       {/* Grid for drawing and designing circuits */}
