@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig() {
+export default function LTIConfig () {
   const classes = useStyles()
 
   const [ltiDetails, setLTIDetails] = React.useState({
@@ -277,8 +277,8 @@ export default function LTIConfig() {
   }
 
   const handleSimParamChange = (event) => {
-    setSimParam(event.target.value);
-  };
+    setSimParam(event.target.value)
+  }
 
   const handleOnClick = () => {
     var score = ''
