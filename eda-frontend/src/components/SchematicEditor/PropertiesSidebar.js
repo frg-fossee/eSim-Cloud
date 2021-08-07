@@ -272,7 +272,7 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
     setDialogOpen(false)
     exportImage('PNG').then((res) => {
       console.log(schSave.project_id)
-      dispatch(saveSchematic(schSave.title, schSave.description, schSave.xmlData, res, true, branchName, setVersions, versions, branchOpen, setBranchOpen))
+      dispatch(saveSchematic(schSave.title, schSave.description, schSave.xmlData, res, true, branchName, setVersions, false, versions, branchOpen, setBranchOpen))
     })
     setBranchName('')
   }
@@ -464,7 +464,8 @@ export default function PropertiesSidebar ({ gridRef, outlineRef }) {
                           setVersions={setVersions}
                           setBranchOpen={setBranchOpen}
                           projectBranch={projectBranch}
-                          projectVersion={projectVersion} />
+                          projectVersion={projectVersion}
+                          ltiId={version.lti_id} />
                       )
                     }
                   </Collapse>

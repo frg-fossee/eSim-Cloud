@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 import {
   List,
   Checkbox,
@@ -16,6 +17,7 @@ import {
   Snackbar,
   IconButton
 } from '@material-ui/core'
+import queryString from 'query-string'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MuiAlert from '@material-ui/lab/Alert'
@@ -25,9 +27,7 @@ import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setRes
 import { GenerateNetList, GenerateNodeList, GenerateCompList, ErcCheckNets } from './Helper/ToolbarTools'
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
-import queryString from 'query-string'
 import Notice from '../Shared/Notice'
-import PropTypes from 'prop-types'
 import api from '../../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -364,6 +364,9 @@ export default function SimulationProperties (props) {
       formData.append('version', url.version)
       formData.append('branch', url.branch)
     }
+    if (url.lti_nonce) {
+      formData.append('lti_id', url.lti_id)
+    }
     const config = {
       headers: {
         'content-type': 'multipart/form-data'
@@ -462,6 +465,7 @@ export default function SimulationProperties (props) {
               dispatch(setResultText(simResultText))
             }
             setIsResult(true)
+            props.setLtiSimResult(true)
           }
         }
       })
@@ -1332,6 +1336,8 @@ export default function SimulationProperties (props) {
 }
 
 SimulationProperties.propTypes = {
+  ltiSimResult: PropTypes.object,
+  setLtiSimResult: PropTypes.object,
   dcSweepcontrolLine: PropTypes.object,
   transientAnalysisControlLine: PropTypes.object,
   acAnalysisControlLine: PropTypes.object,
