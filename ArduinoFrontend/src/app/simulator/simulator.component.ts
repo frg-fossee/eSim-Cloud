@@ -470,7 +470,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         SaveOnline.Save(this.projectTitle, this.description, this.api, branch, newVersionId, (out) => {
           AlertService.showAlert('Updated');
           if (out['duplicate']) {
-
+            // TODO: if duplicate, refresh the route with same versionId and same branch
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
               // add new quert parameters
               this.router.navigate(
@@ -492,6 +492,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
             return;
           }
+          // If project is not duplicate refresh route with newVersion Id and same branch
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             // add new quert parameters
             this.router.navigate(
@@ -513,6 +514,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         }, this.projectId);
       });
     } else {
+      // TODO: Save a new project within master branch
       const branch = 'master';
       const versionId = this.getRandomString(20);
       // Save Project and show alert
@@ -584,8 +586,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       return;
     }
     this.aroute.queryParams.subscribe(params => {
+      // read branch from queryParams
       const branch = params.branch;
+      // read version from queryParams
       const version = params.version;
+      // read project from DB
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
         this.projectTitle = data.name;
         this.description = data.description;
@@ -795,7 +800,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   redoChange() {
     UndoUtils.workspaceRedo();
   }
-
+  /**
+   * Create a new branch for project
+   * @param obj Object containing branch and version
+   */
   createNewBranch(obj) {
     const branch = obj.branch;
     const versionId = obj.version;
@@ -823,6 +831,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }, this.projectId);
   }
 
+  /**
+   * Generate and return a random string
+   * @param length Length of random string
+   * @returns random string
+   */
   getRandomString(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

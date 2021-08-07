@@ -6,6 +6,7 @@
     <mat-icon style="cursor:pointer;" (click)="createBranch()">create_new_folder</mat-icon>
   </div>
 
+  <!-- message text to show -->
   <p id="msg_text" style="display:none;"></p>
 
   <mat-accordion>
@@ -16,6 +17,7 @@
         <mat-panel-title>
           Variation {{branches.length-i}}: {{branch.name}}
         </mat-panel-title>
+        <!-- delete branch button -->
         <mat-icon [matMenuTriggerFor]="deleteMenu" #deleteMenuTrigger="matMenuTrigger" (click)="delete('branch',branch)"
           *ngIf="branchName != branch.name">delete</mat-icon>
       </mat-expansion-panel-header>
@@ -23,6 +25,7 @@
         [ngClass]="{'var-selected':(version.version==versionId && branchName == version.branch)}" class="version-list">
         <p>{{version.name}} <br> {{version.formated_save_time}}</p>
         <span style="flex: 1;"></span>
+        <!-- delete variation button -->
         <mat-icon *ngIf="version.version!=versionId || branchName != version.branch" [matMenuTriggerFor]="deleteMenu"
           #deleteMenuTrigger="matMenuTrigger" (click)="delete('version',version)" id="{{version.version}}">
           delete_outline</mat-icon>
@@ -33,6 +36,7 @@
 
 </div>
 
+<!-- Delete Confirmation Menu -->
 <mat-menu #deleteMenu="matMenu" xPosition="before" yPosition="below">
   <div class="menu">
     <p><b>{{bannerMsg}}</b></p>

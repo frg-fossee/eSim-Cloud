@@ -51,7 +51,12 @@ export class ConvertJSONFormat {
     return obj;
   }
 
-  static getRandomString(length) {
+  /**
+   * Generate and return a random string
+   * @param length Length of random string
+   * @returns random string
+   */
+  static getRandomString(length): string {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;

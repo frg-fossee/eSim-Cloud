@@ -59,7 +59,6 @@ export class DashboardComponent implements OnInit {
    * @param offline Is Offline circuit boolean
    */
   openProject(id, offline = false) {
-    console.log(this.online);
     // Select the clicked item
     if (offline) {
       this.selected = this.items[id];
@@ -113,6 +112,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  /**
+   * Filter projects: Pick only 1 variation of a project
+   * @param val All projects in cloud
+   * @returns filtered list of projects
+   */
   filterOnlineProjects(val) {
     const projects = [];
     const added = [];
@@ -404,7 +408,7 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Export the circuit in json format
-   * @param id Project id
+   * @param selected selected Project
    * @param offline Is Offline Circuit
    */
   ExportCircuit(selected, offline) {

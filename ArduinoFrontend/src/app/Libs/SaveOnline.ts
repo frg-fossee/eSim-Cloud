@@ -29,6 +29,8 @@ export class SaveOnline {
    * @param name Project Name
    * @param description Project Description
    * @param api API Service
+   * @param branch Branch of variation
+   * @param version Version of variation
    * @param callback Callback when save/update is done
    * @param id Project ID
    */
@@ -82,11 +84,6 @@ export class SaveOnline {
 
         // if update then update the project
         if (toUpdate) {
-          // console.log(saveObj.data_dump.toString());
-          // console.log(datadump);
-          // if(saveObj.data_dump.toString() == datadump){
-
-          // }
           api.updateProject(id, saveObj, token).subscribe(out => {
             if (callback) {
               callback(out);
@@ -203,6 +200,11 @@ export class SaveOnline {
     });
   }
 
+  /**
+   * Generate and return a random string
+   * @param length Length of random string
+   * @returns random string
+   */
   static getRandomString(length) {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

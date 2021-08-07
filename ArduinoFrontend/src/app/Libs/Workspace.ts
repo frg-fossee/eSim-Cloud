@@ -708,7 +708,7 @@ export class Workspace {
     const interval = setInterval(() => {
       if (window.queue === 0) {
         clearInterval(interval);
-        // start drawing wires
+        // start drawing wires with Id retain
         Workspace.LoadWires(data.wires, true);
         // Hide loading animation
         window.hideLoading();
