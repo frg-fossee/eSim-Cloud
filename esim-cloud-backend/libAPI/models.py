@@ -40,7 +40,7 @@ class Library(models.Model):
 
     def __str__(self):
         return self.library_name
-    
+
     def delete(self, *args, **kwargs):
         try:
             shutil.rmtree(
@@ -91,7 +91,7 @@ class LibraryComponent(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def delete(self, *args, **kwargs):
         try:
             os.remove(self.thumbnail_path)
@@ -99,7 +99,6 @@ class LibraryComponent(models.Model):
         except Exception:
             pass
         super(LibraryComponent, self).delete(*args, **kwargs)
-
 
 
 @receiver(post_delete, sender=LibraryComponent)
@@ -134,14 +133,13 @@ class ComponentAlternate(models.Model):
 
     def __str__(self):
         return self.full_name
-    
+
     def delete(self, *args, **kwargs):
         try:
             os.remove(self.svg_path)
         except Exception:
             pass
         super(ComponentAlternate, self).delete(*args, **kwargs)
-
 
 
 @receiver(post_delete, sender=ComponentAlternate)
