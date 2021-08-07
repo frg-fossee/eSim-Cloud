@@ -12,6 +12,7 @@ import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
+import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import queryString from 'query-string'
 import api from '../../utils/Api'
 
@@ -36,10 +37,10 @@ const sortOrder = {
   Descending: 2
 }
 
-export default function SubmissionTable () {
+export default function SubmissionTable() {
   const classes = useStyles()
-  const [responseData, setResponseData] = React.useState(null)
-  const [sortData, setSortData] = React.useState(null)
+  const [responseData, setResponseData] = React.useState([])
+  const [sortData, setSortData] = React.useState([])
   const [sortOrderUser, setSortOrderUser] = React.useState(sortOrder.Unsorted)
   const [sortOrderTime, setSortOrderTime] = React.useState(sortOrder.Unsorted)
 
@@ -117,38 +118,43 @@ export default function SubmissionTable () {
   }
 
   return (
-    <TableContainer>
-      {sortData ? <Table className={classes.table} aria-label="submission table">
-        <TableHead>
-          <TableRow>
-            <TableCell onClick={handleUserSort}>User {sortOrderUser === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderUser === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
-            <TableCell align="center">User ID in LMS</TableCell>
-            <TableCell onClick={handleTimeSort} align="center">Submitted at {sortOrderTime === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderTime === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
-            <TableCell align="center">Submitted From</TableCell>
-            <TableCell align="center">Score</TableCell>
-            <TableCell align="center">Submissions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortData.map((student) => {
-            return <TableRow key={student.schematic.save_id}>
-              <TableCell component="th" scope="row">
-                {student.student.username}
-              </TableCell>
-              <TableCell align="center">{student.ltisession.user_id}</TableCell>
-              <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
-              <TableCell align="center">{student.ltisession.lis_outcome_service_url}</TableCell>
-              <TableCell align="center">{student.score}</TableCell>
-              <TableCell align="center">
-                <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}`}>
-                  Open Submission
-                </Button>
-              </TableCell>
+    <>
+      <TableContainer>
+        {sortData.length !== 0 ? <Table className={classes.table} aria-label="submission table">
+          <TableHead>
+            <TableRow>
+              <TableCell onClick={handleUserSort}>User {sortOrderUser === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderUser === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
+              <TableCell align="center">User ID in LMS</TableCell>
+              <TableCell onClick={handleTimeSort} align="center">Submitted at {sortOrderTime === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderTime === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
+              <TableCell align="center">Submitted From</TableCell>
+              <TableCell align="center">Score</TableCell>
+              <TableCell align="center">Submissions</TableCell>
             </TableRow>
-          }
-          )}
-        </TableBody>
-      </Table> : <Typography style={{ textAlign: 'center' }}><h1>No submissions for this assignment</h1></Typography>}
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {sortData.map((student) => {
+              return <TableRow key={student.schematic.save_id}>
+                <TableCell component="th" scope="row">
+                  {student.student.username}
+                </TableCell>
+                <TableCell align="center">{student.ltisession.user_id}</TableCell>
+                <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
+                <TableCell align="center">{student.ltisession.lis_outcome_service_url}</TableCell>
+                <TableCell align="center">{student.score}</TableCell>
+                <TableCell align="center">
+                  <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}&version=${student.schematic.version}&branch=${student.schematic.branch}`}>
+                    Open Submission
+                  </Button>
+                </TableCell>
+              </TableRow>
+            }
+            )}
+          </TableBody>
+        </Table> : <Typography style={{ textAlign: 'center' }}><h1>No submissions for this assignment</h1></Typography>}
+      </TableContainer>
+      <Button style={{ marginTop: '2%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
+        Return to Dashboard
+      </Button>
+    </>
   )
 }
