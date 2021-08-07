@@ -1,5 +1,6 @@
 from django.db import models
 from saveAPI.models import StateSave
+from django.contrib.postgres.fields import ArrayField
 from django.contrib.auth import get_user_model
 from simulationAPI.models import simulation
 import uuid
@@ -20,6 +21,8 @@ class lticonsumer(models.Model):
                                           related_name="initial_schematic")
     test_case = models.ForeignKey(
         to=simulation, on_delete=models.CASCADE, null=True, blank=True)
+    sim_params = ArrayField(
+        models.CharField(max_length=20), blank=True, null=True)
     scored = models.BooleanField(null=False)
 
     def __str__(self):

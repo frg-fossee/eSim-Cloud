@@ -50,7 +50,8 @@ class LTIExist(APIView):
             "model_schematic": model_sch_serialized.data,
             "test_case": consumer.test_case.id if consumer.test_case else None,
             "scored": consumer.scored,
-            "id": consumer.id
+            "id": consumer.id,
+            "sim_params": consumer.sim_params
         }
         return Response(response_data,
                         status=status.HTTP_200_OK)
@@ -103,7 +104,8 @@ class LTIBuildApp(APIView):
                     "model_schematic": str(serialized.data["model_schematic"]),
                     "test_case": serialized.data['test_case'],
                     "scored": serialized.data['scored'],
-                    "id": serialized.data['id']
+                    "id": serialized.data['id'],
+                    "sim_params": serialized.data['sim_params']
                 }
                 print("Recieved POST for LTI APP:", response_data)
                 response_serializer = consumerResponseSerializer(
@@ -125,8 +127,7 @@ class LTIBuildApp(APIView):
 
 class LTIUpdateAPP(APIView):
 
-    @swagger_auto_schema(request_body=consumerSerializer,
-                         responses={201: consumerResponseSerializer})
+    @swagger_auto_schema(request_body=consumerSerializer)
     def post(self, request):
         serialized = consumerSerializer(data=request.data)
         try:
@@ -139,6 +140,9 @@ class LTIUpdateAPP(APIView):
                     id=serialized.data.get('test_case'))
             except simulation.DoesNotExist:
                 sim = None
+            host = request.get_host()
+            url = "http://" + host + "/api/lti/auth/" + \
+                str(consumer.model_schematic.save_id) + "/"
             consumer.consumer_key = serialized.data.get('consumer_key')
             consumer.secret_key = serialized.data.get('secret_key')
             consumer.score = serialized.data.get('score')
@@ -148,8 +152,22 @@ class LTIUpdateAPP(APIView):
                 id=serialized.data.get('initial_schematic'))
             consumer.test_case = sim
             consumer.scored = serialized.data.get('scored')
+            consumer.sim_params = serialized.data.get('sim_params')
             consumer.save()
-            return Response(serialized.data, status=status.HTTP_200_OK)
+            response_data = {
+                "consumer_key": serialized.data.get('consumer_key'),
+                "secret_key": serialized.data.get('secret_key'),
+                "config_url": url,
+                "score": serialized.data.get('score'),
+                "initial_schematic": str(serialized.data[
+                    "initial_schematic"]),
+                "model_schematic": str(serialized.data["model_schematic"]),
+                "test_case": serialized.data['test_case'],
+                "scored": serialized.data['scored'],
+                "id": consumer.id,
+                "sim_params": serialized.data['sim_params']
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
         else:
             return Response(serialized.errors,
                             status=status.HTTP_400_BAD_REQUEST)

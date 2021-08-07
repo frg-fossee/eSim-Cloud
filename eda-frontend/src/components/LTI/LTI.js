@@ -82,10 +82,6 @@ export default function LTIConfig() {
   const [simParam, setSimParam] = React.useState([])
 
   useEffect(() => {
-    console.log(activeSim)
-  }, [activeSim])
-
-  useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
     const token = localStorage.getItem('esim_token')
     const config = {
@@ -107,6 +103,15 @@ export default function LTIConfig() {
     })
     // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if (historyId !== 'None' && history !== []) {
+      var temp = history.find(ele => ele.id === historyId)
+      console.log("CHANGING ACTIVE SIM")
+      setActiveSim(temp)
+    }
+    // eslint-disable-next-line
+  }, [history, historyId])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -131,9 +136,10 @@ export default function LTIConfig() {
           initialSchematic: res.data.model_schematic,
           testCase: res.data.test_case,
           scored: res.data.scored,
-          id: res.data.id
+          id: res.data.id,
         })
       setSchematic(`${res.data.model_schematic.version}-${res.data.model_schematic.branch}`)
+      setSimParam(res.data.sim_params)
       if (res.data.test_case === null) {
         setHistoryId('None')
       } else {
@@ -189,7 +195,8 @@ export default function LTIConfig() {
       score: score,
       initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
-      scored: ltiDetails.scored
+      scored: ltiDetails.scored,
+      sim_params: simParam
     }
     console.log(body)
     api.post('lti/build/', body)
@@ -230,6 +237,7 @@ export default function LTIConfig() {
           id: ''
         })
         setHistoryId('')
+        setSimParam([])
       })
       .catch(error => console.log(error))
   }
@@ -266,14 +274,9 @@ export default function LTIConfig() {
   }
 
   const handleChangeSim = (e) => {
-    if (e.target.value === 'None') {
-      setLTIDetails({ ...ltiDetails, testCase: null })
-    } else {
-      setLTIDetails({ ...ltiDetails, testCase: e.target.value })
-      var temp = history.find(ele => ele.id === e.target.value)
-      setActiveSim(temp)
-    }
+    setLTIDetails({ ...ltiDetails, testCase: e.target.value })
     setHistoryId(e.target.value)
+    setSimParam([])
   }
 
   const handleSimParamChange = (event) => {
@@ -295,7 +298,8 @@ export default function LTIConfig() {
       initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
       scored: ltiDetails.scored,
-      id: ltiDetails.id
+      id: ltiDetails.id,
+      sim_params: simParam
     }
     console.log(body)
     api.post('lti/update/', body)
@@ -390,7 +394,7 @@ export default function LTIConfig() {
                 className={classes.selectEmpty}
                 inputProps={{ readOnly: !ltiDetails.scored }}
               >
-                <MenuItem value="None">
+                <MenuItem value={null}>
                   None
                 </MenuItem>
                 {history.map(sim => {
