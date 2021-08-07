@@ -462,11 +462,63 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
     // if projet id is uuid (online circuit)
     if (SaveOnline.isUUID(this.projectId)) {
-      // Update Project to DB
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => AlertService.showAlert('Updated'), this.projectId);
+      this.aroute.queryParams.subscribe(params => {
+        const branch = params.branch;
+        const versionId = params.version;
+        const newVersionId = this.getRandomString(20);
+        // Update Project to DB
+        SaveOnline.Save(this.projectTitle, this.description, this.api, branch, newVersionId, (out) => {
+          AlertService.showAlert('Updated');
+          if (out['duplicate']) {
+            // TODO: if duplicate, refresh the route with same versionId and same branch
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              // add new quert parameters
+              this.router.navigate(
+                ['/simulator'],
+                {
+                  relativeTo: this.aroute,
+                  queryParams: {
+                    id: out.save_id,
+                    online: true,
+                    offline: null,
+                    gallery: null,
+                    version: versionId,
+                    branch
+                  },
+                  queryParamsHandling: 'merge'
+                }
+              );
+            });
+
+            return;
+          }
+          // If project is not duplicate refresh route with newVersion Id and same branch
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            // add new quert parameters
+            this.router.navigate(
+              ['/simulator'],
+              {
+                relativeTo: this.aroute,
+                queryParams: {
+                  id: out.save_id,
+                  online: true,
+                  offline: null,
+                  gallery: null,
+                  version: newVersionId,
+                  branch
+                },
+                queryParamsHandling: 'merge'
+              }
+            );
+          });
+        }, this.projectId);
+      });
     } else {
+      // TODO: Save a new project within master branch
+      const branch = 'master';
+      const versionId = this.getRandomString(20);
       // Save Project and show alert
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
         AlertService.showAlert('Saved');
         // add new quert parameters
         this.router.navigate(
@@ -477,7 +529,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
               id: out.save_id,
               online: true,
               offline: null,
-              gallery: null
+              gallery: null,
+              version: versionId,
+              branch
             },
             queryParamsHandling: 'merge'
           }
@@ -531,12 +585,18 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       AlertService.showAlert('Please Login');
       return;
     }
-
-    this.api.readProject(id, token).subscribe((data: any) => {
-      this.projectTitle = data.name;
-      this.description = data.description;
-      this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
-      Workspace.Load(JSON.parse(data.data_dump));
+    this.aroute.queryParams.subscribe(params => {
+      // read branch from queryParams
+      const branch = params.branch;
+      // read version from queryParams
+      const version = params.version;
+      // read project from DB
+      this.api.readProject(id, branch, version, token).subscribe((data: any) => {
+        this.projectTitle = data.name;
+        this.description = data.description;
+        this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+        Workspace.Load(JSON.parse(data.data_dump));
+      });
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
         AlertService.showAlert('You are Not Authorized to view this circuit');
@@ -740,4 +800,51 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   redoChange() {
     UndoUtils.workspaceRedo();
   }
+  /**
+   * Create a new branch for project
+   * @param obj Object containing branch and version
+   */
+  createNewBranch(obj) {
+    const branch = obj.branch;
+    const versionId = obj.version;
+    // Save Project and show alert
+    SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
+      AlertService.showAlert('Created new branch');
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        // add new quert parameters
+        this.router.navigate(
+          ['/simulator'],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: out.save_id,
+              online: true,
+              offline: null,
+              gallery: null,
+              version: versionId,
+              branch
+            },
+            queryParamsHandling: 'merge'
+          }
+        );
+      });
+    }, this.projectId);
+  }
+
+  /**
+   * Generate and return a random string
+   * @param length Length of random string
+   * @returns random string
+   */
+  getRandomString(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
+  }
+
 }

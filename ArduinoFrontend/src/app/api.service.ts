@@ -29,8 +29,6 @@ export class ApiService {
     if (data.description === '') {
       data.description = null;
     }
-    data.branch = 'test';
-    data.version = 'test';
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -55,10 +53,12 @@ export class ApiService {
   /**
    * Read Project using id
    * @param id Read Project ID
+   * @param branch Branch of Variation
+   * @param version Version of Variation
    * @param token Auth Token
    */
-  readProject(id: string, token: string) {
-    return this.http.get(`${this.url}api/save/${id}/test/test`, {
+  readProject(id: string, branch: string, version: string, token: string) {
+    return this.http.get(`${this.url}api/save/${id}/${version}/${branch}`, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
@@ -89,8 +89,6 @@ export class ApiService {
    */
   updateProject(id: string, data: any, token: string) {
     data.save_id = id;
-    data.branch = 'test';
-    data.version = 'test';
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -162,4 +160,53 @@ export class ApiService {
   fetchSamples(): Observable<any> {
     return this.http.get('./assets/samples/Samples.json');
   }
+
+  /**
+   * List all the variations with save id
+   * @param id Project id
+   * @param token Auth Token
+   */
+  listAllVersions(id, token): Observable<any> {
+    return this.http.get(`${this.url}api/save/versions/${id}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
+  /**
+   * Delete specific branch
+   * @param id Project Id
+   * @param branch Branch of variation
+   * @param token Auth Token
+   */
+  deleteBranch(id, branch, token) {
+    return this.http.delete(`${this.url}api/save/versions/${id}/${branch}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
+  /**
+   * Delete specifit variation
+   * @param id Project Id
+   * @param branch Branch of variation
+   * @param version Version of variation
+   * @param token Auth Token
+   */
+  deleteVariation(id, branch, version, token) {
+    return this.http.delete(`${this.url}api/save/versions/${version}/${id}/${branch}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
 }
