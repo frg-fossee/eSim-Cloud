@@ -607,7 +607,7 @@ class Stack {
       // console.log('printing working')
       // console.log(this.data)
       while(top >= 0) { // print upto 0th index
-          console.log(this.data[top]);
+          // console.log(this.data[top]);
            top--;
       }
     }
@@ -697,7 +697,7 @@ function annotate(graph) {
                           cur_set.push(cur_node)
                           stk.print()
                           for (var wire in cur_node.edges) {
-                            console.log(cur_node.edges[wire])
+                            // console.log(cur_node.edges[wire])
                             if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
                               if (cur_node.edges[wire].target.ParentComponent !== null) {
                                 if(cur_node.edges[wire].target.ParentComponent.symbol === 'PWR'){
