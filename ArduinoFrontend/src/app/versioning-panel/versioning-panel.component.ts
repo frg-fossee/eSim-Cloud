@@ -222,7 +222,7 @@ export class VersioningPanelComponent implements OnInit {
   delete(type, data) {
     this.toDeleteObj = { type, data };
     // if branch, set message accordingly
-    type === 'branch' ? this.bannerMsg = 'Are you sure you want to delete this branch?'
+    type === 'branch' ? this.bannerMsg = 'Are you sure you want to delete this Variation?'
       : this.bannerMsg = 'Are you sure you want to delete this version?';
     // open confirmation menu
     this.deleteMenuTrigger.openMenu();
