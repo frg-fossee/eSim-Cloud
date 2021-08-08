@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'saveAPI',
     'publishAPI',
     'arduinoAPI',
+    'workflowAPI',
     'ltiAPI',
 ]
 

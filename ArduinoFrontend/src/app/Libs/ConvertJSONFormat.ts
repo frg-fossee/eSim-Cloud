@@ -10,10 +10,10 @@ export class ConvertJSONFormat {
   static async convertToOfflineFormat(id, data) {
     const obj = JSON.parse(data.data_dump);
     const project = {
-        name: data.name,
-        description: data.description,
-        image: data.base64_image,
-        created_at: Date.now(),
+      name: data.name,
+      description: data.description,
+      image: data.base64_image,
+      created_at: Date.now(),
     };
     obj['id'] = id;
     obj['project'] = project;
@@ -38,6 +38,8 @@ export class ConvertJSONFormat {
       description: data.project.description,
       name: data.project.name,
       base64_image: data.project.image,
+      branch: 'master',
+      version: this.getRandomString(20)
     };
     // Remove unwanted props from JSON
     delete data['id'];
@@ -48,4 +50,21 @@ export class ConvertJSONFormat {
     obj.data_dump = JSON.stringify(dataDump);
     return obj;
   }
+
+  /**
+   * Generate and return a random string
+   * @param length Length of random string
+   * @returns random string
+   */
+  static getRandomString(length): string {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
+  }
+
 }

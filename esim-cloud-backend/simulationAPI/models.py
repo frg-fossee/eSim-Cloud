@@ -8,7 +8,6 @@ import uuid
 from saveAPI.models import StateSave
 
 
-
 class Task(models.Model):
     # User details for auth to be stored along with task.
     # user = models.ForeignKey(User, on_delete=models.CASCADE)

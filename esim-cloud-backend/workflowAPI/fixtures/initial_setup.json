@@ -1,0 +1,270 @@
+[
+  {
+    "model": "auth.group",
+    "pk": 1,
+    "fields": { "name": "Contributor [E-Sim]", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 2,
+    "fields": { "name": "Contributor [Arduino]", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 3,
+    "fields": { "name": "Reviewer [Arduino]", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 4,
+    "fields": { "name": "Reviewer [E-Sim]", "permissions": [] }
+  },
+  {
+    "model": "auth.group",
+    "pk": 5,
+    "fields": { "name": "Staff [eSim]", "permissions": [] }
+  },
+  {
+    "model": "workflowAPI.state",
+    "pk": 1,
+    "fields": {
+      "name": "Draft",
+      "description": "State used for the drafting stage of a project",
+      "public": false,
+      "report": false
+    }
+  },
+  {
+    "model": "workflowAPI.state",
+    "pk": 2,
+    "fields": {
+      "name": "Review",
+      "description": "State used for the reviewing stage",
+      "public": false,
+      "report": false
+    }
+  },
+  {
+    "model": "workflowAPI.state",
+    "pk": 3,
+    "fields": {
+      "name": "Reported",
+      "description": "State used when a project gets reported",
+      "public": true,
+      "report": true
+    }
+  },
+  {
+    "model": "workflowAPI.state",
+    "pk": 4,
+    "fields": {
+      "name": "Published",
+      "description": "State used for the  published stage",
+      "public": true,
+      "report": false
+    }
+  },
+  {
+    "model": "workflowAPI.customgroup",
+    "pk": 1,
+    "fields": {
+      "group": 3,
+      "is_arduino": true,
+      "is_type_reviewer": true,
+      "is_default_role": false
+    }
+  },
+  {
+    "model": "workflowAPI.customgroup",
+    "pk": 2,
+    "fields": {
+      "group": 4,
+      "is_arduino": false,
+      "is_type_reviewer": true,
+      "is_default_role": false
+    }
+  },
+  {
+    "model": "workflowAPI.customgroup",
+    "pk": 3,
+    "fields": {
+      "group": 2,
+      "is_arduino": true,
+      "is_type_reviewer": false,
+      "is_default_role": true
+    }
+  },
+  {
+    "model": "workflowAPI.customgroup",
+    "pk": 4,
+    "fields": {
+      "group": 1,
+      "is_arduino": false,
+      "is_type_reviewer": false,
+      "is_default_role": true
+    }
+  },
+  {
+    "model": "workflowAPI.customgroup",
+    "pk": 5,
+    "fields": {
+        "group": 5,
+        "is_arduino": false,
+        "is_type_reviewer": false,
+        "is_type_staff": true,
+        "is_default_role": false
+      }
+  },
+  {
+    "model": "workflowAPI.permission",
+    "pk": 1,
+    "fields": {
+      "role": 2,
+      "view_own_states": [1, 2, 3, 4],
+      "view_other_states": [3, 4],
+      "edit_own_states": [1],
+      "del_own_states": [1]
+    }
+  },
+  {
+    "model": "workflowAPI.permission",
+    "pk": 2,
+    "fields": {
+      "role": 1,
+      "view_own_states": [1, 2, 3, 4],
+      "view_other_states": [3, 4],
+      "edit_own_states": [1],
+      "del_own_states": [1]
+    }
+  },
+  {
+    "model": "workflowAPI.permission",
+    "pk": 3,
+    "fields": {
+      "role": 3,
+      "view_own_states": [1, 2, 3, 4],
+      "view_other_states": [2, 3, 4],
+      "edit_own_states": [1],
+      "del_own_states": [1]
+    }
+  },
+  {
+    "model": "workflowAPI.permission",
+    "pk": 4,
+    "fields": {
+      "role": 4,
+      "view_own_states": [1, 2, 3, 4],
+      "view_other_states": [2, 3, 4],
+      "edit_own_states": [1],
+      "del_own_states": [1]
+    }
+  },
+  {
+    "model": "workflowAPI.transition",
+    "pk": 1,
+    "fields": {
+      "name": "Draft To Review",
+      "from_state": 1,
+      "to_state": 2,
+      "restricted_for_creator": false,
+      "only_for_creator": true,
+      "event_creator": "Review in Progress",
+      "history_creator": "Drafted and Sent for Review",
+      "event_reviewer": "Review in progress",
+      "history_reviewer": "Received for Review",
+      "event_other": "Review in progress",
+      "history_other": "Received for Review",
+      "role": [1, 2]
+    }
+  },
+  {
+    "model": "workflowAPI.transition",
+    "pk": 2,
+    "fields": {
+      "name": "Review To Published",
+      "from_state": 2,
+      "to_state": 4,
+      "restricted_for_creator": true,
+      "only_for_creator": false,
+      "event_creator": null,
+      "history_creator": "Reviewed & Published",
+      "event_reviewer": null,
+      "history_reviewer": "Reviewed & Published",
+      "event_other": null,
+      "history_other": "Reviewed & Published",
+      "role": [3, 4]
+    }
+  },
+  {
+    "model": "workflowAPI.transition",
+    "pk": 3,
+    "fields": {
+      "name": "Published to Reported",
+      "from_state": 4,
+      "to_state": 3,
+      "restricted_for_creator": false,
+      "only_for_creator": false,
+      "event_creator": "Waiting for Report evaluation",
+      "history_creator": "Reported",
+      "event_reviewer": "Waiting for Report evaluation",
+      "history_reviewer": "Reported",
+      "event_other": "Waiting for Report evaluation",
+      "history_other": "Reported",
+      "role": [1, 2, 3, 4]
+    }
+  },
+  {
+    "model": "workflowAPI.transition",
+    "pk": 4,
+    "fields": {
+      "name": "Review to Draft",
+      "from_state": 2,
+      "to_state": 1,
+      "restricted_for_creator": false,
+      "only_for_creator": false,
+      "event_creator": "Revision in progress",
+      "history_creator": "Reverted for Revision",
+      "event_reviewer": "Revision in progress",
+      "history_reviewer": "Reverted for Revision",
+      "event_other": "Revision in progress",
+      "history_other": "Reverted for Revision",
+      "role": [1, 2, 3, 4]
+    }
+  },
+  {
+    "model": "workflowAPI.transition",
+    "pk": 5,
+    "fields": {
+      "name": "Reported to Draft",
+      "from_state": 3,
+      "to_state": 1,
+      "restricted_for_creator": true,
+      "only_for_creator": false,
+      "event_creator": "Revision in progress",
+      "history_creator": "Received for revision",
+      "event_reviewer": "Revision in progress",
+      "history_reviewer": "Sent for revision",
+      "event_other": "Revision in progress",
+      "history_other": "Sent for revision",
+      "role": [3, 4]
+    }
+  },
+  {
+    "model": "workflowAPI.transition",
+    "pk": 6,
+    "fields": {
+      "name": "Reported to Published",
+      "from_state": 3,
+      "to_state": 4,
+      "restricted_for_creator": true,
+      "only_for_creator": false,
+      "event_creator": null,
+      "history_creator": "Reviewed & Published",
+      "event_reviewer": null,
+      "history_reviewer": "Reviewed & Published",
+      "event_other": null,
+      "history_other": "Reviewed & Published",
+      "role": [3, 4]
+    }
+  }
+]

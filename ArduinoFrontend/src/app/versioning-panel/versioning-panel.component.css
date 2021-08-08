@@ -1,0 +1,28 @@
+.var-selected {
+    background-color: #dddddd;
+}
+.version-list {
+    padding: 6px 24px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.version-list p {
+    margin: 0;
+}
+.version-list:hover {
+    background-color: #f0f0f0;
+}
+.menu {
+    padding: 4px 12px;
+}
+.menu p {
+    margin: 0;
+    font-size: 1rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+}
+#msg_text {
+    margin: 12px;
+}

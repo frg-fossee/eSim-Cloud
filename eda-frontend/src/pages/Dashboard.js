@@ -3,13 +3,13 @@ import React, { useEffect } from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { CssBaseline } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-
 import { Header } from '../components/Shared/Navbar'
 import Layout from '../components/Shared/Layout'
 import LayoutMain from '../components/Shared/LayoutMain'
 import DashboardSidebar from '../components/Dashboard/DashboardSidebar'
 import DashboardHome from '../components/Dashboard/DashboardHome'
 import SchematicsList from '../components/Dashboard/SchematicsList'
+import DashboardOtherProjects from '../components/Dashboard/DashboardOtherProjects'
 import api from '../utils/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -64,6 +64,11 @@ export default function Dashboard () {
             exact
             path="/dashboard/schematics"
             component={() => <SchematicsList ltiDetails={ltiDetails}/>}
+          />
+          <Route
+            exact
+            path="/dashboard/review_projects"
+            component={DashboardOtherProjects}
           />
         </Switch>}
       </LayoutMain>

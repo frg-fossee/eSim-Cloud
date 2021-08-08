@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Create New Variation</h2>
+<div mat-dialog-content>
+
+  <mat-form-field>
+    <mat-label>Variation Name</mat-label>
+    <input matInput type="text" [formControl]="variationName">
+  </mat-form-field>
+
+</div>
+<div>
+  <button mat-raised-button (click)="createVariation()" color="primary">CREATE VARIATION</button>
+</div>

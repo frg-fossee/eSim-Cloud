@@ -14,13 +14,13 @@ import {
   Card,
   Checkbox,
   Snackbar,
-  IconButton
+  IconButton,
+  Chip,
+  Input
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { useDispatch, useSelector } from 'react-redux'
-import { fetchSchematics } from '../../redux/actions/index'
 import queryString from 'query-string'
 import CloseIcon from '@material-ui/icons/Close'
 import TextareaAutosize from '@material-ui/core/TextareaAutosize'
@@ -56,8 +56,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function LTIConfig () {
   const classes = useStyles()
-  const dispatch = useDispatch()
-  const schematics = useSelector(state => state.dashboardReducer.schematics)
 
   const [ltiDetails, setLTIDetails] = React.useState({
     secretKey: '',
@@ -69,19 +67,46 @@ export default function LTIConfig () {
     initialSchematic: '',
     modelSchematic: '',
     testCase: null,
-    scored: true
+    scored: true,
+    id: ''
   })
 
   const { secretKey, consumerKey, configURL, configExists, score, modelSchematic } = ltiDetails
-  const [initial, setInitial] = React.useState('')
-  const [history, setHistory] = React.useState('')
+  const [schematic, setSchematic] = React.useState('')
+  const [history, setHistory] = React.useState([])
   const [historyId, setHistoryId] = React.useState('')
+  const [schematics, setSchematics] = React.useState([])
   const [update, setUpdate] = React.useState(false)
   const [submitMessage, setSubmitMessage] = React.useState('')
+  const [activeSim, setActiveSim] = React.useState(null)
+  const [simParam, setSimParam] = React.useState([])
 
   useEffect(() => {
-    dispatch(fetchSchematics())
-  }, [dispatch])
+    console.log(activeSim)
+  }, [activeSim])
+
+  useEffect(() => {
+    var url = queryString.parse(window.location.href.split('lti?')[1])
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get(`save/versions/${url.id}`, config).then(res => {
+      res.data.map(ele => {
+        ele.save_time = new Date(ele.save_time)
+        return 0
+      })
+      setSchematics(res.data)
+    }).catch(err => {
+      console.log(err)
+    })
+    // eslint-disable-next-line
+  }, [])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -103,28 +128,42 @@ export default function LTIConfig () {
           configURL: res.data.config_url,
           score: res.data.score,
           configExists: true,
-          initialSchematic: res.data.initial_schematic.save_id,
+          initialSchematic: res.data.model_schematic,
           testCase: res.data.test_case,
-          scored: res.data.scored
+          scored: res.data.scored,
+          id: res.data.id
         })
+      setSchematic(`${res.data.model_schematic.version}-${res.data.model_schematic.branch}`)
       if (res.data.test_case === null) {
         setHistoryId('None')
       } else {
         setHistoryId(res.data.test_case)
       }
-      setInitial(res.data.initial_schematic)
     }).catch(err => {
       console.log(err)
-      api.get(`save/${url.id}`, config).then(res => {
-        console.log(res.data)
+      api.get(`save/${url.id}/${url.version}/${url.branch}`, config).then(res => {
         setLTIDetails(
           {
             modelSchematic: res.data,
             scored: true
           })
+        setSchematic(`${res.data.version}-${res.data.branch}`)
       })
     })
-    api.get(`simulation/history/${url.id}/${null}`, config).then(res => {
+  }, [])
+
+  useEffect(() => {
+    var url = queryString.parse(window.location.href.split('lti?')[1])
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+    api.get(`simulation/history/${url.id}/${schematic.split('-')[0]}/${schematic.split('-')[1]}/${null}`, config).then(res => {
       res.data.map(ele => {
         ele.simulation_time = new Date(ele.simulation_time)
         return 0
@@ -133,7 +172,7 @@ export default function LTIConfig () {
     }).catch(err => {
       console.log(err)
     })
-  }, [])
+  }, [schematic])
 
   // eslint-disable-next-line
   const handleLTIGenerate = () => {
@@ -146,9 +185,9 @@ export default function LTIConfig () {
     const body = {
       consumer_key: ltiDetails.consumerKey,
       secret_key: ltiDetails.secretKey,
-      model_schematic: ltiDetails.modelSchematic.save_id,
+      model_schematic: ltiDetails.modelSchematic.id,
       score: score,
-      initial_schematic: ltiDetails.initialSchematic,
+      initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
       scored: ltiDetails.scored
     }
@@ -160,7 +199,8 @@ export default function LTIConfig () {
           configURL: res.data.config_url,
           configExists: true,
           consumerError: '',
-          score: res.data.score
+          score: res.data.score,
+          id: res.data.id
         })
         return res.data
       })
@@ -175,7 +215,7 @@ export default function LTIConfig () {
   }
 
   const handleDeleteLTIApp = () => {
-    api.delete(`lti/delete/${ltiDetails.modelSchematic.save_id}`)
+    api.delete(`lti/delete/${ltiDetails.modelSchematic.id}`)
       .then(res => {
         setLTIDetails({
           secretKey: '',
@@ -186,7 +226,8 @@ export default function LTIConfig () {
           score: '',
           initialSchematic: '',
           modelSchematic: modelSchematic,
-          testCase: null
+          testCase: null,
+          id: ''
         })
         setHistoryId('')
       })
@@ -216,22 +257,27 @@ export default function LTIConfig () {
   const handleChange = (e) => {
     var schematic = null
     schematics.forEach(element => {
-      if (element.save_id === e.target.value) {
+      if (element.version === e.target.value.split('-')[0] && element.branch === e.target.value.split('-')[1]) {
         schematic = element
       }
     })
-    setInitial(schematic)
-    setLTIDetails({ ...ltiDetails, initialSchematic: e.target.value })
+    setSchematic(e.target.value)
+    setLTIDetails({ ...ltiDetails, modelSchematic: schematic })
   }
 
   const handleChangeSim = (e) => {
     if (e.target.value === 'None') {
-      console.log('in if')
       setLTIDetails({ ...ltiDetails, testCase: null })
     } else {
       setLTIDetails({ ...ltiDetails, testCase: e.target.value })
+      var temp = history.find(ele => ele.id === e.target.value)
+      setActiveSim(temp)
     }
     setHistoryId(e.target.value)
+  }
+
+  const handleSimParamChange = (event) => {
+    setSimParam(event.target.value)
   }
 
   const handleOnClick = () => {
@@ -244,11 +290,12 @@ export default function LTIConfig () {
     const body = {
       consumer_key: ltiDetails.consumerKey,
       secret_key: ltiDetails.secretKey,
-      model_schematic: ltiDetails.modelSchematic.save_id,
+      model_schematic: ltiDetails.modelSchematic.id,
       score: score,
-      initial_schematic: ltiDetails.initialSchematic,
+      initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
-      scored: ltiDetails.scored
+      scored: ltiDetails.scored,
+      id: ltiDetails.id
     }
     console.log(body)
     api.post('lti/update/', body)
@@ -287,16 +334,16 @@ export default function LTIConfig () {
               <CardMedia
                 className={classes.media}
                 image={ltiDetails.modelSchematic.base64_image}
-                title="Model Schematic"
+                title="Schematic"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Model Schematic
+                  Schematic
                 </Typography>
               </CardContent>
             </CardActionArea>
           </Card>
-          {ltiDetails.initialSchematic && <Card className={classes.root} style={{ marginLeft: '2%' }}>
+          {/* {ltiDetails.initialSchematic && <Card className={classes.root} style={{ marginLeft: '2%' }}>
             <CardActionArea>
               <CardMedia
                 className={classes.media}
@@ -309,82 +356,96 @@ export default function LTIConfig () {
                 </Typography>
               </CardContent>
             </CardActionArea>
-          </Card>}
+          </Card>} */}
+          <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
+            {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
+            <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} />
+            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} />
+            <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} />
+            <FormControl style={{ marginTop: '1%' }} className={classes.formControl}>
+              <InputLabel htmlFor="outlined-age-native-simple">Schematic</InputLabel>
+              <Select
+                labelId="demo-simple-select-placeholder-label-label"
+                id="demo-simple-select-placeholder-label"
+                value={schematic}
+                style={{ minWidth: '300px' }}
+                onChange={handleChange}
+                label="Schematic"
+                className={classes.selectEmpty}
+              >
+                {schematics.map(schematic => {
+                  return <MenuItem key={schematic.version} value={`${schematic.version}-${schematic.branch}`}>{schematic.name} of variation {schematic.branch} saved at {schematic.save_time.toLocaleString()}</MenuItem>
+                })}
+              </Select>
+            </FormControl>
+            <FormControl style={{ marginLeft: '2%', marginTop: '1%' }} className={classes.formControl}>
+              <InputLabel htmlFor="outlined-age-native-simple">Test Case</InputLabel>
+              {history && <Select
+                labelId="select-simulation-history"
+                id="select-sim"
+                value={historyId}
+                style={{ minWidth: '300px' }}
+                onChange={handleChangeSim}
+                label="Test Case"
+                className={classes.selectEmpty}
+                inputProps={{ readOnly: !ltiDetails.scored }}
+              >
+                <MenuItem value="None">
+                  None
+                </MenuItem>
+                {history.map(sim => {
+                  return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
+                })}
+              </Select>}
+            </FormControl>
+            <br />
+            {activeSim && <FormControl style={{ marginTop: '1%', minWidth: 200 }} className={classes.formControl}>
+              <InputLabel id="demo-mutiple-chip-label">Comparison Parameter</InputLabel>
+              {history && <Select
+                labelId="select-comparison-parameter"
+                id="demo-mutiple-chip"
+                multiple
+                value={simParam}
+                onChange={handleSimParamChange}
+                input={<Input id="select-multiple-chip" />}
+                inputProps={{ readOnly: !ltiDetails.scored }}
+                renderValue={(selected) => (
+                  <div className={classes.chips}>
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} className={classes.chip} />
+                    ))}
+                  </div>
+                )}
+              >
+                {activeSim.result.data.map(params => {
+                  return <MenuItem key={params[0]} value={params[0]}>{params[0]}</MenuItem>
+                })}
+              </Select>}
+            </FormControl>}
+            <FormControlLabel
+              style={{ marginLeft: '1%', marginTop: '2%' }}
+              control={
+                <Checkbox
+                  checked={ltiDetails.scored}
+                  onChange={handleCheckChange}
+                  name="scored"
+                  color="primary"
+                />
+              }
+              label="Scored?"
+            />
+          </div>
         </div>
-        <div style={{ minWidth: '500px', marginLeft: '2%', marginTop: '2%' }}>
-          {ltiDetails.consumerError && <h3>{ltiDetails.consumerError}</h3>}
-          <TextField id="standard-basic" label="Consumer Key" defaultValue={consumerKey} onChange={handleConsumerKey} value={consumerKey} disabled={configExists} variant="outlined" />
-          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Secret Key" defaultValue={secretKey} onChange={handleSecretKey} value={secretKey} variant="outlined" />
-          <TextField style={{ marginLeft: '1%' }} id="standard-basic" label="Score" defaultValue={score} onChange={handleScore} value={score} disabled={!ltiDetails.scored} variant="outlined" />
-          <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
-            <InputLabel htmlFor="outlined-age-native-simple">Student Schematic</InputLabel>
-            <Select
-              labelId="demo-simple-select-placeholder-label-label"
-              id="demo-simple-select-placeholder-label"
-              value={ltiDetails.initialSchematic}
-              style={{ minWidth: '300px' }}
-              onChange={handleChange}
-              label="Student Schematic"
-              className={classes.selectEmpty}
-            >
-              {schematics.map(schematic => {
-                return <MenuItem key={schematic.save_id} value={schematic.save_id}>{schematic.name}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
-          <FormControl variant="outlined" style={{ marginLeft: '1%' }} className={classes.formControl}>
-            <InputLabel htmlFor="outlined-age-native-simple">Test Case</InputLabel>
-            {history && <Select
-              labelId="select-simulation-history"
-              id="select-sim"
-              value={historyId}
-              style={{ minWidth: '300px' }}
-              onChange={handleChangeSim}
-              label="Test Case"
-              className={classes.selectEmpty}
-              inputProps={{ readOnly: !ltiDetails.scored }}
-            >
-              <MenuItem value="None">
-                None
-              </MenuItem>
-              {history.map(sim => {
-                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
-              })}
-            </Select>}
-          </FormControl>
-          <FormControlLabel
-            style={{ marginLeft: '1%' }}
-            control={
-              <Checkbox
-                checked={ltiDetails.scored}
-                onChange={handleCheckChange}
-                name="scored"
-                color="primary"
-              />
-            }
-            label="Scored?"
-          />
-          <br />
-          <Button style={{ marginTop: '1%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
+        <div>
+          <Button style={{ marginTop: '1%', marginLeft: '2%', minWidth: 300 }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
             Return to Dashboard
           </Button>
-          <Button style={{ marginTop: '1%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
+          <Button style={{ marginTop: '1%', marginLeft: '1%', minWidth: 300 }} disableElevation variant="contained" color="primary" disabled={configExists} onClick={handleLTIGenerate}>
             Create LTI URL
           </Button>
           {configExists &&
             <Button
-              style={{ marginLeft: '1%', marginTop: '1%' }}
-              disableElevation
-              variant="contained"
-              className={classes.delete}
-              startIcon={<DeleteIcon />}
-              onClick={() => handleDeleteLTIApp()}
-            >
-              Delete
-            </Button>}
-          {configExists &&
-            <Button
-              style={{ marginLeft: '1%', marginTop: '1%' }}
+              style={{ marginLeft: '1%', marginTop: '1%', minWidth: 300 }}
               disableElevation
               color="primary"
               variant="contained"
@@ -393,19 +454,30 @@ export default function LTIConfig () {
               Submissions
             </Button>}
           {configExists && <Button
-            style={{ marginLeft: '1%', marginTop: '1%' }}
+            style={{ marginLeft: '1%', marginTop: '1%', minWidth: 297 }}
             disableElevation
             color="primary"
             variant="contained"
             onClick={handleOnClick} >
             Update LTI App
           </Button>}
-          {configURL && <div style={{ display: 'flex', marginTop: '1%' }}>
-            <h3 className={classes.config} style={{ float: 'left' }}>URL for LTI Access:</h3>
+          {configExists &&
+            <Button
+              style={{ marginLeft: '1%', marginTop: '1%', minWidth: 300 }}
+              disableElevation
+              variant="contained"
+              className={classes.delete}
+              startIcon={<DeleteIcon />}
+              onClick={() => handleDeleteLTIApp()}
+            >
+              Delete
+            </Button>}
+          {configURL && <div style={{ display: 'flex', marginTop: '1%', marginLeft: '2%' }}>
+            <h3 className={classes.config} style={{ float: 'left', marginTop: '1.1%' }}>URL for LTI Access:</h3>
             <h3 className={classes.config} style={{ float: 'left' }}>
-              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '14px', minWidth: 580, width: 580, maxWidth: 580, border: 'none', backgroundColor: '#f4f6f8' }} />
+              <TextareaAutosize className="lti-url" value={configURL} maxRows={1} style={{ fontSize: '18px', width: 1200, maxWidth: 1200, border: 'none' }} />
             </h3>
-            <Button style={{ float: 'right', height: '50%', marginTop: '0.7%', marginLeft: '1%' }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
+            <Button style={{ float: 'right', height: '50%', marginTop: '0.7%', marginLeft: '1%', minWidth: 200 }} disableElevation variant="contained" color="primary" onClick={handleUrlCopy}>
               Copy LTI URL
             </Button>
 

@@ -54,7 +54,7 @@ const searchOptions = {
 
 const searchOptionsList = ['NAME', 'KEYWORD', 'DESCRIPTION', 'COMPONENT_LIBRARY', 'PREFIX']
 
-export default function ComponentSidebar ({ compRef }) {
+export default function ComponentSidebar ({ compRef, ltiSimResult, setLtiSimResult }) {
   const classes = useStyles()
   const libraries = useSelector(state => state.schematicEditorReducer.libraries)
   const collapse = useSelector(state => state.schematicEditorReducer.collapse)
@@ -128,7 +128,7 @@ export default function ComponentSidebar ({ compRef }) {
     timeoutId.current = setTimeout(() => {
       // call api here
       setLoading(true)
-      var config = {}
+      let config = {}
       const token = localStorage.getItem('esim_token')
       if (token && token !== undefined) {
         config = {
@@ -196,13 +196,13 @@ export default function ComponentSidebar ({ compRef }) {
         <Collapse in={collapse[library.id]} timeout={'auto'} unmountOnExit mountOnEnter exit={false}>
           <List component="div" disablePadding dense >
             {/* Chunked Components of Library */}
-            { chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
+            {chunk(components[library.id], COMPONENTS_PER_ROW).map((componentChunk) => {
               return (
                 <ListItem key={componentChunk[0].svg_path} divider>
-                  { componentChunk.map((component) => {
+                  {componentChunk.map((component) => {
                     return (
                       <ListItemIcon key={component.full_name}>
-                        <SideComp component={component} setFavourite={setFavourite} favourite={favourite}/>
+                        <SideComp component={component} setFavourite={setFavourite} favourite={favourite} />
                       </ListItemIcon>
                     )
                   })}
@@ -351,8 +351,8 @@ export default function ComponentSidebar ({ compRef }) {
                 </ListItem>
                 <Divider />
                 { libraries.sort(function (a, b) {
-                  var textA = a.library_name.toUpperCase()
-                  var textB = b.library_name.toUpperCase()
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
                 }).filter((library) => {
                   if (library.default) { return 1 }
@@ -368,8 +368,8 @@ export default function ComponentSidebar ({ compRef }) {
                   <span className={classes.head}>ADDITIONAL</span>
                 </ListItem>
                 { libraries.sort(function (a, b) {
-                  var textA = a.library_name.toUpperCase()
-                  var textB = b.library_name.toUpperCase()
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
                 }).filter((library) => {
                   if (library.additional) { return 1 }
@@ -385,8 +385,8 @@ export default function ComponentSidebar ({ compRef }) {
                   <span className={classes.head}>UPLOADED</span>
                 </ListItem>
                 { libraries.sort(function (a, b) {
-                  var textA = a.library_name.toUpperCase()
-                  var textB = b.library_name.toUpperCase()
+                  const textA = a.library_name.toUpperCase()
+                  const textB = b.library_name.toUpperCase()
                   return (textA < textB) ? -1 : (textA > textB) ? 1 : 0
                 }).filter((library) => {
                   if (!library.default && !library.additional) { return 1 }
@@ -413,7 +413,7 @@ export default function ComponentSidebar ({ compRef }) {
               </IconButton>
             </Tooltip>
           </ListItem>
-          <SimulationProperties />
+          <SimulationProperties ltiSimResult={ltiSimResult} setLtiSimResult={setLtiSimResult} />
         </List>
       </div>
     </>
@@ -421,5 +421,7 @@ export default function ComponentSidebar ({ compRef }) {
 }
 
 ComponentSidebar.propTypes = {
-  compRef: PropTypes.object.isRequired
+  compRef: PropTypes.object.isRequired,
+  ltiSimResult: PropTypes.string,
+  setLtiSimResult: PropTypes.string
 }

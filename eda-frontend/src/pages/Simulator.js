@@ -80,14 +80,14 @@ export default function Simulator () {
     let cleanCode = ''
     let frontPlot = ''
     for (let line = 0; line < codeArray.length; line++) {
-      if (codeArray[line].includes('plot')) {
+      if (codeArray[line].includes('plot') && !codeArray[line].includes('setplot')) {
         frontPlot += codeArray[line].split('plot ')[1] + ' '
       }
     }
     frontPlot = `print ${frontPlot} > data.txt \n`
     let flag = 0
     for (let i = 0; i < codeArray.length; i++) {
-      if (codeArray[i].includes('plot')) {
+      if (codeArray[i].includes('plot') && !codeArray[i].includes('setplot')) {
         if (!flag) {
           cleanCode += frontPlot
           flag = 1

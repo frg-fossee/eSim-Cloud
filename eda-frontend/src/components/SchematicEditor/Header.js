@@ -29,9 +29,9 @@ import CloseIcon from '@material-ui/icons/Close'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
-
+import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
-import { setTitle, logout, setSchTitle, setSchShared, loadMinUser } from '../../redux/actions/index'
+import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -101,7 +101,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-function Header () {
+function Header (props) {
   const history = useHistory()
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
@@ -161,7 +161,7 @@ function Header () {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
-  // handel notification snackbar open and close with message
+  // handle notification snackbar open and close with message
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -176,7 +176,7 @@ function Header () {
     setSnacOpen(false)
   }
 
-  // handel schematic Share Dialog box
+  // handle schematic Share Dialog box
   const [openShare, setShareOpen] = React.useState(false)
 
   const handleShareOpen = () => {
@@ -193,6 +193,14 @@ function Header () {
   useEffect(() => {
     setShared(schSave.isShared)
   }, [schSave.isShared])
+
+  useEffect(() => {
+    if (history.location.search === '') {
+      dispatch(setSchTitle('Untitled_Schematic'))
+      dispatch(setSchDescription(''))
+      dispatch({ type: actions.CLEAR_DETAILS })
+    }
+  }, [history.location.search, dispatch])
 
   const handleShareChange = (event) => {
     setShared(event.target.checked)
@@ -211,16 +219,16 @@ function Header () {
     }
   }
 
-  // handel display format of last saved status
+  // handle display format of last saved status
   function getDate (jsonDate) {
-    var json = jsonDate
-    var date = new Date(json)
+    const json = jsonDate
+    const date = new Date(json)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
     const [{ value: month }, , { value: day }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(date)
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
-  // handel Copy Share Url
+  // handle Copy Share Url
   const textAreaRef = React.useRef(null)
 
   function copyToClipboard (e) {
@@ -245,7 +253,7 @@ function Header () {
         disableBackdropClick
       >
         <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
-          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large"/><br/>
+          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large" /><br />
           <Typography variant='h5' align='center'>
             {'Login to continue working on the circuit'}
           </Typography>
@@ -281,7 +289,7 @@ function Header () {
         onClose={() => { setLogoutConfirm(false) }}
       >
         <DialogTitle id="alert-dialog-title" style={{ textAlign: 'center' }}>
-          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large"/><br/>
+          <ErrorOutlineIcon style={{ color: 'red' }} fontSize="large" /><br />
           <Typography variant='h5' align='center'>
             {'Are you sure you want to logout?'}
           </Typography>
@@ -320,7 +328,7 @@ function Header () {
           className={classes.toolbarTitle}
         >
           <Link color="inherit" target='_blank' component={RouterLink} to="/">
-          eSim
+            eSim
           </Link>
         </Typography>
 
@@ -343,7 +351,7 @@ function Header () {
                 variant="body2"
                 style={{ margin: '0px 15px 0px auto', paddingTop: '5px', color: '#8c8c8c' }}
               >
-              Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
+                Last Saved : {getDate(schSave.details.save_time)} {/* Display last saved status for saved schematics */}
               </Typography>
               : <></>
             }
@@ -391,12 +399,12 @@ function Header () {
           <DialogActions>
             {shared === true && document.queryCommandSupported('copy')
               ? <Button onClick={copyToClipboard} color="primary" autoFocus>
-              Copy url
+                Copy url
               </Button>
               : <></>
             }
             <Button onClick={handleShareClose} color="primary" autoFocus>
-            close
+              close
             </Button>
           </DialogActions>
         </Dialog>
@@ -413,7 +421,7 @@ function Header () {
               variant="outlined"
               target="_blank"
             >
-          Login
+              Login
             </Button>
             : (<>
 
@@ -451,7 +459,7 @@ function Header () {
                   to="/dashboard/profile"
                   onClick={handleClose}
                 >
-                My Profile
+                  My Profile
                 </MenuItem>
                 <MenuItem
                   target='_blank'
@@ -459,7 +467,7 @@ function Header () {
                   to="/dashboard/schematics"
                   onClick={handleClose}
                 >
-                My Schematics
+                  My Schematics
                 </MenuItem>
                 <MenuItem
                   target='_blank'
@@ -467,12 +475,12 @@ function Header () {
                   to="/account/change_password"
                   onClick={handleClose}
                 >
-                Change password
+                  Change password
                 </MenuItem>
                 <MenuItem onClick={() => {
                   setLogoutConfirm(true)
                 }}>
-                Logout
+                  Logout
                 </MenuItem>
               </Menu>
             </>

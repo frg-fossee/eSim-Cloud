@@ -122,7 +122,9 @@ export default function SubmissionTable () {
         <TableHead>
           <TableRow>
             <TableCell onClick={handleUserSort}>User {sortOrderUser === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderUser === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
-            <TableCell onClick={handleTimeSort} align="center">Created at {sortOrderTime === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderTime === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
+            <TableCell align="center">User ID in LMS</TableCell>
+            <TableCell onClick={handleTimeSort} align="center">Submitted at {sortOrderTime === 1 ? <ArrowUpwardIcon fontSize="small" /> : sortOrderTime === 2 ? <ArrowDownwardIcon fontSize="small" /> : <ArrowUpwardIcon color="disabled" fontSize="small" />}</TableCell>
+            <TableCell align="center">Submitted From</TableCell>
             <TableCell align="center">Score</TableCell>
             <TableCell align="center">Submissions</TableCell>
           </TableRow>
@@ -133,7 +135,9 @@ export default function SubmissionTable () {
               <TableCell component="th" scope="row">
                 {student.student.username}
               </TableCell>
-              <TableCell align="center">{student.schematic.save_time.toUTCString()}</TableCell>
+              <TableCell align="center">{student.ltisession.user_id}</TableCell>
+              <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
+              <TableCell align="center">{student.ltisession.lis_outcome_service_url}</TableCell>
               <TableCell align="center">{student.score}</TableCell>
               <TableCell align="center">
                 <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}`}>

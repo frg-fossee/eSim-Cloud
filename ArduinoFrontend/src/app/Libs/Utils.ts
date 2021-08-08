@@ -14,6 +14,8 @@ import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
 import { Resistor, BreadBoard } from './General';
+import { L293D } from './drivers/L293D';
+import { Thermistor } from './inputs/Thermistor';
 
 /**
  * Utils class
@@ -27,7 +29,7 @@ export class Utils {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
       ['SlideSwitch', 'MQ2', 'TMP36'],
-      ['PotentioMeter'/*, 'PhotoResistor'*/]
+      ['PotentioMeter', 'PhotoResistor', 'Thermistor']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -41,7 +43,7 @@ export class Utils {
       ['LCD16X2']
     ],
     drivers: [
-      ['L298N']
+      ['L298N', 'L293D']
     ],
     misc: [
       ['Label', 'RelayModule']
@@ -167,6 +169,16 @@ export class Utils {
       name: 'Buzzer',
       image: './assets/images/components/Buzzer.png',
       className: Buzzer
+    },
+    L293D: {
+      name: 'L293D',
+      image: './assets/images/components/L293D.png',
+      className: L293D
+    },
+    Thermistor: {
+      name: 'Thermistor',
+      image: './assets/images/components/Thermistor.png',
+      className: Thermistor
     }
   };
 }

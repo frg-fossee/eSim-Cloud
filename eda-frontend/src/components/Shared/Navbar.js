@@ -2,7 +2,15 @@ import React, { useEffect } from 'react'
 import { useHistory, Link as RouterLink } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import {
-  AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar, Menu, ListItemText,
+  AppBar,
+  Button,
+  Toolbar,
+  Typography,
+  Link,
+  IconButton,
+  Avatar,
+  Menu,
+  ListItemText,
   Fade,
   MenuItem
 } from '@material-ui/core'
@@ -15,6 +23,9 @@ import { authDefault, loadUser, logout } from '../../redux/actions/index'
 const useStyles = makeStyles((theme) => ({
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`
+  },
+  root: {
+    width: 500
   },
   toolbar: {
     flexWrap: 'wrap'
@@ -38,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepPurple[500]),
     backgroundColor: deepPurple[500],
     fontSize: '17px'
+  },
+  typography: {
+    padding: theme.spacing(2)
   }
 }))
 
@@ -125,6 +139,15 @@ export function Header () {
               >
                 Gallery
               </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/projects"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Projects
+              </Link>
 
               <Link
                 variant="button"
@@ -166,7 +189,16 @@ export function Header () {
               >
                 Gallery
               </Link>
-
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/projects"
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginRight: '20px' }}
+              >
+                Projects
+              </Link>
               <Link
                 variant="button"
                 color="textPrimary"
@@ -195,7 +227,6 @@ export function Header () {
           Login
         </Button>)
           : (<>
-
             <IconButton
               edge="start"
               style={{ marginLeft: 'auto' }}

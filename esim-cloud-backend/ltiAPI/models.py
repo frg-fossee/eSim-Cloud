@@ -2,11 +2,14 @@ from django.db import models
 from saveAPI.models import StateSave
 from django.contrib.auth import get_user_model
 from simulationAPI.models import simulation
+import uuid
 
 
 # Create your models here.
 class lticonsumer(models.Model):
-    consumer_key = models.CharField(max_length=50, null=False, unique=True)
+    id = models.UUIDField(default=uuid.uuid4, editable=False,
+                          unique=True, primary_key=True)
+    consumer_key = models.CharField(max_length=50, null=False)
     secret_key = models.CharField(max_length=50, null=False)
     model_schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
                                         related_name="model_schematic")
@@ -25,6 +28,8 @@ class lticonsumer(models.Model):
 
 class ltiSession(models.Model):
     user_id = models.CharField(max_length=200)
+    lti_consumer = models.ForeignKey(to=lticonsumer,
+                                     on_delete=models.CASCADE, null=True)
     lis_result_sourcedid = models.CharField(max_length=300, null=True)
     lis_outcome_service_url = models.CharField(max_length=300)
     oauth_nonce = models.CharField(max_length=300)
@@ -33,6 +38,7 @@ class ltiSession(models.Model):
     oauth_signature_method = models.CharField(max_length=300)
     oauth_version = models.CharField(max_length=300)
     oauth_signature = models.CharField(max_length=300)
+    simulations = models.ManyToManyField(to=simulation)
 
 
 class Submission(models.Model):

@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -29,7 +29,8 @@ import { OptionModalComponent } from './alert/option-modal/option-modal.componen
 import { MaterialModule } from './material/material.module';
 import { FormsService } from './forms.service';
 import { LTIFormDialogComponent } from './lti-form-dialog/lti-form-dialog.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { VersioningPanelComponent } from './versioning-panel/versioning-panel.component';
+import { CreateVariationDialogComponent } from './versioning-panel/create-variation-dialog/create-variation-dialog.component';
 
 /**
  * Monaco OnLoad Function
@@ -67,6 +68,8 @@ const monacoConfig: NgxMonacoEditorConfig = {
     ExitConfirmDialogComponent,
     LTIFormDialogComponent,
     SaveProjectDialogComponent,
+    VersioningPanelComponent,
+    CreateVariationDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,6 +93,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
     SaveProjectDialogComponent,
+    CreateVariationDialogComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
