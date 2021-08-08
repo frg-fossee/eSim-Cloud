@@ -29,19 +29,4 @@ export class FormsService {
       acceptSubmissions: true
     });
   }
-
-  getLTIDetails(data) {
-    console.log(data);
-    data = {
-      secret_key: '',
-      consumer_key: '',
-      config_url: '',
-      configExists: false,
-      consumerError: '',
-      score: data.score,
-      initial_schematic: data.initial_schematic,
-      model_schematic: data.model_schematic,
-      test_case: ''
-    }
-  }
 }

@@ -102,15 +102,17 @@ export class ViewProjectComponent implements OnInit {
     window['showLoading'](); // Show Loading animation
 
     // Get Token if not present then redirect to login
-    const token = Login.getToken();
-    if (!token) {
-      Login.redirectLogin();
-      return;
-    }
+    let token = Login.getToken();
+    // if (!token) {
+    //   Login.redirectLogin();
+    //   return;
+    // }
     // Sharing url
+    token = token ? token : null;
     this.shareURL = window.location.href;
 
     this.aroute.paramMap.subscribe((v: any) => {
+      console.log(v);
       // From Slug find project id
       const slug: string = v.params.slug;
       const pos = slug ? slug.indexOf('-') : -1;

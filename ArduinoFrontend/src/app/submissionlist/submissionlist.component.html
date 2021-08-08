@@ -1,0 +1,39 @@
+<app-header title="Submissions"></app-header>
+<h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 1em;">
+  Submissions
+</h3>
+<div class="m-3">
+  <mat-form-field>
+    <input matInput placeholder="Search" (keyup)="searchNFilter($event.target.value)" />
+  </mat-form-field>
+</div>
+<div class="container" *ngIf="submissions.filteredData.length === 0">
+  <div class="jumbotron">
+    <h3>No submissions found</h3>
+  </div>
+</div>
+<div class="mat-elevation-z8" *ngIf="submissions.filteredData.length !== 0">
+  <mat-table class="submission-table" [dataSource]="submissions" matSort>
+    <ng-container [matColumnDef]="column" *ngFor="let column of columnNames;let i = index;">
+      <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header> {{columnHeadings[i]}} </mat-header-cell>
+      <mat-cell *matCellDef="let submission">{{submission[column]}}
+        <!-- {{column !== 'save_time' ? (submission[column]) : (submission[column] | date:'medium')}} -->
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="run">
+      <mat-header-cell mat-header-cell *matHeaderCellDef>View</mat-header-cell>
+      <mat-cell *matCellDef="let submission">
+        <button mat-icon-button color="primary" [routerLink]="['/simulator']"
+          [queryParams]="{id: submission.id, offline: false}">
+          <mat-icon>
+            play_circle_outline
+          </mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+    <!-- Delete and More options icon buttons -->
+    <mat-header-row *matHeaderRowDef="columnNames.concat(actions)"></mat-header-row>
+    <mat-row matRipple *matRowDef="let row; columns: columnNames.concat(actions)"></mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

@@ -1,0 +1,128 @@
+<app-header title="Create LTI App"></app-header>
+<h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 1em;">
+  Get Config URL
+</h3>
+<div class="container">
+  <div class="row">
+    <mat-card class="col-md-6 p-1 centerize" *ngIf="!modelCircuit">
+      <mat-card-title>Loading the circuit</mat-card-title>
+    </mat-card>
+    <mat-card class="col-md-6 p-1 centerize mat-elevation-z0" *ngIf="modelCircuit">
+      <mat-card-header>
+        <mat-card-title>Model Simulation</mat-card-title>
+      </mat-card-header>
+      <img mat-card-image [attr.src]="modelCircuit.base64_image" alt="Loading the image" class="image mat-elevation-z8"
+        matRipple/>
+      <mat-card-content class="justify">
+        <mat-card-subtitle>{{ modelCircuit.name }}</mat-card-subtitle>
+        <p>{{ modelCircuit.description }}</p>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="col-md-6 p-1 centerize mat-elevation-z0" *ngIf="studentCircuit">
+      <mat-card-header>
+        <mat-card-title>Student Simulation</mat-card-title>
+      </mat-card-header>
+      <img mat-card-image [attr.src]="studentCircuit.base64_image" alt="Loading the image"
+        class="image mat-elevation-z8" matRipple />
+      <mat-card-content class="justify">
+        <mat-card-subtitle>{{ studentCircuit.name }}</mat-card-subtitle>
+        <p>{{ studentCircuit.description }}</p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<form [formGroup]="service.form" class='main-form'>
+  <mat-grid-list cols='2' rowHeight="300px">
+    <mat-grid-tile>
+      <div class="field-group">
+        <input formControlName="model_schematic" value="{{circuit_id}}" style="display:none" />
+        <mat-form-field>
+          <input formControlName="consumer_key" matInput placeholder="Consumer Key" required />
+          <mat-hint>Should not contain any spaces</mat-hint>
+          <mat-error *ngIf="service.form.controls['consumer_key'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['consumer_key'].errors?.minlength">String should be atleast 2
+            characters long</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select formControlName="test_case" matInput placeholder="Test Case"
+            (selectionChange)="ontestCaseSelectChanges($event)">
+            <mat-option>
+              None
+            </mat-option>
+            <ng-container *ngFor="let test_case of testCases">
+              <mat-option value="{{test_case.id}}">{{test_case.output}}</mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
+        <div class="check-box-spacing">
+          <mat-checkbox formControlName="scored">
+            Accept Submissions
+          </mat-checkbox>
+        </div>
+      </div>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <div class="field-group">
+        <mat-form-field>
+          <input formControlName="secret_key" matInput placeholder="Secret Key" [type]="hide ? 'password' : 'text'"
+            required>
+          <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          <mat-error *ngIf="service.form.controls['secret_key'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['secret_key'].errors?.minlength">String should be atleast 2 characters
+            long</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select formControlName="initial_schematic" matInput required placeholder="Students's Simulation"
+            (selectionChange)="onStudentSimulationSelectChanges($event)">
+            <mat-option>
+              None
+            </mat-option>
+            <ng-container *ngFor="let circuit of circuits">
+              <mat-option value="{{circuit.save_id}}">{{circuit.name}} {{circuit.save_time | date:'medium'}}
+              </mat-option>
+            </ng-container>
+          </mat-select>
+          <mat-error>This field is mandatory</mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input formControlName="score" matInput placeholder="Score" required />
+          <mat-error *ngIf="service.form.controls['score'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="service.form.controls['score'].errors?.min || service.form.controls['score'].errors?.max">
+            Value should be 0 or 1</mat-error>
+        </mat-form-field>
+      </div>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <div>
+    <div *ngIf="details.consumerError">
+      <p>{{ details.consumerError }}</p>
+      <p *ngIf="!details.consumerError"></p>
+    </div>
+    <div *ngIf="details.configExists">
+      <span>
+        CONFIG URL :
+      </span>
+      <a href="{{configUrl}}" id="urlDisplayer">{{ configUrl }}</a>
+      <button mat-icon-button color="primary" type="button" (click)="CopyUrlToClipBoard()" matRipple>
+        <mat-icon>
+          file_copy
+        </mat-icon>
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-8 p-2">
+      <button class="btn-lti" mat-raised-button color="primary" type="submit" (click)="onSubmit()"
+        *ngIf="!details.configExists" [disabled]="service.form.invalid">Save</button>
+      <button class="btn-lti" mat-raised-button color="primary" type="submit" (click)="onUpdate()"
+        *ngIf="details.configExists" [disabled]="service.form.invalid">Update</button>
+      <button class="btn-lti" mat-raised-button color="warn" type="button" *ngIf="details.configExists"
+        (click)="onDelete()">Delete</button>
+      <button class="btn-lti" mat-raised-button color="primary" type="button" [routerLink]="['/submissions']"
+        [queryParams]="{consumer_key: details.consumer_key, scored: details.scored}" *ngIf="details.configExists && details.scored">Submissions</button>
+      <button class="btn-lti" mat-raised-button color="primary" type="button" [routerLink]="['/dashboard']">Go to
+        Dashboard</button>
+    </div>
+  </div>
+</form>

@@ -2,7 +2,6 @@ import { CircuitElement } from './CircuitElement';
 import { Point } from './Point';
 import { areBoundingBoxesIntersecting } from './RaphaelUtils';
 import _ from 'lodash';
-import { Wire } from './Wire';
 import { UndoUtils } from './UndoUtils';
 
 /**

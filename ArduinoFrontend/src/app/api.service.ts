@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 
@@ -21,6 +21,39 @@ export class ApiService {
   constructor(private http: HttpClient) {
   }
   /**
+   * Get Http Headers
+   * @param token Login Token
+   * @returns Http headers as per given conditions
+   */
+  httpHeaders(token: string) {
+    if(environment.production) {
+      if(token) {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        });
+      } else {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        });
+      }
+    }
+    else {
+      if(token) {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`,
+        });
+      } else {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+        });
+      }
+    }
+  }
+  /**
    * Save Project to Cloud
    * @param data The Project data
    * @param token Auth Token
@@ -30,11 +63,7 @@ export class ApiService {
       data.description = null;
     }
     return this.http.post(`${this.url}api/save`, data, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -43,11 +72,7 @@ export class ApiService {
    */
   listProject(token) {
     return this.http.get(`${this.url}api/save/arduino/list`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -57,13 +82,9 @@ export class ApiService {
    * @param version Version of Variation
    * @param token Auth Token
    */
-  readProject(id: string, branch: string, version: string, token: string) {
+   readProject(id: string, branch: string, version: string, token: string) {
     return this.http.get(`${this.url}api/save/${id}/${version}/${branch}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -74,11 +95,7 @@ export class ApiService {
   searchProject(title: string, token: string) {
     const url = encodeURI(`${this.url}api/save/search?name__icontains=${title}&is_arduino=true`);
     return this.http.get(url, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -90,11 +107,7 @@ export class ApiService {
   updateProject(id: string, data: any, token: string) {
     data.save_id = id;
     return this.http.post(`${this.url}api/save`, data, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -104,11 +117,7 @@ export class ApiService {
    */
   deleteProject(id, token): Observable<any> {
     return this.http.delete(`${this.url}api/save/${id}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -131,11 +140,7 @@ export class ApiService {
    */
   userInfo(token: string): Observable<any> {
     return this.http.get(`${this.url}api/auth/users/me`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -147,11 +152,7 @@ export class ApiService {
   Sharing(id: string, on: boolean, token: string) {
     const state = on ? 'on' : 'off';
     return this.http.post(`${this.url}api/save/${id}/sharing/${state}`, {}, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -163,11 +164,7 @@ export class ApiService {
 
   existLTIURL(id: string, token: string) {
     return this.http.get(`${this.url}api/lti/exist/${id}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,        
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -177,21 +174,13 @@ export class ApiService {
    */
   listAllVersions(id, token): Observable<any> {
     return this.http.get(`${this.url}api/save/versions/${id}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
 
   saveLTIDetails(id: string, token: string, data: any) {
     return this.http.post(`${this.url}api/lti/build/`, data, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
 
@@ -203,14 +192,10 @@ export class ApiService {
    */
   deleteBranch(id, branch, token) {
     return this.http.delete(`${this.url}api/save/versions/${id}/${branch}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
-
+  
   removeLTIDetails(id: string, token: string) {
     return this.http.delete(`${this.url}api/lti/delete/${id}`, {
       headers: new HttpHeaders({
@@ -218,6 +203,7 @@ export class ApiService {
       })
     });
   }
+
   /**
    * Delete specifit variation
    * @param id Project Id
@@ -227,12 +213,25 @@ export class ApiService {
    */
   deleteVariation(id, branch, version, token) {
     return this.http.delete(`${this.url}api/save/versions/${version}/${id}/${branch}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
 
+  updateLTIDetails(id: string, token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/update/`, data, {
+      headers: this.httpHeaders(token),
+    })
+  }
+
+  submitCircuit(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/submit/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  getSubmissions(consumerKey: string, token: string) {
+    return this.http.get(`${this.url}api/lti/submissions/${consumerKey}`, {
+      headers: this.httpHeaders(token),
+    })
+  }
 }

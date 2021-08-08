@@ -1,0 +1,41 @@
+.main-form{
+	margin: 10px;
+}
+
+.field-group{
+	width: 100%;
+	padding: 5%;
+}
+
+.field-group > * {
+	width: 100%;
+}
+
+.check-box-spacing {
+	margin-left: 5px;
+	padding-bottom: 10px;
+}
+
+.btn-lti {
+	margin: 20px;
+	align-self: center;
+}
+
+.centerize {
+	text-align: center;
+}
+
+.justify {
+	text-align: justify;
+}
+
+
+.image {
+	width: 562px !important;
+	height: 426px !important;
+}
+
+.card-size {
+	max-width: 600px;
+	max-height: 600px;
+}

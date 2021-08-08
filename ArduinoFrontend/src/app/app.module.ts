@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SimulatorComponent } from './simulator/simulator.component';
+// import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
@@ -28,9 +29,16 @@ import { SaveProjectDialogComponent } from './simulator/save-project-dialog/save
 import { OptionModalComponent } from './alert/option-modal/option-modal.component';
 import { MaterialModule } from './material/material.module';
 import { FormsService } from './forms.service';
-import { LTIFormDialogComponent } from './lti-form-dialog/lti-form-dialog.component';
 import { VersioningPanelComponent } from './versioning-panel/versioning-panel.component';
 import { CreateVariationDialogComponent } from './versioning-panel/create-variation-dialog/create-variation-dialog.component';
+import { LTIFormComponent } from './lti-form/lti-form.component';
+import { SubmissionlistComponent } from './submissionlist/submissionlist.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// import { GraphlistComponent } from './graphlist/graphlist.component';
+// import { GraphComponent } from './graph/graph.component';
+// import { GraphDataService } from './graph-data.service';
 
 /**
  * Monaco OnLoad Function
@@ -66,10 +74,11 @@ const monacoConfig: NgxMonacoEditorConfig = {
     OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
-    LTIFormDialogComponent,
     SaveProjectDialogComponent,
     VersioningPanelComponent,
     CreateVariationDialogComponent,
+    LTIFormComponent,
+    SubmissionlistComponent,
   ],
   imports: [
     BrowserModule,
@@ -79,6 +88,12 @@ const monacoConfig: NgxMonacoEditorConfig = {
     HttpClientModule,
     MaterialModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    MaterialModule,
+    ReactiveFormsModule,
+    DragDropModule,
+    ScrollingModule,
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, FormsService],

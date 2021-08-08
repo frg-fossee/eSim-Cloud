@@ -8,7 +8,7 @@ export class Login {
    * Get Auth Token
    */
   static getToken(): string {
-    return window.localStorage.getItem('esim_token');
+    return "6c11dab5b394100813ba8af1141cf3ba13b9e6b6"; // window.localStorage.getItem('esim_token');
   }
   /**
    * Logout and redirect to home page
