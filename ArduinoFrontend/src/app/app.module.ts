@@ -6,7 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SimulatorComponent } from './simulator/simulator.component';
-// import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
@@ -36,9 +35,6 @@ import { SubmissionlistComponent } from './submissionlist/submissionlist.compone
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-// import { GraphlistComponent } from './graphlist/graphlist.component';
-// import { GraphComponent } from './graph/graph.component';
-// import { GraphDataService } from './graph-data.service';
 
 /**
  * Monaco OnLoad Function
