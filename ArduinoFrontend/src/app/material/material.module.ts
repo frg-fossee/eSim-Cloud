@@ -23,6 +23,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     Material.MatCheckboxModule,
     Material.MatToolbarModule,
     BrowserAnimationsModule,
+    Material.MatExpansionModule,
+    Material.MatMenuModule,
   ],
   exports: [
     Material.MatDialogModule,
@@ -40,6 +42,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     Material.MatSelectModule,
     Material.MatCheckboxModule,
     BrowserAnimationsModule,
+    Material.MatExpansionModule,
+    Material.MatMenuModule,
   ]
 })
 export class MaterialModule { }
