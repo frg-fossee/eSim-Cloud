@@ -29,7 +29,9 @@ export class GalleryComponent implements OnInit {
    * On Init Page
    */
   ngOnInit() {
-    this.api.login().then(()=>{});
+    this.api.login().then(() => {
+
+    });
     // Add Page Title
     document.title = 'Gallery | Arduino On Cloud';
     // Show Loading animation

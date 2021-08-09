@@ -90,9 +90,9 @@ export class DashboardComponent implements OnInit {
   /**
    * On Init Dashboard Page
    */
-   ngOnInit() {
+  ngOnInit() {
     // In Angular  Development Mode.
-    this.api.login().then(()=>{
+    this.api.login().then(() => {
       this.readTempItems();
       this.readOnCloudItems();
     });
