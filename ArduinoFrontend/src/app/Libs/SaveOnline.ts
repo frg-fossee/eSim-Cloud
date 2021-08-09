@@ -49,6 +49,8 @@ export class SaveOnline {
       is_arduino: true,
       description,
       name,
+      branch,
+      version,
     };
     // Data Dump will contain Workspace Data and Circuit data
     const dataDump = {
