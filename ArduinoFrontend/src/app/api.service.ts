@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
 import { Login } from './Libs/Login';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Class For handlind API.
@@ -19,7 +20,7 @@ export class ApiService {
    * Constructor for api
    * @param http For http request & response
    */
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,public aroute:ActivatedRoute) {
   }
   /**
    * Save Project to Cloud
@@ -209,6 +210,26 @@ export class ApiService {
       })
     });
   }
+  /**
+   * Development Mode Login.
+   */
+   login()  {
+    return new Promise((reslove,reject)=>{
+      if (environment.production === false) {
+        this.aroute.queryParams.subscribe((paramData: any) => {
+          if (paramData.token != null) {
+            localStorage.setItem('esim_token', paramData.token);
+            reslove(1);
+          } else if (Login.getToken()) {
+            reslove(1);
+          }
+        });
+      } else {
+        reslove(0);
+      }
+    })
+  }
+  
   /**
    * Logout
    */
