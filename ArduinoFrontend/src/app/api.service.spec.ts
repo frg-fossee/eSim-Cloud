@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ApiService', () => {
   beforeEach(() => TestBed.configureTestingModule({
-    imports: [HttpClientTestingModule,RouterTestingModule]
+    imports: [HttpClientTestingModule, RouterTestingModule]
   }));
 
   it('should be created', () => {
