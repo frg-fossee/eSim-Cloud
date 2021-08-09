@@ -23,7 +23,7 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     public aroute: ActivatedRoute
-    ) {
+  ) {
   }
   /**
    * Save Project to Cloud
@@ -230,7 +230,7 @@ export class ApiService {
       } else {
         reslove(0);
       }
-    })
+    });
   }
 
   /**
