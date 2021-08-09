@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Login } from '../Libs/Login';
 import { ApiService } from '../api.service';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Class For Header Component (DO Eager Loading)
@@ -39,11 +40,29 @@ export class HeaderComponent implements OnInit {
    * Constructor for Header
    * @param api API Service
    */
-  constructor(private api: ApiService) { }
+  constructor(
+    private api: ApiService,
+    private aroute: ActivatedRoute) { }
   /**
    * On Init
    */
   ngOnInit() {
+    this.userInfo();
+  }
+  /**
+   * Redirect to login
+   */
+  Login() {
+    Login.redirectLogin(this.front);
+  }
+  /**
+   * Handle Logout
+   */
+  Logout() {
+    Login.logout();
+  }
+
+  userInfo() {
     // Get Login Token
     this.token = Login.getToken();
 
@@ -61,17 +80,5 @@ export class HeaderComponent implements OnInit {
     }
     // Initializing window
     this.window = window;
-  }
-  /**
-   * Redirect to login
-   */
-  Login() {
-    Login.redirectLogin(this.front);
-  }
-  /**
-   * Handle Logout
-   */
-  Logout() {
-    Login.logout();
   }
 }
