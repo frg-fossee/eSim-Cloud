@@ -52,9 +52,9 @@ class LibraryInline(InlineActionsMixin, admin.TabularInline):
             )
             library_set.save()
         messages.info(request, mark_safe(
-            f"Library {obj.library_name} moved to '\
-            '<a href='/api/admin/libAPI/libraryset/{library_set.id}'>'\
-            '{library_set.name}</a>."))
+            f"Library {obj.library_name} moved to \
+            <a href='/api/admin/libAPI/libraryset/{library_set.id}'>\
+            {library_set.name}</a>."))
         obj.library_set = library_set
         obj.save()
 
@@ -75,7 +75,7 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         # For new library set instance
         User = get_user_model()
-        user = User.objects.get(id=request.POST.get('user'))
+        user = User.objects.get(id=request.user.id)
         if obj.pk is None:
             obj = LibrarySet(
                 user=user,
@@ -86,6 +86,8 @@ class LibrarySetAdmin(InlineActionsModelAdminMixin, admin.ModelAdmin):
 
         # If the library set is being changed
         else:
+            user = (LibrarySet.objects.get(id=obj.pk)).user
+            obj.user = user
             obj.save()
 
         files = request.FILES.getlist('files')

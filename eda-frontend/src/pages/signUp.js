@@ -68,7 +68,7 @@ export default function SignUp () {
   const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
   // Function call for google oAuth sign up.
-  const handelGoogleSignup = () => {
+  const handleGoogleSignup = () => {
     var host = window.location.protocol + '//' + window.location.host
     dispatch(googleLogin(host))
   }
@@ -146,7 +146,7 @@ export default function SignUp () {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                   >
-                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* handle password visibility */}
                   </IconButton>
                 </InputAdornment>
               )
@@ -178,7 +178,7 @@ export default function SignUp () {
             fullWidth
             variant="outlined"
             color="primary"
-            onClick={handelGoogleSignup}
+            onClick={handleGoogleSignup}
             className={classes.submit}
           >
             <img alt="G" src={google} height="20" />&emsp; Sign Up With Google

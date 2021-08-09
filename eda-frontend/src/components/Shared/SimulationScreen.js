@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SimulationScreen ({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
-  const stitle = useSelector((state) => state.netlistReducer.title)
+  const stitle = useSelector((state) => state.saveSchematicReducer.title)
   const netlist = useSelector((state) => state.netlistReducer.netlist)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
@@ -90,14 +90,6 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     n: 0.000000001,
     p: 0.000000000001
   }
-
-  useEffect(() => {
-    console.log(history)
-  }, [history])
-
-  useEffect(() => {
-    console.log(comparingSim)
-  }, [comparingSim])
 
   useEffect(() => {
     if (close) {
@@ -521,7 +513,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                   {result.title}
                 </Typography>
                 <Typography variant="h5" align="center" component="p" gutterBottom>
-                  Simulation Result for {stitle} *
+                  Simulation Result for {stitle}
                 </Typography>
               </Paper>
             </Grid>
@@ -535,7 +527,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                     ? <Grid item xs={12} sm={12}>
                       <Paper className={classes.paper}>
                         <Typography variant="h4" align="center" gutterBottom>
-                        GRAPH OUTPUT
+                          GRAPH OUTPUT
                         </Typography>
                         <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
                           <TextField
@@ -552,29 +544,29 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                             }}
                           >
                             <option value='G'>
-                            Giga (G)
+                              Giga (G)
                             </option>
                             <option value='M'>
-                            Mega (MEG)
+                              Mega (MEG)
                             </option>
                             <option value='K'>
-                            Kilo (K)
+                              Kilo (K)
                             </option>
                             <option value='si'>
-                            SI UNIT
+                              SI UNIT
                             </option>
 
                             <option value='m'>
-                            Milli (m)
+                              Milli (m)
                             </option>
                             <option value='u'>
-                            Micro (u)
+                              Micro (u)
                             </option>
                             <option value='n'>
-                            Nano (n)
+                              Nano (n)
                             </option>
                             <option value='p'>
-                            Pico (p)
+                              Pico (p)
                             </option>
 
                           </TextField>
@@ -592,29 +584,29 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                             }}
                           >
                             <option value='G'>
-                            Giga (G)
+                              Giga (G)
                             </option>
                             <option value='M'>
-                            Mega (MEG)
+                              Mega (MEG)
                             </option>
                             <option value='K'>
-                            Kilo (K)
+                              Kilo (K)
                             </option>
                             <option value='si'>
-                            SI UNIT
+                              SI UNIT
                             </option>
 
                             <option value='m'>
-                            Milli (m)
+                              Milli (m)
                             </option>
                             <option value='u'>
-                            Micro (u)
+                              Micro (u)
                             </option>
                             <option value='n'>
-                            Nano (n)
+                              Nano (n)
                             </option>
                             <option value='p'>
-                            Pico (p)
+                              Pico (p)
                             </option>
 
                           </TextField>
@@ -655,15 +647,15 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               className={classes.selectEmpty}
                             >
                               <MenuItem value="">
-                              None
+                                None
                               </MenuItem>
                               {history.map(sim => {
-                                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
                               })}
                             </Select>
                           </FormControl>}
                           {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
-                          Download Graph Output
+                            Download Graph Output
                           </Button>}
                         </div>
                         {!compare && <Graph
@@ -766,7 +758,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                     ? <Grid item xs={12} sm={12}>
                       <Paper className={classes.paper}>
                         <Typography variant="h4" align="center" gutterBottom>
-                        OUTPUT
+                          OUTPUT
                         </Typography>
                         <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
                           <TextField
@@ -783,10 +775,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                             }}
                           >
                             <option value='Engineering'>
-                            Engineering Notation
+                              Engineering Notation
                             </option>
                             <option value='Scientific'>
-                            Scientific Notation
+                              Scientific Notation
                             </option>
                           </TextField>
 
@@ -826,10 +818,10 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               className={classes.selectEmpty}
                             >
                               <MenuItem value="">
-                              None
+                                None
                               </MenuItem>
                               {history.map(sim => {
-                                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toUTCString()}</MenuItem>
+                                return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
                               })}
                             </Select>
                           </FormControl>}
@@ -861,7 +853,6 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                                   </TableRow>
                                 ))
                                 }
-
                               </TableBody>
                             </Table>
                           </TableContainer>

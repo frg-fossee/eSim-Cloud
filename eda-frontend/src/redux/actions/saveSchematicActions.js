@@ -37,8 +37,8 @@ export const setSchXmlData = (xmlData) => (dispatch) => {
 }
 
 // Api call to save new schematic or updating saved schematic.
-export const saveSchematic = (title, description, xml, base64, newBranch = false, branchName = null, setVersions, versions, branchOpen, setBranchOpen) => (dispatch, getState) => {
-  const libraries = []
+export const saveSchematic = (title, description, xml, base64, newBranch = false, branchName = null, setVersions, ltiExists = false, versions, branchOpen, setBranchOpen, setSaveId = null) => (dispatch, getState) => {
+  var libraries = []
   getState().schematicEditorReducer.libraries.forEach(e => { libraries.push(e.id) })
   const project_id = getState().saveSchematicReducer.details.project_id
   const body = {
@@ -70,7 +70,7 @@ export const saveSchematic = (title, description, xml, base64, newBranch = false
     body.version = randomstring.generate({
       length: 20
     })
-    if (schSave.isSaved) {
+    if (schSave.isSaved && !ltiExists) {
       //  Updating saved schemaic
       body.save_id = schSave.details.save_id
       body.branch = decodeURI(window.location.href.split('branch=')[1])

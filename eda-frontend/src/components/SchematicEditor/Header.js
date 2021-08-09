@@ -161,7 +161,7 @@ function Header (props) {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
-  // handel notification snackbar open and close with message
+  // handle notification snackbar open and close with message
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -176,7 +176,7 @@ function Header (props) {
     setSnacOpen(false)
   }
 
-  // handel schematic Share Dialog box
+  // handle schematic Share Dialog box
   const [openShare, setShareOpen] = React.useState(false)
 
   const handleShareOpen = () => {
@@ -219,7 +219,7 @@ function Header (props) {
     }
   }
 
-  // handel display format of last saved status
+  // handle display format of last saved status
   function getDate (jsonDate) {
     const json = jsonDate
     const date = new Date(json)
@@ -228,7 +228,7 @@ function Header (props) {
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
-  // handel Copy Share Url
+  // handle Copy Share Url
   const textAreaRef = React.useRef(null)
 
   function copyToClipboard (e) {

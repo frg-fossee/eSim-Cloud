@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
@@ -11,13 +11,16 @@ import {
   CardHeader,
   Tooltip,
   ButtonBase,
-  Chip
+  Chip,
+  IconButton
 } from '@material-ui/core'
+import ScreenShareRoundedIcon from '@material-ui/icons/ScreenShareRounded'
 import ShareIcon from '@material-ui/icons/Share'
 import { makeStyles } from '@material-ui/core/styles'
 import { Link as RouterLink } from 'react-router-dom'
+import { deleteSchematic, fetchSchematics } from '../../redux/actions/index'
 import DeleteIcon from '@material-ui/icons/Delete'
-import { deleteSchematic } from '../../redux/actions/index'
+import { useDispatch } from 'react-redux'
 import ReportProblemIcon from '@material-ui/icons/ReportProblem'
 import SimpleSnackbar from '../Shared/Snackbar'
 
@@ -33,6 +36,26 @@ const useStyles = makeStyles((theme) => ({
   no: {
     color: 'red',
     marginLeft: '10px'
+  },
+  paper: {
+    position: 'absolute',
+    width: 400,
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3)
+  },
+  config: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(1)
+  },
+  delete: {
+    backgroundColor: 'red',
+    color: 'white'
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    maxWidth: 150
   }
 }))
 
@@ -80,8 +103,13 @@ function getDate (jsonDate) {
 // Card displaying overview of onCloud saved schematic.
 export default function SchematicCard ({ sch }) {
   const classes = useStyles()
+  const dispatch = useDispatch()
 
-  // To handel delete schematic snackbar
+  useEffect(() => {
+    dispatch(fetchSchematics())
+  }, [dispatch])
+
+  // To handle delete schematic snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
 
   const handleSnacClick = () => {
@@ -99,6 +127,11 @@ export default function SchematicCard ({ sch }) {
     win.focus()
   }
 
+  const clickViewLTI = () => {
+    const win = window.open()
+    win.location.href = `/eda/#/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`
+  }
+
   return (
     <>
       {/* User saved Schematic Overview Card */}
@@ -107,7 +140,8 @@ export default function SchematicCard ({ sch }) {
         <ButtonBase
           target="_blank"
           component={RouterLink}
-          to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
+          to={sch.lti_id ? `/editor?id=${sch.save_id}&version=${sch.version}&lti_id=${sch.lti_id}&branch=${sch.branch}` : `/editor?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`}
+          // to={'/editor?id=' + sch.save_id + '&version=' + sch.version + '&branch=' + sch.branch}
           style={{ width: '100%' }}
         >
           <CardActionArea>
@@ -135,6 +169,18 @@ export default function SchematicCard ({ sch }) {
         <CardActions>
           <Chip color='primary' variant='outlined' label={`Updated ${timeSince(sch.save_time)} ago...`} />
           {sch.project_id && <Chip variant='outlined' clickable={true} onClick={clickViewProject} label='Project' />}
+          {sch.lti_id && <Chip variant='outlined' clickable={true} onClick={clickViewLTI} label='LTI' />}
+          {/* Display create LTI app option  */}
+          {!sch.lti_id && <Tooltip title='Create LTI app' placement="bottom" arrow>
+            <IconButton
+              component={RouterLink}
+              color='secondary'
+              // style={{ marginLeft: 'auto' }}
+              // fontSize="small"
+              to={`/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`} >
+              <ScreenShareRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>}
           {/* Display delete option */}
           {!sch.project_id &&
           <Button onClick={() => { handleSnacClick() }}>
@@ -169,5 +215,6 @@ export default function SchematicCard ({ sch }) {
 
 SchematicCard.propTypes = {
   sch: PropTypes.object,
-  createCircuit: PropTypes.func
+  createCircuit: PropTypes.func,
+  consKey: PropTypes.string
 }

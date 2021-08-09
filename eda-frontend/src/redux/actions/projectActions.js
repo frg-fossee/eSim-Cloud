@@ -17,7 +17,6 @@ export const createProject = (save_id, details) => (dispatch, getState) => {
   if (token) {
     config.headers.Authorization = `Token ${token}`
   }
-
   api.post(`/publish/project/${save_id}`, details, config)
     .then(
       (res) => {

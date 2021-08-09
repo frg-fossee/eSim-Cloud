@@ -106,7 +106,7 @@ function ProjectTimeline ({ history, isOwner }) {
                 <TimelineConnector />
               </TimelineSeparator>
               <TimelineContent>
-                <Typography color='primary'>{timeline[0].transition.event_creator}</Typography>
+                <Typography color='primary'>{timeline[timeline.length - 1].transition.event_creator}</Typography>
               </TimelineContent>
             </TimelineItem>}
 
