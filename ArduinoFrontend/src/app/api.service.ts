@@ -161,7 +161,6 @@ export class ApiService {
   fetchSamples(): Observable<any> {
     return this.http.get('./assets/samples/Samples.json');
   }
-<<<<<<< HEAD
   /**
    * Logout
    */
@@ -173,55 +172,4 @@ export class ApiService {
       })
     }).subscribe(() => { Login.logout(); }, (e) => { console.log(e) })
   }
-=======
-
-  /**
-   * List all the variations with save id
-   * @param id Project id
-   * @param token Auth Token
-   */
-  listAllVersions(id, token): Observable<any> {
-    return this.http.get(`${this.url}api/save/versions/${id}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
-    });
-  }
-
-  /**
-   * Delete specific branch
-   * @param id Project Id
-   * @param branch Branch of variation
-   * @param token Auth Token
-   */
-  deleteBranch(id, branch, token) {
-    return this.http.delete(`${this.url}api/save/versions/${id}/${branch}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
-    });
-  }
-
-  /**
-   * Delete specifit variation
-   * @param id Project Id
-   * @param branch Branch of variation
-   * @param version Version of variation
-   * @param token Auth Token
-   */
-  deleteVariation(id, branch, version, token) {
-    return this.http.delete(`${this.url}api/save/versions/${version}/${id}/${branch}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
-      })
-    });
-  }
-
->>>>>>> upstream/develop
 }
