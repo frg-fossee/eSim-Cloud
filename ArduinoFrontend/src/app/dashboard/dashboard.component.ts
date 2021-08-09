@@ -90,9 +90,24 @@ export class DashboardComponent implements OnInit {
   /**
    * On Init Dashboard Page
    */
-  ngOnInit() {
-    this.readTempItems();
-    this.readOnCloudItems();
+   ngOnInit() {
+    // In Angular  Development Mode.
+    if (environment.production === false) {
+      this.aroute.queryParams.subscribe((paramData: any) => {
+        if (paramData.token != null) {
+          localStorage.setItem('esim_token', paramData.token);
+          this.readTempItems();
+          this.readOnCloudItems();
+        } else if (Login.getToken()) {
+          this.readTempItems();
+          this.readOnCloudItems();
+        }
+      });
+    } else {
+      this.readTempItems();
+      this.readOnCloudItems();
+    }
+
   }
 
   /**
