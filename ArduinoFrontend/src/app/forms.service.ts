@@ -15,7 +15,7 @@ export class FormsService {
     score: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(1)]),
     test_case: new FormControl(''),
     initial_schematic: new FormControl('', Validators.required),
-    acceptSubmissions: new FormControl(true)
+    scored: new FormControl(true)
   })
 
   initialize() {
@@ -26,7 +26,7 @@ export class FormsService {
       score: 0,
       test_case: '',
       initial_schematic: '',
-      acceptSubmissions: true
+      scored: true
     });
   }
 }
