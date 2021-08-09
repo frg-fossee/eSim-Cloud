@@ -20,7 +20,10 @@ export class ApiService {
    * Constructor for api
    * @param http For http request & response
    */
-  constructor(private http: HttpClient,public aroute:ActivatedRoute) {
+  constructor(
+    private http: HttpClient,
+    public aroute: ActivatedRoute
+    ) {
   }
   /**
    * Save Project to Cloud
@@ -213,8 +216,8 @@ export class ApiService {
   /**
    * Development Mode Login.
    */
-   login()  {
-    return new Promise((reslove,reject)=>{
+  login() {
+    return new Promise((reslove, reject) => {
       if (environment.production === false) {
         this.aroute.queryParams.subscribe((paramData: any) => {
           if (paramData.token != null) {
@@ -229,11 +232,11 @@ export class ApiService {
       }
     })
   }
-  
+
   /**
    * Logout
    */
-   logout(token): void {
+  logout(token): void {
     console.log(token);
     this.http.post(`${this.url}api/auth/token/logout/`, '', {
       headers: new HttpHeaders({
