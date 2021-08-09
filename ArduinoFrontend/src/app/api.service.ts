@@ -214,11 +214,11 @@ export class ApiService {
    */
    logout(token): void {
     console.log(token);
-    this.http.post(`${this.url}api/auth/token/logout/`,'', {
+    this.http.post(`${this.url}api/auth/token/logout/`, '', {
       headers: new HttpHeaders({
         Authorization: `Token ${token}`
       })
-    }).subscribe(() => { Login.logout(); }, (e) => { console.log(e) })
+    }).subscribe(() => { Login.logout(); }, (e) => { console.log(e); });
   }
 
 }
