@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
+import { Login } from './Libs/Login';
 
 /**
  * Class For handlind API.
@@ -207,6 +208,17 @@ export class ApiService {
         'Access-Control-Allow-Origin': '*',
       })
     });
+  }
+  /**
+   * Logout
+   */
+   logout(token): void {
+    console.log(token);
+    this.http.post(`${this.url}api/auth/token/logout/`,'', {
+      headers: new HttpHeaders({
+        Authorization: `Token ${token}`
+      })
+    }).subscribe(() => { Login.logout(); }, (e) => { console.log(e) })
   }
 
 }
