@@ -96,7 +96,9 @@ export class DashboardComponent implements OnInit {
       this.aroute.queryParams.subscribe((paramData: any) => {
         if (paramData.token != null) {
           localStorage.setItem('esim_token', paramData.token);
-          // this.userInfo();
+          this.readTempItems();
+          this.readOnCloudItems();
+        } else if (Login.getToken()) {
           this.readTempItems();
           this.readOnCloudItems();
         }
@@ -118,7 +120,6 @@ export class DashboardComponent implements OnInit {
     // if token is present get the list of project created by a user
     if (token) {
       this.api.listProject(token).subscribe((val: any[]) => {
-        console.log(val);
         this.online = val;
       }, err => console.log(err));
     } else {

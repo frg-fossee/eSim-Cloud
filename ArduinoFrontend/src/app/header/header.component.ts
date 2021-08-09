@@ -62,7 +62,8 @@ export class HeaderComponent implements OnInit {
    * Handle Logout
    */
   Logout() {
-    Login.logout();
+    // Login.logout();
+    this.api.logout(this.token);
   }
   /**
    * Getting User Information.
