@@ -244,5 +244,18 @@ export class ApiService {
       })
     }).subscribe(() => { Login.logout(); }, (e) => { console.log(e); });
   }
+  /**
+   * Specific User Role.
+   * @param token Auth Token
+   */
+   getRole(token): Observable<any> {
+    return this.http.get(`${this.url}api/workflow/role/`, {
+      headers: new HttpHeaders({
+        // 'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        // 'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
 
 }

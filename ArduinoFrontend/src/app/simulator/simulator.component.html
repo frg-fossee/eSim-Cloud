@@ -207,9 +207,17 @@
       style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
 
   <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
-    style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+    style="margin-right: 12px;align-items: center;background: transparent;" (click)="autoLayout()"><i
       style="font-size: 20px;color: black;"
       [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
+
+  <button *ngIf="isStaff" mat-icon-button matTooltip="Add to Gallery" class="mt-1"
+    style="margin-right: 30px;align-items: center;background: transparent;" (click)="addToGallery()">
+    <mat-icon aria-hidden="false" style="font-size: 28px;color: black;" aria-label="Example Add to gallery icon">
+      add_photo_alternate</mat-icon>
+  </button>
+
+
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 

@@ -102,6 +102,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
+
+  /**
+   * Determines whether staff is
+   */
+  isStaff: boolean = false;
   /**
    * Simulator Component constructor
    * @param aroute Activated Route
@@ -151,6 +156,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       // if token is valid get User name
       this.token = Login.getToken();
       if (this.token) {
+        this.api.getRole(this.token).subscribe((result: any) => {
+          result.is_type_staff == true ? this.isStaff = true : this.isStaff = false;
+        });
         this.api.userInfo(this.token).subscribe((tmp) => {
           this.username = tmp.username;
         }, err => {
@@ -643,7 +651,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Logout and clear token
    */
   Logout() {
-    Login.logout();
+    // Login.logout();
+    this.api.logout(Login.getToken());
   }
   RouteToSimulator() {
     this.window.location = '../#/simulator';
@@ -845,6 +854,13 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         charactersLength));
     }
     return result;
+  }
+
+  /**
+   * Add to gallery component.
+   */
+  addToGallery() {
+
   }
 
 }

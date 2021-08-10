@@ -48,6 +48,17 @@ export class DashboardComponent implements OnInit {
   /**
    * Close Project Properties dialog
    */
+
+  /**
+   * Group role of dashboard component
+   */
+  groupRole =[];
+
+  /**
+   * Token
+   */
+  token;
+
   closeProject() {
     document.documentElement.style.overflow = 'auto';
     const closeProject = document.getElementById('openproject');
@@ -93,9 +104,23 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     // In Angular  Development Mode.
     this.api.login().then(() => {
+      this.token =Login.getToken()
+      this.readRoles(this.token);
       this.readTempItems();
       this.readOnCloudItems();
     });
+  }
+
+  /**
+   * Reads roles
+   */
+  readRoles(token: string) {
+    this.api.getRole(token).subscribe((result: any) => {
+      console.log(result);
+      this.groupRole =result.group;
+    }, (e) => {
+      console.log(e);
+    })
   }
 
   /**

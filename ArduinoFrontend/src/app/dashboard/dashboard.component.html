@@ -1,10 +1,6 @@
 <app-header title="Dashboard"></app-header>
 
 <div id="main">
-  <h3 style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 1em;">
-    Arduino
-    Circuits</h3>
-
   <!--<div >
       <a type="button" class="btn btn-primary mb-3" [routerLink]="['/simulator']">+ New
         Circuit</a>
@@ -18,16 +14,29 @@
         <button type="submit" class="btn btn-primary mb-2"><i class="fa fa-search"></i></button>
       </form>
     </div>-->
+
   <div class="row" style="margin: 1em">
+    <div class="col-sm-5" *ngIf="token">
+      <!-- <mat-sidenav-container class="role-container">
+        <mat-sidenav mode="side" opened>Sidenav content</mat-sidenav>
+        <mat-sidenav-content>Main content</mat-sidenav-content>
+      </mat-sidenav-container> -->
+      <div class="role-container">
+        <div *ngFor="let role of groupRole" style="padding: 1rem;border-bottom: 1px solid black;">
+          {{role}}
+        </div>
+      </div>
+    </div>
     <div class="col-sm-3">
+      <h3
+        style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 1em;">
+        Arduino
+        Circuits</h3>
       <a type="button" class="btn btn-primary mb-3 m-2" [routerLink]="['/simulator']">+ New
         Circuit</a>
       <label for="importFileBTN" mat-icon-button class="btn btn-primary mb-3 m-2">Import Circuit</label>
       <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file"
-        (change)="ImportCircuit($event)" hidden />
-    </div>
-    <div class="col-sm-6"></div>
-    <div class="col-sm-3">
+        (change)="ImportCircuit($event)" hidden /><br />
       <form class="form-inline" (submit)="SearchCircuits(searchBox)">
         <div style="flex:1 1 auto;">
           <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
@@ -35,7 +44,10 @@
         <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
       </form>
     </div>
+    <!-- <div class="col-sm-5"></div> -->
+    <div class="col-sm-3">
 
+    </div>
   </div>
 
 

@@ -94,3 +94,16 @@ button[type="submit"] {
     margin-left: 5px;
   }
 }
+.example-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /* background: #eee; */
+}
+.role-container{
+  width: 300px;
+  margin-bottom: 20px;
+  box-shadow: 2px 0px #495057;
+}
