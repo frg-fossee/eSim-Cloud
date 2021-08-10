@@ -8,6 +8,9 @@ import { ActivatedRoute } from '@angular/router';
 /**
  * Class For handlind API.
  */
+/**
+ * Injectable
+ */
 @Injectable({
   providedIn: 'root'
 })
@@ -248,7 +251,7 @@ export class ApiService {
    * Specific User Role.
    * @param token Auth Token
    */
-   getRole(token): Observable<any> {
+  getRole(token): Observable<any> {
     return this.http.get(`${this.url}api/workflow/role/`, {
       headers: new HttpHeaders({
         // 'Content-Type': 'application/json',
@@ -256,6 +259,13 @@ export class ApiService {
         // 'Access-Control-Allow-Origin': '*',
       })
     });
+  }
+
+  /**
+   * Saves staff gallery
+   */
+  saveStaffGallery() {
+
   }
 
 }

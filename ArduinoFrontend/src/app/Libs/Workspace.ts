@@ -555,6 +555,7 @@ export class Workspace {
       x - offsetX,
       y - offsetY
     );
+    console.log(obj);
     window['scope'][classString].push(obj);
     // Push dump to Undo stack & Reset
     UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
