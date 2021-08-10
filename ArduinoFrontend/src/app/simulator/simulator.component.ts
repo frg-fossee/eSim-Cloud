@@ -643,7 +643,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Logout and clear token
    */
   Logout() {
-    Login.logout();
+    // Login.logout();
+    this.api.logout(Login.getToken());
   }
   RouteToSimulator() {
     this.window.location = '../#/simulator';
