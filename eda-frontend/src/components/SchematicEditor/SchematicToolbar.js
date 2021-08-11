@@ -184,7 +184,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
   }
 
   const handleChangeSim = (e) => {
-    console.log('in here')
     if (e.target.value === null) {
       setActiveSimResult(null)
     } else {
@@ -278,7 +277,8 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
           id: ltiId,
           user_id: ltiUserId,
           oauth_nonce: ltiNonce
-        }
+        },
+        student_simulation: activeSimResult
       }
       console.log(body)
       api.post('lti/submit/', body)
@@ -784,7 +784,7 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
       <span className={classes.pipe}>|</span>
-      {((ltiId && ltiUserId && ltiNonce) || consumerKey) && scored && <Tooltip title="Submit">
+      {((ltiId && ltiUserId && ltiNonce) || consumerKey) && scored && activeSimResult && <Tooltip title="Submit">
         <Button size="small" variant="outlined" color="primary" className={classes.button} endIcon={<Icon>send</Icon>}
           onClick={onSubmission} >
           Submit
@@ -819,7 +819,6 @@ export default function SchematicToolbar ({ mobileClose, gridRef, ltiSimResult, 
           label="Simulations"
           className={classes.selectEmpty}
         >
-          <MenuItem key={-1} value="None">None</MenuItem>
           {ltiSimHistory.map(sim => {
             return <MenuItem key={sim.id} value={sim.id}>{sim.simulation_type} at {sim.simulation_time.toLocaleString()}</MenuItem>
           })}

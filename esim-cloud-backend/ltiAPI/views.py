@@ -18,6 +18,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from pylti.common import LTIException, verify_request_common, post_message, \
     generate_request_xml, LTIPostMessageException
+from .process_submission import process_submission
 
 
 def denied(r):
@@ -295,10 +296,11 @@ class LTIPostGrade(APIView):
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
         schematic.save()
+        score = process_submission(consumer.test_case.result, sim.result)
         submission_data = {
             "project": consumer,
             "student": schematic.owner,
-            "score": consumer.score,
+            "score": score,
             "ltisession": lti_session,
             "schematic": schematic,
             "student_simulation": sim
