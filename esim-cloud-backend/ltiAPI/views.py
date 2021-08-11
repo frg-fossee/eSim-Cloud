@@ -291,6 +291,7 @@ class LTIPostGrade(APIView):
                 "error": "No LTI session exists for this ID"
             }, status=status.HTTP_400_BAD_REQUEST)
         consumer = lticonsumer.objects.get(id=lti_session.lti_consumer.id)
+        sim = simulation.objects.get(id=request.data['student_simulation'])
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
         schematic.save()
@@ -299,7 +300,8 @@ class LTIPostGrade(APIView):
             "student": schematic.owner,
             "score": consumer.score,
             "ltisession": lti_session,
-            "schematic": schematic
+            "schematic": schematic,
+            "student_simulation": sim
         }
         submission = Submission.objects.create(**submission_data)
         xml = generate_request_xml(
@@ -331,8 +333,13 @@ class LTIPostGrade(APIView):
 class GetLTISubmission(APIView):
     permission_classes = [IsAuthenticated, ]
 
-    def get(self, request, consumer_key):
-        consumer = lticonsumer.objects.get(consumer_key=consumer_key)
+    def get(self, request, save_id, version, branch):
+        consumer = lticonsumer.objects.get(
+            model_schematic__save_id=save_id,
+            model_schematic__branch=branch,
+            model_schematic__version=version)
+        print(consumer)
         submissions = consumer.submission_set.all()
+        print(submissions)
         serialized = GetSubmissionsSerializer(submissions, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)

@@ -59,7 +59,7 @@ export default function SubmissionTable() {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.get(`/lti/submissions/${url.consumer_key}`, config)
+    api.get(`/lti/submissions/${url.id}/${url.version}/${url.branch}`, config)
       .then(
         (res) => {
           for (var i = 0; i < res.data.length; i++) {
@@ -117,6 +117,11 @@ export default function SubmissionTable() {
     }
   }
 
+  const handleButtonClick = () => {
+    var url = queryString.parse(window.location.href.split('submission')[1])
+    window.location.href = `/eda/#/lti?id=${url.id}&version=${url.version}&branch=${url.branch}`
+  }
+
   return (
     <>
       <TableContainer>
@@ -152,8 +157,8 @@ export default function SubmissionTable() {
           </TableBody>
         </Table> : <Typography style={{ textAlign: 'center' }}><h1>No submissions for this assignment</h1></Typography>}
       </TableContainer>
-      <Button style={{ marginTop: '2%' }} disableElevation variant="contained" color="primary" href='/eda/#/dashboard' startIcon={<ArrowBackIcon />}>
-        Return to Dashboard
+      <Button style={{ marginTop: '2%' }} disableElevation variant="contained" color="primary" onClick={handleButtonClick} startIcon={<ArrowBackIcon />}>
+        Return to LTI App
       </Button>
     </>
   )

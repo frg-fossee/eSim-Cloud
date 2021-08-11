@@ -453,7 +453,7 @@ export default function LTIConfig() {
               disableElevation
               color="primary"
               variant="contained"
-              href={`#/submission?consumer_key=${ltiDetails.consumerKey}`}
+              href={`#/submission?id=${ltiDetails.modelSchematic.save_id}&version=${ltiDetails.modelSchematic.version}&branch=${ltiDetails.modelSchematic.branch}`}
             >
               Submissions
             </Button>}

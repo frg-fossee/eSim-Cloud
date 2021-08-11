@@ -128,8 +128,7 @@ export default function SchematicCard ({ sch }) {
   }
 
   const clickViewLTI = () => {
-    const win = window.open()
-    win.location.href = `/eda/#/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`
+    window.location.href = `/eda/#/lti?id=${sch.save_id}&version=${sch.version}&branch=${sch.branch}`
   }
 
   return (
