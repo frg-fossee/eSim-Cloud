@@ -1,18 +1,21 @@
 import React, { useEffect } from 'react'
 import {
   Button,
-  Typography
+  Typography,
+  IconButton,
+  Input,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableContainer,
 } from '@material-ui/core'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
 import { makeStyles } from '@material-ui/core/styles'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
+import FilterListIcon from '@material-ui/icons/FilterList'
 import queryString from 'query-string'
 import api from '../../utils/Api'
 
@@ -43,9 +46,11 @@ export default function SubmissionTable() {
   const [sortData, setSortData] = React.useState([])
   const [sortOrderUser, setSortOrderUser] = React.useState(sortOrder.Unsorted)
   const [sortOrderTime, setSortOrderTime] = React.useState(sortOrder.Unsorted)
+  const [anchorEl, setAnchorEl] = React.useState(null)
 
   useEffect(() => {
     setSortData(responseData)
+    console.log(responseData)
   }, [responseData])
 
   useEffect(() => {
@@ -79,11 +84,19 @@ export default function SubmissionTable() {
     setSortOrderTime(0)
     var temp = responseData.slice()
     if (sortOrderUser === 0) {
-      temp.sort((a, b) => a.student.username < b.student.username)
+      temp.sort((a, b) => {
+        if (a.student.username > b.student.username) return -1
+        else if (a.student.username < b.student.username) return 1
+        return 0
+      })
       setSortData(temp)
       setSortOrderUser(1)
     } else if (sortOrderUser === 1) {
-      temp.sort((a, b) => a.student.username > b.student.username)
+      temp.sort((a, b) => {
+        if (a.student.username < b.student.username) return -1
+        else if (a.student.username > b.student.username) return 1
+        return 0
+      })
       setSortData(temp)
       setSortOrderUser(2)
     } else {
@@ -117,6 +130,26 @@ export default function SubmissionTable() {
     }
   }
 
+  const onSearch = (e) => {
+    setSortData(responseData.filter((o) =>
+      // eslint-disable-next-line
+      Object.keys(o).some((k) => {
+        if ((k === 'student') && String(o[k]['username']).toLowerCase().includes(e.target.value.toLowerCase())) {
+          return String(o[k]['username']).toLowerCase().includes(e.target.value.toLowerCase())
+        }
+      }
+      )
+    ))
+  }
+
+  const handleFilterOpen = (e) => {
+    if (anchorEl) {
+      setAnchorEl(null)
+    } else {
+      setAnchorEl(e.currentTarget)
+    }
+  }
+
   const handleButtonClick = () => {
     var url = queryString.parse(window.location.href.split('submission')[1])
     window.location.href = `/eda/#/lti?id=${url.id}&version=${url.version}&branch=${url.branch}`
@@ -124,6 +157,8 @@ export default function SubmissionTable() {
 
   return (
     <>
+      <IconButton onClick={handleFilterOpen} style={{ float: 'right' }} ><FilterListIcon /></IconButton>
+      <Input style={{ float: 'right' }} onChange={(e) => onSearch(e)} placeholder='Search' />
       <TableContainer>
         {sortData.length !== 0 ? <Table className={classes.table} aria-label="submission table">
           <TableHead>
