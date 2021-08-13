@@ -297,7 +297,7 @@ class LTIPostGrade(APIView):
         schematic.shared = True
         schematic.save()
         score, comparison_result = process_submission(
-            consumer.test_case.result, sim.result)
+            consumer.test_case.result, sim.result, consumer.sim_params)
         submission_data = {
             "project": consumer,
             "student": schematic.owner,
@@ -328,7 +328,7 @@ class LTIPostGrade(APIView):
                         "message": msg,
                         "score": score,
                         "given": sim.result,
-                        "comparison_result": comparison_result
+                        "comparison_result": comparison_result,
                     }
                 else:
                     response_data = {
@@ -336,7 +336,8 @@ class LTIPostGrade(APIView):
                         "score": score,
                         "expected": consumer.test_case.result,
                         "given": sim.result,
-                        "comparison_result": comparison_result
+                        "comparison_result": comparison_result,
+                        "sim_params": consumer.sim_params,
                     }
                 return Response(data=response_data, status=status.HTTP_200_OK)
 
