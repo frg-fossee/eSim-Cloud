@@ -296,7 +296,8 @@ class LTIPostGrade(APIView):
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
         schematic.save()
-        score = process_submission(consumer.test_case.result, sim.result)
+        score, comparison_result = process_submission(
+            consumer.test_case.result, sim.result)
         submission_data = {
             "project": consumer,
             "student": schematic.owner,
@@ -322,8 +323,22 @@ class LTIPostGrade(APIView):
                 submission.lms_success = True
                 submission.save()
                 msg = 'Your score was submitted. Great job!'
-                return Response(data={"message": msg,"score":score,"expected":consumer.test_case.result,"given":sim.result},
-                                status=status.HTTP_200_OK)
+                if consumer.scored:
+                    response_data = {
+                        "message": msg,
+                        "score": score,
+                        "given": sim.result,
+                        "comparison_result": comparison_result
+                    }
+                else:
+                    response_data = {
+                        "message": msg,
+                        "score": score,
+                        "expected": consumer.test_case.result,
+                        "given": sim.result,
+                        "comparison_result": comparison_result
+                    }
+                return Response(data=response_data, status=status.HTTP_200_OK)
 
         except LTIException:
             submission.lms_success = False

@@ -61,4 +61,4 @@ def process_submission(expected_simulation, given_simulation):
             len(comparison_result['different']) + \
             len(comparison_result['missing'])
         score += len(comparison_result['same'])/total
-    return score
+    return score, comparison_result

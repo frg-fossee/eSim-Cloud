@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function TabPanel (props) {
+function TabPanel(props) {
   const { children, value, index } = props
 
   return (
@@ -62,7 +62,7 @@ TabPanel.propTypes = {
 }
 
 // Card displaying user my schematics page header.
-function MainCard () {
+function MainCard() {
   const classes = useStyles()
 
   return (
@@ -93,7 +93,7 @@ function MainCard () {
   )
 }
 
-export default function SchematicsList ({ ltiDetails = null }) {
+export default function SchematicsList({ ltiDetails = null }) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schematics = useSelector(state => state.dashboardReducer.schematics)

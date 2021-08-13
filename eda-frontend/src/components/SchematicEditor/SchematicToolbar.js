@@ -185,6 +185,7 @@ export default function SchematicToolbar({
             return 0;
           });
           setLtiSimHistory(res.data);
+          setActiveSimResult(res.data[0].id);
         })
         .catch((err) => {
           console.log(err);
@@ -356,13 +357,6 @@ export default function SchematicToolbar({
             "There was an error while submitting. Please try again later!"
           );
         })
-        .catch((err) => {
-          console.log(err);
-          setSubmit(true);
-          setSubmitMessage(
-            "There was an error while submitting. Please try again later!"
-          );
-        });
     }
     // eslint-disable-next-line
   }, [saveId]);
@@ -724,7 +718,7 @@ export default function SchematicToolbar({
         close={handleShortClose}
       />
 
-      <Tooltip title="New">
+      {!ltiId && <Tooltip title="New">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -735,8 +729,8 @@ export default function SchematicToolbar({
         >
           <CreateNewFolderOutlinedIcon fontSize="small" />
         </IconButton>
-      </Tooltip>
-      <Tooltip title="Open (Ctrl + O)">
+      </Tooltip>}
+      {!ltiId && <Tooltip title="Open (Ctrl + O)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -745,14 +739,14 @@ export default function SchematicToolbar({
         >
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
-      </Tooltip>
-      <OpenSchDialog
+      </Tooltip>}
+      {!ltiId &&<OpenSchDialog
         open={schOpen}
         close={handleSchDialClose}
         openLocal={handelLocalSchOpen}
         openKicad={handleKicadFileUpload}
-      />
-      <Tooltip title="Save (Ctrl + S)">
+      />}
+      {!ltiId && <Tooltip title="Save (Ctrl + S)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -761,14 +755,14 @@ export default function SchematicToolbar({
         >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
-      </Tooltip>
+      </Tooltip>}
       <SimpleSnackbar
         open={snacOpen}
         close={handleSnacClose}
         message={message}
       />
-      <span className={classes.pipe}>|</span>
-      <Tooltip title="Export (Ctrl + E)">
+      {!ltiId && <span className={classes.pipe}>|</span>}
+      {!ltiId && <Tooltip title="Export (Ctrl + E)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -777,8 +771,8 @@ export default function SchematicToolbar({
         >
           <SystemUpdateAltOutlinedIcon fontSize="small" />
         </IconButton>
-      </Tooltip>
-      <Tooltip title="Image Export (Ctrl + Shift + E)">
+      </Tooltip>}
+      {!ltiId && <Tooltip title="Image Export (Ctrl + Shift + E)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -787,9 +781,9 @@ export default function SchematicToolbar({
         >
           <ImageOutlinedIcon fontSize="small" />
         </IconButton>
-      </Tooltip>
-      <ImageExportDialog open={imgopen} onClose={handleImgClose} />
-      <Tooltip title="Print Preview (Ctrl + P)">
+      </Tooltip>}
+      {!ltiId && <ImageExportDialog open={imgopen} onClose={handleImgClose} />}
+      {!ltiId && <Tooltip title="Print Preview (Ctrl + P)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -798,8 +792,8 @@ export default function SchematicToolbar({
         >
           <PrintOutlinedIcon fontSize="small" />
         </IconButton>
-      </Tooltip>
-      <span className={classes.pipe}>|</span>
+      </Tooltip>}
+      {!ltiId && <span className={classes.pipe}>|</span>}
 
       <Tooltip title="Simulate">
         <IconButton
@@ -953,7 +947,7 @@ export default function SchematicToolbar({
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
       <span className={classes.pipe}>|</span>
-      {((ltiId && ltiUserId && ltiNonce) || consumerKey) &&
+      {/* {((ltiId && ltiUserId && ltiNonce) || consumerKey) &&
         scored &&
         activeSimResult && (
           <Tooltip title="Submit">
@@ -968,7 +962,7 @@ export default function SchematicToolbar({
               Submit
             </Button>
           </Tooltip>
-        )}
+        )} */}
       {consumerKey && (
         <>
           <Button
@@ -1025,26 +1019,26 @@ export default function SchematicToolbar({
                 );
               })}
             </Select>
-            {((ltiId && ltiUserId && ltiNonce) || consumerKey) &&
-              scored &&
-              activeSimResult && (
-                <Tooltip title="Submit">
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    className={classes.button}
-                    endIcon={<Icon>send</Icon>}
-                    onClick={onSubmission}
-                  >
-                    Submit
-                  </Button>
-                </Tooltip>
-              )}
           </FormControl>
         </div>
       )}
-      <SubmitResults show={results} setResults={setResults} results={submissionDetails}/>
+      {((ltiId && ltiUserId && ltiNonce) || consumerKey) &&
+        scored &&
+        activeSimResult && (
+          <Tooltip title="Submit">
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              className={classes.button}
+              endIcon={<Icon>send</Icon>}
+              onClick={onSubmission}
+            >
+              Submit
+            </Button>
+          </Tooltip>
+        )}
+      <SubmitResults show={results} setResults={setResults} results={submissionDetails} />
       <IconButton
         color="inherit"
         aria-label="open drawer"
