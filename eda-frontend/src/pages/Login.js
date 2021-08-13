@@ -16,6 +16,7 @@ import {
   InputAdornment,
   IconButton
 } from '@material-ui/core'
+import Tooltip from '@material-ui/core/Tooltip'
 import { makeStyles } from '@material-ui/core/styles'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import Visibility from '@material-ui/icons/Visibility'
@@ -51,34 +52,67 @@ var url = ''
 export default function SignIn (props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
+  const [close, setClose] = useState(false)
 
   const dispatch = useDispatch()
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
 
   useEffect(() => {
+    const query = new URLSearchParams(props.location.search)
+    if (query.get('logout')) {
+      localStorage.removeItem('esim_token')
+    }
+  // eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
     dispatch(authDefault())
     document.title = 'Login - eSim '
+
+    const user = localStorage.getItem('username')
+    if (user && user !== '') {
+      setUsername(user)
+      setRemember(true)
+    }
+
+    const query = new URLSearchParams(props.location.search)
+    if (query.get('close')) {
+      setClose(true)
+    }
+
     const ardUrl = localStorage.getItem('ard_redurl')
     if (ardUrl && ardUrl !== '') {
       url = ardUrl
     } else if (props.location.search !== '') {
-      const query = new URLSearchParams(props.location.search)
       url = query.get('url')
       localStorage.setItem('ard_redurl', url)
     } else {
       url = ''
     }
-  }, [dispatch, props.location.search])
+  }, [dispatch, props.location.search, close])
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [remember, setRemember] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const handleClickShowPassword = () => setShowPassword(!showPassword)
   const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
   // Function call for normal user login.
-  const handleLogin = () => {
-    dispatch(login(username, password, url))
+  const handleLogin = (event) => {
+    event.preventDefault()
+    if (remember) {
+      localStorage.setItem('username', username)
+    } else if (username === localStorage.getItem('username')) {
+      localStorage.setItem('username', '')
+    }
+    if (!close) {
+      dispatch(login(username, password, url))
+    }
+    if (close) {
+      dispatch(login(username, password, 'close'))
+    }
+    localStorage.removeItem('ard_redurl')
   }
 
   // Function call for google oAuth login.
@@ -103,7 +137,7 @@ export default function SignIn (props) {
           {auth.errors}
         </Typography>
 
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleLogin} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -127,14 +161,16 @@ export default function SignIn (props) {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton
-                    size="small"
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
-                  </IconButton>
+                  <Tooltip title={'Show Password'} aria-label={'Show Password'} arrow>
+                    <IconButton
+                      size="small"
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                    >
+                      {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* handle password visibility */}
+                    </IconButton>
+                  </Tooltip>
                 </InputAdornment>
               )
             }}
@@ -145,14 +181,21 @@ export default function SignIn (props) {
             autoComplete="current-password"
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={
+              <Checkbox
+                value="remember"
+                checked={remember}
+                onChange={ () => { setRemember(!remember) }}
+                color="primary" />
+            }
             label="Remember me"
           />
           <Button
             fullWidth
             variant="contained"
             color="primary"
-            onClick={handleLogin}
+            type="submit"
+            // onClick={handleLogin}
             className={classes.submit}
           >
             Login

@@ -45,16 +45,31 @@
       </li> -->
     </ul>
 
-    <div class="navbar-nav ml-auto" *ngIf="!token">
-      <a mat-raised-button [href]="window.location.protocol + '//' + window.location.hostname" style="margin-right: 10px;">Home</a>
-      <a mat-raised-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
-      <a mat-raised-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
-      <a mat-raised-button [routerLink]="['/simulator']" style="margin-right: 10px;">Editor</a>
-      <a mat-raised-button (click)="Login()">Login</a>
+    <div class="navbar-nav ml-auto">
+      <a mat-raised-button
+        (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))"
+        style="margin-right: 10px;">Home</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard'))"
+        style="margin-right: 10px;">Dashboard</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/gallery'))" style="margin-right: 10px;">Gallery</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToSimulator.bind(this))" style="margin-right: 10px;">Editor</a>
+      <a mat-raised-button *ngIf="!token" (click)="HandleRouter(Login)">Login</a>
+      <div class="dropdown show" *ngIf="token">
+        <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
+          class="d-inline-block align-center" alt="Login Image">
+        <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;"
+          aria-labelledby="dropdownMenuLink">
+          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
+        </div>
+      </div>
     </div>
 
-    <div class="navbar-nav ml-auto" *ngIf="token">
-      <!--<div class="dropdown my-dropdown" *ngIf="token">
+    <!-- <div class="navbar-nav ml-auto" *ngIf="token"> -->
+    <!--<div class="dropdown my-dropdown" *ngIf="token">
         <div class="w3-dropdown-hover">
           <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
             alt="Login Image">
@@ -82,23 +97,7 @@
           </div>
         </div>
       </div>-->
-      <div class="dropdown show" *ngIf="token">
-        <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
-          class="d-inline-block align-center" alt="Login Image">
-        <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;"
-          aria-labelledby="dropdownMenuLink">
-          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
-          <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i> New</a>
-          <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i> Dashboard</a>
-          <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i> Gallery</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
-        </div>
-      </div>
-    </div>
+    <!-- </div> -->
 
 
   </div>
@@ -138,6 +137,19 @@
   </div>
   <!--/simulation loading svg-->
 
+  <span class="pipe">|</span>
+
+  <button mat-icon-button matTooltip="Undo" (click)="undoChange()"
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1" [disabled]="enableButton('undo')">
+    <mat-icon style="font-size: 20px;color: black;">undo</mat-icon>
+  </button>
+
+  <button mat-icon-button matTooltip="Redo" (click)="redoChange()"
+    style="align-items: center;background: transparent; margin: auto;" class="mt-1" [disabled]="enableButton('redo')">
+    <!-- <i style="font-size: 20px;color: black;" class="fa fa-repeat"></i> -->
+    <mat-icon style="font-size: 20px;color: black;">redo</mat-icon>
+  </button>
+
   <!-- Import export -->
   <span class="pipe">|</span>
   <button mat-icon-button matTooltip="Download JSON file" (click)="exportJson()" id="importBtn"
@@ -148,7 +160,7 @@
   <button mat-icon-button matTooltip="Import JSON file"
     style="align-items: center;background: transparent; margin: auto;" class="mt-1">
     <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
-    <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+      <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
     </label>
   </button>
   <span class="pipe">|</span>
@@ -195,8 +207,9 @@
       style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
 
   <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
-  style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
-    style="font-size: 20px;color: black;" [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
+    style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+      style="font-size: 20px;color: black;"
+      [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
@@ -347,6 +360,7 @@
       </div>
     </div>
 
+    <app-versioning-panel (createNewBranch)="createNewBranch($event)"></app-versioning-panel>
 
   </div>
 

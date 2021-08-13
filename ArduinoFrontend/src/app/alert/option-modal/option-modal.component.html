@@ -1,0 +1,8 @@
+<div mat-dialog-content>
+  {{ data.message }}
+</div>
+<div class="option-buttons" mat-dialog-actions>
+  <button class="response-button" mat-raised-button color="primary" (click)="onOption1()">{{ data.option1Text }}</button>
+  <button class="response-button" mat-raised-button color="primary" (click)="onOption2()">{{ data.option2Text }}</button>
+  <button class="response-button" mat-raised-button color="warn" (click)="onDismiss()">{{ data.cancelButtonText }} </button>
+</div>

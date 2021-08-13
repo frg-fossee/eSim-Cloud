@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,7 +23,9 @@ import {
   MatTabsModule,
   MatSnackBarModule,
   MatIconModule,
-  MatTooltipModule
+  MatTooltipModule,
+  MatExpansionModule,
+  MatMenuModule
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -37,6 +39,10 @@ import { AlertModalComponent } from './alert/alert-modal/alert-modal.component';
 import { ConfirmModalComponent } from './alert/confirm-modal/confirm-modal.component';
 import { ExportJSONDialogComponent } from './export-jsondialog/export-jsondialog.component';
 import { ExitConfirmDialogComponent } from './exit-confirm-dialog/exit-confirm-dialog.component';
+import { SaveProjectDialogComponent } from './simulator/save-project-dialog/save-project-dialog.component';
+import { OptionModalComponent } from './alert/option-modal/option-modal.component';
+import { VersioningPanelComponent } from './versioning-panel/versioning-panel.component';
+import { CreateVariationDialogComponent } from './versioning-panel/create-variation-dialog/create-variation-dialog.component';
 
 /**
  * Monaco OnLoad Function
@@ -69,8 +75,12 @@ const monacoConfig: NgxMonacoEditorConfig = {
     HeaderComponent,
     AlertModalComponent,
     ConfirmModalComponent,
+    OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
+    SaveProjectDialogComponent,
+    VersioningPanelComponent,
+    CreateVariationDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -88,7 +98,10 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MatIconModule,
     MatTabsModule,
     MatTooltipModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatExpansionModule,
+    ReactiveFormsModule,
+    MatMenuModule
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
@@ -99,8 +112,11 @@ const monacoConfig: NgxMonacoEditorConfig = {
     ComponentlistComponent,
     AlertModalComponent,
     ConfirmModalComponent,
+    OptionModalComponent,
     ExportJSONDialogComponent,
     ExitConfirmDialogComponent,
+    SaveProjectDialogComponent,
+    CreateVariationDialogComponent,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA

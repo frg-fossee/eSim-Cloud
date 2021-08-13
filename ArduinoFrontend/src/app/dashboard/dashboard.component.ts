@@ -7,6 +7,9 @@ import { Title } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material';
 import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
+import { SaveOnline } from '../Libs/SaveOnline';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * For Handling Time ie. Prevent moment error
@@ -74,13 +77,62 @@ export class DashboardComponent implements OnInit {
    * @param snackbar Material Snackbar
    * @param title Document Title
    */
-  constructor(private api: ApiService, private snackbar: MatSnackBar, private title: Title, private alertService: AlertService) {
+  constructor(
+    private api: ApiService,
+    private snackbar: MatSnackBar,
+    private title: Title,
+    private alertService: AlertService,
+    private router: Router,
+    private aroute: ActivatedRoute
+  ) {
     this.title.setTitle('Dashboard | Arduino On Cloud');
   }
   /**
    * On Init Dashboard Page
    */
   ngOnInit() {
+    this.readTempItems();
+    this.readOnCloudItems();
+  }
+
+  /**
+   * Read the online saved circuits.
+   */
+  readOnCloudItems() {
+    // Get Login token
+    const token = Login.getToken();
+    // if token is present get the list of project created by a user
+    if (token) {
+      this.api.listProject(token).subscribe((val: any[]) => {
+        this.online = this.filterOnlineProjects(val);
+      }, err => console.log(err));
+    } else {
+      // if no token is present then show this message
+      this.onCloudMessage = 'Please Login to See Circuit';
+    }
+  }
+
+  /**
+   * Filter projects: Pick only 1 variation of a project
+   * @param val All projects in cloud
+   * @returns filtered list of projects
+   */
+  filterOnlineProjects(val) {
+    const projects = [];
+    const added = [];
+    for (const e in val) {
+      if (!added.includes(val[e].save_id)) {
+        added.push(val[e].save_id);
+        projects.push(val[e]);
+      }
+    }
+    return projects;
+  }
+
+  /**
+   * Read the Database for temporarily saved circuits.
+   */
+  readTempItems() {
     // Read All Offline Project
     SaveOffline.ReadALL((v: any[]) => {
       // Map Offline Project to standard card item
@@ -96,18 +148,6 @@ export class DashboardComponent implements OnInit {
         };
       });
     });
-
-    // Get Login token
-    const token = Login.getToken();
-    // if token is present get the list of project created by a user
-    if (token) {
-      this.api.listProject(token).subscribe((val: any[]) => {
-        this.online = val;
-      }, err => console.log(err));
-    } else {
-      // if no token is present then show this message
-      this.onCloudMessage = 'Please Login to See Circuit';
-    }
   }
 
   /**
@@ -343,5 +383,138 @@ export class DashboardComponent implements OnInit {
         });
       }
     }
+  }
+
+  /**
+   * Import the circuit in json format
+   * @param event Context of event
+   */
+  ImportCircuit(event) {
+    const file: File = event.target.files[0];
+    let fileData;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsText(file);
+
+      reader.onload = async () => {
+        fileData = reader.result;
+        fileData = await JSON.parse(fileData);
+        this.SaveCircuit(fileData);
+        document.getElementById('importFileBTN')['value'] = null;
+      };
+    }
+  }
+
+  /**
+   * Export the circuit in json format
+   * @param selected selected Project
+   * @param offline Is Offline Circuit
+   */
+  ExportCircuit(selected, offline) {
+    let id = selected.save_id;
+    if (offline) {
+      if (typeof id !== 'number') {
+        id = Date.now();
+      }
+      SaveOffline.Read(id, this.DownloadFile);
+    } else {
+      const token = Login.getToken();
+      if (!token) {
+        AlertService.showAlert('Please Login');
+        return;
+      }
+      this.api.readProject(id, selected.branch, selected.version, token).subscribe(
+        data => {
+          // Converting data to required format
+          const obj = JSON.parse(data['data_dump']);
+          const project = {
+            name: data['name'],
+            description: data['description'],
+            image: data['base64_image'],
+            created_at: data['create_time'],
+          };
+          obj['id'] = id;
+          obj['project'] = project;
+          // Getting image data from image url
+          const image = document.createElement('img');
+          image.setAttribute('src', project.image);
+          image.setAttribute('visibility', 'hidden');
+          image.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = image.width;
+            canvas.height = image.height;
+            canvas.getContext('2d').drawImage(image, 0, 0, image.width, image.height);
+            obj.project.image = canvas.toDataURL();
+            this.DownloadFile(obj);
+            image.parentElement.removeChild(image);
+            canvas.parentElement.removeChild(canvas);
+          };
+        },
+        (err: HttpErrorResponse) => {
+          if (err.status === 401) {
+            AlertService.showAlert('You are Not Authorized to download this circuit');
+            window.open('../../../', '_self');
+            return;
+          }
+          AlertService.showAlert('Something Went Wrong');
+          console.log(err);
+        }
+      );
+    }
+  }
+
+  /**
+   * Creates virtual DOM element to download the content
+   * @param data Data in JSON format with meta details like id, project info
+   */
+  DownloadFile(data) {
+    const filename = (data.project.name ? data.project.name : 'Undefined') + '.json';
+    const fileJSON = JSON.stringify(data);
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileJSON));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  }
+
+  /**
+   * Save the circuit in the database
+   * @param fileData JSON Object of the circuit
+   */
+  SaveCircuit(fileData) {
+    AlertService.showOptions('Where do you want to save it?', () => {
+      if (!(Login.getToken())) {
+        AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
+        return;
+      }
+      // If project id is uuid (online circuit) then accordingly save or update
+      SaveOnline.SaveFromDashboard(fileData, this.api, (_) => {
+        this.readOnCloudItems();
+      }, SaveOnline.isUUID(fileData.id));
+    },
+      () => {
+        if (!(fileData.id) || typeof fileData.id !== 'number') {
+          fileData.id = Date.now();
+          SaveOffline.Save(fileData, (_) => {
+            this.readTempItems();
+          });
+        } else {
+          SaveOffline.Read(fileData.id, (data) => {
+            if (data) {
+              SaveOffline.Update(fileData, (_) => {
+                this.readTempItems();
+              });
+            } else {
+              SaveOffline.Save(fileData, (_) => {
+                this.readTempItems();
+              });
+            }
+          });
+        }
+      },
+      () => { }, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
   }
 }

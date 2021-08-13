@@ -121,7 +121,7 @@ export class ViewProjectComponent implements OnInit {
         id = id.replace(/_/g, '-');
         // Check if project id is uuid
         if (SaveOnline.isUUID(id)) {
-          this.api.readProject(id, token).subscribe((output: any) => {
+          this.api.readProject(id, '', '', token).subscribe((output: any) => {
             this.shareName = `${output.name} | Arduino On Cloud`; // Set the sharing name
             // Set the page title
             this.title.setTitle(this.shareName);

@@ -16,7 +16,9 @@ import { environment } from 'src/environments/environment';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { LayoutUtils } from '../layout/ArduinoCanvasInterface';
 import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialog.component';
+import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
+import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -136,6 +138,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (environment.production) {
       window.removeEventListener('beforeunload', Workspace.BeforeUnload);
     }
+    // Make Redo & Undo Stack empty
+    UndoUtils.redo = [];
+    UndoUtils.undo = [];
   }
   /**
    * On Init Callback
@@ -377,6 +382,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       el.value = 'Untitled';
     }
     this.projectTitle = el.value;
+    return this.projectTitle;
   }
   /**
    * Function invoked when dbclick is performed on a component inside ComponentList
@@ -391,6 +397,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param key string
    */
   dragStart(event: DragEvent, key: string) {
+    // Save Dump of current Workspace
     event.dataTransfer.dropEffect = 'copyMove';
     event.dataTransfer.setData('text', key);
   }
@@ -455,11 +462,63 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
     // if projet id is uuid (online circuit)
     if (SaveOnline.isUUID(this.projectId)) {
-      // Update Project to DB
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (_) => AlertService.showAlert('Updated'), this.projectId);
+      this.aroute.queryParams.subscribe(params => {
+        const branch = params.branch;
+        const versionId = params.version;
+        const newVersionId = this.getRandomString(20);
+        // Update Project to DB
+        SaveOnline.Save(this.projectTitle, this.description, this.api, branch, newVersionId, (out) => {
+          AlertService.showAlert('Updated');
+          if (out['duplicate']) {
+            // TODO: if duplicate, refresh the route with same versionId and same branch
+            this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+              // add new quert parameters
+              this.router.navigate(
+                ['/simulator'],
+                {
+                  relativeTo: this.aroute,
+                  queryParams: {
+                    id: out.save_id,
+                    online: true,
+                    offline: null,
+                    gallery: null,
+                    version: versionId,
+                    branch
+                  },
+                  queryParamsHandling: 'merge'
+                }
+              );
+            });
+
+            return;
+          }
+          // If project is not duplicate refresh route with newVersion Id and same branch
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            // add new quert parameters
+            this.router.navigate(
+              ['/simulator'],
+              {
+                relativeTo: this.aroute,
+                queryParams: {
+                  id: out.save_id,
+                  online: true,
+                  offline: null,
+                  gallery: null,
+                  version: newVersionId,
+                  branch
+                },
+                queryParamsHandling: 'merge'
+              }
+            );
+          });
+        }, this.projectId);
+      });
     } else {
+      // TODO: Save a new project within master branch
+      const branch = 'master';
+      const versionId = this.getRandomString(20);
       // Save Project and show alert
-      SaveOnline.Save(this.projectTitle, this.description, this.api, (out) => {
+      SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
         AlertService.showAlert('Saved');
         // add new quert parameters
         this.router.navigate(
@@ -470,7 +529,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
               id: out.save_id,
               online: true,
               offline: null,
-              gallery: null
+              gallery: null,
+              version: versionId,
+              branch
             },
             queryParamsHandling: 'merge'
           }
@@ -479,7 +540,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
   }
   /** Function saves or updates the project offline */
-  SaveProjectOff() {
+  SaveProjectOff(callback = null) {
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
       AlertService.showAlert('Project is already Online!');
@@ -487,7 +548,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
     // Save circuit if id is not presenr
     if (this.projectId) {
-      Workspace.SaveCircuit(this.projectTitle, this.description, null, this.projectId);
+      Workspace.SaveCircuit(this.projectTitle, this.description, callback, this.projectId);
     } else {
       // save circuit and add query parameters
       Workspace.SaveCircuit(this.projectTitle, this.description, (v) => {
@@ -503,6 +564,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             queryParamsHandling: 'merge'
           }
         );
+        if (callback) {
+          callback();
+        }
       });
     }
   }
@@ -521,12 +585,18 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       AlertService.showAlert('Please Login');
       return;
     }
-
-    this.api.readProject(id, token).subscribe((data: any) => {
-      this.projectTitle = data.name;
-      this.description = data.description;
-      this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
-      Workspace.Load(JSON.parse(data.data_dump));
+    this.aroute.queryParams.subscribe(params => {
+      // read branch from queryParams
+      const branch = params.branch;
+      // read version from queryParams
+      const version = params.version;
+      // read project from DB
+      this.api.readProject(id, branch, version, token).subscribe((data: any) => {
+        this.projectTitle = data.name;
+        this.description = data.description;
+        this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
+        Workspace.Load(JSON.parse(data.data_dump));
+      });
     }, (err: HttpErrorResponse) => {
       if (err.status === 401) {
         AlertService.showAlert('You are Not Authorized to view this circuit');
@@ -574,6 +644,57 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   Logout() {
     Login.logout();
+  }
+  RouteToSimulator() {
+    this.window.location = '../#/simulator';
+    this.window.location.reload();
+  }
+  /**
+   * @param routeLink route link
+   * @param isAbsolute is the link absolute? [pass false if relatives]
+   */
+  RouteToFunction(routeLink, isAbsolute = false) {
+    return () => {
+      if (isAbsolute) {
+        this.window.location = routeLink;
+      } else {
+        this.router.navigateByUrl(routeLink);
+      }
+    };
+  }
+  /**
+   * Handles routeLinks
+   */
+  HandleRouter(callback) {
+    AlertService.showOptions(
+      'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
+      () => {
+        AlertService.showCustom(
+          SaveProjectDialogComponent,
+          {
+            onChangeProjectTitle: (e) => {
+              this.projectTitle = e.target.value || '';
+              return this.projectTitle;
+            },
+            projectTitle: this.projectTitle,
+          },
+          (value) => {
+            if (value) {
+              this.SaveProjectOff(() => {
+                callback();
+              });
+            }
+          }
+        );
+      },
+      () => {
+        callback();
+      },
+      () => { },
+      'Save',
+      'Don\'t save',
+      'Cancel'
+    );
   }
   /**
    * Open Gallery Project
@@ -649,6 +770,81 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  /**
+   * Function to enable/disable undo/redo button depending upon undostack
+   * @param type button type
+   * @returns boolean
+   */
+  enableButton(type) {
+    if (!UndoUtils.enableButtonsBool) {
+      return true;
+    }
+    if (type === 'undo') {
+      return UndoUtils.undo.length <= 0;
+    } else if (type === 'redo') {
+      return UndoUtils.redo.length <= 0;
+    }
+  }
+
+  /**
+   * Undo Operation
+   */
+  undoChange() {
+    UndoUtils.workspaceUndo();
+  }
+  /**
+   * Redo Operation
+   */
+  redoChange() {
+    UndoUtils.workspaceRedo();
+  }
+  /**
+   * Create a new branch for project
+   * @param obj Object containing branch and version
+   */
+  createNewBranch(obj) {
+    const branch = obj.branch;
+    const versionId = obj.version;
+    // Save Project and show alert
+    SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
+      AlertService.showAlert('Created new branch');
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        // add new quert parameters
+        this.router.navigate(
+          ['/simulator'],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: out.save_id,
+              online: true,
+              offline: null,
+              gallery: null,
+              version: versionId,
+              branch
+            },
+            queryParamsHandling: 'merge'
+          }
+        );
+      });
+    }, this.projectId);
+  }
+
+  /**
+   * Generate and return a random string
+   * @param length Length of random string
+   * @returns random string
+   */
+  getRandomString(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+    return result;
   }
 
 }

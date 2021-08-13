@@ -6,6 +6,7 @@ import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -145,7 +146,7 @@ export class Workspace {
    */
   static onDragStopEvent(element) {
     for (const fn of window.DragStopListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 
@@ -154,7 +155,7 @@ export class Workspace {
    */
   static onDragEvent(element) {
     for (const fn of window.DragListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 
@@ -515,6 +516,11 @@ export class Workspace {
         window.Selected.togglePerpendicularLine(false);
       }
     }
+    if (event.ctrlKey && (event.key === 'z' || event.key === 'Z') && UndoUtils.enableButtonsBool) {
+      // CTRL + z
+      // Call Undo Function
+      UndoUtils.workspaceUndo();
+    }
   }
   /**
    * Event Listener for zoom in/zoom out on workspace
@@ -550,6 +556,8 @@ export class Workspace {
       y - offsetY
     );
     window['scope'][classString].push(obj);
+    // Push dump to Undo stack & Reset
+    UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
   }
   /** Function updates the position of wires */
   static updateWires() {
@@ -630,7 +638,7 @@ export class Workspace {
       // console.log(saveObj);
       // Save or Update Circuit Ofline
       if (toUpdate) {
-        SaveOffline.Update(saveObj);
+        SaveOffline.Update(saveObj, callback);
       } else {
         SaveOffline.Save(saveObj, callback);
       }
@@ -700,8 +708,8 @@ export class Workspace {
     const interval = setInterval(() => {
       if (window.queue === 0) {
         clearInterval(interval);
-        // start drawing wires
-        Workspace.LoadWires(data.wires);
+        // start drawing wires with Id retain
+        Workspace.LoadWires(data.wires, true);
         // Hide loading animation
         window.hideLoading();
       }
@@ -709,7 +717,7 @@ export class Workspace {
 
   }
   /** This function recreates the wire object */
-  static LoadWires(wires: any[]) {
+  static LoadWires(wires: any[], retainId = false, pushUndo = false) {
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -740,11 +748,16 @@ export class Workspace {
       // console.log([start, end]);
       // if both nodes are present then connect those nodes
       if (start && end) {
-        const tmp = new Wire(window.canvas, start);
+        let tmp: any;
+        if (retainId) {
+          tmp = new Wire(window.canvas, start, w.id);
+        } else {
+          tmp = new Wire(window.canvas, start);
+        }
         tmp.load(w);
         start.connectedTo = tmp;
         end.connectedTo = tmp;
-        tmp.connect(end, true, true);
+        tmp.connect(end, true, true, pushUndo);
         window['scope']['wires'].push(tmp);
         tmp.update();
         if (start.connectCallback) {
@@ -762,8 +775,8 @@ export class Workspace {
   }
 
   /** Function to delete component fro Workspace */
-  static DeleteComponent() {
-
+  static DeleteComponent(undoReset = true) {
+    // Save Dump of current Workspace
     // Check if component is selected
     if (window['Selected']) {
       // is selected component is an arduini uno then show confirm message
@@ -778,6 +791,12 @@ export class Workspace {
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
 
+      if (!(window.Selected instanceof Wire && !window.Selected.isConnected())) {
+        const obj = { keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' };
+        // Push dump to Undo stack & Reset if undoReset is true, else just push
+        if (undoReset) { UndoUtils.pushChangeToUndoAndReset(obj); } else { UndoUtils.pushChangeToUndo(obj); }
+      }
+
       // If Current Selected item is a Wire which is not Connected from both end
       if (key === 'wires') {
         if (isNull(window.Selected.end)) {
@@ -785,6 +804,28 @@ export class Workspace {
           window.Selected.remove();
           window.Selected = null;
           window.isSelected = false;
+        }
+      }
+
+      // If BreadBoard remove draglistners too
+      if (key === 'BreadBoard') {
+        // Search in DragListeners & splice
+        for (const i in window['DragListeners']) {
+          if (window.DragListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragListeners'].splice(i, 1);
+            }
+          }
+        }
+        // Search in DragStopListeners & splice
+        for (const i in window['DragStopListeners']) {
+          if (window.DragStopListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragStopListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragStopListeners'].splice(i, 1);
+            }
+          }
         }
       }
 
@@ -839,6 +880,7 @@ export class Workspace {
 
   /** Function to paste component fro Workspace */
   static pasteComponent() {
+    // Save Dump of current Workspace
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
       const ele = document.getElementById('contextMenu');
@@ -1089,22 +1131,24 @@ export class Workspace {
         }
       }
     }
+    // Save the Thumbnail for the circuit
+    Download.ExportImage(ImageType.PNG).then(v => {
+      saveObj.project['image'] = v; // Add the base64 image
+      // Export JSON File & Download it
+      const filename = `${name}.json`;
+      const jsonStr = JSON.stringify(saveObj);
 
-    // Export JSON File & Download it
-    const filename = `${name}.json`;
-    const jsonStr = JSON.stringify(saveObj);
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
+      element.setAttribute('download', filename);
 
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
-    element.setAttribute('download', filename);
+      element.style.display = 'none';
+      document.body.appendChild(element);
 
-    element.style.display = 'none';
-    document.body.appendChild(element);
+      element.click();
 
-    element.click();
-
-    document.body.removeChild(element);
-
+      document.body.removeChild(element);
+    });
     return true;
 
   }

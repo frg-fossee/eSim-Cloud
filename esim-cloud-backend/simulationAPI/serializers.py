@@ -1,6 +1,7 @@
 import logging
 from rest_framework import serializers
-from simulationAPI.models import spiceFile, Task
+from simulationAPI.models import spiceFile, Task, simulation
+from saveAPI.serializers import SaveListSerializer
 
 logger = logging.getLogger(__name__)
 
@@ -29,3 +30,17 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
         spiceFile.objects.create(task=task, file=files_data)
         logger.info('Created Object for:' + files_data.name)
         return task
+
+
+class simulationSerializer(serializers.ModelSerializer):
+    schematic = SaveListSerializer(many=False)
+
+    class Meta:
+        model = simulation
+        fields = '__all__'
+
+
+class simulationSaveSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = simulation
+        fields = '__all__'

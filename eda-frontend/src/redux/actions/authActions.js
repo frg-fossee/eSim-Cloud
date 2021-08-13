@@ -6,8 +6,83 @@ export const loadUser = () => (dispatch, getState) => {
   // User Loading
   dispatch({ type: actions.USER_LOADING })
 
-  // Get token from localstorage
-  const token = getState().authReducer.token
+  // Get token from localstorage and dispatch LOGIN_SUCCESSFUL
+  const token = localStorage.getItem('esim_token')
+  const userId = localStorage.getItem('user_id')
+  if (token) {
+    dispatch({
+      type: actions.LOGIN_SUCCESSFUL,
+      payload: {
+        data: {
+          auth_token: token,
+          user_id: userId
+        }
+      }
+    })
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  // If token available add to headers
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
+  }
+
+  api.get('auth/users/me/', config)
+    .then(
+      (res) => {
+        if (res.status === 200) {
+          dispatch({
+            type: actions.USER_LOADED,
+            payload: {
+              user: res.data
+            }
+          })
+        } else if (res.status >= 400 && res.status < 500) {
+          dispatch({
+            type: actions.LOGIN_FAILED,
+            payload: {
+              data: res.data
+            }
+          })
+        }
+      }
+    )
+    .catch((err) => {
+      console.error(err)
+      dispatch({
+        type: actions.LOGIN_FAILED,
+        payload: {
+          data: {}
+        }
+      })
+    })
+}
+
+// Api call for maintaining user login state throughout the application without excess actions
+export const loadMinUser = () => (dispatch) => {
+  // Get token from localstorage and dispatch LOGIN_SUCCESSFUL
+  const token = localStorage.getItem('esim_token')
+  const userId = localStorage.getItem('user_id')
+  if (token) {
+    dispatch({
+      type: actions.LOGIN_SUCCESSFUL,
+      payload: {
+        data: {
+          auth_token: token,
+          user_id: userId
+        }
+      }
+    })
+  }
 
   // add headers
   const config = {
@@ -63,7 +138,7 @@ export const login = (username, password, toUrl) => {
   }
 
   return function (dispatch) {
-    api.post('auth/token/login/', body)
+    api.post('auth/user/token/', body)
       .then((res) => {
         if (res.status === 200) {
           dispatch({
@@ -74,6 +149,10 @@ export const login = (username, password, toUrl) => {
           })
           if (toUrl === '') {
             dispatch(loadUser())
+          } else if (toUrl === 'close') {
+            window.opener = null
+            window.open('', '_self')
+            window.close()
           } else {
             window.open(toUrl, '_self')
             localStorage.setItem('ard_redurl', '')
@@ -82,7 +161,7 @@ export const login = (username, password, toUrl) => {
           dispatch({
             type: actions.AUTHENTICATION_ERROR,
             payload: {
-              data: 'Incorrect Username or Password.'
+              data: res.data.non_field_errors[0]
             }
           })
         } else {
@@ -97,7 +176,7 @@ export const login = (username, password, toUrl) => {
       .catch((err) => {
         var res = err.response
         if (res.status === 400 || res.status === 403 || res.status === 401) {
-          dispatch(loginError('Incorrect Username or Password.'))
+          dispatch(loginError(res.data.non_field_errors[0]))
         } else {
           dispatch(loginError('Something went wrong! Login Failed'))
         }
@@ -218,7 +297,7 @@ const resetPasswordError = (message) => (dispatch) => {
 }
 
 // Redux action for display reset password confirmation error
-const resetPasswordConfirmError = (message) => (dispatch) => {
+export const resetPasswordConfirmError = (message) => (dispatch) => {
   dispatch({
     type: actions.RESET_PASSWORD_CONFIRM_FAILED,
     payload: {
@@ -255,44 +334,7 @@ export const googleLogin = (host, toUrl) => {
       })
   }
 }
-
-// Handles api call for user's password recovery
-export const resetPassword = (email) => (dispatch) => {
-  const body = {
-    email: email
-  }
-
-  // add headers
-  const config = {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
-
-  api.post('auth/users/reset_password/', body, config)
-    .then((res) => {
-      if (res.status >= 200 || res.status < 304) {
-        dispatch({
-          type: actions.RESET_PASSWORD_SUCCESSFUL,
-          payload: {
-            data: 'The password reset link has been sent to your email account.'
-          }
-        })
-        setTimeout(() => {
-          window.location.href = '/eda/#/login'
-        }, 2000)
-        // history.push('/login')
-      }
-    })
-    .catch((err) => {
-      var res = err.response
-      if ([400, 401, 403, 304].includes(res.status)) {
-        dispatch(resetPasswordError(res.data))
-      }
-    })
-}
-
-// Handles api call for user's password reset confirmation
+// Handles api call for user's password confirmation
 export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => (dispatch) => {
   const body = {
     uid: uid,
@@ -339,4 +381,65 @@ export const resetPasswordConfirm = (uid, token, newPassword, reNewPassword) => 
         dispatch(resetPasswordConfirmError(message))
       }
     })
+}
+// Handles api call for user's password recovery
+export const resetPassword = (email) => (dispatch) => {
+  const body = {
+    email: email
+  }
+
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+
+  api.post('auth/users/reset_password/', body, config)
+    .then((res) => {
+      if (res.status >= 200 || res.status < 304) {
+        dispatch({
+          type: actions.RESET_PASSWORD_SUCCESSFUL,
+          payload: {
+            data: 'The password reset link has been sent to your email account.'
+          }
+        })
+        setTimeout(() => {
+          window.location.href = '/eda/#/login'
+        }, 2000)
+        // history.push('/login')
+      }
+    })
+    .catch((err) => {
+      var res = err.response
+      if ([400, 401, 403, 304].includes(res.status)) {
+        dispatch(resetPasswordError(res.data))
+      }
+    })
+}
+// API call for fetching user role.
+export const fetchRole = () => (dispatch, getState) => {
+  const token = getState().authReducer.token
+  // add headers
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+  if (token) {
+    config.headers.Authorization = `Token ${token}`
+  } else {
+    dispatch({ type: actions.LOADING_FAILED })
+    return
+  }
+  api.get('workflow/role/', config)
+    .then((res) => {
+      console.log(res.data)
+      dispatch({
+        type: actions.ROLE_LOADED,
+        payload: {
+          data: res.data
+        }
+      })
+    }).catch(() => { console.log('Error') })
 }

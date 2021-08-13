@@ -59,7 +59,6 @@ services:
         - redis
         - db
         - celery
-        - mongodb
     env_file:
       - .env.prod
     environment:
@@ -67,7 +66,6 @@ services:
     links:
       - "redis:redis"
       - "db:db"
-      - "mongodb:mongodb"
 
 
   celery:
@@ -89,25 +87,12 @@ services:
     depends_on:
       - redis
       - db
-      - mongodb
     links:
       - "redis:redis"
       - "db:db"
-      - "mongodb:mongodb"
 
     deploy:
       replicas: 3
-
-  mongodb:
-    image: "mongo:${TAG_MONGO}"
-    environment:
-      - MONGO_DATA_DIR=/usr/data/db/
-      - MONGO_LOG_DIR=/dev/null
-    volumes:
-      - ./mongo_data:/usr/data/db
-    env_file:
-      - .env.prod
-    command: mongod
 
   redis:
       image: "redis:${TAG_REDIS}"

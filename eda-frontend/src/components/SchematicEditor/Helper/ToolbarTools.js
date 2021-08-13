@@ -33,6 +33,14 @@ export default function ToolbarTools(grid, unredo) {
   graph.getView().addListener(mxEvent.UNDO, listener)
 }
 
+// Display mxGraph root (For development only)
+export function dispGraph () {
+  if (graph) {
+    console.log('Graph Root', graph.getDefaultParent())
+    console.log('Current Cell', graph.getSelectionCell())
+  }
+}
+
 // SAVE
 export function Save() {
   XMLWireConnections()
@@ -42,14 +50,96 @@ export function Save() {
   return value
 }
 
+// Function to clear undo/redo history
+export function clearHistory() {
+  undoManager.clear()
+}
+
+// Func to check if wire change
+const checkWireChange = (changes) => {
+  for (const change of changes) {
+    if (change.__proto__.constructor.name === 'mxTerminalChange') { return true }
+  }
+  return false
+}
+
 // UNDO
 export function Undo() {
-  undoManager.undo()
+  if (undoManager.indexOfNextAdd === 0) {
+    // Nothing to undo
+    return
+  } else if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd - 1].changes)) {
+    // Found Wire
+    undoManager.undo()
+  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length > 1) {
+    // Found Component
+    let undos = 1
+    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
+      if (undoManager.history[i].changes.length === 1
+        || checkWireChange(undoManager.history[i].changes)
+      ) { break }
+    }
+    while (undos !== 0) {
+      undoManager.undo()
+      undos--
+    }
+  } else if (undoManager.history[undoManager.indexOfNextAdd - 1].changes.length === 1) {
+    // Found Rotate/Move
+    let undos = 0
+    for (let i = undoManager.indexOfNextAdd - 1; i >= 0; i--, undos++) {
+      if (undoManager.history[i].changes.length !== 1) { break }
+    }
+    while (undos !== 0) {
+      undoManager.undo()
+      undos--
+    }
+  }
+  else {
+    // Default case !?
+    undoManager.undo()
+  }
 }
 
 // REDO
 export function Redo() {
-  undoManager.redo()
+  if (undoManager.indexOfNextAdd === undoManager.history.length) {
+    // Nothing to redo
+    return
+  } else if (checkWireChange(undoManager.history[undoManager.indexOfNextAdd].changes)) {
+    // Found Wire
+    undoManager.redo()
+  } else if (
+    undoManager.history[undoManager.indexOfNextAdd].changes.length === 1
+    && undoManager.history[undoManager.indexOfNextAdd].changes[0].__proto__.constructor.name === 'mxChildChange'
+  ) {
+    // Found Component
+    let redos = 1
+    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
+      if (undoManager.history[i].changes.length === 12 ||
+        undoManager.history[i].changes.length === 1 ||
+        checkWireChange(undoManager.history[i].changes)
+      ) { break }
+    }
+    while (redos !== 0) {
+      undoManager.redo()
+      redos--
+    }
+  } else if (undoManager.history[undoManager.indexOfNextAdd].changes.length === 1) {
+    //Found component Rotate/Move
+    let redos = 1;
+    for (let i = undoManager.indexOfNextAdd + 1; i < undoManager.history.length; i++, redos++) {
+      if (undoManager.history[i].changes.length !== 1 ||
+        undoManager.history[i].changes[0].__proto__.constructor.name === 'mxChildChange'
+      ) { break }
+    }
+    while (redos !== 0) {
+      redos--
+      undoManager.redo()
+    }
+  } else {
+    // Default Case !?
+    undoManager.redo()
+  }
 }
 
 // Zoom IN
@@ -77,19 +167,38 @@ export function ClearGrid() {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
 }
 
-// ROTATE COMPONENT
-export function Rotate() {
+export function rotateCell (cell, rot_ang) {
   var view = graph.getView()
-  var cell = graph.getSelectionCell()
   var state = view.getState(cell, true)
-  // console.log(state)
   var vHandler = graph.createVertexHandler(state)
-  // console.log('Handler')
-  // console.log(vHandler)
+  console.log(cell)
   if (cell != null) {
-    vHandler.rotateCell(cell, 90, cell.getParent())
+    vHandler.rotateCell(cell, parseInt(rot_ang))
+    let childCount = cell.getChildCount()
+    for (let i = 0; i < childCount; i++) {
+      let child = cell.getChildAt(i)
+      vHandler.rotateCell(child, parseInt(rot_ang) * (-1))
+    }
   }
   vHandler.destroy()
+}
+
+function rotate (rot_ang) {
+  var cell = graph.getSelectionCell()
+  console.log(graph.getDefaultParent())
+  if (cell !== undefined) {
+    rotateCell(cell, rot_ang)
+  }
+}
+
+// ROTATE COMPONENT CLOCKWISE
+export function Rotate() {
+  rotate(90)
+}
+
+// ROTATE COMPONENT Anti-CLOCKWISE
+export function RotateACW() {
+  rotate(-90)
 }
 
 // PRINT PREVIEW OF SCHEMATIC
@@ -208,7 +317,7 @@ export function ErcCheck() {
   }
 }
 // ERC Check for Netlist, It also returns a boolean value which is called in the Netlist Generator 
-function ErcCheckNets() {
+export function ErcCheckNets() {
   var list = graph.getModel().cells // mapping the grid
   var vertexCount = 0
   var errorCount = 0
@@ -219,11 +328,13 @@ function ErcCheckNets() {
     var cell = list[property]
     if (cell.Component === true) {
       for (var child in cell.children) {
-        var childVertex = cell.children[child]
-        if (childVertex.Pin === true && childVertex.edges === null) {
-          graph.getSelectionCell(childVertex)
-          ++PinNC
-          ++errorCount
+        if (child.connectable) {
+          var childVertex = cell.children[child]
+          if (childVertex.Pin === true && childVertex.edges === null) {
+            graph.getSelectionCell(childVertex)
+            ++PinNC
+            ++errorCount
+          }
         }
       }
       ++vertexCount
@@ -257,9 +368,9 @@ export function GenerateNetList() {
   var c = 1
   var n = 1
   var spiceModels = ''
-  var netlist = {
+  var compDetails = {
     componentlist: [],
-    nodelist: []
+    nodelist: new Set()
   }
   var erc = ErcCheckNets() // Checking for ERC Failures
   var k = ''
@@ -271,11 +382,9 @@ export function GenerateNetList() {
       if (list[property].Component === true && list[property].symbol !== 'PWR') {
         var compobj = {
           name: '',
-          node1: '',
-          node2: '',
           magnitude: ''
         }
-        mxCell.prototype.ConnectedNode = null
+        // mxCell.prototype.ConnectedNode = null
         var component = list[property]
         if (component.symbol === 'R') {
           k = k + component.symbol + r.toString()
@@ -298,32 +407,32 @@ export function GenerateNetList() {
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
-            if (pin.vertex === true) {
+            if (pin.vertex === true && pin.connectable) {
               if (pin.edges !== null || pin.edges.length !== 0) {
                 for (var wire in pin.edges) {
                   if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
                     // Wire to Pin Connection 
                     if (pin.edges[wire].source.edge === true) {
-                      pin.edges[wire].node = pin.edges[wire].source.node
+                    //   pin.edges[wire].node = pin.edges[wire].source.node
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       // Pin to Wire Connection 
                     } else if (pin.edges[wire].target.edge === true) {
-                      pin.edges[wire].node = pin.edges[wire].target.node
+                    //   pin.edges[wire].node = pin.edges[wire].target.node
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
                       pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
                       // Souce or Target is Ground 
                     } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                      pin.edges[wire].node = 0
+                    //   pin.edges[wire].node = 0
                       pin.edges[wire].value = 0
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       // Pin to Pin Connection, Setting the Source to be the Node Value 
                     } else {
-                      pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                    //   pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                      // pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       pin.edges[wire].value = pin.edges[wire].node
@@ -336,15 +445,19 @@ export function GenerateNetList() {
             }
           }
           compobj.name = component.symbol
-          compobj.node1 = component.children[0].edges[0].node
-          compobj.node2 = component.children[1].edges[0].node
           compobj.magnitude = 10
-          netlist.componentlist.push(component.properties.PREFIX)
-          netlist.nodelist.push(compobj.node2, compobj.node1)
+          var nodeNumber = 0
+          for(var child in component.children){
+              nodeNumber++
+              compobj['node' + nodeNumber.toString()] = component.children[child].edges[0].node
+              compDetails.nodelist.add(component.children[child].edges[0].node)
+          }
+          compDetails.componentlist.push(component.properties.PREFIX)
+          // console.log("compDetails", compDetails)
         }
-        console.log('component properties', component.properties)
-        if (component.properties.MODEL.length > 0) {
-            k = k + ' ' + component.properties.MODEL.split(' ')[1]
+        // console.log('component properties', component.properties)
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
+          k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
 
         if (component.properties.PREFIX.charAt(0) === 'V' || component.properties.PREFIX.charAt(0) === 'v' || component.properties.PREFIX.charAt(0) === 'I' || component.properties.PREFIX.charAt(0) === 'i') {
@@ -366,67 +479,67 @@ export function GenerateNetList() {
               component.value = component.value + '\n' + component.properties.VALUE
             }
           }
-        }else if(component.properties.PREFIX.charAt(0) === 'C' || component.properties.PREFIX.charAt(0) === 'c'){
-            k = k + ' ' + component.properties.VALUE
-            if(component.properties.IC != 0){
-                k = k + ' IC=' + component.properties.IC
-            }
-            component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'L' || component.properties.PREFIX.charAt(0) === 'l'){
-            k = k + ' ' + component.properties.VALUE
-            if(component.properties.IC != 0){
-                k = k + ' IC=' + component.properties.IC
-            }
-            if(component.properties.DTEMP != 27){
-                k = k + ' dtemp=' + component.properties.DTEMP
-            }            
-            component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'M' || component.properties.PREFIX.charAt(0) === 'm'){
-            // k = k + ' ' + component.properties.VALUE   
-            if(component.properties.MULTIPLICITY_PARAMETER != 1){
-                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
-            }
-            if(component.properties.DTEMP != 27){
-                k = k + ' dtemp=' + component.properties.DTEMP
-            }            
-            // component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'Q' || component.properties.PREFIX.charAt(0) === 'q'){
-            // k = k + ' ' + component.properties.VALUE
-            if(component.properties.MULTIPLICITY_PARAMETER != 1){
-                k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
-            }
-            if(component.properties.DTEMP != 27){
-                k = k + ' dtemp=' + component.properties.DTEMP
-            }            
-            // component.value = component.value + '\n' + component.properties.VALUE
-        }else if(component.properties.PREFIX.charAt(0) === 'R' || component.properties.PREFIX.charAt(0) === 'r'){
-            k = k + ' ' + component.properties.VALUE
-            if(component.properties.SHEET_RESISTANCE != 0){
-                k = k + ' RSH=' + component.properties.SHEET_RESISTANCE
-            }
-            if(component.properties.FIRST_ORDER_TEMPERATURE_COEFF != 0){
-                k = k + ' tc1=' + component.properties.FIRST_ORDER_TEMPERATURE_COEFF
-            }
-            if(component.properties.SECOND_ORDER_TEMPERATURE_COEFF != 0){
-                k = k + ' tc2=' + component.properties.SECOND_ORDER_TEMPERATURE_COEFF
-            }
-            if(component.properties.PARAMETER_MEASUREMENT_TEMPERATURE != 27){
-                k = k + ' TNOM=' + component.properties.PARAMETER_MEASUREMENT_TEMPERATURE
-            }
-            component.value = component.value + '\n' + component.properties.VALUE
-        }else {
+        } else if (component.properties.PREFIX.charAt(0) === 'C' || component.properties.PREFIX.charAt(0) === 'c') {
+          k = k + ' ' + component.properties.VALUE
+          if (component.properties.IC != 0) {
+            k = k + ' IC=' + component.properties.IC
+          }
+          component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'L' || component.properties.PREFIX.charAt(0) === 'l') {
+          k = k + ' ' + component.properties.VALUE
+          if (component.properties.IC != 0) {
+            k = k + ' IC=' + component.properties.IC
+          }
+          if (component.properties.DTEMP != 27) {
+            k = k + ' dtemp=' + component.properties.DTEMP
+          }
+          component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'M' || component.properties.PREFIX.charAt(0) === 'm') {
+          // k = k + ' ' + component.properties.VALUE   
+          if (component.properties.MULTIPLICITY_PARAMETER != 1) {
+            k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+          }
+          if (component.properties.DTEMP != 27) {
+            k = k + ' dtemp=' + component.properties.DTEMP
+          }
+          // component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'Q' || component.properties.PREFIX.charAt(0) === 'q') {
+          // k = k + ' ' + component.properties.VALUE
+          if (component.properties.MULTIPLICITY_PARAMETER != 1) {
+            k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
+          }
+          if (component.properties.DTEMP != 27) {
+            k = k + ' dtemp=' + component.properties.DTEMP
+          }
+          // component.value = component.value + '\n' + component.properties.VALUE
+        } else if (component.properties.PREFIX.charAt(0) === 'R' || component.properties.PREFIX.charAt(0) === 'r') {
+          k = k + ' ' + component.properties.VALUE
+          if (component.properties.SHEET_RESISTANCE != 0) {
+            k = k + ' RSH=' + component.properties.SHEET_RESISTANCE
+          }
+          if (component.properties.FIRST_ORDER_TEMPERATURE_COEFF != 0) {
+            k = k + ' tc1=' + component.properties.FIRST_ORDER_TEMPERATURE_COEFF
+          }
+          if (component.properties.SECOND_ORDER_TEMPERATURE_COEFF != 0) {
+            k = k + ' tc2=' + component.properties.SECOND_ORDER_TEMPERATURE_COEFF
+          }
+          if (component.properties.PARAMETER_MEASUREMENT_TEMPERATURE != 27) {
+            k = k + ' TNOM=' + component.properties.PARAMETER_MEASUREMENT_TEMPERATURE
+          }
+          component.value = component.value + '\n' + component.properties.VALUE
+        } else {
           if (component.properties.VALUE !== undefined) {
             k = k + ' ' + component.properties.VALUE
             component.value = component.value + '\n' + component.properties.VALUE
           }
         }
 
-        if (component.properties.EXTRA_EXPRESSION.length > 0) {
+        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
           k = k + ' ' + component.properties.EXTRA_EXPRESSION
           component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
         }
-        
-        if (component.properties.MODEL.length > 0) {
+
+        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
           spiceModels += component.properties.MODEL + '\n'
         }
 
@@ -458,7 +571,6 @@ export function GenerateNetList() {
     })
     morph.startAnimation()
   }
-  var a = new Set(netlist.nodelist)
   var netobj = {
     models: spiceModels,
     main: k
@@ -466,6 +578,75 @@ export function GenerateNetList() {
   return netobj
 }
 // Function to Annotate, TODO! It needs some polishing 
+class Stack {
+    constructor(){
+        this.data = [];
+        this.top = 0;
+    }
+    push(element) {
+      this.data[this.top] = element;
+      this.top = this.top + 1;
+    }
+   length() {
+      return this.top;
+   }
+   peek() {
+      return this.data[this.top-1];
+   }
+   isEmpty() {
+     return this.top === 0;
+   }
+   pop() {
+    if( this.isEmpty() === false ) {
+       this.top = this.top -1;
+       return this.data.pop(); // removes the last element
+     }
+   }
+   print() {
+      var top = this.top - 1; // because top points to index where new    element to be inserted
+      // console.log('printing working')
+      // console.log(this.data)
+      while(top >= 0) { // print upto 0th index
+          // console.log(this.data[top]);
+           top--;
+      }
+    }
+    reverse() {
+       this._reverse(this.top - 1 );
+    }
+    _reverse(index) {
+       if(index != 0) {
+          this._reverse(index-1);
+       }
+       console.log(this.data[index]);
+    }
+}
+
+function traverseWire(edge, vis) {
+  var ans = []
+  vis[edge.id] = 1
+  if (edge.target.vertex == true || edge.source.vertex == true) {
+    if (edge.target.vertex == true) { ans.push(edge.target) }
+    if (edge.source.vertex == true) { ans.push(edge.source) }
+    return ans;
+  } else {
+    vis[parseInt(edge.id)] = true
+    if (edge.edges && edge.edges.length > 0) {
+      edge.edges.forEach((elem) => {
+        ans = ans.concat(traverseWire(elem, vis))
+      })
+    } else {
+      if (edge.source.edge == true && !vis[edge.source.id]) {
+        ans = ans.concat(traverseWire(edge.source, vis))
+      }
+      if (edge.target.edge == true && !vis[edge.target.id]) {
+        ans = ans.concat(traverseWire(edge.target, vis))
+      }
+    }
+    return ans
+  }
+}
+
 function annotate(graph) {
 
   var r = 1
@@ -477,156 +658,227 @@ function annotate(graph) {
   var w = 1
   var list = graph.getModel().cells
   var n = 1
-  var netlist = {
-    componentlist: [],
-    nodelist: []
-  }
   var erc = true
   var k = ''
   if (erc === false) {
     alert('ERC check failed')
   } else {
-    for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
-        var compobj = {
-          name: '',
-          node1: '',
-          node2: '',
-          magnitude: ''
-        }
-        mxCell.prototype.ConnectedNode = null
-        var component = list[property]
-        if (component.symbol === 'R') {
-          k = k + component.symbol + r.toString()
-          component.value = component.symbol + r.toString()
-          component.properties.PREFIX = component.value
-
-          ++r
-        } else if (component.symbol === 'V') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++v
-        } else if (component.symbol === 'C') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++c
-        } else if (component.symbol === 'D') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++d
-        } else if (component.symbol === 'Q') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-          ++q
-        } else {
-          k = k + component.symbol + c.toString()
-          component.value = component.symbol + c.toString()
-          component.properties.PREFIX = component.value
-          ++w
-        }
-
-        if (component.children !== null) {
-          for (var child in component.children) {
-            var pin = component.children[child]
-            if (pin.vertex === true) {
-              if (pin.edges !== null || pin.edges.length !== 0) {
-                for (var wire in pin.edges) {
-                  if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                    if (pin.edges[wire].source.edge === true) {
-                      // Not Performing any Action for Pin to Wire Connections 
-                    } else if (pin.edges[wire].target.edge === true) {
-                      // Not Performing any Action for Pin to Wire Connections 
-                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                      pin.edges[wire].node = 0
-                      pin.edges[wire].value = 0
-                    } else {
-                      pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.edges[wire].value = pin.edges[wire].node
+    // DFS _________
+    var NODE_SETS = []
+    // console.log('dfs init')
+    var ptr = 1
+    var mp = Array(5000).fill(0)
+    NODE_SETS[0] = new Set() // Defining ground
+    for(var property in list){
+        if(list[property].Component === true && list[property].symbol !== 'PWR'){
+            mxCell.prototype.ConnectedNode = null
+            var component = list[property]
+            if (component.children !== null) {
+              // pins
+              for (var child in component.children) {
+                  var pin = component.children[child];
+                  
+                  if (pin != null &&  pin.vertex === true && pin.connectable) {
+                    if (pin.edges !== null || pin.edges.length !== 0) {
+                      if(mp[(pin.id)] === 1){                                
+                          continue                      
+                      }
+                      var stk = new Stack()
+                      var cur_node
+                      var cur_set = []
+                      var contains_gnd = 0                     
+                      
+                      stk.push(pin)      
+                      // console.log('exploring connected nodes of', pin)                    
+                      while(!stk.isEmpty()){
+                          cur_node = stk.peek()
+                          stk.pop();
+                          mp[cur_node.id] = 1
+                          cur_set.push(cur_node)
+                          stk.print()
+                          for (var wire in cur_node.edges) {
+                            // console.log(cur_node.edges[wire])
+                            if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
+                              if (cur_node.edges[wire].target.ParentComponent !== null) {
+                                if(cur_node.edges[wire].target.ParentComponent.symbol === 'PWR'){
+                                    contains_gnd = 1
+                                }
+                              }
+                              if(cur_node.edges[wire].target.vertex == true){
+                                if (!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)){
+                                  stk.push(cur_node.edges[wire].target)
+                                }
+                              }
+                              if(cur_node.edges[wire].source.vertex == true){
+                                if(!mp[(cur_node.edges[wire].source.id)] && (cur_node.edges[wire].source.id !== cur_node.id)){
+                                    stk.push(cur_node.edges[wire].source)
+                                }
+                              }
+                              // Checking for wires which are connected to another wire(s), Comment out 
+                              // the if conditions below if edge connections malfunction
+                              var conn_vertices = [];
+                              if (cur_node.edges[wire].edges && cur_node.edges[wire].edges.length > 0) {
+                                for (const ed in cur_node.edges[wire].edges) {
+                                  if (!mp[cur_node.edges[wire].edges[ed].id]) {
+                                    conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].edges[ed], mp))
+                                  }
+                                }
+                              }
+                              if (cur_node.edges[wire].source.edge == true) {
+                                if (!mp[(cur_node.edges[wire].source.id)] && (cur_node.edges[wire].source.id !== cur_node.id)) {
+                                  conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].source, mp))
+                                }
+                              }
+                              if (cur_node.edges[wire].target.edge == true) {
+                                if (!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)) {
+                                  conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].target, mp))
+                                }
+                              }
+                              // console.log("CONN EDGES", conn_vertices)
+                              conn_vertices.forEach((elem) => {
+                                stk.push(elem)
+                              })
+                            }
+                          }
+                        if(contains_gnd === 1){
+                            for(var x in cur_set)
+                                NODE_SETS[0].add(cur_set[x])
+                        }
+                          // console.log("Set of nodes at same pot:", cur_set)   
+                      }
+                    } 
+                    if (!contains_gnd){
+                        NODE_SETS.push(new Set(cur_set))
                     }
                   }
-                }
-                k = k + ' ' + pin.edges[0].node
               }
             }
-          }
-          compobj.name = component.symbol
-          compobj.node1 = component.children[0].edges[0].node
-          compobj.node2 = component.children[1].edges[0].node
-          compobj.magnitude = 10
-          netlist.componentlist.push(component.properties.PREFIX)
-          netlist.nodelist.push(compobj.node2, compobj.node1)
         }
-        if (component.properties.VALUE !== undefined) {
-          k = k + ' ' + component.properties.VALUE
-        }
-
-        if (component.properties.EXTRA_EXPRESSION.length > 0) {
-          k = k + ' ' + component.properties.EXTRA_EXPRESSION
-        }
-        if (component.properties.MODEL.length > 0) {
-          k = k + ' ' + component.properties.MODEL.split(' ')[1]
-        }
-        k = k + ' \n'
-      }
     }
+    // console.log('dfs end')
+    // console.log("Results after considering edges: ", NODE_SETS)
+    for (var property in list) {
+        if (list[property].Component === true && list[property].symbol !== 'PWR') {
+          mxCell.prototype.ConnectedNode = null
+          var component = list[property]
+          if (component.symbol === 'R') {
+            component.value = component.symbol + r.toString()
+            component.properties.PREFIX = component.value
+            ++r
+          } else if (component.symbol === 'V') {
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++v
+          } else if (component.symbol === 'C') {
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++c
+          } else if (component.symbol === 'D') {
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++d
+          } else if (component.symbol === 'Q') {
+            component.value = component.symbol + v.toString()
+            component.properties.PREFIX = component.value
+            ++q
+          } else {
+            component.value = component.symbol + c.toString()
+            component.properties.PREFIX = component.value
+            ++w
+          }
+          if (component.children !== null) {
+            for (var child in component.children) {
+              var pin = component.children[child]
+              if (pin.vertex === true && pin.connectable) {
+                if (pin.edges !== null || pin.edges.length !== 0) {
+                // Search for pin in NODE_SET:
+                // assign: pin.edges[wire].node= "NODE" + $indexOfSet
+                NODE_SETS.forEach((e, i) => {
+                  var done = 0
+                  e.forEach((vertex) => {
+                    if (vertex.id == pin.id && done === 0) {
+                      if (i === 0) {
+                        pin.edges[wire].node = 0
+                        pin.ConnectedNode = 0
+                        pin.edges[wire].value = pin.edges[wire].node
+                      } else {
+                        pin.edges[wire].node = "COM." + i.toString()
+                        pin.ConnectedNode = 'COM.' + i.toString() 
+                        pin.edges[wire].value = pin.edges[wire].node
+                      }
+                      done = 1
+                      // console.log("VALUE SET TO ", pin.edges[wire].ConnectedNode)
+                    }
+                  })
+                })
+                k = k + ' ' + pin.edges[0].node
+                }
+              }
+            }
+        }
+      }
+    } 
   }
   return list
 }
+
 // Returns all the Nodes present in the Schematic, Used for Simulation 
 export function GenerateNodeList() {
   var list = annotate(graph)
-  var a = []
   // Using a Set to avoid duplicate Nodes 
-  var netlist = new Set()
-  var k = 'Unitled netlist \n'
+  var nodelist = new Set()
+  for (var property in list) {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      // Fetching all the nodes 
+      var component = list[property]
+      if (component.children !== null) {
+        for(var child in component.children){
+            nodelist.add(component.children[child].edges[0].node)
+        }        
+      }
+    }
+  }
+  return nodelist
+}
+// Sends a list of components present in the netlist 
+export function GenerateCompList() {
+  var list = annotate(graph)
+  var a = []
+  var complist = [] // This will contain the list of Component Prefix
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
       var compobj = {
         name: '',
-        node1: '',
-        node2: '',
         magnitude: ''
       }
-      // Fetching all the nodes 
       var component = list[property]
-      if (component.children !== null) {
-        compobj.name = component.symbol
-        compobj.node1 = component.children[0].edges[0].node
-        compobj.node2 = component.children[1].edges[0].node
-        netlist.add(compobj.node1, compobj.node2)
+      compobj.name = component.symbol
+      var nodeNumber = 0
+      for(var child in component.children){
+          nodeNumber++
+          compobj['node' + nodeNumber.toString()] = component.children[child].edges[0].node
       }
+      complist.push(component.properties.PREFIX)
     }
   }
-  return netlist
+  return complist
 }
-// Sends a list of components present in the netlist 
-export function GenerateCompList() {
+// Sends a detailed list of components present in the netlist 
+export function GenerateDetailedCompList() {
   var list = annotate(graph)
   var a = []
   var netlist = [] // This will contain the list of Component Prefix
   var k = 'Unitled netlist \n'
   for (var property in list) {
     if (list[property].Component === true && list[property].symbol !== 'PWR') {
-      var compobj = {
-        name: '',
-        node1: '',
-        node2: '',
-        magnitude: ''
-      }
       var component = list[property]
-      compobj.name = component.symbol
-      compobj.node1 = component.children[0].edges[0].node
-      compobj.node2 = component.children[1].edges[0].node
-      netlist.push(component.properties.PREFIX)
+      netlist.push({name:component.properties.PREFIX,value:component.properties.VALUE,unit:component.properties.VALUE_UNIT})
     }
   }
   return netlist
 }
+
+
 // Function to Render Circuit XML
 export function renderXML() {
   graph.view.refresh()
@@ -635,7 +887,7 @@ export function renderXML() {
   parseXmlToGraph(xmlDoc, graph)
 }
 // Function to Parse XML and Redraw on Grid
-function parseXmlToGraph(xmlDoc, graph) {
+export function parseXmlToGraph(xmlDoc, graph) {
   const cells = xmlDoc.documentElement.children[0].children
   const parent = graph.getDefaultParent()
   var v1

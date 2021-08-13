@@ -41,16 +41,29 @@ class Library(models.Model):
     def __str__(self):
         return self.library_name
 
+    def delete(self, *args, **kwargs):
+        try:
+            shutil.rmtree(
+                os.path.join(
+                    "./kicad-symbols/",
+                    self.library_set.user.username + "-"
+                    + self.library_set.name,
+                    "symbol-svgs", self.library_name[:-4]
+                ))
+        except Exception:
+            pass
+        super(Library, self).delete(*args, **kwargs)
+
 
 @receiver(post_delete, sender=Library)
-def library_post_save_receiver(sender, instance: Library, **kwargs):
+def library_post_delete_receiver(sender, instance: Library, **kwargs):
     try:
         shutil.rmtree(
             os.path.join(
                 "kicad-symbols/",
                 instance.library_set.user.username + "-"
                 + instance.library_set.name,
-                "symbol-svgs", instance.library_name[:4]
+                "symbol-svgs", instance.library_name[:4], "/"
             ))
     except Exception:
         pass
@@ -78,6 +91,14 @@ class LibraryComponent(models.Model):
 
     def __str__(self):
         return self.name
+
+    def delete(self, *args, **kwargs):
+        try:
+            os.remove(self.thumbnail_path)
+            os.remove(self.svg_path)
+        except Exception:
+            pass
+        super(LibraryComponent, self).delete(*args, **kwargs)
 
 
 @receiver(post_delete, sender=LibraryComponent)
@@ -112,6 +133,22 @@ class ComponentAlternate(models.Model):
 
     def __str__(self):
         return self.full_name
+
+    def delete(self, *args, **kwargs):
+        try:
+            os.remove(self.svg_path)
+        except Exception:
+            pass
+        super(ComponentAlternate, self).delete(*args, **kwargs)
+
+
+@receiver(post_delete, sender=ComponentAlternate)
+def alt_component_post_delete_receiver(
+        sender, instance: ComponentAlternate, **kwargs):
+    try:
+        os.remove(instance.svg_path)
+    except Exception:
+        pass
 
 
 class FavouriteComponent(models.Model):

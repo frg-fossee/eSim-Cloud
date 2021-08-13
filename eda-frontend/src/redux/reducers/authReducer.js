@@ -6,6 +6,7 @@ const initialState = {
   isRegistered: null,
   isLoading: false,
   user: null,
+  roles: null,
   errors: '',
   regErrors: '',
   resetPasswordSuccess: false,
@@ -21,15 +22,13 @@ export default function (state = initialState, action) {
         isLoading: true
       }
     }
-
     case actions.DEFAULT_STORE: {
       return {
-        ...state,
+        ...initialState,
         errors: '',
         regErrors: ''
       }
     }
-
     case actions.SIGNUP_SUCCESSFUL: {
       return {
         ...state,
@@ -56,6 +55,7 @@ export default function (state = initialState, action) {
     }
 
     case actions.LOGIN_SUCCESSFUL: {
+      localStorage.setItem('user_id', action.payload.data.user_id)
       localStorage.setItem('esim_token', action.payload.data.auth_token)
       return {
         ...state,
@@ -120,6 +120,12 @@ export default function (state = initialState, action) {
       }
     }
 
+    case actions.ROLE_LOADED: {
+      return {
+        ...state,
+        roles: action.payload.data
+      }
+    }
     default:
       return state
   }

@@ -12,8 +12,9 @@ import SchematicToolbar from '../components/SchematicEditor/SchematicToolbar'
 import RightSidebar from '../components/SchematicEditor/RightSidebar'
 import PropertiesSidebar from '../components/SchematicEditor/PropertiesSidebar'
 import LoadGrid from '../components/SchematicEditor/Helper/ComponentDrag.js'
+import ComponentProperties from '../components/SchematicEditor/ComponentProperties'
 import '../components/SchematicEditor/Helper/SchematicEditor.css'
-import { fetchSchematic, loadGallery } from '../redux/actions/index'
+import { fetchSchematic, fetchGallerySchematic } from '../redux/actions/index'
 import { useDispatch } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +34,7 @@ export default function SchematiEditor (props) {
   const outlineRef = React.createRef()
   const dispatch = useDispatch()
   const [mobileOpen, setMobileOpen] = React.useState(false)
+  const [ltiSimResult, setLtiSimResult] = React.useState(false)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -40,33 +42,47 @@ export default function SchematiEditor (props) {
 
   useEffect(() => {
     document.title = 'Schematic Editor - eSim '
-    var container = gridRef.current
-    var sidebar = compRef.current
-    var outline = outlineRef.current
+    const container = gridRef.current
+    const sidebar = compRef.current
+    const outline = outlineRef.current
     LoadGrid(container, sidebar, outline)
 
     if (props.location.search !== '') {
       const query = new URLSearchParams(props.location.search)
-      var cktid = query.get('id')
-
+      console.log(props.location.search)
+      const cktid = query.get('id')
+      const version = query.get('version')
+      const branch = query.get('branch')
+      console.log(cktid)
       if (cktid.substr(0, 7) === 'gallery') {
         // Loading Gallery schemaic.
-        dispatch(loadGallery(cktid.substr(7, cktid.length)))
+        dispatch(fetchGallerySchematic(cktid))
       } else {
         // Loading User on-cloud saved schemaic.
-        dispatch(fetchSchematic(cktid))
+        dispatch(fetchSchematic(cktid, version, branch))
       }
     }
-  }, [compRef, gridRef, outlineRef, props.location, dispatch])
+  // eslint-disable-next-line
+  }, [props.location])
 
   return (
-
     <div className={classes.root}>
-
       <CssBaseline />
 
       {/* Schematic editor header, toolbar and left side pane */}
-      <Layout header={<Header />} resToolbar={<SchematicToolbar gridRef={gridRef} mobileClose={handleDrawerToggle} />} sidebar={<ComponentSidebar compRef={compRef} />} />
+      <Layout
+        header={<Header />}
+        resToolbar={
+          <SchematicToolbar
+            gridRef={gridRef}
+            ltiSimResult={ltiSimResult}
+            setLtiSimResult={setLtiSimResult}
+            mobileClose={handleDrawerToggle}
+          />
+        }
+        sidebar={<ComponentSidebar compRef={compRef} ltiSimResult={ltiSimResult}
+          setLtiSimResult={setLtiSimResult}/>}
+      />
 
       {/* Grid for drawing and designing circuits */}
       <LayoutMain>
@@ -77,9 +93,10 @@ export default function SchematiEditor (props) {
       </LayoutMain>
 
       {/* Schematic editor Right side pane */}
-      <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle} >
+      <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle}>
         <PropertiesSidebar gridRef={gridRef} outlineRef={outlineRef} />
       </RightSidebar>
+      <ComponentProperties/>
     </div>
   )
 }

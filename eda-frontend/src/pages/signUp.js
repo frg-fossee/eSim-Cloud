@@ -68,9 +68,14 @@ export default function SignUp () {
   const handleMouseDownPassword = () => setShowPassword(!showPassword)
 
   // Function call for google oAuth sign up.
-  const handelGoogleSignup = () => {
+  const handleGoogleSignup = () => {
     var host = window.location.protocol + '//' + window.location.host
     dispatch(googleLogin(host))
+  }
+
+  const handleSignup = (event) => {
+    event.preventDefault()
+    dispatch(signUp(email, username, password, history))
   }
 
   return (
@@ -87,9 +92,17 @@ export default function SignUp () {
         {/* Display's error messages while signing in */}
         <Typography variant="body1" align="center" style={{ marginTop: '10px' }} color={auth.isRegistered ? 'secondary' : 'error'}>
           {auth.regErrors}
+          { auth.isRegistered &&
+            <>
+              <br />
+              <Link component={RouterLink} to="/login">
+                {'Back to Login'}
+              </Link>
+            </>
+          }
         </Typography>
 
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSignup} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -133,7 +146,7 @@ export default function SignUp () {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                   >
-                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* Handel password visibility */}
+                    {showPassword ? <Visibility fontSize="small" /> : <VisibilityOff fontSize="small" />} {/* handle password visibility */}
                   </IconButton>
                 </InputAdornment>
               )
@@ -152,7 +165,7 @@ export default function SignUp () {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(signUp(email, username, password, history))}
+            type="submit"
             className={classes.submit}
             disabled={!accept}
           >
@@ -165,7 +178,7 @@ export default function SignUp () {
             fullWidth
             variant="outlined"
             color="primary"
-            onClick={handelGoogleSignup}
+            onClick={handleGoogleSignup}
             className={classes.submit}
           >
             <img alt="G" src={google} height="20" />&emsp; Sign Up With Google
