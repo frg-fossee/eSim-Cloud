@@ -322,7 +322,7 @@ class LTIPostGrade(APIView):
                 submission.lms_success = True
                 submission.save()
                 msg = 'Your score was submitted. Great job!'
-                return Response(data={"message": msg},
+                return Response(data={"message": msg,"score":score,"expected":consumer.test_case.result,"given":sim.result},
                                 status=status.HTTP_200_OK)
 
         except LTIException:
