@@ -64,7 +64,6 @@ export const loadUser = () => (dispatch, getState) => {
           data: []
         }
       })
-
     })
 }
 
@@ -127,7 +126,6 @@ export const loadMinUser = () => (dispatch) => {
         payload: {
           data: {}
         },
-
       })
     })
 }
