@@ -185,7 +185,7 @@ export default function SchematicToolbar({
             return 0;
           });
           setLtiSimHistory(res.data);
-          setActiveSimResult(res.data[0].id);
+          setActiveSimResult(res.data[res.data.length - 1].id);
         })
         .catch((err) => {
           console.log(err);
@@ -740,7 +740,7 @@ export default function SchematicToolbar({
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>}
-      {!ltiId &&<OpenSchDialog
+      {!ltiId && <OpenSchDialog
         open={schOpen}
         close={handleSchDialClose}
         openLocal={handelLocalSchOpen}
@@ -761,7 +761,54 @@ export default function SchematicToolbar({
         close={handleSnacClose}
         message={message}
       />
-      {!ltiId && <span className={classes.pipe}>|</span>}
+      {ltiId && ltiUserId && ltiNonce && ltiSimHistory && (
+        <div>
+          <FormControl
+            size="small"
+            style={{ marginLeft: "1%", paddingBottom: "1%" }}
+            className={classes.formControl}
+          >
+            <InputLabel htmlFor="outlined-age-native-simple">
+              See simulations
+            </InputLabel>
+            <Select
+              labelId="demo-simple-select-placeholder-label-label"
+              id="demo-simple-select-placeholder-label"
+              value={activeSimResult}
+              style={{ minWidth: "300px" }}
+              onChange={handleChangeSim}
+              label="Simulations"
+              className={classes.selectEmpty}
+            >
+              {ltiSimHistory.map((sim) => {
+                return (
+                  <MenuItem key={sim.id} value={sim.id}>
+                    {sim.simulation_type} at{" "}
+                    {sim.simulation_time.toLocaleString()}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </div>
+      )}
+      {((ltiId && ltiUserId && ltiNonce) || consumerKey) &&
+        scored &&
+        activeSimResult && (
+          <Tooltip title="Submit">
+            <Button
+              size="small"
+              variant="outlined"
+              color="primary"
+              className={classes.button}
+              endIcon={<Icon>send</Icon>}
+              onClick={onSubmission}
+            >
+              Submit
+            </Button>
+          </Tooltip>
+        )}
+      <span className={classes.pipe}>|</span>
       {!ltiId && <Tooltip title="Export (Ctrl + E)">
         <IconButton
           color="inherit"
@@ -947,22 +994,7 @@ export default function SchematicToolbar({
       </Tooltip>
       <HelpScreen open={helpOpen} close={handleHelpClose} />
       <span className={classes.pipe}>|</span>
-      {/* {((ltiId && ltiUserId && ltiNonce) || consumerKey) &&
-        scored &&
-        activeSimResult && (
-          <Tooltip title="Submit">
-            <Button
-              size="small"
-              variant="outlined"
-              color="primary"
-              className={classes.button}
-              endIcon={<Icon>send</Icon>}
-              onClick={onSubmission}
-            >
-              Submit
-            </Button>
-          </Tooltip>
-        )} */}
+
       {consumerKey && (
         <>
           <Button
@@ -991,53 +1023,6 @@ export default function SchematicToolbar({
         </>
       )}
 
-      {ltiId && ltiUserId && ltiNonce && ltiSimHistory && (
-        <div>
-          <FormControl
-            size="small"
-            style={{ marginLeft: "1%", paddingBottom: "1%" }}
-            className={classes.formControl}
-          >
-            <InputLabel htmlFor="outlined-age-native-simple">
-              See simulations
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-placeholder-label-label"
-              id="demo-simple-select-placeholder-label"
-              value={activeSimResult}
-              style={{ minWidth: "300px" }}
-              onChange={handleChangeSim}
-              label="Simulations"
-              className={classes.selectEmpty}
-            >
-              {ltiSimHistory.map((sim) => {
-                return (
-                  <MenuItem key={sim.id} value={sim.id}>
-                    {sim.simulation_type} at{" "}
-                    {sim.simulation_time.toLocaleString()}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </div>
-      )}
-      {((ltiId && ltiUserId && ltiNonce) || consumerKey) &&
-        scored &&
-        activeSimResult && (
-          <Tooltip title="Submit">
-            <Button
-              size="small"
-              variant="outlined"
-              color="primary"
-              className={classes.button}
-              endIcon={<Icon>send</Icon>}
-              onClick={onSubmission}
-            >
-              Submit
-            </Button>
-          </Tooltip>
-        )}
       <SubmitResults show={results} setResults={setResults} results={submissionDetails} />
       <IconButton
         color="inherit"

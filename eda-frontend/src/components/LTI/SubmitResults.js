@@ -31,7 +31,7 @@ function SubmitResults({ show, setResults, results }) {
     const classes = useStyles()
     const showIcons = (item) => {
         if (
-            results.comparison_result == "Same Values" || results.comparison_result["same"].includes(item)
+            results.comparison_result === "Same Values" || results.comparison_result["same"].includes(item)
         ) {
             return <CheckCircleIcon />
         } else {
