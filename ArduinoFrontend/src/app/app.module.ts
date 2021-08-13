@@ -43,6 +43,7 @@ import { SaveProjectDialogComponent } from './simulator/save-project-dialog/save
 import { OptionModalComponent } from './alert/option-modal/option-modal.component';
 import { VersioningPanelComponent } from './versioning-panel/versioning-panel.component';
 import { CreateVariationDialogComponent } from './versioning-panel/create-variation-dialog/create-variation-dialog.component';
+import { DeleteProjectDialogComponent } from './gallery/delete-project-dialog/delete-project-dialog.component';
 
 /**
  * Monaco OnLoad Function
@@ -81,6 +82,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     SaveProjectDialogComponent,
     VersioningPanelComponent,
     CreateVariationDialogComponent,
+    DeleteProjectDialogComponent,
   ],
   imports: [
     BrowserModule,

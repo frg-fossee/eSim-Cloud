@@ -11,15 +11,18 @@
       <div class="row" style="margin: 1em;">
         <div class="col-md-3" *ngFor="let item of samples; let i = index">
           {{ DateTime(item) }}
-          <div class="subbox" [routerLink]="['/simulator']" [queryParams]="{gallery:i}">
+          <div class="subbox">
             <div>
-              <div style="width: 100%;  background-color: #e8e8e8;">
-                <img class="item-img" style="border-radius: 5px;" src="./assets/samples/{{item.base64_image}}"
+              <div [routerLink]="['/simulator']" [queryParams]="{gallery:i,proId:item.save_id}" style="width: 100%;  background-color: #e8e8e8;">
+                <img class="item-img" style="border-radius: 5px;" src="{{item.media}}"
                   alt="{{item.name}}">
               </div>
               <div style="box-sizing: border-box; padding: 15px;">
-                <h5>{{item.name}}</h5>
-                <p style="margin-bottom: 0;text-align: right;font-size: small;">{{item.time}} By {{item.author}}</p>
+                <div class="footer">
+                  <h5>{{item.name}}</h5>
+                  <mat-icon aria-hidden="false" aria-label="Delete icon" color="warn" (click)="deleteProjectFromGallery(item.save_id,item.name)">delete</mat-icon>
+                </div>
+                <!-- <p style="margin-bottom: 0;text-align: right;font-size: small;">{{item.time}} By {{item.author}}</p> -->
               </div>
             </div>
           </div>

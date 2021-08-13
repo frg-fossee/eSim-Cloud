@@ -126,8 +126,7 @@ export const loadMinUser = () => (dispatch) => {
         type: actions.LOGIN_FAILED,
         payload: {
           data: {}
-        },
-        
+        }        
       })
     })
 }

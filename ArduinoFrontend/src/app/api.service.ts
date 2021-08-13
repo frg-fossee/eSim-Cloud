@@ -46,6 +46,20 @@ export class ApiService {
     });
   }
   /**
+  * Save Project to Gallery
+  * @param data The Project data
+  * @param token Auth Token
+  */
+  saveProjectToGallery(data: any, token: string) {
+    return this.http.post(`${this.url}api/save/gallery/` + data.save_id, data, {
+      headers: new HttpHeaders({
+        // 'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        // 'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+  /**
    * List all the project created by an user
    * @param token Auth Token
    */
@@ -166,7 +180,29 @@ export class ApiService {
    * Fetch Samples
    */
   fetchSamples(): Observable<any> {
-    return this.http.get('./assets/samples/Samples.json');
+    // return this.http.get('./assets/samples/Samples.json');
+    return this.http.get(`${this.url}api/save/gallery`);
+  }
+
+  /**
+   * Fetchs single project  gallery to simulator
+   * @param id 
+   */
+  fetchSingleProjectToGallery(id: any) {
+    return this.http.get(`${this.url}api/save/gallery/` + id);
+  }
+
+  /**
+   * Deletes single project from gallery
+   * @param id 
+   * @param token  
+   */
+  deleteProjectFromGallery(id: any, token: any) {
+    return this.http.delete(`${this.url}api/save/gallery/` + id, {
+      headers: new HttpHeaders({
+        Authorization: `Token ${token}`,
+      })
+    });
   }
 
   /**
@@ -260,12 +296,4 @@ export class ApiService {
       })
     });
   }
-
-  /**
-   * Saves staff gallery
-   */
-  saveStaffGallery() {
-
-  }
-
 }

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../api.service';
+import { filter, map } from 'rxjs/operators';
+import { Login } from '../Libs/Login';
+import { AlertService } from '../alert/alert-service/alert.service';
+import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
 
 /**
  * For Handling Time ie. Prevent moment error
@@ -30,15 +34,26 @@ export class GalleryComponent implements OnInit {
    */
   ngOnInit() {
     this.api.login().then(() => {
-
+    
     });
     // Add Page Title
     document.title = 'Gallery | Arduino On Cloud';
     // Show Loading animation
     window['showLoading']();
     // Fetch Samples
-    this.api.fetchSamples().subscribe(samples => {
-      this.samples = samples;
+    this.api.fetchSamples().pipe(
+      map((data) => {
+        return data.filter((d) => {
+          if (d.is_arduino == true) {
+            return d;
+          }
+        });
+      })
+    ).subscribe((samples: any[]) => {
+      samples.map(d => {
+        this.samples.push(Object.assign({}, d));
+      });
+
       // Hide Loading Animation
       window['hideLoading']();
     }, err => {
@@ -55,5 +70,28 @@ export class GalleryComponent implements OnInit {
    */
   DateTime(item) {
     item.time = moment(item.create_time).fromNow();
+  }
+
+  getUserInfo(){
+    // this.api.getRole(Login).subscribe()
+  }
+
+  /**
+   * Deletes project from gallery
+   * @param save_id
+   * @param name  
+   */
+  deleteProjectFromGallery(save_id: any, name: any) {
+
+    let isDelete = confirm('Delete' + ' ' + name);
+    if (isDelete == true) {
+      this.api.deleteProjectFromGallery(save_id, Login.getToken()).subscribe((done) => {
+        this.samples = [];
+        this.ngOnInit();
+      }, (e) => {
+        console.log(e);
+      })
+    }
+
   }
 }

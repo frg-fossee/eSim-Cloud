@@ -184,7 +184,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       }
       // if gallery query parameter is present
       if (v.gallery) {
-        this.OpenGallery(v.gallery);
+        this.OpenGallery(v.gallery, v.proId);
         return;
       }
       // if id is present and it is ofline
@@ -578,6 +578,16 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  /**
+   * Function save the gallery
+   */
+  addToGallery() {
+    SaveOnline.staffSaveGallery(this.projectTitle, this.description, this.api, (out) => {
+      // this.router.navigate(['/gallery'])
+    })
+
+  }
   /** Function clear variables in the Workspace */
   ClearProject() {
     Workspace.ClearWorkspace();
@@ -709,7 +719,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Open Gallery Project
    * @param index Gallery item index
    */
-  OpenGallery(index: string) {
+  OpenGallery(index: string, id: any) {
     // Show Loading animation
     window['showLoading']();
     // Get Position
@@ -717,21 +727,21 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // if it is a valid number then proceed
     if (!isNaN(i)) {
       // Fetch all samples
-      this.api.fetchSamples().subscribe(out => {
-        if (out[i]) {
+      this.api.fetchSingleProjectToGallery(id).subscribe((out:any) => {
+        if (out) {
           // set project title
-          this.projectTitle = out[i].name;
+          this.projectTitle = out.name;
           this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
           // Set project description
-          this.description = out[i].description;
+          this.description = out.description;
           // Load the project
-          Workspace.Load(JSON.parse(out[i].data_dump));
+          Workspace.Load(JSON.parse(out.data_dump));
         } else {
           AlertService.showAlert('No Item Found');
         }
         window['hideLoading']();
       }, err => {
-        console.error(err);
+        console.log(err);
         AlertService.showAlert('Failed to load From gallery!');
         window['hideLoading']();
       });
@@ -854,13 +864,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         charactersLength));
     }
     return result;
-  }
-
-  /**
-   * Add to gallery component.
-   */
-  addToGallery() {
-
   }
 
 }
