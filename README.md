@@ -4,7 +4,7 @@ eSim and Arduino on Cloud
 <h6 align="center"> 
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
@@ -163,6 +163,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://ikartikgautam.web.app/"><img src="https://avatars.githubusercontent.com/u/39825660?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kartik Gautam</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=ikartikgautam" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=ikartikgautam" title="Documentation">📖</a> <a href="#design-ikartikgautam" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/Kaustuv942"><img src="https://avatars.githubusercontent.com/u/56028031?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kaustuv K Chattopadhyay</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=Kaustuv942" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=Kaustuv942" title="Documentation">📖</a> <a href="#design-Kaustuv942" title="Design">🎨</a></td>
   </tr>
 </table>
 
