@@ -80,6 +80,17 @@
         "code",
         "design"
       ]
+    },
+    {
+      "login": "ikartikgautam",
+      "name": "Kartik Gautam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39825660?v=4",
+      "profile": "http://ikartikgautam.web.app/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
