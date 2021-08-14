@@ -4,7 +4,7 @@ eSim and Arduino on Cloud
 <h6 align="center"> 
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 [![Documentation Status](https://readthedocs.org/projects/esim-cloud/badge/?version=latest)](https://esim-cloud.readthedocs.io/en/latest/?badge=latest)
@@ -160,6 +160,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://navonildas.github.io/"><img src="https://avatars.githubusercontent.com/u/29132316?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Navonil Das</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=NavonilDas" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=NavonilDas" title="Documentation">📖</a> <a href="#design-NavonilDas" title="Design">🎨</a></td>
     <td align="center"><a href="https://github.com/meet-10"><img src="https://avatars.githubusercontent.com/u/61341284?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Meet10</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=meet-10" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=meet-10" title="Documentation">📖</a> <a href="#design-meet-10" title="Design">🎨</a></td>
     <td align="center"><a href="https://github.com/gupta-arpit"><img src="https://avatars.githubusercontent.com/u/12170429?v=4?s=100" width="100px;" alt=""/><br /><sub><b>gupta-arpit</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=gupta-arpit" title="Code">💻</a> <a href="#design-gupta-arpit" title="Design">🎨</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://ikartikgautam.web.app/"><img src="https://avatars.githubusercontent.com/u/39825660?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kartik Gautam</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=ikartikgautam" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=ikartikgautam" title="Documentation">📖</a> <a href="#design-ikartikgautam" title="Design">🎨</a></td>
   </tr>
 </table>
 
