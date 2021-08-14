@@ -124,6 +124,17 @@
         "doc",
         "design"
       ]
+    },
+    {
+      "login": "Rugz007",
+      "name": "Rugved Somwanshi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16833604?v=4",
+      "profile": "http://rugvedsomwanshi.me",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
