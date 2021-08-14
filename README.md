@@ -163,6 +163,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://ikartikgautam.web.app/"><img src="https://avatars.githubusercontent.com/u/39825660?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kartik Gautam</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=ikartikgautam" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=ikartikgautam" title="Documentation">📖</a> <a href="#design-ikartikgautam" title="Design">🎨</a></td>
+    <td align="center"><a href="https://github.com/kumanik5661"><img src="https://avatars.githubusercontent.com/u/42597251?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Nikhil Kumar</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=kumanik5661" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=kumanik5661" title="Documentation">📖</a> <a href="#design-kumanik5661" title="Design">🎨</a></td>
     <td align="center"><a href="https://github.com/Kaustuv942"><img src="https://avatars.githubusercontent.com/u/56028031?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Kaustuv K Chattopadhyay</b></sub></a><br /><a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=Kaustuv942" title="Code">💻</a> <a href="https://github.com/frg-fossee/eSim-Cloud/commits?author=Kaustuv942" title="Documentation">📖</a> <a href="#design-Kaustuv942" title="Design">🎨</a></td>
   </tr>
 </table>
