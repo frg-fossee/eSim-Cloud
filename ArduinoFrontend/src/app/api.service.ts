@@ -26,8 +26,8 @@ export class ApiService {
    * @returns Http headers as per given parameter and environment
    */
   httpHeaders(token: string) {
-    if(environment.production) {
-      if(token) {
+    if (environment.production) {
+      if (token) {
         return new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`,
@@ -39,9 +39,8 @@ export class ApiService {
           'Access-Control-Allow-Origin': '*',
         });
       }
-    }
-    else {
-      if(token) {
+    } else {
+      if (token) {
         return new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`,
