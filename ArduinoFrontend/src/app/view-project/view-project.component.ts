@@ -102,11 +102,12 @@ export class ViewProjectComponent implements OnInit {
     window['showLoading'](); // Show Loading animation
 
     // Get Token if not present then redirect to login
-    const token = Login.getToken();
-    if (!token) {
-      Login.redirectLogin();
-      return;
-    }
+    let token = Login.getToken();
+    // if (!token) {
+    //   Login.redirectLogin();
+    //   return;
+    // }
+    token = token ? token : null;
     // Sharing url
     this.shareURL = window.location.href;
 
