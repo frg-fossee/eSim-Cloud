@@ -58,7 +58,7 @@ class Command(BaseCommand):
         )
 
         logger.info(f"Reading libraries from {options['location']}")
-        logger.info(f"Saving as " + name[6:])
+        logger.info(f"Saving as " + name[5:])
         logger.info(f"Saving Libraries to {out_location}")
 
         if not os.path.isdir(out_location):
