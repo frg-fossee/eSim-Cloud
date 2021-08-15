@@ -432,14 +432,7 @@ function Header (props) {
               >
                 Editor
               </Link>
-              {/* <Button
-              onClick={() => { window.open(homeURL, '_self') }}
-              style={{ marginLeft: '65%' }}
-              color="textPrimary"
-              className={classes.link}
-            >
-              Home
-            </Button>  */}
+
               <Link
                 variant="button"
                 color="textPrimary"
@@ -475,12 +468,64 @@ function Header (props) {
             </>
             : (<>
 
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={() => { window.open(homeURL, '_self') }}
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginRight: '20px' }}
+              >
+                Home
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/gallery"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator/ngspice"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Simulator
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/dashboard"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Dashboard
+              </Link>
+
               <IconButton
                 edge="start"
                 color="primary"
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 onClick={handleClick}
+                style={{ marginRight: '20px' }}
               >
                 <Avatar className={classes.purple}>
                   {auth.user.username.charAt(0).toUpperCase()}
