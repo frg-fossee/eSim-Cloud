@@ -111,7 +111,7 @@ function Header (props) {
   const [loginDialog, setLoginDialog] = React.useState(false)
   const [logoutConfirm, setLogoutConfirm] = React.useState(false)
   const [reloginMessage, setReloginMessage] = React.useState('')
-
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
@@ -412,18 +412,112 @@ function Header (props) {
         {/* Display login option or user menu as per authenticated status */}
         {
           (!auth.isAuthenticated
-            ? <Button
-              size="small"
-              component={RouterLink}
-              to="/login?close=close"
-              style={{ marginLeft: 'auto' }}
-              color="primary"
-              variant="outlined"
-              target="_blank"
-            >
+            ? <>
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={() => { window.open(homeURL, '_self') }}
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginLeft: '61%', marginRight: '20px' }}
+              >
+                Home
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/gallery"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator/ngspice"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Simulator
+              </Link>
+              <Button
+                size="small"
+                component={RouterLink}
+                to="/login?close=close"
+                style={{ marginLeft: 'auto' }}
+                color="primary"
+                variant="outlined"
+                target="_blank"
+              >
               Login
-            </Button>
+              </Button>
+            </>
             : (<>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={() => { window.open(homeURL, '_self') }}
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginRight: '20px' }}
+              >
+                Home
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/gallery"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator/ngspice"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Simulator
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/dashboard"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Dashboard
+              </Link>
 
               <IconButton
                 edge="start"
@@ -431,6 +525,7 @@ function Header (props) {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 onClick={handleClick}
+                style={{ marginRight: '20px' }}
               >
                 <Avatar className={classes.purple}>
                   {auth.user.username.charAt(0).toUpperCase()}

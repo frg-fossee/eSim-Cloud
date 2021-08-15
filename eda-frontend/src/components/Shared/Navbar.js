@@ -70,7 +70,7 @@ export function Header () {
   const handleClose = () => {
     setAnchorEl(null)
   }
-
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
   useEffect(() => {
     function checkUserData () {
       const userToken = localStorage.getItem('esim_token')
@@ -113,9 +113,10 @@ export function Header () {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/"
+                onClick={() => { window.open(homeURL, '_self') }}
                 component={RouterLink}
                 className={classes.link}
+                // style={{ marginLeft: '65%' }}
               >
                 Home
               </Link>
@@ -170,6 +171,17 @@ export function Header () {
               </Link>
             </>)
             : (<>
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={() => { window.open(homeURL, '_self') }}
+                component={RouterLink}
+                // className={classes.link}
+                style={{ marginRight: '20px' }}
+              >
+                Home
+              </Link>
+
               <Link
                 variant="button"
                 color="textPrimary"
