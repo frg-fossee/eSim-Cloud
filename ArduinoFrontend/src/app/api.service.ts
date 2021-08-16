@@ -108,7 +108,8 @@ export class ApiService {
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
         'Access-Control-Allow-Origin': '*',
-      })
+      }),
+      observe: 'response',
     });
   }
   /**

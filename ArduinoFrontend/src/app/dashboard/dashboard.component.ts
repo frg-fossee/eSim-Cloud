@@ -172,7 +172,7 @@ export class DashboardComponent implements OnInit {
       // Delete Project from cloud
       const token = Login.getToken();
       this.api.deleteProject(id, token).subscribe((out) => {
-        if (out.done) {
+        if (out.status === 204 || out.done) {
           // Remove From the list
           this.online.splice(index, 1);
         } else {
