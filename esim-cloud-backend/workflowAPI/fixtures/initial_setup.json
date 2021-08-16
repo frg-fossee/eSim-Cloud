@@ -25,6 +25,11 @@
     "fields": { "name": "Staff [eSim]", "permissions": [] }
   },
   {
+    "model": "auth.group",
+    "pk": 6,
+    "fields": { "name": "Staff [Arduino]", "permissions": [] }
+  },
+  {
     "model": "workflowAPI.state",
     "pk": 1,
     "fields": {
