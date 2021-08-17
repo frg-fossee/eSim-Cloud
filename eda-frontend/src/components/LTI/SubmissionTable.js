@@ -159,6 +159,9 @@ export default function SubmissionTable () {
     <>
       <IconButton onClick={handleFilterOpen} style={{ float: 'right' }} ><FilterListIcon /></IconButton>
       <Input style={{ float: 'right' }} onChange={(e) => onSearch(e)} placeholder='Search' />
+      <Button style={{ float: 'left' }} disableElevation variant="contained" color="primary" onClick={handleButtonClick} startIcon={<ArrowBackIcon />}>
+        Return to LTI App
+      </Button>
       <TableContainer>
         {sortData.length !== 0 ? <Table className={classes.table} aria-label="submission table">
           <TableHead>
@@ -192,9 +195,6 @@ export default function SubmissionTable () {
           </TableBody>
         </Table> : <Typography style={{ textAlign: 'center' }}><h1>No submissions for this assignment</h1></Typography>}
       </TableContainer>
-      <Button style={{ marginTop: '2%' }} disableElevation variant="contained" color="primary" onClick={handleButtonClick} startIcon={<ArrowBackIcon />}>
-        Return to LTI App
-      </Button>
     </>
   )
 }
