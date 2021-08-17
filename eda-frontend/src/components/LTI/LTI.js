@@ -80,6 +80,24 @@ export default function LTIConfig() {
   const [submitMessage, setSubmitMessage] = React.useState('')
   const [activeSim, setActiveSim] = React.useState(null)
   const [simParam, setSimParam] = React.useState([])
+  const [graphSimParams, setGraphSimParams] = React.useState([])
+
+  useEffect(() => {
+    if (activeSim) {
+      var arr = []
+      if (activeSim.result.graph === "true") {
+        activeSim.result.data.map((i) => {
+          console.log(i)
+          i.labels.map((params) => {
+            if (!arr.includes(params)) {
+              arr.push(params)
+            }
+          })
+        })
+      }
+      setGraphSimParams(arr)
+    }
+  }, [activeSim])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -329,6 +347,11 @@ export default function LTIConfig() {
     document.execCommand('copy')
   }
 
+  const handleGraphParams = (params) => {
+    console.log(params)
+    return <MenuItem>Hello</MenuItem>
+  }
+
   return (
     <>
       {ltiDetails && <>
@@ -421,9 +444,19 @@ export default function LTIConfig() {
                   </div>
                 )}
               >
-                {activeSim.result.data.map(params => {
-                  return <MenuItem key={params[0]} value={params[0]}>{params[0]}</MenuItem>
-                })}
+                {activeSim.result.graph === "true"
+                  ? graphSimParams.map((params) => {
+                    return (
+                      <MenuItem key={`${params}-${Math.random()}`} value={params}>{params}</MenuItem>
+                    )
+                  })
+                  : activeSim.result.data.map((params) => {
+                    return (
+                      <MenuItem key={params[0]} value={params[0]}>
+                        {params[0]}
+                      </MenuItem>
+                    )
+                  })}
               </Select>}
             </FormControl>}
             <FormControlLabel

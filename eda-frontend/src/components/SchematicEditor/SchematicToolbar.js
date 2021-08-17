@@ -718,7 +718,7 @@ export default function SchematicToolbar({
         close={handleShortClose}
       />
 
-      {!ltiId && <Tooltip title="New">
+      {(!ltiId || !ltiNonce) &&  <Tooltip title="New">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -730,7 +730,7 @@ export default function SchematicToolbar({
           <CreateNewFolderOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>}
-      {!ltiId && <Tooltip title="Open (Ctrl + O)">
+      {(!ltiId || !ltiNonce) && <Tooltip title="Open (Ctrl + O)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -740,13 +740,13 @@ export default function SchematicToolbar({
           <OpenInBrowserIcon fontSize="small" />
         </IconButton>
       </Tooltip>}
-      {!ltiId && <OpenSchDialog
+      {(!ltiId || !ltiNonce) && <OpenSchDialog
         open={schOpen}
         close={handleSchDialClose}
         openLocal={handelLocalSchOpen}
         openKicad={handleKicadFileUpload}
       />}
-      {!ltiId && <Tooltip title="Save (Ctrl + S)">
+      {(!ltiId || !ltiNonce) && <Tooltip title="Save (Ctrl + S)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -809,7 +809,7 @@ export default function SchematicToolbar({
           </Tooltip>
         )}
       <span className={classes.pipe}>|</span>
-      {!ltiId && <Tooltip title="Export (Ctrl + E)">
+      {(!ltiId || !ltiNonce) && <Tooltip title="Export (Ctrl + E)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -819,7 +819,7 @@ export default function SchematicToolbar({
           <SystemUpdateAltOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>}
-      {!ltiId && <Tooltip title="Image Export (Ctrl + Shift + E)">
+      {(!ltiId || !ltiNonce) && <Tooltip title="Image Export (Ctrl + Shift + E)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -829,8 +829,8 @@ export default function SchematicToolbar({
           <ImageOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>}
-      {!ltiId && <ImageExportDialog open={imgopen} onClose={handleImgClose} />}
-      {!ltiId && <Tooltip title="Print Preview (Ctrl + P)">
+      {(!ltiId || !ltiNonce) && <ImageExportDialog open={imgopen} onClose={handleImgClose} />}
+      {(!ltiId || !ltiNonce) && <Tooltip title="Print Preview (Ctrl + P)">
         <IconButton
           color="inherit"
           className={classes.tools}
@@ -840,7 +840,7 @@ export default function SchematicToolbar({
           <PrintOutlinedIcon fontSize="small" />
         </IconButton>
       </Tooltip>}
-      {!ltiId && <span className={classes.pipe}>|</span>}
+      {(!ltiId || !ltiNonce) && <span className={classes.pipe}>|</span>}
 
       <Tooltip title="Simulate">
         <IconButton

@@ -114,6 +114,7 @@ function Header(props) {
   const [logoutConfirm, setLogoutConfirm] = React.useState(false)
   const [reloginMessage, setReloginMessage] = React.useState('')
   const [ltiId, setLtiId] = React.useState(null)
+  const [ltiNonce, setLtiNonce] = React.useState(null)
 
   const dispatch = useDispatch()
 
@@ -159,6 +160,9 @@ function Header(props) {
     var url = queryString.parse(window.location.href.split("editor")[1])
     if (url.lti_id) {
       setLtiId(url.lti_id)
+    }
+    if (url.lti_nonce) {
+      setLtiNonce(url.lti_nonce)
     }
   }, [])
 
@@ -420,7 +424,7 @@ function Header(props) {
         </Dialog>
 
         {/* Display login option or user menu as per authenticated status */}
-        {!ltiId &&
+        {(!ltiId || !ltiNonce) &&
           (!auth.isAuthenticated
             ? <Button
               size="small"
@@ -497,7 +501,7 @@ function Header(props) {
             )
           )
         }
-        {ltiId && <Typography
+        {ltiId && ltiNonce && <Typography
           variant="h6"
           color="inherit"
           noWrap
