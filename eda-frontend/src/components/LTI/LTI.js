@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function LTIConfig() {
+export default function LTIConfig () {
   const classes = useStyles()
 
   const [ltiDetails, setLTIDetails] = React.useState({
@@ -85,7 +85,7 @@ export default function LTIConfig() {
   useEffect(() => {
     if (activeSim) {
       var arr = []
-      if (activeSim.result.graph === "true") {
+      if (activeSim.result.graph === 'true') {
         activeSim.result.data.map((i) => {
           console.log(i)
           i.labels.map((params) => {
@@ -125,7 +125,7 @@ export default function LTIConfig() {
   useEffect(() => {
     if (historyId !== 'None' && history !== []) {
       var temp = history.find(ele => ele.id === historyId)
-      console.log("CHANGING ACTIVE SIM")
+      console.log('CHANGING ACTIVE SIM')
       setActiveSim(temp)
     }
     // eslint-disable-next-line
@@ -154,7 +154,7 @@ export default function LTIConfig() {
           initialSchematic: res.data.model_schematic,
           testCase: res.data.test_case,
           scored: res.data.scored,
-          id: res.data.id,
+          id: res.data.id
         })
       setSchematic(`${res.data.model_schematic.version}-${res.data.model_schematic.branch}`)
       setSimParam(res.data.sim_params)
@@ -298,8 +298,8 @@ export default function LTIConfig() {
   }
 
   const handleSimParamChange = (event) => {
-    setSimParam(event.target.value);
-  };
+    setSimParam(event.target.value)
+  }
 
   const handleOnClick = () => {
     var score = ''
@@ -345,11 +345,6 @@ export default function LTIConfig() {
     copyText.select()
     copyText.setSelectionRange(0, 99999)
     document.execCommand('copy')
-  }
-
-  const handleGraphParams = (params) => {
-    console.log(params)
-    return <MenuItem>Hello</MenuItem>
   }
 
   return (
@@ -444,7 +439,7 @@ export default function LTIConfig() {
                   </div>
                 )}
               >
-                {activeSim.result.graph === "true"
+                {activeSim.result.graph === 'true'
                   ? graphSimParams.map((params) => {
                     return (
                       <MenuItem key={`${params}-${Math.random()}`} value={params}>{params}</MenuItem>

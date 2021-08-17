@@ -32,8 +32,7 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
-import queryString from "query-string";
-
+import queryString from 'query-string'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -73,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 // Notification snackbar to give alert messages
-function SimpleSnackbar({ open, close, message }) {
+function SimpleSnackbar ({ open, close, message }) {
   return (
     <div>
       <Snackbar
@@ -103,7 +102,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-function Header(props) {
+function Header (props) {
   const history = useHistory()
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
@@ -124,7 +123,7 @@ function Header(props) {
 
   // Checks for localStore changes
   useEffect(() => {
-    function checkUserData() {
+    function checkUserData () {
       const userToken = localStorage.getItem('esim_token')
       if (userToken && userToken !== '') {
         // esim_token was added by another tab
@@ -157,7 +156,7 @@ function Header(props) {
   })
 
   useEffect(() => {
-    var url = queryString.parse(window.location.href.split("editor")[1])
+    var url = queryString.parse(window.location.href.split('editor')[1])
     if (url.lti_id) {
       setLtiId(url.lti_id)
     }
@@ -234,7 +233,7 @@ function Header(props) {
   }
 
   // handel display format of last saved status
-  function getDate(jsonDate) {
+  function getDate (jsonDate) {
     const json = jsonDate
     const date = new Date(json)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
@@ -245,7 +244,7 @@ function Header(props) {
   // handel Copy Share Url
   const textAreaRef = React.useRef(null)
 
-  function copyToClipboard(e) {
+  function copyToClipboard (e) {
     textAreaRef.current.select()
     document.execCommand('copy')
     e.target.focus()

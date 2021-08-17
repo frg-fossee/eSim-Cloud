@@ -9,7 +9,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TableContainer,
+  TableContainer
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
@@ -40,7 +40,7 @@ const sortOrder = {
   Descending: 2
 }
 
-export default function SubmissionTable() {
+export default function SubmissionTable () {
   const classes = useStyles()
   const [responseData, setResponseData] = React.useState([])
   const [sortData, setSortData] = React.useState([])
@@ -134,8 +134,8 @@ export default function SubmissionTable() {
     setSortData(responseData.filter((o) =>
       // eslint-disable-next-line
       Object.keys(o).some((k) => {
-        if ((k === 'student') && String(o[k]['username']).toLowerCase().includes(e.target.value.toLowerCase())) {
-          return String(o[k]['username']).toLowerCase().includes(e.target.value.toLowerCase())
+        if ((k === 'student') && String(o[k].username).toLowerCase().includes(e.target.value.toLowerCase())) {
+          return String(o[k].username).toLowerCase().includes(e.target.value.toLowerCase())
         }
       }
       )
