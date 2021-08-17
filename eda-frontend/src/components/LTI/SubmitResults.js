@@ -14,6 +14,7 @@ import PropTypes from 'prop-types'
 import CancelIcon from '@material-ui/icons/Cancel'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CloseIcon from '@material-ui/icons/Close'
+import CompareGraph from './CompareGraph'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -21,11 +22,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const Transition = React.forwardRef(function Transition (props, ref) {
+const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
 
-function SubmitResults ({ show, setResults, results }) {
+function SubmitResults({ show, setResults, results }) {
   const classes = useStyles()
   const showIcons = (item) => {
     if (
@@ -57,10 +58,11 @@ function SubmitResults ({ show, setResults, results }) {
       </AppBar>
       <Grid container>
         <Grid item xs={6}>
-          <h2>Teacher Values</h2>
+          <h3>Your Score: {results.score}</h3>
+          {/* <h2>Teacher Values</h2> */}
         </Grid>
-        <Grid item xs={results.expected ? 6 : 12}>
-          {results.given && results.given.graph !== 'true' && (
+        <Grid item xs={12}>
+          {(results.given && results.given.graph !== 'true') ? (
             <>
               <h2>Your Submission Values: </h2>
               {results.given.data.map((ele) => (
@@ -72,9 +74,9 @@ function SubmitResults ({ show, setResults, results }) {
                 </Paper>
               ))}
             </>
-          )}
+          ) : <CompareGraph expected={results.expected} given={results.given} />
+          }
         </Grid>
-        <h3>Your Score: {results.score}</h3>
       </Grid>
     </Dialog>
   )
