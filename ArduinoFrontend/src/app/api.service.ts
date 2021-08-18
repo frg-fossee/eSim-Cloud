@@ -181,7 +181,7 @@ export class ApiService {
    */
   fetchSamples(): Observable<any> {
     // return this.http.get('./assets/samples/Samples.json');
-    return this.http.get(`${this.url}api/save/gallery`);
+    return this.http.get(`${this.url}api/save/gallery?is_arduino=true`);
   }
 
   /**

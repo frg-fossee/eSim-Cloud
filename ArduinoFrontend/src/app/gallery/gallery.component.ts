@@ -3,7 +3,7 @@ import { ApiService } from '../api.service';
 import { filter, map } from 'rxjs/operators';
 import { Login } from '../Libs/Login';
 import { AlertService } from '../alert/alert-service/alert.service';
-import { DeleteProjectDialogComponent } from './delete-project-dialog/delete-project-dialog.component';
+import { environment } from 'src/environments/environment';
 
 /**
  * For Handling Time ie. Prevent moment error
@@ -41,17 +41,13 @@ export class GalleryComponent implements OnInit {
     // Show Loading animation
     window['showLoading']();
     // Fetch Samples
-    this.api.fetchSamples().pipe(
-      map((data) => {
-        return data.filter((d) => {
-          if (d.is_arduino == true) {
-            return d;
-          }
-        });
-      })
-    ).subscribe((samples: any[]) => {
+    this.api.fetchSamples().subscribe((samples: any[]) => {
       samples.map(d => {
-        this.samples.push(Object.assign({}, d));
+          if(!environment.production){
+            this.samples.push(Object.assign({}, d, {'media':environment.IMG_URL+d.media}));
+          }else{
+            this.samples.push(d);
+          }
       });
 
       // Hide Loading Animation
