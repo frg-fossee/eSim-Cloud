@@ -170,5 +170,12 @@
     </div>
   -->
     </div>
+    <div *ngIf="!selected.offline" style="display:flex; flex-direction: column; padding: 20px; padding-bottom: 50px;">
+      <p *ngIf="selected.shared">
+        Url for Sharing : 
+      </p>
+      <textarea id="sharing-url" *ngIf="selected.shared" 
+      rows="1" width="100%" style="resize:none;" readonly>{{getUrl(selected)}}</textarea>
+    </div>
   </div>
   <!--/open project-->

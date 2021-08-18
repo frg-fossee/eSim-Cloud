@@ -260,9 +260,8 @@ export class DashboardComponent implements OnInit {
    */
   CopyUrlToClipBoard(url) {
     // Create a temp html element put url inside it
-    const tmpEl = document.createElement('textarea');
+    const tmpEl: HTMLTextAreaElement = document.querySelector('#sharing-url');
     tmpEl.value = url;
-    document.body.appendChild(tmpEl);
     // Focus and Select the element
     tmpEl.focus();
     tmpEl.select();
@@ -276,8 +275,6 @@ export class DashboardComponent implements OnInit {
         duration: 2000
       });
     }
-    // Remove the temp element
-    document.body.removeChild(tmpEl);
   }
   /**
    * Project to enable or disable sharing (default enable)
@@ -520,5 +517,12 @@ export class DashboardComponent implements OnInit {
         }
       },
       () => { }, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
+  }
+
+  getUrl(circuit) {
+    let slug = `${circuit.save_id.replace(/-/g, '_')}-${circuit.branch.replace(/-/g, '_')}-${circuit.version.replace(/-/g, '_')}`;
+    slug += `-${circuit.name.substr(0, 50).replace(/ +/g, '-')}`;
+    // redirect to share url
+    return `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
   }
 }
