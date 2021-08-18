@@ -154,9 +154,9 @@ export const login = (username, password, toUrl) => {
             window.open('', '_self')
             window.close()
           } else {
-            if (process.env.NODE_ENV === "development") {
+            if (process.env.NODE_ENV === 'development') {
               localStorage.setItem('ard_redurl', '')
-              window.location.href = toUrl + "?token=" + localStorage.getItem('esim_token');
+              window.location.href = toUrl + '?token=' + localStorage.getItem('esim_token')
             } else {
               window.open(toUrl, '_self')
               localStorage.setItem('ard_redurl', '')
