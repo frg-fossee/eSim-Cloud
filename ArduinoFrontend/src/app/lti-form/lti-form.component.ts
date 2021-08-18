@@ -184,7 +184,18 @@ export class LTIFormComponent implements OnInit {
           this.configUrl = this.details.config_url;
           console.log(res);
           console.log(this.configUrl);
-          /* Route with lti id */
+          this.router.navigate(
+            [],
+            {
+              relativeTo: this.aroute,
+              queryParams: {
+                id: this.modelCircuit.save_id,
+                branch: this.modelCircuit.branch,
+                version: this.modelCircuit.version,
+                lti: this.lti_id,
+              },
+              queryParamsHandling: 'merge'
+            });
         }, err => {
           console.log(err);
           this.setConsumerError(err);
@@ -259,15 +270,13 @@ export class LTIFormComponent implements OnInit {
         ...this.details,
         ...this.form.value,
         initial_schematic: `${res['initial_schematic']}`,
-        id: res['id'],
+        id: res['id'] ? res['id']: this.lti_id,
         model_schematic: res['model_schematic'],
         config_url: res['config_url'],
         configExists: true,
         consumerError: '',
       }
-      this.lti_id = res['id'];
-      // this.studentCircuit = res['initial_schematic'];
-      // this.modelCircuit = res['model_schematic'];
+      // this.lti_id = res['id'];
       this.configUrl = this.details.config_url;
       console.log(res);
       console.log(this.configUrl);
