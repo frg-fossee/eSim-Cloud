@@ -215,6 +215,7 @@ export default function LTIConfig () {
   }
 
   const handleDeleteLTIApp = () => {
+    console.log(ltiDetails.modelSchematic.id);
     api.delete(`lti/delete/${ltiDetails.modelSchematic.id}`)
       .then(res => {
         setLTIDetails({

@@ -235,13 +235,22 @@ class LTIAuthView(APIView):
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
         print(i.initial_schematic.save_id)
-        next_url = "http://" + host + "/eda/#editor?id=" + \
-                   str(i.initial_schematic.save_id) + "&branch=" \
-                   + str(i.initial_schematic.branch) + "&version=" \
-                   + str(i.initial_schematic.version) \
-                   + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
-                   lti_session.user_id \
-                   + "&lti_nonce=" + lti_session.oauth_nonce
+        if(i.model_schematic.is_arduino):
+            next_url = "http://" + host + "/arduino/#simulator?id=" + \
+                    str(i.initial_schematic.save_id) + "&branch=" \
+                    + str(i.initial_schematic.branch) + "&version=" \
+                    + str(i.initial_schematic.version) \
+                    + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
+                    lti_session.user_id \
+                    + "&lti_nonce=" + lti_session.oauth_nonce
+        else:
+            next_url = "http://" + host + "/eda/#editor?id=" + \
+                    str(i.initial_schematic.save_id) + "&branch=" \
+                    + str(i.initial_schematic.branch) + "&version=" \
+                    + str(i.initial_schematic.version) \
+                    + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
+                    lti_session.user_id \
+                    + "&lti_nonce=" + lti_session.oauth_nonce
         try:
             print("Got verification request")
             verify_request_common(consumers_dict, url,

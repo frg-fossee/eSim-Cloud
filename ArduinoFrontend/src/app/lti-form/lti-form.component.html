@@ -14,7 +14,7 @@
       <img mat-card-image [attr.src]="modelCircuit.base64_image" alt="Loading the image" class="image mat-elevation-z8"
         matRipple/>
       <mat-card-content class="justify">
-        <mat-card-subtitle>{{ modelCircuit.name }}</mat-card-subtitle>
+        <mat-card-subtitle>{{ modelCircuit.name }} - {{ modelCircuit.branch }}</mat-card-subtitle>
         <p>{{ modelCircuit.description }}</p>
       </mat-card-content>
     </mat-card>
@@ -25,22 +25,21 @@
       <img mat-card-image [attr.src]="studentCircuit.base64_image" alt="Loading the image"
         class="image mat-elevation-z8" matRipple />
       <mat-card-content class="justify">
-        <mat-card-subtitle>{{ studentCircuit.name }}</mat-card-subtitle>
+        <mat-card-subtitle>{{ studentCircuit.name }} - {{ studentCircuit.branch }}</mat-card-subtitle>
         <p>{{ studentCircuit.description }}</p>
       </mat-card-content>
     </mat-card>
   </div>
 </div>
-<form [formGroup]="service.form" class='main-form'>
+<form [formGroup]="form" class='main-form'>
   <mat-grid-list cols='2' rowHeight="300px">
     <mat-grid-tile>
       <div class="field-group">
-        <input formControlName="model_schematic" value="{{circuit_id}}" style="display:none" />
         <mat-form-field>
           <input formControlName="consumer_key" matInput placeholder="Consumer Key" required />
           <mat-hint>Should not contain any spaces</mat-hint>
-          <mat-error *ngIf="service.form.controls['consumer_key'].errors?.required">This field is mandatory</mat-error>
-          <mat-error *ngIf="service.form.controls['consumer_key'].errors?.minlength">String should be atleast 2
+          <mat-error *ngIf="form.controls['consumer_key'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="form.controls['consumer_key'].errors?.minlength">String should be atleast 2
             characters long</mat-error>
         </mat-form-field>
         <mat-form-field>
@@ -67,8 +66,8 @@
           <input formControlName="secret_key" matInput placeholder="Secret Key" [type]="hide ? 'password' : 'text'"
             required>
           <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-          <mat-error *ngIf="service.form.controls['secret_key'].errors?.required">This field is mandatory</mat-error>
-          <mat-error *ngIf="service.form.controls['secret_key'].errors?.minlength">String should be atleast 2 characters
+          <mat-error *ngIf="form.controls['secret_key'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="form.controls['secret_key'].errors?.minlength">String should be atleast 2 characters
             long</mat-error>
         </mat-form-field>
         <mat-form-field>
@@ -78,7 +77,7 @@
               None
             </mat-option>
             <ng-container *ngFor="let circuit of circuits">
-              <mat-option value="{{circuit.save_id}}">{{circuit.name}} {{circuit.save_time | date:'medium'}}
+              <mat-option value="{{circuit.id}}"> {{ circuit.name }} of variation {{ circuit.branch }} saved at {{circuit.save_time}}
               </mat-option>
             </ng-container>
           </mat-select>
@@ -86,37 +85,20 @@
         </mat-form-field>
         <mat-form-field>
           <input formControlName="score" matInput placeholder="Score" required />
-          <mat-error *ngIf="service.form.controls['score'].errors?.required">This field is mandatory</mat-error>
-          <mat-error *ngIf="service.form.controls['score'].errors?.min || service.form.controls['score'].errors?.max">
+          <mat-error *ngIf="form.controls['score'].errors?.required">This field is mandatory</mat-error>
+          <mat-error *ngIf="form.controls['score'].errors?.min || form.controls['score'].errors?.max">
             Value should be 0 or 1</mat-error>
         </mat-form-field>
       </div>
     </mat-grid-tile>
   </mat-grid-list>
-  <div>
-    <div *ngIf="details.consumerError">
-      <p>{{ details.consumerError }}</p>
-      <p *ngIf="!details.consumerError"></p>
-    </div>
-    <div *ngIf="details.configExists">
-      <span>
-        CONFIG URL :
-      </span>
-      <a href="{{configUrl}}" id="urlDisplayer">{{ configUrl }}</a>
-      <button mat-icon-button color="primary" type="button" (click)="CopyUrlToClipBoard()" matRipple>
-        <mat-icon>
-          file_copy
-        </mat-icon>
-      </button>
-    </div>
-  </div>
   <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-8 p-2">
       <button class="btn-lti" mat-raised-button color="primary" type="submit" (click)="onSubmit()"
-        *ngIf="!details.configExists" [disabled]="service.form.invalid">Save</button>
+        *ngIf="!details.configExists" [disabled]="form.invalid">Save</button>
       <button class="btn-lti" mat-raised-button color="primary" type="submit" (click)="onUpdate()"
-        *ngIf="details.configExists" [disabled]="service.form.invalid">Update</button>
+        *ngIf="details.configExists" [disabled]="form.invalid">Update</button>
       <button class="btn-lti" mat-raised-button color="warn" type="button" *ngIf="details.configExists"
         (click)="onDelete()">Delete</button>
       <button class="btn-lti" mat-raised-button color="primary" type="button" [routerLink]="['/submissions']"
@@ -126,3 +108,18 @@
     </div>
   </div>
 </form>
+<div>
+  <div *ngIf="details.consumerError">
+    <p>{{ details.consumerError }}</p>
+    <p *ngIf="!details.consumerError"></p>
+  </div>
+  <div *ngIf="details.configExists" style="display:flex;">
+    <span>
+      CONFIG URL :
+    </span>
+    <textarea rows="1" id="lti-url" style="width:90%; display: inline;" readonly>{{ configUrl }}</textarea>
+    <button mat-raised-button color="primary" type="button" (click)="copyURL()">
+      <i class="bi bi-clipboard"></i>
+    </button>
+  </div>
+</div>

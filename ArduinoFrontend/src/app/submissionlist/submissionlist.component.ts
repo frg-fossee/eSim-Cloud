@@ -38,7 +38,7 @@ export class SubmissionlistComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.columnHeadings = ['LMS User ID', 'User', 'Submitted on', 'Score']
+    this.columnHeadings = ['User ID in LMS', 'User', 'Submitted on', 'Score']
     this.columnNames = ['user_id', 'user', 'save_time', 'score']
     this.actions = [ 'run', ]
     this.submissions.filterPredicate = (data, filter) => data.user.includes(filter) || data.user_id.includes(filter); 

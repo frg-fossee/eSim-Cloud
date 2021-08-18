@@ -163,11 +163,6 @@ export class ApiService {
     return this.http.get('./assets/samples/Samples.json');
   }
 
-  existLTIURL(id: string, token: string) {
-    return this.http.get(`${this.url}api/lti/exist/${id}`, {
-      headers: this.httpHeaders(token),
-    });
-  }
   /**
    * List all the variations with save id
    * @param id Project id
@@ -175,12 +170,6 @@ export class ApiService {
    */
   listAllVersions(id, token): Observable<any> {
     return this.http.get(`${this.url}api/save/versions/${id}`, {
-      headers: this.httpHeaders(token),
-    });
-  }
-
-  saveLTIDetails(id: string, token: string, data: any) {
-    return this.http.post(`${this.url}api/lti/build/`, data, {
       headers: this.httpHeaders(token),
     });
   }
@@ -194,14 +183,6 @@ export class ApiService {
   deleteBranch(id, branch, token) {
     return this.http.delete(`${this.url}api/save/versions/${id}/${branch}`, {
       headers: this.httpHeaders(token),
-    });
-  }
-  
-  removeLTIDetails(id: string, token: string) {
-    return this.http.delete(`${this.url}api/lti/delete/${id}`, {
-      headers: new HttpHeaders({
-        'Authorization': `Token ${token}`,
-      })
     });
   }
 
@@ -218,7 +199,39 @@ export class ApiService {
     });
   }
 
-  updateLTIDetails(id: string, token: string, data: any) {
+  /**
+ * Logout
+ */
+  logout(token): void {
+    console.log(token);
+    this.http.post(`${this.url}api/auth/token/logout/`, '', {
+      headers: new HttpHeaders({
+        Authorization: `Token ${token}`
+      })
+    }).subscribe(() => { Login.logout(); }, (e) => { console.log(e); });
+  }
+
+  existLTIURL(id: string, token: string) {
+    return this.http.get(`${this.url}api/lti/exist/${id}`, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  saveLTIDetails(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/build/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  removeLTIDetails(id: number, token: string) {
+    return this.http.delete(`${this.url}api/lti/delete/${id}`, {
+      headers: new HttpHeaders({
+        'Authorization': `Token ${token}`,
+      })
+    });
+  }
+
+  updateLTIDetails(token: string, data: any) {
     return this.http.post(`${this.url}api/lti/update/`, data, {
       headers: this.httpHeaders(token),
     })
@@ -235,16 +248,4 @@ export class ApiService {
       headers: this.httpHeaders(token),
     })
   }
-
-    /**
-   * Logout
-   */
-     logout(token): void {
-      console.log(token);
-      this.http.post(`${this.url}api/auth/token/logout/`, '', {
-        headers: new HttpHeaders({
-          Authorization: `Token ${token}`
-        })
-      }).subscribe(() => { Login.logout(); }, (e) => { console.log(e); });
-    }
 }

@@ -7,7 +7,7 @@
 	padding: 5%;
 }
 
-.field-group > * {
+.field-group > mat-form-field {
 	width: 100%;
 }
 

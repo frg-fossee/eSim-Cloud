@@ -120,7 +120,7 @@
           <button mat-raised-button color="primary" class="col-md-3"
             (click)="ExportCircuit(selected.save_id, selected.offline)">Export Circuit</button>
           <button mat-raised-button color="primary" class="col-md-3" *ngIf="!selected.offline" 
-            [routerLink]="['/lti']" [queryParams]="{id: selected.save_id}">Create LTI App</button>
+            [routerLink]="['/lti']" [queryParams]="{id: selected.save_id, branch: selected.branch, version: selected.version, lti: selected.lti_id}">Create LTI App</button>
         </div>
 
         <div class="act-desc">

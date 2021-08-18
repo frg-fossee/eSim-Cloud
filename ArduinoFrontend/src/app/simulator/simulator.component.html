@@ -213,8 +213,6 @@
       style="font-size: 20px;color: black;"
       [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
-  <span class="pipe">|</span>
-
   <span class="pipe" *ngIf="submitButtonVisibility">|</span>
 
   <button mat-raised-button color="primary" class="mt-1 ripple" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="submitCircuit()">
