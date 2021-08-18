@@ -208,7 +208,7 @@ export class DashboardComponent implements OnInit {
    */
   DisableSharing(item: any) {
     const token = Login.getToken();
-    this.EnableSharing(item.save_id, token, (v) => {
+    this.EnableSharing(item, token, (v) => {
       item.shared = v.shared;
       AlertService.showAlert('Sharing Disabled!');
     }, false);
@@ -260,9 +260,8 @@ export class DashboardComponent implements OnInit {
    */
   CopyUrlToClipBoard(url) {
     // Create a temp html element put url inside it
-    const tmpEl = document.createElement('textarea');
+    const tmpEl: HTMLTextAreaElement = document.querySelector('#sharing-url');
     tmpEl.value = url;
-    document.body.appendChild(tmpEl);
     // Focus and Select the element
     tmpEl.focus();
     tmpEl.select();
@@ -276,8 +275,6 @@ export class DashboardComponent implements OnInit {
         duration: 2000
       });
     }
-    // Remove the temp element
-    document.body.removeChild(tmpEl);
   }
   /**
    * Project to enable or disable sharing (default enable)
@@ -286,8 +283,8 @@ export class DashboardComponent implements OnInit {
    * @param callback Callback when done
    * @param enable Enable/Disable sharing
    */
-  EnableSharing(id, token, callback: any, enable: boolean = true) {
-    this.api.Sharing(id, enable, token).subscribe((v) => {
+  EnableSharing(circuit, token, callback: any, enable: boolean = true) {
+    this.api.Sharing(circuit.save_id, circuit.branch, circuit.version, enable, token).subscribe((v) => {
       callback(v);
     }, err => {
       if (err.status === 401) {
@@ -324,9 +321,10 @@ export class DashboardComponent implements OnInit {
       duration: 10000
     });
     // Create a Slug
-    const slug = `${selected.save_id.replace(/-/g, '_')}-${selected.name.substr(0, 50).replace(/ +/g, '-')}`;
+    let slug = `${selected.save_id.replace(/-/g, '_')}-${selected.branch.replace(/-/g, '_')}-${selected.version.replace(/-/g, '_')}`;
+    slug += `-${selected.name.substr(0, 50).replace(/ +/g, '-')}`;
     // redirect to share url
-    let shareURL = `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug} `;
+    let shareURL = `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
     const copyUrl = shareURL;
     // encode url for redirect
     shareURL = encodeURIComponent(shareURL);
@@ -345,7 +343,7 @@ export class DashboardComponent implements OnInit {
         window.open(map[index], '_blank');
       } else {
         // otherwise enable sharing and open the link in new tab
-        this.EnableSharing(selected.save_id, token, (v) => {
+        this.EnableSharing(selected, token, (v) => {
           selected.shared = v.shared;
           if (selected.shared) {
             window.open(map[index], '_blank');
@@ -361,7 +359,7 @@ export class DashboardComponent implements OnInit {
       if (selected.shared) {
         window.open(`mailto:?${back}`, '_blank');
       } else {
-        this.EnableSharing(selected.save_id, token, (v) => {
+        this.EnableSharing(selected, token, (v) => {
           selected.shared = v.shared;
           if (selected.shared) {
             window.open(`mailto:?${back}`, '_blank');
@@ -376,7 +374,7 @@ export class DashboardComponent implements OnInit {
         this.CopyUrlToClipBoard(copyUrl);
       } else {
         // other wise enable share and copy the url
-        this.EnableSharing(selected.save_id, token, (v) => {
+        this.EnableSharing(selected, token, (v) => {
           selected.shared = v.shared;
           if (selected.shared) {
             this.CopyUrlToClipBoard(copyUrl);
@@ -519,5 +517,12 @@ export class DashboardComponent implements OnInit {
         }
       },
       () => { }, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
+  }
+
+  getUrl(circuit) {
+    let slug = `${circuit.save_id.replace(/-/g, '_')}-${circuit.branch.replace(/-/g, '_')}-${circuit.version.replace(/-/g, '_')}`;
+    slug += `-${circuit.name.substr(0, 50).replace(/ +/g, '-')}`;
+    // redirect to share url
+    return `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
   }
 }
