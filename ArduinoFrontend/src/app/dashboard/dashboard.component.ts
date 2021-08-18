@@ -91,21 +91,10 @@ export class DashboardComponent implements OnInit {
    */
   ngOnInit() {
     // In Angular  Development Mode.
-    if (environment.production === false) {
-      this.aroute.queryParams.subscribe((paramData: any) => {
-        if (paramData.token != null) {
-          localStorage.setItem('esim_token', paramData.token);
-          this.readTempItems();
-          this.readOnCloudItems();
-        } else if (Login.getToken()) {
-          this.readTempItems();
-          this.readOnCloudItems();
-        }
-      });
-    } else {
+    this.api.login().then(() => {
       this.readTempItems();
       this.readOnCloudItems();
-    }
+    });
   }
 
   /**

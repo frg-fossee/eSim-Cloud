@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Login } from '../Libs/Login';
 import { ApiService } from '../api.service';
+import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 
 /**
@@ -48,6 +49,8 @@ export class HeaderComponent implements OnInit {
    */
   ngOnInit() {
     this.userInfo();
+    // Initializing window
+    this.window = window;
   }
   /**
    * Redirect to login
@@ -59,13 +62,15 @@ export class HeaderComponent implements OnInit {
    * Handle Logout
    */
   Logout() {
-    Login.logout();
+    // Login.logout();
+    this.api.logout(this.token);
   }
-
+  /**
+   * Getting User Information.
+   */
   userInfo() {
     // Get Login Token
     this.token = Login.getToken();
-
     // If token is available then get username
     if (this.token) {
       this.api.userInfo(this.token).subscribe((v) => {
@@ -78,7 +83,5 @@ export class HeaderComponent implements OnInit {
         // }
       });
     }
-    // Initializing window
-    this.window = window;
   }
 }

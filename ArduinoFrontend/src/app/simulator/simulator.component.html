@@ -54,7 +54,7 @@
       <a mat-raised-button (click)="HandleRouter(RouteToFunction('/gallery'))" style="margin-right: 10px;">Gallery</a>
       <a mat-raised-button (click)="HandleRouter(RouteToSimulator.bind(this))" style="margin-right: 10px;">Editor</a>
       <a mat-raised-button *ngIf="!token" (click)="HandleRouter(Login)">Login</a>
-      <div class="dropdown show" *ngIf="token">
+      <div class="dropdown show" style="margin-left: 20px;margin-top: 6px;" *ngIf="token">
         <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
           class="d-inline-block align-center" alt="Login Image">
