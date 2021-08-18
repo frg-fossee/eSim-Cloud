@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
+import { Login } from './Libs/Login';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Class For handlind API.
@@ -18,7 +20,10 @@ export class ApiService {
    * Constructor for api
    * @param http For http request & response
    */
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    public aroute: ActivatedRoute
+  ) {
   }
   /**
    * Save Project to Cloud
@@ -31,9 +36,9 @@ export class ApiService {
     }
     return this.http.post(`${this.url}api/save`, data, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -44,9 +49,9 @@ export class ApiService {
   listProject(token) {
     return this.http.get(`${this.url}api/save/arduino/list`, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -62,7 +67,7 @@ export class ApiService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -77,7 +82,7 @@ export class ApiService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -93,7 +98,7 @@ export class ApiService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -107,7 +112,7 @@ export class ApiService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       }),
       observe: 'response',
     });
@@ -133,9 +138,9 @@ export class ApiService {
   userInfo(token: string): Observable<any> {
     return this.http.get(`${this.url}api/auth/users/me`, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -151,7 +156,7 @@ export class ApiService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -170,9 +175,9 @@ export class ApiService {
   listAllVersions(id, token): Observable<any> {
     return this.http.get(`${this.url}api/save/versions/${id}`, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -186,9 +191,9 @@ export class ApiService {
   deleteBranch(id, branch, token) {
     return this.http.delete(`${this.url}api/save/versions/${id}/${branch}`, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -203,11 +208,42 @@ export class ApiService {
   deleteVariation(id, branch, version, token) {
     return this.http.delete(`${this.url}api/save/versions/${version}/${id}/${branch}`, {
       headers: new HttpHeaders({
-        'Content-Type': 'application/json',
+        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        'Access-Control-Allow-Origin': '*',
+        // 'Access-Control-Allow-Origin': '*',
       })
     });
+  }
+  /**
+   * Development Mode Login.
+   */
+  login() {
+    return new Promise((reslove, reject) => {
+      if (environment.production === false) {
+        this.aroute.queryParams.subscribe((paramData: any) => {
+          if (paramData.token != null) {
+            localStorage.setItem('esim_token', paramData.token);
+            reslove(1);
+          } else if (Login.getToken()) {
+            reslove(1);
+          }
+        });
+      } else {
+        reslove(0);
+      }
+    });
+  }
+
+  /**
+   * Logout
+   */
+  logout(token): void {
+    console.log(token);
+    this.http.post(`${this.url}api/auth/token/logout/`, '', {
+      headers: new HttpHeaders({
+        Authorization: `Token ${token}`
+      })
+    }).subscribe(() => { Login.logout(); }, (e) => { console.log(e); });
   }
 
 }
