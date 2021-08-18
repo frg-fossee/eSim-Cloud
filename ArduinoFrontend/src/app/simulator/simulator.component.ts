@@ -147,22 +147,22 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     // Get User Token
-    this.token = Login.getToken();
-
-    // if token is valid get User name
-    if (this.token) {
-      this.api.userInfo(this.token).subscribe((tmp) => {
-        this.username = tmp.username;
-      }, err => {
-        if (err.status === 401) {
-          // Unauthorized clear token
-          Login.logout();
-        }
-        this.token = null;
-        console.log(err);
-      });
-    }
-
+    this.api.login().then(() => {
+      // if token is valid get User name
+      this.token = Login.getToken();
+      if (this.token) {
+        this.api.userInfo(this.token).subscribe((tmp) => {
+          this.username = tmp.username;
+        }, err => {
+          if (err.status === 401) {
+            // Unauthorized clear token
+            Login.logout();
+          }
+          this.token = null;
+          console.log(err);
+        });
+      }
+    });
     this.projectId = null;
 
     // Detect change in url Query parameters
@@ -644,7 +644,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Logout and clear token
    */
   Logout() {
-    Login.logout();
+    // Login.logout();
+    this.api.logout(Login.getToken());
   }
   RouteToSimulator() {
     this.window.location = '../#/simulator';
