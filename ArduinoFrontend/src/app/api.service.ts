@@ -213,7 +213,7 @@ export class ApiService {
   listAllVersions(id, token): Observable<any> {
     return this.http.get(`${this.url}api/save/versions/${id}`, {
       headers: new HttpHeaders({
-        // 'Content-Type': 'application/json',
+        // 'Content-Type': 'application/jsone',
         Authorization: `Token ${token}`,
         // 'Access-Control-Allow-Origin': '*',
       })
