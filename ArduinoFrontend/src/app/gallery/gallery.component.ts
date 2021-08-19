@@ -27,7 +27,7 @@ export class GalleryComponent implements OnInit {
   /**
    * Determines whether staff is
    */
-  isStaff: boolean = false;
+  isStaff = false;
 
   /**
    * Gallery Page Constructor
@@ -92,7 +92,7 @@ export class GalleryComponent implements OnInit {
   /**
    * Deletes project from gallery
    * @param saveId component Id
-   * @param name name of the component 
+   * @param name name of the component
    */
   DeleteCircuit(saveId: any, name: any) {
     this.api.deleteProjectFromGallery(saveId, Login.getToken()).subscribe((done) => {
