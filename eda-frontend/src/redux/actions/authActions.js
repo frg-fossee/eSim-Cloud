@@ -64,7 +64,6 @@ export const loadUser = () => (dispatch, getState) => {
           data: []
         }
       })
-
     })
 }
 
