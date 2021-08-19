@@ -19,6 +19,7 @@ import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialo
 import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
+import { sample } from 'rxjs/operators';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -102,7 +103,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
-
   /**
    * Determines whether staff is
    */
@@ -157,7 +157,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       this.token = Login.getToken();
       if (this.token) {
         this.api.getRole(this.token).subscribe((result: any) => {
-          result.is_type_staff == true ? this.isStaff = true : this.isStaff = false;
+          result.is_arduino_staff == true ? this.isStaff = true : this.isStaff = false;
         });
         this.api.userInfo(this.token).subscribe((tmp) => {
           this.username = tmp.username;
@@ -201,6 +201,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.LoadOnlineProject(v.id);
       }
     });
+
 
     // Make a svg g tag
     const gtag = this.makeSVGg();
@@ -718,6 +719,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Open Gallery Project
    * @param index Gallery item index
+   * @param id Component Id
    */
   OpenGallery(index: string, id: any) {
     // Show Loading animation
@@ -727,7 +729,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // if it is a valid number then proceed
     if (!isNaN(i)) {
       // Fetch all samples
-      this.api.fetchSingleProjectToGallery(id).subscribe((out:any) => {
+      this.api.fetchSingleProjectToGallery(id).subscribe((out: any) => {
         if (out) {
           // set project title
           this.projectTitle = out.name;

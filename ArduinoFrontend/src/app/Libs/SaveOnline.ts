@@ -135,7 +135,7 @@ export class SaveOnline {
     const saveObj = {
       data_dump: '',
       is_arduino: true,
-      description:'',
+      description: '',
       name,
       save_id: 'gallery' + Math.random() * 100000
     };
@@ -163,7 +163,6 @@ export class SaveOnline {
     }
     // Convert Data Dump to an String and add to Save Object
     saveObj.data_dump = JSON.stringify(dataDump);
-    console.log(saveObj);
     // Generate Thumbnail for the project
     Download.ExportImage(ImageType.PNG).then(v => {
       saveObj['media'] = v; // Store the base64 image
@@ -171,7 +170,7 @@ export class SaveOnline {
       api.saveProjectToGallery(saveObj, token).subscribe(output => {
         if (callback) {
           callback(output);
-          
+
           AlertService.showAlert('Saved In Gallery');
         }
       }, err => {
@@ -187,9 +186,7 @@ export class SaveOnline {
         }
         AlertService.showAlert(message);
       });
-
     });
-
   }
   /**
    * Save or Update Project from Dashboard
