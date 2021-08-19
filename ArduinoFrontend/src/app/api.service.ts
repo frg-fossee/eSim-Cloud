@@ -28,11 +28,11 @@ export class ApiService {
   /**
    * Get Http Headers
    * @param token Login Token
-   * @returns Http headers as per given conditions
+   * @returns Http headers as per given parameter and environment
    */
   httpHeaders(token: string) {
-    if(environment.production) {
-      if(token) {
+    if (environment.production) {
+      if (token) {
         return new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`,
@@ -44,9 +44,8 @@ export class ApiService {
           'Access-Control-Allow-Origin': '*',
         });
       }
-    }
-    else {
-      if(token) {
+    } else {
+      if (token) {
         return new HttpHeaders({
           'Content-Type': 'application/json',
           Authorization: `Token ${token}`,
@@ -77,7 +76,7 @@ export class ApiService {
    */
   listProject(token) {
     return this.http.get(`${this.url}api/save/arduino/list`, {
-      headers: this.httpHeaders(token),
+      headers: this.httpHeaders(token)
     });
   }
   /**
@@ -87,9 +86,12 @@ export class ApiService {
    * @param version Version of Variation
    * @param token Auth Token
    */
-   readProject(id: string, branch: string, version: string, token: string) {
-    return this.http.get(`${this.url}api/save/${id}/${version}/${branch}`, {
-      headers: this.httpHeaders(token),
+  readProject(id: string, branch: string, version: string, token: string) {
+    let url = `${this.url}api/save/${id}`;
+    url += version ? `/${version}` : '';
+    url += branch ? `/${branch}` : '';
+    return this.http.get(url, {
+      headers: this.httpHeaders(token)
     });
   }
   /**
@@ -122,7 +124,12 @@ export class ApiService {
    */
   deleteProject(id, token): Observable<any> {
     return this.http.delete(`${this.url}api/save/${id}`, {
-      headers: this.httpHeaders(token),
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        // 'Access-Control-Allow-Origin': '*',
+      }),
+      observe: 'response',
     });
   }
   /**
@@ -154,10 +161,10 @@ export class ApiService {
    * @param on Sharing State
    * @param token Auth token
    */
-  Sharing(id: string, on: boolean, token: string) {
+  Sharing(id: string, branch: string, version: string, on: boolean, token: string) {
     const state = on ? 'on' : 'off';
-    return this.http.post(`${this.url}api/save/${id}/sharing/${state}`, {}, {
-      headers: this.httpHeaders(token),
+    return this.http.post(`${this.url}api/save/${id}/sharing/${state}/${version}/${branch}`, {}, {
+      headers: this.httpHeaders(token)
     });
   }
   /**
@@ -174,7 +181,7 @@ export class ApiService {
    */
   listAllVersions(id, token): Observable<any> {
     return this.http.get(`${this.url}api/save/versions/${id}`, {
-      headers: this.httpHeaders(token),
+      headers: this.httpHeaders(token)
     });
   }
 

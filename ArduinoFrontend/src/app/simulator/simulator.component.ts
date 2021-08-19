@@ -620,6 +620,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Fetches project from cloud
    * @param id Project id
+   * @param offline A check whether circuit is offline or shared in absence of token
    */
   LoadOnlineProject(id, offline) {
     const token = Login.getToken();
