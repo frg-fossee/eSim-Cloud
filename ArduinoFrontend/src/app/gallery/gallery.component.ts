@@ -44,15 +44,15 @@ export class GalleryComponent implements OnInit {
    */
   ngOnInit() {
     this.api.login().then(() => {
-      let token = Login.getToken();
+      const token = Login.getToken();
       if (token) {
         this.api.getRole(token).subscribe((result: any) => {
-          result.is_arduino_staff == true ? this.isStaff = true : this.isStaff = false;
+          result.is_arduino_staff === true ? this.isStaff = true : this.isStaff = false;
         });
       }
     }).catch(() => {
 
-    })
+    });
     // Add Page Title
     document.title = 'Gallery | Arduino On Cloud';
     // Show Loading animation
@@ -61,7 +61,7 @@ export class GalleryComponent implements OnInit {
     this.api.fetchSamples().subscribe((samples: any[]) => {
       samples.map(d => {
         if (!environment.production) {
-          this.samples.push(Object.assign({}, d, { 'media': environment.IMG_URL + d.media }));
+          this.samples.push(Object.assign({}, d, { media: environment.IMG_URL + d.media }));
         } else {
           this.samples.push(d);
         }
@@ -91,11 +91,11 @@ export class GalleryComponent implements OnInit {
 
   /**
    * Deletes project from gallery
-   * @param save_id
-   * @param name  
+   * @param saveId component Id
+   * @param name name of the component 
    */
-  DeleteCircuit(save_id: any, name: any) {
-    this.api.deleteProjectFromGallery(save_id, Login.getToken()).subscribe((done) => {
+  DeleteCircuit(saveId: any, name: any) {
+    this.api.deleteProjectFromGallery(saveId, Login.getToken()).subscribe((done) => {
       this.samples = [];
       this.ngOnInit();
       this.snackbar.open('Circuit Deleted.', null, {
@@ -103,13 +103,13 @@ export class GalleryComponent implements OnInit {
       });
     }, (e) => {
       console.log(e);
-    })
+    });
   }
   /**
- * Delete the Project from Database
- * @param id Project id
- * @param name Project's name
- */
+   * Delete the Project from Database
+   * @param id Project id
+   * @param name Project's name
+   */
   deleteProjectFromGallery(id, name) {
     // ASK for user confirmation
     AlertService.showConfirm('Are You Sure You want to Delete Circuit', () => this.DeleteCircuit(id, name), () => { });

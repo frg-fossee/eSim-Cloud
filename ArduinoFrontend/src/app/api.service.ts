@@ -194,8 +194,8 @@ export class ApiService {
 
   /**
    * Deletes single project from gallery
-   * @param id 
-   * @param token  
+   * @param id Project id
+   * @param token  Auth Token
    */
   deleteProjectFromGallery(id: any, token: any) {
     return this.http.delete(`${this.url}api/save/gallery/` + id, {

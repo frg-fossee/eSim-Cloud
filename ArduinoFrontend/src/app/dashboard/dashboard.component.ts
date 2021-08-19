@@ -52,7 +52,7 @@ export class DashboardComponent implements OnInit {
   /**
    * Group role of dashboard component
    */
-  groupRole =[];
+  groupRole = [];
 
   /**
    * Token
@@ -104,7 +104,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     // In Angular  Development Mode.
     this.api.login().then(() => {
-      this.token =Login.getToken()
+      this.token = Login.getToken()
       this.readRoles(this.token);
       this.readTempItems();
       this.readOnCloudItems();
@@ -117,10 +117,10 @@ export class DashboardComponent implements OnInit {
   readRoles(token: string) {
     this.api.getRole(token).subscribe((result: any) => {
       console.log(result);
-      this.groupRole =result.group;
+      this.groupRole = result.group;
     }, (e) => {
       console.log(e);
-    })
+    });
   }
 
   /**

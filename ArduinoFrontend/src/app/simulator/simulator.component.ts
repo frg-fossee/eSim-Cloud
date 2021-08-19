@@ -106,7 +106,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Determines whether staff is
    */
-  isStaff: boolean = false;
+  isStaff = false;
   /**
    * Simulator Component constructor
    * @param aroute Activated Route
@@ -157,7 +157,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       this.token = Login.getToken();
       if (this.token) {
         this.api.getRole(this.token).subscribe((result: any) => {
-          result.is_arduino_staff == true ? this.isStaff = true : this.isStaff = false;
+          result.is_arduino_staff === true ? this.isStaff = true : this.isStaff = false;
         });
         this.api.userInfo(this.token).subscribe((tmp) => {
           this.username = tmp.username;
@@ -586,7 +586,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   addToGallery() {
     SaveOnline.staffSaveGallery(this.projectTitle, this.description, this.api, (out) => {
       // this.router.navigate(['/gallery'])
-    })
+    });
 
   }
   /** Function clear variables in the Workspace */

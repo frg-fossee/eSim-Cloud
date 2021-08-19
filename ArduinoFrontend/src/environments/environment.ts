@@ -9,7 +9,7 @@ export const environment = {
   API_URL: 'http://localhost/',
   LOGIN_URL: `${window.location.protocol}\\\\localhost/eda/#/login?url=`,
   DASHBOARD_URL: `../#/dashboard`,
-  IMG_URL:'http://localhost'
+  IMG_URL: 'http://localhost'
 };
 
 /*
