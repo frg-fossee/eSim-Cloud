@@ -31,7 +31,7 @@ import ZoomInIcon from '@material-ui/icons/ZoomIn'
 import ZoomOutIcon from '@material-ui/icons/ZoomOut'
 import SettingsOverscanIcon from '@material-ui/icons/SettingsOverscan'
 import MuiAlert from '@material-ui/lab/Alert'
-import { ZoomIn, ZoomOut, ZoomAct, GenerateCompList, GenerateNetList } from '../components/SchematicEditor/Helper/ToolbarTools'
+import { ZoomIn, ZoomOut, ZoomAct, GenerateDetailedCompList, GenerateNetList } from '../components/SchematicEditor/Helper/ToolbarTools'
 import ReportComponent from '../components/Project/ReportComponent'
 import ChangeStatus from '../components/Project/ChangeStatus'
 import { NetlistModal } from '../components/SchematicEditor/ToolbarExtension'
@@ -39,7 +39,9 @@ import ProjectTimeline from '../components/Project/ProjectTimeline'
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    minHeight: '30vh'
+    overflowX: 'visible',
+    overflowY: 'hidden',
+    backgroundColor: '#f4f6f8'
 
   },
   toolbar: {
@@ -74,6 +76,7 @@ export default function ProjectPage (props) {
   const [reportDescription, setDescription] = React.useState(null)
   const [netlist, genNetlist] = React.useState('')
   const [statusChanged, setStatusChanged] = React.useState(false)
+  const [componentsList, setComponentsList] = React.useState(undefined)
   const project = useSelector(state => state.projectReducer)
   const auth = useSelector(state => state.authReducer)
   const netfile = useSelector((state) => state.netlistReducer)
@@ -135,10 +138,12 @@ export default function ProjectPage (props) {
         break
     }
   }
-
   const changedStatus = () => {
     setStatusChanged(true)
   }
+  useEffect(() => {
+    console.log(project.details)
+  }, [project])
   useEffect(() => {
     var container = gridRef.current
     LoadGrid(container, null, null)
@@ -155,12 +160,15 @@ export default function ProjectPage (props) {
         dispatch(fetchSchematic(saveID, version, branch))
       }
     }
-    console.log(GenerateCompList())
+    setTimeout(() => {
+      setComponentsList([GenerateDetailedCompList()])
+    }, 2000)
     // eslint-disable-next-line
   }, [props.location, dispatch])
   return (
     <div className={classes.root}>
       <LayoutMain>
+
         {project.details !== '401'
           ? <>
             {statusChanged
@@ -169,60 +177,76 @@ export default function ProjectPage (props) {
               </> : <Grid container>
                 <Grid item xs={1} />
                 <Grid item xs={10}>
-                  <div className={classes.toolbar} />
-                  <Typography>
-                    {project.details && <h1 style={{ marginBottom: '0' }}>{project.details.title}</h1>}
-                    {project.details && <h4 style={{ marginTop: '0' }}>By: {project.details.author_name} </h4>}
-                  </Typography>
                   {project.reports && project.details.is_reported &&
                     <ReportComponent project={project} changedStatus={changedStatus} location={props.location} />
                   }
                   {project.details && !project.details?.is_reported && project.details?.author_name !== auth.user?.username &&
                     <ChangeStatus project={project} changedStatus={changedStatus} />
                   }
-                  <Typography>
-                    <h3>{project.details?.description}</h3>
-                    {project.details && project.details?.fields && project.details.fields.map(item => (
-                      <p key={item}>
-                        <h2 style={{ marginTop: '0' }}>{item.name}</h2>
-                        <h3 style={{ marginTop: '0' }}>{item.text}</h3>
-                      </p>
-                    ))}
-                  </Typography>
+                  <Paper style={{ padding: '1%', marginTop: '2%', borderRadius: '12px' }}>
+                    <Typography>
+                      {project.details && <h1 style={{ marginTop: '0', marginBottom: '0' }}>{project.details.title}</h1>}
+                      {project.details && <h4 style={{ marginTop: '0', marginBottom: '0' }}>By: {project.details.author_name} </h4>}
+                    </Typography>
+                    <hr style={{ marginTop: '0' }} />
 
-                  <Dialog
-                    open={simulateOpen}
-                    onClose={handleSimulateOpen}
-                  >
-                    <DialogTitle onClose={handleSimulateOpen}>Simulate Circuit</DialogTitle>
-                    <DialogContent style={{ padding: '3%' }}>
-                      <SimulationProperties />
-                    </DialogContent>
-                  </Dialog>
-                  <Dialog
-                    open={reportOpen}
-                    onClose={handleReportOpen}
-                    fullWidth={true}
-                    maxWidth={'md'} >
-                    <DialogTitle>Report this project</DialogTitle>
-                    <DialogContent style={{ padding: '3%' }}>
-                      <TextField
-                        multiline
-                        variant="outlined"
-                        label="Report Description"
-                        style={{ width: '100%' }}
-                        value={reportDescription}
-                        error={!reportDescription}
-                        helperText={'Please enter description'}
-                        onChange={handleChangeDescription}
-                        rows={8} />
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={() => onClick('Report')}>Report</Button>
-                      <Button onClick={handleReportOpen}>Cancel</Button>
-                    </DialogActions>
-                  </Dialog>
+                    <Typography>
+                      <h3>{project.details?.description}</h3>
+                      {componentsList && <h2 style={{ marginBottom: '0' }}>Component List:</h2>}
+                      {componentsList && componentsList[0].map((item, i) => (<div key={i}>{i + 1}.{item.name}  {item.value}{item.unit}</div>))}
+                      {project.details && project.details?.fields && project.details.fields.map(item => (
+                        <p key={item}>
+                          <h3 style={{ marginTop: '0', marginBottom: '0' }}>{item.name}:</h3>
+                          <p style={{ marginTop: '0' }}>
+                            {item.text.split('\n').map((text) => (
+                              <span key={text}>
+                                {text}
+                                <br></br>
+                              </span>
+                            ))}
+                          </p>
+                        </p>
+                      ))}
+                    </Typography>
 
+                    <Dialog
+                      open={simulateOpen}
+                      onClose={handleSimulateOpen}
+                    >
+                      <DialogTitle onClose={handleSimulateOpen}>Simulate Circuit</DialogTitle>
+                      <DialogContent style={{ padding: '3%' }}>
+                        {project.details && <SimulationProperties
+                          dcSweepcontrolLine={project.details.dc_sweep}
+                          transientAnalysisControlLine={project.details.transient_analysis}
+                          acAnalysisControlLine={project.details.ac_analysis}
+                          tfAnalysisControlLine={project.details.tf_analysis}
+                        />}
+                      </DialogContent>
+                    </Dialog>
+                    <Dialog
+                      open={reportOpen}
+                      onClose={handleReportOpen}
+                      fullWidth={true}
+                      maxWidth={'md'} >
+                      <DialogTitle>Report this project</DialogTitle>
+                      <DialogContent style={{ padding: '3%' }}>
+                        <TextField
+                          multiline
+                          variant="outlined"
+                          label="Report Description"
+                          style={{ width: '100%' }}
+                          value={reportDescription}
+                          error={!reportDescription}
+                          helperText={'Please enter description'}
+                          onChange={handleChangeDescription}
+                          rows={8} />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={() => onClick('Report')}>Report</Button>
+                        <Button onClick={handleReportOpen}>Cancel</Button>
+                      </DialogActions>
+                    </Dialog>
+                  </Paper>
                   <h1>Circuit Diagram:
                     {auth.isAuthenticated && <Button variant="contained" style={{ float: 'right', backgroundColor: 'red', color: 'white', marginTop: '.5%' }} onClick={() => handleReportOpen()}>Report</Button>}
                     {auth.isAuthenticated && <Button variant="contained" color="primary" style={{ float: 'right', margin: '.5% .5% 0 0%' }} onClick={() => onClick('Make copy')}>Make a Copy</Button>}
@@ -274,11 +298,11 @@ export default function ProjectPage (props) {
                         </center>
                       </LayoutMain>
                     </Grid>
-                    <ComponentProperties/>
+                    <ComponentProperties />
                     <Grid item xs={1} />
 
                     <Grid item xs={12} sm={12}>
-                      <Paper style={{ padding: '2%', marginTop: '3%' }}>
+                      <Paper style={{ padding: '0 2%', margin: '3% 0', borderRadius: '12px' }}>
                         <List>
                           <h3>History of this Project</h3>
                           {project.details?.history[0]
@@ -296,7 +320,6 @@ export default function ProjectPage (props) {
           : <>
             {statusChanged ? <>Status Changed. Wait for it to get back to the status where it is visible for you.</> : <>Not Authorized</>}
           </>}
-
       </LayoutMain>
     </div>
   )

@@ -34,7 +34,6 @@ def ExecNetlist(filepath, file_id):
                                 cwd=current_dir)
         stdout, stderr = proc.communicate()
         logger.info('Ran ngSpice command')
-
         if proc.returncode not in [0, 1]:
             logger.error('ngspice error encountered')
             logger.error(stderr)

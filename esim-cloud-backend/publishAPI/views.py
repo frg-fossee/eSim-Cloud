@@ -1,11 +1,15 @@
 from rest_framework import permissions
 from publishAPI.serializers import CircuitTagSerializer, ProjectSerializer, \
-    TransitionHistorySerializer  # noqa
+    TransitionHistorySerializer, DCSweepSerializer, \
+    TransientAnalysisSerializer, ACAnalysisSerializer, \
+    TFAnalysisSerializer  # noqa
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, \
     AllowAny, DjangoModelPermissions  # noqa
 from rest_framework.parsers import JSONParser, MultiPartParser
 from workflowAPI.models import Permission
-from publishAPI.models import CircuitTag, Project, Field, TransitionHistory
+from publishAPI.models import ACAnalysisParameters, CircuitTag, \
+    DCSweepParameters, Project, Field, TFAnalysisParameters, \
+    TransientAnalysisParameters, TransitionHistory
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly, \
     IsAuthenticated, AllowAny, \
     DjangoModelPermissions  # noqa
@@ -49,7 +53,6 @@ class ProjectViewSet(APIView):
                     view_own_states=queryset.state).exists():
                 pass
             elif queryset.author != self.request.user and Permission.objects.filter(  # noqa
-                    # noqa
                     role__in=user_roles,
                     view_other_states=queryset.state).exists():
                 pass
@@ -97,7 +100,44 @@ class ProjectViewSet(APIView):
                               ['description'], author=active_state_save.owner,
                               is_arduino=active_state_save.is_arduino,
                               active_branch=request.data[0]['active_branch'],
-                              active_version=request.data[0]['active_version'])
+                              active_version=request.data[0]['active_version'],
+                              )
+            dc_sweep = DCSweepParameters(
+                parameter=request.data[3]['parameter'],
+                sweepType=request.data[3]['sweepType'],
+                start=request.data[3]['start'],
+                stop=request.data[3]['stop'],
+                step=request.data[3]['step'],
+                parameter2=request.data[3]['parameter2'],
+                start2=request.data[3]['start2'],
+                step2=request.data[3]['step2'],
+                stop2=request.data[3]['stop2'],
+                )
+            transient_analysis = TransientAnalysisParameters(
+                start=request.data[4]['start'],
+                stop=request.data[4]['stop'],
+                step=request.data[4]['step'],
+                skipInitial=request.data[4]['skipInitial'],
+            )
+            ac_analysis = ACAnalysisParameters(
+                input=request.data[5]['input'],
+                stop=request.data[5]['stop'],
+                start=request.data[5]['start'],
+                pointsBydecade=request.data[5]['pointsBydecade'],
+            )
+            tf_analysis = TFAnalysisParameters(
+                outputNodes=request.data[6]['outputNodes'],
+                outputVoltageSource=request.data[6]['outputVoltageSource'],
+                inputVoltageSource=request.data[6]['inputVoltageSource'],
+            )
+            dc_sweep.save()
+            ac_analysis.save()
+            tf_analysis.save()
+            transient_analysis.save()
+            project.dc_sweep = dc_sweep
+            project.transient_analysis = transient_analysis
+            project.ac_analysis = ac_analysis
+            project.tf_analysis = tf_analysis
             project.save()
             for field in request.data[1]:
                 field = Field(name=field['name'], text=field['text'])
@@ -145,6 +185,42 @@ class ProjectViewSet(APIView):
                 'active_branch']
             active_state_save.project.active_version = request.data[0][
                 'active_version']
+            dc_sweep = DCSweepParameters(
+                parameter=request.data[3]['parameter'],
+                sweepType=request.data[3]['sweepType'],
+                start=request.data[3]['start'],
+                stop=request.data[3]['stop'],
+                step=request.data[3]['step'],
+                parameter2=request.data[3]['parameter2'],
+                start2=request.data[3]['start2'],
+                step2=request.data[3]['step2'],
+                stop2=request.data[3]['stop2'],
+                )
+            transient_analysis = TransientAnalysisParameters(
+                start=request.data[4]['start'],
+                stop=request.data[4]['stop'],
+                step=request.data[4]['step'],
+                skipInitial=request.data[4]['skipInitial'],
+            )
+            ac_analysis = ACAnalysisParameters(
+                input=request.data[5]['input'],
+                stop=request.data[5]['stop'],
+                start=request.data[5]['start'],
+                pointsBydecade=request.data[5]['pointsBydecade'],
+            )
+            tf_analysis = TFAnalysisParameters(
+                outputNodes=request.data[6]['outputNodes'],
+                outputVoltageSource=request.data[6]['outputVoltageSource'],
+                inputVoltageSource=request.data[6]['inputVoltageSource'],
+            )
+            dc_sweep.save()
+            ac_analysis.save()
+            tf_analysis.save()
+            transient_analysis.save()
+            active_state_save.project.dc_sweep = dc_sweep
+            active_state_save.project.transient_analysis = transient_analysis
+            active_state_save.project.ac_analysis = ac_analysis
+            active_state_save.project.tf_analysis = tf_analysis
             active_state_save.project.save()
             if request.data[2] != '':
                 ChangeStatus(self, request.data[2], active_state_save.project)
@@ -182,8 +258,8 @@ class ProjectViewSet(APIView):
             return Response({'error': 'No circuit there'},
                             status=status.HTTP_404_NOT_FOUND)
         if project.author == self.request.user and Permission.objects.filter(
-                         role__in=self.request.user.groups.all(),
-                         del_own_states=project.state).exists():
+                role__in=self.request.user.groups.all(),
+                del_own_states=project.state).exists():
             project.delete()
             return Response({'done': True})
         else:

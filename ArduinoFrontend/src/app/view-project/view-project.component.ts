@@ -102,11 +102,8 @@ export class ViewProjectComponent implements OnInit {
     window['showLoading'](); // Show Loading animation
 
     // Get Token if not present then redirect to login
-    const token = Login.getToken();
-    if (!token) {
-      Login.redirectLogin();
-      return;
-    }
+    let token = Login.getToken();
+    token = token ? token : null;
     // Sharing url
     this.shareURL = window.location.href;
 
@@ -114,14 +111,17 @@ export class ViewProjectComponent implements OnInit {
       // From Slug find project id
       const slug: string = v.params.slug;
       const pos = slug ? slug.indexOf('-') : -1;
-
+      let [ id, branch, version, ] = slug.split('-', 3);
+      let name = slug.split('-').splice(3).join('-');
       // if project id is found
-      if (pos > -1) {
-        let id = slug.substr(0, pos);
+      if (id && version && branch) {
         id = id.replace(/_/g, '-');
+        version = version.replace(/_/g, '-');
+        branch = branch.replace(/_/g, '-');
+        name = name.replace(/-/g, ' ');
         // Check if project id is uuid
         if (SaveOnline.isUUID(id)) {
-          this.api.readProject(id, token).subscribe((output: any) => {
+          this.api.readProject(id, branch, version, token).subscribe((output: any) => {
             this.shareName = `${output.name} | Arduino On Cloud`; // Set the sharing name
             // Set the page title
             this.title.setTitle(this.shareName);

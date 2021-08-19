@@ -45,6 +45,14 @@ class Project(models.Model):
     is_reported = models.BooleanField(default=False, null=True)
     active_branch = models.CharField(max_length=20, null=True)
     active_version = models.CharField(max_length=20, null=True)
+    dc_sweep = models.OneToOneField(
+        to='DCSweepParameters', on_delete=models.CASCADE, null=True)
+    transient_analysis = models.OneToOneField(
+        to='TransientAnalysisParameters', on_delete=models.CASCADE, null=True)
+    tf_analysis = models.OneToOneField(
+        to='TFAnalysisParameters', on_delete=models.CASCADE, null=True)
+    ac_analysis = models.OneToOneField(
+        to='ACAnalysisParameters', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.title
@@ -80,3 +88,35 @@ class Report(models.Model):
         get_user_model(), on_delete=models.CASCADE, related_name='reporter',
         null=True)  # noqa
     approved = models.BooleanField(default=None, null=True)
+
+
+class DCSweepParameters(models.Model):
+    parameter = models.CharField(max_length=200, null=True)
+    sweepType = models.CharField(max_length=200, null=False, default='Linear')
+    start = models.CharField(max_length=200, null=True)
+    stop = models.CharField(max_length=200, null=True)
+    step = models.CharField(max_length=200, null=True)
+    parameter2 = models.CharField(max_length=200, null=True)
+    start2 = models.CharField(max_length=200, null=True)
+    stop2 = models.CharField(max_length=200, null=True)
+    step2 = models.CharField(max_length=200, null=True)
+
+
+class TransientAnalysisParameters(models.Model):
+    start = models.CharField(max_length=200, null=True)
+    stop = models.CharField(max_length=200, null=True)
+    step = models.CharField(max_length=200, null=True)
+    skipInitial = models.BooleanField(default=False)
+
+
+class ACAnalysisParameters(models.Model):
+    input = models.CharField(max_length=200, default='dec')
+    stop = models.CharField(max_length=200, null=True)
+    start = models.CharField(max_length=200, null=True)
+    pointsBydecade = models.CharField(max_length=200, null=True)
+
+
+class TFAnalysisParameters(models.Model):
+    outputNodes = models.BooleanField(default=False)
+    outputVoltageSource = models.CharField(max_length=200, null=True)
+    inputVoltageSource = models.CharField(max_length=200, null=True)
