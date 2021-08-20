@@ -198,7 +198,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         }
       } else if (v.id) {
         this.projectId = v.id;
-        this.LoadOnlineProject(v.id);
+        this.LoadOnlineProject(v.id, v.offline);
       }
     });
 
@@ -597,10 +597,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Fetches project from cloud
    * @param id Project id
+   * @param offline A check whether circuit is offline or shared in absence of token
    */
-  LoadOnlineProject(id) {
+  LoadOnlineProject(id, offline) {
     const token = Login.getToken();
-    if (!token) {
+    if (!token && offline !== 'false') {
       AlertService.showAlert('Please Login');
       return;
     }

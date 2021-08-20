@@ -16,7 +16,7 @@
           <h3 style="font-family: cursive;">Description</h3>
           <p>{{data.description}}</p>
           <button mat-raised-button color="primary" [routerLink]="['/simulator']"
-            [queryParams]="{id: data.save_id,offline: false}">
+            [queryParams]="{id: data.save_id,version: data.version,branch: data.branch,offline: false}">
             Run Simulation</button>
           <div style="margin-top: 100px;"></div>
           <div>Author Name: <label>{{data.owner}}</label></div>
@@ -35,7 +35,7 @@
             </button>
           </a>
 
-          <a href="http://www.reddit.com/submit?url={{shareURL}}" target="_blank">
+          <a href="http://www.reddit.com/submit?url={{shareURL}}&title={{shareName}}" target="_blank">
             <button mat-mini-fab style="background-color: #ff4500;" matTooltip="Share it on Reddit">
               <i class='fab fa-reddit-alien' style='font-size:24px;'></i>
             </button>

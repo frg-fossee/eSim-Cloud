@@ -29,6 +29,38 @@ export class ApiService {
   ) {
   }
   /**
+   * Get Http Headers
+   * @param token Login Token
+   * @returns Http headers as per given parameter and environment
+   */
+  httpHeaders(token: string) {
+    if (environment.production) {
+      if (token) {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        });
+      } else {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        });
+      }
+    } else {
+      if (token) {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Token ${token}`,
+        });
+      } else {
+        return new HttpHeaders({
+          'Content-Type': 'application/json',
+        });
+      }
+    }
+  }
+  /**
    * Save Project to Cloud
    * @param data The Project data
    * @param token Auth Token
@@ -65,11 +97,7 @@ export class ApiService {
    */
   listProject(token) {
     return this.http.get(`${this.url}api/save/arduino/list`, {
-      headers: new HttpHeaders({
-        // 'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token)
     });
   }
   /**
@@ -80,12 +108,11 @@ export class ApiService {
    * @param token Auth Token
    */
   readProject(id: string, branch: string, version: string, token: string) {
-    return this.http.get(`${this.url}api/save/${id}/${version}/${branch}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+    let url = `${this.url}api/save/${id}`;
+    url += version ? `/${version}` : '';
+    url += branch ? `/${branch}` : '';
+    return this.http.get(url, {
+      headers: this.httpHeaders(token)
     });
   }
   /**
@@ -130,7 +157,8 @@ export class ApiService {
         'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
         // 'Access-Control-Allow-Origin': '*',
-      })
+      }),
+      observe: 'response',
     });
   }
   /**
@@ -166,14 +194,10 @@ export class ApiService {
    * @param on Sharing State
    * @param token Auth token
    */
-  Sharing(id: string, on: boolean, token: string) {
+  Sharing(id: string, branch: string, version: string, on: boolean, token: string) {
     const state = on ? 'on' : 'off';
-    return this.http.post(`${this.url}api/save/${id}/sharing/${state}`, {}, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+    return this.http.post(`${this.url}api/save/${id}/sharing/${state}/${version}/${branch}`, {}, {
+      headers: this.httpHeaders(token)
     });
   }
   /**
@@ -212,11 +236,7 @@ export class ApiService {
    */
   listAllVersions(id, token): Observable<any> {
     return this.http.get(`${this.url}api/save/versions/${id}`, {
-      headers: new HttpHeaders({
-        // 'Content-Type': 'application/jsone',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token)
     });
   }
 
