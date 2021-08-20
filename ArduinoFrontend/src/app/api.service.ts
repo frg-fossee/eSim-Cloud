@@ -77,9 +77,10 @@ export class ApiService {
       })
     });
   }
-  /**
+
+ /**
   * Save Project to Gallery
-  * @param data The Project data
+  * @param data The Project gallery data
   * @param token Auth Token
   */
   saveProjectToGallery(data: any, token: string) {
@@ -210,7 +211,7 @@ export class ApiService {
 
   /**
    * Fetchs single project  gallery to simulator
-   * @param id 
+   * @param id  unique id for gallery circuit
    */
   fetchSingleProjectToGallery(id: any) {
     return this.http.get(`${this.url}api/save/gallery/` + id);
