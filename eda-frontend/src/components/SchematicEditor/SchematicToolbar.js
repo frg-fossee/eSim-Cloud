@@ -171,6 +171,7 @@ export default function SchematicToolbar({
   const [initalSch, setIntialSch] = React.useState('')
   const [modelSch, setModelSch] = React.useState('')
   const [id, setId] = React.useState('')
+  // eslint-disable-next-line
   const [scored, setScored] = React.useState(false)
   const [ltiSimHistory, setLtiSimHistory] = React.useState([])
   const [activeSimResult, setActiveSimResult] = React.useState(null)

@@ -86,8 +86,9 @@ export default function LTIConfig () {
     if (activeSim) {
       var arr = []
       if (activeSim.result.graph === 'true') {
+        // eslint-disable-next-line
         activeSim.result.data.map((i) => {
-          console.log(i)
+          // eslint-disable-next-line
           i.labels.map((params) => {
             if (!arr.includes(params)) {
               arr.push(params)

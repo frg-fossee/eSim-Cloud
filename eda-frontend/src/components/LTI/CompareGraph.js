@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
   Typography,
@@ -43,6 +43,7 @@ export default function CompareGraph({ expected, given }) {
 
   const precisionArr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
+  // eslint-disable-next-line
   const scales = {
     G: 1000000000,
     M: 1000000,
@@ -63,6 +64,7 @@ export default function CompareGraph({ expected, given }) {
       console.log('expectedresult', handlePreProcess(expected))
       setExpectedResult(handlePreProcess(expected))
     }
+  // eslint-disable-next-line
   }, [given, expected])
 
   const handlePreProcess = (element) => {

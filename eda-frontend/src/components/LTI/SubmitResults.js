@@ -73,7 +73,7 @@ function SubmitResults({ show, setResults, results }) {
             <Grid item xs={5}>
               <h2>Teacher's values:</h2>
               {results.expected.data.map((ele, index) => (
-                <Paper key={ele}>
+                <Paper class={classes.paper} key={ele}>
                   <Typography>
                     {index + 1}. {ele[0]} : {ele[2]}
                   </Typography>
@@ -91,7 +91,7 @@ function SubmitResults({ show, setResults, results }) {
             <>
               <h2>Your Submission Values: </h2>
               {results.given.data.map((ele, index) => (
-                <Paper key={ele}>
+                <Paper class={classes.paper} key={ele}>
                   {showIcons(ele[0])}
                   <Typography>
                     {index + 1}. {ele[0]} : {ele[2]}

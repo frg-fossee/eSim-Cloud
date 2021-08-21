@@ -1,4 +1,5 @@
 import traceback
+import datetime
 from .serializers import consumerSerializer, consumerResponseSerializer, \
     SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer
 from .utils import consumers, get_reverse, message_identifier
@@ -242,6 +243,11 @@ class LTIAuthView(APIView):
                    'oauth_signature_method',
                    'oauth_version', 'oauth_signature']
         ltidata = {key: params.get(key) for key in ltikeys}
+        current_time = datetime.datetime.now().timestamp()
+        time_diff = abs(current_time - float(ltidata['oauth_timestamp']))
+        if time_diff > 19800 and time_diff < 20000:
+            ltidata['oauth_timestamp'] = time_diff
+            params['oauth_timestamp'] = time_diff
         lti_session = ltiSession.objects.create(**ltidata)
         print("Got POST for validating LTI consumer")
         try:
