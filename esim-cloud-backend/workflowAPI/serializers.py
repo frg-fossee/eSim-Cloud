@@ -8,10 +8,11 @@ class UserRoleRetreieveSerializer(serializers.ModelSerializer):
     arduino_reviewer = serializers.BooleanField()
     is_arduino_staff = serializers.BooleanField()
     is_esim_staff = serializers.BooleanField()
+
     class Meta:
         model = CustomGroup
-        fields = ['group', 'is_type_reviewer', 'arduino_reviewer', 'e_sim_reviewer', 
-        'is_type_staff', 'is_arduino_staff', 'is_esim_staff']
+        fields = ['group', 'is_type_reviewer', 'arduino_reviewer',
+                  'e_sim_reviewer', 'is_type_staff', 'is_arduino_staff', 'is_esim_staff']
 
 
 class StatusWithNotesSerializer(serializers.ModelSerializer):
