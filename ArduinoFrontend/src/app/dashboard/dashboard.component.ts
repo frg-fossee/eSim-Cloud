@@ -38,9 +38,9 @@ export class DashboardComponent implements OnInit {
    */
   online: any[] = [];
   /**
-   *  List of Search circuit 
+   * List of Search circuit
    */
-  searchCircuit: any[] = []
+  searchCircuit: any[] = [];
   /**
    * Message shown to user if something happens while fetching online circuits
    */
@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
   /**
    * Username  of register user.
    */
-  username = "";
+  username = '';
 
   // configuration for side nav.
   @ViewChild('sidenav') sidenav: MatSidenav;

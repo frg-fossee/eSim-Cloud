@@ -38,8 +38,10 @@ export class HeaderComponent implements OnInit {
    */
   @Input() front = false;
 
-  name:string
-  
+  /**
+   * Name  of the user
+   */
+  name: string;
   /**
    * Constructor for Header
    * @param api API Service
@@ -78,7 +80,7 @@ export class HeaderComponent implements OnInit {
     if (this.token) {
       this.api.userInfo(this.token).subscribe((v) => {
         this.username = v.username;
-        this.name =this.username;
+        this.name = this.username;
       }, (err) => {
         // console.log(err.status)
         console.log(err);
