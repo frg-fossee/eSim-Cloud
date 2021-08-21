@@ -22,6 +22,10 @@
         <div class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngIf="isShowing || isExpanded">
           <a mat-list-item *ngFor="let role of groupRole">{{role}}</a>
         </div>
+        <mat-list-item class="parent" (click)="onHomeClick()">
+          <span>Home</span>
+          <mat-icon class="custom-menu" mat-list-icon>home</mat-icon>
+        </mat-list-item>
         <mat-list-item class="parent" (click)="onCloudClick()">
           <span>On Cloud</span>
           <mat-icon class="custom-menu" mat-list-icon>cloud</mat-icon>
@@ -57,10 +61,34 @@
             <button type="submit" class=" btn btn-primary"><i class="fa fa-search"></i></button>
           </form>
         </div>
+
+        <div *ngIf="searchCircuit && searchCircuit.length === 0" style="margin: 1em;"></div>
+        <mat-icon style="cursor: pointer;margin-left: 36px;" *ngIf="searchCircuit && searchCircuit.length !== 0"
+          (click)="removeSearchCircuits()" mat-list-icon>close</mat-icon>
+        <div class="row" style="margin: 1em;">
+          <div class="col-md-4" *ngFor="let item of searchCircuit; let i = index">
+            <div class="subbox" (click)="openProject(i)">
+              <div>
+                <div style="width: 100%;  background-color: #e8e8e8;">
+                  <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+                </div>
+                <div style="box-sizing: border-box; padding: 15px;">
+                  <h4>{{item.name}}</h4>
+                  <p style="word-break: break-all;">
+                    {{ item.description | slice:0:57 }}
+                    {{ (item.description && item.description.length) > 60?'...':'' }}
+                  </p>
+                  {{ DateDiff(item,item.save_time) }}
+                  <p>{{item.time}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <!-- on cloud circuit -->
       <div *ngIf="isCloudCircuit">
-        <div *ngIf="online && online.length === 0" style="margin: 1em;" [innerHtml]="onCloudMessage"></div>
+        <div *ngIf="online && online.length === 0" style="margin: 1em;" innerHtml="onCloudMessage"></div>
         <div class="row" style="margin: 1em;">
           <div class="col-md-4" *ngFor="let item of online; let i = index">
             <div class="subbox" (click)="openProject(i)">

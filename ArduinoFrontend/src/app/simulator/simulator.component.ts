@@ -94,7 +94,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Username
    */
-  username: string;
+  username: string ="";
   /**
    * window
    */

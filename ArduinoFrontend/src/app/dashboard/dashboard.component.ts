@@ -38,6 +38,10 @@ export class DashboardComponent implements OnInit {
    */
   online: any[] = [];
   /**
+   *  List of Search circuit 
+   */
+  searchCircuit: any[] = []
+  /**
    * Message shown to user if something happens while fetching online circuits
    */
   onCloudMessage = 'No Online Circuits Available &#9785;';
@@ -76,7 +80,7 @@ export class DashboardComponent implements OnInit {
    * Username  of register user.
    */
   username = "";
-  
+
   // configuration for side nav.
   @ViewChild('sidenav') sidenav: MatSidenav;
   isExpanded = true;
@@ -84,7 +88,7 @@ export class DashboardComponent implements OnInit {
   isShowing = false;
   showSubSubMenu = false;
   /**
-   * Determines whether cloud side menu click on
+   * Determines whether cloud side menu click
    */
   onCloudClick() {
     this.isCloudCircuit = true;
@@ -92,12 +96,26 @@ export class DashboardComponent implements OnInit {
     this.mainContent = false;
   }
   /**
-   * Determines whether temp circuit click on
+   * Determines whether temp circuit click
    */
   onTempCircuitClick() {
     this.isTempCircuit = true;
     this.isCloudCircuit = false;
     this.mainContent = false;
+  }
+  /**
+   * Determines whether home click
+   */
+  onHomeClick() {
+    this.mainContent = true;
+    this.isTempCircuit = false;
+    this.isCloudCircuit = false;
+  }
+  /**
+   * Removes search circuits
+   */
+  removeSearchCircuits() {
+    this.searchCircuit = [];
   }
   getInitials(nameString, i) {
     const fullName = nameString.split(' ');
@@ -328,6 +346,7 @@ export class DashboardComponent implements OnInit {
       if (input.value === '') {
         this.api.listProject(token).subscribe((val: any[]) => {
           this.online = val;
+          this.searchCircuit = val;
         }, err => console.log(err));
         return;
       }
@@ -335,6 +354,7 @@ export class DashboardComponent implements OnInit {
       this.api.searchProject(input.value, token).subscribe((out: any[]) => {
         console.log(out);
         this.online = out;
+        this.searchCircuit = out;
       }, err => {
         AlertService.showAlert('Something went wrong');
         console.log(err);

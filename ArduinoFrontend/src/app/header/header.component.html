@@ -49,14 +49,12 @@
     </div>
   </div>-->
       <div class="dropdown show mr-2" *ngIf="token" style="margin-top: 4px;">
-
         <!-- <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
           class="d-inline-block align-center" alt="Login Image"> -->
         <div class="circles" id="dropdownMenuLink" data-toggle="dropdown">
           {{ username.charAt(0).toUpperCase() }}
         </div>
-
         <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;  color: black !important;"
           aria-labelledby="dropdownMenuLink">
           <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
