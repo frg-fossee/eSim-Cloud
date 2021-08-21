@@ -555,7 +555,6 @@ export class Workspace {
       x - offsetX,
       y - offsetY
     );
-    console.log(obj);
     window['scope'][classString].push(obj);
     // Push dump to Undo stack & Reset
     UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
@@ -635,7 +634,6 @@ export class Workspace {
     }
     // Save the Thumbnail for the circuit
     Download.ExportImage(ImageType.PNG).then(v => {
-      console.log(saveObj);
       saveObj.project['image'] = v; // Add the base64 image
       // console.log(saveObj);
       // Save or Update Circuit Ofline
@@ -1139,8 +1137,6 @@ export class Workspace {
       // Export JSON File & Download it
       const filename = `${name}.json`;
       const jsonStr = JSON.stringify(saveObj);
-      console.log(jsonStr);
-
       const element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
       element.setAttribute('download', filename);
