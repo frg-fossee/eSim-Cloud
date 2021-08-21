@@ -6,4 +6,5 @@ export const environment = {
   API_URL: '../../',
   LOGIN_URL: `../../../eda/#/login?url=`,
   DASHBOARD_URL: `../arduino/#/dashboard`,
+  IMG_URL: ''
 };
