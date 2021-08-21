@@ -34,7 +34,7 @@ button:hover {
   width: 100%;
   line-height: 60px;
   font-weight: bold;
-  margin-left: 3%;
+  margin-left: 1rem;
   font-size: 1.3em;
 }
 
@@ -94,4 +94,17 @@ button:hover {
   position:inherit;
   width: 100%;
   overflow-y: scroll;
+}
+/* Avatar image */
+/* avatar  */
+.circles {
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background: #673ab7;
+  border: 2px solid #fff;
+  text-align: center;
+  line-height: 48px;
+  margin-right: 1rem;
+  color: white;
 }

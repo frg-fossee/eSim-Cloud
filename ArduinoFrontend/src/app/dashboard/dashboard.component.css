@@ -148,28 +148,12 @@ button[type="submit"] {
   margin-right: 1.3rem;
   margin-left: 8px;
 }
-
-/* avatar  */
-.rows {
-  display: flex;
-  align-items: center;
-}
-
-.circles {
-  height: 50px;
-  width: 50px;
-  border-radius: 50%;
-  background: #673ab7;
-  border: 2px solid #fff;
-  text-align: center;
-  line-height: 48px;
-  margin-right: 1rem;
-  color: white;
-}
-
 .maincontent {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
+}
+.circuitBtn{
+  width: 296px;
 }

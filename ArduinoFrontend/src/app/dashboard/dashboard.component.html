@@ -8,9 +8,9 @@
   <mat-sidenav-container class="example-container" autosize>
     <mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true">
       <mat-nav-list>
-        <mat-list-item  *ngIf="username" (click)="showSubmenu = !showSubmenu" class="parent">
+        <mat-list-item *ngIf="username" (click)="showSubmenu = !showSubmenu" class="parent">
           <!-- <mat-icon mat-list-icon>admin</mat-icon> -->
-          <div class="rows">
+          <div>
             <div class="circles">
               {{ username.charAt(0).toUpperCase() }}
             </div>
@@ -39,21 +39,22 @@
       <div *ngIf="mainContent">
         <div class="maincontent">
           <h3
-            style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin: 1em;">
+            style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin-top: 5rem;">
             Arduino
             Circuits</h3>
           <div>
-            <a type="button" class="btn btn-primary mb-8 m-2" [routerLink]="['/simulator']">+ New
+            <a type="button" class="circuitBtn btn btn-primary mb-8 m-2" [routerLink]="['/simulator']">+ New
               Circuit</a>
-            <label for="importFileBTN" mat-icon-button class="btn btn-primary mb-8 m-2">Import Circuit</label>
+            <label for="importFileBTN" mat-icon-button class="circuitBtn btn btn-primary mb-8 m-2">Import
+              Circuit</label>
             <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file"
               (change)="ImportCircuit($event)" hidden /><br />
           </div>
           <form class="form-inline" (submit)="SearchCircuits(searchBox)">
-            <div >
-              <input type="text" #searchBox class="form-control" id="Search" placeholder="Search">
+            <div>
+              <input type="text" #searchBox style="width: 570px;" class="form-control" id="Search" placeholder="Search">
             </div>
-            <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+            <button type="submit" class=" btn btn-primary"><i class="fa fa-search"></i></button>
           </form>
         </div>
       </div>
@@ -260,4 +261,4 @@
         readonly>{{getUrl(selected)}}</textarea>
     </div>
   </div>
-<!--/open project-->
+  <!--/open project-->
