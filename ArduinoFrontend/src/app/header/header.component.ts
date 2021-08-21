@@ -37,6 +37,9 @@ export class HeaderComponent implements OnInit {
    * Is it a Front Page
    */
   @Input() front = false;
+
+  name:string
+  
   /**
    * Constructor for Header
    * @param api API Service
@@ -75,6 +78,7 @@ export class HeaderComponent implements OnInit {
     if (this.token) {
       this.api.userInfo(this.token).subscribe((v) => {
         this.username = v.username;
+        this.name =this.username;
       }, (err) => {
         // console.log(err.status)
         console.log(err);

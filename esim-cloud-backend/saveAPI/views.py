@@ -484,7 +484,6 @@ class GalleryView(APIView):
 
     @swagger_auto_schema(responses={200: GallerySerializer})
     def get(self, request):
-        print(request.GET.get("is_arduino"))
         if (request.GET.get("is_arduino") == "true"):
             galleryset = Gallery.objects.filter(is_arduino=True)
         else:

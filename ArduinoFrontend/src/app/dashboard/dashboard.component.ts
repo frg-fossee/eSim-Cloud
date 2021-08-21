@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { SaveOffline } from '../Libs/SaveOffiline';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
-import { MatSnackBar } from '@angular/material';
+import { MatSidenav, MatSnackBar } from '@angular/material';
 import { Title } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material';
 import { environment } from 'src/environments/environment';
@@ -59,6 +59,52 @@ export class DashboardComponent implements OnInit {
    */
   token;
 
+  /**
+   * visible cloud circuit
+   */
+  isCloudCircuit = false;
+  /**
+   * visible temp circuit
+   */
+  isTempCircuit = false;
+  /**
+   * Main content of div
+   */
+  mainContent = true;
+
+  /**
+   * Username  of register user.
+   */
+  username = "";
+  
+  // configuration for side nav.
+  @ViewChild('sidenav') sidenav: MatSidenav;
+  isExpanded = true;
+  showSubmenu = false;
+  isShowing = false;
+  showSubSubMenu = false;
+  /**
+   * Determines whether cloud side menu click on
+   */
+  onCloudClick() {
+    this.isCloudCircuit = true;
+    this.isTempCircuit = false;
+    this.mainContent = false;
+  }
+  /**
+   * Determines whether temp circuit click on
+   */
+  onTempCircuitClick() {
+    this.isTempCircuit = true;
+    this.isCloudCircuit = false;
+    this.mainContent = false;
+  }
+  getInitials(nameString, i) {
+    const fullName = nameString.split(' ');
+    const initials = fullName.shift().charAt(0) + fullName.pop().charAt(0);
+    return initials.toUpperCase();
+  }
+
   closeProject() {
     document.documentElement.style.overflow = 'auto';
     const closeProject = document.getElementById('openproject');
@@ -105,12 +151,30 @@ export class DashboardComponent implements OnInit {
     // In Angular  Development Mode.
     this.api.login().then(() => {
       this.token = Login.getToken();
+      this.userInfo(this.token);
       this.readRoles(this.token);
       this.readTempItems();
       this.readOnCloudItems();
     });
   }
+  /**
+   * Getting User Information.
+   */
+  userInfo(token) {
 
+    // If token is available then get username
+    if (token) {
+      this.api.userInfo(token).subscribe((v) => {
+        this.username = v.username;
+      }, (err) => {
+        // console.log(err.status)
+        console.log(err);
+        // if (err.status === 401) {
+        Login.logout();
+        // }
+      });
+    }
+  }
   /**
    * Reads roles
    */

@@ -25,7 +25,11 @@ import {
   MatIconModule,
   MatTooltipModule,
   MatExpansionModule,
-  MatMenuModule
+  MatMenuModule,
+  MatSidenavModule,
+  MatSliderModule,
+  MatListModule,
+  MatStepperModule
 } from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -100,6 +104,10 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MatTooltipModule,
     MatSnackBarModule,
     MatExpansionModule,
+    MatSidenavModule,
+    MatSliderModule,
+    MatListModule,
+    MatStepperModule,
     ReactiveFormsModule,
     MatMenuModule
   ],
