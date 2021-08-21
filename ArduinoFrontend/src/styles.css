@@ -90,3 +90,8 @@ button:hover {
   max-width: unset !important;
   margin: 12px !important;
 }
+.cdk-global-scrollblock {
+  position:inherit;
+  width: 100%;
+  overflow-y: scroll;
+}
