@@ -24,7 +24,7 @@ export const setCompProperties = (id, compProperties) => (dispatch) => {
   })
 }
 
-// Handeling hiding of component properties sidebar
+// handleing hiding of component properties sidebar
 export const closeCompProperties = () => (dispatch) => {
   dispatch({
     type: actions.CLOSE_COMP_PROPERTIES

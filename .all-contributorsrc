@@ -1,0 +1,91 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "darshkpatel",
+      "name": "Darsh Patel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11258286?v=4",
+      "profile": "http://darshkpatel.com",
+      "contributions": [
+        "code",
+        "doc",
+        "infra"
+      ]
+    },
+    {
+      "login": "dssudake",
+      "name": "Darshan Sudake",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42094875?v=4",
+      "profile": "https://www.linkedin.com/in/darshan-sudake-a640ba1b1/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "felixfaisal",
+      "name": "felixfaisal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42486737?v=4",
+      "profile": "https://felixfaisal.github.io/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "rohitgeddam",
+      "name": "rohitgeddam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48797475?v=4",
+      "profile": "https://github.com/rohitgeddam",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "NavonilDas",
+      "name": "Navonil Das",
+      "avatar_url": "https://avatars.githubusercontent.com/u/29132316?v=4",
+      "profile": "http://navonildas.github.io/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "meet-10",
+      "name": "Meet10",
+      "avatar_url": "https://avatars.githubusercontent.com/u/61341284?v=4",
+      "profile": "https://github.com/meet-10",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "gupta-arpit",
+      "name": "gupta-arpit",
+      "avatar_url": "https://avatars.githubusercontent.com/u/12170429?v=4",
+      "profile": "https://github.com/gupta-arpit",
+      "contributions": [
+        "code",
+        "design"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "eSim-Cloud",
+  "projectOwner": "frg-fossee",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

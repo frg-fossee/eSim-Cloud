@@ -91,25 +91,45 @@ export class DashboardComponent implements OnInit {
    * On Init Dashboard Page
    */
   ngOnInit() {
-    this.readTempItems();
-    this.readOnCloudItems();
+    // In Angular  Development Mode.
+    this.api.login().then(() => {
+      this.readTempItems();
+      this.readOnCloudItems();
+    });
   }
 
   /**
    * Read the online saved circuits.
    */
-   readOnCloudItems() {
+  readOnCloudItems() {
     // Get Login token
     const token = Login.getToken();
     // if token is present get the list of project created by a user
     if (token) {
       this.api.listProject(token).subscribe((val: any[]) => {
-        this.online = val;
+        this.online = this.filterOnlineProjects(val);
       }, err => console.log(err));
     } else {
       // if no token is present then show this message
       this.onCloudMessage = 'Please Login to See Circuit';
     }
+  }
+
+  /**
+   * Filter projects: Pick only 1 variation of a project
+   * @param val All projects in cloud
+   * @returns filtered list of projects
+   */
+  filterOnlineProjects(val) {
+    const projects = [];
+    const added = [];
+    for (const e in val) {
+      if (!added.includes(val[e].save_id)) {
+        added.push(val[e].save_id);
+        projects.push(val[e]);
+      }
+    }
+    return projects;
   }
 
   /**
@@ -155,7 +175,7 @@ export class DashboardComponent implements OnInit {
       // Delete Project from cloud
       const token = Login.getToken();
       this.api.deleteProject(id, token).subscribe((out) => {
-        if (out.done) {
+        if (out.status === 204 || out.done) {
           // Remove From the list
           this.online.splice(index, 1);
         } else {
@@ -188,7 +208,7 @@ export class DashboardComponent implements OnInit {
    */
   DisableSharing(item: any) {
     const token = Login.getToken();
-    this.EnableSharing(item.save_id, token, (v) => {
+    this.EnableSharing(item, token, (v) => {
       item.shared = v.shared;
       AlertService.showAlert('Sharing Disabled!');
     }, false);
@@ -240,9 +260,8 @@ export class DashboardComponent implements OnInit {
    */
   CopyUrlToClipBoard(url) {
     // Create a temp html element put url inside it
-    const tmpEl = document.createElement('textarea');
+    const tmpEl: HTMLTextAreaElement = document.querySelector('#sharing-url');
     tmpEl.value = url;
-    document.body.appendChild(tmpEl);
     // Focus and Select the element
     tmpEl.focus();
     tmpEl.select();
@@ -256,8 +275,6 @@ export class DashboardComponent implements OnInit {
         duration: 2000
       });
     }
-    // Remove the temp element
-    document.body.removeChild(tmpEl);
   }
   /**
    * Project to enable or disable sharing (default enable)
@@ -266,8 +283,8 @@ export class DashboardComponent implements OnInit {
    * @param callback Callback when done
    * @param enable Enable/Disable sharing
    */
-  EnableSharing(id, token, callback: any, enable: boolean = true) {
-    this.api.Sharing(id, enable, token).subscribe((v) => {
+  EnableSharing(circuit, token, callback: any, enable: boolean = true) {
+    this.api.Sharing(circuit.save_id, circuit.branch, circuit.version, enable, token).subscribe((v) => {
       callback(v);
     }, err => {
       if (err.status === 401) {
@@ -304,9 +321,10 @@ export class DashboardComponent implements OnInit {
       duration: 10000
     });
     // Create a Slug
-    const slug = `${selected.save_id.replace(/-/g, '_')}-${selected.name.substr(0, 50).replace(/ +/g, '-')}`;
+    let slug = `${selected.save_id.replace(/-/g, '_')}-${selected.branch.replace(/-/g, '_')}-${selected.version.replace(/-/g, '_')}`;
+    slug += `-${selected.name.substr(0, 50).replace(/ +/g, '-')}`;
     // redirect to share url
-    let shareURL = `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug} `;
+    let shareURL = `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
     const copyUrl = shareURL;
     // encode url for redirect
     shareURL = encodeURIComponent(shareURL);
@@ -325,7 +343,7 @@ export class DashboardComponent implements OnInit {
         window.open(map[index], '_blank');
       } else {
         // otherwise enable sharing and open the link in new tab
-        this.EnableSharing(selected.save_id, token, (v) => {
+        this.EnableSharing(selected, token, (v) => {
           selected.shared = v.shared;
           if (selected.shared) {
             window.open(map[index], '_blank');
@@ -341,7 +359,7 @@ export class DashboardComponent implements OnInit {
       if (selected.shared) {
         window.open(`mailto:?${back}`, '_blank');
       } else {
-        this.EnableSharing(selected.save_id, token, (v) => {
+        this.EnableSharing(selected, token, (v) => {
           selected.shared = v.shared;
           if (selected.shared) {
             window.open(`mailto:?${back}`, '_blank');
@@ -356,7 +374,7 @@ export class DashboardComponent implements OnInit {
         this.CopyUrlToClipBoard(copyUrl);
       } else {
         // other wise enable share and copy the url
-        this.EnableSharing(selected.save_id, token, (v) => {
+        this.EnableSharing(selected, token, (v) => {
           selected.shared = v.shared;
           if (selected.shared) {
             this.CopyUrlToClipBoard(copyUrl);
@@ -391,10 +409,11 @@ export class DashboardComponent implements OnInit {
 
   /**
    * Export the circuit in json format
-   * @param id Project id
+   * @param selected selected Project
    * @param offline Is Offline Circuit
    */
-  ExportCircuit(id, offline) {
+  ExportCircuit(selected, offline) {
+    let id = selected.save_id;
     if (offline) {
       if (typeof id !== 'number') {
         id = Date.now();
@@ -406,15 +425,15 @@ export class DashboardComponent implements OnInit {
         AlertService.showAlert('Please Login');
         return;
       }
-      this.api.readProject(id, token).subscribe(
+      this.api.readProject(id, selected.branch, selected.version, token).subscribe(
         data => {
           // Converting data to required format
           const obj = JSON.parse(data['data_dump']);
           const project = {
-              name: data['name'],
-              description: data['description'],
-              image: data['base64_image'],
-              created_at: data['create_time'],
+            name: data['name'],
+            description: data['description'],
+            image: data['base64_image'],
+            created_at: data['create_time'],
           };
           obj['id'] = id;
           obj['project'] = project;
@@ -477,26 +496,33 @@ export class DashboardComponent implements OnInit {
         this.readOnCloudItems();
       }, SaveOnline.isUUID(fileData.id));
     },
-    () => {
-      if (!(fileData.id) || typeof fileData.id !== 'number') {
-        fileData.id = Date.now();
-        SaveOffline.Save(fileData, (_) => {
-          this.readTempItems();
-        });
-      } else {
-        SaveOffline.Read(fileData.id, (data) => {
-          if (data) {
-            SaveOffline.Update(fileData, (_) => {
-              this.readTempItems();
-            });
-          } else {
-            SaveOffline.Save(fileData, (_) => {
-              this.readTempItems();
-            });
-          }
-        });
-      }
-    },
-    () => {}, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
+      () => {
+        if (!(fileData.id) || typeof fileData.id !== 'number') {
+          fileData.id = Date.now();
+          SaveOffline.Save(fileData, (_) => {
+            this.readTempItems();
+          });
+        } else {
+          SaveOffline.Read(fileData.id, (data) => {
+            if (data) {
+              SaveOffline.Update(fileData, (_) => {
+                this.readTempItems();
+              });
+            } else {
+              SaveOffline.Save(fileData, (_) => {
+                this.readTempItems();
+              });
+            }
+          });
+        }
+      },
+      () => { }, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
+  }
+
+  getUrl(circuit) {
+    let slug = `${circuit.save_id.replace(/-/g, '_')}-${circuit.branch.replace(/-/g, '_')}-${circuit.version.replace(/-/g, '_')}`;
+    slug += `-${circuit.name.substr(0, 50).replace(/ +/g, '-')}`;
+    // redirect to share url
+    return `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
   }
 }
