@@ -46,12 +46,15 @@
     </ul>
 
     <div class="navbar-nav ml-auto">
-      <a mat-raised-button (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))" style="margin-right: 10px;">Home</a>
-      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard'))" style="margin-right: 10px;">Dashboard</a>
+      <a mat-raised-button
+        (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))"
+        style="margin-right: 10px;">Home</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard'))"
+        style="margin-right: 10px;">Dashboard</a>
       <a mat-raised-button (click)="HandleRouter(RouteToFunction('/gallery'))" style="margin-right: 10px;">Gallery</a>
       <a mat-raised-button (click)="HandleRouter(RouteToSimulator.bind(this))" style="margin-right: 10px;">Editor</a>
       <a mat-raised-button *ngIf="!token" (click)="HandleRouter(Login)">Login</a>
-      <div class="dropdown show" *ngIf="token">
+      <div class="dropdown show" style="margin-left: 20px;margin-top: 6px;" *ngIf="token">
         <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
           class="d-inline-block align-center" alt="Login Image">
@@ -66,7 +69,7 @@
     </div>
 
     <!-- <div class="navbar-nav ml-auto" *ngIf="token"> -->
-      <!--<div class="dropdown my-dropdown" *ngIf="token">
+    <!--<div class="dropdown my-dropdown" *ngIf="token">
         <div class="w3-dropdown-hover">
           <img src="./assets/images/login.svg" width="30" height="30" class="d-inline-block align-center"
             alt="Login Image">
@@ -93,7 +96,7 @@
             </div>
           </div>
         </div>
-      </div>--> 
+      </div>-->
     <!-- </div> -->
 
 
@@ -157,7 +160,7 @@
   <button mat-icon-button matTooltip="Import JSON file"
     style="align-items: center;background: transparent; margin: auto;" class="mt-1">
     <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
-    <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+      <input type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
     </label>
   </button>
   <span class="pipe">|</span>
@@ -204,8 +207,9 @@
       style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
 
   <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
-  style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
-    style="font-size: 20px;color: black;" [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
+    style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+      style="font-size: 20px;color: black;"
+      [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
@@ -356,6 +360,7 @@
       </div>
     </div>
 
+    <app-versioning-panel (createNewBranch)="createNewBranch($event)"></app-versioning-panel>
 
   </div>
 

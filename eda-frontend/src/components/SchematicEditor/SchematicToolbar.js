@@ -270,7 +270,6 @@ export default function SchematicToolbar ({
       '\n'
 
     const checkNetlist = (netlist) => {
-      console.log(netlist)
       netlist = netlist.split('\n')
       for (let line = 0; line < netlist.length; line++) {
         const splitLine = netlist[line].split(' ')
@@ -402,13 +401,13 @@ export default function SchematicToolbar ({
     setHelpOpen(false)
   }
 
-  // Handel Delete component
+  // handle Delete component
   const handleDeleteComp = () => {
     DeleteComp()
     dispatch(closeCompProperties())
   }
 
-  // Handel Notification Snackbar
+  // handle Notification Snackbar
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -544,8 +543,8 @@ export default function SchematicToolbar ({
     }
   }
 
-  // Handel Save Schematic onCloud
-  const handelSchSave = () => {
+  // handle Save Schematic onCloud
+  const handleSchSave = () => {
     if (auth.isAuthenticated !== true) {
       setMessage('You are not Logged In')
       handleSnacClick()
@@ -583,7 +582,7 @@ export default function SchematicToolbar ({
   }
 
   // Save Schematics Locally
-  const handelLocalSchSave = () => {
+  const handleLocalSchSave = () => {
     const saveLocalData = {}
     saveLocalData.data_dump = Save()
     saveLocalData.title = schSave.title
@@ -604,7 +603,7 @@ export default function SchematicToolbar ({
   }
 
   // Open Locally Saved Schematic
-  const handelLocalSchOpen = () => {
+  const handleLocalSchOpen = () => {
     let obj = {}
     const fileSelector = document.createElement('input')
     fileSelector.setAttribute('type', 'file')
@@ -680,7 +679,7 @@ export default function SchematicToolbar ({
       // Save - Ctrl + S
       if (event.ctrlKey && event.keyCode === 83) {
         event.preventDefault()
-        handelSchSave()
+        handleSchSave()
       }
       // Print - Ctrl + P
       if (event.ctrlKey && event.keyCode === 80) {
@@ -698,7 +697,7 @@ export default function SchematicToolbar ({
         if (event.shiftKey) {
           handleImgClickOpen()
         } else {
-          handelLocalSchSave()
+          handleLocalSchSave()
         }
       }
     }
@@ -809,6 +808,7 @@ export default function SchematicToolbar ({
         </Tooltip>
       )}
       <span className={classes.pipe}>|</span>
+
       {(!ltiId || !ltiNonce) && <Tooltip title="Export (Ctrl + E)">
         <IconButton
           color="inherit"

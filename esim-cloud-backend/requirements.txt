@@ -65,3 +65,5 @@ webencodings==0.5.1
 whitenoise==5.0.1
 zipp==3.1.0
 pylti==0.7.0
+sphinxcontrib-openapi
+m2r2

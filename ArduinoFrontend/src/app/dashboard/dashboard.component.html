@@ -23,7 +23,8 @@
       <a type="button" class="btn btn-primary mb-3 m-2" [routerLink]="['/simulator']">+ New
         Circuit</a>
       <label for="importFileBTN" mat-icon-button class="btn btn-primary mb-3 m-2">Import Circuit</label>
-      <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file" (change)="ImportCircuit($event)" hidden/>
+      <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file"
+        (change)="ImportCircuit($event)" hidden />
     </div>
     <div class="col-sm-6"></div>
     <div class="col-sm-3">
@@ -93,8 +94,9 @@
       <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
         (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;&#10006;</button>
 
-      <button class="ml-auto" style="position: relative; padding-top: 10px;background-color: transparent; border: none;font-size: 2.2em;font-weight: 400;"
-        (click)="closeProject()">	&#10006;</button>
+      <button class="ml-auto"
+        style="position: relative; padding-top: 10px;background-color: transparent; border: none;font-size: 2.2em;font-weight: 400;"
+        (click)="closeProject()"> &#10006;</button>
     </div>
     <hr>
     <div class="row">
@@ -109,14 +111,14 @@
 
         <div class="row act-buttons">
           <button mat-raised-button color="primary" class="col-md-3" [routerLink]="['/simulator']"
-            [queryParams]="{id: selected.save_id,offline: selected.offline}">
+            [queryParams]="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
             Edit Circuit</button>
           <button mat-raised-button color="warn" class="col-md-3"
             (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
           <button mat-raised-button class="col-md-3" style="background-color: #26b12d;color: white;" *ngIf="!isProd">
             Publish circuit</button>
           <button mat-raised-button color="primary" class="col-md-3"
-            (click)="ExportCircuit(selected.save_id, selected.offline)">Export Circuit</button>
+            (click)="ExportCircuit(selected, selected.offline)">Export Circuit</button>
         </div>
 
         <div class="act-desc">
@@ -167,6 +169,13 @@
       </div>
     </div>
   -->
+    </div>
+    <div *ngIf="!selected.offline" style="display:flex; flex-direction: column; padding: 20px; padding-bottom: 50px;">
+      <p *ngIf="selected.shared">
+        Url for Sharing : 
+      </p>
+      <textarea id="sharing-url" *ngIf="selected.shared" 
+      rows="1" width="100%" style="resize:none;" readonly>{{getUrl(selected)}}</textarea>
     </div>
   </div>
   <!--/open project-->
