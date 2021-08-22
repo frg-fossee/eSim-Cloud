@@ -5,13 +5,11 @@ import {
   Grid,
   TextField,
   Paper,
-  Container,
+  Container
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 
-
 import Graph from '../Shared/Graph'
-
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -33,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 // {details:{},title:''} simResults
-export default function CompareGraph({ expected, given }) {
+export default function CompareGraph ({ expected, given }) {
   const classes = useStyles()
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
@@ -476,10 +474,7 @@ export default function CompareGraph({ expected, given }) {
 }
 
 CompareGraph.propTypes = {
-  open: PropTypes.bool,
-  close: PropTypes.func,
-  isResult: PropTypes.bool,
-  simType: PropTypes.string,
-  taskId: PropTypes.string
+  expected: PropTypes.object,
+  given: PropTypes.object
   // simResults: PropTypes.object
 }

@@ -23,7 +23,7 @@ def differentiateGraphResults(expected, given, sim_params):
                 for i in range(0, len(expected_labels)):
                     if i != 0:
                         if expected_labels[i] in given_labels:
-                            if set(expected[index]['y'][i-1]) == set(given[index]['y'][i-1]):
+                            if set(expected[index]['y'][i-1]) == set(given[index]['y'][i-1]):  # noqa
                                 results['same'].append(expected_labels[i])
                             else:
                                 results['different'].append(expected_labels[i])

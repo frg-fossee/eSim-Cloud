@@ -10,10 +10,11 @@ class consumerSerializer(serializers.ModelSerializer):
     sim_params = serializers.ListField(
         child=serializers.CharField(max_length=50)
     )
+
     class Meta:
         model = lticonsumer
         fields = ['consumer_key', 'secret_key', 'model_schematic',
-                  'score', 'initial_schematic', 'test_case', 'scored', 
+                  'score', 'initial_schematic', 'test_case', 'scored',
                   'id', 'sim_params']
 
     def create(self, validated_data):
@@ -32,7 +33,8 @@ class consumerResponseSerializer(serializers.Serializer):
     config_url = serializers.CharField(max_length=100)
     consumer_key = serializers.CharField(max_length=50)
     secret_key = serializers.CharField(max_length=50)
-    sim_params = serializers.ListField(child=serializers.CharField(max_length=50))
+    sim_params = serializers.ListField(
+        child=serializers.CharField(max_length=50))
     score = serializers.FloatField(required=False, allow_null=True)
     initial_schematic = serializers.IntegerField()
     model_schematic = serializers.IntegerField()

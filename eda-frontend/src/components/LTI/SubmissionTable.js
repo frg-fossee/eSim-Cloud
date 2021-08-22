@@ -9,8 +9,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TableContainer,
-  Slide,
+  TableContainer
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward'
@@ -41,11 +40,7 @@ const sortOrder = {
   Descending: 2
 }
 
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
-
-export default function SubmissionTable() {
+export default function SubmissionTable () {
   const classes = useStyles()
   const [responseData, setResponseData] = React.useState([])
   const [sortData, setSortData] = React.useState([])
@@ -227,6 +222,7 @@ export default function SubmissionTable() {
             </DialogTitle>
             <DialogContent dividers>
               {simResult && simResult.result.graph === 'false' && simResult.result.data.map((ele, index) => (
+                // eslint-disable-next-line
                 <Typography>
                   {index + 1}. {ele[0]} : {ele[2]}
                 </Typography>))}
