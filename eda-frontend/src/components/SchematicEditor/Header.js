@@ -32,6 +32,7 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
+import { HomeDialog } from './ToolbarExtension'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -101,13 +102,13 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-function Header (props) {
+function Header ({gridRef}) {
   const history = useHistory()
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schSave = useSelector(state => state.saveSchematicReducer)
   const [anchorEl, setAnchorEl] = React.useState(null)
-
+  const xyz = gridRef
   const [loginDialog, setLoginDialog] = React.useState(false)
   const [logoutConfirm, setLogoutConfirm] = React.useState(false)
   const [reloginMessage, setReloginMessage] = React.useState('')
@@ -185,6 +186,18 @@ function Header (props) {
 
   const handleShareClose = () => {
     setShareOpen(false)
+  }
+
+  // handle home dialog box
+  const [homeopen, setHomeOpen] = React.useState(false)
+  
+  const handleHomeOpen = (e) => {
+    e.preventDefault()
+    setHomeOpen(true)
+  }
+
+  const handleHomeClose = () => {
+    console.log(homeopen)
   }
 
   // change saved schematic share status
@@ -416,13 +429,16 @@ function Header (props) {
               <Link
                 variant="button"
                 color="textPrimary"
-                onClick={() => { window.open(homeURL, '_self') }}
+                onClick={handleHomeOpen}
                 component={RouterLink}
                 className={classes.link}
                 style={{ marginLeft: '61%', marginRight: '20px' }}
               >
                 Home
               </Link>
+              { gridRef &&
+                <HomeDialog open={homeopen} gridRef={xyz} schSave={schSave} onClose={handleHomeClose} />
+              }
               <Link
                 variant="button"
                 color="textPrimary"
@@ -471,13 +487,16 @@ function Header (props) {
               <Link
                 variant="button"
                 color="textPrimary"
-                onClick={() => { window.open(homeURL, '_self') }}
+                onClick={handleHomeOpen}
                 component={RouterLink}
                 className={classes.link}
                 style={{ marginRight: '20px' }}
               >
                 Home
               </Link>
+              { gridRef &&
+                <HomeDialog open={homeopen} gridRef={xyz} schSave={schSave} onClose={handleHomeClose} />
+              }
               <Link
                 variant="button"
                 color="textPrimary"
