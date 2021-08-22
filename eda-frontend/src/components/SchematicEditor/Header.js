@@ -102,7 +102,7 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-function Header ({gridRef}) {
+function Header ({ gridRef }) {
   const history = useHistory()
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
@@ -112,7 +112,6 @@ function Header ({gridRef}) {
   const [loginDialog, setLoginDialog] = React.useState(false)
   const [logoutConfirm, setLogoutConfirm] = React.useState(false)
   const [reloginMessage, setReloginMessage] = React.useState('')
-  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
@@ -190,7 +189,7 @@ function Header ({gridRef}) {
 
   // handle home dialog box
   const [homeopen, setHomeOpen] = React.useState(false)
-  
+
   const handleHomeOpen = (e) => {
     e.preventDefault()
     setHomeOpen(true)
@@ -198,6 +197,7 @@ function Header ({gridRef}) {
 
   const handleHomeClose = () => {
     console.log(homeopen)
+    setHomeOpen(false)
   }
 
   // change saved schematic share status
@@ -604,6 +604,10 @@ function Header ({gridRef}) {
       </Toolbar>
     </>
   )
+}
+
+Header.propTypes = {
+  gridRef: PropTypes.object.isRequired
 }
 
 export default Header

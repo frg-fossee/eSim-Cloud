@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -38,7 +39,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents, fetchGallery } from '../../redux/actions/index'
+import { fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents, fetchGallery, setSchXmlData, saveSchematic } from '../../redux/actions/index'
 import { blue } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
 import Tabs from '@material-ui/core/Tabs'
@@ -48,8 +49,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
 import { fetchRole } from '../../redux/actions/authActions'
 import Canvg from 'canvg'
-import {Save} from './Helper/ToolbarTools'
-import {setSchXmlData, saveSchematic,setSchTitle, openLocalSch, saveToGallery } from '../../redux/actions/index'
+import { Save } from './Helper/ToolbarTools'
+
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
 })
@@ -128,9 +129,9 @@ const useStyles = makeStyles((theme) => ({
     color: 'white'
   },
   flex_container: {
-    display: "flex",
-    justifyContent: 'space-evenly',
-  },
+    display: 'flex',
+    justifyContent: 'space-evenly'
+  }
 }))
 
 // Screen to display information about as keyboard shortcuts, units table and simulation modes
@@ -450,9 +451,8 @@ ImageExportDialog.propTypes = {
   open: PropTypes.bool.isRequired
 }
 
-
 //  home button dialog
-export function HomeDialog ({ open , gridRef, onClose, schSave}) {
+export function HomeDialog ({ open, gridRef, onClose, schSave }) {
   const classes = useStyles()
   // const abc = schSave
   const dispatch = useDispatch()
@@ -462,11 +462,9 @@ export function HomeDialog ({ open , gridRef, onClose, schSave}) {
     // dispatch(setSchTitle(abc.title))
   }, [dispatch])
 
-  const schSavereduc = useSelector(state => state.saveSchematicReducer)
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
-  
+
   const handleClose = () => {
-    open = false
     onClose('')
   }
 
@@ -557,14 +555,12 @@ export function HomeDialog ({ open , gridRef, onClose, schSave}) {
     })
   }
 
-
   // handle Save Schematic onCloud
   const handleSchSave = () => {
     if (auth.isAuthenticated !== true) {
       setMessage('You are not Logged In')
       // handleClose()
       handleSnacClick()
-
     } else {
       const xml = Save()
       dispatch(setSchXmlData(xml))
@@ -582,17 +578,15 @@ export function HomeDialog ({ open , gridRef, onClose, schSave}) {
     <Dialog onClose={handleClose} aria-labelledby="image-export-dialog-title" open={open}>
       <DialogTitle id="image-export-dialog-title">Save changes to the untitled circuit? Your changes will be lost if you do not save it.</DialogTitle>
       <DialogContent className={classes.flex_container} >
-        <div>
-      <Button variant="contained" color="primary" size="large" onClick={handleSchSave} >
+        <Button variant="contained" color="primary" size="large" onClick={handleSchSave} >
               Save
         </Button>
-        <Button variant="contained" color="primary" size="large"  onClick={() => { window.open(homeURL, '_self') }}>
+        <Button variant="contained" color="primary" size="large" onClick={() => { window.open(homeURL, '_self') }}>
               Dont Save
         </Button>
         <Button variant="contained" className={classes.delete} size="large" onClick={handleClose}>
               Cancel
-          </Button>
-          </div>
+        </Button>
       </DialogContent>
       <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
     </Dialog>
@@ -603,6 +597,7 @@ HomeDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   gridRef: PropTypes.object.isRequired,
+  schSave: PropTypes.object.isRequired
 }
 
 // Dialog box to open saved Schematics
