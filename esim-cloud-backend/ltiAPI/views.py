@@ -335,6 +335,7 @@ class LTIPostGrade(APIView):
                         "score": score,
                         "given": sim.result,
                         "comparison_result": comparison_result,
+                        "sim_params": consumer.sim_params,
                     }
                 else:
                     response_data = {
@@ -362,8 +363,8 @@ class GetLTISubmission(APIView):
             model_schematic__save_id=save_id,
             model_schematic__branch=branch,
             model_schematic__version=version)
-        print(consumer)
+        # print(consumer)
         submissions = consumer.submission_set.all()
-        print(submissions)
+        # print(submissions)
         serialized = GetSubmissionsSerializer(submissions, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)

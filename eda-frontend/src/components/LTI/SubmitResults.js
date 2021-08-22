@@ -8,12 +8,14 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Tooltip
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import CancelIcon from "@material-ui/icons/Cancel";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CloseIcon from "@material-ui/icons/Close";
+import AdjustIcon from '@material-ui/icons/Adjust';
 import CompareGraph from "./CompareGraph";
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: 'left',
     backgroundColor: '#404040',
     color: '#fff'
   }
@@ -33,17 +35,29 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 function SubmitResults({ show, setResults, results }) {
+  console.log(results)
   const classes = useStyles();
   const showIcons = (item) => {
-    if (
-      results.comparison_result === "Same Values" ||
-      results.comparison_result.same.includes(item)
-    ) {
-      return <CheckCircleIcon />;
-    } else {
-      return <CancelIcon />;
+    if (results.sim_params.includes(item)) {
+      if (
+        results.comparison_result === "Same Values" ||
+        results.comparison_result.same.includes(item)
+      ) {
+        return <Tooltip title="Correct">
+          <CheckCircleIcon />
+        </Tooltip>
+      } else {
+        return <Tooltip title="Wrong">
+          <CancelIcon />
+        </Tooltip>
+      }
     }
-  };
+    else {
+      return <Tooltip title="Not Graded">
+        <AdjustIcon />
+      </Tooltip>
+    }
+  }
   return (
     <Dialog
       open={show}
@@ -64,13 +78,13 @@ function SubmitResults({ show, setResults, results }) {
         </Toolbar>
       </AppBar>
       <Grid container>
-        <Grid item xs={6}>
-          <h3>Your Score: {results.score}</h3>
+        <Grid item xs={12}>
+          <h1 style={{ textAlign: 'center' }}>Your Score: {results.score} /1 </h1>
           {/* <h2>Teacher Values</h2> */}
         </Grid>
         {results.expected && results.given.graph !== "true" && (
           <>
-            <Grid item xs={5}>
+            <Grid item xs={5} style={{ padding: '2%' }}>
               <h2>Teacher's values:</h2>
               {results.expected.data.map((ele, index) => (
                 <Paper class={classes.paper} key={ele}>
@@ -86,15 +100,21 @@ function SubmitResults({ show, setResults, results }) {
         <Grid
           item
           xs={results.expected && results.given.graph !== "true" ? 5 : 12}
+          style={{ padding: '2%' }}
         >
           {results.given && results.given.graph !== "true" ? (
             <>
               <h2>Your Submission Values: </h2>
               {results.given.data.map((ele, index) => (
                 <Paper class={classes.paper} key={ele}>
-                  {showIcons(ele[0])}
-                  <Typography>
-                    {index + 1}. {ele[0]} : {ele[2]}
+                  <Typography style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                  }}
+                  >
+                    {showIcons(ele[0])}
+                    <p style={{ marginLeft: '2%' }}>{index + 1}. {ele[0]} : {ele[2]}</p>
                   </Typography>
                 </Paper>
               ))}
@@ -104,7 +124,7 @@ function SubmitResults({ show, setResults, results }) {
           )}
         </Grid>
       </Grid>
-    </Dialog>
+    </Dialog >
   );
 }
 

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import lticonsumer, ltiSession, Submission
 from saveAPI.serializers import SaveListSerializer
 from django.contrib.auth import get_user_model
+from simulationAPI.serializers import simulationSerializer
 
 
 class consumerSerializer(serializers.ModelSerializer):
@@ -69,8 +70,10 @@ class GetSubmissionsSerializer(serializers.ModelSerializer):
     ltisession = GetSessionSerializer(many=False)
     schematic = SaveListSerializer(many=False)
     student = GetSubmissionUserSerializer(many=False)
+    student_simulation = simulationSerializer()
 
     class Meta:
         model = Submission
         fields = ["schematic", "student", "project",
-                  "score", "lms_success", "ltisession"]
+                  "score", "lms_success", "ltisession",
+                  "student_simulation"]
