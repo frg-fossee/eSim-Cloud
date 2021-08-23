@@ -262,7 +262,7 @@ class LTIAuthView(APIView):
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-    
+
         protocol = 'https://' if request.is_secure() else 'http://'
         next_url = protocol + host + "/eda/#editor?id=" + \
                    str(i.initial_schematic.save_id) + "&branch=" \
