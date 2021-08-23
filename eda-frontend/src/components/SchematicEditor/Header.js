@@ -115,13 +115,14 @@ function Header (props) {
   const [ltiId, setLtiId] = React.useState(null)
   const [ltiNonce, setLtiNonce] = React.useState(null)
 
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
-  // Checks for localStore changes
+  // Checks for localStore changess
   useEffect(() => {
     function checkUserData () {
       const userToken = localStorage.getItem('esim_token')
@@ -174,7 +175,7 @@ function Header (props) {
     dispatch(setSchTitle(`${e.target.value}`))
   }
 
-  // handel notification snackbar open and close with message
+  // handle notification snackbar open and close with message
   const [snacOpen, setSnacOpen] = React.useState(false)
   const [message, setMessage] = React.useState('')
 
@@ -189,7 +190,7 @@ function Header (props) {
     setSnacOpen(false)
   }
 
-  // handel schematic Share Dialog box
+  // handle schematic Share Dialog box
   const [openShare, setShareOpen] = React.useState(false)
 
   const handleShareOpen = () => {
@@ -232,7 +233,7 @@ function Header (props) {
     }
   }
 
-  // handel display format of last saved status
+  // handle display format of last saved status
   function getDate (jsonDate) {
     const json = jsonDate
     const date = new Date(json)
@@ -241,7 +242,7 @@ function Header (props) {
     return `${day} ${month} ${hour}:${minute}:${second}`
   }
 
-  // handel Copy Share Url
+  // handle Copy Share Url
   const textAreaRef = React.useRef(null)
 
   function copyToClipboard (e) {
@@ -425,18 +426,112 @@ function Header (props) {
         {/* Display login option or user menu as per authenticated status */}
         {(!ltiId || !ltiNonce) &&
           (!auth.isAuthenticated
-            ? <Button
-              size="small"
-              component={RouterLink}
-              to="/login?close=close"
-              style={{ marginLeft: 'auto' }}
-              color="primary"
-              variant="outlined"
-              target="_blank"
-            >
+            ? <>
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={() => { window.open(homeURL, '_self') }}
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginLeft: '61%', marginRight: '20px' }}
+              >
+                Home
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/gallery"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator/ngspice"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Simulator
+              </Link>
+              <Button
+                size="small"
+                component={RouterLink}
+                to="/login?close=close"
+                style={{ marginLeft: 'auto' }}
+                color="primary"
+                variant="outlined"
+                target="_blank"
+              >
               Login
-            </Button>
+              </Button>
+            </>
             : (<>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={() => { window.open(homeURL, '_self') }}
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginRight: '20px' }}
+              >
+                Home
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/gallery"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/simulator/ngspice"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Simulator
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/dashboard"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Dashboard
+              </Link>
 
               <IconButton
                 edge="start"
@@ -444,6 +539,7 @@ function Header (props) {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 onClick={handleClick}
+                style={{ marginRight: '20px' }}
               >
                 <Avatar className={classes.purple}>
                   {auth.user.username.charAt(0).toUpperCase()}
