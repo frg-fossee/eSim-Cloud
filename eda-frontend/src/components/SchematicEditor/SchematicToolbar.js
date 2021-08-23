@@ -743,7 +743,7 @@ export default function SchematicToolbar ({
       {(!ltiId || !ltiNonce) && <OpenSchDialog
         open={schOpen}
         close={handleSchDialClose}
-        openLocal={handelLocalSchOpen}
+        openLocal={handleLocalSchOpen}
         openKicad={handleKicadFileUpload}
       />}
       {(!ltiId || !ltiNonce) && <Tooltip title="Save (Ctrl + S)">
@@ -751,7 +751,7 @@ export default function SchematicToolbar ({
           color="inherit"
           className={classes.tools}
           size="small"
-          onClick={handelSchSave}
+          onClick={handleSchSave}
         >
           <SaveOutlinedIcon fontSize="small" />
         </IconButton>
@@ -813,7 +813,7 @@ export default function SchematicToolbar ({
           color="inherit"
           className={classes.tools}
           size="small"
-          onClick={handelLocalSchSave}
+          onClick={handleLocalSchSave}
         >
           <SystemUpdateAltOutlinedIcon fontSize="small" />
         </IconButton>
