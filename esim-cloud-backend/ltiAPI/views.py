@@ -42,7 +42,8 @@ class LTIExist(APIView):
             instance=consumer.initial_schematic)
         model_sch_serialized = StateSaveSerializer(
             instance=consumer.model_schematic)
-        config_url = "http://" + host + "/api/lti/auth/" + save_id + "/"
+        protocol = 'https://' if request.is_secure() else 'http://'
+        config_url = protocol + host + "/api/lti/auth/" + save_id + "/"
         response_data = {
             "consumer_key": consumer.consumer_key,
             "secret_key": consumer.secret_key,
@@ -94,7 +95,8 @@ class LTIBuildApp(APIView):
                 saved_state.shared = True
                 saved_state.save()
                 host = request.get_host()
-                url = "http://" + host + "/api/lti/auth/" + \
+                protocol = 'https://' if request.is_secure() else 'http://'
+                url = protocol + host + "/api/lti/auth/" + \
                     str(saved_state.save_id) + "/"
                 response_data = {
                     "consumer_key": serialized.data.get('consumer_key'),
@@ -143,7 +145,8 @@ class LTIUpdateAPP(APIView):
             except simulation.DoesNotExist:
                 sim = None
             host = request.get_host()
-            url = "http://" + host + "/api/lti/auth/" + \
+            protocol = 'https://' if request.is_secure() else 'http://'
+            url = protocol + host + "/api/lti/auth/" + \
                 str(consumer.model_schematic.save_id) + "/"
             consumer.consumer_key = serialized.data.get('consumer_key')
             consumer.secret_key = serialized.data.get('secret_key')
@@ -259,8 +262,9 @@ class LTIAuthView(APIView):
         except lticonsumer.DoesNotExist:
             print("Consumer does not exist on backend")
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
-        print(i.initial_schematic.save_id)
-        next_url = "http://" + host + "/eda/#editor?id=" + \
+    
+        protocol = 'https://' if request.is_secure() else 'http://'
+        next_url = protocol + host + "/eda/#editor?id=" + \
                    str(i.initial_schematic.save_id) + "&branch=" \
                    + str(i.initial_schematic.branch) + "&version=" \
                    + str(i.initial_schematic.version) \
