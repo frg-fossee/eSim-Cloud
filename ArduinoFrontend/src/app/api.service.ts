@@ -307,10 +307,10 @@ export class ApiService {
       headers: new HttpHeaders({
         Authorization: `Token ${token}`
       })
-    }).subscribe(() => { 
+    }).subscribe(() => {
       this.isAuthenticated.next(false);
       Login.logout();
-     }, (e) => { console.log(e); });
+    }, (e) => { console.log(e); });
   }
   /**
    * Specific User Role.

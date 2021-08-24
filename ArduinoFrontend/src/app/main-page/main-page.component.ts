@@ -45,7 +45,7 @@ export class MainPageComponent implements OnInit {
    * Message shown to user if something happens while fetching online circuits
    */
   onCloudMessage = 'No Online Circuits Available  &#9785;';
-  /** 
+  /**
    * Variable to tell if it is production build
    */
   isProd = environment.production;
@@ -77,9 +77,8 @@ export class MainPageComponent implements OnInit {
    * Username  of register user.
    */
   username = '';
-
   /**
-   * Search text of search box 
+   * Search text of search box
    */
   searchText = '';
 
@@ -169,14 +168,14 @@ export class MainPageComponent implements OnInit {
    */
   checkUrl() {
     this.aroute.params.subscribe((params: any) => {
-      if (params.id == 'temp') {
+      if (params.id === 'temp') {
         this.isTempCircuit = true;
         this.isCloudCircuit = false;
       } else {
         this.isTempCircuit = false;
         this.isCloudCircuit = true;
       }
-    })
+    });
   }
   /**
    * Getting User Information.

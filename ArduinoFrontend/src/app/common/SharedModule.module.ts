@@ -9,7 +9,7 @@ import { MaterialModule } from './material.module';
         CommonModule,
         RouterModule,
         MaterialModule
-     ],
+    ],
     declarations: [
         HeaderComponent
     ],
@@ -17,4 +17,4 @@ import { MaterialModule } from './material.module';
         HeaderComponent
     ]
 })
-export class SharedModule {}
+export class SharedModule { }

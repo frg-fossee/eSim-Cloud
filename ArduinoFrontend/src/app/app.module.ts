@@ -69,7 +69,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     SaveProjectDialogComponent,
     VersioningPanelComponent,
     CreateVariationDialogComponent,
-    
+
   ],
   imports: [
     BrowserModule,
@@ -80,7 +80,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     MaterialModule,
     HttpClientModule,
     ReactiveFormsModule,
-    SharedModule   //shared module for Header component
+    SharedModule   // shared module for Header component
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],

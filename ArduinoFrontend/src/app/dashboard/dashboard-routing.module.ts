@@ -12,7 +12,7 @@ const routes: Routes = [
         children: [
             {
                 path: '',
-                component:MainPageComponent
+                component: MainPageComponent
 
             },
             {
@@ -20,8 +20,8 @@ const routes: Routes = [
                 component: GalleryComponent
             },
             {
-                path :'mainpage/:id',
-                component:MainPageComponent
+                path: 'mainpage/:id',
+                component: MainPageComponent
             }
         ]
     },

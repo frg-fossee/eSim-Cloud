@@ -83,14 +83,12 @@ export class HeaderComponent implements OnInit, OnDestroy {
   stateChangeUserInfo() {
     // Get Login Token
     this.subscription = this.api.isAuthenticated.subscribe((res: boolean) => {
-      if (res == true) {
+      if (res === true) {
         this.getUserInfo();
       } else {
         this.username = undefined;
       }
-
-    })
-
+    });
   }
 
   getUserInfo() {

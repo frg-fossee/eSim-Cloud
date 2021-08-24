@@ -43,9 +43,10 @@ export class SidePanelComponent implements OnInit {
       this.readRoles(this.token);
     });
   }
+
   /**
- * Getting User Information.
- */
+   * Getting User Information.
+   */
   userInfo(token) {
 
     // If token is available then get username
