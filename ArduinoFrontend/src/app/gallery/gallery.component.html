@@ -1,7 +1,9 @@
-<app-header title="Gallery"></app-header>
+<!-- <app-header title="Gallery"></app-header> -->
 
+<mat-sidenav-container class="example-container" autosize>
+<app-side-panel (onCloudEvent)="onCloudClick($event)" (onTempEvent)="onTempCircuitClick($event)"></app-side-panel>
 <!--close header-->
-<div id="main">
+<div id="main" style="margin-left: 240px;">
   <!-- <h5 style="margin:1em;font-family: monospace;font-weight: 900;font-size: 30px">Gallery</h5> -->
   <mat-tab-group style="width: 100%;display: flex;">
     <mat-tab label="Experiments">
@@ -34,3 +36,4 @@
   </mat-tab-group>
 
 </div>
+</mat-sidenav-container>  

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 import { Login } from './Libs/Login';
 import { ActivatedRoute } from '@angular/router';
@@ -23,6 +23,9 @@ export class ApiService {
    * Constructor for api
    * @param http For http request & response
    */
+
+  isAuthenticated = new Subject<boolean>();
+
   constructor(
     private http: HttpClient,
     public aroute: ActivatedRoute
@@ -78,11 +81,11 @@ export class ApiService {
     });
   }
 
- /**
-  * Save Project to Gallery
-  * @param data The Project gallery data
-  * @param token Auth Token
-  */
+  /**
+   * Save Project to Gallery
+   * @param data The Project gallery data
+   * @param token Auth Token
+   */
   saveProjectToGallery(data: any, token: string) {
     return this.http.post(`${this.url}api/save/gallery/` + data.save_id, data, {
       headers: new HttpHeaders({
@@ -282,8 +285,10 @@ export class ApiService {
         this.aroute.queryParams.subscribe((paramData: any) => {
           if (paramData.token != null) {
             localStorage.setItem('esim_token', paramData.token);
+            this.isAuthenticated.next(true);
             reslove(1);
           } else if (Login.getToken()) {
+            this.isAuthenticated.next(true);
             reslove(1);
           }
         });
@@ -302,7 +307,10 @@ export class ApiService {
       headers: new HttpHeaders({
         Authorization: `Token ${token}`
       })
-    }).subscribe(() => { Login.logout(); }, (e) => { console.log(e); });
+    }).subscribe(() => { 
+      this.isAuthenticated.next(false);
+      Login.logout();
+     }, (e) => { console.log(e); });
   }
   /**
    * Specific User Role.

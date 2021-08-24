@@ -98,13 +98,16 @@ button:hover {
 /* Avatar image */
 /* avatar  */
 .circles {
-  height: 50px;
-  width: 50px;
+  height: 40px;
+  width: 40px;
   border-radius: 50%;
   background: #673ab7;
   border: 2px solid #fff;
   text-align: center;
-  line-height: 48px;
+  line-height: 39px;
   margin-right: 1rem;
   color: white;
+}
+.mat-drawer-content {
+  position:initial !important;
 }
