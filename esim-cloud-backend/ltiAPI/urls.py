@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^denied/$', views.denied, name="denied"),
     path('exist/<uuid:save_id>/', views.LTIExist.as_view()),
     path('delete/<int:id>/', views.LTIDeleteApp.as_view()),
-    path('submissions/<str:consumer_key>/', views.GetLTISubmission.as_view()),
+    path('submissions/<str:save_id>/<str:version>/<str:branch>',
+         views.GetLTISubmission.as_view()),
     path('exists/', views.LTIAllConsumers.as_view())
 ]
