@@ -26,7 +26,7 @@ export class ApiService {
   ) {
   }
   /**
-   * Get Http Headers
+   * Get Http Headers only for those API calls where token is not mandatory
    * @param token Login Token
    * @returns Http headers as per given parameter and environment
    */
@@ -273,8 +273,8 @@ export class ApiService {
     });
   }
 
-  getSubmissions(consumerKey: string, token: string) {
-    return this.http.get(`${this.url}api/lti/submissions/${consumerKey}`, {
+  getSubmissions(id: string, branch: string, version: string, token: string) {
+    return this.http.get(`${this.url}api/lti/submissions/${id}/${version}/${branch}`, {
       headers: this.httpHeaders(token),
     })
   }

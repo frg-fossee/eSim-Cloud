@@ -1,41 +1,33 @@
-.main-form{
-	margin: 10px;
+form {
+	margin: 30px;
 }
 
-.field-group{
-	width: 100%;
-	padding: 5%;
-}
-
-.field-group > mat-form-field {
+mat-form-field {
 	width: 100%;
 }
 
-.check-box-spacing {
-	margin-left: 5px;
-	padding-bottom: 10px;
+.form-buttons {
+	padding: 10px;
 }
 
-.btn-lti {
-	margin: 20px;
-	align-self: center;
+.form-buttons > button {
+	width: 200px;
+	margin: 5px;
 }
 
-.centerize {
-	text-align: center;
+.url-error-div {
+	padding: 20px;
 }
 
-.justify {
-	text-align: justify;
+#lti-url {
+	resize: none;
+	width: 75%;
+	padding-left: 10px;
+	padding-bottom: 0px;
 }
 
-
-.image {
-	width: 562px !important;
-	height: 426px !important;
-}
-
-.card-size {
-	max-width: 600px;
-	max-height: 600px;
+#copy-button {
+	padding: 0px;
+	border-width: 0px;
+	margin: 0px;
 }

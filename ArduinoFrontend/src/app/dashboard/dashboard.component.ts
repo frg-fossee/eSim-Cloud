@@ -524,4 +524,11 @@ export class DashboardComponent implements OnInit {
     // redirect to share url
     return `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
   }
+
+  DisableLTI() {
+    const token = Login.getToken();
+    if(token) {
+      
+    }
+  }
 }

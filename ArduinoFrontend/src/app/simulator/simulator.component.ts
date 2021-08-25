@@ -107,6 +107,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   lti_nonce: string = '';
   lti_user_id: string = '';
   scored: boolean = false;
+  branch: string;
+  version: string;
 //   waveForm: ChartDataSets[] = [
 //     { data: [], label: "Waveform", fill: true }
 //   ];
@@ -214,21 +216,32 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.lti_id = v.lti_id;
         this.lti_nonce = v.lti_nonce;
         this.lti_user_id = v.lti_user_id;
+        this.branch = v.branch;
+        this.version = v.version;
         this.submitButtonVisibility = true;
         console.log(v);
         this.LoadOnlineProject(v.id, 'false');
+        // if(!v.branch && !v.version) {
+        //   this.createNewBranch({
+        //       branch: 'lti_submission',
+        //       version: this.getRandomString(20),
+        //   });
+        // } else {
+        //   this.LoadOnlineProject(v.id, 'false');
+        // }
       } else if (v.id) {
         this.projectId = v.id;
         this.LoadOnlineProject(v.id, v.offline);
-        this.api.existLTIURL(v.id, this.token).subscribe(res => {
-          this.lti_id = res['lti_id']
-          this.lti_nonce = res['lti_nonce']
-          this.lti_user_id = res['lti_user_id']
-          this.submitButtonVisibility = true;
-        }, err => {
-          console.log(err);
-          this.submitButtonVisibility = false;
-        });
+        // this.api.existLTIURL(v.id, this.token).subscribe(res => {
+        //   this.lti_id = res['lti_id'];
+        //   this.lti_nonce = res['lti_nonce'];
+        //   this.lti_user_id = res['lti_user_id'];
+        //   this.submitButtonVisibility = true;
+        // }, err => {
+        //   console.log(err);
+        //   this.submitButtonVisibility = false;
+        // });
+        this.submitButtonVisibility = false;
       }
       console.log(this.projectId);
     });
@@ -891,9 +904,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  submitCircuit() {
+  SaveLTISubmission() {
     const token = Login.getToken();
-    SaveOnline.Save(this.projectTitle, this.description, this.api, "", "", (out) => {
+    this.branch = this.branch ? this.branch: 'master';
+    this.version = this.getRandomString(20);
+    SaveOnline.Save(this.projectTitle, this.description, this.api, this.branch, this.version, (out) => {
       this.projectId = out.save_id;
       console.log(this.projectId);
       const data = {
@@ -902,27 +917,31 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           id: this.lti_id,
           user_id: this.lti_user_id,
           oauth_nonce: this.lti_nonce,
-        }
+        },
+        student_simulation: null,
       }
       this.api.submitCircuit(token, data).subscribe(res => {
         AlertService.showAlert(res['message']);
-        // this.submissionsUpdated.emit()
-        // add new query parameters
-        this.router.navigate(
-          [],
-          {
-            relativeTo: this.aroute,
-            queryParams: {
-              id: out.save_id,
-              lti_id: this.lti_id,
-              lti_user_id: this.lti_user_id,
-              lti_nonce: this.lti_nonce,
-              online: true,
-              offline: false,
-              gallery: null
-            },
-            queryParamsHandling: 'merge'
-          });
+          // add new query parameters
+          this.router.navigate(
+            [],
+            {
+              relativeTo: this.aroute,
+              queryParams: {
+                id: out.save_id,
+                lti_id: this.lti_id,
+                lti_user_id: this.lti_user_id,
+                lti_nonce: this.lti_nonce,
+                branch: this.branch,
+                version: this.version,
+                online: true,
+                offline: false,
+                gallery: null
+              },
+              queryParamsHandling: 'merge'
+            }
+          );
+        return;
       }, err => {
         AlertService.showAlert(err['message']);
         console.log(err);

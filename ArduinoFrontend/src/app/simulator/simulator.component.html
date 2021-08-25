@@ -209,13 +209,13 @@
   <span class="pipe">|</span>
 
   <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
-    style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+    style="align-items: center;background: transparent;" (click)="autoLayout()"><i
       style="font-size: 20px;color: black;"
       [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
   <span class="pipe" *ngIf="submitButtonVisibility">|</span>
 
-  <button mat-raised-button color="primary" class="mt-1 ripple" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="submitCircuit()">
+  <button mat-raised-button color="primary" class="mt-1" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="SaveLTISubmission()">
     <i style="color: #000;" class="fas fa-paper-plane"></i>
     <span style="color: #000;">
       Submit

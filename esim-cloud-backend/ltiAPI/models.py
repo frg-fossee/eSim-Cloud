@@ -53,7 +53,7 @@ class Submission(models.Model):
         to=ltiSession, on_delete=models.CASCADE, null=True)
     schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE)
     student_simulation = models.ForeignKey(to=simulation,
-                                           on_delete=models.CASCADE)
+                                           on_delete=models.CASCADE, null=True)
     lms_success = models.BooleanField(null=True)
 
     def __str__(self):

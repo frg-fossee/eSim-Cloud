@@ -311,12 +311,19 @@ class LTIPostGrade(APIView):
                 "error": "No LTI session exists for this ID"
             }, status=status.HTTP_400_BAD_REQUEST)
         consumer = lticonsumer.objects.get(id=lti_session.lti_consumer.id)
-        sim = simulation.objects.get(id=request.data['student_simulation'])
+        try:
+            sim = simulation.objects.get(id=request.data['student_simulation'])
+        except simulation.DoesNotExist:
+            sim = None
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
         schematic.save()
-        score, comparison_result = process_submission(
-            consumer.test_case.result, sim.result, consumer.sim_params)
+        if(sim):
+            score, comparison_result = process_submission(
+                consumer.test_case.result, sim.result, consumer.sim_params)
+        else:
+            score = consumer.score
+            comparison_result = None
         submission_data = {
             "project": consumer,
             "student": schematic.owner,
@@ -346,7 +353,7 @@ class LTIPostGrade(APIView):
                     response_data = {
                         "message": msg,
                         "score": score,
-                        "given": sim.result,
+                        "given": sim.result if sim else None,
                         "comparison_result": comparison_result,
                         "sim_params": consumer.sim_params,
                     }
@@ -355,7 +362,7 @@ class LTIPostGrade(APIView):
                         "message": msg,
                         "score": score,
                         "expected": consumer.test_case.result,
-                        "given": sim.result,
+                        "given": sim.result if sim else None,
                         "comparison_result": comparison_result,
                         "sim_params": consumer.sim_params,
                     }

@@ -93,6 +93,8 @@
       <h2 style="margin-left: 1%">{{selected.name}}</h2>
       <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
         (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;&#10006;</button>
+      <button *ngIf="selected.lti_id" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
+        (click)="DisableLTI(selected)">LTI</button>
 
       <button class="ml-auto"
         style="position: relative; padding-top: 10px;background-color: transparent; border: none;font-size: 2.2em;font-weight: 400;"
@@ -120,7 +122,10 @@
           <button mat-raised-button color="primary" class="col-md-3"
             (click)="ExportCircuit(selected.save_id, selected.offline)">Export Circuit</button>
           <button mat-raised-button color="primary" class="col-md-3" *ngIf="!selected.offline" 
-            [routerLink]="['/lti']" [queryParams]="{id: selected.save_id, branch: selected.branch, version: selected.version, lti: selected.lti_id}">Create LTI App</button>
+            [routerLink]="['/lti']" [queryParams]="{id: selected.save_id, branch: selected.branch, version: selected.version, lti: selected.lti_id}">
+            <span *ngIf="selected.lti_id">Update LTI App</span>
+            <span *ngIf="!selected.lti_id">Create LTI App</span>
+          </button>
         </div>
 
         <div class="act-desc">
