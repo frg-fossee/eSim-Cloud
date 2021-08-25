@@ -20,9 +20,9 @@ import { DashboardComponent } from './dashboard.component';
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         MaterialModule,
         SharedModule,
-        ReactiveFormsModule,
         DashboardRoutingModule
     ],
 
