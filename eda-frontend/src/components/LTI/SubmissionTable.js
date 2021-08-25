@@ -188,6 +188,7 @@ export default function SubmissionTable () {
                 <TableCell align="center">Score</TableCell>
                 <TableCell align="center">Submission Circuit</TableCell>
                 <TableCell align="center">Submission Simulation</TableCell>
+                <TableCell align="center">Teacher Simulation</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -210,7 +211,11 @@ export default function SubmissionTable () {
                       Open Simulation Result
                     </Button>
                   </TableCell>
-
+                  <TableCell align="center">
+                    <Button disableElevation variant="contained" color="primary" onClick={() => handleSimOpen(student.project.test_case)}>
+                      Open Teacher Simulation
+                    </Button>
+                  </TableCell>
                 </TableRow>
               }
               )}
