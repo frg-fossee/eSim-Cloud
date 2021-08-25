@@ -75,11 +75,11 @@ const monacoConfig: NgxMonacoEditorConfig = {
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     MonacoEditorModule.forRoot(monacoConfig),
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
-    ReactiveFormsModule,
     SharedModule   // shared module for Header component
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],

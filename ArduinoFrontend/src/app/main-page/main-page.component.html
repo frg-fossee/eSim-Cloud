@@ -14,7 +14,7 @@
   <form class="form-inline" (submit)="SearchCircuits(searchBox)">
     <div>
       <input type="text" #searchBox style="width: 570px;" [(ngModel)]="searchText" name="search"
-        class="form-control" id="Search" placeholder="Search">
+        class="form-control" value="" id="Search" placeholder="Search">
     </div>
     <button type="submit" class=" btn btn-primary"><i class="fa fa-search"></i></button>
   </form>
