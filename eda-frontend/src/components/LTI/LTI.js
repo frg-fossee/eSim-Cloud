@@ -80,9 +80,24 @@ export default function LTIConfig () {
   const [submitMessage, setSubmitMessage] = React.useState('')
   const [activeSim, setActiveSim] = React.useState(null)
   const [simParam, setSimParam] = React.useState([])
+  const [graphSimParams, setGraphSimParams] = React.useState([])
 
   useEffect(() => {
-    console.log(activeSim)
+    if (activeSim) {
+      var arr = []
+      if (activeSim.result.graph === 'true') {
+        // eslint-disable-next-line
+        activeSim.result.data.map((i) => {
+          // eslint-disable-next-line
+          i.labels.map((params) => {
+            if (!arr.includes(params)) {
+              arr.push(params)
+            }
+          })
+        })
+      }
+      setGraphSimParams(arr)
+    }
   }, [activeSim])
 
   useEffect(() => {
@@ -107,6 +122,15 @@ export default function LTIConfig () {
     })
     // eslint-disable-next-line
   }, [])
+
+  useEffect(() => {
+    if (historyId !== 'None' && history !== []) {
+      var temp = history.find(ele => ele.id === historyId)
+      console.log('CHANGING ACTIVE SIM')
+      setActiveSim(temp)
+    }
+    // eslint-disable-next-line
+  }, [history, historyId])
 
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
@@ -134,6 +158,7 @@ export default function LTIConfig () {
           id: res.data.id
         })
       setSchematic(`${res.data.model_schematic.version}-${res.data.model_schematic.branch}`)
+      setSimParam(res.data.sim_params)
       if (res.data.test_case === null) {
         setHistoryId('None')
       } else {
@@ -189,7 +214,8 @@ export default function LTIConfig () {
       score: score,
       initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
-      scored: ltiDetails.scored
+      scored: ltiDetails.scored,
+      sim_params: simParam
     }
     console.log(body)
     api.post('lti/build/', body)
@@ -230,6 +256,7 @@ export default function LTIConfig () {
           id: ''
         })
         setHistoryId('')
+        setSimParam([])
       })
       .catch(error => console.log(error))
   }
@@ -266,14 +293,9 @@ export default function LTIConfig () {
   }
 
   const handleChangeSim = (e) => {
-    if (e.target.value === 'None') {
-      setLTIDetails({ ...ltiDetails, testCase: null })
-    } else {
-      setLTIDetails({ ...ltiDetails, testCase: e.target.value })
-      var temp = history.find(ele => ele.id === e.target.value)
-      setActiveSim(temp)
-    }
+    setLTIDetails({ ...ltiDetails, testCase: e.target.value })
     setHistoryId(e.target.value)
+    setSimParam([])
   }
 
   const handleSimParamChange = (event) => {
@@ -295,7 +317,8 @@ export default function LTIConfig () {
       initial_schematic: ltiDetails.modelSchematic.id,
       test_case: ltiDetails.testCase,
       scored: ltiDetails.scored,
-      id: ltiDetails.id
+      id: ltiDetails.id,
+      sim_params: simParam
     }
     console.log(body)
     api.post('lti/update/', body)
@@ -390,7 +413,7 @@ export default function LTIConfig () {
                 className={classes.selectEmpty}
                 inputProps={{ readOnly: !ltiDetails.scored }}
               >
-                <MenuItem value="None">
+                <MenuItem value={null}>
                   None
                 </MenuItem>
                 {history.map(sim => {
@@ -417,9 +440,19 @@ export default function LTIConfig () {
                   </div>
                 )}
               >
-                {activeSim.result.data.map(params => {
-                  return <MenuItem key={params[0]} value={params[0]}>{params[0]}</MenuItem>
-                })}
+                {activeSim.result.graph === 'true'
+                  ? graphSimParams.map((params) => {
+                    return (
+                      <MenuItem key={`${params}-${Math.random()}`} value={params}>{params}</MenuItem>
+                    )
+                  })
+                  : activeSim.result.data.map((params) => {
+                    return (
+                      <MenuItem key={params[0]} value={params[0]}>
+                        {params[0]}
+                      </MenuItem>
+                    )
+                  })}
               </Select>}
             </FormControl>}
             <FormControlLabel
@@ -449,7 +482,7 @@ export default function LTIConfig () {
               disableElevation
               color="primary"
               variant="contained"
-              href={`#/submission?consumer_key=${ltiDetails.consumerKey}`}
+              href={`#/submission?id=${ltiDetails.modelSchematic.save_id}&version=${ltiDetails.modelSchematic.version}&branch=${ltiDetails.modelSchematic.branch}`}
             >
               Submissions
             </Button>}
