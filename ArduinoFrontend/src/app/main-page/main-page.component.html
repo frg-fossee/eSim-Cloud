@@ -11,12 +11,12 @@
     <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file"
       (change)="ImportCircuit($event)" hidden /><br />
   </div>
-  <form class="form-inline" (submit)="SearchCircuits(searchBox)">
+  <form class="form-inline" >
     <div>
-      <input type="text" #searchBox style="width: 570px;" [(ngModel)]="searchText" name="search"
+      <input type="text" #searchBox style="width: 570px;"  name="search"
         class="form-control" value="" id="Search" placeholder="Search">
     </div>
-    <button type="submit" class=" btn btn-primary"><i class="fa fa-search"></i></button>
+    <button type="submit" class=" btn btn-primary" (click)="SearchCircuits(searchBox)" ><i class="fa fa-search"></i></button>
   </form>
 
   
@@ -99,8 +99,7 @@
         <p>{{selected.description}}</p>
 
         <div class="row act-buttons">
-          <button mat-raised-button color="primary" class="col-md-3" [routerLink]="['/simulator']"
-            [queryParams]="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
+          <button mat-raised-button color="primary" class="col-md-3" [routerLink]="['/simulator']" [queryParams]="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
             Edit Circuit</button>
           <button mat-raised-button color="warn" class="col-md-3"
             (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>

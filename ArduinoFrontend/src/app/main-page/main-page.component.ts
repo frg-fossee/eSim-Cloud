@@ -80,7 +80,7 @@ export class MainPageComponent implements OnInit {
   /**
    * Search text of search box
    */
-  searchText = '';
+  // searchText = '';
 
   // configuration for side nav.
   @ViewChild('sidenav') sidenav: MatSidenav;
@@ -210,7 +210,7 @@ export class MainPageComponent implements OnInit {
    * Read the online saved circuits.
    */
   readOnCloudItems() {
-    this.searchText = '';
+    // this.searchText = '';
     // Get Login token
     const token = Login.getToken();
     // if token is present get the list of project created by a user
