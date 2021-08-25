@@ -99,7 +99,7 @@
         <p>{{selected.description}}</p>
 
         <div class="row act-buttons">
-          <button mat-raised-button color="primary" class="col-md-3" [routerLink]="['/simulator']" [queryParams]="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
+          <button mat-raised-button color="primary" class="col-md-3" routerLink="['/simulator']" queryParams="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
             Edit Circuit</button>
           <button mat-raised-button color="warn" class="col-md-3"
             (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
