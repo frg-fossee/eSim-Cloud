@@ -12,10 +12,10 @@ describe('SidePanelComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule,HttpClientTestingModule, MaterialModule,BrowserAnimationsModule],
-      declarations: [ SidePanelComponent ],
+      imports: [RouterTestingModule, HttpClientTestingModule, MaterialModule, BrowserAnimationsModule],
+      declarations: [SidePanelComponent],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
