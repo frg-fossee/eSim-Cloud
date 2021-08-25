@@ -305,6 +305,7 @@ class LTIPostGrade(APIView):
         sim = simulation.objects.get(id=request.data['student_simulation'])
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
+        schematic.is_submission = True
         schematic.save()
         score, comparison_result = process_submission(
             consumer.test_case.result, sim.result, consumer.sim_params)
