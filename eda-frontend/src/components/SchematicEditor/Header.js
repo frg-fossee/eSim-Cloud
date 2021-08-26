@@ -190,11 +190,11 @@ function Header ({ gridRef }) {
   // handle home dialog box
   const [homeopen, setHomeOpen] = React.useState(false)
   const [routeVal, setRouteVal] = React.useState(undefined)
-  var x = ''
+
   const handleHomeOpen = (e) => {
     e.preventDefault()
-    x = e.target.attributes.value['value']
-    setRouteVal(e.target.attributes.value['value'])
+
+    setRouteVal(e.target.attributes.value.value)
     setHomeOpen(true)
   }
 
@@ -440,7 +440,7 @@ function Header ({ gridRef }) {
               >
                 Home
               </Link>
-              
+
               {gridRef && routeVal &&
                 <HomeDialog open={homeopen} gridRef={xyz} routeVal={routeVal} schSave={schSave} onClose={handleHomeClose} />
               }
