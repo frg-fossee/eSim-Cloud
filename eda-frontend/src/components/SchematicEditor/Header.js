@@ -189,9 +189,12 @@ function Header ({ gridRef }) {
 
   // handle home dialog box
   const [homeopen, setHomeOpen] = React.useState(false)
-
+  const [routeVal, setRouteVal] = React.useState(undefined)
+  var x = ''
   const handleHomeOpen = (e) => {
     e.preventDefault()
+    x = e.target.attributes.value['value']
+    setRouteVal(e.target.attributes.value['value'])
     setHomeOpen(true)
   }
 
@@ -433,11 +436,13 @@ function Header ({ gridRef }) {
                 component={RouterLink}
                 className={classes.link}
                 style={{ marginLeft: '61%', marginRight: '20px' }}
+                value="home"
               >
                 Home
               </Link>
-              { gridRef &&
-                <HomeDialog open={homeopen} gridRef={xyz} schSave={schSave} onClose={handleHomeClose} />
+              
+              {gridRef && routeVal &&
+                <HomeDialog open={homeopen} gridRef={xyz} routeVal={routeVal} schSave={schSave} onClose={handleHomeClose} />
               }
               <Link
                 variant="button"
@@ -452,8 +457,10 @@ function Header ({ gridRef }) {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/gallery"
+                // to="/gallery"
+                onClick={handleHomeOpen}
                 component={RouterLink}
+                value="gallery"
                 style={{ marginRight: '20px' }}
 
               >
@@ -463,8 +470,9 @@ function Header ({ gridRef }) {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/simulator/ngspice"
+                onClick={handleHomeOpen}
                 component={RouterLink}
+                value="simulator/ngspice"
                 style={{ marginRight: '20px' }}
 
               >
@@ -490,12 +498,13 @@ function Header ({ gridRef }) {
                 onClick={handleHomeOpen}
                 component={RouterLink}
                 className={classes.link}
+                value="home"
                 style={{ marginRight: '20px' }}
               >
                 Home
               </Link>
-              { gridRef &&
-                <HomeDialog open={homeopen} gridRef={xyz} schSave={schSave} onClose={handleHomeClose} />
+              { gridRef && routeVal &&
+                <HomeDialog open={homeopen} gridRef={xyz} routeVal={routeVal} schSave={schSave} onClose={handleHomeClose} />
               }
               <Link
                 variant="button"
@@ -510,7 +519,9 @@ function Header ({ gridRef }) {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/gallery"
+                // to="/gallery"
+                value= "gallery"
+                onClick={handleHomeOpen}
                 component={RouterLink}
                 style={{ marginRight: '20px' }}
 
@@ -521,8 +532,9 @@ function Header ({ gridRef }) {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/simulator/ngspice"
+                onClick={handleHomeOpen}
                 component={RouterLink}
+                value="simulator/ngspice"
                 style={{ marginRight: '20px' }}
 
               >
@@ -531,7 +543,8 @@ function Header ({ gridRef }) {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/dashboard"
+                onClick={handleHomeOpen}
+                value="dashboard"
                 component={RouterLink}
                 style={{ marginRight: '20px' }}
               >
