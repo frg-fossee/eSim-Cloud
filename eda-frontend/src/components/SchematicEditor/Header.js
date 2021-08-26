@@ -32,7 +32,11 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
+
 import { HomeDialog } from './ToolbarExtension'
+
+import queryString from 'query-string'
+
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -112,13 +116,19 @@ function Header ({ gridRef }) {
   const [loginDialog, setLoginDialog] = React.useState(false)
   const [logoutConfirm, setLogoutConfirm] = React.useState(false)
   const [reloginMessage, setReloginMessage] = React.useState('')
+
+  const [ltiId, setLtiId] = React.useState(null)
+  const [ltiNonce, setLtiNonce] = React.useState(null)
+
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
+
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
-  // Checks for localStore changes
+  // Checks for localStore changess
   useEffect(() => {
     function checkUserData () {
       const userToken = localStorage.getItem('esim_token')
@@ -151,6 +161,16 @@ function Header ({ gridRef }) {
       window.removeEventListener('storage', checkUserData)
     }
   })
+
+  useEffect(() => {
+    var url = queryString.parse(window.location.href.split('editor')[1])
+    if (url.lti_id) {
+      setLtiId(url.lti_id)
+    }
+    if (url.lti_nonce) {
+      setLtiNonce(url.lti_nonce)
+    }
+  }, [])
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -426,7 +446,7 @@ function Header ({ gridRef }) {
         </Dialog>
 
         {/* Display login option or user menu as per authenticated status */}
-        {
+        {(!ltiId || !ltiNonce) &&
           (!auth.isAuthenticated
             ? <>
               <Link
@@ -614,6 +634,15 @@ function Header ({ gridRef }) {
             )
           )
         }
+        {ltiId && ltiNonce && <Typography
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={classes.toolbarTitle}
+          style={{ marginLeft: 'auto', color: 'red' }}
+        >
+          Exam
+        </Typography>}
       </Toolbar>
     </>
   )
