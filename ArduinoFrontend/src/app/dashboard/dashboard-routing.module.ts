@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { GalleryComponent } from '../gallery/gallery.component';
 import { MainPageComponent } from '../main-page/main-page.component';
 import { DashboardComponent } from './dashboard.component';
+import { SimulatorComponent } from '../simulator/simulator.component';
 
 
 const routes: Routes = [
@@ -22,9 +23,20 @@ const routes: Routes = [
             {
                 path: 'mainpage/:id',
                 component: MainPageComponent
+            },
+            {
+                path: 'simulator',
+                redirectTo: '/simulator',
+                pathMatch: 'full'
             }
+
         ]
     },
+    {
+        path: 'dashboard/simulator',
+        redirectTo: '/simulator',
+        pathMatch: 'full'
+    }
 ];
 
 @NgModule({

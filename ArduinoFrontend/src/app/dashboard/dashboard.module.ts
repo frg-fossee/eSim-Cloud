@@ -15,7 +15,7 @@ import { DashboardComponent } from './dashboard.component';
         DashboardComponent,
         GalleryComponent,
         MainPageComponent,
-        SidePanelComponent
+        SidePanelComponent,
     ],
     imports: [
         CommonModule,

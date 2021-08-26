@@ -4,22 +4,24 @@
     Arduino
     Circuits</h3>
   <div>
-    <a type="button" class="circuitBtn btn btn-primary mb-8 m-2" routerLink="['/simulator']">+ New
+    <a type="button" class="circuitBtn btn btn-primary mb-8 m-2" [routerLink]="['../simulator']"
+      routerLinkActive="router-link-active">+ New
       Circuit</a>
     <label for="importFileBTN" mat-icon-button class="circuitBtn btn btn-primary mb-8 m-2">Import
       Circuit</label>
     <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file"
       (change)="ImportCircuit($event)" hidden /><br />
   </div>
-  <form class="form-inline" >
+  <form class="form-inline">
     <div>
-      <input type="text" #searchBox style="width: 570px;"  name="search"
-        class="form-control" value="" id="Search" placeholder="Search">
+      <input type="text" #searchBox style="width: 570px;" name="search" class="form-control" value="" id="Search"
+        placeholder="Search">
     </div>
-    <button type="submit" class=" btn btn-primary" (click)="SearchCircuits(searchBox)" ><i class="fa fa-search"></i></button>
+    <button type="submit" class=" btn btn-primary" (click)="SearchCircuits(searchBox)"><i
+        class="fa fa-search"></i></button>
   </form>
 
-  
+
   <div *ngIf="online && online.length === 0 && token" class="no-search">
     <div style="cursor: pointer;display: flex;">
       <p [innerHtml]="onCloudMessage" style="margin-top:8px;margin-right: 12px;">
@@ -99,7 +101,8 @@
         <p>{{selected.description}}</p>
 
         <div class="row act-buttons">
-          <button mat-raised-button color="primary" class="col-md-3" routerLink="['/simulator']" queryParams="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
+          <button mat-raised-button color="primary" class="col-md-3" [routerLink]="['/simulator']"
+            [queryParams]="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
             Edit Circuit</button>
           <button mat-raised-button color="warn" class="col-md-3"
             (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
@@ -111,9 +114,11 @@
 
         <div class="act-desc">
           <h6>Author name: You</h6>
+          <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
           {{ ExpandDate(selected) }}
           <h6>Created At: {{selected.create}}</h6>
           <h6>Edited At: {{selected.edit}}</h6>
+          <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
         </div>
 
         <div *ngIf="!selected.offline">
@@ -143,6 +148,18 @@
         </div>
 
       </div>
+      <!--Comments
+    <hr>
+    <div style="height: 185px; width: 100%;">
+      <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
+        <h3 style="padding-left: 10px;font-weight: bolder; font-size: 22px;font-family: monospace">Comments</h3>
+        <form class="form-group">
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" style="width: 97%;"></textarea>
+        </form>
+        <button mat-raised-button disabled>Post Comment</button>
+      </div>
+    </div>
+  -->
     </div>
     <div *ngIf="!selected.offline" style="display:flex; flex-direction: column; padding: 20px; padding-bottom: 50px;">
       <p *ngIf="selected.shared">
