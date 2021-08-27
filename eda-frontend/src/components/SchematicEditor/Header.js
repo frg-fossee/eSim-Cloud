@@ -120,8 +120,6 @@ function Header ({ gridRef }) {
   const [ltiId, setLtiId] = React.useState(null)
   const [ltiNonce, setLtiNonce] = React.useState(null)
 
-  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
-
   const dispatch = useDispatch()
 
   const handleClick = (event) => {
