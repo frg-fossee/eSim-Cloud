@@ -77,7 +77,6 @@ export class SaveOnline {
       }
       // Convert Data Dump to an String and add to Save Object
       saveObj.data_dump = JSON.stringify(dataDump);
-      // console.log(saveObj);
       // Generate Thumbnail for the project
       Download.ExportImage(ImageType.PNG).then(v => {
         saveObj['base64_image'] = v; // Store the base64 image
