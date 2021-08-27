@@ -12,12 +12,10 @@
     <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file"
       (change)="ImportCircuit($event)" hidden /><br />
   </div>
-  <form class="form-inline">
     <div>
-      <input type="text" #searchBox style="width: 570px;" [(ngModel)]="circuitFilter.name" name="search"
-        class="form-control" value="" id="Search" placeholder="Search">
+      <input type="text"  style="width: 570px;" [(ngModel)]="circuitFilter.name" name="search"
+        class="form-control"   placeholder="Search">
     </div>
-  </form>
 </div>
 
 <div class="row" *ngIf="isCloudCircuit" style="margin: 1em;margin-left: 240px;">

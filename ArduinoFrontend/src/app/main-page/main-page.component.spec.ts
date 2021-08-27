@@ -3,13 +3,15 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { MainPageComponent } from './main-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MaterialModule } from '../common/material.module';
+import { FormsModule } from '@angular/forms';
+import { FilterPipeModule } from 'ngx-filter-pipe';
 describe('MainPageComponent', () => {
   let component: MainPageComponent;
   let fixture: ComponentFixture<MainPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, HttpClientTestingModule, MaterialModule],
+      imports: [RouterTestingModule, HttpClientTestingModule, MaterialModule, FormsModule, FilterPipeModule],
       declarations: [MainPageComponent]
     })
       .compileComponents();
