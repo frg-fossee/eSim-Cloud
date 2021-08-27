@@ -14,28 +14,27 @@
   </div>
   <form class="form-inline">
     <div>
-      <input type="text" #searchBox style="width: 570px;" name="search" class="form-control" value="" id="Search"
-        placeholder="Search">
+      <input type="text" #searchBox style="width: 570px;" [(ngModel)]="circuitFilter.name" name="search"
+        class="form-control" value="" id="Search" placeholder="Search">
     </div>
-    <button type="submit" class=" btn btn-primary" (click)="SearchCircuits(searchBox)"><i
-        class="fa fa-search"></i></button>
   </form>
+</div>
+
+<div class="row" *ngIf="isCloudCircuit" style="margin: 1em;margin-left: 240px;">
 
 
-  <div *ngIf="online && online.length === 0 && token" class="no-search">
+  <div *ngIf="(online | filterBy: circuitFilter).length === 0" class="no-search">
     <div style="cursor: pointer;display: flex;">
       <p [innerHtml]="onCloudMessage" style="margin-top:8px;margin-right: 12px;">
       </p>
       <!-- <mat-chip color="warn" (click)="readOnCloudItems()" style="display: flex;" selected>
-        Clear Search
-        <mat-icon style="cursor: pointer;margin-left: 12px;" mat-list-icon>close</mat-icon>
-      </mat-chip> -->
+            Clear Search
+            <mat-icon style="cursor: pointer;margin-left: 12px;" mat-list-icon>close</mat-icon>
+          </mat-chip> -->
     </div>
   </div>
-</div>
+  <div class="col-md-4" *ngFor="let item of online | filterBy:circuitFilter; let i = index">
 
-<div class="row" *ngIf="isCloudCircuit" style="margin: 1em;margin-left: 240px;">
-  <div class="col-md-4" *ngFor="let item of online; let i = index">
     <div class="subbox" (click)="openProject(i)">
       <div>
         <div style="width: 100%;  background-color: #e8e8e8;">

@@ -2,6 +2,7 @@ import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/c
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FilterPipeModule } from 'ngx-filter-pipe';
 import { MaterialModule } from '../common/material.module';
 import { SharedModule } from '../common/SharedModule.module';
 import { GalleryComponent } from '../gallery/gallery.component';
@@ -24,7 +25,8 @@ import { DashboardComponent } from './dashboard.component';
         MaterialModule,
         SharedModule,
         HttpClientModule,
-        DashboardRoutingModule
+        FilterPipeModule,
+        DashboardRoutingModule,
     ],
 
     exports: []

@@ -37,10 +37,12 @@ export class MainPageComponent implements OnInit {
    * List of Online Circuits
    */
   online: any[] = [];
+
   /**
-   * List of Search circuit
+   * List of Search circuit name
    */
-  searchCircuit: any[] = [];
+  circuitFilter: any = { name: '' };
+
   /**
    * Message shown to user if something happens while fetching online circuits
    */
@@ -338,31 +340,7 @@ export class MainPageComponent implements OnInit {
     item.create = moment(item.create_time).format('LLLL');
     item.edit = moment(item.save_time).format('LLLL');
   }
-  /**
-   * Search Circuit from cloud
-   * @param input Html Input Box
-   */
-  SearchCircuits(input: HTMLInputElement) {
-    const token = Login.getToken();
-    if (token) {
-      if (input.value === '') {
-        this.api.listProject(token).subscribe((val: any[]) => {
-          this.online = val;
-        }, err => console.log(err));
-        return;
-      }
 
-      this.api.searchProject(input.value, token).subscribe((out: any[]) => {
-        console.log(out);
-        this.online = out;
-      }, err => {
-        AlertService.showAlert('Something went wrong');
-        console.log(err);
-      });
-    } else {
-      AlertService.showAlert('Please Login!');
-    }
-  }
   /**
    * Copy respective url to clipboard for sharing
    * @param url URL that need to be copy
