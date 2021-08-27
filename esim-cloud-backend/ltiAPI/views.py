@@ -1,4 +1,4 @@
-import traceback
+import traceback, os
 import datetime
 from .serializers import consumerSerializer, consumerResponseSerializer, \
     SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer
@@ -265,13 +265,22 @@ class LTIAuthView(APIView):
 
         protocol = 'https://' if request.is_secure() else 'http://'
         if(i.model_schematic.is_arduino):
-            next_url = protocol + host + "/arduino/#simulator?id=" + \
-                    str(i.initial_schematic.save_id) + "&branch=" \
-                    + str(i.initial_schematic.branch) + "&version=" \
-                    + str(i.initial_schematic.version) \
-                    + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
-                    lti_session.user_id \
-                    + "&lti_nonce=" + lti_session.oauth_nonce
+            if(bool(os.environ.get('MODE', False))):
+                next_url = protocol + host + ":4200/#/simulator?id=" + \
+                        str(i.initial_schematic.save_id) + "&branch=" \
+                        + str(i.initial_schematic.branch) + "&version=" \
+                        + str(i.initial_schematic.version) \
+                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
+                        lti_session.user_id \
+                        + "&lti_nonce=" + lti_session.oauth_nonce
+            else:
+                next_url = protocol + host + "/arduino/#simulator?id=" + \
+                        str(i.initial_schematic.save_id) + "&branch=" \
+                        + str(i.initial_schematic.branch) + "&version=" \
+                        + str(i.initial_schematic.version) \
+                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
+                        lti_session.user_id \
+                        + "&lti_nonce=" + lti_session.oauth_nonce
         else:
             next_url = protocol + host + "/eda/#editor?id=" + \
                     str(i.initial_schematic.save_id) + "&branch=" \

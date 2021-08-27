@@ -4,6 +4,7 @@ import { AlertService } from '../alert/alert-service/alert.service';
 import { Login } from '../Libs/Login';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { environment } from 'src/environments/environment';
 
 
 export interface circuit {
@@ -117,6 +118,10 @@ export class LTIFormComponent implements OnInit {
           this.studentCircuit = res['initial_schematic'];
           res['initial_schematic'] = this.studentCircuit.id;
           res['model_schematic'] = this.modelCircuit.id;
+          if(!environment.production) {
+            this.modelCircuit['base64_image'] = environment.API_URL + this.modelCircuit['base64_image'];
+            this.studentCircuit['base64_image'] = environment.API_URL + this.studentCircuit['base64_image'];
+          }
           this.setForm(res);
           this.details = {
             ...this.form.value,
@@ -127,7 +132,7 @@ export class LTIFormComponent implements OnInit {
           };
           this.getAllVersions();
           this.configUrl = this.details.config_url;
-          console.log(res);
+          console.log(this.modelCircuit, this.studentCircuit);
         }, err => {
           if (err.status == 404) {
             this.details.configExists = false;

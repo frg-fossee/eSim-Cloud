@@ -44,8 +44,11 @@
         </div>
       </li> -->
     </ul>
-
-    <div class="navbar-nav ml-auto">
+    <div class="navbar-nav ml-auto" *ngIf="lti_id || lti_nonce || lti_user_id">
+      <span style="color: #808080; margin-right: 10px;">Last saved: {{ getFormattedDate(save_time) }}</span>
+      <b style="color: #ff0000;">EXAM</b>
+    </div>
+    <div class="navbar-nav ml-auto" *ngIf="!lti_id && !lti_nonce && !lti_user_id">
       <a mat-raised-button
         (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))"
         style="margin-right: 10px;">Home</a>

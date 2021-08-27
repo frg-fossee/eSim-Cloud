@@ -109,6 +109,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   scored: boolean = false;
   branch: string;
   version: string;
+  save_time: Date;
 //   waveForm: ChartDataSets[] = [
 //     { data: [], label: "Waveform", fill: true }
 //   ];
@@ -650,6 +651,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
         this.projectTitle = data.name;
         this.description = data.description;
+        this.save_time = data.save_time;
         this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
         Workspace.Load(JSON.parse(data.data_dump));
       });
@@ -947,5 +949,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         console.log(err);
       });
     });
+  }
+
+  getFormattedDate(date: string) {
+    const dateObj = new Date(date);
+    return `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
   }
 }
