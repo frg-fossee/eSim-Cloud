@@ -242,7 +242,6 @@ export class MainPageComponent implements OnInit {
     }
     return projects;
   }
-
   /**
    * Read the Database for temporarily saved circuits.
    */
