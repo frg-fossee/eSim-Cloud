@@ -83,6 +83,29 @@
         </div>
       </div>
     </mat-tab>
+    <mat-tab label="LTI Apps">
+      <div *ngIf="online && online.length === 0" style="margin: 1em;" [innerHtml]="onCloudMessage"></div>
+      <div class="row" style="margin: 1em;">
+        <div class="col-md-3" *ngFor="let item of getLTIApps()">
+          <div class="subbox" (click)="openProject(item.index)">
+            <div>
+              <div style="width: 100%;  background-color: #e8e8e8;">
+                <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+              </div>
+              <div style="box-sizing: border-box; padding: 15px;">
+                <h4>{{item.name}}</h4>
+                <p style="word-break: break-all;">
+                  {{ item.description | slice:0:57 }}
+                  {{ (item.description && item.description.length) > 60?'...':'' }}
+                </p>
+                {{ DateDiff(item,item.save_time) }}
+                <p>{{item.time}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
   </mat-tab-group>
 </div>
 
@@ -94,7 +117,7 @@
       <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
         (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;&#10006;</button>
       <button *ngIf="selected.lti_id" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
-        (click)="DisableLTI(selected)">LTI</button>
+        (click)="DeleteLTI(selected)">LTI</button>
 
       <button class="ml-auto"
         style="position: relative; padding-top: 10px;background-color: transparent; border: none;font-size: 2.2em;font-weight: 400;"
