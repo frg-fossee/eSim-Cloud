@@ -14,6 +14,12 @@
     <ul class="list-group list-group-flush text-secondary">
       <li class="list-group-item"><b>Branch:</b> {{ modelCircuit.branch }}</li>
       <li class="list-group-item"><b>Version:</b> {{ modelCircuit.version }}</li>
+      <li class="list-group-item">
+        <mat-checkbox [(ngModel)]="modelCodeView">
+          <b>View Code</b>
+        </mat-checkbox>
+        <lti-view-code *ngIf="modelCodeView" [id]="circuit_id" [branch]="branch" [version]="version"></lti-view-code>
+      </li>
     </ul>
     <div class="card-footer">
       <p class="card-text"><small class="text-muted">Last Modified: {{ getFormattedDate(modelCircuit.save_time)
@@ -33,6 +39,12 @@
     <ul class="list-group list-group-flush text-secondary">
       <li class="list-group-item"><b>Branch:</b> {{ studentCircuit.branch }}</li>
       <li class="list-group-item"><b>Version:</b> {{ studentCircuit.version }}</li>
+      <li class="list-group-item">
+        <mat-checkbox [(ngModel)]="studentCodeView">
+          <b>View Code</b>
+        </mat-checkbox>
+        <lti-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch" [version]="studentCircuit.version"></lti-view-code>
+      </li>
     </ul>
     <div class="card-footer">
       <p class="card-text"><small class="text-muted">Last Modified: {{ getFormattedDate(studentCircuit.save_time)

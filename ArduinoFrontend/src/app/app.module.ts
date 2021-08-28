@@ -35,6 +35,7 @@ import { SubmissionlistComponent } from './submissionlist/submissionlist.compone
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ViewCodeComponent } from './lti-form/view-code/view-code.component';
 
 /**
  * Monaco OnLoad Function
@@ -75,6 +76,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     CreateVariationDialogComponent,
     LTIFormComponent,
     SubmissionlistComponent,
+    ViewCodeComponent,
   ],
   imports: [
     BrowserModule,
