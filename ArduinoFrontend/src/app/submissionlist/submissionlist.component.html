@@ -6,7 +6,7 @@
 
 <div class="m-3">
   <button mat-raised-button color="primary" type="button" [routerLink]="['/lti']"
-    [queryParams]="{id: id, branch: branch, version: version, lti: lti}">Return to LTI App</button>
+    [queryParams]="{id: id, branch: branch, version: version, lti: lti}">RETURN TO LTI APP</button>
   <mat-form-field style="float: right;">
     <input matInput placeholder="Search the user" (keyup)="searchNFilter($event.target.value)" />
   </mat-form-field>
@@ -42,11 +42,9 @@
     <ng-container matColumnDef="run">
       <th mat-header-cell *matHeaderCellDef>Submissions</th>
       <td mat-cell *matCellDef="let submission">
-        <button mat-icon-button color="primary" [routerLink]="['/simulator']"
+        <button mat-raised-button color="primary" [routerLink]="['/simulator']"
           [queryParams]="{id: submission.id, offline: false, branch: submission.branch, version: submission.version}">
-          <mat-icon>
-            play_circle_outline
-          </mat-icon>
+          OPEN SUBMISSION
         </button>
       </td>
     </ng-container>
