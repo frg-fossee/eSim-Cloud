@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -32,13 +33,15 @@ import {
   ListItemAvatar,
   Tooltip,
   Snackbar,
-  Collapse
+  Collapse,
+  Hidden,
+  Input
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents, fetchGallery } from '../../redux/actions/index'
+import { setTitle, setSchTitle, fetchSchematics, fetchSchematic, fetchGallerySchematic, fetchAllLibraries, fetchLibrary, removeLibrary, uploadLibrary, resetUploadSuccess, deleteLibrary, fetchComponents, fetchGallery, setSchXmlData, saveSchematic } from '../../redux/actions/index'
 import { blue } from '@material-ui/core/colors'
 import { Alert } from '@material-ui/lab'
 import Tabs from '@material-ui/core/Tabs'
@@ -46,6 +49,9 @@ import Tab from '@material-ui/core/Tab'
 import Box from '@material-ui/core/Box'
 import ExpandMore from '@material-ui/icons/ExpandMore'
 import ExpandLess from '@material-ui/icons/ExpandLess'
+import { fetchRole } from '../../redux/actions/authActions'
+import Canvg from 'canvg'
+import { Save } from './Helper/ToolbarTools'
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />
@@ -119,6 +125,19 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(4),
     backgroundColor: blue[100],
     color: blue[600]
+  },
+  delete: {
+    backgroundColor: 'red',
+    color: 'white',
+    marginBottom: '10px'
+  },
+  flex_container: {
+    display: 'flex',
+    flexDirection: 'column'
+    // justifyContent: 'space-evenly'
+  },
+  flex_item: {
+    marginBottom: '10px'
   }
 }))
 
@@ -437,6 +456,258 @@ export function ImageExportDialog (props) {
 ImageExportDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired
+}
+
+//  home button dialog
+export function HomeDialog ({ open, gridRef, routeVal, onClose, schSave }) {
+  const classes = useStyles()
+  // const abc = schSave
+  const dispatch = useDispatch()
+  console.log(open)
+  useEffect(() => {
+    dispatch(fetchRole())
+  }, [dispatch])
+  var homeURL = ''
+  if (routeVal === 'home') {
+    homeURL = `${window.location.protocol}\\\\${window.location.host}/`
+  } else {
+    homeURL = `${window.location.protocol}\\\\${window.location.host}/eda/#/${routeVal}`
+  }
+
+  console.log(homeURL)
+  const handleClose = () => {
+    onClose('')
+  }
+
+  // handle Notification Snackbar
+  const [snacOpen, setSnacOpen] = React.useState(false)
+  const [message, setMessage] = React.useState('')
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
+
+  const auth = useSelector((state) => state.authReducer)
+
+  // handle schemaname dialog box
+  const [schemanameopen, setSchemaNameOpen] = React.useState(false)
+
+  const handleSchemaNameOpen = (e) => {
+    e.preventDefault()
+    console.log(e)
+    console.log(routeVal)
+
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else {
+      setSchemaNameOpen(true)
+    }
+  }
+
+  const handleSchemaNameClose = () => {
+    setSchemaNameOpen(false)
+  }
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="image-export-dialog-title" open={open}>
+      <DialogTitle id="image-export-dialog-title">Save changes to the untitled circuit? Your changes will be lost if you do not save it.</DialogTitle>
+      <DialogContent className={classes.flex_container} >
+        <Button variant="contained" className={classes.flex_item} color="primary" size="large" onClick={handleSchemaNameOpen} >
+              Save
+        </Button>
+        <Button variant="contained" color="primary" className={classes.flex_item}size="large" onClick={() => { window.open(homeURL, '_self') }}>
+              Dont Save
+        </Button>
+        <Button variant="contained" className={classes.delete} size="large" onClick={handleClose}>
+              Cancel
+        </Button>
+      </DialogContent>
+      {gridRef && routeVal &&
+                <SchematicNameDialog open={schemanameopen} gridRef={gridRef} routeVal={routeVal} schSave={schSave} onClose={handleSchemaNameClose} />
+      }
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+    </Dialog>
+  )
+}
+
+HomeDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  gridRef: PropTypes.object.isRequired,
+  schSave: PropTypes.object.isRequired,
+  routeVal: PropTypes.string.isRequired
+}
+
+export function SchematicNameDialog ({ open, gridRef, routeVal, onClose, schSave }) {
+  const classes = useStyles()
+  const dispatch = useDispatch()
+  console.log(open)
+  useEffect(() => {
+    dispatch(fetchRole())
+  }, [dispatch])
+  var homeURL = ''
+  console.log(routeVal)
+  if (routeVal === 'home') {
+    homeURL = `${window.location.protocol}\\\\${window.location.host}/`
+  } else {
+    homeURL = `${window.location.protocol}\\\\${window.location.host}/eda/#/${routeVal}`
+  }
+
+  console.log(homeURL)
+  const handleClose = () => {
+    onClose('')
+  }
+
+  // handle Notification Snackbar
+  const [snacOpen, setSnacOpen] = React.useState(false)
+  const [message, setMessage] = React.useState('')
+
+  const handleSnacClick = () => {
+    setSnacOpen(true)
+  }
+
+  const handleSave = (version, newSave, save_id) => {
+    if (!newSave) {
+      // window.location = '#/editor?id=' + window.location.href.split('id=')[1].substr(0, 36) + '&version=' + version + '&branch=' + window.location.href.split('branch=')[1].substr(0)
+      // window.location.reload()
+      // window.open(homeURL, '_self')
+      window.location = homeURL
+      window.location.reload()
+    } else {
+      // window.location = '#/editor?id=' + save_id + '&version=' + version + '&branch=master'
+      // window.location.reload()
+      window.open(homeURL, '_self')
+    }
+  }
+
+  const handleSnacClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+    setSnacOpen(false)
+  }
+
+  const auth = useSelector((state) => state.authReducer)
+
+  // Image Export of Schematic Diagram
+  async function exportImage (type) {
+    const svg = document.querySelector('#divGrid > svg').cloneNode(true)
+    svg.removeAttribute('style')
+    svg.setAttribute('width', gridRef.current.scrollWidth)
+    svg.setAttribute('height', gridRef.current.scrollHeight)
+    const canvas = document.createElement('canvas')
+    canvas.width = gridRef.current.scrollWidth
+    canvas.height = gridRef.current.scrollHeight
+    canvas.style.width = canvas.width + 'px'
+    canvas.style.height = canvas.height + 'px'
+    const images = svg.getElementsByTagName('image')
+    for (const image of images) {
+      const data = await fetch(image.getAttribute('xlink:href')).then((v) => {
+        return v.text()
+      })
+      image.removeAttribute('xlink:href')
+      image.setAttribute(
+        'href',
+        'data:image/svg+xml;base64,' + window.btoa(data)
+      )
+    }
+    const ctx = canvas.getContext('2d')
+    ctx.mozImageSmoothingEnabled = true
+    ctx.webkitImageSmoothingEnabled = true
+    ctx.msImageSmoothingEnabled = true
+    ctx.imageSmoothingEnabled = true
+    const pixelRatio = window.devicePixelRatio || 1
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
+    return new Promise((resolve) => {
+      if (type === 'SVG') {
+        const svgdata = new XMLSerializer().serializeToString(svg)
+        resolve('<?xml version="1.0" encoding="UTF-8"?>' + svgdata)
+        return
+      }
+      const v = Canvg.fromString(ctx, svg.outerHTML)
+      v.render().then(() => {
+        let image = ''
+        if (type === 'JPG') {
+          const imgdata = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          for (let i = 0; i < imgdata.data.length; i += 4) {
+            if (imgdata.data[i + 3] === 0) {
+              imgdata.data[i] = 255
+              imgdata.data[i + 1] = 255
+              imgdata.data[i + 2] = 255
+              imgdata.data[i + 3] = 255
+            }
+          }
+          ctx.putImageData(imgdata, 0, 0)
+          image = canvas.toDataURL('image/jpeg', 1.0)
+        } else {
+          if (type === 'PNG') {
+            image = canvas.toDataURL('image/png')
+          }
+        }
+        resolve(image)
+      })
+    })
+  }
+
+  // handle Save Schematic onCloud
+  const handleSchSave = () => {
+    if (auth.isAuthenticated !== true) {
+      setMessage('You are not Logged In')
+      handleSnacClick()
+    } else {
+      const xml = Save()
+      dispatch(setSchXmlData(xml))
+      const title = schSave.title
+      const description = schSave.description
+      exportImage('PNG').then((res) => {
+        dispatch(saveSchematic(title, description, xml, res, false, null, handleSave))
+      })
+      setMessage('Saved Successfully')
+      handleSnacClick()
+    }
+  }
+  const titleHandler = (e) => {
+    e.preventDefault()
+    dispatch(setTitle(`* ${e.target.value}`))
+    dispatch(setSchTitle(`${e.target.value}`))
+  }
+  return (
+    <Dialog onClose={handleClose} aria-labelledby="image-export-dialog-title" open={open}>
+      <DialogTitle id="image-export-dialog-title">Confirm the Title for the Schematic</DialogTitle>
+      <DialogContent className={classes.flex_container} >
+        <Hidden xsDown>
+          <Input
+            style={{ marginBottom: '10px' }}
+            className={classes.input}
+            color="secondary"
+            value={schSave.title === 'Untitled_Schematic' ? 'Untitled_Schematic' : schSave.title}
+            onChange={titleHandler}
+            inputProps={{ 'aria-label': 'SchematicTitle' }}
+          />
+        </Hidden>
+        <Button variant="contained" color="primary" size="large" onClick={handleSchSave} >
+              Save
+        </Button>
+      </DialogContent>
+      <SimpleSnackbar open={snacOpen} close={handleSnacClose} message={message} />
+    </Dialog>
+  )
+}
+
+SchematicNameDialog.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  gridRef: PropTypes.object.isRequired,
+  schSave: PropTypes.object.isRequired,
+  routeVal: PropTypes.string.isRequired
 }
 
 // Dialog box to open saved Schematics
