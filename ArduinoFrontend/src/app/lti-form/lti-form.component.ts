@@ -82,6 +82,7 @@ export class LTIFormComponent implements OnInit {
 
   ngOnInit() {
     document.documentElement.style.overflow = 'auto';
+    document.title= 'LTI | Arduino on Cloud';
     this.aroute.queryParams.subscribe(v => {
       console.log(v);
       // if project id is present and no query parameter then redirect to dashboard
