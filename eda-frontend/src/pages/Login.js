@@ -61,7 +61,6 @@ export default function SignIn (props) {
     const query = new URLSearchParams(props.location.search)
     if (query.get('logout')) {
       localStorage.removeItem('esim_token')
-      sessionStorage.removeItem('esim_token')
     }
   // eslint-disable-next-line
   }, [])
@@ -87,7 +86,6 @@ export default function SignIn (props) {
     } else if (props.location.search !== '') {
       url = query.get('url')
       localStorage.setItem('ard_redurl', url)
-      sessionStorage.setItem('ard_redurl', url)
     } else {
       url = ''
     }
@@ -105,10 +103,8 @@ export default function SignIn (props) {
     event.preventDefault()
     if (remember) {
       localStorage.setItem('username', username)
-      sessionStorage.setItem('username', username)
     } else if (username === localStorage.getItem('username')) {
       localStorage.setItem('username', '')
-      sessionStorage.setItem('username', '')
     }
     if (!close) {
       dispatch(login(username, password, url))
@@ -117,7 +113,6 @@ export default function SignIn (props) {
       dispatch(login(username, password, 'close'))
     }
     localStorage.removeItem('ard_redurl')
-    sessionStorage.removeItem('ard_redurl')
   }
 
   // Function call for google oAuth login.

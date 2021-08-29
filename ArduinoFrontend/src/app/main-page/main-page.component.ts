@@ -665,14 +665,14 @@ export class MainPageComponent implements OnInit {
    */
   DeleteLTI(selected) {
     const token = Login.getToken();
-    if(token) {
+    if (token) {
       AlertService.showConfirm('Are You Sure You want to Delete LTI App', () => {
         this.api.removeLTIDetails(selected.id, token).subscribe(_ => {
           selected.lti_id = null;
-          AlertService.showAlert("Deleted LTI App successfully");
+          AlertService.showAlert('Deleted LTI App successfully');
           this.readOnCloudItems();
         }, err => {
-          AlertService.showAlert("Something went wrong");
+          AlertService.showAlert('Something went wrong');
           console.log(err);
         });
       });

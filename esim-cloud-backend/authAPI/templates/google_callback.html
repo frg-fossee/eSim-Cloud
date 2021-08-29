@@ -7,11 +7,9 @@
     <title>Redirecting to the destination...</title>
     <script>
         window.localStorage.setItem('esim_token', '{{ token }}');
-        window.sessionStorage.setItem('esim_token', '{{ token }}');
         var redirect_to = window.localStorage.getItem('ard_redurl');
         if (redirect_to) {
             window.localStorage.removeItem('ard_redurl');
-            window.sessionStorage.removeItem('ard_redurl');
             window.open(redirect_to, '_self')
         } else {
             window.open('{{url}}', '_self')

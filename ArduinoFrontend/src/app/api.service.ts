@@ -283,7 +283,7 @@ export class ApiService {
   removeLTIDetails(id: number, token: string) {
     return this.http.delete(`${this.url}api/lti/delete/${id}`, {
       headers: new HttpHeaders({
-        'Authorization': `Token ${token}`,
+        Authorization: `Token ${token}`,
       })
     });
   }
@@ -317,7 +317,7 @@ export class ApiService {
   updateLTIDetails(token: string, data: any) {
     return this.http.post(`${this.url}api/lti/update/`, data, {
       headers: this.httpHeaders(token),
-    })
+    });
   }
 
   /**
@@ -341,7 +341,7 @@ export class ApiService {
   getSubmissions(id: string, branch: string, version: string, token: string) {
     return this.http.get(`${this.url}api/lti/submissions/${id}/${version}/${branch}`, {
       headers: this.httpHeaders(token),
-    })
+    });
   }
 
   /**

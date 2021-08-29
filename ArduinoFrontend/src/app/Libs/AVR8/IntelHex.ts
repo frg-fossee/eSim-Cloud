@@ -1,4 +1,3 @@
-import { saveAs } from 'file-saver';
 /**
  * PART OF AVR8js (Minimal Hex Parser)
  * To Understand Proper Working visit
@@ -8,7 +7,6 @@ import { saveAs } from 'file-saver';
  */
 export function parseHex(source: string, target: Uint8Array) {
   // Split By Lines
-  // writeText(source, "hexCode.hex");
   for (const line of source.split('\n')) {
     if (line[0] === ':' && line.substr(7, 2) === '00') {
       const bytes = parseInt(line.substr(1, 2), 16);
@@ -18,9 +16,4 @@ export function parseHex(source: string, target: Uint8Array) {
       }
     }
   }
-}
-
-function writeText(data, filename) {
-    const blob = new Blob([data], {type: 'text/plain;charset=utf-8'});
-    saveAs(blob, filename);
 }

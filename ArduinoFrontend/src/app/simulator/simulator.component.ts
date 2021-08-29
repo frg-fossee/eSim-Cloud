@@ -106,19 +106,19 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Hide/Show submit button
    */
-  submitButtonVisibility: boolean = false;
+  submitButtonVisibility = false;
   /**
    * LTI ID of LTI App (if simulator is opened on LMS)
    */
-  lti_id: string = '';
+  ltiId = '';
   /**
    * LTI Nonce of LTI App (if simulator is opened on LMS)
    */
-  lti_nonce: string = '';
+  ltiNonce = '';
   /**
    * LTI User ID of LTI App (if simulator is opened on LMS)
    */
-  lti_user_id: string = '';
+  ltiUserId = '';
   /**
    * Currently loaded circuit's branch
    */
@@ -130,7 +130,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Currently loaded circuit's save time
    */
-  save_time: Date;
+  saveTime: Date;
   /**
    * Determines whether staff is
    */
@@ -226,9 +226,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         }
       } else if (v.id && v.lti_id && v.lti_nonce && v.lti_user_id) {
         this.projectId = v.id;
-        this.lti_id = v.lti_id;
-        this.lti_nonce = v.lti_nonce;
-        this.lti_user_id = v.lti_user_id;
+        this.ltiId = v.lti_id;
+        this.ltiNonce = v.lti_nonce;
+        this.ltiUserId = v.lti_user_id;
         this.branch = v.branch;
         this.version = v.version;
         this.submitButtonVisibility = true;
@@ -287,9 +287,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
     // Initializing window
     this.window = window;
-  }
-  isLoaded() {
-    return Workspace.circuitLoaded;
   }
   /**
    * Enable Move on Property Box
@@ -655,7 +652,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
         this.projectTitle = data.name;
         this.description = data.description;
-        this.save_time = data.save_time;
+        this.saveTime = data.save_time;
         this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
         Workspace.Load(JSON.parse(data.data_dump));
       });
@@ -916,40 +913,39 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   SaveLTISubmission() {
     const token = Login.getToken();
-    this.branch = this.branch ? this.branch: 'master';
+    this.branch = this.branch ? this.branch : 'master';
     this.version = this.getRandomString(20);
     SaveOnline.Save(this.projectTitle, this.description, this.api, this.branch, this.version, (out) => {
       this.projectId = out.save_id;
       const data = {
         schematic: this.projectId,
         ltisession: {
-          id: this.lti_id,
-          user_id: this.lti_user_id,
-          oauth_nonce: this.lti_nonce,
+          id: this.ltiId,
+          user_id: this.ltiUserId,
+          oauth_nonce: this.ltiNonce,
         },
         student_simulation: null,
-      }
+      };
       this.api.submitCircuit(token, data).subscribe(res => {
         AlertService.showAlert(res['message']);
-          // add new query parameters
-          this.router.navigate(
-            [],
-            {
-              relativeTo: this.aroute,
-              queryParams: {
-                id: out.save_id,
-                lti_id: this.lti_id,
-                lti_user_id: this.lti_user_id,
-                lti_nonce: this.lti_nonce,
-                branch: this.branch,
-                version: this.version,
-                online: true,
-                offline: false,
-                gallery: null
-              },
-              queryParamsHandling: 'merge'
-            }
-          );
+        // add new query parameters
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: out.save_id,
+              lti_id: this.ltiId,
+              lti_user_id: this.ltiUserId,
+              lti_nonce: this.ltiNonce,
+              branch: this.branch,
+              version: this.version,
+              online: true,
+              offline: false,
+              gallery: null
+            },
+            queryParamsHandling: 'merge'
+          });
         return;
       }, err => {
         AlertService.showAlert(err['message']);
@@ -961,10 +957,12 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Returns date in human readable format
    * @param date Date string
-   * @returns string with formatted date  
+   * @returns string with formatted date
    */
   getFormattedDate(date: string) {
     const dateObj = new Date(date);
-    return `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
+    let str = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} `;
+    str += `${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
+    return str;
   }
 }

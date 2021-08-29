@@ -39,7 +39,7 @@ class StateSaveView(APIView):
     @swagger_auto_schema(request_body=StateSaveSerializer)
     def post(self, request, *args, **kwargs):
         print("Getting Saved State")
-        print(request.body)
+
         logger.info('Got POST for state save ')
         esim_libraries = None
         if request.data.get('esim_libraries'):

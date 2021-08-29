@@ -78,7 +78,7 @@ services:
     env_file:
           - .env.prod
     environment:
-          - DJANGO_DEBUG=True
+          - DJANGO_DEBUG=False
     volumes:
       - ./esim-cloud-backend:/code
       - run_vol:/var/run

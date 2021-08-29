@@ -57,8 +57,6 @@ export default function (state = initialState, action) {
     case actions.LOGIN_SUCCESSFUL: {
       localStorage.setItem('user_id', action.payload.data.user_id)
       localStorage.setItem('esim_token', action.payload.data.auth_token)
-      sessionStorage.setItem('user_id', action.payload.data.user_id)
-      sessionStorage.setItem('esim_token', action.payload.data.auth_token)
       return {
         ...state,
         token: action.payload.data.auth_token,
@@ -80,7 +78,6 @@ export default function (state = initialState, action) {
     case actions.LOGIN_FAILED:
     case actions.LOGOUT_SUCCESSFUL: {
       localStorage.removeItem('esim_token')
-      sessionStorage.removeItem('esim_token')
       return {
         ...state,
         errors: action.payload.data,

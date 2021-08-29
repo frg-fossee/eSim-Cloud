@@ -18,7 +18,7 @@
         <mat-checkbox [(ngModel)]="modelCodeView">
           <b>View Code</b>
         </mat-checkbox>
-        <lti-view-code *ngIf="modelCodeView" [id]="circuit_id" [branch]="branch" [version]="version"></lti-view-code>
+        <app-view-code *ngIf="modelCodeView" [id]="circuitId" [branch]="branch" [version]="version"></app-view-code>
       </li>
     </ul>
     <div class="card-footer">
@@ -43,8 +43,8 @@
         <mat-checkbox [(ngModel)]="studentCodeView">
           <b>View Code</b>
         </mat-checkbox>
-        <lti-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
-          [version]="studentCircuit.version"></lti-view-code>
+        <app-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
+          [version]="studentCircuit.version"></app-view-code>
       </li>
     </ul>
     <div class="card-footer">

@@ -8,5 +8,6 @@ import { Component, OnInit, Input, ViewChild } from '@angular/core';
 export class DashboardComponent implements OnInit {
 
   ngOnInit() {
+
   }
 }

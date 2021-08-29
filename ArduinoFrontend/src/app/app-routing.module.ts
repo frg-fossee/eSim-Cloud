@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SimulatorComponent } from './simulator/simulator.component';
 import { FrontPageComponent } from './front-page/front-page.component';
 import { GalleryComponent } from './gallery/gallery.component';
-import {ViewProjectComponent} from './view-project/view-project.component';
+import { ViewProjectComponent } from './view-project/view-project.component';
 import { LTIFormComponent } from './lti-form/lti-form.component';
 import { SubmissionlistComponent } from './submissionlist/submissionlist.component';
 

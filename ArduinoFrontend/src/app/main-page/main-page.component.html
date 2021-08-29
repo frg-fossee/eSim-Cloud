@@ -123,6 +123,7 @@
       <h2 style="margin-left: 1%">{{selected.name}}</h2>
       <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
         (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;&#10006;</button>
+
       <button *ngIf="selected.lti_id" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
         (click)="DeleteLTI(selected)">LTI&nbsp;&nbsp;&#10006;</button>
       <button class="ml-auto"

@@ -6,7 +6,7 @@ import { Login } from 'src/app/Libs/Login';
  * Class for Viewing Code in LTI Form Component
  */
 @Component({
-  selector: 'lti-view-code',
+  selector: 'app-view-code',
   templateUrl: './view-code.component.html',
   styleUrls: ['./view-code.component.css']
 })
@@ -48,10 +48,6 @@ export class ViewCodeComponent implements OnInit {
    * List of code for every arduino of the circuit.
    */
   arduinos = [];
-  /**
-   * Show/Hide Code Area
-   */
-  showUI: boolean = false;
 
   /**
    * On Init Callback
@@ -63,7 +59,7 @@ export class ViewCodeComponent implements OnInit {
       this.getCode(res['data_dump']);
     }, err => {
       console.log(err);
-    })
+    });
   }
 
   /**
@@ -71,9 +67,9 @@ export class ViewCodeComponent implements OnInit {
    * @param dataDump circuit dump
    */
   getCode(dataDump) {
-    let dump = JSON.parse(dataDump);
+    const dump = JSON.parse(dataDump);
     this.arduinos = dump['ArduinoUno'];
-    if(this.arduinos.length > 0) {
+    if (this.arduinos.length > 0) {
       this.codeDiv.nativeElement.style.display = 'block';
       this.noCodeDiv.nativeElement.style.display = 'none';
     } else {
