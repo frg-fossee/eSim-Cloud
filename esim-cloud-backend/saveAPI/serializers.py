@@ -81,7 +81,7 @@ class SaveListSerializer(serializers.ModelSerializer):
         fields = ('save_time', 'save_id', 'name', 'description',
                   'shared', 'base64_image', 'create_time', 'version',
                   'branch', 'esim_libraries', 'project_id', 'project_version',
-                  'project_branch', 'is_reported', 'id', 'lti_id', 
+                  'project_branch', 'is_reported', 'id', 'lti_id',
                   'is_submission')
 
     def get_lti_id(self, obj):
