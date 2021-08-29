@@ -231,11 +231,8 @@ export class LTIFormComponent implements OnInit {
    * @param value id of the circuit to be set as initial/student circuit
    * @param callback function called after retrieving the intended circuit
    */
-  getStudentSimulation(value, callback) {
+  getStudentSimulation(value) {
     this.studentCircuit = value ? this.circuits.filter(v => v.id === parseInt(value, 10))[0] : undefined;
-    if (callback) {
-      callback();
-    }
   }
 
   /**
@@ -243,7 +240,7 @@ export class LTIFormComponent implements OnInit {
    * @param event Event data on changing select form field for student simulation 
    */
   onStudentSelectChanges(event) {
-    this.getStudentSimulation(event.value, null);
+    this.getStudentSimulation(event.value);
   }
 
   /**
