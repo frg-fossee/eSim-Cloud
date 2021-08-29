@@ -44,6 +44,7 @@
         </div>
       </li> -->
     </ul>
+
     <div class="navbar-nav ml-auto" *ngIf="lti_id || lti_nonce || lti_user_id">
       <span style="color: #808080; margin-right: 10px;">Last saved: {{ getFormattedDate(saveTime) }}</span>
       <b style="color: #ff0000;">EXAM</b>
@@ -490,5 +491,3 @@
     </div>
   </div>
 </div>
-<app-graphlist *ngIf="isLoaded()"></app-graphlist>
-<!-- <app-graph *ngIf="isLoaded()"></app-graph> -->

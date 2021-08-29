@@ -112,10 +112,12 @@ export class SaveOnline {
           }
           AlertService.showAlert(message);
         });
-      }
-    });
-  }
 
+      }
+
+    });
+
+  }
   /**
    * Save Staff Project
    * @param name Project Name

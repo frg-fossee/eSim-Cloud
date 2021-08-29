@@ -358,7 +358,6 @@ export class ApiService {
       Login.logout();
     }, (e) => { console.log(e); });
   }
-
   /**
    * Specific User Role.
    * @param token Auth Token

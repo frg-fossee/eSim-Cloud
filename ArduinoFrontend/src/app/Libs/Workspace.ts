@@ -55,6 +55,7 @@ export class Workspace {
    * If simulation is on progress or not
    */
   static simulating = false;
+
   /** function to zoom in workspace */
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -770,6 +771,7 @@ export class Workspace {
         // alert('something went wrong');
       }
     }
+
   }
 
   /** Function to delete component fro Workspace */
@@ -1026,7 +1028,6 @@ export class Workspace {
     // }
 
     // Update the simulation status
-    // Workspace.GetNodeValues();
     Workspace.simulating = true;
   }
   /**
