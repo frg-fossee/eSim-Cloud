@@ -1,4 +1,4 @@
-import traceback, os
+import traceback
 import datetime
 from .serializers import consumerSerializer, consumerResponseSerializer, \
     SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer
@@ -265,7 +265,7 @@ class LTIAuthView(APIView):
 
         protocol = 'https://' if request.is_secure() else 'http://'
         if(i.model_schematic.is_arduino):
-            if(bool(os.environ.get('MODE', False))):
+            if(settings.DEBUG):
                 next_url = protocol + host + ":4200/#/simulator?id=" + \
                         str(i.initial_schematic.save_id) + "&branch=" \
                         + str(i.initial_schematic.branch) + "&version=" \
