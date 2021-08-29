@@ -45,19 +45,21 @@
       </li> -->
     </ul>
 
-    <div class="navbar-nav ml-auto">
+    <div class="navbar-nav ml-auto" style="height: 42px;">
       <a mat-raised-button
         (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))"
-        style="margin-right: 10px;">Home</a>
-      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard'))"
-        style="margin-right: 10px;">Dashboard</a>
-      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/gallery'))" style="margin-right: 10px;">Gallery</a>
-      <a mat-raised-button (click)="HandleRouter(RouteToSimulator.bind(this))" style="margin-right: 10px;">Editor</a>
+        class="navBarItem">Home</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard'))" class="navBarItem">Dashboard</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard/gallery'))" class="navBarItem">Gallery</a>
+      <a mat-raised-button (click)="HandleRouter(RouteToSimulator.bind(this))" class="navBarItem">Editor</a>
       <a mat-raised-button *ngIf="!token" (click)="HandleRouter(Login)">Login</a>
-      <div class="dropdown show" style="margin-left: 20px;margin-top: 6px;" *ngIf="token">
-        <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+      <div class="dropdown show" style="margin-left: 10px;margin-top:4px;" *ngIf="token">
+        <!-- <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
-          class="d-inline-block align-center" alt="Login Image">
+          class="d-inline-block align-center" alt="Login Image"> -->
+        <div class="circles" id="dropdownMenuLink" data-toggle="dropdown">
+          {{ username.charAt(0).toUpperCase() }}
+        </div>
         <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;"
           aria-labelledby="dropdownMenuLink">
           <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
@@ -207,9 +209,17 @@
       style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
 
   <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
-    style="margin-right: 30px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+    style="margin-right: 12px;align-items: center;background: transparent;" (click)="autoLayout()"><i
       style="font-size: 20px;color: black;"
       [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
+
+  <button *ngIf="isStaff" mat-icon-button matTooltip="Add to Gallery" class="mt-1"
+    style="margin-right: 30px;align-items: center;background: transparent;" (click)="addToGallery()">
+    <mat-icon aria-hidden="false" style="font-size: 28px;color: black;" aria-label="Example Add to gallery icon">
+      add_photo_alternate</mat-icon>
+  </button>
+
+
 
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 

@@ -1,8 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Login } from '../Libs/Login';
 import { ApiService } from '../api.service';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 /**
  * Class For Header Component (DO Eager Loading)
@@ -12,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   /**
    * Login Token
    */
@@ -37,10 +38,20 @@ export class HeaderComponent implements OnInit {
    * Is it a Front Page
    */
   @Input() front = false;
+
+  /**
+   * Name  of the user
+   */
+  name: string;
   /**
    * Constructor for Header
    * @param api API Service
    */
+
+  /**
+   * getting subscription of user;
+   */
+  subscription = new Subscription();
   constructor(
     private api: ApiService,
     private aroute: ActivatedRoute) { }
@@ -48,7 +59,8 @@ export class HeaderComponent implements OnInit {
    * On Init
    */
   ngOnInit() {
-    this.userInfo();
+    this.getUserInfo();
+    this.stateChangeUserInfo();
     // Initializing window
     this.window = window;
   }
@@ -68,13 +80,24 @@ export class HeaderComponent implements OnInit {
   /**
    * Getting User Information.
    */
-  userInfo() {
+  stateChangeUserInfo() {
     // Get Login Token
+    this.subscription = this.api.isAuthenticated.subscribe((res: boolean) => {
+      if (res === true) {
+        this.getUserInfo();
+      } else {
+        this.username = undefined;
+      }
+    });
+  }
+
+  getUserInfo() {
     this.token = Login.getToken();
     // If token is available then get username
     if (this.token) {
       this.api.userInfo(this.token).subscribe((v) => {
         this.username = v.username;
+        this.name = this.username;
       }, (err) => {
         // console.log(err.status)
         console.log(err);
@@ -83,5 +106,12 @@ export class HeaderComponent implements OnInit {
         // }
       });
     }
+  }
+  /**
+   * on destroy when page is dead then call
+   */
+  ngOnDestroy() {
+    // destroy  auth subject.
+    this.subscription.unsubscribe();
   }
 }

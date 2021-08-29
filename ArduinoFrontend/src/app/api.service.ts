@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 import { Login } from './Libs/Login';
 import { ActivatedRoute } from '@angular/router';
 
 /**
  * Class For handlind API.
+ */
+/**
+ * Injectable
  */
 @Injectable({
   providedIn: 'root'
@@ -20,6 +23,9 @@ export class ApiService {
    * Constructor for api
    * @param http For http request & response
    */
+
+  isAuthenticated = new Subject<boolean>();
+
   constructor(
     private http: HttpClient,
     public aroute: ActivatedRoute
@@ -67,6 +73,21 @@ export class ApiService {
       data.description = null;
     }
     return this.http.post(`${this.url}api/save`, data, {
+      headers: new HttpHeaders({
+        // 'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        // 'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
+  /**
+   * Save Project to Gallery
+   * @param data The Project gallery data
+   * @param token Auth Token
+   */
+  saveProjectToGallery(data: any, token: string) {
+    return this.http.post(`${this.url}api/save/gallery/` + data.save_id, data, {
       headers: new HttpHeaders({
         // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
@@ -187,7 +208,29 @@ export class ApiService {
    * Fetch Samples
    */
   fetchSamples(): Observable<any> {
-    return this.http.get('./assets/samples/Samples.json');
+    // return this.http.get('./assets/samples/Samples.json');
+    return this.http.get(`${this.url}api/save/gallery?is_arduino=true`);
+  }
+
+  /**
+   * Fetchs single project  gallery to simulator
+   * @param id  unique id for gallery circuit
+   */
+  fetchSingleProjectToGallery(id: any) {
+    return this.http.get(`${this.url}api/save/gallery/` + id);
+  }
+
+  /**
+   * Deletes single project from gallery
+   * @param id Project id
+   * @param token  Auth Token
+   */
+  deleteProjectFromGallery(id: any, token: any) {
+    return this.http.delete(`${this.url}api/save/gallery/` + id, {
+      headers: new HttpHeaders({
+        Authorization: `Token ${token}`,
+      })
+    });
   }
 
   /**
@@ -242,8 +285,10 @@ export class ApiService {
         this.aroute.queryParams.subscribe((paramData: any) => {
           if (paramData.token != null) {
             localStorage.setItem('esim_token', paramData.token);
+            this.isAuthenticated.next(true);
             reslove(1);
           } else if (Login.getToken()) {
+            this.isAuthenticated.next(true);
             reslove(1);
           }
         });
@@ -262,7 +307,22 @@ export class ApiService {
       headers: new HttpHeaders({
         Authorization: `Token ${token}`
       })
-    }).subscribe(() => { Login.logout(); }, (e) => { console.log(e); });
+    }).subscribe(() => {
+      this.isAuthenticated.next(false);
+      Login.logout();
+    }, (e) => { console.log(e); });
   }
-
+  /**
+   * Specific User Role.
+   * @param token Auth Token
+   */
+  getRole(token): Observable<any> {
+    return this.http.get(`${this.url}api/workflow/role/`, {
+      headers: new HttpHeaders({
+        // 'Content-Type': 'application/json',
+        Authorization: `Token ${token}`,
+        // 'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
 }

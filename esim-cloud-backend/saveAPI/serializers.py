@@ -102,5 +102,5 @@ class GallerySerializer(serializers.ModelSerializer):
         model = Gallery
         fields = (
             'save_id', 'data_dump', 'name',
-            'description', 'media', 'shared', 'esim_libraries'
+            'description', 'media', 'shared', 'esim_libraries', 'is_arduino'
             )

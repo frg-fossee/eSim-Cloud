@@ -77,7 +77,6 @@ export class SaveOnline {
       }
       // Convert Data Dump to an String and add to Save Object
       saveObj.data_dump = JSON.stringify(dataDump);
-
       // Generate Thumbnail for the project
       Download.ExportImage(ImageType.PNG).then(v => {
         saveObj['base64_image'] = v; // Store the base64 image
@@ -120,6 +119,73 @@ export class SaveOnline {
 
     }
 
+  }
+  /**
+   * Save Staff Project
+   * @param name Project Name
+   * @param description Project Description
+   * @param api API Service
+   * @param callback Callback when save is done
+   */
+  static staffSaveGallery(name = '', description = '', api: ApiService, callback: (data: any) => void = null) {
+    //  Get Token
+    const token = Login.getToken();
+    // Save Object that needs to send to server
+    const saveObj = {
+      data_dump: '',
+      is_arduino: true,
+      description: '',
+      name,
+      save_id: 'gallery' + Math.random() * 100000
+    };
+    // Data Dump will contain Workspace Data and Circuit data
+    const dataDump = {
+      canvas: {
+        x: Workspace.translateX,
+        y: Workspace.translateY,
+        scale: Workspace.scale
+      }
+    };
+    // For each item in scope
+    for (const key in window.scope) {
+      // if at least one component present in the scope
+      if (window.scope[key] && window.scope[key].length > 0) {
+        dataDump[key] = []; // Intialize datadump
+        // Call the save function and push the return object
+        for (const item of window.scope[key]) {
+          if (item.save) {
+            dataDump[key].push(item.save());
+          }
+        }
+
+      }
+    }
+    // Convert Data Dump to an String and add to Save Object
+    saveObj.data_dump = JSON.stringify(dataDump);
+    // Generate Thumbnail for the project
+    Download.ExportImage(ImageType.PNG).then(v => {
+      saveObj['media'] = v; // Store the base64 image
+      // Otherwise save the project
+      api.saveProjectToGallery(saveObj, token).subscribe(output => {
+        if (callback) {
+          callback(output);
+
+          AlertService.showAlert('Saved In Gallery');
+        }
+      }, err => {
+        console.log(err);
+        let message = '';
+        for (const key in err.error) {
+          if (err.error[key]) {
+            message += '\n' + key;
+            for (const item of err.error[key]) {
+              message += `${item},`;
+            }
+          }
+        }
+        AlertService.showAlert(message);
+      });
+    });
   }
   /**
    * Save or Update Project from Dashboard
