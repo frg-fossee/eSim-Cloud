@@ -73,6 +73,14 @@ export class MainPageComponent implements OnInit {
    * visible temp circuit
    */
   isTempCircuit = false;
+  /**
+   * show LTI App circuit tab or not
+   */
+  isLTIApp = false;
+  /**
+   * show LTI Submissions circuit tab or not
+   */
+  isLTISub = false;
 
 
   /**
@@ -94,8 +102,10 @@ export class MainPageComponent implements OnInit {
    * Determines whether cloud side menu click
    */
   onCloudClick() {
-    this.isCloudCircuit = true;
     this.isTempCircuit = false;
+    this.isCloudCircuit = true;
+    this.isLTIApp = false;
+    this.isLTISub = false;
   }
   /**
    * Determines whether temp circuit click
@@ -103,6 +113,26 @@ export class MainPageComponent implements OnInit {
   onTempCircuitClick() {
     this.isTempCircuit = true;
     this.isCloudCircuit = false;
+    this.isLTIApp = false;
+    this.isLTISub = false;
+  }
+  /**
+   * Determines whether LTI App click
+   */
+  onLTIAppsClick() {
+    this.isTempCircuit = false;
+    this.isCloudCircuit = false;
+    this.isLTIApp = true;
+    this.isLTISub = false;
+  }
+  /**
+   * Determines whether temp circuit click
+   */
+  onLTISubmissionsClick() {
+    this.isTempCircuit = false;
+    this.isCloudCircuit = false;
+    this.isLTIApp = false;
+    this.isLTISub = true;
   }
 
   getInitials(nameString, i) {
@@ -166,16 +196,24 @@ export class MainPageComponent implements OnInit {
   }
 
   /**
-   * Checks url if the user click temp circuits
+   * Checks url if the user click on other tabs
    */
   checkUrl() {
     this.aroute.params.subscribe((params: any) => {
       if (params.id === 'temp') {
         this.isTempCircuit = true;
         this.isCloudCircuit = false;
+        this.isLTIApp = false;
+        this.isLTISub = false;
+      } else if (params.id === 'ltiapp') {
+        this.onLTIAppsClick();
+      } else if (params.id === 'ltisub') {
+        this.onLTISubmissionsClick();
       } else {
         this.isTempCircuit = false;
         this.isCloudCircuit = true;
+        this.isLTIApp = false;
+        this.isLTISub = false;
       }
     });
   }
@@ -219,6 +257,9 @@ export class MainPageComponent implements OnInit {
     if (token) {
       this.api.listProject(token).subscribe((val: any[]) => {
         this.online = this.filterOnlineProjects(val);
+        this.online.forEach((circuit, index) => {
+          circuit.index = index;
+        });
       }, err => console.log(err));
     } else {
       // if no token is present then show this message
@@ -613,4 +654,29 @@ export class MainPageComponent implements OnInit {
     return `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
   }
 
+  DeleteLTI(selected) {
+    const token = Login.getToken();
+    if(token) {
+      AlertService.showConfirm('Are You Sure You want to Delete LTI App', () => {
+        this.api.removeLTIDetails(selected.id, token).subscribe(_ => {
+          selected.lti_id = null;
+          AlertService.showAlert("Deleted LTI App successfully");
+          this.readOnCloudItems();
+        }, err => {
+          AlertService.showAlert("Something went wrong");
+          console.log(err);
+        });
+      });
+    }
+  }
+
+  getLTIApps() {
+    console.log(this.online);
+    return this.online.filter(circuit => circuit.lti_id);
+  }
+  
+  getLTISubmissions() {
+    console.log(this.online);
+    return this.online.filter(circuit => circuit.is_submission);
+  }
 }
