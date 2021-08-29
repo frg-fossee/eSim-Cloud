@@ -28,6 +28,7 @@
     "is-promise": "2.2.2",
     "lodash": "^4.17.19",
     "lodash-transpose": "^0.2.1",
+    "ngx-filter-pipe": "^2.1.2",
     "ngx-monaco-editor": "^7.0.0",
     "rxjs": "~6.3.3",
     "tslib": "^1.14.1",

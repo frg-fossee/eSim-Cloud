@@ -1,0 +1,31 @@
+.example-sidenav {
+    min-width: 200px;
+    user-select: none;
+}
+.full-width {
+    width: 100%;
+}
+.menu-button {
+    transition: 300ms ease-in-out;
+    transform: rotate(0deg);
+}
+.menu-button.rotated {
+    transform: rotate(180deg);
+}
+.submenu {
+    display: none;
+    overflow-y: hidden;
+    transition: transform 300ms ease;
+    transform: scaleY(0);
+    transform-origin: top;
+    padding-left: 30px;
+}
+.submenu.expanded {
+    display: block;
+    transform: scaleY(1);
+}
+.custom-menu {
+    margin-right: 1.3rem;
+    margin-left: 8px;
+}
+

@@ -25,6 +25,11 @@
     "fields": { "name": "Staff [eSim]", "permissions": [] }
   },
   {
+    "model": "auth.group",
+    "pk": 6,
+    "fields": { "name": "Staff [Arduino]", "permissions": [] }
+  },
+  {
     "model": "workflowAPI.state",
     "pk": 1,
     "fields": {
@@ -71,6 +76,7 @@
       "group": 3,
       "is_arduino": true,
       "is_type_reviewer": true,
+      "is_type_staff": false,
       "is_default_role": false
     }
   },
@@ -81,6 +87,7 @@
       "group": 4,
       "is_arduino": false,
       "is_type_reviewer": true,
+      "is_type_staff": false,
       "is_default_role": false
     }
   },
@@ -91,6 +98,7 @@
       "group": 2,
       "is_arduino": true,
       "is_type_reviewer": false,
+      "is_type_staff": false,
       "is_default_role": true
     }
   },
@@ -101,6 +109,7 @@
       "group": 1,
       "is_arduino": false,
       "is_type_reviewer": false,
+      "is_type_staff": false,
       "is_default_role": true
     }
   },
@@ -108,12 +117,23 @@
     "model": "workflowAPI.customgroup",
     "pk": 5,
     "fields": {
-        "group": 5,
-        "is_arduino": false,
-        "is_type_reviewer": false,
-        "is_type_staff": true,
-        "is_default_role": false
-      }
+      "group": 5,
+      "is_arduino": false,
+      "is_type_reviewer": false,
+      "is_type_staff": true,
+      "is_default_role": false
+    }
+  },
+  {
+    "model": "workflowAPI.customgroup",
+    "pk": 6,
+    "fields": {
+      "group": 6,
+      "is_arduino": true,
+      "is_type_reviewer": false,
+      "is_type_staff": true,
+      "is_default_role": false
+    }
   },
   {
     "model": "workflowAPI.permission",
