@@ -23,9 +23,6 @@ class consumerSerializer(serializers.ModelSerializer):
 
 
 class consumerSubmissionSerializer(serializers.ModelSerializer):
-    sim_params = serializers.ListField(
-        child=serializers.CharField(max_length=50)
-    )
     test_case = simulationSerializer(many=False)
 
     class Meta:

@@ -378,7 +378,7 @@ function Header ({ gridRef }) {
         </Hidden>
 
         {/* Display last saved and shared option for saved schematics */}
-        {auth.isAuthenticated === true
+        {(!ltiId || !ltiNonce) && auth.isAuthenticated === true
           ? <>
             {(schSave.isSaved === true && schSave.details.save_time !== undefined)
               ? <Typography

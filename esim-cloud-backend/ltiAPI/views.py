@@ -318,6 +318,7 @@ class LTIPostGrade(APIView):
             "student_simulation": sim
         }
         submission = Submission.objects.create(**submission_data)
+        print("after submission model created")
         xml = generate_request_xml(
             message_identifier(), 'replaceResult',
             lti_session.lis_result_sourcedid, submission.score)
@@ -326,6 +327,7 @@ class LTIPostGrade(APIView):
             post = post_message(
                 consumers(), lti_session.oauth_consumer_key,
                 lti_session.lis_outcome_service_url, xml)
+            print(post)
             if not post:
                 msg = 'An error occurred while saving your score.\
                      Please try again.'
