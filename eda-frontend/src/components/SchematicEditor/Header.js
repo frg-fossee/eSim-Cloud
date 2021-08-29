@@ -639,7 +639,7 @@ function Header ({ gridRef }) {
           className={classes.toolbarTitle}
           style={{ marginLeft: 'auto', color: 'red' }}
         >
-          Exam
+          Assignment
         </Typography>}
       </Toolbar>
     </>
