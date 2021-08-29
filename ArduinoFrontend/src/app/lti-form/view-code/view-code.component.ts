@@ -33,18 +33,32 @@ export class ViewCodeComponent implements OnInit {
    */
   @Input() version: string;
   /**
-   * Reference of Textarea element in this component
+   * Reference to Textarea element in this component
    */
   @ViewChild('codeArea') textarea: ElementRef;
+  /**
+   * Reference to div element not containing code in this component
+   */
+  @ViewChild('noCodeSection') noCodeDiv: ElementRef;
+  /**
+   * Reference to div element containing code in this component
+   */
+  @ViewChild('codeSection') codeDiv: ElementRef;
   /**
    * List of code for every arduino of the circuit.
    */
   arduinos = [];
+  /**
+   * Show/Hide Code Area
+   */
+  showUI: boolean = false;
 
   /**
    * On Init Callback
    */
   ngOnInit() {
+    this.noCodeDiv.nativeElement.style.display = 'block';
+    this.codeDiv.nativeElement.style.display = 'none';
     this.api.readProject(this.id, this.branch, this.version, Login.getToken()).subscribe(res => {
       this.getCode(res['data_dump']);
     }, err => {
@@ -59,6 +73,13 @@ export class ViewCodeComponent implements OnInit {
   getCode(dataDump) {
     let dump = JSON.parse(dataDump);
     this.arduinos = dump['ArduinoUno'];
+    if(this.arduinos.length > 0) {
+      this.codeDiv.nativeElement.style.display = 'block';
+      this.noCodeDiv.nativeElement.style.display = 'none';
+    } else {
+      this.noCodeDiv.nativeElement.style.display = 'block';
+      this.codeDiv.nativeElement.style.display = 'none';
+    }
   }
 
   /**
