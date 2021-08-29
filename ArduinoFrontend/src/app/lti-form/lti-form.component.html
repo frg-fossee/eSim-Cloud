@@ -43,7 +43,8 @@
         <mat-checkbox [(ngModel)]="studentCodeView">
           <b>View Code</b>
         </mat-checkbox>
-        <lti-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch" [version]="studentCircuit.version"></lti-view-code>
+        <lti-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
+          [version]="studentCircuit.version"></lti-view-code>
       </li>
     </ul>
     <div class="card-footer">
@@ -65,7 +66,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-select formControlName="initial_schematic" matInput required placeholder="Students's Simulation"
-          [compareWith]="compareIds" (selectionChange)="onSelectChanges($event)">
+          [compareWith]="compareIds" (selectionChange)="onStudentSelectChanges($event)">
           <mat-option>
             None
           </mat-option>

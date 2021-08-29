@@ -387,13 +387,13 @@ export class MainPageComponent implements OnInit {
    * @param url URL that need to be copy
    */
   CopyUrlToClipBoard(url) {
-    // Create a temp html element put url inside it
+    // Select the html textarea element and put url inside it
     const tmpEl: HTMLTextAreaElement = document.querySelector('#sharing-url');
     tmpEl.value = url;
     // Focus and Select the element
     tmpEl.focus();
     tmpEl.select();
-    // exec copu command
+    // exec copy command
     const done = document.execCommand('copy');
     // if not able to copy show alert with url else show user a snackbar
     if (!done) {
@@ -647,6 +647,11 @@ export class MainPageComponent implements OnInit {
       () => { }, 'On the Cloud', 'Temporarily in the browser', 'Cancel');
   }
 
+  /**
+   * Get Url for sharing circuits
+   * @param circuit Object containing data of the circuit opened
+   * @returns url string for sharing circuits
+   */
   getUrl(circuit) {
     let slug = `${circuit.save_id.replace(/-/g, '_')}-${circuit.branch.replace(/-/g, '_')}-${circuit.version.replace(/-/g, '_')}`;
     slug += `-${circuit.name.substr(0, 50).replace(/ +/g, '-')}`;
@@ -654,6 +659,10 @@ export class MainPageComponent implements OnInit {
     return `${window.location.protocol}\\\\${window.location.host}/arduino/#/project/${slug}`;
   }
 
+  /**
+   * Deletes the LTI App created for the selected circuit.
+   * @param selected Data of the circuit selected from dashboard
+   */
   DeleteLTI(selected) {
     const token = Login.getToken();
     if(token) {
@@ -670,13 +679,19 @@ export class MainPageComponent implements OnInit {
     }
   }
 
+  /**
+   * Filter Projects if they have LTI App
+   * @returns Filtered array of circuits containing lti_id
+   */
   getLTIApps() {
-    console.log(this.online);
     return this.online.filter(circuit => circuit.lti_id);
   }
-  
+
+  /**
+   * Filter Projects if they are LTI Submissions
+   * @returns Filtered array of circuits containing is_submission
+   */
   getLTISubmissions() {
-    console.log(this.online);
     return this.online.filter(circuit => circuit.is_submission);
   }
 }

@@ -253,18 +253,33 @@ export class ApiService {
     });
   }
 
+  /**
+   * Request to fetch LTI App details for id of the given circuit
+   * @param id save_id of the circuit
+   * @param token Auth Token
+   */
   existLTIURL(id: string, token: string) {
     return this.http.get(`${this.url}api/lti/exist/${id}`, {
       headers: this.httpHeaders(token),
     });
   }
 
+  /**
+   * Request to save LTI details at the backend
+   * @param token Auth Token
+   * @param data LTI Details containing ids of model and student circuits, consumer and secret keys
+   */
   saveLTIDetails(token: string, data: any) {
     return this.http.post(`${this.url}api/lti/build/`, data, {
       headers: this.httpHeaders(token),
     });
   }
 
+  /**
+   * Requests for deleting the LTI app
+   * @param id Model Circuit ID Number
+   * @param token Auth Token
+   */
   removeLTIDetails(id: number, token: string) {
     return this.http.delete(`${this.url}api/lti/delete/${id}`, {
       headers: new HttpHeaders({
@@ -294,18 +309,35 @@ export class ApiService {
     });
   }
 
+  /**
+   * Request to update LTI details at the backend
+   * @param token Auth Token
+   * @param data LTI Details containing ids of model and student circuits, consumer and secret keys
+   */
   updateLTIDetails(token: string, data: any) {
     return this.http.post(`${this.url}api/lti/update/`, data, {
       headers: this.httpHeaders(token),
     })
   }
 
+  /**
+   * Requests for creating submission for the circuit with given id
+   * @param token Auth Token
+   * @param data LTI data (contains save_id, lti_id, lti_nonce, lti_user_id)
+   */
   submitCircuit(token: string, data: any) {
     return this.http.post(`${this.url}api/lti/submit/`, data, {
       headers: this.httpHeaders(token),
     });
   }
 
+  /**
+   * Requests to retrieve all the submissions for given LTI App from backend
+   * @param id save_id of the circuit
+   * @param branch branch of the circuit
+   * @param version version of the circuit
+   * @param token Auth Token
+   */
   getSubmissions(id: string, branch: string, version: string, token: string) {
     return this.http.get(`${this.url}api/lti/submissions/${id}/${version}/${branch}`, {
       headers: this.httpHeaders(token),

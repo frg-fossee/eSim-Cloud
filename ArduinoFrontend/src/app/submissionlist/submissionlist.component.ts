@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertService } from '../alert/alert-service/alert.service';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
 
@@ -16,6 +15,9 @@ export interface submission {
   score: number;
 }
 
+/**
+ * Class for Submission List
+ */
 @Component({
   selector: 'app-submissionlist',
   templateUrl: './submissionlist.component.html',
@@ -23,25 +25,59 @@ export interface submission {
 })
 export class SubmissionlistComponent implements OnInit {
 
+  /**
+   * Data source/list of submissions shown on the mat table
+   */
   submissions = new MatTableDataSource<submission>([]);
+  /**
+   * Ordered list representing column names in table headers
+   */
   columnNames: string[];
-  actions: string[];
+  /**
+   * Id of the circuit received from query parameters
+   */
   id: string;
+  /**
+   * Branch of the circuit received from query parameters
+   */
   branch: string;
+  /**
+   * Version of the circuit received from query parameters
+   */
   version: string;
-  searchString: string;
+  /**
+   * LTI Id of the circuit received from query parameters
+   * Used in return button above the table
+   */
   lti: string;
-
+  /**
+   * a state keeping track of value in search box.
+   */
+  searchString: string;
+  /**
+   * for adding mat sort functionality to mat table
+   */
   @ViewChild(MatSort) sort: MatSort;
+  /**
+   * for adding mat paginator functionality to mat table
+   */
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
+  /**
+   * Submission List Component Constructor 
+   * @param router Router to navigate
+   * @param aroute Activated Route
+   * @param api API service for api calls
+   */
   constructor(
     private router: Router,
     private aroute: ActivatedRoute,
     private api: ApiService,
-    private alertService: AlertService,
     ) { }
 
+  /**
+   * On Init Callback
+   */
   ngOnInit() {
     document.title= 'Submissions | Arduino on Cloud';
     this.columnNames = ['user', 'user_id', 'save_time', 'lis_outcome_service_url', 'score', 'run', ]
@@ -62,6 +98,9 @@ export class SubmissionlistComponent implements OnInit {
     });
   }
 
+  /**
+   * Sets up the table accessing functions for the mat table
+   */
   setUpTable() {
     this.submissions.filterPredicate = (data, filter) => data.user.toLocaleLowerCase().includes(filter) || data.user_id.toLocaleLowerCase().includes(filter);
     this.submissions.paginator = this.paginator;
@@ -80,19 +119,23 @@ export class SubmissionlistComponent implements OnInit {
     };
   }
 
+  /**
+   * Function that executes on modifying value in the search box
+   * @param searchString String entered as input by user
+   */
   searchNFilter(searchString: string) {
-    console.log(searchString);
-    console.log(this.submissions);
     this.submissions.filter = searchString.trim().toLocaleLowerCase();
     if (this.submissions.paginator) {
       this.submissions.paginator.firstPage();
     }
   }
 
+  /**
+   * Retrieves submissions from backend
+   */
   PopulateSubmissions() {
     const token = Login.getToken();
     this.api.getSubmissions(this.id, this.branch, this.version, token).subscribe(res => {
-      console.log(res);
       for(let i = 0; i < res['length']; i++) {
         this.submissions.data.push({
           user: res[i]['student'] ? res[i]['student']['username'] : 'Anonymous User',
@@ -112,6 +155,11 @@ export class SubmissionlistComponent implements OnInit {
     });
   }
 
+  /**
+   * Converts date string in appropriate format
+   * @param date Date string returned by backend
+   * @returns date string in human readable format
+   */
   getFormattedDate(date: string) {
     const dateObj = new Date(date);
     return `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;

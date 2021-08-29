@@ -6,7 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { environment } from 'src/environments/environment';
 
-
+/**
+ * Interface to store relevant circuit data
+ */
 export interface circuit {
   id: number;
   branch: string;
@@ -17,6 +19,9 @@ export interface circuit {
   save_id: string;
 }
 
+/**
+ * Interface to store LTI Details
+ */
 export interface LTIDetails {
   secret_key: string;
   consumer_key: string;
@@ -32,6 +37,9 @@ export interface LTIDetails {
   sim_params: string[];
 }
 
+/**
+ * Class for LTI Form
+ */
 @Component({
   selector: 'lti-form',
   templateUrl: './lti-form.component.html',
@@ -39,6 +47,12 @@ export interface LTIDetails {
 })
 export class LTIFormComponent implements OnInit {
 
+  /**
+   * LTI Form Component Constructor
+   * @param api API service for api calls
+   * @param router Router to navigate
+   * @param aroute Activated Route
+   */
   constructor(
     public api: ApiService,
     private router: Router,
@@ -46,17 +60,53 @@ export class LTIFormComponent implements OnInit {
   ) {
   }
 
+  /**
+   * Toggles input type of secret key form-field
+   */
   hide: boolean = true;
+  /**
+   * stores relevant data of model circuit chosen
+   */
   modelCircuit: circuit;
+  /**
+   * stores relevant data of student/initial circuit chosen
+   */
   studentCircuit: circuit;
-  circuit_id: any = null; // strongly type it to string
+  /**
+   * circuit id of the circuit received from query parameters
+   */
+  circuit_id: string = null;
+  /**
+   * branch of the circuit received from query parameters
+   */
   branch: string = '';
+  /**
+   * version of the circuit received from query parameters
+   */
   version: string = '';
-  lti_id: string = null; // strongly type it to string
+  /**
+   * LTI ID of the circuit received from query parameters
+   */
+  lti_id: string = null;
+  /**
+   * Show/Hide Tooltip
+   */
   copyTooltip: boolean = false;
+  /**
+   * Stores all versions of the circuit
+   */
   circuits: any[];
+  /**
+   * Stores all test cases applicable for the circuit
+   */
   testCases: any[];
+  /**
+   * Stores config url shown in text box
+   */
   configUrl: string = '';
+  /**
+   * Stores LTI details recieved from backend and the LTI Form
+   */
   details: LTIDetails = {
     secret_key: '',
     consumer_key: '',
@@ -71,6 +121,9 @@ export class LTIFormComponent implements OnInit {
     id: '',
     sim_params: [],
   }
+  /**
+   * Defines LTI Form Controls and Validators
+   */
   form: FormGroup = new FormGroup({
     consumer_key: new FormControl("", [Validators.required, Validators.minLength(2)]),
     secret_key: new FormControl("", [Validators.required, Validators.minLength(2)]),
@@ -80,11 +133,13 @@ export class LTIFormComponent implements OnInit {
     scored: new FormControl(true),
   })
 
+  /**
+   * On Init Callback
+   */
   ngOnInit() {
     document.documentElement.style.overflow = 'auto';
     document.title= 'LTI | Arduino on Cloud';
     this.aroute.queryParams.subscribe(v => {
-      console.log(v);
       // if project id is present and no query parameter then redirect to dashboard
       const token = Login.getToken();
       if (Object.keys(v).length === 0 && this.circuit_id || !token) {
@@ -100,8 +155,9 @@ export class LTIFormComponent implements OnInit {
       if (this.lti_id) {
         this.details.id = this.lti_id;
         const token = Login.getToken();
-
+        // Get details of the LTI App.
         this.api.existLTIURL(this.circuit_id, token).subscribe(res => {
+          // Switch to the branch and version of the existing LTI App
           if (res['model_schematic'].branch != this.branch || res['model_schematic'].version != this.version) {
             this.router.navigate(
               [],
@@ -133,7 +189,6 @@ export class LTIFormComponent implements OnInit {
           };
           this.getAllVersions();
           this.configUrl = this.details.config_url;
-          console.log(this.modelCircuit, this.studentCircuit);
         }, err => {
           if (err.status == 404) {
             this.details.configExists = false;
@@ -148,6 +203,10 @@ export class LTIFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Sets the form fields as set in the supplied object
+   * @param res Object with interface similar to form property
+   */
   setForm(res: any) {
     this.form.setValue({
       consumer_key: res['consumer_key'],
@@ -159,19 +218,37 @@ export class LTIFormComponent implements OnInit {
     })
   }
 
+  /**
+   * Called on changing option in select form field for test case
+   * @param event Event data on changing select form field for test case 
+   */
   ontestCaseSelectChanges(event) {
     console.log(event);
   }
 
+  /**
+   * Sets the student circuit of the LTI form
+   * @param value id of the circuit to be set as initial/student circuit
+   * @param callback function called after retrieving the intended circuit
+   */
   getStudentSimulation(value, callback) {
     this.studentCircuit = value ? this.circuits.filter(v => v.id === parseInt(value, 10))[0] : undefined;
-    callback();
+    if (callback) {
+      callback();
+    }
   }
 
-  onSelectChanges(event) {
-    this.getStudentSimulation(event.value, () => console.log(this.studentCircuit));
+  /**
+   * Called on changing option in select form field for student simulation
+   * @param event Event data on changing select form field for student simulation 
+   */
+  onStudentSelectChanges(event) {
+    this.getStudentSimulation(event.value, null);
   }
 
+  /**
+   * Called on clicking Save button from LTI Form
+   */
   onSubmit() {
     if (this.form.valid) {
       if (!this.details.scored) {
@@ -193,9 +270,7 @@ export class LTIFormComponent implements OnInit {
         delete data['config_url']
         delete data['consumerError']
         delete data['id']
-        console.log(data);
         this.api.saveLTIDetails(token, data).subscribe(res => {
-          console.log(res);
           this.setForm(res);
           this.details = {
             ...this.form.value,
@@ -207,11 +282,7 @@ export class LTIFormComponent implements OnInit {
             consumerError: '',
           }
           this.lti_id = res['id'];
-          // this.studentCircuit = res['initial_schematic'];
-          // this.modelCircuit = res['model_schematic'];
           this.configUrl = this.details.config_url;
-          console.log(res);
-          console.log(this.configUrl);
           this.router.navigate(
             [],
             {
@@ -232,11 +303,13 @@ export class LTIFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Called on clicking Delete button from LTI Form
+   */
   onDelete() {
     const token = Login.getToken();
     if (token) {
       this.api.removeLTIDetails(this.details.model_schematic, token).subscribe(res => {
-        console.log(res);
         this.details = {
           ...this.details,
           secret_key: '',
@@ -270,6 +343,9 @@ export class LTIFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Called on clicking Update button from LTI Form
+   */
   onUpdate() {
     const token = Login.getToken();
     if (!this.form.valid && !token) {
@@ -279,7 +355,7 @@ export class LTIFormComponent implements OnInit {
       ...this.details,
       ...this.form.value,
       id: this.lti_id,
-      configExists: this.details.configExists, // false,
+      configExists: this.details.configExists,
       model_schematic: this.details.model_schematic,
       test_case: null,
       sim_params: [],
@@ -291,15 +367,11 @@ export class LTIFormComponent implements OnInit {
     delete data['configExists']
     delete data['config_url']
     delete data['consumerError']
-    console.log(data);
     this.api.updateLTIDetails(token, data).subscribe(res => {
-      console.log(res);
       this.setForm(res);
       this.details = {
         ...this.details,
         ...this.form.value,
-        // scored: this.details.scored ? this.details.scored : false,
-        // initial_schematic: parseInt(res['initial_schematic'], 10),
         id: res['id'] ? res['id'] : this.lti_id,
         model_schematic: parseInt(res['model_schematic'], 10),
         config_url: res['config_url'] ? res['config_url'] : this.details.config_url,
@@ -308,8 +380,6 @@ export class LTIFormComponent implements OnInit {
       }
       this.lti_id = res['id'];
       this.configUrl = this.details.config_url;
-      console.log(res);
-      console.log(this.configUrl);
       this.router.navigate(
         [],
         {
@@ -324,14 +394,19 @@ export class LTIFormComponent implements OnInit {
     }, err => {
       console.log(err);
       this.setConsumerError(err);
-      // this.details.configExists = false;
     });
   }
 
+  /**
+   * Called to reset LTI Form
+   */
   onClear() {
     this.form.reset();
   }
 
+  /**
+   * Set errors received from backend
+   */
   setConsumerError(err) {
     this.details.consumerError = "";
     if (err.error) {
@@ -347,6 +422,9 @@ export class LTIFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Copies URL from the text box
+   */
   copyURL() {
     let copyUrl: HTMLTextAreaElement = document.querySelector('#lti-url');
     this.copyTooltip = true;
@@ -356,7 +434,7 @@ export class LTIFormComponent implements OnInit {
   }
 
   /**
-   * Get all variation of project
+   * Get all variations of the circuit
    */
   getAllVersions() {
     // get Auth token
@@ -369,7 +447,7 @@ export class LTIFormComponent implements OnInit {
         } else {
           this.modelCircuit = this.circuits.filter(v => v.branch === this.branch && v.version === this.version)[0]
         }
-        // Splice the model circuit from the retrieved ones.
+        // Splice the model circuit from the retrieved ones if required.
       });
     } else {
       // if no token is present then show this message
@@ -377,10 +455,21 @@ export class LTIFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Comparing the circuits using their id field
+   * @param id1 Id of circuit selected
+   * @param id2 Id of the circuits from mat-option
+   * @returns boolean value whether ids are same or not
+   */
   compareIds(id1, id2) {
     return id1 && id2 && id1 === id2;
   }
 
+  /**
+   * Converts date string in appropriate format
+   * @param date Date string returned by backend
+   * @returns date string in human readable format
+   */
   getFormattedDate(date: string) {
     const dateObj = new Date(date);
     return `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;

@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
@@ -103,30 +103,34 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
+  /**
+   * Hide/Show submit button
+   */
   submitButtonVisibility: boolean = false;
+  /**
+   * LTI ID of LTI App (if simulator is opened on LMS)
+   */
   lti_id: string = '';
+  /**
+   * LTI Nonce of LTI App (if simulator is opened on LMS)
+   */
   lti_nonce: string = '';
+  /**
+   * LTI User ID of LTI App (if simulator is opened on LMS)
+   */
   lti_user_id: string = '';
-  scored: boolean = false;
+  /**
+   * Currently loaded circuit's branch
+   */
   branch: string;
+  /**
+   * Currently loaded circuit's version
+   */
   version: string;
+  /**
+   * Currently loaded circuit's save time
+   */
   save_time: Date;
-//   waveForm: ChartDataSets[] = [
-//     { data: [], label: "Waveform", fill: true }
-//   ];
-//   time: Label[] =[];
-//   timeChartColors: Color[] = [
-//     {
-//       borderColor: "#039BE5",
-//       pointBackgroundColor: "#039BE5"
-//     }
-//   ];
-//   timeChartOptions: ChartOptions = {
-//     animation: {
-//       duration: 0
-//     }
-//  };
-  // submissionsUpdated: EventEmitter = new EventEmitter()
   /**
    * Determines whether staff is
    */
@@ -228,31 +232,12 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.branch = v.branch;
         this.version = v.version;
         this.submitButtonVisibility = true;
-        console.log(v);
         this.LoadOnlineProject(v.id, 'false');
-        // if(!v.branch && !v.version) {
-        //   this.createNewBranch({
-        //       branch: 'lti_submission',
-        //       version: this.getRandomString(20),
-        //   });
-        // } else {
-        //   this.LoadOnlineProject(v.id, 'false');
-        // }
       } else if (v.id) {
         this.projectId = v.id;
         this.LoadOnlineProject(v.id, v.offline);
-        // this.api.existLTIURL(v.id, this.token).subscribe(res => {
-        //   this.lti_id = res['lti_id'];
-        //   this.lti_nonce = res['lti_nonce'];
-        //   this.lti_user_id = res['lti_user_id'];
-        //   this.submitButtonVisibility = true;
-        // }, err => {
-        //   console.log(err);
-        //   this.submitButtonVisibility = false;
-        // });
         this.submitButtonVisibility = false;
       }
-      console.log(this.projectId);
     });
 
 
@@ -537,7 +522,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           if (out['duplicate']) {
             // TODO: if duplicate, refresh the route with same versionId and same branch
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              // add new quert parameters
+              // add new query parameters
               this.router.navigate(
                 ['/simulator'],
                 {
@@ -559,7 +544,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           }
           // If project is not duplicate refresh route with newVersion Id and same branch
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            // add new quert parameters
+            // add new query parameters
             this.router.navigate(
               ['/simulator'],
               {
@@ -585,7 +570,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       // Save Project and show alert
       SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
         AlertService.showAlert('Saved');
-        // add new quert parameters
+        // add new query parameters
         this.router.navigate(
           [],
           {
@@ -890,7 +875,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
       AlertService.showAlert('Created new branch');
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        // add new quert parameters
+        // add new query parameters
         this.router.navigate(
           ['/simulator'],
           {
@@ -926,13 +911,15 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  /**
+   * Saves the circuit and saves it as a submission for given LTI details
+   */
   SaveLTISubmission() {
     const token = Login.getToken();
     this.branch = this.branch ? this.branch: 'master';
     this.version = this.getRandomString(20);
     SaveOnline.Save(this.projectTitle, this.description, this.api, this.branch, this.version, (out) => {
       this.projectId = out.save_id;
-      console.log(this.projectId);
       const data = {
         schematic: this.projectId,
         ltisession: {
@@ -971,6 +958,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Returns date in human readable format
+   * @param date Date string
+   * @returns string with formatted date  
+   */
   getFormattedDate(date: string) {
     const dateObj = new Date(date);
     return `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
