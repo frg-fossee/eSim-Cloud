@@ -199,7 +199,7 @@ export default function SubmissionTable () {
                   </TableCell>
                   <TableCell align="center">{student.ltisession.user_id}</TableCell>
                   <TableCell align="center">{student.schematic.save_time.toLocaleString()}</TableCell>
-                  <TableCell align="center">{student.ltisession.lis_outcome_service_url.split('/')[2]}</TableCell>
+                  <TableCell align="center">{student.ltisession.lis_outcome_service_url ? student.ltisession.lis_outcome_service_url.split('/')[2] : <h1>None</h1>}</TableCell>
                   <TableCell align="center">{student.score}</TableCell>
                   <TableCell align="center">
                     <Button disableElevation variant="contained" color="primary" href={`#/editor?id=${student.schematic.save_id}&version=${student.schematic.version}&branch=${student.schematic.branch}`}>
