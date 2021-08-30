@@ -45,11 +45,11 @@
       </li> -->
     </ul>
 
-    <div class="navbar-nav ml-auto" *ngIf="lti_id || lti_nonce || lti_user_id">
+    <div class="navbar-nav ml-auto" *ngIf="ltiId || ltiNonce || ltiUserId">
       <span style="color: #808080; margin-right: 10px;">Last saved: {{ getFormattedDate(saveTime) }}</span>
       <b style="color: #ff0000;">EXAM</b>
     </div>
-    <div class="navbar-nav ml-auto" *ngIf="!lti_id && !lti_nonce && !lti_user_id">
+    <div class="navbar-nav ml-auto" *ngIf="!ltiId && !ltiNonce && !ltiUserId">
       <a mat-raised-button
         (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))"
         class="navBarItem">Home</a>
