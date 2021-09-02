@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SimulatorComponent } from './simulator/simulator.component';
+// import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
@@ -32,6 +33,10 @@ import { SidePanelComponent } from './side-panel/side-panel.component';
 import { MaterialModule } from './common/material.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { SharedModule } from './common/SharedModule.module';
+import { GraphComponent } from './graph/graph.component';
+import { GraphDataService } from './graph-data.service';
+import { GraphlistComponent } from './graphlist/graphlist.component';
+
 
 /**
  * Monaco OnLoad Function
@@ -69,7 +74,8 @@ const monacoConfig: NgxMonacoEditorConfig = {
     SaveProjectDialogComponent,
     VersioningPanelComponent,
     CreateVariationDialogComponent,
-
+    GraphComponent,
+    GraphlistComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,7 +89,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     SharedModule   // shared module for Header component
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, GraphDataService],
   bootstrap: [AppComponent],
   entryComponents: [
     ViewComponentInfoComponent,

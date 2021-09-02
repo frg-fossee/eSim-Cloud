@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
@@ -103,6 +103,27 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
+  submitButtonVisibility: boolean = false;
+  lti_id: string = '';
+  lti_nonce: string = '';
+  lti_user_id: string = '';
+  scored: boolean = false;
+//   waveForm: ChartDataSets[] = [
+//     { data: [], label: "Waveform", fill: true }
+//   ];
+//   time: Label[] =[];
+//   timeChartColors: Color[] = [
+//     {
+//       borderColor: "#039BE5",
+//       pointBackgroundColor: "#039BE5"
+//     }
+//   ];
+//   timeChartOptions: ChartOptions = {
+//     animation: {
+//       duration: 0
+//     }
+//  };
+  // submissionsUpdated: EventEmitter = new EventEmitter()
   /**
    * Determines whether staff is
    */
@@ -196,10 +217,19 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             this.LoadProject(data);
           });
         }
+      } else if (v.id && v.lti_id && v.lti_nonce && v.lti_user_id) {
+        this.projectId = v.id;
+        this.lti_id = v.lti_id;
+        this.lti_nonce = v.lti_nonce;
+        this.lti_user_id = v.lti_user_id;
+        this.submitButtonVisibility = true;
+        console.log(v);
+        this.LoadOnlineProject(v.id, 'false');
       } else if (v.id) {
         this.projectId = v.id;
         this.LoadOnlineProject(v.id, v.offline);
       }
+      console.log(this.projectId);
     });
 
 
@@ -249,6 +279,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
     // Initializing window
     this.window = window;
+  }
+  isLoaded() {
+    return Workspace.circuitLoaded;
   }
   /**
    * Enable Move on Property Box

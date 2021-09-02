@@ -325,4 +325,80 @@ export class ApiService {
       })
     });
   }
+
+  existLTIURL(id: string, token: string) {
+    if (token) {
+      return this.http.get(`${this.url}api/lti/exist/${id}`, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        })
+      });
+    } else {
+      return this.http.get(`${this.url}api/lti/exist/${id}`, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        })
+      });
+    }
+  }
+
+  saveLTIDetails(id: string, token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/build/`, data, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
+  removeLTIDetails(id: string, token: string) {
+    return this.http.delete(`${this.url}api/lti/delete/${id}`, {
+      headers: new HttpHeaders({
+        'Authorization': `Token ${token}`,
+      })
+    });
+  }
+
+  updateLTIDetails(id: string, token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/update/`, data, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    })
+  }
+
+  submitCircuit(token: string, data: any) {
+    if (token) {
+      return this.http.post(`${this.url}api/lti/submit/`, data, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${token}`,
+          'Access-Control-Allow-Origin': '*',
+        })
+      });
+    } else {
+      return this.http.post(`${this.url}api/lti/submit/`, data, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        })
+      });
+    }
+  }
+
+  getSubmissions(consumerKey: string, token: string) {
+    return this.http.get(`${this.url}api/lti/submissions/${consumerKey}`, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`,
+        'Access-Control-Allow-Origin': '*',
+      })
+    })
+  }
 }

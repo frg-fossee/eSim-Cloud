@@ -221,6 +221,15 @@
 
 
 
+  <span class="pipe" *ngIf="submitButtonVisibility">|</span>
+
+  <button mat-raised-button color="primary" class="mt-1 ripple" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="submitCircuit()">
+    <i style="color: #000;" class="fas fa-paper-plane"></i>
+    <span style="color: #000;">
+      Submit
+    </span>
+  </button>
+  <!-- Condition to dislay the Submit button is yet to be added -->
   <!-- <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-reply"></i></button>
 
   <button class="btn btn-light btn-sm  mb-1 mt-1 bg-white" style="font-size:20px"><i class="fa fa-share"></i></button>
@@ -477,3 +486,5 @@
     </div>
   </div>
 </div>
+<app-graphlist *ngIf="isLoaded()"></app-graphlist>
+<!-- <app-graph *ngIf="isLoaded()"></app-graph> -->
