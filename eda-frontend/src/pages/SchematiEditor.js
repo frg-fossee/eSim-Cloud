@@ -71,7 +71,7 @@ export default function SchematiEditor (props) {
 
       {/* Schematic editor header, toolbar and left side pane */}
       <Layout
-        header={<Header />}
+        header={gridRef && <Header gridRef={gridRef}/> }
         resToolbar={
           <SchematicToolbar
             gridRef={gridRef}
