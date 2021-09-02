@@ -505,7 +505,7 @@ function Header ({ gridRef }) {
                 variant="outlined"
                 target="_blank"
               >
-              Login
+                Login
               </Button>
             </>
             : (<>
