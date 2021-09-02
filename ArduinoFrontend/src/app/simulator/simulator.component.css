@@ -379,3 +379,7 @@ body {
   min-height: 150%;
   background-color: rgba(0, 0, 0, 0.4);
 }
+.navBarItem{
+  margin-right: 10px !important;
+  margin-top: 4px !important;
+}

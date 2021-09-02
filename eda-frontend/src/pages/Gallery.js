@@ -103,7 +103,7 @@ function SchematicCard ({ sch }) {
             Launch in Editor
           </Button>
           {console.log(auth.roles)}
-          {auth.roles && auth.roles.is_type_staff &&
+          {auth.roles && auth.roles.is_esim_staff &&
             <Button onClick={() => { handleSnacClick() }}>
               <Tooltip title="Delete" placement="bottom" arrow>
                 <DeleteIcon

@@ -803,7 +803,7 @@ export default function SchematicToolbar ({
             endIcon={<Icon>send</Icon>}
             onClick={onSubmission}
           >
-              Submit
+          Submit
           </Button>
         </Tooltip>
       )}
@@ -1057,7 +1057,7 @@ export default function SchematicToolbar ({
           </>
         }
       />
-      {auth.roles && auth.roles.is_type_staff && (
+      {auth.roles && auth.roles.is_esim_staff && (
         <Tooltip title="Add to Gallery">
           <IconButton
             color="inherit"

@@ -1137,7 +1137,6 @@ export class Workspace {
       // Export JSON File & Download it
       const filename = `${name}.json`;
       const jsonStr = JSON.stringify(saveObj);
-
       const element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
       element.setAttribute('download', filename);

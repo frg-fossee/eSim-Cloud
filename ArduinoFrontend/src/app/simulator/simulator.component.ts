@@ -19,6 +19,7 @@ import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialo
 import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
+import { sample } from 'rxjs/operators';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -93,7 +94,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Username
    */
-  username: string;
+  username = '';
   /**
    * window
    */
@@ -102,6 +103,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
+  /**
+   * Determines whether staff is
+   */
+  isStaff = false;
   /**
    * Simulator Component constructor
    * @param aroute Activated Route
@@ -151,6 +156,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       // if token is valid get User name
       this.token = Login.getToken();
       if (this.token) {
+        this.api.getRole(this.token).subscribe((result: any) => {
+          result.is_arduino_staff === true ? this.isStaff = true : this.isStaff = false;
+        });
         this.api.userInfo(this.token).subscribe((tmp) => {
           this.username = tmp.username;
         }, err => {
@@ -176,7 +184,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       }
       // if gallery query parameter is present
       if (v.gallery) {
-        this.OpenGallery(v.gallery);
+        this.OpenGallery(v.gallery, v.proId);
         return;
       }
       // if id is present and it is ofline
@@ -193,6 +201,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.LoadOnlineProject(v.id, v.offline);
       }
     });
+
 
     // Make a svg g tag
     const gtag = this.makeSVGg();
@@ -570,6 +579,16 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  /**
+   * Function save the gallery
+   */
+  addToGallery() {
+    SaveOnline.staffSaveGallery(this.projectTitle, this.description, this.api, (out) => {
+      // this.router.navigate(['/gallery'])
+    });
+
+  }
   /** Function clear variables in the Workspace */
   ClearProject() {
     Workspace.ClearWorkspace();
@@ -701,8 +720,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Open Gallery Project
    * @param index Gallery item index
+   * @param id Component Id
    */
-  OpenGallery(index: string) {
+  OpenGallery(index: string, id: any) {
     // Show Loading animation
     window['showLoading']();
     // Get Position
@@ -710,21 +730,21 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // if it is a valid number then proceed
     if (!isNaN(i)) {
       // Fetch all samples
-      this.api.fetchSamples().subscribe(out => {
-        if (out[i]) {
+      this.api.fetchSingleProjectToGallery(id).subscribe((out: any) => {
+        if (out) {
           // set project title
-          this.projectTitle = out[i].name;
+          this.projectTitle = out.name;
           this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
           // Set project description
-          this.description = out[i].description;
+          this.description = out.description;
           // Load the project
-          Workspace.Load(JSON.parse(out[i].data_dump));
+          Workspace.Load(JSON.parse(out.data_dump));
         } else {
           AlertService.showAlert('No Item Found');
         }
         window['hideLoading']();
       }, err => {
-        console.error(err);
+        console.log(err);
         AlertService.showAlert('Failed to load From gallery!');
         window['hideLoading']();
       });

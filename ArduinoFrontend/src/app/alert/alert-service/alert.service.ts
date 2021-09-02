@@ -11,7 +11,7 @@ export class AlertService {
 
   private static dialog: MatDialog;
 
-  constructor(private dialog: MatDialog) {
+  constructor(public dialog: MatDialog) {
     AlertService.dialog = dialog;
   }
 
