@@ -33,7 +33,6 @@ import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
 import queryString from 'query-string'
-
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
     marginRight: theme.spacing(2)
