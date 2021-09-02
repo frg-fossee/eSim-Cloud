@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'project/:slug', component: ViewProjectComponent },
   {
     path: 'dashboard',
-    loadChildren: './dashboard/dashboard.module#DashboardModule',
+    loadChildren: './dashboard/dashboard.module#DashboardModule'
   },
   { path: 'simulator', component: SimulatorComponent },
   { path: 'lti', component: LTIFormComponent },
