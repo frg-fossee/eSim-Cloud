@@ -146,7 +146,8 @@ export class SubmissionlistComponent implements OnInit {
           id: res[i]['schematic']['save_id'],
           branch: res[i]['schematic']['branch'],
           version: res[i]['schematic']['version'],
-          lis_outcome_service_url: res[i]['ltisession']['lis_outcome_service_url'].split('://')[1],
+          lis_outcome_service_url: res[i]['ltisession']['lis_outcome_service_url'] ?
+           res[i]['ltisession']['lis_outcome_service_url'].split('://')[1] : 'None',
         });
       }
       this.setUpTable();
