@@ -10,6 +10,7 @@ import { MainPageComponent } from '../main-page/main-page.component';
 import { SidePanelComponent } from '../side-panel/side-panel.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
+import { ChangePasswordComponent } from '../change-password/change-password.component';
 
 @NgModule({
     declarations: [
@@ -17,6 +18,7 @@ import { DashboardComponent } from './dashboard.component';
         GalleryComponent,
         MainPageComponent,
         SidePanelComponent,
+        ChangePasswordComponent,
     ],
     imports: [
         CommonModule,

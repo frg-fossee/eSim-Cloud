@@ -297,7 +297,6 @@ export class ApiService {
       }
     });
   }
-
   /**
    * Logout
    */
@@ -322,6 +321,21 @@ export class ApiService {
         // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
         // 'Access-Control-Allow-Origin': '*',
+      })
+    });
+  }
+
+  /**
+   * Changes password
+   * @param token 
+   * @param cpData 
+   * @returns password 
+   */
+  changePassword(token, cpData): Observable<any> {
+    console.log(token);
+    return this.http.post(`${this.url}api/auth/users/set_password/`, cpData, {
+      headers: new HttpHeaders({
+        Authorization: `Token ${token}`
       })
     });
   }

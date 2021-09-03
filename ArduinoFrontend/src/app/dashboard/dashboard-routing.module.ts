@@ -4,6 +4,7 @@ import { GalleryComponent } from '../gallery/gallery.component';
 import { MainPageComponent } from '../main-page/main-page.component';
 import { DashboardComponent } from './dashboard.component';
 import { SimulatorComponent } from '../simulator/simulator.component';
+import { ChangePasswordComponent } from '../change-password/change-password.component';
 
 
 const routes: Routes = [
@@ -28,6 +29,10 @@ const routes: Routes = [
                 path: 'simulator',
                 redirectTo: '/simulator',
                 pathMatch: 'full'
+            },
+            {
+                path: 'change-password',
+                component: ChangePasswordComponent
             }
 
         ]
