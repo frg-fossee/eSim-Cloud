@@ -270,16 +270,16 @@ class LTIAuthView(APIView):
                         str(i.initial_schematic.save_id) + "&branch=" \
                         + str(i.initial_schematic.branch) + "&version=" \
                         + str(i.initial_schematic.version) \
-                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
-                        lti_session.user_id \
+                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" \
+                        + lti_session.user_id \
                         + "&lti_nonce=" + lti_session.oauth_nonce
             else:
                 next_url = protocol + host + "/arduino/#simulator?id=" + \
                         str(i.initial_schematic.save_id) + "&branch=" \
                         + str(i.initial_schematic.branch) + "&version=" \
                         + str(i.initial_schematic.version) \
-                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
-                        lti_session.user_id \
+                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" \
+                        + lti_session.user_id \
                         + "&lti_nonce=" + lti_session.oauth_nonce
         else:
             next_url = protocol + host + "/eda/#editor?id=" + \
