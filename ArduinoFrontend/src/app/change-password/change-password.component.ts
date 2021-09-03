@@ -101,7 +101,7 @@ export class ChangePasswordComponent implements OnInit {
     this.api.changePassword(this.token, modifiedData).subscribe((success: any) => {
       this.isSuccessMessage = true;
       this.isErrorMessage = false;
-      this.messageText = 'Password Change Successfully.';
+      this.messageText = 'The password has been changed successfully.';
       setTimeout(() => {
         this.router.navigate(['/dashboard']);
       }, 500);
