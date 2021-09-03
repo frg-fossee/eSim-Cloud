@@ -157,10 +157,11 @@ export class DHT11 extends CircuitElement {
 
       // let arr =[0o1101010o00o11000,0o0,0o1001101 ]
       arr.forEach(d=>{
+        console.log(d);
       this.setValue(d);
       })
       // this.setValue(arr);
-    }, 20);
+    }, 1000);
     // this.setValue(0.987);
 
 
