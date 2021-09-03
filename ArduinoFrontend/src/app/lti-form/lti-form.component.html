@@ -122,7 +122,7 @@
     <button class="ml-5" mat-raised-button color="warn" type="button" *ngIf="details.configExists"
       (click)="onDelete()">DELETE</button>
     <button class="ml-5" mat-raised-button color="primary" type="button" [routerLink]="['/submissions']"
-      [queryParams]="{id: modelCircuit.save_id, branch: modelCircuit.branch, version: modelCircuit.version, scored: details.scored, lti: lti_id}"
+      [queryParams]="{id: modelCircuit.save_id, branch: modelCircuit.branch, version: modelCircuit.version, scored: details.scored, lti: lti}"
       *ngIf="details.configExists && details.scored">SUBMISSIONS</button>
     <button class="ml-5" mat-raised-button color="primary" type="button" [routerLink]="['/dashboard']">GO TO
       DASHBOARD</button>

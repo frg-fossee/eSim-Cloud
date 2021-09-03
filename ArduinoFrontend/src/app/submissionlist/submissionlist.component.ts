@@ -81,6 +81,7 @@ export class SubmissionlistComponent implements OnInit {
   ngOnInit() {
     document.title = 'Submissions | Arduino on Cloud';
     this.columnNames = ['user', 'user_id', 'save_time', 'lis_outcome_service_url', 'score', 'run', ];
+    this.submissions.data.splice(0, this.submissions.data.length);
     this.aroute.queryParams.subscribe(v => {
       const token = Login.getToken();
       if (!v.id || !v.branch || !v.version || !token) {
