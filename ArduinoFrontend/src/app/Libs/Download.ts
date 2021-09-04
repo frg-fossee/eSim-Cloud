@@ -52,8 +52,11 @@ export class Download {
    * @param type Type of the Image
    */
   static async ExportImage(type: ImageType) {
+    let svg: SVGSVGElement;
     // Get SVG from Workspace an Clone it
-    const svg = (document.querySelector('#holder > svg').cloneNode(true) as SVGSVGElement);
+    if (document.querySelector('#holder > svg')) {
+      svg = (document.querySelector('#holder > svg').cloneNode(true) as SVGSVGElement);
+    }
     svg.getElementsByTagName('g')[0].removeAttribute('transform'); // Remove any transformation
 
     // Extract all image from svg
