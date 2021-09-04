@@ -73,7 +73,7 @@ export class SubmissionlistComponent implements OnInit {
     private router: Router,
     private aroute: ActivatedRoute,
     private api: ApiService,
-    ) { }
+  ) { }
 
   /**
    * On Init Callback
@@ -148,7 +148,7 @@ export class SubmissionlistComponent implements OnInit {
           branch: res[i]['schematic']['branch'],
           version: res[i]['schematic']['version'],
           lis_outcome_service_url: res[i]['ltisession']['lis_outcome_service_url'] ?
-           res[i]['ltisession']['lis_outcome_service_url'].split('://')[1] : 'None',
+            res[i]['ltisession']['lis_outcome_service_url'].split('://')[1] : 'None',
         });
       }
       this.setUpTable();

@@ -6,11 +6,11 @@ import { Workspace } from '../Libs/Workspace';
 import { ExportJSONDialogComponent } from './export-jsondialog.component';
 
 
-class MockWorkspace extends Workspace {
-    SaveJson() {
-        return true;
-    }
-}
+// class MockWorkspace extends Workspace {
+//     SaveJson() {
+//         return true;
+//     }
+// }
 
 describe('ExportJSONDialogComponent', () => {
 
@@ -30,7 +30,7 @@ describe('ExportJSONDialogComponent', () => {
             ],
             providers: [
                 { provide: MatDialogRef, useValue: {} },
-                { provide: Workspace, useValue: MockWorkspace },
+                { provide: Workspace, useValue: {} },
                 { provide: MAT_DIALOG_DATA, useValue: { description: 'this is a desc', title: 'title' } },
             ]
         }).compileComponents();
