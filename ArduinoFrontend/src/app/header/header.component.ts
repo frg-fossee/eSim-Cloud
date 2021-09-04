@@ -107,6 +107,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
       });
     }
   }
+  onChangePassword(){
+    // let isFront =false;
+    let redirectUri =  window.location.href;
+    redirectUri = encodeURIComponent(redirectUri);
+    console.log(redirectUri);
+    // const url = `${window.location.protocol}\\\\${window.location.host}\\eda\\#\\login?url=${redirectUri}`;
+    const url = `${environment.CHANGED_PASSWORD_URL}`;
+    window.open(url, '_self');
+  }
   /**
    * on destroy when page is dead then call
    */
@@ -114,4 +123,5 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // destroy  auth subject.
     this.subscription.unsubscribe();
   }
+
 }

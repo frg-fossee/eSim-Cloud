@@ -57,8 +57,8 @@
         </div>
         <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;  color: black !important;"
           aria-labelledby="dropdownMenuLink">
-          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1 "></i> {{username}}</a>
-          <a *ngIf="username" class="dropdown-item" [routerLink]="['/dashboard/change-password']" routerLinkActive="router-link-active" ><i class="fa fa-unlock-alt mr-1"></i> Change Password</a>
+          <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+          <a *ngIf="username" class="dropdown-item"  (click)="onChangePassword()" ><i class="fa fa-unlock-alt mr-1"></i> Change Password</a>
           <div class="dropdown-divider"></div>
           <!-- <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
           <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i> New</a>
