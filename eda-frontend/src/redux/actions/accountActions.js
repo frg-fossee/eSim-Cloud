@@ -12,7 +12,7 @@ const changePasswordError = (message) => (dispatch) => {
   })
 }
 
-export const changePassword = (oldPassword, newPassword, reNewPassword, history) => (dispatch, getState) => {
+export const changePassword = (oldPassword, newPassword, reNewPassword, history, url) => (dispatch, getState) => {
   const body = {
     current_password: oldPassword,
     new_password: newPassword,
@@ -41,9 +41,15 @@ export const changePassword = (oldPassword, newPassword, reNewPassword, history)
             data: 'The password has been changed successfully.'
           }
         })
-        setTimeout(() => {
-          history.push('/dashboard')
-        }, 2000)
+        if (url != null) {
+          setTimeout(() => {
+            window.location.href = url
+          }, 2000)
+        } else {
+          setTimeout(() => {
+            history.push('/dashboard')
+          }, 2000)
+        }
       }
     })
     .catch((err) => {

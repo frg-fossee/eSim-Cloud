@@ -108,6 +108,18 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
   /**
+   * Determines whether change password on click
+   */
+  onChangePassword() {
+    // let isFront =false;
+    let redirectUri = window.location.href;
+    redirectUri = encodeURIComponent(redirectUri);
+    console.log(redirectUri);
+    // const url = `${window.location.protocol}\\\\${window.location.host}\\eda\\#\\login?url=${redirectUri}`;
+    const url = `${environment.CHANGED_PASSWORD_URL}${redirectUri}`;
+    window.open(url, '_self');
+  }
+  /**
    * on destroy when page is dead then call
    */
   ngOnDestroy() {
