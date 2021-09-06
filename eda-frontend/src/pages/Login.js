@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 var url = ''
 
-export default function SignIn (props) {
+export default function SignIn(props) {
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const [close, setClose] = useState(false)
@@ -62,7 +62,7 @@ export default function SignIn (props) {
     if (query.get('logout')) {
       localStorage.removeItem('esim_token')
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
@@ -83,6 +83,7 @@ export default function SignIn (props) {
     const ardUrl = localStorage.getItem('ard_redurl')
     if (ardUrl && ardUrl !== '') {
       url = ardUrl
+      console.log(url)
     } else if (props.location.search !== '') {
       url = query.get('url')
       localStorage.setItem('ard_redurl', url)
@@ -185,7 +186,7 @@ export default function SignIn (props) {
               <Checkbox
                 value="remember"
                 checked={remember}
-                onChange={ () => { setRemember(!remember) }}
+                onChange={() => { setRemember(!remember) }}
                 color="primary" />
             }
             label="Remember me"
