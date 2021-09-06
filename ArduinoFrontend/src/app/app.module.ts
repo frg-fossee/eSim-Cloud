@@ -80,7 +80,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
-    SharedModule   // shared module for Header component.
+    SharedModule   // shared module for Header component
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
