@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function ChangePassword(props) {
+export default function ChangePassword (props) {
   const classes = useStyles()
 
   const account = useSelector(state => state.accountReducer)

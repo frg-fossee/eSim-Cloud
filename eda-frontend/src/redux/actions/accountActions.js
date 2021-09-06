@@ -43,7 +43,7 @@ export const changePassword = (oldPassword, newPassword, reNewPassword, history,
         })
         if (url != null) {
           setTimeout(() => {
-            window.location.href = url;
+            window.location.href = url
           }, 2000)
         } else {
           setTimeout(() => {
