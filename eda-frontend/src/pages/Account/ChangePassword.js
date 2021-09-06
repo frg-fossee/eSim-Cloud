@@ -38,10 +38,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function ChangePassword () {
+export default function ChangePassword (props) {
   const classes = useStyles()
 
   const account = useSelector(state => state.accountReducer)
+  const query = new URLSearchParams(props.location.search)
+  const url = query.get('url')
 
   const dispatch = useDispatch()
   var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
@@ -170,7 +172,7 @@ export default function ChangePassword () {
             fullWidth
             variant="contained"
             color="primary"
-            onClick={() => dispatch(changePassword(currentPassword, newPassword, reNewPassword, history))}
+            onClick={() => dispatch(changePassword(currentPassword, newPassword, reNewPassword, history, url))}
             className={classes.submit}
             disabled={false}
           >
