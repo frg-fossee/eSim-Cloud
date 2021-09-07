@@ -205,8 +205,12 @@
     (click)="zoom(0)"><i style="font-size: 20px;color: black;" class="fa fa-search-plus"></i></button>
 
   <button mat-icon-button matTooltip="Zoom out" class="mt-1"
-    style="margin-right: 30px;align-items: center;background: transparent;" (click)="zoom(1)"><i
+    style="align-items: center;background: transparent;" (click)="zoom(1)"><i
       style="font-size: 20px;color: black;" class="fa fa-search-minus"></i></button>
+
+  <span class="pipe">|</span>
+  <button mat-icon-button matTooltip="See waveform" class="mt-1" style="align-items: center;background: transparent;"
+    (click)="showGraph()"><i style="font-size: 20px;color: black;" class="fas fa-chart-line"></i></button>
 
   <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
     style="margin-right: 12px;align-items: center;background: transparent;" (click)="autoLayout()"><i
@@ -218,8 +222,6 @@
     <mat-icon aria-hidden="false" style="font-size: 28px;color: black;" aria-label="Example Add to gallery icon">
       add_photo_alternate</mat-icon>
   </button>
-
-
 
   <span class="pipe" *ngIf="submitButtonVisibility">|</span>
 
@@ -486,5 +488,4 @@
     </div>
   </div>
 </div>
-<app-graphlist *ngIf="isLoaded()"></app-graphlist>
-<!-- <app-graph *ngIf="isLoaded()"></app-graph> -->
+<app-graphlist *ngIf="graphToggle && isLoaded()"></app-graphlist>

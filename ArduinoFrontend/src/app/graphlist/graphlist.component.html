@@ -1,6 +1,7 @@
 <div class="graph-container" cdkDrag>
   <div class="p-1">
-    <button mat-mini-fab color="primary" class='dragger align-right' cdkDragHandle>
+    <h4>Waveforms</h4>
+    <button mat-icon-button color="primary" class='dragger align-right' cdkDragHandle>
       <i class='fas fa-arrows-alt'></i>
     </button>
   </div>
@@ -10,7 +11,7 @@
   <cdk-virtual-scroll-viewport *ngIf="simulationStatus" itemSize="25" minBufferPx="200" maxBufferPx="400"
     class="example-viewport">
     <div *cdkVirtualFor="let node of nodes" class="example-item">
-      <app-graph [id]="node"></app-graph>
+      <app-graph [id]="node.point" [arduino]="node.arduino"></app-graph>
     </div>
   </cdk-virtual-scroll-viewport>
 </div>

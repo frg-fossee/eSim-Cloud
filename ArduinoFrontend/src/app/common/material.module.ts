@@ -35,7 +35,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
-
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 const material = [
   MatAutocompleteModule,
@@ -81,7 +81,8 @@ const material = [
   declarations: [],
   imports: [
     CommonModule,
-    material
+    material,
+    ScrollingModule,
   ],
   exports: [material],
   providers: [{ provide: MatDialogRef, useValue: {} },

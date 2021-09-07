@@ -36,6 +36,8 @@ import { SharedModule } from './common/SharedModule.module';
 import { GraphComponent } from './graph/graph.component';
 import { GraphDataService } from './graph-data.service';
 import { GraphlistComponent } from './graphlist/graphlist.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 
 /**
@@ -86,7 +88,9 @@ const monacoConfig: NgxMonacoEditorConfig = {
     BrowserAnimationsModule,
     MaterialModule,
     HttpClientModule,
-    SharedModule   // shared module for Header component
+    SharedModule,  // shared module for Header component
+    DragDropModule,
+    ScrollingModule,
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, GraphDataService],

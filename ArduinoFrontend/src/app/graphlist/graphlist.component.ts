@@ -9,23 +9,32 @@ import { Workspace } from '../Libs/Workspace';
 })
 export class GraphlistComponent implements OnInit {
 
-  nodes: string[] = [];
+  nodes: Object[] = [];
   simulationStatus: boolean = false;
 
   constructor() { }
 
-  ngOnInit() {
-    if (Workspace.circuitLoaded) {
+  readPins() {
+    this.nodes = [];
+    // Workspace.circuitLoadStatus.subscribe(_ => {
       window['scope'].ArduinoUno.forEach(arduino => {
         arduino.nodes.forEach(point => {
-          if (point.connectedTo) {
-            this.nodes.push(point.id);
+          if (point.connectedTo && (point.id <= 13 && point.id >= 2)) {
+            this.nodes.push({point: point.id, arduino: arduino.id});
           }
         });
       });
-    }
-    Workspace.simulationStarted.subscribe(res => this.simulationStatus = res)
-    Workspace.simulationStopped.subscribe(res => this.simulationStatus = res);
+    // });
+  }
+
+  ngOnInit() {
+    Workspace.simulationStarted.subscribe(res => {
+      this.simulationStatus = res;
+    });
+    Workspace.simulationStopped.subscribe(res => {
+      this.simulationStatus = res;
+    });
+    this.readPins();
   }
 
 }

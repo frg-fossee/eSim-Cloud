@@ -17,6 +17,7 @@ export class GraphComponent implements OnInit {
   chartConfig: any;
   previousTime: Date;
   @Input() id: string;
+  @Input() arduino: number;
   state: boolean;
   nodes: string[];
   ignored: boolean = false;
@@ -31,41 +32,28 @@ export class GraphComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    Workspace.simulationStopped.subscribe(res => {
+      this.ignored = false;
+    });
+    Workspace.simulationStarted.subscribe(res => {
+      this.clearGraph();
+    });
   }
 
   ngAfterViewInit() {
     const canvasElement = `graph${this.id}`;
     this.configChart();
     this.pinGraph = new Chart(document.getElementById(canvasElement) as HTMLCanvasElement, this.chartConfig);
-    Workspace.simulationStopped.subscribe(res => {
-      this.ignored = false
-    });
-    Workspace.simulationStarted.subscribe(res => {
-      this.clearGraph();
-    });
     GraphDataService.voltageChange.subscribe(res => {
-      if (res.pinTo <= Number(this.id) && Number(this.id) <= res.pinFrom) {
+      if (res.pinTo <= Number(this.id) && Number(this.id) <= res.pinFrom && this.arduino === res.arduino.id) {
         let pinNumber = 15 - parseInt(this.id, 10);
         let pinBitInPort = pinNumber > 7 ? pinNumber - 8: pinNumber;
-        // console.log(res.value);
-        // let timeDiff = (res.time - this.previousTime.valueOf()) / 1000;
         console.log(this.id, pinBitInPort, res.value);
         this.pinGraph.data.datasets[0].label = res.label;
-        this.pinId = `D${pinNumber}`;
-        // this.previousTime = this.data.length === 0 ? res.time : this.previousTime;
-        // if (this.ignored) {
-
-        // if(this.data[this.data.length - 1] === ((res.value >> pinBitInPort) & 1)) {
-
-        // } else { }
-          this.data.push((res.value >> pinBitInPort) & 1);
-          this.xlabels.push(res.time);
-        // } else {
-        //   this.ignored = true;
-        // }
-        // let canvas = document.getElementById('graph') as HTMLCanvasElement
-        // canvas.style.width = canvas.style.width + 40;
+        this.pinId = `${res.arduino.name} - D${pinNumber}`;
+        this.data.push((res.value >> pinBitInPort) & 1);
+        this.xlabels.push(res.time);
+        console.log(this.data, this.pinId);
         this.pinGraph.update();
       }
       // else {

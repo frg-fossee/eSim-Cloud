@@ -60,6 +60,7 @@ export class Workspace {
    * If circuit is loaded or not
    */
   static circuitLoaded = false;
+  static circuitLoadStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
   static simulationStopped: EventEmitter<boolean> = new EventEmitter<boolean>();
   static simulationStarted: EventEmitter<boolean> = new EventEmitter<boolean>();
   /** function to zoom in workspace */
@@ -778,6 +779,7 @@ export class Workspace {
       }
     }
     Workspace.circuitLoaded = true;
+    Workspace.circuitLoadStatus.emit(true);
   }
 
   /** Function to delete component fro Workspace */

@@ -103,6 +103,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
+  /**
+   * Toggle the graph
+   */
+  graphToggle: boolean = false;
   submitButtonVisibility: boolean = false;
   lti_id: string = '';
   lti_nonce: string = '';
@@ -281,7 +285,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     this.window = window;
   }
   isLoaded() {
-    return Workspace.circuitLoaded;
+    return Workspace.circuitLoaded || window['scope'].ArduinoUno.length > 0;
   }
   /**
    * Enable Move on Property Box
@@ -902,4 +906,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  showGraph() {
+    this.graphToggle = !this.graphToggle;
+  }
 }
