@@ -38,6 +38,17 @@ class StateSave(models.Model):
     def __str__(self):
         return self.name
 
+class ArduinoSimulationData(models.Model):
+    save_id = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
+                            null=True)
+    result = models.TextField(null=True, default=True)
+
+    def save(self, *args, **kwargs):
+        super(ArduinoSimulationData, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.result
+
 
 class Gallery(models.Model):
     id = models.AutoField(primary_key=True)
