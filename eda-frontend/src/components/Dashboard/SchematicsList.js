@@ -213,12 +213,13 @@ export default function SchematicsList ({ ltiDetails = null }) {
             <Tab label='Schematics' />
             <Tab label='Projects' />
             <Tab label='LTI Apps' />
+            <Tab label='LTI Submissions' />
           </Tabs>
         </AppBar>
         <TabPanel style={{ width: '100%' }} value={value} index={0}>
-          {saves.filter(x => { return (x.project_id == null && x.lti_id == null) }).length !== 0
+          {saves.filter(x => { return (x.project_id == null && x.lti_id == null && x.is_submission == null) }).length !== 0
             ? <>
-              {saves.filter(x => { return (x.project_id == null && x.lti_id == null) }).map(
+              {saves.filter(x => { return (x.project_id == null && x.lti_id == null && x.is_submission == null) }).map(
                 (sch) => {
                   return (
                     <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
@@ -281,7 +282,28 @@ export default function SchematicsList ({ ltiDetails = null }) {
             </Grid>
           }
         </TabPanel>
-        {/* List all schematics saved by user */}
+        <TabPanel style={{ width: '100%' }} value={value} index={3}>
+          {saves.filter(x => { return x.is_submission }).length !== 0
+            ? <>
+              {saves.filter(x => { return x.is_submission }).map(
+                (sch) => {
+                  return (
+                    <Grid item xs={12} sm={6} lg={3} key={sch.save_id}>
+                      <SchematicCard sch={sch} />
+                    </Grid>
+                  )
+                }
+              )}
+            </>
+            : <Grid item xs={12}>
+              <Card style={{ padding: '7px 15px' }} className={classes.mainHead}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Hey {auth.user.username} , You dont have any saved projects...
+                </Typography>
+              </Card>
+            </Grid>
+          }
+        </TabPanel>
 
       </Grid>
     </>

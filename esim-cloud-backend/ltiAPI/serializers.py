@@ -22,6 +22,19 @@ class consumerSerializer(serializers.ModelSerializer):
         return consumer
 
 
+class consumerSubmissionSerializer(serializers.ModelSerializer):
+    test_case = simulationSerializer(many=False)
+
+    class Meta:
+        model = lticonsumer
+        fields = ['consumer_key', 'secret_key', 'model_schematic',
+                  'score', 'initial_schematic', 'test_case', 'scored',
+                  'id', 'sim_params']
+
+    def create(self, validated_data):
+        pass
+
+
 class consumerExistsSerializer(serializers.ModelSerializer):
     class Meta:
         model = lticonsumer
@@ -73,6 +86,7 @@ class GetSubmissionsSerializer(serializers.ModelSerializer):
     schematic = SaveListSerializer(many=False)
     student = GetSubmissionUserSerializer(many=False)
     student_simulation = simulationSerializer()
+    project = consumerSubmissionSerializer(many=False)
 
     class Meta:
         model = Submission
