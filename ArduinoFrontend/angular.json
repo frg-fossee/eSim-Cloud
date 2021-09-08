@@ -13,6 +13,13 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "lodash",
+              "lodash-transpose",
+              "chroma-js",
+              "util",
+              "lru-cache"
+            ],
             "aot": true,
             "outputPath": "dist/ArduinoFrontend",
             "index": "src/index.html",
