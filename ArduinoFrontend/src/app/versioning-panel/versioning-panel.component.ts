@@ -20,7 +20,7 @@ export class VersioningPanelComponent implements OnInit {
 
   @Output() createNewBranch = new EventEmitter();
   @ViewChild(MatAccordion, { static: true }) accordion: MatAccordion;
-  @ViewChild('deleteMenuTrigger', { static: false }) deleteMenuTrigger: MatMenuTrigger;
+  @ViewChild('deleteMenuTrigger') deleteMenuTrigger: MatMenuTrigger;
   /**
    * List of branches and their version
    */
