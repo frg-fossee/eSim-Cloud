@@ -24,7 +24,7 @@ export class SidePanelComponent implements OnInit {
    */
   token;
   // configuration for side nav.
-  @ViewChild('sidenav') sidenav: MatSidenav;
+  @ViewChild('sidenav', { static: true }) sidenav: MatSidenav;
   isExpanded = true;
   showSubmenu = false;
   isShowing = false;

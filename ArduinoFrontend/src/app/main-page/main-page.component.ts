@@ -85,7 +85,7 @@ export class MainPageComponent implements OnInit {
   // searchText = '';
 
   // configuration for side nav.
-  @ViewChild('sidenav') sidenav: MatSidenav;
+  @ViewChild('sidenav', { static: false }) sidenav: MatSidenav;
   isExpanded = true;
   showSubmenu = false;
   isShowing = false;

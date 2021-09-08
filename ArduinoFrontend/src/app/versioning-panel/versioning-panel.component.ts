@@ -17,8 +17,8 @@ export class DeleteObj {
 export class VersioningPanelComponent implements OnInit {
 
   @Output() createNewBranch = new EventEmitter();
-  @ViewChild(MatAccordion) accordion: MatAccordion;
-  @ViewChild('deleteMenuTrigger') deleteMenuTrigger: MatMenuTrigger;
+  @ViewChild(MatAccordion, { static: true }) accordion: MatAccordion;
+  @ViewChild('deleteMenuTrigger', { static: false }) deleteMenuTrigger: MatMenuTrigger;
   /**
    * List of branches and their version
    */
