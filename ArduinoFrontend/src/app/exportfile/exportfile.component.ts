@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Download, ImageType } from '../Libs/Download';
 import { Title } from '@angular/platform-browser';
-import { MatDialogRef } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
 
 /**
  * Declare window so that custom created function don't throw error

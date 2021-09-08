@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 /**
  * Declare window so that custom created function don't throw error

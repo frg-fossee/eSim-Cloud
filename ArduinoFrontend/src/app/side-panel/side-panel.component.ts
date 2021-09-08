@@ -1,6 +1,6 @@
 import { Route } from '@angular/compiler/src/core';
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav } from '@angular/material/sidenav';
 import { Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';

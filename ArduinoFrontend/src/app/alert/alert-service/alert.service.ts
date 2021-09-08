@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AlertModalComponent } from '../alert-modal/alert-modal.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfirmModalComponent } from '../confirm-modal/confirm-modal.component';
 import { OptionModalComponent } from '../option-modal/option-modal.component';
 

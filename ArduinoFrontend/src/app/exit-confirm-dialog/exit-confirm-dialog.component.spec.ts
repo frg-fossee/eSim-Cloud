@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule, MatDialogRef } from '@angular/material';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { ExitConfirmDialogComponent } from './exit-confirm-dialog.component';
 

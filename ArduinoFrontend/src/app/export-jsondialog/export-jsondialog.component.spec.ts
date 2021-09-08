@@ -1,6 +1,7 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MatFormFieldModule, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Workspace } from '../Libs/Workspace';
 import { ExportJSONDialogComponent } from './export-jsondialog.component';

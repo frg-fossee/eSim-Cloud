@@ -2,7 +2,7 @@ import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angu
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { ViewComponentInfoComponent } from '../view-component-info/view-component-info.component';
 import { ExportfileComponent } from '../exportfile/exportfile.component';
 import { ComponentlistComponent } from '../componentlist/componentlist.component';
