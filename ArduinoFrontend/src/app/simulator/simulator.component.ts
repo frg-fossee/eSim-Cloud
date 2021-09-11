@@ -112,6 +112,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   lti_nonce: string = '';
   lti_user_id: string = '';
   scored: boolean = false;
+  /**
+   * Circuit's primary key
+   */
+  id: number;
 //   waveForm: ChartDataSets[] = [
 //     { data: [], label: "Waveform", fill: true }
 //   ];
@@ -649,6 +653,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       const version = params.version;
       // read project from DB
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
+        this.id = data.id;
         this.projectTitle = data.name;
         this.description = data.description;
         this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');

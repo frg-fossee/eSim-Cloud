@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { resolveComponentResources } from '@angular/core/src/metadata/resource_loading';
+import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { AlertService } from '../alert/alert-service/alert.service';
+import { ApiService } from '../api.service';
+import { GraphComponent } from '../graph/graph.component';
+import { Login } from '../Libs/Login';
 import { Workspace } from '../Libs/Workspace';
 
 @Component({
@@ -9,10 +12,12 @@ import { Workspace } from '../Libs/Workspace';
 })
 export class GraphlistComponent implements OnInit {
 
+  @Input() id: number;
+  @ViewChildren('pinGraph') graphList!: QueryList<GraphComponent>
   nodes: Object[] = [];
   simulationStatus: boolean = false;
 
-  constructor() { }
+  constructor(private api: ApiService) { }
 
   readPins() {
     this.nodes = [];
@@ -20,7 +25,7 @@ export class GraphlistComponent implements OnInit {
       window['scope'].ArduinoUno.forEach(arduino => {
         arduino.nodes.forEach(point => {
           if (point.connectedTo && (point.id <= 13 && point.id >= 2)) {
-            this.nodes.push({point: point.id, arduino: arduino.id});
+            this.nodes.push({point: point.id, arduinoId: arduino.id, arduinoName: arduino.name});
           }
         });
       });
@@ -35,6 +40,26 @@ export class GraphlistComponent implements OnInit {
       this.simulationStatus = res;
     });
     this.readPins();
+    Workspace.circuitLoadStatus.subscribe(res => {
+      this.readPins();
+    })
+    document.addEventListener('changed', this.readPins);
+  }
+
+  SaveData() {
+    console.log("Clicked");
+    let data = {};
+    this.graphList.forEach(pinGraph => {
+      data[pinGraph.pinLabel] = {
+        values: pinGraph.data,
+        delay: pinGraph.xlabels,
+        length: pinGraph.data.length,
+      }
+    });
+    const token = Login.getToken();
+    console.log(data);
+    this.api.storeSimulationData(this.id, token, data).subscribe(res => AlertService.showAlert("Record Saved Successfully")
+    , err => AlertService.showAlert(err));
   }
 
 }

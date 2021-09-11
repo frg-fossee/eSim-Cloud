@@ -1,9 +1,10 @@
 <div class="graph-container" cdkDrag>
   <div class="p-1">
-    <h4>Waveforms</h4>
+    <h4 style="display: inline;">Waveforms</h4>
     <button mat-icon-button color="primary" class='dragger align-right' cdkDragHandle>
       <i class='fas fa-arrows-alt'></i>
     </button>
+    <button mat-raised-button color="primary" class="align-right" (click)="SaveData()">SAVE</button>
   </div>
   <div *ngIf="!simulationStatus" class="alternate-simulation-text">
     Start the simulation to visualize
@@ -11,7 +12,7 @@
   <cdk-virtual-scroll-viewport *ngIf="simulationStatus" itemSize="25" minBufferPx="200" maxBufferPx="400"
     class="example-viewport">
     <div *cdkVirtualFor="let node of nodes" class="example-item">
-      <app-graph [id]="node.point" [arduino]="node.arduino"></app-graph>
+      <app-graph #pinGraph [id]="node.point" [arduinoId]="node.arduinoId" [arduinoName]="node.arduinoName"></app-graph>
     </div>
   </cdk-virtual-scroll-viewport>
 </div>

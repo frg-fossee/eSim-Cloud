@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, } from '@angular/core';
+import { Component, Directive, Input, OnInit, } from '@angular/core';
 import { Chart } from 'chart.js';
 import { GraphDataService } from '../graph-data.service';
 import { Workspace } from '../Libs/Workspace';
@@ -11,12 +11,13 @@ import { Workspace } from '../Libs/Workspace';
 export class GraphComponent implements OnInit {
 
   data: number[];
-  xlabels: string[];
+  xlabels: number[];
   pinGraph: Chart;
   chartConfig: any;
   previousTime: Date;
   @Input() id: string;
-  @Input() arduino: number;
+  @Input() arduinoId: number;
+  @Input() arduinoName: string;
   state: boolean;
   nodes: string[];
   ignored: boolean = false;
@@ -31,6 +32,7 @@ export class GraphComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.pinLabel = `${this.arduinoName} - D${this.id}`;
     Workspace.simulationStopped.subscribe(res => {
       this.ignored = false;
     });
@@ -44,12 +46,16 @@ export class GraphComponent implements OnInit {
     this.configChart();
     this.pinGraph = new Chart(document.getElementById(canvasElement) as HTMLCanvasElement, this.chartConfig);
     GraphDataService.voltageChange.subscribe(res => {
-      if(this.arduino === res.arduino.id) {
+      if(this.arduinoId === res.arduino.id) {
         let pinNumber = 15 - parseInt(this.id, 10);
-        this.pinLabel = `${res.arduino.name} - D${pinNumber}`;
         this.pinGraph.data.datasets[0].label = res.label;
         this.data.push((res.value >> pinNumber) & 1);
-        this.xlabels.push(res.time);
+        if(this.xlabels.length === 0) {
+          this.xlabels.push(new Date(res.time).getTime() - new Date(res.time).getTime());
+          this.previousTime = new Date(res.time);
+        }
+        this.xlabels.push(new Date(res.time).getTime() - new Date(this.previousTime).getTime());
+        this.previousTime = new Date(res.time);
         console.log(this.pinLabel, this.data);
         console.log(this.pinLabel, this.xlabels);
         this.pinGraph.update();

@@ -401,4 +401,10 @@ export class ApiService {
       })
     })
   }
+
+  storeSimulationData(id: number, token: string, data: Object) {
+    return this.http.post(`${this.url}api/save/arduinodata/${id}`, data, {
+      headers: this.httpHeaders(token),
+    })
+  }
 }
