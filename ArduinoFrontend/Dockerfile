@@ -1,4 +1,4 @@
-FROM node:10-alpine3.11
+FROM node:14-alpine3.11
 
 RUN mkdir /code
 WORKDIR /code

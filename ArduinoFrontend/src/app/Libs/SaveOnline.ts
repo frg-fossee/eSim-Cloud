@@ -1,4 +1,3 @@
-import { isNull } from 'util';
 import { Login } from './Login';
 import { Download, ImageType } from './Download';
 import { ApiService } from '../api.service';
@@ -40,7 +39,7 @@ export class SaveOnline {
     if (token) {
       // if id is present then update
       let toUpdate = false;
-      if (isNull(id)) {
+      if ((id) === null) {
       } else {
         toUpdate = true;
       }

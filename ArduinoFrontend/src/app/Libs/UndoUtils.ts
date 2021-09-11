@@ -1,6 +1,5 @@
 import { Utils } from './Utils';
 import { Workspace } from './Workspace';
-import { isNull } from 'util';
 
 declare var window;
 
@@ -373,7 +372,7 @@ export abstract class UndoUtils {
 
             // If Current Selected item is a Wire which is not Connected from both end
             if (key === 'wires') {
-                if (isNull(ele.element.end)) {
+                if ((ele.element.end) === null) {
                     // Remove and deselect
                     toRem.remove();
                 }
@@ -418,7 +417,7 @@ export abstract class UndoUtils {
                         let index = 0;
                         while (index < window.scope.wires.length) {
                             const wire = window.scope.wires[index];
-                            if (isNull(wire.start) && isNull(wire.end)) {
+                            if ((wire.start) === null && (wire.end) === null) {
                                 window.scope.wires.splice(index, 1);
                                 continue;
                             }

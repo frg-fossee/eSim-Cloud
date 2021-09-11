@@ -4,7 +4,7 @@ import { filter, map } from 'rxjs/operators';
 import { Login } from '../Libs/Login';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { environment } from 'src/environments/environment';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 /**
  * For Handling Time ie. Prevent moment error

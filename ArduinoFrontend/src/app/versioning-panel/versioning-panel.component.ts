@@ -1,5 +1,7 @@
 import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
-import { MatAccordion, MatDialog, MatMenuTrigger } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatAccordion } from '@angular/material/expansion';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../api.service';
 import { Login } from '../Libs/Login';
@@ -17,7 +19,7 @@ export class DeleteObj {
 export class VersioningPanelComponent implements OnInit {
 
   @Output() createNewBranch = new EventEmitter();
-  @ViewChild(MatAccordion) accordion: MatAccordion;
+  @ViewChild(MatAccordion, { static: true }) accordion: MatAccordion;
   @ViewChild('deleteMenuTrigger') deleteMenuTrigger: MatMenuTrigger;
   /**
    * List of branches and their version

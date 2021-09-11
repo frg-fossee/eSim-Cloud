@@ -1,6 +1,5 @@
 import { Point } from './Point';
 import { Wire } from './Wire';
-import { isNull } from 'util';
 import { BoundingBox } from './Geometry';
 import { UndoUtils } from './UndoUtils';
 
@@ -341,7 +340,7 @@ export abstract class CircuitElement {
   setClickListener(callback: () => void) {
     this.elements.mousedown(() => {
       if (window['Selected'] && (window['Selected'] instanceof Wire)) {
-        if ((isNull(window['Selected'].start) || isNull(window['Selected'].end))) {
+        if (((window['Selected'].start) === null || (window['Selected'].end) === null)) {
           return;
         }
         window['Selected'].deselect();
