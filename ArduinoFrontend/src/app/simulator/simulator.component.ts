@@ -104,6 +104,34 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   isAutoLayoutInProgress = false;
   /**
+   * Hide/Show submit button
+   */
+  submitButtonVisibility = false;
+  /**
+   * LTI ID of LTI App (if simulator is opened on LMS)
+   */
+  ltiId = '';
+  /**
+   * LTI Nonce of LTI App (if simulator is opened on LMS)
+   */
+  ltiNonce = '';
+  /**
+   * LTI User ID of LTI App (if simulator is opened on LMS)
+   */
+  ltiUserId = '';
+  /**
+   * Currently loaded circuit's branch
+   */
+  branch: string;
+  /**
+   * Currently loaded circuit's version
+   */
+  version: string;
+  /**
+   * Currently loaded circuit's save time
+   */
+  saveTime: Date;
+  /**
    * Determines whether staff is
    */
   isStaff = false;
@@ -196,9 +224,19 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             this.LoadProject(data);
           });
         }
+      } else if (v.id && v.lti_id && v.lti_nonce && v.lti_user_id) {
+        this.projectId = v.id;
+        this.ltiId = v.lti_id;
+        this.ltiNonce = v.lti_nonce;
+        this.ltiUserId = v.lti_user_id;
+        this.branch = v.branch;
+        this.version = v.version;
+        this.submitButtonVisibility = true;
+        this.LoadOnlineProject(v.id, 'false');
       } else if (v.id) {
         this.projectId = v.id;
         this.LoadOnlineProject(v.id, v.offline);
+        this.submitButtonVisibility = false;
       }
     });
 
@@ -481,7 +519,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           if (out['duplicate']) {
             // TODO: if duplicate, refresh the route with same versionId and same branch
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              // add new quert parameters
+              // add new query parameters
               this.router.navigate(
                 ['/simulator'],
                 {
@@ -503,7 +541,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           }
           // If project is not duplicate refresh route with newVersion Id and same branch
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            // add new quert parameters
+            // add new query parameters
             this.router.navigate(
               ['/simulator'],
               {
@@ -529,7 +567,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       // Save Project and show alert
       SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
         AlertService.showAlert('Saved');
-        // add new quert parameters
+        // add new query parameters
         this.router.navigate(
           [],
           {
@@ -614,6 +652,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
         this.projectTitle = data.name;
         this.description = data.description;
+        this.saveTime = data.save_time;
         this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
         Workspace.Load(JSON.parse(data.data_dump));
       });
@@ -833,7 +872,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
       AlertService.showAlert('Created new branch');
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        // add new quert parameters
+        // add new query parameters
         this.router.navigate(
           ['/simulator'],
           {
@@ -869,4 +908,61 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  /**
+   * Saves the circuit and saves it as a submission for given LTI details
+   */
+  SaveLTISubmission() {
+    const token = Login.getToken();
+    this.branch = this.branch ? this.branch : 'master';
+    this.version = this.getRandomString(20);
+    SaveOnline.Save(this.projectTitle, this.description, this.api, this.branch, this.version, (out) => {
+      this.projectId = out.save_id;
+      const data = {
+        schematic: this.projectId,
+        ltisession: {
+          id: this.ltiId,
+          user_id: this.ltiUserId,
+          oauth_nonce: this.ltiNonce,
+        },
+        student_simulation: null,
+      };
+      this.api.submitCircuit(token, data).subscribe(res => {
+        AlertService.showAlert(res['message']);
+        // add new query parameters
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: out.save_id,
+              lti_id: this.ltiId,
+              lti_user_id: this.ltiUserId,
+              lti_nonce: this.ltiNonce,
+              branch: this.branch,
+              version: this.version,
+              online: true,
+              offline: false,
+              gallery: null
+            },
+            queryParamsHandling: 'merge'
+          });
+        return;
+      }, err => {
+        AlertService.showAlert(err['message']);
+        console.log(err);
+      });
+    });
+  }
+
+  /**
+   * Returns date in human readable format
+   * @param date Date string
+   * @returns string with formatted date
+   */
+  getFormattedDate(date: string) {
+    const dateObj = new Date(date);
+    let str = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} `;
+    str += `${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
+    return str;
+  }
 }

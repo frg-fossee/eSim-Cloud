@@ -1,0 +1,11 @@
+<div #noCodeSection>
+  No arduino present in the circuit.
+</div>
+<div #codeSection>
+  <mat-select class="form-control" (selectionChange)="setCode($event)" placeholder="Select any arduino to view code">
+    <ng-container *ngFor="let arduino of arduinos; let i=index;">
+      <mat-option [value]="i">{{ arduino.data.name }}</mat-option>
+    </ng-container>
+  </mat-select>
+  <textarea #codeArea rows="10" readonly></textarea>
+</div>

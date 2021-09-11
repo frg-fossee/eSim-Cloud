@@ -105,6 +105,7 @@ export class ViewProjectComponent implements OnInit {
     let token = Login.getToken();
     token = token ? token : null;
     // Sharing url
+    token = token ? token : null;
     this.shareURL = window.location.href;
 
     this.aroute.paramMap.subscribe((v: any) => {
