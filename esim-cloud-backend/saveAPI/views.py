@@ -1,7 +1,7 @@
 # from django.core.files.base import File
 import django_filters
 from django_filters import rest_framework as filters
-from .serializers import StateSaveSerializer, SaveListSerializer, \
+from .serializers import ArduinoSimulationDataSerializer, StateSaveSerializer, SaveListSerializer, \
     GallerySerializer
 from .serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -11,7 +11,7 @@ from rest_framework.response import Response
 # from rest_framework.generics import ListAPIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .models import StateSave, Gallery
+from .models import ArduinoSimulationData, StateSave, Gallery
 from workflowAPI.models import Permission
 from publishAPI.models import Project
 from ltiAPI.models import Submission
@@ -601,3 +601,41 @@ class GalleryFetchSaveDeleteView(APIView):
             return Response({'done': True})
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ArduinoSimulationDataView(APIView):
+    """
+    Simulation Data from Arduino
+    """
+
+    permission_classes = (AllowAny,)
+    methods = ['GET', 'POST']
+
+    @swagger_auto_schema(request_body=ArduinoSimulationDataSerializer)
+    def post(self, request, save_id):
+        try:
+            circuit = StateSave.objects.get(id=save_id)
+        except StateSave.DoesNotExist:
+            return Response({"error": "Circuit not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        if(not(len(request.data))):
+            return Response({"error": "Simulation data not passed"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        print(request.data)
+        try:
+            data = ArduinoSimulationData.objects.get(save_id=circuit)
+        except ArduinoSimulationData.DoesNotExist:
+            try:
+                ArduinoSimulationData(save_id=circuit, result=str(request.data)).save()
+            except:
+                return Response(status=500)
+            else:
+                return Response(status=200)
+        else:
+            data.result = str(request.data)
+            print(data)
+            try:
+                data.save()
+            except:
+                return Response(status=500)
+            else:
+                return Response(status=200)

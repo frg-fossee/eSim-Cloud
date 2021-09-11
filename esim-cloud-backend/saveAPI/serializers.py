@@ -2,7 +2,7 @@ from os import makedirs, read
 from django.db.models import fields
 from rest_framework import serializers
 from rest_framework.fields import ListField
-from saveAPI.models import StateSave, Gallery
+from saveAPI.models import StateSave, Gallery, ArduinoSimulationData
 from libAPI.models import Library
 from libAPI.serializers import LibrarySerializer
 from django.core.files.base import ContentFile
@@ -103,3 +103,10 @@ class GallerySerializer(serializers.ModelSerializer):
             'save_id', 'data_dump', 'name',
             'description', 'media', 'shared', 'esim_libraries', 'is_arduino'
             )
+
+class ArduinoSimulationDataSerializer(serializers.ModelSerializer):
+    save_id = serializers.IntegerField()
+    result = serializers.CharField()
+    class Meta:
+        model = ArduinoSimulationData
+        fields = ( 'save_id', 'result', )
