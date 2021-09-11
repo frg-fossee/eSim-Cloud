@@ -212,7 +212,7 @@ export class ArduinoUno extends CircuitElement {
     this.runner = new ArduinoRunner(this.hex);
 
     this.runner.portB.addListener((value) => {
-      this.EmitValueChangeEvent(value, 2, 7, new Date());
+      this.EmitValueChangeEvent(value, this.runner.portD.lastValue, new Date());
       for (let i = 0; i <= 5; ++i) {
         if (
           this.runner.portB.pinState(i) !== AVR8.PinState.Input &&
@@ -232,7 +232,7 @@ export class ArduinoUno extends CircuitElement {
     });
 
     this.runner.portD.addListener((value) => {
-      this.EmitValueChangeEvent(value, 8, 13, new Date());
+      this.EmitValueChangeEvent(this.runner.portB.lastValue, value, new Date());
       if (
         this.runner.portD.pinState(0) !== AVR8.PinState.Input &&
         this.runner.portD.pinState(0) !== AVR8.PinState.InputPullUp
@@ -364,13 +364,11 @@ export class ArduinoUno extends CircuitElement {
     }
   }
 
-  EmitValueChangeEvent(value, pinTo, pinFrom, time) {
+  EmitValueChangeEvent(portBValue, portDValue, time) {
+    const value = (portBValue << 8) | (portDValue & 255);
     GraphDataService.voltageChange.emit({
-      id: this.id,
-      value: value,
+      value,
       time,
-      pinTo,
-      pinFrom,
       arduino: {id: this.id, name: this.name},
     });
   }

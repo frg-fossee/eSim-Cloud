@@ -1,13 +1,13 @@
 .graph-container {
-  left: 50px;
+  left: calc(100vw - 460px);
   display: block;
   position: fixed;
   max-width: fit-content;
-  min-width: 420px;
-  min-height: 300px;
+  min-width: 440px;
+  min-height: 700px;
   z-index: 700;
   background: #fff;
-  top: 120px;
+  top: 320px;
   box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
   padding: 15px;
   border-radius: 5px;
@@ -22,7 +22,7 @@
 }
 
 .example-viewport {
-  height: 350px;
+  height: 680px;
   width: 420px;
 }
 

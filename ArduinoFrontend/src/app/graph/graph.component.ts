@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Input, OnInit, } from '@angular/core';
 import { Chart } from 'chart.js';
 import { GraphDataService } from '../graph-data.service';
-import { Point } from '../Libs/Point';
 import { Workspace } from '../Libs/Workspace';
 
 @Component({
@@ -21,7 +20,7 @@ export class GraphComponent implements OnInit {
   state: boolean;
   nodes: string[];
   ignored: boolean = false;
-  pinId = "";
+  pinLabel = "";
 
   constructor(private graphDataService: GraphDataService) {
     this.data = [];
@@ -45,21 +44,16 @@ export class GraphComponent implements OnInit {
     this.configChart();
     this.pinGraph = new Chart(document.getElementById(canvasElement) as HTMLCanvasElement, this.chartConfig);
     GraphDataService.voltageChange.subscribe(res => {
-      if (res.pinTo <= Number(this.id) && Number(this.id) <= res.pinFrom && this.arduino === res.arduino.id) {
+      if(this.arduino === res.arduino.id) {
         let pinNumber = 15 - parseInt(this.id, 10);
-        let pinBitInPort = pinNumber > 7 ? pinNumber - 8: pinNumber;
-        console.log(this.id, pinBitInPort, res.value);
+        this.pinLabel = `${res.arduino.name} - D${pinNumber}`;
         this.pinGraph.data.datasets[0].label = res.label;
-        this.pinId = `${res.arduino.name} - D${pinNumber}`;
-        this.data.push((res.value >> pinBitInPort) & 1);
+        this.data.push((res.value >> pinNumber) & 1);
         this.xlabels.push(res.time);
-        console.log(this.data, this.pinId);
+        console.log(this.pinLabel, this.data);
+        console.log(this.pinLabel, this.xlabels);
         this.pinGraph.update();
       }
-      // else {
-      //   this.data.push(this.data[this.data.length - 1] ? this.data[this.data.length - 1] : 0);
-      //   this.xlabels.push(res.time.getMilliseconds());
-      // }
     });
   }
 
