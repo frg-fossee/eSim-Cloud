@@ -371,7 +371,7 @@ export class Point {
       this.listener(this.value, calledby, this);
     }
 
-    if (isNull(calledby)) {
+    if ((calledby) === null) {
       calledby = this;
     }
     // Propogate the value further

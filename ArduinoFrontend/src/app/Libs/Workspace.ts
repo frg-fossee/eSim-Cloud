@@ -3,7 +3,6 @@ import { Wire } from './Wire';
 import { ArduinoUno } from './outputs/Arduino';
 import { ApiService } from '../api.service';
 import { Download, ImageType } from './Download';
-import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
@@ -599,7 +598,7 @@ export class Workspace {
   static SaveCircuit(name: string = '', description: string = '', callback: any = null, id: number = null) {
     let toUpdate = false;
     // Check if id is already present then enable Update
-    if (isNull(id)) {
+    if ((id) === null) {
       id = Date.now();
     } else {
       toUpdate = true;
@@ -718,7 +717,7 @@ export class Workspace {
   }
   /** This function recreates the wire object */
   static LoadWires(wires: any[], retainId = false, pushUndo = false) {
-    if (isNull(wires) || isUndefined(wires)) {
+    if ((wires) === null || (wires) === undefined) {
       return;
     }
 
@@ -799,7 +798,7 @@ export class Workspace {
 
       // If Current Selected item is a Wire which is not Connected from both end
       if (key === 'wires') {
-        if (isNull(window.Selected.end)) {
+        if ((window.Selected.end) === null) {
           // Remove and deselect
           window.Selected.remove();
           window.Selected = null;
@@ -847,7 +846,7 @@ export class Workspace {
             let index = 0;
             while (index < window.scope.wires.length) {
               const wire = window.scope.wires[index];
-              if (isNull(wire.start) && isNull(wire.end)) {
+              if ((wire.start) === null && (wire.end) === null) {
                 window.scope.wires.splice(index, 1);
                 continue;
               }

@@ -1,6 +1,5 @@
 import { CircuitElement } from '../CircuitElement';
 import { ArduinoRunner } from '../AVR8/Execute';
-import { isUndefined, isNull } from 'util';
 import { Point } from '../Point';
 
 /**
@@ -76,7 +75,7 @@ export class ArduinoUno extends CircuitElement {
     // Add a Analog value change Listener to the circuit nodes
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`A${i}`].addValueListener((val) => {
-        if (isUndefined(this.runner) || isNull(this.runner)) {
+        if ((this.runner) === undefined || (this.runner) === null) {
           setTimeout(() => {
             this.runner.adc.setAnalogValue(i, Math.floor(204.6 * val));
           }, 300);
@@ -103,7 +102,7 @@ export class ArduinoUno extends CircuitElement {
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`D${i + 8}`].addValueListener((v) => {
         // console.log([i, v]);
-        if (isUndefined(this.runner) || isNull(this.runner)) {
+        if ((this.runner) === undefined || (this.runner) === null) {
           setTimeout(() => {
             this.pinNameMap[`D${i + 8}`].setValue(1, this.pinNameMap[`D${i + 8}`]);
           }, 300);
@@ -121,7 +120,7 @@ export class ArduinoUno extends CircuitElement {
     // Handle Input For Port D D2 - D7
     for (let i = 2; i <= 7; ++i) {
       this.pinNameMap[`D${i}`].addValueListener((v) => {
-        if (isUndefined(this.runner) || isNull(this.runner)) {
+        if ((this.runner) === undefined || (this.runner) === null) {
           setTimeout(() => {
             this.pinNameMap[`D${i}`].setValue(v, this.pinNameMap[`D${i}`]);
           }, 300);
@@ -204,7 +203,7 @@ export class ArduinoUno extends CircuitElement {
       color: '#00ff00'
     });
     const myOutput = document.createElement('pre');
-    if (isNull(this.hex) && isUndefined(this.hex)) {
+    if ((this.hex) === null && (this.hex) === undefined) {
       return;
     }
     this.runner = new ArduinoRunner(this.hex);
