@@ -45,7 +45,11 @@
       </li> -->
     </ul>
 
-    <div class="navbar-nav ml-auto" style="height: 42px;">
+    <div class="navbar-nav ml-auto" *ngIf="ltiId || ltiNonce || ltiUserId">
+      <span style="color: #808080; margin-right: 10px;">Last saved: {{ getFormattedDate(saveTime) }}</span>
+      <b style="color: #ff0000;">ASSIGNMENT</b>
+    </div>
+    <div class="navbar-nav ml-auto" *ngIf="!ltiId && !ltiNonce && !ltiUserId">
       <a mat-raised-button
         (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))"
         class="navBarItem">Home</a>
@@ -213,7 +217,7 @@
     (click)="showGraph()"><i style="font-size: 20px;color: black;" class="fas fa-chart-line"></i></button>
 
   <button mat-icon-button matTooltip="Auto-arrange wires" class="mt-1"
-    style="margin-right: 12px;align-items: center;background: transparent;" (click)="autoLayout()"><i
+    style="align-items: center;background: transparent;" (click)="autoLayout()"><i
       style="font-size: 20px;color: black;"
       [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
@@ -224,6 +228,13 @@
   </button>
 
   <span class="pipe" *ngIf="submitButtonVisibility">|</span>
+
+  <button mat-raised-button color="primary" class="mt-1" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="SaveLTISubmission()">
+    <i style="color: #000;" class="fas fa-paper-plane"></i>
+    <span style="color: #000;">
+      Submit
+    </span>
+  </button>
 
   <button mat-raised-button color="primary" class="mt-1 ripple" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="submitCircuit()">
     <i style="color: #000;" class="fas fa-paper-plane"></i>

@@ -5,6 +5,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Workspace } from '../Libs/Workspace';
 import { ExportJSONDialogComponent } from './export-jsondialog.component';
 
+
+// class MockWorkspace extends Workspace {
+//     SaveJson() {
+//         return true;
+//     }
+// }
+
 describe('ExportJSONDialogComponent', () => {
 
     let component: ExportJSONDialogComponent;
@@ -23,6 +30,7 @@ describe('ExportJSONDialogComponent', () => {
             ],
             providers: [
                 { provide: MatDialogRef, useValue: {} },
+                { provide: Workspace, useValue: {} },
                 { provide: MAT_DIALOG_DATA, useValue: { description: 'this is a desc', title: 'title' } },
             ]
         }).compileComponents();

@@ -32,7 +32,7 @@ export class ApiService {
   ) {
   }
   /**
-   * Get Http Headers
+   * Get Http Headers only for those API calls where token is not mandatory
    * @param token Login Token
    * @returns Http headers as per given parameter and environment
    */
@@ -73,11 +73,7 @@ export class ApiService {
       data.description = null;
     }
     return this.http.post(`${this.url}api/save`, data, {
-      headers: new HttpHeaders({
-        // 'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
 
@@ -127,11 +123,7 @@ export class ApiService {
   searchProject(title: string, token: string) {
     const url = encodeURI(`${this.url}api/save/search?name__icontains=${title}&is_arduino=true`);
     return this.http.get(url, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -143,11 +135,7 @@ export class ApiService {
   updateProject(id: string, data: any, token: string) {
     data.save_id = id;
     return this.http.post(`${this.url}api/save`, data, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -185,11 +173,7 @@ export class ApiService {
    */
   userInfo(token: string): Observable<any> {
     return this.http.get(`${this.url}api/auth/users/me`, {
-      headers: new HttpHeaders({
-        // 'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
   /**
@@ -252,11 +236,7 @@ export class ApiService {
    */
   deleteBranch(id, branch, token) {
     return this.http.delete(`${this.url}api/save/versions/${id}/${branch}`, {
-      headers: new HttpHeaders({
-        // 'Content-Type': 'application/json',
-        Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
-      })
+      headers: this.httpHeaders(token),
     });
   }
 
@@ -269,10 +249,41 @@ export class ApiService {
    */
   deleteVariation(id, branch, version, token) {
     return this.http.delete(`${this.url}api/save/versions/${version}/${id}/${branch}`, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Request to fetch LTI App details for id of the given circuit
+   * @param id save_id of the circuit
+   * @param token Auth Token
+   */
+  existLTIURL(id: string, token: string) {
+    return this.http.get(`${this.url}api/lti/exist/${id}`, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Request to save LTI details at the backend
+   * @param token Auth Token
+   * @param data LTI Details containing ids of model and student circuits, consumer and secret keys
+   */
+  saveLTIDetails(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/build/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Requests for deleting the LTI app
+   * @param id Model Circuit ID Number
+   * @param token Auth Token
+   */
+  removeLTIDetails(id: number, token: string) {
+    return this.http.delete(`${this.url}api/lti/delete/${id}`, {
       headers: new HttpHeaders({
-        // 'Content-Type': 'application/json',
         Authorization: `Token ${token}`,
-        // 'Access-Control-Allow-Origin': '*',
       })
     });
   }
@@ -295,6 +306,41 @@ export class ApiService {
       } else {
         reslove(0);
       }
+    });
+  }
+
+  /**
+   * Request to update LTI details at the backend
+   * @param token Auth Token
+   * @param data LTI Details containing ids of model and student circuits, consumer and secret keys
+   */
+  updateLTIDetails(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/update/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Requests for creating submission for the circuit with given id
+   * @param token Auth Token
+   * @param data LTI data (contains save_id, lti_id, lti_nonce, lti_user_id)
+   */
+  submitCircuit(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/submit/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Requests to retrieve all the submissions for given LTI App from backend
+   * @param id save_id of the circuit
+   * @param branch branch of the circuit
+   * @param version version of the circuit
+   * @param token Auth Token
+   */
+  getSubmissions(id: string, branch: string, version: string, token: string) {
+    return this.http.get(`${this.url}api/lti/submissions/${id}/${version}/${branch}`, {
+      headers: this.httpHeaders(token),
     });
   }
 

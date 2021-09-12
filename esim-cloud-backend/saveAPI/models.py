@@ -31,6 +31,7 @@ class StateSave(models.Model):
     esim_libraries = models.ManyToManyField(Library)
     project = models.ForeignKey(to=Project, on_delete=models.SET_NULL,
                                 null=True)
+    is_submission = models.BooleanField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         super(StateSave, self).save(*args, **kwargs)

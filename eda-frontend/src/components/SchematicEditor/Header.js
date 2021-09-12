@@ -32,11 +32,8 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
-
 import { HomeDialog } from './ToolbarExtension'
-
 import queryString from 'query-string'
-
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -378,7 +375,7 @@ function Header ({ gridRef }) {
         </Hidden>
 
         {/* Display last saved and shared option for saved schematics */}
-        {auth.isAuthenticated === true
+        {(!ltiId || !ltiNonce) && auth.isAuthenticated === true
           ? <>
             {(schSave.isSaved === true && schSave.details.save_time !== undefined)
               ? <Typography
@@ -639,7 +636,7 @@ function Header ({ gridRef }) {
           className={classes.toolbarTitle}
           style={{ marginLeft: 'auto', color: 'red' }}
         >
-          Exam
+          Assignment
         </Typography>}
       </Toolbar>
     </>

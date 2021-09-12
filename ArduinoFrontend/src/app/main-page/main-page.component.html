@@ -72,6 +72,48 @@
     </div>
   </div>
 </div>
+<!-- LTI Apps -->
+<div *ngIf="isLTIApp">
+  <div *ngIf="getLTIApps().length == 0" style="margin: 1em;margin-left: 240px;">No LTI Apps created &#9785;</div>
+  <div class="row" style="margin: 1em;margin-left: 240px;">
+    <div class="col-md-4" *ngFor="let item of getLTIApps()">
+      <div class="subbox" (click)="openProject(item.index,false)">
+        <div>
+          <div style="width: 100%;  background-color: #e8e8e8;">
+            <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+          </div>
+          <div style="box-sizing: border-box; padding: 15px;">
+            <h4>{{item.name}}</h4>
+            <p>{{item.description}}</p>
+            {{ DateDiff(item,item.save_time) }}
+            <p>{{item.time}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- LTI Submissions -->
+<div *ngIf="isLTISub">
+  <div *ngIf="getLTISubmissions().length == 0" style="margin: 1em;margin-left: 240px;">No LTI Submissions received &#9785;</div>
+  <div class="row" style="margin: 1em;margin-left: 240px;">
+    <div class="col-md-4" *ngFor="let item of getLTISubmissions()">
+      <div class="subbox" (click)="openProject(item.index,false)">
+        <div>
+          <div style="width: 100%;  background-color: #e8e8e8;">
+            <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+          </div>
+          <div style="box-sizing: border-box; padding: 15px;">
+            <h4>{{item.name}}</h4>
+            <p>{{item.description}}</p>
+            {{ DateDiff(item,item.save_time) }}
+            <p>{{item.time}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!--open project-->
@@ -82,6 +124,8 @@
       <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
         (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;&#10006;</button>
 
+      <button *ngIf="selected.lti_id" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
+        (click)="DeleteLTI(selected)">LTI&nbsp;&nbsp;&#10006;</button>
       <button class="ml-auto"
         style="position: relative; padding-top: 10px;background-color: transparent; border: none;font-size: 2.2em;font-weight: 400;"
         (click)="closeProject()"> &#10006;</button>
@@ -107,6 +151,11 @@
             Publish circuit</button>
           <button mat-raised-button color="primary" class="col-md-3"
             (click)="ExportCircuit(selected, selected.offline)">Export Circuit</button>
+          <button mat-raised-button color="primary" class="col-md-3" *ngIf="!selected.offline" 
+            [routerLink]="['/lti']" [queryParams]="{id:selected.save_id,branch:selected.branch,version:selected.version,lti:selected.lti_id}">
+            <span *ngIf="selected.lti_id">Update LTI App</span>
+            <span *ngIf="!selected.lti_id">Create LTI App</span>
+          </button>
         </div>
 
         <div class="act-desc">
