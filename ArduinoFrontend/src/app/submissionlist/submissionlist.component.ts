@@ -147,8 +147,7 @@ export class SubmissionlistComponent implements OnInit {
           id: res[i]['schematic']['save_id'],
           branch: res[i]['schematic']['branch'],
           version: res[i]['schematic']['version'],
-          lis_outcome_service_url: res[i]['ltisession']['lis_outcome_service_url'] ?
-            res[i]['ltisession']['lis_outcome_service_url'].split('://')[1].split('/')[0] : 'None',
+          lis_outcome_service_url: this.getHostFromUrl(res[i]['ltisession']['lis_outcome_service_url']),
         });
       }
       this.setUpTable();
@@ -168,5 +167,9 @@ export class SubmissionlistComponent implements OnInit {
     let str = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} `;
     str += `${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
     return str;
+  }
+
+  getHostFromUrl(url: string) {
+    return url ? (url.search('://') === -1 ? url.split('://')[0] : url.split('://')[1]).split('/')[0] : 'None';
   }
 }

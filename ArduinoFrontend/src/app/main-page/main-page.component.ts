@@ -680,7 +680,15 @@ export class MainPageComponent implements OnInit {
   }
 
   /**
-   * Filter Projects if they have LTI App
+   * Filter Circuits if they don't have LTI App or are not submissions
+   * @returns Filtered array of circuits containing lti_id = null and is_submission = false
+   */
+  getNormalCircuits() {
+    return this.online.filter(i => !i.lti_id && !i.is_submission );
+  }
+
+  /**
+   * Filter Circuits if they have LTI App
    * @returns Filtered array of circuits containing lti_id
    */
   getLTIApps() {
@@ -688,7 +696,7 @@ export class MainPageComponent implements OnInit {
   }
 
   /**
-   * Filter Projects if they are LTI Submissions
+   * Filter Circuits if they are LTI Submissions
    * @returns Filtered array of circuits containing is_submission
    */
   getLTISubmissions() {

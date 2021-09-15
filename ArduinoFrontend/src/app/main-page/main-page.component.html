@@ -31,9 +31,9 @@
           </mat-chip> -->
     </div>
   </div>
-  <div class="col-md-4" *ngFor="let item of online.filter(i => !i.lti_id && !i.is_submission ) | filterBy:circuitFilter; let i = index">
+  <div class="col-md-4" *ngFor="let item of getNormalCircuits() | filterBy:circuitFilter">
 
-    <div class="subbox" (click)="openProject(i)">
+    <div class="subbox" (click)="openProject(item.index)">
       <div>
         <div style="width: 100%;  background-color: #e8e8e8;">
           <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
