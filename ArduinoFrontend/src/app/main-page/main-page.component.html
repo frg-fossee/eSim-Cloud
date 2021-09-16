@@ -31,9 +31,9 @@
           </mat-chip> -->
     </div>
   </div>
-  <div class="col-md-4" *ngFor="let item of online | filterBy:circuitFilter; let i = index">
+  <div class="col-md-4" *ngFor="let item of getNormalCircuits() | filterBy:circuitFilter">
 
-    <div class="subbox" (click)="openProject(i)">
+    <div class="subbox" (click)="openProject(item.index)">
       <div>
         <div style="width: 100%;  background-color: #e8e8e8;">
           <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
@@ -74,9 +74,9 @@
 </div>
 <!-- LTI Apps -->
 <div *ngIf="isLTIApp">
-  <div *ngIf="getLTIApps().length == 0" style="margin: 1em;margin-left: 240px;">No LTI Apps created &#9785;</div>
+  <div *ngIf="(getLTIApps() | filterBy:circuitFilter).length == 0" style="margin: 1em;margin-left: 240px;">No LTI Apps created &#9785;</div>
   <div class="row" style="margin: 1em;margin-left: 240px;">
-    <div class="col-md-4" *ngFor="let item of getLTIApps()">
+    <div class="col-md-4" *ngFor="let item of getLTIApps() | filterBy:circuitFilter">
       <div class="subbox" (click)="openProject(item.index,false)">
         <div>
           <div style="width: 100%;  background-color: #e8e8e8;">
@@ -95,9 +95,9 @@
 </div>
 <!-- LTI Submissions -->
 <div *ngIf="isLTISub">
-  <div *ngIf="getLTISubmissions().length == 0" style="margin: 1em;margin-left: 240px;">No LTI Submissions received &#9785;</div>
+  <div *ngIf="(getLTISubmissions() | filterBy:circuitFilter).length == 0" style="margin: 1em;margin-left: 240px;">No LTI Submissions received &#9785;</div>
   <div class="row" style="margin: 1em;margin-left: 240px;">
-    <div class="col-md-4" *ngFor="let item of getLTISubmissions()">
+    <div class="col-md-4" *ngFor="let item of getLTISubmissions() | filterBy:circuitFilter">
       <div class="subbox" (click)="openProject(item.index,false)">
         <div>
           <div style="width: 100%;  background-color: #e8e8e8;">

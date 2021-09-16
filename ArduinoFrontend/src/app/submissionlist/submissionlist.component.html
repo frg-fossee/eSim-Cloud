@@ -53,8 +53,15 @@
     <tr mat-row *matRowDef="let row; columns: columnNames"></tr>
 
     <tr mat-row *matNoDataRow>
-      <td mat-cell colspan="6">No data matching the filter "{{submissions.filter}}"</td>
+      <td mat-cell colspan="6">
+        <span *ngIf="searchString.length !== 0">
+          No data matching the filter "{{submissions.filter}}"
+        </span>
+        <span *ngIf="searchString.length === 0">
+          No data found
+        </span>
+      </td>
     </tr>
   </table>
-  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[20, 100, 500]" showFirstLastButtons></mat-paginator>
 </div>
