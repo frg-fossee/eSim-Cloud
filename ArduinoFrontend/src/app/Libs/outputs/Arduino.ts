@@ -50,12 +50,18 @@ export class ArduinoUno extends CircuitElement {
    * Servo attached to an arduino
    */
   private servos: any[] = [];
+  flag = "00";
+  prevPortD = 0;
+  prevPortB = 0;
+  portFlag = '';
+  delayTime = new Date(); // Extra
   /**
-   * Constructor for Arduino
+    * Constructor for Arduino
    * @param canvas Raphael Paper
    * @param x X position
    * @param y Y Position
    */
+
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
     // Logic to Create Name of an  arduino
@@ -212,7 +218,19 @@ export class ArduinoUno extends CircuitElement {
     this.runner = new ArduinoRunner(this.hex);
 
     this.runner.portB.addListener((value) => {
-      this.EmitValueChangeEvent(value, this.runner.portD.lastValue, new Date());
+      if (this.portFlag !== 'D' &&
+        (this.flag === '21' || this.flag === '41')
+      ) {
+        this.EmitValueChangeEvent(); // Reset flag = "00";
+        this.portFlag = 'B';
+      } else {
+        this.portFlag = '';
+      }
+      // if (this.flag === '00') this.flag = '21';
+      this.flag = '21';
+      this.prevPortB = value;
+      this.delayTime = new Date();
+
       for (let i = 0; i <= 5; ++i) {
         if (
           this.runner.portB.pinState(i) !== AVR8.PinState.Input &&
@@ -232,7 +250,18 @@ export class ArduinoUno extends CircuitElement {
     });
 
     this.runner.portD.addListener((value) => {
-      this.EmitValueChangeEvent(this.runner.portB.lastValue, value, new Date());
+      if (this.portFlag !== 'B' &&
+        (this.flag === '21' || this.flag === '41')
+      ) {
+        this.EmitValueChangeEvent(); // Reset flag = "00";
+        this.portFlag = 'D';
+      } else {
+        this.portFlag = '';
+      }
+      // if (this.flag === '00') this.flag = '41';
+      this.flag = '41';
+      this.prevPortD = value
+      this.delayTime = new Date();
       if (
         this.runner.portD.pinState(0) !== AVR8.PinState.Input &&
         this.runner.portD.pinState(0) !== AVR8.PinState.InputPullUp
@@ -364,12 +393,15 @@ export class ArduinoUno extends CircuitElement {
     }
   }
 
-  EmitValueChangeEvent(portBValue, portDValue, time) {
-    const value = (portBValue << 8) | (portDValue & 255);
+
+  EmitValueChangeEvent() {
+    const value = (this.prevPortB << 8) | (this.prevPortD & 255);
     GraphDataService.voltageChange.emit({
       value,
-      time,
-      arduino: {id: this.id, name: this.name},
+      time: this.delayTime,
+      arduino: { id: this.id, name: this.name },
     });
+    this.flag = "00";
+    // this.portFlag = '';
   }
 }

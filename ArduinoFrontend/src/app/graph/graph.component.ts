@@ -32,7 +32,7 @@ export class GraphComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.pinLabel = `${this.arduinoName} - D${this.id}`;
+    this.pinLabel = `${this.arduinoName} - D${15 - parseInt(this.id, 10)}`;
     Workspace.simulationStopped.subscribe(res => {
       this.ignored = false;
     });
@@ -46,11 +46,11 @@ export class GraphComponent implements OnInit {
     this.configChart();
     this.pinGraph = new Chart(document.getElementById(canvasElement) as HTMLCanvasElement, this.chartConfig);
     GraphDataService.voltageChange.subscribe(res => {
-      if(this.arduinoId === res.arduino.id) {
+      if (this.arduinoId === res.arduino.id) {
         let pinNumber = 15 - parseInt(this.id, 10);
         this.pinGraph.data.datasets[0].label = res.label;
         this.data.push((res.value >> pinNumber) & 1);
-        if(this.xlabels.length === 0) {
+        if (this.xlabels.length === 0) {
           this.xlabels.push(new Date(res.time).getTime() - new Date(res.time).getTime());
           this.previousTime = new Date(res.time);
         }
@@ -115,8 +115,8 @@ export class GraphComponent implements OnInit {
               min: 0,
               stepSize: 1,
               max: 2,
-              callback: function(value, index) {
-                return value > 1 ? '': value;
+              callback: function (value, index) {
+                return value > 1 ? '' : value;
               },
             }
           }],
