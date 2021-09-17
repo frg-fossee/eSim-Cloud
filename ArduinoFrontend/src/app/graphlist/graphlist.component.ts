@@ -46,7 +46,8 @@ export class GraphlistComponent implements OnInit {
     })
     document.addEventListener('changed', (r) => {
       console.log('Detecting changes', r);
-    });
+      this.readPins();
+    }, true);
   }
 
   SaveData() {
