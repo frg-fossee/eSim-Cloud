@@ -229,14 +229,18 @@
 
   <span class="pipe" *ngIf="submitButtonVisibility">|</span>
 
-  <button mat-raised-button color="primary" class="mt-1" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="SaveLTISubmission()">
-    <i style="color: #000;" class="fas fa-paper-plane"></i>
-    <span style="color: #000;">
-      Submit
-    </span>
-  </button>
-
-  <button mat-raised-button color="primary" class="mt-1 ripple" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" (click)="submitCircuit()">
+  <mat-form-field *ngIf="submitButtonVisibility">
+    <mat-select matInput [(ngModel)]="toBeCompared" placeholder="See Previous Runs" (selectionChange)="onSelectionChanges($event)">
+      <!-- [compareWith]="compareIds" > -->
+      <mat-option>
+        None
+      </mat-option>
+      <!-- <ng-container *ngFor="let _ of _"> -->
+        <!-- <mat-option [value]=""></mat-option> -->
+      <!-- </ng-container> -->
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button color="primary" class="mt-1" style="margin: 10px 0px;" *ngIf="submitButtonVisibility" [disabled]="!toBeCompared" (click)="SaveLTISubmission()">
     <i style="color: #000;" class="fas fa-paper-plane"></i>
     <span style="color: #000;">
       Submit

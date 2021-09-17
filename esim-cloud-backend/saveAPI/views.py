@@ -1,7 +1,7 @@
 # from django.core.files.base import File
 import django_filters
 from django_filters import rest_framework as filters
-from .serializers import ArduinoSimulationDataSerializer, StateSaveSerializer, SaveListSerializer, \
+from .serializers import ArduinoModelSimulationDataSerializer, StateSaveSerializer, SaveListSerializer, \
     GallerySerializer
 from .serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -11,7 +11,7 @@ from rest_framework.response import Response
 # from rest_framework.generics import ListAPIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .models import ArduinoSimulationData, StateSave, Gallery
+from .models import ArduinoModelSimulationData, StateSave, Gallery
 from workflowAPI.models import Permission
 from publishAPI.models import Project
 from ltiAPI.models import Submission
@@ -603,7 +603,7 @@ class GalleryFetchSaveDeleteView(APIView):
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class ArduinoSimulationDataView(APIView):
+class ArduinoModelSimulationDataView(APIView):
     """
     Simulation Data from Arduino
     """
@@ -611,7 +611,7 @@ class ArduinoSimulationDataView(APIView):
     permission_classes = (AllowAny,)
     methods = ['GET', 'POST']
 
-    @swagger_auto_schema(request_body=ArduinoSimulationDataSerializer)
+    @swagger_auto_schema(request_body=ArduinoModelSimulationDataSerializer)
     def post(self, request, save_id):
         try:
             circuit = StateSave.objects.get(id=save_id)
@@ -623,10 +623,10 @@ class ArduinoSimulationDataView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         print(request.data)
         try:
-            data = ArduinoSimulationData.objects.get(save_id=circuit)
-        except ArduinoSimulationData.DoesNotExist:
+            data = ArduinoModelSimulationData.objects.get(save_id=circuit)
+        except ArduinoModelSimulationData.DoesNotExist:
             try:
-                ArduinoSimulationData(save_id=circuit, result=str(request.data)).save()
+                ArduinoModelSimulationData(save_id=circuit, result=str(request.data)).save()
             except:
                 return Response(status=500)
             else:

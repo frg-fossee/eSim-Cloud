@@ -1,5 +1,5 @@
 from django.contrib import admin
-from saveAPI.models import Gallery, StateSave, ArduinoSimulationData
+from saveAPI.models import Gallery, StateSave, ArduinoModelSimulationData
 from django.forms import TextInput, Textarea
 from django.db import models
 
@@ -11,7 +11,7 @@ class UserCircuits(admin.ModelAdmin):
     list_filter = ('version', 'save_id',)
 
 
-@admin.register(ArduinoSimulationData)
+@admin.register(ArduinoModelSimulationData)
 class ArduinoSimulation(admin.ModelAdmin):
     list_display = ('save_id', "result")
     list_filter = ('save_id', "result",)

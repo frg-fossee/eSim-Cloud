@@ -20,6 +20,7 @@ export class GraphlistComponent implements OnInit {
   constructor(private api: ApiService) { }
 
   readPins() {
+    console.log('Detecting changes');
     this.nodes = [];
     // Workspace.circuitLoadStatus.subscribe(_ => {
       window['scope'].ArduinoUno.forEach(arduino => {
@@ -43,7 +44,9 @@ export class GraphlistComponent implements OnInit {
     Workspace.circuitLoadStatus.subscribe(res => {
       this.readPins();
     })
-    document.addEventListener('changed', this.readPins);
+    document.addEventListener('changed', (r) => {
+      console.log('Detecting changes', r);
+    });
   }
 
   SaveData() {
