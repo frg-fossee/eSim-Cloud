@@ -9,9 +9,8 @@
   <div *ngIf="!simulationStatus" class="alternate-simulation-text">
     Start the simulation to visualize
   </div>
-  <cdk-virtual-scroll-viewport *ngIf="simulationStatus" itemSize="25" minBufferPx="200" maxBufferPx="400"
-    class="example-viewport">
-    <div *cdkVirtualFor="let node of nodes" class="example-item">
+  <cdk-virtual-scroll-viewport itemSize="25" minBufferPx="200" maxBufferPx="400" class="example-viewport">
+    <div *ngFor="let node of nodes" class="example-item">
       <app-graph #pinGraph [id]="node.point" [arduinoId]="node.arduinoId" [arduinoName]="node.arduinoName"></app-graph>
     </div>
   </cdk-virtual-scroll-viewport>

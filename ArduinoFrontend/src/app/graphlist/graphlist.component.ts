@@ -45,9 +45,44 @@ export class GraphlistComponent implements OnInit {
       this.readPins();
     })
     document.addEventListener('changed', (r) => {
-      console.log('Detecting changes', r);
-      this.readPins();
-    }, true);
+      console.log('Detecting changes', r['detail']['ele']['element']);
+      let changeInfo = r['detail']['ele'];
+      if (changeInfo.keyName === 'wires') {
+        let wire = changeInfo['element'];
+        let SarduinoId = wire['start']['keyName'] === 'ArduinoUno' ? wire.start.id : undefined;
+        let EarduinoId = wire['end']['keyName'] === 'ArduinoUno' ? wire.end.id : undefined;
+        if (changeInfo.event === 'delete') {
+          this.nodes = this.nodes.filter(i => {
+            if(SarduinoId && i['arduinoId'] === SarduinoId) {
+              if(i['point'] === wire.start.pid) {
+                return false;
+              }
+            }
+            if (EarduinoId && i['arduinoId'] === EarduinoId) {
+              if(i['point'] === wire.end.pid) {
+                return false;
+              }
+            }
+            return true;
+          });
+          console.log(this.nodes);
+        } else if(changeInfo.event === 'add') {
+          let Sarduino = SarduinoId ? window['scope'].ArduinoUno.filter(arduino => arduino.id === wire.start.id)[0]: undefined;
+          let Earduino = EarduinoId ? window['scope'].ArduinoUno.filter(arduino => arduino.id === wire.end.id)[0]: undefined;
+          this.pushPoint(Sarduino, wire.start.pid);
+          this.pushPoint(Earduino, wire.end.pid);
+        }
+      }
+    });
+  }
+
+  pushPoint(arduino, pointId) {
+    if(arduino) {
+      let point = arduino['nodes'][pointId];
+      if (point.connectedTo && (point.id <= 13 && point.id >= 2)) {
+        this.nodes.push({point: point.id, arduinoId: arduino.id, arduinoName: arduino.name});
+      }
+    }
   }
 
   SaveData() {

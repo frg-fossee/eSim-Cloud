@@ -52,9 +52,9 @@ export class GraphComponent implements OnInit {
         this.data.push((res.value >> pinNumber) & 1);
         if (this.xlabels.length === 0) {
           this.xlabels.push(new Date(res.time).getTime() - new Date(res.time).getTime());
-          this.previousTime = new Date(res.time);
+        } else {
+          this.xlabels.push(new Date(res.time).getTime() - new Date(this.previousTime).getTime());
         }
-        this.xlabels.push(new Date(res.time).getTime() - new Date(this.previousTime).getTime());
         this.previousTime = new Date(res.time);
         console.log(this.pinLabel, this.data);
         console.log(this.pinLabel, this.xlabels);

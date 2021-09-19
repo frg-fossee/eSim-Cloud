@@ -38,7 +38,6 @@ export abstract class UndoUtils {
         if (this.undo.length > 0) {
             const cng = this.undo.pop();
             this.loadChange(cng, 'undo');
-            document.dispatchEvent(UndoUtils.event);
         }
     }
 
@@ -49,7 +48,6 @@ export abstract class UndoUtils {
         if (this.redo.length > 0) {
             const cng = this.redo.pop();
             this.loadChange(cng, 'redo');
-            document.dispatchEvent(UndoUtils.event);
         }
     }
 
@@ -74,14 +72,17 @@ export abstract class UndoUtils {
                     step += 1;
                 }
             }
+            if(ele.event === 'add' || ele.event === 'delete') {
+                UndoUtils.event.detail['ele'] = ele;
+                console.log(ele);
+                document.dispatchEvent(UndoUtils.event);
+            }
             ele.step = step;
             this.undo.push(ele);
-            document.dispatchEvent(UndoUtils.event);
             return;
         }
         // If not delete continue to normal Undo Process
         this.pushChangeToUndo(ele);
-        document.dispatchEvent(UndoUtils.event);
     }
 
     /**
@@ -113,6 +114,11 @@ export abstract class UndoUtils {
         }
         // Push to Undo stack
         this.undo.push(ele);
+        if(ele.event === 'add' || ele.event === 'delete') {
+            UndoUtils.event.detail['ele'] = ele;
+            console.log(ele);
+            document.dispatchEvent(UndoUtils.event);
+        }
     }
 
     /**
@@ -134,6 +140,11 @@ export abstract class UndoUtils {
                 }
                 return;
             }
+        }
+        if(ele.event === 'add' || ele.event === 'delete') {
+            UndoUtils.event.detail['ele'] = ele;
+            console.log(ele);
+            document.dispatchEvent(UndoUtils.event);
         }
 
         // handle Delete events

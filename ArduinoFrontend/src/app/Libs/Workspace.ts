@@ -991,6 +991,7 @@ export class Workspace {
    * Start Simulation
    */
   static startArduino() {
+    Workspace.simulationStarted.emit(true);
     // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
@@ -1037,7 +1038,6 @@ export class Workspace {
 
     // Update the simulation status
     // Workspace.GetNodeValues();
-    Workspace.simulationStarted.emit(true);
     Workspace.simulating = true;
   }
   /**
