@@ -102,12 +102,13 @@
   position: fixed;
   width: 220px;
   min-height: 50px;
-  z-index: 100;
+  z-index: 600;
   background: #fff;
-  top: 120px;
+  top: 110px;
   box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
   padding: 15px;
   border-radius: 5px;
+  left: calc(100vw - 230px);
 }
 
 * {
@@ -188,13 +189,18 @@
   display: flex;
   background-color: whitesmoke;
   justify-content: space-between;
-  height: 50px;
+  height: auto;
+  padding-top: 10px;
+  flex-wrap: wrap;
 }
 
 #secondary-header > button {
   font-size: smaller;
-  margin-left: 10px;
+  /* margin-left: 10px; */
+  margin: 1px 0px 0px 5px;
   background-color: #fff;
+  align-items: center;
+  background: transparent;
 }
 
 .btn-fst i {
