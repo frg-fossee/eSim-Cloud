@@ -183,10 +183,10 @@ export class 74LS47 extends CircuitElement {
         this.pinNamedMap['C'].value = 0;
         this.pinNamedMap['D'].value = 0;
         this.prevValues = {
-            A: -1,
-            B: -1,
-            C: -1,
-            D: -1
+            A: 0,
+            B: 0,
+            C: 0,
+            D: 0
         };
         this.LT_bar = false;
         this.RBI_bar= false;
