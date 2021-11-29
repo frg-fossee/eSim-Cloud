@@ -1,6 +1,6 @@
 {
     "name": "7447 Decoder IC",
-    "className": "7447",
+    "className": "74LS47",
     "pins": [
       {
         "x": 0,
