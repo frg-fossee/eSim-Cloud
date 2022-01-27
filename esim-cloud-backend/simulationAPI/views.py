@@ -159,6 +159,23 @@ class SimulationResults(APIView):
         serialized = simulationSerializer(sims, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
 
+class SimulationResultsForLTI(APIView):
+    permission_classes = (IsAuthenticated, )
+
+    def get(self, request, save_id, sim, version, branch):
+        if sim is None:
+            sims = simulation.objects.filter(
+                owner=self.request.user, schematic__save_id=save_id,
+                 schematic__branch=branch
+            )
+        else:
+            sims = simulation.objects.filter(
+                owner=self.request.user, schematic__save_id=save_id,
+                schematic__branch=branch
+            )
+        serialized = simulationSerializer(sims, many=True)
+        return Response(serialized.data, status=status.HTTP_200_OK)        
+
 
 class SimulationResultsFromSimulator(APIView):
     permission_classes = (IsAuthenticated, )
