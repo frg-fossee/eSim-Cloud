@@ -20,7 +20,7 @@ urlpatterns = [
 
     path('history/lti/<uuid:save_id>/<str:version>/<str:branch>/<str:sim>',
          simulationAPI_views.SimulationResultsForLTI.as_view(),
-         name='schematic sim  history for lti'),     
+         name='schematic sim  history for lti'),
 
     path('history/simulator/<str:sim>',
          simulationAPI_views.SimulationResultsFromSimulator.as_view(),
