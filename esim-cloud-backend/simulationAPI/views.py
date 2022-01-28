@@ -175,7 +175,7 @@ class SimulationResultsForLTI(APIView):
                 schematic__branch=branch
             )
         serialized = simulationSerializer(sims, many=True)
-        return Response(serialized.data, status=status.HTTP_200_OK)        
+        return Response(serialized.data, status=status.HTTP_200_OK)
 
 
 class SimulationResultsFromSimulator(APIView):
