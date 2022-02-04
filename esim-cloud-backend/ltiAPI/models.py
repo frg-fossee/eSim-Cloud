@@ -30,11 +30,11 @@ class lticonsumer(models.Model):
 
 
 class ltiSession(models.Model):
-    user_id = models.CharField(max_length=200)
+    user_id = models.CharField(max_length=200, null=True)
     lti_consumer = models.ForeignKey(to=lticonsumer,
                                      on_delete=models.CASCADE, null=True)
     lis_result_sourcedid = models.CharField(max_length=300, null=True)
-    lis_outcome_service_url = models.CharField(max_length=300)
+    lis_outcome_service_url = models.CharField(max_length=300, null=True)
     oauth_nonce = models.CharField(max_length=300)
     oauth_timestamp = models.CharField(max_length=300)
     oauth_consumer_key = models.CharField(max_length=300)
@@ -53,7 +53,7 @@ class Submission(models.Model):
         to=ltiSession, on_delete=models.CASCADE, null=True)
     schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE)
     student_simulation = models.ForeignKey(to=simulation,
-                                           on_delete=models.CASCADE)
+                                           on_delete=models.CASCADE, null=True)
     lms_success = models.BooleanField(null=True)
 
     def __str__(self):

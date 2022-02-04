@@ -264,13 +264,31 @@ class LTIAuthView(APIView):
             return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
         protocol = 'https://' if request.is_secure() else 'http://'
-        next_url = protocol + host + "/eda/#editor?id=" + \
-                   str(i.initial_schematic.save_id) + "&branch=" \
-                   + str(i.initial_schematic.branch) + "&version=" \
-                   + str(i.initial_schematic.version) \
-                   + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
-                   lti_session.user_id \
-                   + "&lti_nonce=" + lti_session.oauth_nonce
+        if(i.model_schematic.is_arduino):
+            if(settings.DEBUG):
+                next_url = protocol + host + ":4200/#/simulator?id=" + \
+                        str(i.initial_schematic.save_id) + "&branch=" \
+                        + str(i.initial_schematic.branch) + "&version=" \
+                        + str(i.initial_schematic.version) \
+                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" \
+                        + lti_session.user_id \
+                        + "&lti_nonce=" + lti_session.oauth_nonce
+            else:
+                next_url = protocol + host + "/arduino/#simulator?id=" + \
+                        str(i.initial_schematic.save_id) + "&branch=" \
+                        + str(i.initial_schematic.branch) + "&version=" \
+                        + str(i.initial_schematic.version) \
+                        + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" \
+                        + lti_session.user_id \
+                        + "&lti_nonce=" + lti_session.oauth_nonce
+        else:
+            next_url = protocol + host + "/eda/#editor?id=" + \
+                    str(i.initial_schematic.save_id) + "&branch=" \
+                    + str(i.initial_schematic.branch) + "&version=" \
+                    + str(i.initial_schematic.version) \
+                    + "&lti_id=" + str(lti_session.id) + "&lti_user_id=" + \
+                    lti_session.user_id \
+                    + "&lti_nonce=" + lti_session.oauth_nonce
         try:
             print("Got verification request")
             verify_request_common(consumers_dict, url,
@@ -302,12 +320,20 @@ class LTIPostGrade(APIView):
                 "error": "No LTI session exists for this ID"
             }, status=status.HTTP_400_BAD_REQUEST)
         consumer = lticonsumer.objects.get(id=lti_session.lti_consumer.id)
-        sim = simulation.objects.get(id=request.data['student_simulation'])
+        try:
+            sim = simulation.objects.get(id=request.data['student_simulation'])
+        except simulation.DoesNotExist:
+            sim = None
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
+        schematic.is_submission = True
         schematic.save()
-        score, comparison_result = process_submission(
-            consumer.test_case.result, sim.result, consumer.sim_params)
+        if(sim):
+            score, comparison_result = process_submission(
+                consumer.test_case.result, sim.result, consumer.sim_params)
+        else:
+            score = consumer.score
+            comparison_result = None
         submission_data = {
             "project": consumer,
             "student": schematic.owner,
@@ -317,6 +343,7 @@ class LTIPostGrade(APIView):
             "student_simulation": sim
         }
         submission = Submission.objects.create(**submission_data)
+        print("after submission model created")
         xml = generate_request_xml(
             message_identifier(), 'replaceResult',
             lti_session.lis_result_sourcedid, submission.score)
@@ -325,6 +352,7 @@ class LTIPostGrade(APIView):
             post = post_message(
                 consumers(), lti_session.oauth_consumer_key,
                 lti_session.lis_outcome_service_url, xml)
+            print(post)
             if not post:
                 msg = 'An error occurred while saving your score.\
                      Please try again.'
@@ -337,7 +365,7 @@ class LTIPostGrade(APIView):
                     response_data = {
                         "message": msg,
                         "score": score,
-                        "given": sim.result,
+                        "given": sim.result if sim else None,
                         "comparison_result": comparison_result,
                         "sim_params": consumer.sim_params,
                     }
@@ -346,7 +374,7 @@ class LTIPostGrade(APIView):
                         "message": msg,
                         "score": score,
                         "expected": consumer.test_case.result,
-                        "given": sim.result,
+                        "given": sim.result if sim else None,
                         "comparison_result": comparison_result,
                         "sim_params": consumer.sim_params,
                     }

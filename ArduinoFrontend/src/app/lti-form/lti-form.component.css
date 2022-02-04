@@ -1,0 +1,33 @@
+form {
+	margin: 30px;
+}
+
+mat-form-field {
+	width: 100%;
+}
+
+.form-buttons {
+	padding: 10px;
+}
+
+.form-buttons > button {
+	width: 200px;
+	margin: 5px;
+}
+
+.url-error-div {
+	padding: 20px;
+}
+
+#lti-url {
+	resize: none;
+	width: 75%;
+	padding-left: 10px;
+	padding-bottom: 0px;
+}
+
+#copy-button {
+	padding: 0px;
+	border-width: 0px;
+	margin: 0px;
+}
