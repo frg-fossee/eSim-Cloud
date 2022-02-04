@@ -151,7 +151,7 @@ export class DHT11 extends CircuitElement {
     });
 
     this.data = setInterval(() => {
-      const arr = [ 0 , 0 , 1 , 1 , 0 , 1 , 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 1 , 1 , 0 , 1]
+    const arr = [ 0 , 0 , 1 , 1 , 0 , 1 , 0 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 1 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 1 , 0 , 0 , 1 , 1 , 0 , 1];
       //  let arr = ['00110101' ,'00000000','00011000','00000000','10011010'];
       // let arr = ['0011010100000000','0001100000000000','10011010'];
 
@@ -159,7 +159,7 @@ export class DHT11 extends CircuitElement {
       arr.forEach(d => {
         console.log(d);
         this.setValue(d);
-      })
+      });
       // this.setValue(arr);
     }, 1000);
     // this.setValue(0.987);
