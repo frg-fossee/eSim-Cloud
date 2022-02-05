@@ -9,7 +9,7 @@ import { Motor, L298N, ServoMotor } from './outputs/Motors';
 import { LCD16X2, SevenSegment } from './outputs/Display';
 import { Label } from './Miscellaneous';
 import { PhotoResistor } from './inputs/PhotoResistor';
-import { TMP36 } from './inputs/TemperatureSensors';
+import { DHT11, TMP36 } from './inputs/TemperatureSensors';
 import { Potentiometer } from './inputs/Potentiometer';
 import { Relay } from './inputs/Relay';
 import { MQ2 } from './inputs/GasSensor';
@@ -29,7 +29,8 @@ export class Utils {
     input: [
       ['PushButton', 'UltrasonicSensor', 'PIRSensor'], // Row
       ['SlideSwitch', 'MQ2', 'TMP36'],
-      ['PotentioMeter', 'PhotoResistor', 'Thermistor']
+      ['PotentioMeter', 'PhotoResistor', 'Thermistor'],
+      ['DHT11']
     ],
     power: [
       ['Battery9v', 'CoinCell'] // Row
@@ -179,6 +180,11 @@ export class Utils {
       name: 'Thermistor',
       image: './assets/images/components/Thermistor.png',
       className: Thermistor
-    }
+    },
+    DHT11: {
+      name: 'DHT 11',
+      image: './assets/images/components/DHT11Sensor.svg',
+      className: DHT11
+    },
   };
 }

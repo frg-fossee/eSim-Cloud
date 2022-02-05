@@ -62,7 +62,7 @@ export default function SchematiEditor (props) {
         dispatch(fetchSchematic(cktid, version, branch))
       }
     }
-  // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [props.location])
 
   return (
@@ -81,7 +81,7 @@ export default function SchematiEditor (props) {
           />
         }
         sidebar={<ComponentSidebar compRef={compRef} ltiSimResult={ltiSimResult}
-          setLtiSimResult={setLtiSimResult}/>}
+          setLtiSimResult={setLtiSimResult} />}
       />
 
       {/* Grid for drawing and designing circuits */}
@@ -96,7 +96,7 @@ export default function SchematiEditor (props) {
       <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle}>
         <PropertiesSidebar gridRef={gridRef} outlineRef={outlineRef} />
       </RightSidebar>
-      <ComponentProperties/>
+      <ComponentProperties />
     </div>
   )
 }
