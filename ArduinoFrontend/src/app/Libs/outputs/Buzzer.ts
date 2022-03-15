@@ -104,20 +104,20 @@ export class Buzzer extends CircuitElement {
         this.arduino = trig.connectedTo.start.parent;
       } else if (trig.connectedTo.end.parent instanceof ArduinoUno) {
         this.arduino = trig.connectedTo.end.parent;
-      } 
+      }
     }
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     this.audioCtx = new AudioContext();
     this.oscillator = this.audioCtx.createOscillator();
     this.oscillator.type = 'square';
     this.oscillator.frequency.value = 2300;
-    var prescaler = [8, 32, 64, 128, 256, 1024];
+    const prescaler = [8, 32, 64, 128, 256, 1024];
     this.setIntervId = setInterval(() => {
       try {
-        var tccr2b = this.arduino.runner.timer2.TCCRB;
-        var ocr2a = this.arduino.runner.timer2.ocrA;
-        if (ocr2a != 0){
-          this.oscillator.frequency.value = Math.round(16000000/(2*prescaler[tccr2b-2]*(ocr2a+1)));
+        const tccr2b = this.arduino.runner.timer2.TCCRB;
+        const ocr2a = this.arduino.runner.timer2.ocrA;
+        if (ocr2a !== 0) {
+          this.oscillator.frequency.value = Math.round(16000000 / (2 * prescaler[tccr2b - 2] * (ocr2a + 1)));
         }
       } catch (error) {
       }
