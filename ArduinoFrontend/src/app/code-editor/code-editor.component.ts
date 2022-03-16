@@ -86,7 +86,7 @@ export class CodeEditorComponent {
   /**
    * List of Programming languages available
    */
-  lang: string[] = ["Arduino .ino file", "C inline assembly"]
+  lang: string[] = ['Arduino .ino file', 'C inline assembly'];
   /**
    * Selected programming language
    */
@@ -1210,7 +1210,7 @@ export class CodeEditorComponent {
   /**
    * Event handler for Choosing the programming language.
    */
-  chooseLanguage(item: HTMLSelectElement){
+  chooseLanguage(item: HTMLSelectElement) {
     this.langIndex = item.selectedIndex;
     window['progLang'] =  this.langIndex;
   }

@@ -119,7 +119,7 @@ export class Workspace {
         window['scope'][key] = [];
       }
     }
-    //Default programming language is Arduino
+    // Default programming language is Arduino
     window['progLang'] = 0;
     // True when simulation takes place
     window['isSimulating'] = false;
@@ -940,11 +940,10 @@ export class Workspace {
     }
 
     window.printConsole('Compiling Source Code', ConsoleType.INFO);
-    
-    if(window.progLang == 0){
+
+    if (window.progLang === 0) {
       api.compileCodeINO(toSend).subscribe(v => {
         const taskid = v.uuid; // Get Compilation id
-  
         const temp = setInterval(() => {
           api.getHex(taskid).subscribe(hex => {
             if (hex.state === 'SUCCESS' && !hex.details.error) {
@@ -980,10 +979,9 @@ export class Workspace {
         console.log(error);
         callback();
       });
-    } else if (window.progLang == 1){
+    } else if (window.progLang === 1) {
       api.compileCodeInlineAssembly(toSend).subscribe(v => {
         const taskid = v.uuid; // Get Compilation id
-  
         const temp = setInterval(() => {
           api.getHex(taskid).subscribe(hex => {
             if (hex.state === 'SUCCESS' && !hex.details.error) {
@@ -1020,8 +1018,6 @@ export class Workspace {
         callback();
       });
     }
-    
-
   }
   /**
    * Start Simulation
