@@ -6,6 +6,7 @@ import uuid
 from libAPI.models import Library
 from publishAPI.models import Project
 from django.utils.safestring import mark_safe
+# from ltiAPI.models import ltiSession
 
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
@@ -38,6 +39,28 @@ class StateSave(models.Model):
 
     def __str__(self):
         return self.name
+
+class ArduinoModelSimulationData(models.Model):
+    save_id = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
+                            null=True)
+    result = models.TextField(null=True, default=True)
+
+    def save(self, *args, **kwargs):
+        super(ArduinoModelSimulationData, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.result
+
+# class ArduinoLTISimulationData(models.Model):
+#     session_id = models.ForeignKey(to=ltiSession, on_delete=models.CASCADE, null=True)
+#     circuit_id = models.ForeignKey(to=StateSave, on_delete=models.CASCADE, null=True)
+#     result = models.TextField(null=True, default=True)
+
+#     def save(self, *args, **kwargs):
+#         super(ArduinoModelSimulationData, self).save(*args, **kwargs)
+
+#     def __str__(self):
+#         return self.result
 
 
 class Gallery(models.Model):

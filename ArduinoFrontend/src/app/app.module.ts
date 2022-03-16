@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SimulatorComponent } from './simulator/simulator.component';
+// import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
@@ -37,6 +38,9 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { LTIFormComponent } from './lti-form/lti-form.component';
 import { SubmissionlistComponent } from './submissionlist/submissionlist.component';
 import { ViewCodeComponent } from './lti-form/view-code/view-code.component';
+import { GraphComponent } from './graph/graph.component';
+import { GraphDataService } from './graph-data.service';
+import { GraphlistComponent } from './graphlist/graphlist.component';
 
 /**
  * Monaco OnLoad Function
@@ -77,6 +81,8 @@ const monacoConfig: NgxMonacoEditorConfig = {
     LTIFormComponent,
     SubmissionlistComponent,
     ViewCodeComponent,
+    GraphComponent,
+    GraphlistComponent,
   ],
   imports: [
     BrowserModule,
@@ -92,7 +98,7 @@ const monacoConfig: NgxMonacoEditorConfig = {
     ScrollingModule,
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, GraphDataService],
   bootstrap: [AppComponent],
   entryComponents: [
     ViewComponentInfoComponent,

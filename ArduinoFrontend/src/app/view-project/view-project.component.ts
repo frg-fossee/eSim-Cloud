@@ -109,6 +109,7 @@ export class ViewProjectComponent implements OnInit {
     this.shareURL = window.location.href;
 
     this.aroute.paramMap.subscribe((v: any) => {
+      console.log(v);
       // From Slug find project id
       const slug: string = v.params.slug;
       const pos = slug ? slug.indexOf('-') : -1;

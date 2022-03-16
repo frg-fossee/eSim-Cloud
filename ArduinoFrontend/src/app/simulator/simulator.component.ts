@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
@@ -103,6 +103,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
+  /**
+   * Circuit's primary key
+   */
+  id: number;
+  graphToggle: boolean = false;
   /**
    * Hide/Show submit button
    */
@@ -238,6 +243,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.LoadOnlineProject(v.id, v.offline);
         this.submitButtonVisibility = false;
       }
+      console.log(this.projectId);
     });
 
 
@@ -287,6 +293,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
     // Initializing window
     this.window = window;
+  }
+  isLoaded() {
+    return Workspace.circuitLoaded || window['scope'].ArduinoUno.length > 0;
   }
   /**
    * Enable Move on Property Box
@@ -650,6 +659,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       const version = params.version;
       // read project from DB
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
+        this.id = data.id;
         this.projectTitle = data.name;
         this.description = data.description;
         this.saveTime = data.save_time;
@@ -906,6 +916,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         charactersLength));
     }
     return result;
+  }
+
+  showGraph() {
+    this.graphToggle = !this.graphToggle;
   }
 
   /**

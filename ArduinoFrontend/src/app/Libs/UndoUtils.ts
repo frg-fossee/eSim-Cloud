@@ -22,6 +22,14 @@ export abstract class UndoUtils {
      * Redo Stack
      */
     static redo = [];
+    /**
+     * Workspace changed
+     */
+    static event = new CustomEvent('changed', { 
+        detail : {
+            changed: true,
+        }
+    });
 
     /**
      * Call this function to Undo
@@ -64,6 +72,11 @@ export abstract class UndoUtils {
                     step += 1;
                 }
             }
+            if(ele.event === 'add' || ele.event === 'delete') {
+                UndoUtils.event.detail['ele'] = ele;
+                console.log(ele);
+                document.dispatchEvent(UndoUtils.event);
+            }
             ele.step = step;
             this.undo.push(ele);
             return;
@@ -101,6 +114,11 @@ export abstract class UndoUtils {
         }
         // Push to Undo stack
         this.undo.push(ele);
+        if(ele.event === 'add' || ele.event === 'delete') {
+            UndoUtils.event.detail['ele'] = ele;
+            console.log(ele);
+            document.dispatchEvent(UndoUtils.event);
+        }
     }
 
     /**
@@ -122,6 +140,11 @@ export abstract class UndoUtils {
                 }
                 return;
             }
+        }
+        if(ele.event === 'add' || ele.event === 'delete') {
+            UndoUtils.event.detail['ele'] = ele;
+            console.log(ele);
+            document.dispatchEvent(UndoUtils.event);
         }
 
         // handle Delete events

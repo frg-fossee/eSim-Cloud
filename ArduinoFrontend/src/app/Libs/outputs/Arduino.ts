@@ -2,6 +2,8 @@ import { CircuitElement } from '../CircuitElement';
 import { ArduinoRunner } from '../AVR8/Execute';
 import { isUndefined, isNull } from 'util';
 import { Point } from '../Point';
+import { EventEmitter } from '@angular/core';
+import { GraphDataService } from 'src/app/graph-data.service';
 
 /**
  * AVR8 global variable
@@ -48,12 +50,18 @@ export class ArduinoUno extends CircuitElement {
    * Servo attached to an arduino
    */
   private servos: any[] = [];
+  flag = "00";
+  prevPortD = 0;
+  prevPortB = 0;
+  portFlag = '';
+  delayTime = new Date(); // Extra
   /**
-   * Constructor for Arduino
+    * Constructor for Arduino
    * @param canvas Raphael Paper
    * @param x X position
    * @param y Y Position
    */
+
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
     // Logic to Create Name of an  arduino
@@ -210,6 +218,19 @@ export class ArduinoUno extends CircuitElement {
     this.runner = new ArduinoRunner(this.hex);
 
     this.runner.portB.addListener((value) => {
+      if (this.portFlag !== 'D' &&
+        (this.flag === '21' || this.flag === '41')
+      ) {
+        this.EmitValueChangeEvent(); // Reset flag = "00";
+        this.portFlag = 'B';
+      } else {
+        this.portFlag = '';
+      }
+      // if (this.flag === '00') this.flag = '21';
+      this.flag = '21';
+      this.prevPortB = value;
+      this.delayTime = new Date();
+
       for (let i = 0; i <= 5; ++i) {
         if (
           this.runner.portB.pinState(i) !== AVR8.PinState.Input &&
@@ -229,6 +250,18 @@ export class ArduinoUno extends CircuitElement {
     });
 
     this.runner.portD.addListener((value) => {
+      if (this.portFlag !== 'B' &&
+        (this.flag === '21' || this.flag === '41')
+      ) {
+        this.EmitValueChangeEvent(); // Reset flag = "00";
+        this.portFlag = 'D';
+      } else {
+        this.portFlag = '';
+      }
+      // if (this.flag === '00') this.flag = '41';
+      this.flag = '41';
+      this.prevPortD = value
+      this.delayTime = new Date();
       if (
         this.runner.portD.pinState(0) !== AVR8.PinState.Input &&
         this.runner.portD.pinState(0) !== AVR8.PinState.InputPullUp
@@ -358,5 +391,17 @@ export class ArduinoUno extends CircuitElement {
         return { name: 'portB', pin: num - 8 };
       }
     }
+  }
+
+
+  EmitValueChangeEvent() {
+    const value = (this.prevPortB << 8) | (this.prevPortD & 255);
+    GraphDataService.voltageChange.emit({
+      value,
+      time: this.delayTime,
+      arduino: { id: this.id, name: this.name },
+    });
+    this.flag = "00";
+    // this.portFlag = '';
   }
 }

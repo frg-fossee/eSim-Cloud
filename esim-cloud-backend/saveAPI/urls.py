@@ -50,7 +50,10 @@ urlpatterns = [
          name="deleteBranch"),
 
     path("save/<uuid:save_id>", saveAPI_views.DeleteCircuit.as_view(),
-         name="deleteCircuit")
+         name="deleteCircuit"),
+
+    path("save/arduinodata/<int:save_id>", saveAPI_views.ArduinoModelSimulationDataView.as_view(),
+         name="uploadSimulationData")
 
 ]
 
