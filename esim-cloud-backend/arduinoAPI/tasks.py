@@ -111,6 +111,7 @@ def CompileINO(filenames):
             logger.info(parent)
     return ret
 
+
 def CompileInlineAssembly(filenames):
     ret = {}
     try:
@@ -121,9 +122,11 @@ def CompileInlineAssembly(filenames):
             out_name = settings.MEDIA_ROOT+'/'+str(filename)+'/out.hex'
             logger.info('Compiling')
             logger.info(c_name)
-
+            createObj = "avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o " + obj_name + " " + c_name
+            createBin = "avr-gcc -mmcu=atmega328p " + obj_name + " -o " + bin_name
+            createHex = "avr-objcopy -O ihex -R .eeprom " + bin_name + " " + out_name
             ps = subprocess.Popen(
-                "avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o " + obj_name + " " + c_name + " && avr-gcc -mmcu=atmega328p " + obj_name + " -o " + bin_name + " && avr-objcopy -O ihex -R .eeprom " + bin_name + " " + out_name,
+                createObj + " && " + createBin + " && " + createHex,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 shell=True

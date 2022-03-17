@@ -29,6 +29,7 @@ class CompileSketchINO(APIView):
             'uuid': str(task_id)
         })
 
+
 class CompileSketchInlineAssembly(APIView):
     def post(self, request):
         """
