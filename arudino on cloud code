@@ -1,0 +1,111 @@
+int right_motor_1=2;
+int right_motor_2=3;
+int left_motor_1=4;
+int left_motor_2=5;
+void setup() 
+{
+  Serial.begin(9600);
+  pinMode(right_motor_1,OUTPUT);
+  pinMode(right_motor_2,OUTPUT);
+  pinMode(left_motor_1,OUTPUT);
+  pinMode(left_motor_2,OUTPUT);
+}
+
+char b;
+void loop() 
+{
+  if(Serial.available())
+    { 
+       b=Serial.read();
+         if(b=='F')
+              fwd();
+         if(b=='B')
+              back();
+         if(b=='L')
+              left();
+         if(b=='R')
+              right();
+         if(b=='S')
+              stp();
+         if(b=='G')
+              d_left_fwd();
+         if(b=='H')
+              d_left_back();
+         if(b=='I')
+              d_right_fwd();
+         if(b=='J')
+              d_right_back();
+    }
+}
+
+void fwd()
+{
+   digitalWrite(right_motor_1,HIGH);
+   digitalWrite(right_motor_2,LOW);
+   digitalWrite(left_motor_1,HIGH);
+   digitalWrite(left_motor_2,LOW);
+}
+
+void back()
+{
+   digitalWrite(right_motor_1,LOW);
+   digitalWrite(right_motor_2,HIGH);
+   digitalWrite(left_motor_1,LOW);
+   digitalWrite(left_motor_2,HIGH);
+   
+}
+
+void right()
+{
+   digitalWrite(right_motor_1,LOW);
+   digitalWrite(right_motor_2,HIGH);
+   digitalWrite(left_motor_1,HIGH);
+   digitalWrite(left_motor_2,LOW);
+}
+
+void left()
+{
+   digitalWrite(right_motor_1,HIGH);
+   digitalWrite(right_motor_2,LOW);
+   digitalWrite(left_motor_1,LOW);
+   digitalWrite(left_motor_2,HIGH);
+   
+}
+void stp()
+{
+  digitalWrite(right_motor_1,LOW);
+   digitalWrite(right_motor_2,LOW);
+   digitalWrite(left_motor_1,LOW);
+   digitalWrite(left_motor_2,LOW);
+   
+}
+
+void d_left_fwd()
+{
+  digitalWrite(right_motor_1,HIGH);
+   digitalWrite(right_motor_2,LOW);
+   digitalWrite(left_motor_1,LOW);
+   digitalWrite(left_motor_2,LOW);
+}
+
+void d_left_back()
+{
+  digitalWrite(right_motor_1,LOW);
+   digitalWrite(right_motor_2,HIGH);
+   digitalWrite(left_motor_1,LOW);
+   digitalWrite(left_motor_2,LOW);
+}
+void d_right_fwd()
+{
+  digitalWrite(right_motor_1,LOW);
+   digitalWrite(right_motor_2,LOW);
+   digitalWrite(left_motor_1,HIGH);
+   digitalWrite(left_motor_2,LOW);
+}
+void d_right_back()
+{
+  digitalWrite(right_motor_1,LOW);
+   digitalWrite(right_motor_2,LOW);
+   digitalWrite(left_motor_1,LOW);
+  digitalWrite(left_motor_2,HIGH);
+}
