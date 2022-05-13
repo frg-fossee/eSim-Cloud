@@ -1,52 +1,48 @@
-# Playing songs on Arduino
-Submission for screening task 10<br>
+# Assembly Support for the .ino files
+Submission for screening task 6<br>
 By :-<br>
 **Deepam Priyadarshi**<br>
 deepam.priyadarshi2019@vitstudent.ac.in  
 deepam.odhisha@gmail.com (personal)
 
 ## Approach
-<p>Since due to the inablility of javascript to track event at microseconds level, it is impossible to accurately track the current value at a Buzzer's node/terminal and its rate of change for calculating frequency of the signal.</p>
+Since the initial django docker image present at `docker.pkg.github.com/frg-fossee/esim-cloud/django:dev` has only `avr-gcc` toolchain support, so I can only implement `C inline Assembly` programming in which the `avr-gcc` compiles `.c` files. For using `.asm` file we require `avra` assembler, for which I have to rebuild the comtainer images.  
 
-
-After looking at the backend code of Arduino's inbuilt `tone()` written by [Brett Hagman (Tone.cpp)](https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/Tone.cpp), I realized that the `tone()` function was making use of CTC mode of the 8-Bit timer2 available on Arduino. The TOP count value for timer2 gets stored in the OCR2A register and the optimal prescaler value is stored in the TCCR2B's clock select bits (last 3 bits). According to the ATmega328P datasheet  
+For the swithcing between the programming languages, the users have the liberty to select the type of programming language from the editor' drop down menu as shown in the figure:- 
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/65447610/153737765-b536e15a-0da6-4bf6-aa85-d4f1ac7e983c.png" alt="Formula Description">
+  <kbd>
+  <img src="https://user-images.githubusercontent.com/65447610/155759550-de0a8c07-3c53-4b23-b057-a0de3b4fc95b.png" alt="Selecting Laguage" width="265" height="248" style="border: 5px solid #555">
+    </kbd>
 </p>
 
-where 
-<p align="center">
-  <img src="https://user-images.githubusercontent.com/65447610/153737723-75946990-3312-49d5-b76a-be6b85ee8442.png">
- </p>
+### avr-gcc compilation procedure
+1. To compile the `.c` file received from the frontend we use the command `avr-gcc -Os -DF_CPU=16000000UL -mmcu=atmega328p -c -o {obj_name} {ino_name}`
+2. The above step generates an object file `sketch.o` which is then converted to a binary file named `sketch` using the command `avr-gcc -mmcu=atmega328p {obj_name} -o {bin_name}`
+3. The binary file is then converted to IntelHEX format using the command `avr-objcopy -O ihex -R .eeprom {bin_name} {out_name}`
 
-So, by knowing the last 3 values we can calculate the output frequency that the user wants to hear and initialze it to `AudioContext's Oscillator node frequency` value. Also change the oscillator's waveform type to _square_.  
-
-## Steps taken to solve
-1. Added `pinNamedMap` property which maps the pin of Arduino to which the Buzzer is connected.
-
-2. Added `arduino` property to Buzzer class which stores the instance of `ArduinoUno` class to which the Buzzer is connected.  
-
-This will allow access to read the various register values needed for the above calculations.
-
-3.  Added a `setInterval()` callback in `initSimulation()` method which repeatedly checks for updates in the register values and updates the oscillator frequency. The ID returned by `setInterval()` is stored in the `setIntervId` property.
-
-4. Finally we call `clearInterval(setIntervId)` in the `closeSimulation()` method.
+## Steps taken to add assembly support
+1. A new form element was added in the `code-editor.component.html` file which takes the input of the desired programming laguage in the form of a drop down menu.
+2. A new property `progLang` was introduced in the `window` object which keeps the track of programming language used.
+3. A new function `CompileInlineASM` is introduced in the `task.py` file which compiles the C Inline assembly code using `avr-gcc`.
+4. A new class `CompileSketchInlineASM` in introduced in the `views.py` file
+5. New routes and urls are added in the `urls.py` and `api.service.ts` files. And the respective apis are called in the `workspace.ts` file according to the requirement.
 
 ## Files Changed
-
-The only file that was modified was __`ArduinoFrontend/src/app/Libs/outputs/Buzzer.ts`__
-
-
+1.  `eSim-Cloud/esim-cloud-backend/arduinoAPI/tasks.py`
+2.  `eSim-Cloud/esim-cloud-backend/arduinoAPI/views.py`
+3.  `eSim-Cloud/esim-cloud-backend/arduinoAPI/urls.py`
+4.  `eSim-Cloud/ArduinoFrontend/src/app/Libs/Workspace.ts`
+5.  `eSim-Cloud/ArduinoFrontend/src/app/Libs/Workspace.ts`
+6.  `eSim-Cloud/ArduinoFrontend/src/app/code-editor/code-editor.component.ts`
+7.  `eSim-Cloud/ArduinoFrontend/src/app/code-editor/code-editor.component.html`
 
 ## Video Demostration
 
-The video given below demonstrates the working of `tone()` functionality with all of it's parameters. The code for the song played was taken from the reference `robsoncouto/arduino-songs` given in the screening task's description.
-### Harrpy Potter Theme song
-https://github.com/robsoncouto/arduino-songs/blob/master/harrypotter/harrypotter.ino
 
 
 
-https://user-images.githubusercontent.com/65447610/153737658-270aa62f-35aa-4fd4-86ff-b2061edd8f0e.mp4
+https://user-images.githubusercontent.com/65447610/155765289-da379d63-d570-468a-8235-6e8e1967c7bf.mp4
+
 
 
