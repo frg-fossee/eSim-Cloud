@@ -119,6 +119,8 @@ export class Workspace {
         window['scope'][key] = [];
       }
     }
+    // Default programming language is Arduino
+    window['progLang'] = 0;
     // True when simulation takes place
     window['isSimulating'] = false;
     // Stores the reference to the selected circuit component
@@ -939,45 +941,83 @@ export class Workspace {
 
     window.printConsole('Compiling Source Code', ConsoleType.INFO);
 
-    api.compileCode(toSend).subscribe(v => {
-      const taskid = v.uuid; // Get Compilation id
-
-      const temp = setInterval(() => {
-        api.getHex(taskid).subscribe(hex => {
-          if (hex.state === 'SUCCESS' && !hex.details.error) {
-            clearInterval(temp);
-            let SUCCESS = true;
-            for (const k in hex.details) {
-              if (hex.details[k]) {
-                const d = hex.details[k];
-                window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
-                if (d.output && d.data) {
-                  window.printConsole(d.output, ConsoleType.OUTPUT);
-                  nameMap[k].hex = d.data;
-                }
-                if (d.error) {
-                  SUCCESS = false;
-                  window.printConsole(d.error, ConsoleType.ERROR);
+    if (window.progLang === 0) {
+      api.compileCodeINO(toSend).subscribe(v => {
+        const taskid = v.uuid; // Get Compilation id
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            if (hex.state === 'SUCCESS' && !hex.details.error) {
+              clearInterval(temp);
+              let SUCCESS = true;
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output && d.data) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
+                  }
+                  if (d.error) {
+                    SUCCESS = false;
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
                 }
               }
+              if (SUCCESS) {
+                Workspace.startArduino();
+              }
+              callback();
+            } else if (hex.state === 'FAILED' || hex.details.error) {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+              callback();
             }
-            if (SUCCESS) {
-              Workspace.startArduino();
+          });
+        }, 2000);
+      }, error => {
+        window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
+        console.log(error);
+        callback();
+      });
+    } else if (window.progLang === 1) {
+      api.compileCodeInlineAssembly(toSend).subscribe(v => {
+        const taskid = v.uuid; // Get Compilation id
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            if (hex.state === 'SUCCESS' && !hex.details.error) {
+              clearInterval(temp);
+              let SUCCESS = true;
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output && d.data) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
+                  }
+                  if (d.error) {
+                    SUCCESS = false;
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
+                }
+              }
+              if (SUCCESS) {
+                Workspace.startArduino();
+              }
+              callback();
+            } else if (hex.state === 'FAILED' || hex.details.error) {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+              callback();
             }
-            callback();
-          } else if (hex.state === 'FAILED' || hex.details.error) {
-            clearInterval(temp);
-            window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
-            callback();
-          }
-        });
-      }, 2000);
-    }, error => {
-      window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
-      console.log(error);
-      callback();
-    });
-
+          });
+        }, 2000);
+      }, error => {
+        window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
+        console.log(error);
+        callback();
+      });
+    }
   }
   /**
    * Start Simulation
