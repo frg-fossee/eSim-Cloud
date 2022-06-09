@@ -265,12 +265,46 @@ export class ApiService {
   }
 
   /**
+   * Request to fetch Arduino LTI App details for id of the given circuit
+   * @param id save_id of the circuit
+   * @param token Auth Token
+   */
+  ArduinoexistLTIURL(id: string, token: string) {
+    return this.http.get(`${this.url}api/lti/exist/arduino/${id}`, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
    * Request to save LTI details at the backend
    * @param token Auth Token
    * @param data LTI Details containing ids of model and student circuits, consumer and secret keys
    */
   saveLTIDetails(token: string, data: any) {
     return this.http.post(`${this.url}api/lti/build/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Request to save LTI details at the backend
+   * @param token Auth Token
+   * @param data LTI Details containing ids of model and student circuits, consumer and secret keys
+   */
+   saveArduinoLTIDetails(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/build/arduino`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Resuest for view code
+   * @param id Arduino LTI session id
+   * @param token Auth Token
+   * @returns Boolean for student being able to see the code
+   */
+  viewArduinoCode(id, token): Observable<any>{
+    return this.http.get(`${this.url}api/lti/arduino/viewcode/${id}`, {
       headers: this.httpHeaders(token),
     });
   }
@@ -287,6 +321,20 @@ export class ApiService {
       })
     });
   }
+
+  /**
+   * Requests for deleting the Arduino LTI app
+   * @param id Model Circuit ID Number
+   * @param token Auth Token
+   */
+  removeArduinoLTIDetails(id: number, token: string) {
+    return this.http.delete(`${this.url}api/lti/arduino/delete/${id}`, {
+      headers: new HttpHeaders({
+        Authorization: `Token ${token}`,
+      })
+    });
+  }
+
   /**
    * Development Mode Login.
    */
@@ -321,12 +369,34 @@ export class ApiService {
   }
 
   /**
+   * Request to update LTI details for Arduino at the backend
+   * @param token Auth Token
+   * @param data LTI Details containing ids of model and student circuits, consumer and secret keys
+   */
+  updateArduinoLTIDetails(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/update_arduino/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
    * Requests for creating submission for the circuit with given id
    * @param token Auth Token
    * @param data LTI data (contains save_id, lti_id, lti_nonce, lti_user_id)
    */
   submitCircuit(token: string, data: any) {
     return this.http.post(`${this.url}api/lti/submit/`, data, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Requests for creating submission for the Arduino circuit with given id
+   * @param token Auth Token
+   * @param data LTI data (contains save_id, lti_id, lti_nonce, lti_user_id)
+   */
+  arduinoSubmitCircuit(token: string, data: any) {
+    return this.http.post(`${this.url}api/lti/arduino/submit/`, data, {
       headers: this.httpHeaders(token),
     });
   }
@@ -340,6 +410,19 @@ export class ApiService {
    */
   getSubmissions(id: string, branch: string, version: string, token: string) {
     return this.http.get(`${this.url}api/lti/submissions/${id}/${version}/${branch}`, {
+      headers: this.httpHeaders(token),
+    });
+  }
+
+  /**
+   * Requests to retrieve all the submissions for given Arduino LTI App from backend
+   * @param id save_id of the circuit
+   * @param branch branch of the circuit
+   * @param version version of the circuit
+   * @param token Auth Token
+   */
+  getArduinoSubmissions(id: string, branch: string, version: string, token: string) {
+    return this.http.get(`${this.url}api/lti/arduino/submissions/${id}/${version}/${branch}`, {
       headers: this.httpHeaders(token),
     });
   }
@@ -372,8 +455,34 @@ export class ApiService {
     });
   }
 
-  storeSimulationData(id: number, token: string, data: Object) {
+  storeSimulationData(id, token, data: Object) {
     return this.http.post(`${this.url}api/save/arduinodata/${id}`, data, {
+      headers: this.httpHeaders(token),
+    })
+  }
+
+  /**
+   * Request for storing Arduino LTI Simulation data
+   * @param id Circuit ID
+   * @param lti_id Arduino LTI ID
+   * @param token Login Token
+   * @param data Simulation Data performed by the student
+   */
+  storeLTISimulationData(id, lti_id: number, token, data: Object) {
+    return this.http.post(`${this.url}api/lti/save/arduinodata/${id}/${lti_id}`, data, {
+      headers: this.httpHeaders(token),
+    })
+  }
+
+
+  getSimulationData(id, token: string): Observable<any> {
+    return this.http.get(`${this.url}api/save/arduinodata/${id}`, {
+      headers: this.httpHeaders(token),
+    })
+  }
+
+  getLTISimulationData(id, lti_id, token: string): Observable<any> {
+    return this.http.get(`${this.url}api/lti/save/arduinodata/${id}/${lti_id}`, {
       headers: this.httpHeaders(token),
     })
   }

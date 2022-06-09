@@ -107,11 +107,26 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Circuit's primary key
    */
   id: number;
+  /**
+   * Student simulation records
+   */
+  simData: any[] = [];
+  /**
+   * Select the simulation to be submitted
+   */
+  simSelected: any = null;
+  /**
+   * View or not to view graph
+   */
   graphToggle: boolean = false;
   /**
    * Hide/Show submit button
    */
   submitButtonVisibility = false;
+  /**
+   * Whether the LTI user is allowed to see the code
+   */
+  codeVisibility = true;
   /**
    * LTI ID of LTI App (if simulator is opened on LMS)
    */
@@ -234,10 +249,12 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.ltiId = v.lti_id;
         this.ltiNonce = v.lti_nonce;
         this.ltiUserId = v.lti_user_id;
-        this.branch = v.branch;
+        this.branch = v.branch; 
         this.version = v.version;
         this.submitButtonVisibility = true;
         this.LoadOnlineProject(v.id, 'false');
+        this.getSimRecord();
+        this.showCode(v.lti_id);
       } else if (v.id) {
         this.projectId = v.id;
         this.LoadOnlineProject(v.id, v.offline);
@@ -327,6 +344,29 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
 
     block.classList.toggle('show-div');
+  }
+
+  getSimRecSelectChange(value){
+    this.simSelected = value
+    console.log(this.simSelected);
+  }
+
+  /**
+   * Get the simulation result selected
+   */
+   onSelectionChanges(event) {
+    this.getSimRecSelectChange(event.value);
+  }
+
+  /**
+   * Function to check for viewing code or not in lti
+   */
+  showCode(ltiID){
+    const token = Login.getToken()
+    this.api.viewArduinoCode(ltiID, token).subscribe((v) => {
+      console.log(v['view']);
+      this.codeVisibility = v['view'];
+    });
   }
 
   /** Function called when Start Simulation button is triggered */
@@ -517,7 +557,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       return;
     }
     // if projet id is uuid (online circuit)
-    if (SaveOnline.isUUID(this.projectId)) {
+    if (SaveOnline.isUUID(this.projectId) && this.ltiId === '') {
       this.aroute.queryParams.subscribe(params => {
         const branch = params.branch;
         const versionId = params.version;
@@ -938,9 +978,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           user_id: this.ltiUserId,
           oauth_nonce: this.ltiNonce,
         },
-        student_simulation: null,
+        student_simulation: this.simSelected,
       };
-      this.api.submitCircuit(token, data).subscribe(res => {
+      this.api.arduinoSubmitCircuit(token, data).subscribe(res => {
         AlertService.showAlert(res['message']);
         // add new query parameters
         this.router.navigate(
@@ -979,4 +1019,32 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     str += `${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
     return str;
   }
+
+  callGetSimRecord($event){
+    if($event){
+      this.getSimRecord();
+    }
+  }
+
+  /**
+ * Return the list of student simulation records
+ */
+  getSimRecord(){
+    const token = Login.getToken();
+    var temp = [];
+    if (token) {
+      this.api.getLTISimulationData(this.projectId, this.ltiId, token).subscribe((v) => {
+        for(var i=0; i<v.length; ++i){
+          var data = JSON.parse(v[i].result.replaceAll("'","\""))
+          var key = (Object.keys(data))
+          temp.push({id:v[i].id, length:data[key[0]]['length']});
+        }
+        this.simData = temp;
+      });
+    } else {
+      // if no token is present then show this message
+      AlertService.showAlert('Please Login to Continue');
+    }
+  }
+
 }

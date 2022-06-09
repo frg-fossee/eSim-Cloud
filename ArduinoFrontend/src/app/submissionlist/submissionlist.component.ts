@@ -137,7 +137,7 @@ export class SubmissionlistComponent implements OnInit {
    */
   PopulateSubmissions() {
     const token = Login.getToken();
-    this.api.getSubmissions(this.id, this.branch, this.version, token).subscribe(res => {
+    this.api.getArduinoSubmissions(this.id, this.branch, this.version, token).subscribe(res => {
       for (let i = 0; i < res['length']; i++) {
         this.submissions.data.push({
           user: res[i]['student'] ? res[i]['student']['username'] : 'Anonymous User',

@@ -106,8 +106,8 @@ class GallerySerializer(serializers.ModelSerializer):
             )
 
 class ArduinoModelSimulationDataSerializer(serializers.ModelSerializer):
-    save_id = serializers.IntegerField()
+    # save_id = serializers.IntegerField()
     result = serializers.CharField()
     class Meta:
         model = ArduinoModelSimulationData
-        fields = ( 'save_id', 'result', )
+        fields = ( 'id', 'save_id', 'result', )

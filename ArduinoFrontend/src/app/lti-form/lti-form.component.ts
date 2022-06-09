@@ -35,6 +35,7 @@ export interface LTIDetails {
   scored: boolean;
   id: string;
   sim_params: string[];
+  view_code: boolean;
 }
 
 /**
@@ -99,11 +100,15 @@ export class LTIFormComponent implements OnInit {
   /**
    * Stores all test cases applicable for the circuit
    */
-  testCases: any[];
+  testCases: any[] = [];
   /**
    * Stores config url shown in text box
    */
   configUrl = '';
+  /**
+   * Status of view code checkbox
+   */
+  viewCodeCheckBox: boolean = false;
   /**
    * Stores LTI details recieved from backend and the LTI Form
    */
@@ -120,6 +125,7 @@ export class LTIFormComponent implements OnInit {
     scored: false,
     id: '',
     sim_params: [],
+    view_code: false
   };
   /**
    * Defines LTI Form Controls and Validators
@@ -155,7 +161,7 @@ export class LTIFormComponent implements OnInit {
       if (this.lti) {
         this.details.id = this.lti;
         // Get details of the LTI App.
-        this.api.existLTIURL(this.circuitId, token).subscribe(res => {
+        this.api.ArduinoexistLTIURL(this.circuitId, token).subscribe(res => {
           // Switch to the branch and version of the existing LTI App
           if (res['model_schematic'].branch !== this.branch || res['model_schematic'].version !== this.version) {
             this.router.navigate(
@@ -185,8 +191,10 @@ export class LTIFormComponent implements OnInit {
             config_url: res['config_url'],
             consumerError: '',
             configExists: true,
+            view_code: res['view_code']
           };
           this.getAllVersions();
+          this.getTestCases();
           this.configUrl = this.details.config_url;
         }, err => {
           if (err.status === 404) {
@@ -198,6 +206,7 @@ export class LTIFormComponent implements OnInit {
       } else {
         this.details.configExists = false;
         this.getAllVersions();
+        this.getTestCases();
       }
     });
   }
@@ -210,11 +219,17 @@ export class LTIFormComponent implements OnInit {
     this.form.setValue({
       consumer_key: res['consumer_key'],
       secret_key: res['secret_key'],
-      score: parseInt(res['score'], 10),
+      score: parseFloat(res['score']),
+      // score: res['score'] ? 1 : 0,
       initial_schematic: parseInt(res['initial_schematic'], 10),
       test_case: res['test_case'],
       scored: res['scored'],
     });
+    this.viewCodeCheckBox = res['view_code']
+  }
+
+  gettestCaseSelectChange(value){
+    this.details.test_case = value;
   }
 
   /**
@@ -222,7 +237,7 @@ export class LTIFormComponent implements OnInit {
    * @param event Event data on changing select form field for test case
    */
   ontestCaseSelectChanges(event) {
-    console.log(event);
+    this.gettestCaseSelectChange(event.value);
   }
 
   /**
@@ -243,6 +258,19 @@ export class LTIFormComponent implements OnInit {
   }
 
   /**
+   *  Called on view code checkbox is checked or unchecked
+   * @param event 
+   */
+
+  toggleViewCode(event){
+    if(event.checked){
+      this.details.view_code = true;   
+    } else {
+      this.details.view_code = false;
+    }
+  }
+
+  /**
    * Called on clicking Save button from LTI Form
    */
   onSubmit() {
@@ -253,10 +281,10 @@ export class LTIFormComponent implements OnInit {
       this.details = {
         ...this.details,
         ...this.form.value,
-        scored: this.form.value.scored ? this.form.value.scored : false,
+        scored: this.form.value.scored ? true : false,
         model_schematic: this.modelCircuit.id,
-        test_case: null,
-        sim_params: [],
+        test_case: this.form.value.test_case ? this.form.value.test_case: null,
+        score: this.form.value.score,
         configExists: false,
       };
       const token = Login.getToken();
@@ -266,7 +294,7 @@ export class LTIFormComponent implements OnInit {
         delete data['config_url'];
         delete data['consumerError'];
         delete data['id'];
-        this.api.saveLTIDetails(token, data).subscribe(res => {
+        this.api.saveArduinoLTIDetails(token, data).subscribe(res => {
           this.setForm(res);
           this.details = {
             ...this.form.value,
@@ -305,7 +333,7 @@ export class LTIFormComponent implements OnInit {
   onDelete() {
     const token = Login.getToken();
     if (token) {
-      this.api.removeLTIDetails(this.details.model_schematic, token).subscribe(res => {
+      this.api.removeArduinoLTIDetails(this.details.model_schematic, token).subscribe(res => {
         this.details = {
           ...this.details,
           secret_key: '',
@@ -318,8 +346,10 @@ export class LTIFormComponent implements OnInit {
           sim_params: [],
           scored: false,
           id: '',
+          view_code: false
         };
         this.studentCircuit = undefined;
+        this.circuits = [];
         this.configUrl = this.details.config_url;
         this.router.navigate(
           [],
@@ -353,8 +383,10 @@ export class LTIFormComponent implements OnInit {
       id: this.lti,
       configExists: this.details.configExists,
       model_schematic: this.details.model_schematic,
-      test_case: null,
+      test_case: this.details.test_case,
+      score: this.form.value.score,
       sim_params: [],
+      view_code: this.details.view_code
     };
     if (!this.details.scored) {
       this.details.score = null;
@@ -363,7 +395,7 @@ export class LTIFormComponent implements OnInit {
     delete data['configExists'];
     delete data['config_url'];
     delete data['consumerError'];
-    this.api.updateLTIDetails(token, data).subscribe(res => {
+    this.api.updateArduinoLTIDetails(token, data).subscribe(res => {
       this.setForm(res);
       this.details = {
         ...this.details,
@@ -374,6 +406,7 @@ export class LTIFormComponent implements OnInit {
         configExists: true,
         consumerError: '',
       };
+      AlertService.showAlert("Details Updated Succesfully")
       this.lti = res['id'];
       this.configUrl = this.details.config_url;
       this.router.navigate(
@@ -451,6 +484,26 @@ export class LTIFormComponent implements OnInit {
       AlertService.showAlert('Please Login to Continue');
     }
   }
+
+  getTestCases() {
+    // get Auth token
+    const token = Login.getToken();
+    var temp = [];
+    if (token) {
+      this.api.getSimulationData(this.circuitId, token).subscribe((v) => {
+        for(var i=0; i<v.length; ++i){
+          var data = JSON.parse(v[i].result.replaceAll("'","\""))
+          var key = (Object.keys(data))
+          temp.push({id:v[i].id, length:data[key[0]]['length']});
+        }
+        this.testCases = temp;
+      });
+    } else {
+      // if no token is present then show this message
+      AlertService.showAlert('Please Login to Continue');
+    }
+  }
+
 
   /**
    * Comparing the circuits using their id field

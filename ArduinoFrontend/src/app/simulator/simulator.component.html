@@ -225,7 +225,7 @@
         None
       </mat-option>
       <ng-container *ngFor="let sim of simData;">
-        <mat-option [value]="sim.id">Graph Result - {{ getFormattedDate(sim.save_time) }}</mat-option>
+        <mat-option [value]="sim.id">Graph Result - {{ sim.length }} data points</mat-option>
       </ng-container>
     </mat-select>
   </mat-form-field>
@@ -250,7 +250,8 @@
 
 
 <div class="code-editor" style="z-index: 1000;" #codeDiv>
-  <app-code-editor width="500" height="100" [reinit]="openCodeEditor"></app-code-editor>
+  <app-code-editor width="500" height="100" [reinit]="openCodeEditor" 
+    [codeView]="codeVisibility"></app-code-editor>
 </div>
 
 
@@ -386,7 +387,8 @@
       </div>
     </div>
 
-    <app-versioning-panel (createNewBranch)="createNewBranch($event)"></app-versioning-panel>
+    <app-versioning-panel *ngIf="!submitButtonVisibility" [lti]="submitButtonVisibility"
+    (createNewBranch)="createNewBranch($event)"></app-versioning-panel>
 
   </div>
 
@@ -492,5 +494,5 @@
     </div>
   </div>
 </div>
-<app-graphlist #graph (updateSimulationDataList)="getSimulations()" [id]="id" [lti]="lti"
-  *ngIf="graphToggle && isLoaded()"></app-graphlist>
+<app-graphlist #graph (simDataSave)="callGetSimRecord($event)" (updateSimulationDataList)="getSimulations()" 
+  [id]="id" [lti]="submitButtonVisibility" [save_id]="projectId"  *ngIf="graphToggle && isLoaded()"></app-graphlist>

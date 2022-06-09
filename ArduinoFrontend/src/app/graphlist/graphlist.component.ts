@@ -1,9 +1,12 @@
-import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, Input, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EventEmitter } from '@angular/core';
 import { AlertService } from '../alert/alert-service/alert.service';
 import { ApiService } from '../api.service';
 import { GraphComponent } from '../graph/graph.component';
 import { Login } from '../Libs/Login';
 import { Workspace } from '../Libs/Workspace';
+import { SimulatorComponent } from '../simulator/simulator.component';
 
 @Component({
   selector: 'app-graphlist',
@@ -13,11 +16,17 @@ import { Workspace } from '../Libs/Workspace';
 export class GraphlistComponent implements OnInit {
 
   @Input() id: number;
+  @Input() save_id: any;
+  @Input() lti: boolean;
+  @Output() simDataSave: EventEmitter<boolean> = new EventEmitter()
   @ViewChildren('pinGraph') graphList!: QueryList<GraphComponent>
   nodes: Object[] = [];
   simulationStatus: boolean = false;
 
-  constructor(private api: ApiService) { }
+  constructor(
+    private router: Router,
+    private aroute: ActivatedRoute,
+    private api: ApiService) { }
 
   readPins() {
     console.log('Detecting changes');
@@ -96,9 +105,21 @@ export class GraphlistComponent implements OnInit {
       }
     });
     const token = Login.getToken();
-    console.log(data);
-    this.api.storeSimulationData(this.id, token, data).subscribe(res => AlertService.showAlert("Record Saved Successfully")
-    , err => AlertService.showAlert(err));
+    if(!this.lti){
+      this.api.storeSimulationData(this.save_id, token, data).subscribe(res => AlertService.showAlert("Record Saved Successfully")
+      , err => AlertService.showAlert(err));
+    }else{
+      this.aroute.queryParams.subscribe(v =>{
+        this.api.storeLTISimulationData(this.save_id, v.lti_id, token, data).subscribe(res =>{
+          AlertService.showAlert("Record Saved Successfully");
+          this.simDataSave.emit(true);
+        }
+        , err => {
+          AlertService.showAlert(err);
+          this.simDataSave.emit(false);
+        });
+      });
+    }
   }
 
 }
