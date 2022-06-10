@@ -303,7 +303,7 @@ export class ApiService {
    * @param token Auth Token
    * @returns Boolean for student being able to see the code
    */
-  viewArduinoCode(id, token): Observable<any>{
+  viewArduinoCode(id, token): Observable<any> {
     return this.http.get(`${this.url}api/lti/arduino/viewcode/${id}`, {
       headers: this.httpHeaders(token),
     });
@@ -455,10 +455,10 @@ export class ApiService {
     });
   }
 
-  storeSimulationData(id, token, data: Object) {
+  storeSimulationData(id, token, data: object) {
     return this.http.post(`${this.url}api/save/arduinodata/${id}`, data, {
       headers: this.httpHeaders(token),
-    })
+    });
   }
 
   /**
@@ -468,22 +468,22 @@ export class ApiService {
    * @param token Login Token
    * @param data Simulation Data performed by the student
    */
-  storeLTISimulationData(id, lti_id: number, token, data: Object) {
-    return this.http.post(`${this.url}api/lti/save/arduinodata/${id}/${lti_id}`, data, {
+  storeLTISimulationData(id, ltiId: number, token, data: object) {
+    return this.http.post(`${this.url}api/lti/save/arduinodata/${id}/${ltiId}`, data, {
       headers: this.httpHeaders(token),
-    })
+    });
   }
 
 
   getSimulationData(id, token: string): Observable<any> {
     return this.http.get(`${this.url}api/save/arduinodata/${id}`, {
       headers: this.httpHeaders(token),
-    })
+    });
   }
 
-  getLTISimulationData(id, lti_id, token: string): Observable<any> {
-    return this.http.get(`${this.url}api/lti/save/arduinodata/${id}/${lti_id}`, {
+  getLTISimulationData(id, ltiId, token: string): Observable<any> {
+    return this.http.get(`${this.url}api/lti/save/arduinodata/${id}/${ltiId}`, {
       headers: this.httpHeaders(token),
-    })
+    });
   }
 }

@@ -118,7 +118,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * View or not to view graph
    */
-  graphToggle: boolean = false;
+  graphToggle = false;
   /**
    * Hide/Show submit button
    */
@@ -249,7 +249,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.ltiId = v.lti_id;
         this.ltiNonce = v.lti_nonce;
         this.ltiUserId = v.lti_user_id;
-        this.branch = v.branch; 
+        this.branch = v.branch;
         this.version = v.version;
         this.submitButtonVisibility = true;
         this.LoadOnlineProject(v.id, 'false');
@@ -346,8 +346,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     block.classList.toggle('show-div');
   }
 
-  getSimRecSelectChange(value){
-    this.simSelected = value
+  getSimRecSelectChange(value) {
+    this.simSelected = value;
     console.log(this.simSelected);
   }
 
@@ -361,8 +361,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Function to check for viewing code or not in lti
    */
-  showCode(ltiID){
-    const token = Login.getToken()
+  showCode(ltiID) {
+    const token = Login.getToken();
     this.api.viewArduinoCode(ltiID, token).subscribe((v) => {
       console.log(v['view']);
       this.codeVisibility = v['view'];
@@ -1020,24 +1020,24 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     return str;
   }
 
-  callGetSimRecord($event){
-    if($event){
+  callGetSimRecord($event) {
+    if ($event) {
       this.getSimRecord();
     }
   }
 
   /**
- * Return the list of student simulation records
- */
-  getSimRecord(){
+   * Return the list of student simulation records
+   */
+  getSimRecord() {
     const token = Login.getToken();
-    var temp = [];
+    const temp = [];
     if (token) {
       this.api.getLTISimulationData(this.projectId, this.ltiId, token).subscribe((v) => {
-        for(var i=0; i<v.length; ++i){
-          var data = JSON.parse(v[i].result.replaceAll("'","\""))
-          var key = (Object.keys(data))
-          temp.push({id:v[i].id, length:data[key[0]]['length']});
+        for (const val of v) {
+          const data = JSON.parse(val.result.replaceAll('\'', '\"'));
+          const key = (Object.keys(data));
+          temp.push({id: val.id, length: data[key[0]]['length']});
         }
         this.simData = temp;
       });

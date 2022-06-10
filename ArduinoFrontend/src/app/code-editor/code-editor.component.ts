@@ -101,7 +101,7 @@ export class CodeEditorComponent {
   /**
    * Code Visibility in LTI mode
    */
-  @Input() codeView: boolean = true;
+  @Input() codeView = true;
   /**
    * Reninitialize arduino names
    */

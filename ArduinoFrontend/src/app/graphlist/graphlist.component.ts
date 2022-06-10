@@ -16,12 +16,12 @@ import { SimulatorComponent } from '../simulator/simulator.component';
 export class GraphlistComponent implements OnInit {
 
   @Input() id: number;
-  @Input() save_id: any;
+  @Input() saveId: any;
   @Input() lti: boolean;
-  @Output() simDataSave: EventEmitter<boolean> = new EventEmitter()
-  @ViewChildren('pinGraph') graphList!: QueryList<GraphComponent>
-  nodes: Object[] = [];
-  simulationStatus: boolean = false;
+  @Output() simDataSave: EventEmitter<boolean> = new EventEmitter();
+  @ViewChildren('pinGraph') graphList!: QueryList<GraphComponent>;
+  nodes: object[] = [];
+  simulationStatus = false;
 
   constructor(
     private router: Router,
@@ -32,13 +32,13 @@ export class GraphlistComponent implements OnInit {
     console.log('Detecting changes');
     this.nodes = [];
     // Workspace.circuitLoadStatus.subscribe(_ => {
-      window['scope'].ArduinoUno.forEach(arduino => {
-        arduino.nodes.forEach(point => {
-          if (point.connectedTo && (point.id <= 13 && point.id >= 2)) {
-            this.nodes.push({point: point.id, arduinoId: arduino.id, arduinoName: arduino.name});
-          }
-        });
+    window['scope'].ArduinoUno.forEach(arduino => {
+      arduino.nodes.forEach(point => {
+        if (point.connectedTo && (point.id <= 13 && point.id >= 2)) {
+          this.nodes.push({point: point.id, arduinoId: arduino.id, arduinoName: arduino.name});
+        }
       });
+    });
     // });
   }
 
@@ -52,32 +52,32 @@ export class GraphlistComponent implements OnInit {
     this.readPins();
     Workspace.circuitLoadStatus.subscribe(res => {
       this.readPins();
-    })
+    });
     document.addEventListener('changed', (r) => {
       console.log('Detecting changes', r['detail']['ele']['element']);
-      let changeInfo = r['detail']['ele'];
+      const changeInfo = r['detail']['ele'];
       if (changeInfo.keyName === 'wires') {
-        let wire = changeInfo['element'];
-        let SarduinoId = wire['start']['keyName'] === 'ArduinoUno' ? wire.start.id : undefined;
-        let EarduinoId = wire['end']['keyName'] === 'ArduinoUno' ? wire.end.id : undefined;
+        const wire = changeInfo['element'];
+        const SarduinoId = wire['start']['keyName'] === 'ArduinoUno' ? wire.start.id : undefined;
+        const EarduinoId = wire['end']['keyName'] === 'ArduinoUno' ? wire.end.id : undefined;
         if (changeInfo.event === 'delete') {
           this.nodes = this.nodes.filter(i => {
-            if(SarduinoId && i['arduinoId'] === SarduinoId) {
-              if(i['point'] === wire.start.pid) {
+            if (SarduinoId && i['arduinoId'] === SarduinoId) {
+              if (i['point'] === wire.start.pid) {
                 return false;
               }
             }
             if (EarduinoId && i['arduinoId'] === EarduinoId) {
-              if(i['point'] === wire.end.pid) {
+              if (i['point'] === wire.end.pid) {
                 return false;
               }
             }
             return true;
           });
           console.log(this.nodes);
-        } else if(changeInfo.event === 'add') {
-          let Sarduino = SarduinoId ? window['scope'].ArduinoUno.filter(arduino => arduino.id === wire.start.id)[0]: undefined;
-          let Earduino = EarduinoId ? window['scope'].ArduinoUno.filter(arduino => arduino.id === wire.end.id)[0]: undefined;
+        } else if (changeInfo.event === 'add') {
+          const Sarduino = SarduinoId ? window['scope'].ArduinoUno.filter(arduino => arduino.id === wire.start.id)[0] : undefined;
+          const Earduino = EarduinoId ? window['scope'].ArduinoUno.filter(arduino => arduino.id === wire.end.id)[0] : undefined;
           this.pushPoint(Sarduino, wire.start.pid);
           this.pushPoint(Earduino, wire.end.pid);
         }
@@ -86,8 +86,8 @@ export class GraphlistComponent implements OnInit {
   }
 
   pushPoint(arduino, pointId) {
-    if(arduino) {
-      let point = arduino['nodes'][pointId];
+    if (arduino) {
+      const point = arduino['nodes'][pointId];
       if (point.connectedTo && (point.id <= 13 && point.id >= 2)) {
         this.nodes.push({point: point.id, arduinoId: arduino.id, arduinoName: arduino.name});
       }
@@ -95,23 +95,23 @@ export class GraphlistComponent implements OnInit {
   }
 
   SaveData() {
-    console.log("Clicked");
-    let data = {};
+    console.log('Clicked');
+    const data = {};
     this.graphList.forEach(pinGraph => {
       data[pinGraph.pinLabel] = {
         values: pinGraph.data,
         delay: pinGraph.xlabels,
         length: pinGraph.data.length,
-      }
+      };
     });
     const token = Login.getToken();
-    if(!this.lti){
-      this.api.storeSimulationData(this.save_id, token, data).subscribe(res => AlertService.showAlert("Record Saved Successfully")
+    if (!this.lti) {
+      this.api.storeSimulationData(this.saveId, token, data).subscribe(res => AlertService.showAlert('Record Saved Successfully')
       , err => AlertService.showAlert(err));
-    }else{
-      this.aroute.queryParams.subscribe(v =>{
-        this.api.storeLTISimulationData(this.save_id, v.lti_id, token, data).subscribe(res =>{
-          AlertService.showAlert("Record Saved Successfully");
+    } else {
+      this.aroute.queryParams.subscribe(v => {
+        this.api.storeLTISimulationData(this.saveId, v.lti_id, token, data).subscribe(res => {
+          AlertService.showAlert('Record Saved Successfully');
           this.simDataSave.emit(true);
         }
         , err => {

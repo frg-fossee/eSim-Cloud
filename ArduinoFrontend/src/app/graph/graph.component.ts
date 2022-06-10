@@ -1,4 +1,4 @@
-import { Component, Directive, Input, OnInit, } from '@angular/core';
+import { Component, Directive, Input, OnInit, AfterViewInit } from '@angular/core';
 import { Chart } from 'chart.js';
 import { GraphDataService } from '../graph-data.service';
 import { Workspace } from '../Libs/Workspace';
@@ -8,7 +8,7 @@ import { Workspace } from '../Libs/Workspace';
   templateUrl: './graph.component.html',
   styleUrls: ['./graph.component.css']
 })
-export class GraphComponent implements OnInit {
+export class GraphComponent implements OnInit, AfterViewInit {
 
   data: number[];
   xlabels: number[];
@@ -20,8 +20,8 @@ export class GraphComponent implements OnInit {
   @Input() arduinoName: string;
   state: boolean;
   nodes: string[];
-  ignored: boolean = false;
-  pinLabel = "";
+  ignored = false;
+  pinLabel = '';
 
   constructor(private graphDataService: GraphDataService) {
     this.data = [];
@@ -47,7 +47,7 @@ export class GraphComponent implements OnInit {
     this.pinGraph = new Chart(document.getElementById(canvasElement) as HTMLCanvasElement, this.chartConfig);
     GraphDataService.voltageChange.subscribe(res => {
       if (this.arduinoId === res.arduino.id) {
-        let pinNumber = 15 - parseInt(this.id, 10);
+        const pinNumber = 15 - parseInt(this.id, 10);
         this.pinGraph.data.datasets[0].label = res.label;
         this.data.push((res.value >> pinNumber) & 1);
         if (this.xlabels.length === 0) {
@@ -115,13 +115,13 @@ export class GraphComponent implements OnInit {
               min: 0,
               stepSize: 1,
               max: 2,
-              callback: function (value, index) {
+              callback: (value, index) => {
                 return value > 1 ? '' : value;
               },
             }
           }],
         },
       },
-    }
+    };
   }
 }

@@ -108,7 +108,7 @@ export class LTIFormComponent implements OnInit {
   /**
    * Status of view code checkbox
    */
-  viewCodeCheckBox: boolean = false;
+  viewCodeCheckBox = false;
   /**
    * Stores LTI details recieved from backend and the LTI Form
    */
@@ -225,10 +225,10 @@ export class LTIFormComponent implements OnInit {
       test_case: res['test_case'],
       scored: res['scored'],
     });
-    this.viewCodeCheckBox = res['view_code']
+    this.viewCodeCheckBox = res['view_code'];
   }
 
-  gettestCaseSelectChange(value){
+  gettestCaseSelectChange(value) {
     this.details.test_case = value;
   }
 
@@ -259,12 +259,11 @@ export class LTIFormComponent implements OnInit {
 
   /**
    *  Called on view code checkbox is checked or unchecked
-   * @param event 
    */
 
-  toggleViewCode(event){
-    if(event.checked){
-      this.details.view_code = true;   
+  toggleViewCode(event) {
+    if (event.checked) {
+      this.details.view_code = true;
     } else {
       this.details.view_code = false;
     }
@@ -283,7 +282,7 @@ export class LTIFormComponent implements OnInit {
         ...this.form.value,
         scored: this.form.value.scored ? true : false,
         model_schematic: this.modelCircuit.id,
-        test_case: this.form.value.test_case ? this.form.value.test_case: null,
+        test_case: this.form.value.test_case ? this.form.value.test_case : null,
         score: this.form.value.score,
         configExists: false,
       };
@@ -406,7 +405,7 @@ export class LTIFormComponent implements OnInit {
         configExists: true,
         consumerError: '',
       };
-      AlertService.showAlert("Details Updated Succesfully")
+      AlertService.showAlert('Details Updated Succesfully');
       this.lti = res['id'];
       this.configUrl = this.details.config_url;
       this.router.navigate(
@@ -488,13 +487,13 @@ export class LTIFormComponent implements OnInit {
   getTestCases() {
     // get Auth token
     const token = Login.getToken();
-    var temp = [];
+    const temp = [];
     if (token) {
       this.api.getSimulationData(this.circuitId, token).subscribe((v) => {
-        for(var i=0; i<v.length; ++i){
-          var data = JSON.parse(v[i].result.replaceAll("'","\""))
-          var key = (Object.keys(data))
-          temp.push({id:v[i].id, length:data[key[0]]['length']});
+        for (const val of v) {
+          const data = JSON.parse(val.result.replaceAll('\'', '\"'));
+          const key = (Object.keys(data));
+          temp.push({id: val.id, length: data[key[0]]['length']});
         }
         this.testCases = temp;
       });
