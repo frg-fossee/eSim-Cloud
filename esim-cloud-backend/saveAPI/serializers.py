@@ -6,7 +6,7 @@ from saveAPI.models import StateSave, Gallery, ArduinoModelSimulationData
 from libAPI.models import Library
 from libAPI.serializers import LibrarySerializer
 from django.core.files.base import ContentFile
-from ltiAPI.models import ArduinLTIConsumer, lticonsumer
+from ltiAPI.models import lticonsumer
 import base64
 import six
 import uuid
@@ -55,14 +55,11 @@ class StateSaveSerializer(serializers.ModelSerializer):
                   'id', 'lti_id', 'is_submission')
 
     def get_lti_id(self, obj):
-        save_id = obj.save_id                                              
-        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)             
-        arduinoLTIs = ArduinLTIConsumer.objects.filter(model_schematic__save_id=save_id)
-        if ltis.exists():    
-            return ltis[0].id     
-        elif arduinoLTIs.exists():  
-            return arduinoLTIs[0].id
-        else:          
+        save_id = obj.save_id
+        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
+        if ltis.exists():
+            return ltis[0].id
+        else:
             return None
 
 
@@ -88,14 +85,11 @@ class SaveListSerializer(serializers.ModelSerializer):
                   'is_submission')
 
     def get_lti_id(self, obj):
-        save_id = obj.save_id                                              
-        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)             
-        arduinoLTIs = ArduinLTIConsumer.objects.filter(model_schematic__save_id=save_id)
-        if ltis.exists():    
-            return ltis[0].id     
-        elif arduinoLTIs.exists():  
-            return arduinoLTIs[0].id
-        else:          
+        save_id = obj.save_id
+        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
+        if ltis.exists():
+            return ltis[0].id
+        else:
             return None
 
 
