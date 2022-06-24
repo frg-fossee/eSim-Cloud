@@ -1033,7 +1033,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     const token = Login.getToken();
     const temp = [];
     if (token) {
-      this.api.getLTISimulationData(this.projectId, this.ltiId, token).subscribe((v) => {
+      this.api.getLTISimulationData(this.id, this.ltiId, token).subscribe((v) => {
         for (const val of v) {
           const data = JSON.parse(val.result.replaceAll('\'', '\"'));
           const key = (Object.keys(data));

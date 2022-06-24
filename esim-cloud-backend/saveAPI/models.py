@@ -41,9 +41,11 @@ class StateSave(models.Model):
     def __str__(self):
         return self.name
 
+
 class ArduinoModelSimulationData(models.Model):
-    save_id = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
-                            null=False)
+    save_id = models.ForeignKey(StateSave, to_field='id',
+                                on_delete=models.CASCADE,
+                                null=False)
     result = models.TextField(null=True, default=True)
 
     def save(self, *args, **kwargs):

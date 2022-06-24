@@ -1,6 +1,8 @@
 from django.utils import tree
 from rest_framework import serializers
-from .models import ArduinoLTISession, ArduinoLTISimData, ArduinoSubmission, lticonsumer, ltiSession, Submission, ArduinLTIConsumer
+from .models import ArduinoLTISession, ArduinoLTISimData, \
+    ArduinoSubmission, lticonsumer, ltiSession, Submission, \
+    ArduinLTIConsumer
 from saveAPI.serializers import SaveListSerializer
 from django.contrib.auth import get_user_model
 from simulationAPI.serializers import simulationSerializer
@@ -21,6 +23,7 @@ class consumerSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         consumer = lticonsumer.objects.create(**validated_data)
         return consumer
+
 
 class ArduinoConsumerSerializer(serializers.ModelSerializer):
 
@@ -46,6 +49,7 @@ class consumerSubmissionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         pass
+
 
 class consumerArduinoSubmissionSerializer(serializers.ModelSerializer):
     test_case = ArduinoModelSimulationDataSerializer(many=False)
@@ -79,6 +83,7 @@ class consumerResponseSerializer(serializers.Serializer):
     test_case = serializers.IntegerField(required=False, allow_null=True)
     scored = serializers.BooleanField()
 
+
 class ArduinoConsumerResponseSerializer(serializers.Serializer):
     id = serializers.UUIDField()
     config_url = serializers.CharField(max_length=100)
@@ -96,6 +101,7 @@ class SessionSerializer(serializers.ModelSerializer):
         model = ltiSession
         fields = ["id", "user_id", "oauth_nonce"]
 
+
 class ArduinoSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ArduinoLTISession
@@ -106,6 +112,7 @@ class GetSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ltiSession
         fields = "__all__"
+
 
 class GetArduinoSessionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -126,12 +133,14 @@ class SubmissionSerializer(serializers.ModelSerializer):
         model = Submission
         fields = ["ltisession", "schematic"]
 
+
 class ArduinoSubmissionSerializer(serializers.ModelSerializer):
     ltisession = ArduinoSessionSerializer(many=False)
 
     class Meta:
         model = ArduinoSubmission
         fields = ["ltisession", "schematic"]
+
 
 class GetSubmissionsSerializer(serializers.ModelSerializer):
     ltisession = GetSessionSerializer(many=False)
@@ -146,12 +155,15 @@ class GetSubmissionsSerializer(serializers.ModelSerializer):
                   "score", "lms_success", "ltisession",
                   "student_simulation"]
 
+
 class ArduinoLTISimulationDataSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField()
     result = serializers.CharField()
+
     class Meta:
         model = ArduinoLTISimData
-        fields = ( 'id', 'result' )
+        fields = ('id', 'result')
+
 
 class GetArduinoSubmissionsSerializer(serializers.ModelSerializer):
     ltisession = GetArduinoSessionSerializer(many=False)

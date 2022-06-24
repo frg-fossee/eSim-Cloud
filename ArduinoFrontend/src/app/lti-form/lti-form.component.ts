@@ -136,6 +136,7 @@ export class LTIFormComponent implements OnInit {
     score: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(1)]),
     test_case: new FormControl(''),
     initial_schematic: new FormControl(0, Validators.required),
+    model_schematic: new FormControl(0, Validators.required),
     scored: new FormControl(true),
   });
 
@@ -222,6 +223,7 @@ export class LTIFormComponent implements OnInit {
       score: parseFloat(res['score']),
       // score: res['score'] ? 1 : 0,
       initial_schematic: parseInt(res['initial_schematic'], 10),
+      model_schematic: parseInt(res['model_schematic'], 10),
       test_case: res['test_case'],
       scored: res['scored'],
     });
@@ -238,6 +240,15 @@ export class LTIFormComponent implements OnInit {
    */
   ontestCaseSelectChanges(event) {
     this.gettestCaseSelectChange(event.value);
+  }
+
+  getModelCircuitChange(value) {
+    this.modelCircuit = value ? this.circuits.filter(v => v.id === parseInt(value, 10))[0] : undefined;
+    this.getTestCases();
+  }
+
+  onModelCircuitChange(event) {
+    this.getModelCircuitChange(event.value);
   }
 
   /**
@@ -381,7 +392,7 @@ export class LTIFormComponent implements OnInit {
       ...this.form.value,
       id: this.lti,
       configExists: this.details.configExists,
-      model_schematic: this.details.model_schematic,
+      model_schematic: this.modelCircuit.id,
       test_case: this.details.test_case,
       score: this.form.value.score,
       sim_params: [],
@@ -489,14 +500,29 @@ export class LTIFormComponent implements OnInit {
     const token = Login.getToken();
     const temp = [];
     if (token) {
-      this.api.getSimulationData(this.circuitId, token).subscribe((v) => {
-        for (const val of v) {
-          const data = JSON.parse(val.result.replaceAll('\'', '\"'));
-          const key = (Object.keys(data));
-          temp.push({id: val.id, length: data[key[0]]['length']});
-        }
-        this.testCases = temp;
-      });
+      if (this.modelCircuit) {
+        this.api.getSimulationData(this.modelCircuit.save_id, this.modelCircuit.version, this.modelCircuit.branch, token).subscribe((v) => {
+          for (const val of v) {
+            const data = JSON.parse(val.result.replaceAll('\'', '\"'));
+            const key = (Object.keys(data));
+            temp.push({id: val.id, length: data[key[0]]['length']});
+          }
+          this.testCases = temp;
+        }, err => {
+          this.testCases = null;
+        });
+      } else {
+        this.api.getSimulationData(this.circuitId, this.version, this.branch, token).subscribe((v) => {
+          for (const val of v) {
+            const data = JSON.parse(val.result.replaceAll('\'', '\"'));
+            const key = (Object.keys(data));
+            temp.push({id: val.id, length: data[key[0]]['length']});
+          }
+          this.testCases = temp;
+        }, err => {
+          this.testCases = null;
+        });
+      }
     } else {
       // if no token is present then show this message
       AlertService.showAlert('Please Login to Continue');

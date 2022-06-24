@@ -475,8 +475,8 @@ export class ApiService {
   }
 
 
-  getSimulationData(id, token: string): Observable<any> {
-    return this.http.get(`${this.url}api/save/arduinodata/${id}`, {
+  getSimulationData(id, version, branch, token: string): Observable<any> {
+    return this.http.get(`${this.url}api/save/arduinodata/${id}/${version}/${branch}`, {
       headers: this.httpHeaders(token),
     });
   }

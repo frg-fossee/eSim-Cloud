@@ -106,11 +106,11 @@ export class GraphlistComponent implements OnInit {
     });
     const token = Login.getToken();
     if (!this.lti) {
-      this.api.storeSimulationData(this.saveId, token, data).subscribe(res => AlertService.showAlert('Record Saved Successfully')
+      this.api.storeSimulationData(this.id, token, data).subscribe(res => AlertService.showAlert('Record Saved Successfully')
       , err => AlertService.showAlert(err));
     } else {
       this.aroute.queryParams.subscribe(v => {
-        this.api.storeLTISimulationData(this.saveId, v.lti_id, token, data).subscribe(res => {
+        this.api.storeLTISimulationData(this.id, v.lti_id, token, data).subscribe(res => {
           AlertService.showAlert('Record Saved Successfully');
           this.simDataSave.emit(true);
         }

@@ -5,7 +5,8 @@ from django.http import JsonResponse
 from numpy import save
 import django_filters
 from django_filters import rest_framework as filters
-from .serializers import ArduinoModelSimulationDataSerializer, StateSaveSerializer, SaveListSerializer, \
+from .serializers import ArduinoModelSimulationDataSerializer,\
+    StateSaveSerializer, SaveListSerializer, \
     GallerySerializer
 from .serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -608,6 +609,7 @@ class GalleryFetchSaveDeleteView(APIView):
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class ArduinoModelSimulationDataView(APIView):
     """
     Simulation Data from Arduino
@@ -619,7 +621,7 @@ class ArduinoModelSimulationDataView(APIView):
     @swagger_auto_schema(request_body=ArduinoModelSimulationDataSerializer)
     def post(self, request, save_id):
         try:
-            circuit = StateSave.objects.get(save_id=save_id)
+            circuit = StateSave.objects.get(id=save_id)
         except StateSave.DoesNotExist:
             return Response({"error": "Circuit not found"},
                             status=status.HTTP_404_NOT_FOUND)
@@ -628,28 +630,27 @@ class ArduinoModelSimulationDataView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
         print(request.data)
         try:
-                ArduinoModelSimulationData(save_id=circuit, result=str(request.data)).save()
-        except:
+            ArduinoModelSimulationData(save_id=circuit,
+                                       result=str(request.data)).save()
+        except Exception as e:
             return Response(status=500)
         else:
             return Response(status=200)
 
-    def get(self, request, save_id):
+    def get(self, request, save_id, version, branch):
         try:
-            circuit = StateSave.objects.get(save_id=save_id)
+            circuit = StateSave.objects.get(
+                save_id=save_id,
+                version=version,
+                branch=branch
+                )
         except StateSave.DoesNotExist:
             return Response({"error": "Circuit not found"},
                             status=status.HTTP_404_NOT_FOUND)
         try:
-            queryset = ArduinoModelSimulationData.objects.filter(save_id=circuit.id)
-            print(queryset)
+            queryset = ArduinoModelSimulationData.objects.filter(
+                save_id=circuit.id)
             serial = ArduinoModelSimulationDataSerializer(queryset, many=True)
-            # rsp = []
-            # for data in dat:
-            #     data_points = ast.literal_eval(data.result)[list(ast.literal_eval(data.result))[0]]['length']
-            #     jsString = f'{{"id":{data.id}, "length": {data_points}}}'
-            #     rsp.append(jsString)
-            print(serial.data[0])
             return Response(serial.data, status=200)
         except Exception as e:
             print(e)

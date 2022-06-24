@@ -17,6 +17,7 @@ def consumers():
         consumers[i.consumer_key]['secret'] = i.secret_key
     return consumers
 
+
 def ArduinoConsumers():
     """
     Gets Arduino consumer's map from config
@@ -28,7 +29,6 @@ def ArduinoConsumers():
         consumers[i.consumer_key] = {}
         consumers[i.consumer_key]['secret'] = i.secret_key
     return consumers
-
 
 
 def message_identifier():

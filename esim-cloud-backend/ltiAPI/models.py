@@ -28,6 +28,7 @@ class lticonsumer(models.Model):
     def __str__(self):
         return self.consumer_key
 
+
 class ArduinLTIConsumer(models.Model):
     id = models.UUIDField(default=uuid.uuid4, editable=False,
                           unique=True, primary_key=True)
@@ -36,12 +37,14 @@ class ArduinLTIConsumer(models.Model):
     model_schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
                                         related_name="arduino_model_schematic")
     score = models.FloatField(null=True, blank=True)
-    initial_schematic = models.ForeignKey(to=StateSave,
-                                          on_delete=models.SET_NULL,
-                                          null=True,
-                                          related_name="arduino_initial_schematic")
+    initial_schematic = models.ForeignKey(
+        to=StateSave,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="arduino_initial_schematic")
     test_case = models.ForeignKey(
-        to=ArduinoModelSimulationData, on_delete=models.CASCADE, null=True, blank=True)
+        to=ArduinoModelSimulationData, on_delete=models.CASCADE, null=True,
+        blank=True)
     scored = models.BooleanField(null=False)
     view_code = models.BooleanField(null=False)
 
@@ -62,6 +65,7 @@ class ltiSession(models.Model):
     oauth_version = models.CharField(max_length=300)
     oauth_signature = models.CharField(max_length=300)
     simulations = models.ManyToManyField(to=simulation)
+
 
 class ArduinoLTISession(models.Model):
     user_id = models.CharField(max_length=200, null=True)
@@ -93,9 +97,12 @@ class Submission(models.Model):
     def __str__(self):
         return "Submitted" if self.lms_success else "Not submitted"
 
+
 class ArduinoLTISimData(models.Model):
-    session_id = models.ForeignKey(ArduinoLTISession, to_field='id', on_delete=models.CASCADE)
-    circuit_id = models.ForeignKey(StateSave,  to_field='id', on_delete=models.CASCADE)
+    session_id = models.ForeignKey(ArduinoLTISession, to_field='id',
+                                   on_delete=models.CASCADE)
+    circuit_id = models.ForeignKey(StateSave,  to_field='id',
+                                   on_delete=models.CASCADE)
     result = models.TextField()
 
     def save(self, *args, **kwargs):
@@ -103,7 +110,8 @@ class ArduinoLTISimData(models.Model):
 
     def __str__(self):
         return self.result
-        
+
+
 class ArduinoSubmission(models.Model):
     project = models.ForeignKey(to=ArduinLTIConsumer, on_delete=models.CASCADE)
     student = models.ForeignKey(
@@ -118,6 +126,3 @@ class ArduinoSubmission(models.Model):
 
     def __str__(self):
         return "Submitted" if self.lms_success else "Not submitted"
-
-
-

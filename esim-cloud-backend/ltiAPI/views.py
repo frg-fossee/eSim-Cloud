@@ -5,8 +5,8 @@ import datetime
 from requests import session
 from .serializers import consumerSerializer, consumerResponseSerializer, \
     SubmissionSerializer, GetSubmissionsSerializer, consumerExistsSerializer, \
-        ArduinoConsumerSerializer, ArduinoConsumerResponseSerializer, \
-            GetArduinoSubmissionsSerializer, ArduinoLTISimulationDataSerializer
+    ArduinoConsumerSerializer, ArduinoConsumerResponseSerializer, \
+    GetArduinoSubmissionsSerializer, ArduinoLTISimulationDataSerializer
 from .utils import consumers, get_reverse, message_identifier, ArduinoConsumers
 from .models import ltiSession, lticonsumer, Submission, ArduinLTIConsumer, \
     ArduinoLTISession, ArduinoSubmission, ArduinoLTISimData
@@ -65,6 +65,7 @@ class LTIExist(APIView):
         return Response(response_data,
                         status=status.HTTP_200_OK)
 
+
 class ArduinoLTIExist(APIView):
 
     def get(self, request, save_id):
@@ -99,6 +100,7 @@ class ArduinoLTIExist(APIView):
         return Response(response_data,
                         status=status.HTTP_200_OK)
 
+
 class ArduinoLTIViewCode(APIView):
     def get(self, request, ltiID):
         try:
@@ -107,7 +109,9 @@ class ArduinoLTIViewCode(APIView):
             return Response(data={"error": "LTISession Not found"},
                             status=status.HTTP_404_NOT_FOUND)
         consumer = ArduinLTIConsumer.objects.get(id=ltisess.lti_consumer_id)
-        return Response(data={"view":consumer.view_code},status=status.HTTP_200_OK)
+        return Response(data={"view": consumer.view_code},
+                        status=status.HTTP_200_OK)
+
 
 class LTIAllConsumers(APIView):
     permission_classes = (IsAuthenticated,)
@@ -176,6 +180,7 @@ class LTIBuildApp(APIView):
         else:
             return Response(serialized.errors,
                             status=status.HTTP_400_BAD_REQUEST)
+
 
 class ArduinoLTIBuildApp(APIView):
 
@@ -281,6 +286,7 @@ class LTIUpdateAPP(APIView):
             return Response(serialized.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+
 class ArduinoLTIUpdateAPP(APIView):
 
     @swagger_auto_schema(request_body=ArduinoConsumerSerializer)
@@ -330,6 +336,7 @@ class ArduinoLTIUpdateAPP(APIView):
             return Response(serialized.errors,
                             status=status.HTTP_400_BAD_REQUEST)
 
+
 class LTIDeleteApp(APIView):
 
     def delete(self, request, id):
@@ -341,6 +348,7 @@ class LTIDeleteApp(APIView):
                             status=status.HTTP_204_NO_CONTENT)
         except lticonsumer.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
 
 class ArduinoLTIDeleteApp(APIView):
 
@@ -519,7 +527,7 @@ class ArduinoLTIAuthView(APIView):
             return HttpResponseRedirect(next_url)
         except LTIException:
             traceback.print_exc()
-            return HttpResponseRedirect(get_reverse('ltiAPI:denied'))    
+            return HttpResponseRedirect(get_reverse('ltiAPI:denied'))
 
 
 class LTIPostGrade(APIView):
@@ -627,9 +635,11 @@ class ArduinoLTIPostGrade(APIView):
             return Response(data={
                 "error": "No LTI session exists for this ID"
             }, status=status.HTTP_400_BAD_REQUEST)
-        consumer = ArduinLTIConsumer.objects.get(id=lti_session.lti_consumer.id)
+        consumer = ArduinLTIConsumer.objects.get(
+            id=lti_session.lti_consumer.id)
         try:
-            sim = ArduinoLTISimData.objects.get(id=request.data['student_simulation'])
+            sim = ArduinoLTISimData.objects.get(
+                id=request.data['student_simulation'])
         except ArduinoLTISimData.DoesNotExist:
             print("Here")
             sim = None
@@ -737,11 +747,11 @@ class ArduinoLTISimulationDataView(APIView):
     @swagger_auto_schema(request_body=ArduinoLTISimulationDataSerializer)
     def post(self, request, save_id, lti_id):
         try:
-            circuit = StateSave.objects.get(save_id=save_id)
+            circuit = StateSave.objects.get(id=save_id)
         except StateSave.DoesNotExist:
             return Response({"error": "Circuit not found"},
                             status=status.HTTP_404_NOT_FOUND)
-        
+
         try:
             session = ArduinoLTISession.objects.get(id=lti_id)
         except ArduinoLTISession.DoesNotExist:
@@ -751,16 +761,18 @@ class ArduinoLTISimulationDataView(APIView):
             return Response({"error": "Simulation data not passed"},
                             status=status.HTTP_400_BAD_REQUEST)
         try:
-                ArduinoLTISimData(session_id=session, circuit_id=circuit, result=str(request.data)).save()
-        except:
+            ArduinoLTISimData(session_id=session,
+                              circuit_id=circuit,
+                              result=str(request.data)).save()
+        except Exception as e:
             return Response({"error": "Record Not saved"}, status=500)
         else:
-            return Response({"success": "Record Successfully Saved"}, status=200)
-       
+            return Response({"success": "Record Successfully Saved"},
+                            status=200)
 
     def get(self, request, save_id, lti_id):
         try:
-            circuit = StateSave.objects.get(save_id=save_id)
+            circuit = StateSave.objects.get(id=save_id)
         except StateSave.DoesNotExist:
             return Response({"error": "Circuit not found"},
                             status=status.HTTP_404_NOT_FOUND)

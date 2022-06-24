@@ -1,3 +1,4 @@
+from ensurepip import version
 from os import makedirs, read
 from django.db.models import fields
 from rest_framework import serializers
@@ -55,12 +56,13 @@ class StateSaveSerializer(serializers.ModelSerializer):
                   'id', 'lti_id', 'is_submission')
 
     def get_lti_id(self, obj):
-        save_id = obj.save_id                                              
-        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)             
-        arduinoLTIs = ArduinLTIConsumer.objects.filter(model_schematic__save_id=save_id)
-        if ltis.exists():    
-            return ltis[0].id     
-        elif arduinoLTIs.exists():  
+        save_id = obj.save_id
+        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
+        arduinoLTIs = ArduinLTIConsumer.objects.filter(
+            model_schematic__save_id=save_id)
+        if ltis.exists():
+            return ltis[0].id
+        elif arduinoLTIs.exists():
             return arduinoLTIs[0].id
         else:
             return None
@@ -88,12 +90,13 @@ class SaveListSerializer(serializers.ModelSerializer):
                   'is_submission')
 
     def get_lti_id(self, obj):
-        save_id = obj.save_id                                              
-        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)             
-        arduinoLTIs = ArduinLTIConsumer.objects.filter(model_schematic__save_id=save_id)
-        if ltis.exists():    
-            return ltis[0].id     
-        elif arduinoLTIs.exists():  
+        save_id = obj.save_id
+        ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
+        arduinoLTIs = ArduinLTIConsumer.objects.filter(
+            model_schematic__save_id=save_id)
+        if ltis.exists():
+            return ltis[0].id
+        elif arduinoLTIs.exists():
             return arduinoLTIs[0].id
         else:
             return None
@@ -111,9 +114,11 @@ class GallerySerializer(serializers.ModelSerializer):
             'description', 'media', 'shared', 'esim_libraries', 'is_arduino'
             )
 
+
 class ArduinoModelSimulationDataSerializer(serializers.ModelSerializer):
     # save_id = serializers.IntegerField()
     result = serializers.CharField()
+
     class Meta:
         model = ArduinoModelSimulationData
-        fields = ( 'id', 'save_id', 'result', )
+        fields = ('id', 'save_id', 'result', )

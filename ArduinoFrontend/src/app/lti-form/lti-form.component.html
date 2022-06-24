@@ -5,7 +5,7 @@
   <div class="col-md-6">
   <div class="card bg-light mt-2" *ngIf="modelCircuit">
     <div class="card-header">
-      <h4 class="float-left">Model Simulation</h4>
+      <h4 class="float-left">Mdoel Circuit/Simulation</h4>
       <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
         <h5><i class="fas fa-info-circle"></i></h5>
       </button>
@@ -24,7 +24,7 @@
   <div class="col-md-6">
   <div class="card bg-light mt-2" *ngIf="studentCircuit">
     <div class="card-header">
-      <h4 class="float-left">Student Simulation</h4>
+      <h4 class="float-left">Student Circuit/Simulation</h4>
       <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
         <h5><i class="fas fa-info-circle"></i></h5>
       </button>
@@ -35,7 +35,7 @@
       <li class="list-group-item"><b>Version:</b> {{ studentCircuit.version }}</li>
       <li class="list-group-item">
         <mat-checkbox [(ngModel)]="viewCodeCheckBox" (change)="toggleViewCode($event)">
-          <b>View Code</b>
+          <b>Show Code</b>
         </mat-checkbox>
         <!-- <app-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
           [version]="studentCircuit.version"></app-view-code> -->
@@ -59,7 +59,7 @@
           characters long</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <mat-select formControlName="initial_schematic" matInput required placeholder="Students's Simulation"
+        <mat-select formControlName="initial_schematic" matInput required placeholder="Students's Circuit/Simulation"
           [compareWith]="compareIds" (selectionChange)="onStudentSelectChanges($event)">
           <mat-option>
             None
@@ -71,6 +71,20 @@
           </ng-container>
         </mat-select>
         <mat-error>This field is mandatory</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select formControlName="model_schematic" matInput required placeholder="Teacher's Circuit/Simulation"
+          [compareWith]="compareIds" (selectionChange)="onModelCircuitChange($event)">
+          <mat-option>
+            None
+          </mat-option>
+          <ng-container *ngFor="let ckt of circuits">
+            <mat-option [value]="ckt.id">{{ ckt.name }} of variation {{ ckt.branch }} saved at {{
+              getFormattedDate(ckt.save_time) }}
+            </mat-option>
+          </ng-container>
+        </mat-select>
+        <mat-error *ngIf="form.controls['model_schematic'].errors?.required">This field is mandatory</mat-error>
       </mat-form-field>
     </div>
     <div class="col-md-4">
