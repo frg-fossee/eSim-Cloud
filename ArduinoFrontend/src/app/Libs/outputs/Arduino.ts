@@ -50,13 +50,13 @@ export class ArduinoUno extends CircuitElement {
    * Servo attached to an arduino
    */
   private servos: any[] = [];
-  flag = "00";
+  flag = '00';
   prevPortD = 0;
   prevPortB = 0;
   portFlag = '';
   delayTime = new Date(); // Extra
   /**
-    * Constructor for Arduino
+   * Constructor for Arduino
    * @param canvas Raphael Paper
    * @param x X position
    * @param y Y Position
@@ -260,7 +260,7 @@ export class ArduinoUno extends CircuitElement {
       }
       // if (this.flag === '00') this.flag = '41';
       this.flag = '41';
-      this.prevPortD = value
+      this.prevPortD = value;
       this.delayTime = new Date();
       if (
         this.runner.portD.pinState(0) !== AVR8.PinState.Input &&
@@ -401,7 +401,7 @@ export class ArduinoUno extends CircuitElement {
       time: this.delayTime,
       arduino: { id: this.id, name: this.name },
     });
-    this.flag = "00";
+    this.flag = '00';
     // this.portFlag = '';
   }
 }

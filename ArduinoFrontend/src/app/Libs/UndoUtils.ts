@@ -25,7 +25,7 @@ export abstract class UndoUtils {
     /**
      * Workspace changed
      */
-    static event = new CustomEvent('changed', { 
+    static event = new CustomEvent('changed', {
         detail : {
             changed: true,
         }
@@ -72,7 +72,7 @@ export abstract class UndoUtils {
                     step += 1;
                 }
             }
-            if(ele.event === 'add' || ele.event === 'delete') {
+            if (ele.event === 'add' || ele.event === 'delete') {
                 UndoUtils.event.detail['ele'] = ele;
                 console.log(ele);
                 document.dispatchEvent(UndoUtils.event);
@@ -114,7 +114,7 @@ export abstract class UndoUtils {
         }
         // Push to Undo stack
         this.undo.push(ele);
-        if(ele.event === 'add' || ele.event === 'delete') {
+        if (ele.event === 'add' || ele.event === 'delete') {
             UndoUtils.event.detail['ele'] = ele;
             console.log(ele);
             document.dispatchEvent(UndoUtils.event);
@@ -141,7 +141,7 @@ export abstract class UndoUtils {
                 return;
             }
         }
-        if(ele.event === 'add' || ele.event === 'delete') {
+        if (ele.event === 'add' || ele.event === 'delete') {
             UndoUtils.event.detail['ele'] = ele;
             console.log(ele);
             document.dispatchEvent(UndoUtils.event);

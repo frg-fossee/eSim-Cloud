@@ -188,7 +188,7 @@ export default function LTIConfig () {
     if (token) {
       config.headers.Authorization = `Token ${token}`
     }
-    api.get(`simulation/history/${url.id}/${schematic.split('-')[0]}/${schematic.split('-')[1]}/${null}`, config).then(res => {
+    api.get(`simulation/history/lti/${url.id}/${schematic.split('-')[0]}/${schematic.split('-')[1]}/${null}`, config).then(res => {
       res.data.map(ele => {
         ele.simulation_time = new Date(ele.simulation_time)
         return 0

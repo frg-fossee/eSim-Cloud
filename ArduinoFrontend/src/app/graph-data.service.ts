@@ -5,9 +5,9 @@ import { Injectable, EventEmitter } from '@angular/core';
 })
 export class GraphDataService {
 
-  public static portDChange: EventEmitter<Object> = new EventEmitter<Object>();
-  public static portBChange: EventEmitter<Object> = new EventEmitter<Object>();
-  public static voltageChange: EventEmitter<Object> = new EventEmitter<Object>();
+  public static portDChange: EventEmitter<object> = new EventEmitter<object>();
+  public static portBChange: EventEmitter<object> = new EventEmitter<object>();
+  public static voltageChange: EventEmitter<object> = new EventEmitter<object>();
 
-  constructor() { }  
+  constructor() { }
 }

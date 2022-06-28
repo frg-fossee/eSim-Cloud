@@ -1,6 +1,6 @@
 from xml.etree import ElementTree
 from xml.etree.ElementTree import SubElement, Element
-from .models import lticonsumer
+from .models import ArduinLTIConsumer, lticonsumer
 from django.urls import reverse
 from datetime import time
 
@@ -12,6 +12,19 @@ def consumers():
     """
     consumers = dict()
     consumers_queryset = lticonsumer.objects.all()
+    for i in consumers_queryset:
+        consumers[i.consumer_key] = {}
+        consumers[i.consumer_key]['secret'] = i.secret_key
+    return consumers
+
+
+def ArduinoConsumers():
+    """
+    Gets Arduino consumer's map from config
+    :return: consumers map
+    """
+    consumers = dict()
+    consumers_queryset = ArduinLTIConsumer.objects.all()
     for i in consumers_queryset:
         consumers[i.consumer_key] = {}
         consumers[i.consumer_key]['secret'] = i.secret_key
