@@ -107,7 +107,10 @@ export class CodeEditorComponent {
    * Height of the code editor in terms of VH
    */
   @Input() height = 80;
-
+  /**
+   * Code Visibility in LTI mode
+   */
+  @Input() codeView = true;
   /**
    * Reninitialize arduino names
    */
@@ -132,8 +135,11 @@ export class CodeEditorComponent {
         this.selectedIndex = 0;
       }
       // select the code of respective arduino
-      if (this.arduinos.length > 0) {
+      if (this.arduinos.length > 0 && this.codeView) {
         this.code = this.arduinos[this.selectedIndex].code;
+      } else {
+        this.code = '';
+        this.codeChanged();
       }
       // show loading animation if code editor is nor initialized
       if (this.names.length !== 0 && !this.init) {

@@ -1,12 +1,13 @@
+from ensurepip import version
 from os import makedirs, read
 from django.db.models import fields
 from rest_framework import serializers
 from rest_framework.fields import ListField
-from saveAPI.models import StateSave, Gallery
+from saveAPI.models import StateSave, Gallery, ArduinoModelSimulationData
 from libAPI.models import Library
 from libAPI.serializers import LibrarySerializer
 from django.core.files.base import ContentFile
-from ltiAPI.models import lticonsumer
+from ltiAPI.models import ArduinLTIConsumer, lticonsumer
 import base64
 import six
 import uuid
@@ -57,8 +58,12 @@ class StateSaveSerializer(serializers.ModelSerializer):
     def get_lti_id(self, obj):
         save_id = obj.save_id
         ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
+        arduinoLTIs = ArduinLTIConsumer.objects.filter(
+            model_schematic__save_id=save_id)
         if ltis.exists():
             return ltis[0].id
+        elif arduinoLTIs.exists():
+            return arduinoLTIs[0].id
         else:
             return None
 
@@ -87,8 +92,12 @@ class SaveListSerializer(serializers.ModelSerializer):
     def get_lti_id(self, obj):
         save_id = obj.save_id
         ltis = lticonsumer.objects.filter(model_schematic__save_id=save_id)
+        arduinoLTIs = ArduinLTIConsumer.objects.filter(
+            model_schematic__save_id=save_id)
         if ltis.exists():
             return ltis[0].id
+        elif arduinoLTIs.exists():
+            return arduinoLTIs[0].id
         else:
             return None
 
@@ -104,3 +113,12 @@ class GallerySerializer(serializers.ModelSerializer):
             'save_id', 'data_dump', 'name',
             'description', 'media', 'shared', 'esim_libraries', 'is_arduino'
             )
+
+
+class ArduinoModelSimulationDataSerializer(serializers.ModelSerializer):
+    # save_id = serializers.IntegerField()
+    result = serializers.CharField()
+
+    class Meta:
+        model = ArduinoModelSimulationData
+        fields = ('id', 'save_id', 'result', )

@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
@@ -104,9 +104,29 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   isAutoLayoutInProgress = false;
   /**
+   * Circuit's primary key
+   */
+  id: number;
+  /**
+   * Student simulation records
+   */
+  simData: any[] = [];
+  /**
+   * Select the simulation to be submitted
+   */
+  simSelected: any = null;
+  /**
+   * View or not to view graph
+   */
+  graphToggle = false;
+  /**
    * Hide/Show submit button
    */
   submitButtonVisibility = false;
+  /**
+   * Whether the LTI user is allowed to see the code
+   */
+  codeVisibility = true;
   /**
    * LTI ID of LTI App (if simulator is opened on LMS)
    */
@@ -233,11 +253,14 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.version = v.version;
         this.submitButtonVisibility = true;
         this.LoadOnlineProject(v.id, 'false');
+        this.getSimRecord();
+        this.showCode(v.lti_id);
       } else if (v.id) {
         this.projectId = v.id;
         this.LoadOnlineProject(v.id, v.offline);
         this.submitButtonVisibility = false;
       }
+      console.log(this.projectId);
     });
 
 
@@ -288,6 +311,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // Initializing window
     this.window = window;
   }
+  isLoaded() {
+    return Workspace.circuitLoaded || window['scope'].ArduinoUno.length > 0;
+  }
   /**
    * Enable Move on Property Box
    */
@@ -318,6 +344,29 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
 
     block.classList.toggle('show-div');
+  }
+
+  getSimRecSelectChange(value) {
+    this.simSelected = value;
+    console.log(this.simSelected);
+  }
+
+  /**
+   * Get the simulation result selected
+   */
+   onSelectionChanges(event) {
+    this.getSimRecSelectChange(event.value);
+  }
+
+  /**
+   * Function to check for viewing code or not in lti
+   */
+  showCode(ltiID) {
+    const token = Login.getToken();
+    this.api.viewArduinoCode(ltiID, token).subscribe((v) => {
+      console.log(v['view']);
+      this.codeVisibility = v['view'];
+    });
   }
 
   /** Function called when Start Simulation button is triggered */
@@ -508,7 +557,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       return;
     }
     // if projet id is uuid (online circuit)
-    if (SaveOnline.isUUID(this.projectId)) {
+    if (SaveOnline.isUUID(this.projectId) && this.ltiId === '') {
       this.aroute.queryParams.subscribe(params => {
         const branch = params.branch;
         const versionId = params.version;
@@ -650,6 +699,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       const version = params.version;
       // read project from DB
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
+        this.id = data.id;
         this.projectTitle = data.name;
         this.description = data.description;
         this.saveTime = data.save_time;
@@ -908,6 +958,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  showGraph() {
+    this.graphToggle = !this.graphToggle;
+  }
+
   /**
    * Saves the circuit and saves it as a submission for given LTI details
    */
@@ -924,9 +978,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           user_id: this.ltiUserId,
           oauth_nonce: this.ltiNonce,
         },
-        student_simulation: null,
+        student_simulation: this.simSelected,
       };
-      this.api.submitCircuit(token, data).subscribe(res => {
+      this.api.arduinoSubmitCircuit(token, data).subscribe(res => {
         AlertService.showAlert(res['message']);
         // add new query parameters
         this.router.navigate(
@@ -965,4 +1019,32 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     str += `${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
     return str;
   }
+
+  callGetSimRecord($event) {
+    if ($event) {
+      this.getSimRecord();
+    }
+  }
+
+  /**
+   * Return the list of student simulation records
+   */
+  getSimRecord() {
+    const token = Login.getToken();
+    const temp = [];
+    if (token) {
+      this.api.getLTISimulationData(this.id, this.ltiId, token).subscribe((v) => {
+        for (const val of v) {
+          const data = JSON.parse(val.result.replaceAll('\'', '\"'));
+          const key = (Object.keys(data));
+          temp.push({id: val.id, length: data[key[0]]['length']});
+        }
+        this.simData = temp;
+      });
+    } else {
+      // if no token is present then show this message
+      AlertService.showAlert('Please Login to Continue');
+    }
+  }
+
 }

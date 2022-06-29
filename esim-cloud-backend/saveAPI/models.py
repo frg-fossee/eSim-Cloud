@@ -1,4 +1,5 @@
-from djongo import models
+from enum import unique
+from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
@@ -6,6 +7,7 @@ import uuid
 from libAPI.models import Library
 from publishAPI.models import Project
 from django.utils.safestring import mark_safe
+
 
 # For handling file uploads to a permenant direcrory
 file_storage = FileSystemStorage(
@@ -38,6 +40,19 @@ class StateSave(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ArduinoModelSimulationData(models.Model):
+    save_id = models.ForeignKey(StateSave, to_field='id',
+                                on_delete=models.CASCADE,
+                                null=False)
+    result = models.TextField(null=True, default=True)
+
+    def save(self, *args, **kwargs):
+        super(ArduinoModelSimulationData, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.result
 
 
 class Gallery(models.Model):

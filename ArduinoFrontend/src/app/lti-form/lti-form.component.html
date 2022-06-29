@@ -5,7 +5,7 @@
   <div class="col-md-6">
   <div class="card bg-light mt-2" *ngIf="modelCircuit">
     <div class="card-header">
-      <h4 class="float-left">Model Simulation</h4>
+      <h4 class="float-left">Mdoel Circuit/Simulation</h4>
       <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
         <h5><i class="fas fa-info-circle"></i></h5>
       </button>
@@ -14,12 +14,6 @@
     <ul class="list-group list-group-flush text-secondary">
       <li class="list-group-item"><b>Branch:</b> {{ modelCircuit.branch }}</li>
       <li class="list-group-item"><b>Version:</b> {{ modelCircuit.version }}</li>
-      <li class="list-group-item">
-        <mat-checkbox [(ngModel)]="modelCodeView">
-          <b>View Code</b>
-        </mat-checkbox>
-        <app-view-code *ngIf="modelCodeView" [id]="circuitId" [branch]="branch" [version]="version"></app-view-code>
-      </li>
     </ul>
     <div class="card-footer">
       <p class="card-text"><small class="text-muted">Last Modified: {{ getFormattedDate(modelCircuit.save_time)
@@ -30,7 +24,7 @@
   <div class="col-md-6">
   <div class="card bg-light mt-2" *ngIf="studentCircuit">
     <div class="card-header">
-      <h4 class="float-left">Student Simulation</h4>
+      <h4 class="float-left">Student Circuit/Simulation</h4>
       <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
         <h5><i class="fas fa-info-circle"></i></h5>
       </button>
@@ -40,11 +34,11 @@
       <li class="list-group-item"><b>Branch:</b> {{ studentCircuit.branch }}</li>
       <li class="list-group-item"><b>Version:</b> {{ studentCircuit.version }}</li>
       <li class="list-group-item">
-        <mat-checkbox [(ngModel)]="studentCodeView">
-          <b>View Code</b>
+        <mat-checkbox [(ngModel)]="viewCodeCheckBox" (change)="toggleViewCode($event)">
+          <b>Show Code</b>
         </mat-checkbox>
-        <app-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
-          [version]="studentCircuit.version"></app-view-code>
+        <!-- <app-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
+          [version]="studentCircuit.version"></app-view-code> -->
       </li>
     </ul>
     <div class="card-footer">
@@ -65,7 +59,7 @@
           characters long</mat-error>
       </mat-form-field>
       <mat-form-field>
-        <mat-select formControlName="initial_schematic" matInput required placeholder="Students's Simulation"
+        <mat-select formControlName="initial_schematic" matInput required placeholder="Students's Circuit/Simulation"
           [compareWith]="compareIds" (selectionChange)="onStudentSelectChanges($event)">
           <mat-option>
             None
@@ -77,6 +71,20 @@
           </ng-container>
         </mat-select>
         <mat-error>This field is mandatory</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select formControlName="model_schematic" matInput required placeholder="Teacher's Circuit/Simulation"
+          [compareWith]="compareIds" (selectionChange)="onModelCircuitChange($event)">
+          <mat-option>
+            None
+          </mat-option>
+          <ng-container *ngFor="let ckt of circuits">
+            <mat-option [value]="ckt.id">{{ ckt.name }} of variation {{ ckt.branch }} saved at {{
+              getFormattedDate(ckt.save_time) }}
+            </mat-option>
+          </ng-container>
+        </mat-select>
+        <mat-error *ngIf="form.controls['model_schematic'].errors?.required">This field is mandatory</mat-error>
       </mat-form-field>
     </div>
     <div class="col-md-4">
@@ -90,14 +98,14 @@
       </mat-form-field>
       <mat-form-field>
         <mat-select formControlName="test_case" matInput placeholder="Test Case"
-          (selectionChange)="ontestCaseSelectChanges($event)">
+          [compareWith]="compareIds" (selectionChange)="ontestCaseSelectChanges($event)">
           <mat-option>
             None
           </mat-option>
-          <ng-container *ngFor="let test_case of testCases">
-            <mat-option value="{{test_case.id}}">{{test_case.output}}</mat-option>
+          <ng-container *ngFor="let test_case of testCases; let i = index">
+            <mat-option [value]="test_case.id">Test Case {{i+1}} ({{test_case.length}} data points)</mat-option>
           </ng-container>
-        </mat-select>
+        </mat-select>   
       </mat-form-field>
     </div>
     <div class="col-md-4">

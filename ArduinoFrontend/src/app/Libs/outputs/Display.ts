@@ -806,7 +806,6 @@ export class SevenSegment extends CircuitElement {
     byte |= (this.pinNamedMap['f'].value > 0) ? 32 : 0;
     byte |= (this.pinNamedMap['g'].value > 0) ? 64 : 0;
     byte |= (this.pinNamedMap['DP'].value > 0) ? 128 : 0;
-    // console.log(byte);
     this.animate(byte);
   }
   /** animation caller when start simulation is pressed */

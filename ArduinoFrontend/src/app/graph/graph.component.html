@@ -1,0 +1,11 @@
+<div class="graph-container">
+  <div>
+    <b>
+      Pin : {{ pinLabel }}
+    </b>
+    <button mat-icon-button color="warn" (click)="clearGraph()" class='align-right'>
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
+  <canvas id="graph{{id}}"></canvas>
+</div>
