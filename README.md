@@ -127,7 +127,7 @@ The latest version of documentation for the project is maintained on [esim-cloud
   * mxgraph
   * Angular
   * RaphaelJS
-  * AVR8js simulator
+  * [AVR8js simulator - MIT License](https://github.com/wokwi/avr8js) Credits to [Uri Shaked](https://github.com/urish)
 * Database
   * MySQL
   * Postgres
