@@ -25,7 +25,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from pylti.common import LTIException, verify_request_common, post_message, \
     generate_request_xml, LTIPostMessageException
-from .process_submission import process_submission
+from .process_submission import arduino_eval, process_submission
 
 
 def denied(r):
@@ -94,7 +94,8 @@ class ArduinoLTIExist(APIView):
             "test_case": consumer.test_case.id if consumer.test_case else None,
             "scored": consumer.scored,
             "id": consumer.id,
-            "view_code": consumer.view_code
+            "view_code": consumer.view_code,
+            "con_weightage": consumer.con_weightage
             # "sim_params": consumer.sim_params
         }
         return Response(response_data,
@@ -218,7 +219,8 @@ class ArduinoLTIBuildApp(APIView):
                     "test_case": serialized.data['test_case'],
                     "scored": serialized.data['scored'],
                     "id": serialized.data['id'],
-                    "view_code": serialized.data['view_code']
+                    "view_code": serialized.data['view_code'],
+                    "con_weightage": serialized.data['con_weightage']
                 }
                 print("Recieved POST for LTI APP:", response_data)
                 response_serializer = ArduinoConsumerResponseSerializer(
@@ -329,7 +331,8 @@ class ArduinoLTIUpdateAPP(APIView):
                 "test_case": serialized.data['test_case'],
                 "scored": serialized.data['scored'],
                 "id": consumer.id,
-                "view_code": serialized.data['view_code']
+                "view_code": serialized.data['view_code'],
+                "con_weightage": serialized.data['con_weightage']
             }
             return Response(response_data, status=status.HTTP_200_OK)
         else:
@@ -627,7 +630,6 @@ class ArduinoLTIPostGrade(APIView):
         :return: True if post successful and score valid
         :exception: LTIPostMessageException if call failed
         """
-        print(request.data)
         try:
             lti_session = ArduinoLTISession.objects.get(
                 id=request.data["ltisession"]["id"])
@@ -648,11 +650,10 @@ class ArduinoLTIPostGrade(APIView):
         schematic.is_submission = True
         schematic.save()
         if(sim):
-            score = consumer.score
-            comparison_result = None
+            score = arduino_eval(consumer.test_case.result, sim.result,
+                                 consumer.con_weightage, consumer.score)
         else:
-            score = consumer.score
-            comparison_result = None
+            score = 0
         submission_data = {
             "project": consumer,
             "student": schematic.owner,
@@ -684,18 +685,14 @@ class ArduinoLTIPostGrade(APIView):
                     response_data = {
                         "message": msg,
                         "score": score,
-                        "given": sim.result if sim else None,
-                        "comparison_result": comparison_result,
-                        # "sim_params": consumer.sim_params,
+                        "given": sim.result if sim else None
                     }
                 else:
                     response_data = {
                         "message": msg,
                         "score": score,
                         "expected": consumer.test_case.result,
-                        "given": sim.result if sim else None,
-                        "comparison_result": comparison_result,
-                        # "sim_params": consumer.sim_params,
+                        "given": sim.result if sim else None
                     }
                 return Response(data=response_data, status=status.HTTP_200_OK)
 

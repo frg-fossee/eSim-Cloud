@@ -7,6 +7,7 @@ import { GraphComponent } from '../graph/graph.component';
 import { Login } from '../Libs/Login';
 import { Workspace } from '../Libs/Workspace';
 import { SimulatorComponent } from '../simulator/simulator.component';
+import { GraphDataService } from '../graph-data.service';
 
 @Component({
   selector: 'app-graphlist',
@@ -21,7 +22,10 @@ export class GraphlistComponent implements OnInit {
   @Output() simDataSave: EventEmitter<boolean> = new EventEmitter();
   @ViewChildren('pinGraph') graphList!: QueryList<GraphComponent>;
   nodes: object[] = [];
+  arduinoList: object[] = [];
   simulationStatus = false;
+  dataPoints = 0;
+  hexData: number[] = [];
 
   constructor(
     private router: Router,
@@ -39,12 +43,17 @@ export class GraphlistComponent implements OnInit {
         }
       });
     });
+    window['scope'].ArduinoUno.forEach(arduino => {
+      this.arduinoList.push({arduinoId: arduino.id, arduinoName: arduino.name});
+    });
     // });
   }
 
   ngOnInit() {
     Workspace.simulationStarted.subscribe(res => {
       this.simulationStatus = res;
+      this.dataPoints = 0;
+      this.hexData = [];
     });
     Workspace.simulationStopped.subscribe(res => {
       this.simulationStatus = res;
@@ -83,6 +92,12 @@ export class GraphlistComponent implements OnInit {
         }
       }
     });
+    GraphDataService.voltageChange.subscribe(res => {
+      if (this.arduinoList[0]['arduinoId'] === res.arduino.id) {
+        this.hexData.push(res.value);
+        this.dataPoints++;
+      }
+    });
   }
 
   pushPoint(arduino, pointId) {
@@ -95,22 +110,25 @@ export class GraphlistComponent implements OnInit {
   }
 
   SaveData() {
-    console.log('Clicked');
-    const data = {};
+    const pins = [];
+    const newData = {};
     this.graphList.forEach(pinGraph => {
-      data[pinGraph.pinLabel] = {
-        values: pinGraph.data,
-        delay: pinGraph.xlabels,
-        length: pinGraph.data.length,
+      pins.push(pinGraph.pinLabel);
+    });
+    this.arduinoList.forEach(ard => {
+      newData[ard['arduinoId']] = {
+        pinConnected: pins,
+        hexVals: this.hexData,
+        length: this.dataPoints
       };
     });
     const token = Login.getToken();
     if (!this.lti) {
-      this.api.storeSimulationData(this.id, token, data).subscribe(res => AlertService.showAlert('Record Saved Successfully')
+      this.api.storeSimulationData(this.id, token, newData).subscribe(res => AlertService.showAlert('Record Saved Successfully')
       , err => AlertService.showAlert(err));
     } else {
       this.aroute.queryParams.subscribe(v => {
-        this.api.storeLTISimulationData(this.id, v.lti_id, token, data).subscribe(res => {
+        this.api.storeLTISimulationData(this.id, v.lti_id, token, newData).subscribe(res => {
           AlertService.showAlert('Record Saved Successfully');
           this.simDataSave.emit(true);
         }

@@ -124,10 +124,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   submitButtonVisibility = false;
   /**
-   * Whether the LTI user is allowed to see the code
-   */
-  codeVisibility = true;
-  /**
    * LTI ID of LTI App (if simulator is opened on LMS)
    */
   ltiId = '';
@@ -260,7 +256,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         this.LoadOnlineProject(v.id, v.offline);
         this.submitButtonVisibility = false;
       }
-      console.log(this.projectId);
     });
 
 
@@ -348,7 +343,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
   getSimRecSelectChange(value) {
     this.simSelected = value;
-    console.log(this.simSelected);
   }
 
   /**
@@ -364,14 +358,22 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   showCode(ltiID) {
     const token = Login.getToken();
     this.api.viewArduinoCode(ltiID, token).subscribe((v) => {
-      console.log(v['view']);
-      this.codeVisibility = v['view'];
+      if (!v['view']) {
+        for (const key in window['ArduinoUno_name']) {
+          if (window['ArduinoUno_name'][key]) {
+            window['ArduinoUno_name'][key].code = '';
+          }
+        }
+      }
     });
   }
 
   /** Function called when Start Simulation button is triggered */
   StartSimulation() {
     this.disabled = true;
+    if (!this.graphToggle) {
+      this.graphToggle = !this.graphToggle;
+    }
     // Clears Output in Console
     Workspace.ClearConsole();
     // prints the output in console
@@ -722,7 +724,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param data any
    */
   LoadProject(data: any) {
-    // console.log(data);
     this.projectTitle = data.project.name;
     this.description = data.project.description;
     this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
