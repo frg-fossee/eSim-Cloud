@@ -217,6 +217,7 @@ export class LTIFormComponent implements OnInit {
         this.getAllVersions();
         this.getTestCases();
         this.form.get('con_weightage').setValue(this.details.con_weightage);
+        this.form.get('code_weightage').setValue(this.details.code_weightage);
       }
     });
   }

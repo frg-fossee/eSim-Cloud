@@ -82,6 +82,7 @@ class consumerResponseSerializer(serializers.Serializer):
     model_schematic = serializers.IntegerField()
     test_case = serializers.IntegerField(required=False, allow_null=True)
     scored = serializers.BooleanField()
+    
 
 
 class ArduinoConsumerResponseSerializer(serializers.Serializer):
@@ -95,6 +96,7 @@ class ArduinoConsumerResponseSerializer(serializers.Serializer):
     test_case = serializers.IntegerField(required=False, allow_null=True)
     scored = serializers.BooleanField()
     con_weightage = serializers.FloatField(required=True, allow_null=False)
+    view_code = serializers.BooleanField(allow_null=False)
 
 
 class SessionSerializer(serializers.ModelSerializer):
