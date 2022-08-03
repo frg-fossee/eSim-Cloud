@@ -3,22 +3,22 @@
     "className": "UltrasonicSensor",
     "pins": [
         {
-            "x": 78,
+            "x": 75,
             "y": 100,
             "name": "VCC"
         },
         {
-            "x": 88,
+            "x": 90,
             "y": 100,
             "name": "TRIG"
         },
         {
-            "x": 100,
+            "x": 105,
             "y": 100,
             "name": "ECHO"
         },
         {
-            "x": 110,
+            "x": 120,
             "y": 100,
             "name": "GND"
         }

@@ -1,35 +1,39 @@
-<app-header title="Gallery"></app-header>
-
-<!--close header-->
-<div id="main">
-  <!-- <h5 style="margin:1em;font-family: monospace;font-weight: 900;font-size: 30px">Gallery</h5> -->
-
-
-  <mat-tab-group style="width: 100%;display: flex;">
-    <mat-tab label="Experiments">
-      <p *ngIf="samples.length === 0">No Experiments Available</p>
-      <div class="row" style="margin: 1em;">
-        <div class="col-md-3" *ngFor="let item of samples; let i = index">
-          {{ DateTime(item) }}
-          <div class="subbox" [routerLink]="['/simulator']" [queryParams]="{gallery:i}">
-            <div>
-              <div style="width: 100%;  background-color: #e8e8e8;">
-                <img class="item-img" style="border-radius: 5px;" src="./assets/samples/{{item.base64_image}}"
-                  alt="{{item.name}}">
-              </div>
-              <div style="box-sizing: border-box; padding: 15px;">
-                <h5>{{item.name}}</h5>
-                <p style="margin-bottom: 0;text-align: right;font-size: small;">{{item.time}} By {{item.author}}</p>
+<!-- <app-header title="Gallery"></app-header> -->
+<mat-sidenav-container class="example-container" autosize>
+  <app-side-panel></app-side-panel>
+  <!--close header-->
+  <div id="main" style="margin-left: 240px;">
+    <!-- <h5 style="margin:1em;font-family: monospace;font-weight: 900;font-size: 30px">Gallery</h5> -->
+    <mat-tab-group style="width: 100%;display: flex;">
+      <mat-tab label="Experiments">
+        <p *ngIf="samples.length === 0">No Experiments Available</p>
+        <div class="row" style="margin: 1em;">
+          <div class="col-md-3" *ngFor="let item of samples; let i = index">
+            {{ DateTime(item) }}
+            <div class="subbox">
+              <div>
+                <div [routerLink]="['/simulator']" [queryParams]="{gallery:i,proId:item.save_id}"
+                  style="width: 100%;  background-color: #e8e8e8;">
+                  <img class="item-img" style="border-radius: 5px;" src="{{item.media}}" alt="{{item.name}}">
+                </div>
+                <div style="box-sizing: border-box; padding: 15px;">
+                  <div class="footer">
+                    <h5>{{item.name}}</h5>
+                    <mat-icon aria-hidden="false" *ngIf="isStaff" aria-label="Delete icon" color="warn"
+                      (click)="deleteProjectFromGallery(item.save_id,item.name)">delete</mat-icon>
+                  </div>
+                  <!-- <p style="margin-bottom: 0;text-align: right;font-size: small;">{{item.time}} By {{item.author}}</p> -->
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-    </mat-tab>
-    <mat-tab label="Recents" style="font-weight: bold;">
-      <p style="margin: 1em;">No Published Circuit Available</p>
-    </mat-tab>
-  </mat-tab-group>
+      </mat-tab>
+      <mat-tab label="Recents" style="font-weight: bold;">
+        <p style="margin: 1em;">No Published Circuit Available</p>
+      </mat-tab>
+    </mat-tab-group>
 
-</div>
+  </div>
+</mat-sidenav-container>

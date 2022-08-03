@@ -27,22 +27,12 @@ export default function (state = initialState, action) {
         details: action.payload
       }
     }
-
     case actions.CLEAR_DETAILS: {
       return {
         ...state,
         isSaved: null,
         isShared: null,
         details: {}
-      }
-    }
-
-    case actions.LOAD_GALLERY: {
-      return {
-        ...state,
-        isSaved: null,
-        isShared: null,
-        details: action.payload
       }
     }
 

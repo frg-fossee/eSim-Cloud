@@ -3,12 +3,12 @@
   "className": "SlideSwitch",
   "pins": [
     {
-      "x": 3,
+      "x": 8,
       "y": 23,
       "name": "TERMINAL 1"
     },
     {
-      "x": 21,
+      "x": 22,
       "y": 23,
       "name": "COMMON"
     },

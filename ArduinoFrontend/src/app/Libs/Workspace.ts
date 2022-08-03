@@ -6,6 +6,8 @@ import { Download, ImageType } from './Download';
 import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
+import { UndoUtils } from './UndoUtils';
+import { EventEmitter } from '@angular/core';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -54,7 +56,13 @@ export class Workspace {
    * If simulation is on progress or not
    */
   static simulating = false;
-
+  /**
+   * If circuit is loaded or not
+   */
+  static circuitLoaded = false;
+  static circuitLoadStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
+  static simulationStopped: EventEmitter<boolean> = new EventEmitter<boolean>();
+  static simulationStarted: EventEmitter<boolean> = new EventEmitter<boolean>();
   /** function to zoom in workspace */
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -118,6 +126,8 @@ export class Workspace {
         window['scope'][key] = [];
       }
     }
+    // Default programming language is Arduino
+    window['progLang'] = 0;
     // True when simulation takes place
     window['isSimulating'] = false;
     // Stores the reference to the selected circuit component
@@ -145,7 +155,7 @@ export class Workspace {
    */
   static onDragStopEvent(element) {
     for (const fn of window.DragStopListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 
@@ -154,7 +164,7 @@ export class Workspace {
    */
   static onDragEvent(element) {
     for (const fn of window.DragListeners) {
-      fn(element);
+      fn.fn(element);
     }
   }
 
@@ -483,8 +493,8 @@ export class Workspace {
     if (window.isCodeEditorOpened) {
       return;
     }
-    // console.log([event.ctrlKey, event.key]);
-    if (event.key === 'Delete' || event.key === 'Backspace') {
+    if ((event.key === 'Delete' || event.key === 'Backspace')
+      && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) {
       // Backspace or Delete
       Workspace.DeleteComponent();
     }
@@ -525,6 +535,11 @@ export class Workspace {
         window.Selected.togglePerpendicularLine(false);
       }
     }
+    if (event.ctrlKey && (event.key === 'z' || event.key === 'Z') && UndoUtils.enableButtonsBool) {
+      // CTRL + z
+      // Call Undo Function
+      UndoUtils.workspaceUndo();
+    }
   }
   /**
    * Event Listener for zoom in/zoom out on workspace
@@ -560,6 +575,8 @@ export class Workspace {
       y - offsetY
     );
     window['scope'][classString].push(obj);
+    // Push dump to Undo stack & Reset
+    UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
   }
   /** Function updates the position of wires */
   static updateWires() {
@@ -640,7 +657,7 @@ export class Workspace {
       // console.log(saveObj);
       // Save or Update Circuit Ofline
       if (toUpdate) {
-        SaveOffline.Update(saveObj);
+        SaveOffline.Update(saveObj, callback);
       } else {
         SaveOffline.Save(saveObj, callback);
       }
@@ -710,8 +727,8 @@ export class Workspace {
     const interval = setInterval(() => {
       if (window.queue === 0) {
         clearInterval(interval);
-        // start drawing wires
-        Workspace.LoadWires(data.wires);
+        // start drawing wires with Id retain
+        Workspace.LoadWires(data.wires, true);
         // Hide loading animation
         window.hideLoading();
       }
@@ -719,7 +736,7 @@ export class Workspace {
 
   }
   /** This function recreates the wire object */
-  static LoadWires(wires: any[]) {
+  static LoadWires(wires: any[], retainId = false, pushUndo = false) {
     if (isNull(wires) || isUndefined(wires)) {
       return;
     }
@@ -750,11 +767,16 @@ export class Workspace {
       // console.log([start, end]);
       // if both nodes are present then connect those nodes
       if (start && end) {
-        const tmp = new Wire(window.canvas, start);
+        let tmp: any;
+        if (retainId) {
+          tmp = new Wire(window.canvas, start, w.id);
+        } else {
+          tmp = new Wire(window.canvas, start);
+        }
         tmp.load(w);
         start.connectedTo = tmp;
         end.connectedTo = tmp;
-        tmp.connect(end, true, true);
+        tmp.connect(end, true, true, pushUndo);
         window['scope']['wires'].push(tmp);
         tmp.update();
         if (start.connectCallback) {
@@ -768,12 +790,13 @@ export class Workspace {
         // alert('something went wrong');
       }
     }
-
+    Workspace.circuitLoaded = true;
+    Workspace.circuitLoadStatus.emit(true);
   }
 
   /** Function to delete component fro Workspace */
-  static DeleteComponent() {
-
+  static DeleteComponent(undoReset = true) {
+    // Save Dump of current Workspace
     // Check if component is selected
     if (window['Selected']) {
       // is selected component is an arduini uno then show confirm message
@@ -788,6 +811,12 @@ export class Workspace {
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
 
+      if (!(window.Selected instanceof Wire && !window.Selected.isConnected())) {
+        const obj = { keyName: window.Selected.keyName, element: window.Selected.save(), event: 'delete' };
+        // Push dump to Undo stack & Reset if undoReset is true, else just push
+        if (undoReset) { UndoUtils.pushChangeToUndoAndReset(obj); } else { UndoUtils.pushChangeToUndo(obj); }
+      }
+
       // If Current Selected item is a Wire which is not Connected from both end
       if (key === 'wires') {
         if (isNull(window.Selected.end)) {
@@ -795,6 +824,28 @@ export class Workspace {
           window.Selected.remove();
           window.Selected = null;
           window.isSelected = false;
+        }
+      }
+
+      // If BreadBoard remove draglistners too
+      if (key === 'BreadBoard') {
+        // Search in DragListeners & splice
+        for (const i in window['DragListeners']) {
+          if (window.DragListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragListeners'].splice(i, 1);
+            }
+          }
+        }
+        // Search in DragStopListeners & splice
+        for (const i in window['DragStopListeners']) {
+          if (window.DragStopListeners.hasOwnProperty(i)) {
+            const itrFn = window['DragStopListeners'][i];
+            if (itrFn.id === window['Selected'].id) {
+              window['DragStopListeners'].splice(i, 1);
+            }
+          }
         }
       }
 
@@ -849,6 +900,7 @@ export class Workspace {
 
   /** Function to paste component fro Workspace */
   static pasteComponent() {
+    // Save Dump of current Workspace
     // console.log(Workspace.copiedItem);
     if (Workspace.copiedItem) {
       const ele = document.getElementById('contextMenu');
@@ -914,50 +966,89 @@ export class Workspace {
 
     window.printConsole('Compiling Source Code', ConsoleType.INFO);
 
-    api.compileCode(toSend).subscribe(v => {
-      const taskid = v.uuid; // Get Compilation id
-
-      const temp = setInterval(() => {
-        api.getHex(taskid).subscribe(hex => {
-          if (hex.state === 'SUCCESS' && !hex.details.error) {
-            clearInterval(temp);
-            let SUCCESS = true;
-            for (const k in hex.details) {
-              if (hex.details[k]) {
-                const d = hex.details[k];
-                window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
-                if (d.output && d.data) {
-                  window.printConsole(d.output, ConsoleType.OUTPUT);
-                  nameMap[k].hex = d.data;
-                }
-                if (d.error) {
-                  SUCCESS = false;
-                  window.printConsole(d.error, ConsoleType.ERROR);
+    if (window.progLang === 0) {
+      api.compileCodeINO(toSend).subscribe(v => {
+        const taskid = v.uuid; // Get Compilation id
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            if (hex.state === 'SUCCESS' && !hex.details.error) {
+              clearInterval(temp);
+              let SUCCESS = true;
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output && d.data) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
+                  }
+                  if (d.error) {
+                    SUCCESS = false;
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
                 }
               }
+              if (SUCCESS) {
+                Workspace.startArduino();
+              }
+              callback();
+            } else if (hex.state === 'FAILED' || hex.details.error) {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+              callback();
             }
-            if (SUCCESS) {
-              Workspace.startArduino();
+          });
+        }, 2000);
+      }, error => {
+        window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
+        console.log(error);
+        callback();
+      });
+    } else if (window.progLang === 1) {
+      api.compileCodeInlineAssembly(toSend).subscribe(v => {
+        const taskid = v.uuid; // Get Compilation id
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            if (hex.state === 'SUCCESS' && !hex.details.error) {
+              clearInterval(temp);
+              let SUCCESS = true;
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output && d.data) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
+                  }
+                  if (d.error) {
+                    SUCCESS = false;
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
+                }
+              }
+              if (SUCCESS) {
+                Workspace.startArduino();
+              }
+              callback();
+            } else if (hex.state === 'FAILED' || hex.details.error) {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+              callback();
             }
-            callback();
-          } else if (hex.state === 'FAILED' || hex.details.error) {
-            clearInterval(temp);
-            window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
-            callback();
-          }
-        });
-      }, 2000);
-    }, error => {
-      window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
-      console.log(error);
-      callback();
-    });
-
+          });
+        }, 2000);
+      }, error => {
+        window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
+        console.log(error);
+        callback();
+      });
+    }
   }
   /**
    * Start Simulation
    */
   static startArduino() {
+    Workspace.simulationStarted.emit(true);
     // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
@@ -1003,6 +1094,7 @@ export class Workspace {
     // }
 
     // Update the simulation status
+    // Workspace.GetNodeValues();
     Workspace.simulating = true;
   }
   /**
@@ -1035,6 +1127,7 @@ export class Workspace {
     }
     // Update state and call callback
     Workspace.simulating = false;
+    Workspace.simulationStopped.emit(true);
     callback();
   }
   /**
@@ -1067,4 +1160,107 @@ export class Workspace {
     // Hide Loading animation
     window.hideLoading();
   }
+
+
+  /**
+   * Function generates a JSON object containing all details of the workspace and downloads it
+   * @param name string
+   * @param description string
+   */
+  static SaveJson(name: string = '', description: string = '') {
+
+    const id = Date.now();
+
+    // Default Save object
+    const saveObj = {
+      id,
+      canvas: {
+        x: Workspace.translateX,
+        y: Workspace.translateY,
+        scale: Workspace.scale
+      },
+      project: {
+        name,
+        description,
+        created_at: Date.now(),
+      }
+    };
+
+    // For each item in the scope
+    for (const key in window.scope) {
+      // if atleast one component is present
+      if (window.scope[key] && window.scope[key].length > 0) {
+        saveObj[key] = [];
+        // Add the component to the save object
+        for (const item of window.scope[key]) {
+          if (item.save) {
+            saveObj[key].push(item.save());
+          }
+        }
+      }
+    }
+    // Save the Thumbnail for the circuit
+    Download.ExportImage(ImageType.PNG).then(v => {
+      saveObj.project['image'] = v; // Add the base64 image
+      // Export JSON File & Download it
+      const filename = `${name}.json`;
+      const jsonStr = JSON.stringify(saveObj);
+      const element = document.createElement('a');
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
+    });
+    return true;
+
+  }
+
+  /**
+   * Function to return if workspace is empty or not
+   * @returns 'False' if workspace is not empty & 'True' if workspace is empty
+   */
+  static checkIfWorkspaceEmpty() {
+    for (const key in window.scope) {
+      if (window.scope[key].length > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // static GetNodeValues() { //waveForm, time) {
+  //   const pointD13 = window.scope[Utils.componentBox['controllers'][0][0]][0].nodes[2];
+  //   const interval = setInterval(() => {
+  //     console.log(pointD13.value);
+  //     // [5, undefined];
+  //     // if (Workspace.isChartDataFull(waveForm, 20)) {
+  //     //   Workspace.removeLastElementFromChartDataAndLabel(waveForm, time);
+  //     // }
+  //     // waveForm[0].data.push(window.scope[Utils.componentBox['controllers'][0][0]][0].nodes[2].value);
+  //     // time.push(
+  //     //   Workspace.getLabel()
+  //     // );
+  //     if(!Workspace.simulating) {
+  //       clearInterval(interval);
+  //     }
+  //   }, 1);
+  // }
+
+  // static getLabel(){
+  //   return new Date().getSeconds();
+  // }
+
+  // static removeLastElementFromChartDataAndLabel(waveForm: ChartDataSets[], time: Label[]): void {
+  //   waveForm[0].data = waveForm[0].data.slice(1);
+  //   time = time.slice(1);
+  // }
+
+  // static isChartDataFull(chartData: ChartDataSets[], limit: number): boolean {
+  //   return chartData[0].data.length >= limit;
+  // }
 }

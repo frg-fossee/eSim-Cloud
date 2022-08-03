@@ -1,0 +1,219 @@
+<div *ngIf="isCloudCircuit" class="maincontent">
+  <h3
+    style="font-weight: 900; font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;margin-top: 5rem;">
+    Arduino
+    Circuits</h3>
+  <div>
+    <a type="button" class="circuitBtn btn btn-primary mb-8 m-2" [routerLink]="['../simulator']"
+      routerLinkActive="router-link-active">+ New
+      Circuit</a>
+    <label for="importFileBTN" mat-icon-button class="circuitBtn btn btn-primary mb-8 m-2">Import
+      Circuit</label>
+    <input id="importFileBTN" value="Import Ciruit" accept=".json" #importFile type="file"
+      (change)="ImportCircuit($event)" hidden /><br />
+  </div>
+    <div>
+      <input type="text"  style="width: 570px;" [(ngModel)]="circuitFilter.name" name="search"
+        class="form-control"   placeholder="Search">
+    </div>
+</div>
+
+<div class="row" *ngIf="isCloudCircuit" style="margin: 1em;margin-left: 240px;">
+
+
+  <div *ngIf="(online | filterBy: circuitFilter).length === 0" class="no-search">
+    <div style="cursor: pointer;display: flex;">
+      <p [innerHtml]="onCloudMessage" style="margin-top:8px;margin-right: 12px;">
+      </p>
+      <!-- <mat-chip color="warn" (click)="readOnCloudItems()" style="display: flex;" selected>
+            Clear Search
+            <mat-icon style="cursor: pointer;margin-left: 12px;" mat-list-icon>close</mat-icon>
+          </mat-chip> -->
+    </div>
+  </div>
+  <div class="col-md-4" *ngFor="let item of getNormalCircuits() | filterBy:circuitFilter">
+
+    <div class="subbox" (click)="openProject(item.index)">
+      <div>
+        <div style="width: 100%;  background-color: #e8e8e8;">
+          <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+        </div>
+        <div style="box-sizing: border-box; padding: 15px;">
+          <h4>{{item.name}}</h4>
+          <p style="word-break: break-all;">
+            {{ item.description | slice:0:57 }}
+            {{ (item.description && item.description.length) > 60?'...':'' }}
+          </p>
+          {{ DateDiff(item,item.save_time) }}
+          <p>{{item.time}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Temporary Circuits -->
+<div *ngIf="isTempCircuit">
+  <div *ngIf="items.length == 0" style="margin: 1em;margin-left: 240px;">No Offline Circuits Available &#9785;</div>
+  <div class="row" style="margin: 1em;margin-left: 240px;">
+    <div class="col-md-4" *ngFor="let item of items; let i = index">
+      <div class="subbox" (click)="openProject(i,true)">
+        <div>
+          <div style="width: 100%;  background-color: #e8e8e8;">
+            <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+          </div>
+          <div style="box-sizing: border-box; padding: 15px;">
+            <h4>{{item.name}}</h4>
+            <p>{{item.description}}</p>
+            {{ DateDiff(item,item.save_time) }}
+            <p>{{item.time}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- LTI Apps -->
+<div *ngIf="isLTIApp">
+  <div *ngIf="(getLTIApps() | filterBy:circuitFilter).length == 0" style="margin: 1em;margin-left: 240px;">No LTI Apps created &#9785;</div>
+  <div class="row" style="margin: 1em;margin-left: 240px;">
+    <div class="col-md-4" *ngFor="let item of getLTIApps() | filterBy:circuitFilter">
+      <div class="subbox" (click)="openProject(item.index,false)">
+        <div>
+          <div style="width: 100%;  background-color: #e8e8e8;">
+            <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+          </div>
+          <div style="box-sizing: border-box; padding: 15px;">
+            <h4>{{item.name}}</h4>
+            <p>{{item.description}}</p>
+            {{ DateDiff(item,item.save_time) }}
+            <p>{{item.time}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- LTI Submissions -->
+<div *ngIf="isLTISub">
+  <div *ngIf="(getLTISubmissions() | filterBy:circuitFilter).length == 0" style="margin: 1em;margin-left: 240px;">No LTI Submissions received &#9785;</div>
+  <div class="row" style="margin: 1em;margin-left: 240px;">
+    <div class="col-md-4" *ngFor="let item of getLTISubmissions() | filterBy:circuitFilter">
+      <div class="subbox" (click)="openProject(item.index,false)">
+        <div>
+          <div style="width: 100%;  background-color: #e8e8e8;">
+            <img class="item-img" style="border-radius: 5px;" src={{item.base64_image}} alt="">
+          </div>
+          <div style="box-sizing: border-box; padding: 15px;">
+            <h4>{{item.name}}</h4>
+            <p>{{item.description}}</p>
+            {{ DateDiff(item,item.save_time) }}
+            <p>{{item.time}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--open project-->
+<div id="openproject" style="display: none;z-index: 1000;">
+  <div id="innerdialog" *ngIf="selected">
+    <div class="p-2" style="display: flex; line-height: 20px;max-width: 100%;">
+      <h2 style="margin-left: 1%">{{selected.name}}</h2>
+      <button *ngIf="selected.shared" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
+        (click)="DisableSharing(selected)">Shared&nbsp;&nbsp;&#10006;</button>
+
+      <button *ngIf="selected.lti_id" type="button" class="btn btn-primary btn-sm" style="margin-left: 1%;"
+        (click)="DeleteLTI(selected)">LTI&nbsp;&nbsp;&#10006;</button>
+      <button class="ml-auto"
+        style="position: relative; padding-top: 10px;background-color: transparent; border: none;font-size: 2.2em;font-weight: 400;"
+        (click)="closeProject()"> &#10006;</button>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-7" style="left: 30px;">
+        <div style="display: flex;">
+          <img style="max-width: 100%;margin: auto auto; align-items: center;" src={{selected.base64_image}} alt="">
+        </div>
+      </div>
+      <div class="col-md-5 data-body" style="padding-left: 30px;">
+        <h4 style="font-family: cursive;font-weight: bold;">Description</h4>
+        <p>{{selected.description}}</p>
+
+        <div class="row act-buttons">
+          <button mat-raised-button color="primary" class="col-md-3" [routerLink]="['/simulator']"
+            [queryParams]="{id: selected.save_id,offline: selected.offline,version:selected.version,branch:selected.branch}">
+            Edit Circuit</button>
+          <button mat-raised-button color="warn" class="col-md-3"
+            (click)="DeleteCircuit(selected.save_id,selected.offline,selected.index)">Delete Circuit</button>
+          <button mat-raised-button class="col-md-3" style="background-color: #26b12d;color: white;" *ngIf="!isProd">
+            Publish circuit</button>
+          <button mat-raised-button color="primary" class="col-md-3"
+            (click)="ExportCircuit(selected, selected.offline)">Export Circuit</button>
+          <button mat-raised-button color="primary" class="col-md-3" *ngIf="!selected.offline" 
+            [routerLink]="['/lti']" [queryParams]="{id:selected.save_id,branch:selected.branch,version:selected.version,lti:selected.lti_id}">
+            <span *ngIf="selected.lti_id">Update LTI App</span>
+            <span *ngIf="!selected.lti_id">Create LTI App</span>
+          </button>
+        </div>
+
+        <div class="act-desc">
+          <h6>Author name: You</h6>
+          <!-- <h6 style="margin-left: 15px;font-family: cursive">Forked By:</h6> -->
+          {{ ExpandDate(selected) }}
+          <h6>Created At: {{selected.create}}</h6>
+          <h6>Edited At: {{selected.edit}}</h6>
+          <!-- <h6 style="margin-left: 15px;font-family: cursive">Reviewed At:</h6> -->
+        </div>
+
+        <div *ngIf="!selected.offline">
+          <div class="share-btns">
+            <button mat-mini-fab color="primary" matTooltip="Share it on Facebook" (click)="ShareCircuit(selected,0)"><i
+                class="fab fa-facebook-f" style="color:white; font-size: medium;"></i>
+            </button>
+            <button mat-mini-fab style="background-color: #0080FF;" matTooltip="Share it on Linked In"
+              (click)="ShareCircuit(selected,1)">
+              <i class="fab fa-linkedin-in" style="font-size: x-large; color: white;"></i>
+            </button>
+            <button mat-mini-fab style="background-color: #ff4500;" matTooltip="Share it on Reddit"
+              (click)="ShareCircuit(selected,2)">
+              <i class='fab fa-reddit-alien' style='font-size:24px;color: white;'></i>
+            </button>
+
+            <button mat-mini-fab style="background-color: black;" matTooltip="Share it with Mail"
+              (click)="ShareCircuit(selected,3)">
+              <i class="fa fa-envelope" style="font-size: medium;"></i>
+            </button>
+            <button mat-mini-fab style="background-color: black;" matTooltip="Copy Sharing URL"
+              (click)="ShareCircuit(selected,4)">
+              <i class="fa fa-share-alt" style="font-size: medium; color: white"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+      <!--Comments
+    <hr>
+    <div style="height: 185px; width: 100%;">
+      <div style="position: relative;left: 3%; top: 5px; width: 97%; height: 170px">
+        <h3 style="padding-left: 10px;font-weight: bolder; font-size: 22px;font-family: monospace">Comments</h3>
+        <form class="form-group">
+          <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" style="width: 97%;"></textarea>
+        </form>
+        <button mat-raised-button disabled>Post Comment</button>
+      </div>
+    </div>
+  -->
+    </div>
+    <div *ngIf="!selected.offline" style="display:flex; flex-direction: column; padding: 20px; padding-bottom: 50px;">
+      <p *ngIf="selected.shared">
+        Url for Sharing :
+      </p>
+      <textarea id="sharing-url" *ngIf="selected.shared" rows="1" width="100%" style="resize:none;"
+        readonly>{{getUrl(selected)}}</textarea>
+    </div>
+  </div>
+</div>
+<!--/open project-->

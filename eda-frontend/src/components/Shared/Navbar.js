@@ -1,20 +1,31 @@
-import React from 'react'
-
+import React, { useEffect } from 'react'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import {
-  AppBar, Button, Toolbar, Typography, Link, IconButton, Avatar, Menu, ListItemText,
+  AppBar,
+  Button,
+  Toolbar,
+  Typography,
+  Link,
+  IconButton,
+  Avatar,
+  Menu,
+  ListItemText,
   Fade,
   MenuItem
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import { deepPurple } from '@material-ui/core/colors'
-import { Link as RouterLink, useHistory } from 'react-router-dom'
 import logo from '../../static/logo.png'
 import store from '../../redux/store'
-import { logout } from '../../redux/actions/index'
+import { authDefault, loadUser, logout } from '../../redux/actions/index'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
     borderBottom: `1px solid ${theme.palette.divider}`
+  },
+  root: {
+    width: 500
   },
   toolbar: {
     flexWrap: 'wrap'
@@ -38,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepPurple[500]),
     backgroundColor: deepPurple[500],
     fontSize: '17px'
+  },
+  typography: {
+    padding: theme.spacing(2)
   }
 }))
 
@@ -47,6 +61,7 @@ export function Header () {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = React.useState(null)
   const auth = store.getState().authReducer
+  const dispatch = useDispatch()
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -55,6 +70,23 @@ export function Header () {
   const handleClose = () => {
     setAnchorEl(null)
   }
+  var homeURL = `${window.location.protocol}\\\\${window.location.host}/`
+  useEffect(() => {
+    function checkUserData () {
+      const userToken = localStorage.getItem('esim_token')
+      if (userToken && userToken !== '') {
+        dispatch(loadUser())
+      } else {
+        dispatch(authDefault())
+      }
+    }
+
+    window.addEventListener('storage', checkUserData)
+
+    return () => {
+      window.removeEventListener('storage', checkUserData)
+    }
+  }, [dispatch, history])
 
   return (
     <>
@@ -81,9 +113,10 @@ export function Header () {
               <Link
                 variant="button"
                 color="textPrimary"
-                to="/"
+                onClick={() => { window.open(homeURL, '_self') }}
                 component={RouterLink}
                 className={classes.link}
+                // style={{ marginLeft: '65%' }}
               >
                 Home
               </Link>
@@ -106,6 +139,15 @@ export function Header () {
                 className={classes.link}
               >
                 Gallery
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/projects"
+                component={RouterLink}
+                className={classes.link}
+              >
+                Projects
               </Link>
 
               <Link
@@ -132,6 +174,17 @@ export function Header () {
               <Link
                 variant="button"
                 color="textPrimary"
+                onClick={() => { window.open(homeURL, '_self') }}
+                component={RouterLink}
+                // className={classes.link}
+                style={{ marginRight: '20px' }}
+              >
+                Home
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
                 to="/editor"
                 component={RouterLink}
                 style={{ marginRight: '20px' }}
@@ -148,7 +201,16 @@ export function Header () {
               >
                 Gallery
               </Link>
-
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/projects"
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginRight: '20px' }}
+              >
+                Projects
+              </Link>
               <Link
                 variant="button"
                 color="textPrimary"
@@ -169,14 +231,14 @@ export function Header () {
         (!auth.isAuthenticated ? (<Button
           size="small"
           component={RouterLink}
-          to="/login"
+          to="/login?close=close"
           color="primary"
           variant="outlined"
+          target="_blank"
         >
           Login
         </Button>)
           : (<>
-
             <IconButton
               edge="start"
               style={{ marginLeft: 'auto' }}
@@ -218,6 +280,13 @@ export function Header () {
                 onClick={handleClose}
               >
                 My Schematics
+              </MenuItem>
+              <MenuItem
+                component={RouterLink}
+                to="/account/change_password"
+                onClick={handleClose}
+              >
+                Change password
               </MenuItem>
               <MenuItem onClick={() => {
                 store.dispatch(logout(history))

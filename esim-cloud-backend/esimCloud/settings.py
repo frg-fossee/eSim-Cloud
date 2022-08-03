@@ -14,7 +14,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -23,10 +22,9 @@ SECRET_KEY = os.environ.get(
     "SECRET_KEY", 'kk5tq+=kyyicitl+1ki!wyx@*mz^vmei6_q25dt!^3(_kxd^eg')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=True))
+DEBUG = bool(os.environ.get("DJANGO_DEBUG", default=True) == 'True')
 
 ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1']
-
 
 # Application definition
 
@@ -44,13 +42,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'social_django',
+    'inline_actions',
     'djoser',
     'simulationAPI',
     'authAPI',
     'libAPI',
     'saveAPI',
     'publishAPI',
-    'arduinoAPI'
+    'arduinoAPI',
+    'workflowAPI',
+    'ltiAPI',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,7 @@ ROOT_URLCONF = 'esimCloud.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,7 +86,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'esimCloud.wsgi.application'
 
-
+AUTH_USER_MODEL = 'authAPI.User'
 # Database config Defaults to sqlite3 if not provided in environment files
 
 DATABASES = {
@@ -98,23 +99,10 @@ DATABASES = {
         "HOST": os.environ.get("SQL_HOST", "localhost"),
         "PORT": os.environ.get("SQL_PORT", "5432"),
     },
-
-    "mongodb": {
-        "ENGINE": 'djongo',
-        "NAME": os.environ.get("MONGO_INITDB_DATABASE", "esimcloud_db"),
-        "USER": os.environ.get("MONGO_INITDB_ROOT_USERNAME", "user"),
-        "PASSWORD": os.environ.get("MONGO_INITDB_ROOT_PASSWORD", "password"),
-        "HOST": "mongodb",
-        "PORT": 27017,
-        'AUTH_SOURCE': 'admin',
-        'AUTH_MECHANISM': 'SCRAM-SHA-1',
-    }
-
 }
 
-
 DATABASE_ROUTERS = (
-    'simulationAPI.dbrouters.mongoRouter',
+    # 'simulationAPI.dbrouters.mongoRouter',<- to Store models in mongodb
     # 'saveAPI.dbrouters.mongoRouter',<- to Store saveAPI models in mongodb
     # 'libAPI.dbrouters.mongoRouter'<- to Store LibAPI models in mongodb
 )
@@ -122,19 +110,18 @@ DATABASE_ROUTERS = (
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',    # noqa
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',              # noqa
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',             # noqa
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',            # noqa
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',  # noqa
     },
 ]
-
 
 # Mail server config
 
@@ -163,12 +150,19 @@ POST_ACTIVATE_REDIRECT_URL = os.environ.get(
 
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'eda/#/password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_RETYPE': True,
+    'SET_PASSWORD_RETYPE': True,
     # 'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': 'api/auth/users/activate/{uid}/{token}',
-    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': ["http://localhost:8000/api/auth/google-callback", "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
-    'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy'
-    # 'LOGIN_FIELD': 'email'   For using email only
+    'SOCIAL_AUTH_ALLOWED_REDIRECT_URIS': [
+      "http://localhost:8000/api/auth/google-callback",
+      "http://localhost/api/auth/google-callback", GOOGLE_OAUTH_REDIRECT_URI],  # noqa
+    'SOCIAL_AUTH_TOKEN_STRATEGY': 'authAPI.token.TokenStrategy',
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'SERIALIZERS': {
+        'token_create': 'authAPI.serializers.TokenCreateSerializer',
+    },
 }
 
 REST_FRAMEWORK = {
@@ -187,14 +181,13 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Allow CORS for Public API
 CORS_ORIGIN_ALLOW_ALL = True
@@ -204,14 +197,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/django_static/'
 
-
-# noqa For Netlist handling netlist uploads and other temp uploads
-MEDIA_URL = '/_files/'
-MEDIA_ROOT = os.path.join("/tmp", "esimCloud-temp")
-
 # File Storage
 FILE_STORAGE_ROOT = os.path.join(BASE_DIR, 'file_storage')
 FILE_STORAGE_URL = '/files'
+
+# noqa For Netlist handling netlist uploads and other temp uploads
+MEDIA_URL = '/files/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "file_storage")
 
 # celery
 CELERY_BROKER_URL = 'redis://redis:6379'
@@ -223,7 +215,6 @@ CELERY_IMPORTS = (
     'simulationAPI.tasks',
     'arduinoAPI.tasks'
 )
-
 
 LOGGING = {
     'version': 1,
@@ -239,7 +230,6 @@ LOGGING = {
     },
 }
 
-
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
         'Bearer': {
@@ -249,3 +239,16 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+LTI_TOOL_CONFIGURATION = {
+    'title': 'Esim-Cloud',
+    'description': 'Esim cloud is a simulation platform',
+    'launch_url': 'api/lti/auth/',
+    'course_aware': True,
+    'course_navigation': True
+}
+
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False

@@ -11,6 +11,7 @@ import { LCDCharacterPanel } from './LCD/LCDPanel';
 import { DDRAM, CGROM, CGRAM, RAM } from './LCD/MemorySchema';
 import { MathUtils } from '../MathUtils';
 import { ArduinoUno } from './Arduino';
+import { BoundingBox } from '../Geometry';
 import { Point } from '../Point';
 import { BreadBoard } from '../General';
 
@@ -189,6 +190,17 @@ export class LCD16X2 extends CircuitElement {
       body,
       title: 'LCD Display 16x2'
     };
+  }
+
+  /**
+   * Returns the bounding box for the LCD
+   */
+  getBoundingBox(): BoundingBox {
+    const lcdImageElement = this.elements.items.find(el => el.type === 'image')[0];
+    const lcdBBox = lcdImageElement.getBBox();
+    lcdBBox.x += this.tx;
+    lcdBBox.y += this.ty;
+    return BoundingBox.loadFromRaphaelBbox(lcdBBox);
   }
 
   /**
@@ -794,7 +806,6 @@ export class SevenSegment extends CircuitElement {
     byte |= (this.pinNamedMap['f'].value > 0) ? 32 : 0;
     byte |= (this.pinNamedMap['g'].value > 0) ? 64 : 0;
     byte |= (this.pinNamedMap['DP'].value > 0) ? 128 : 0;
-    // console.log(byte);
     this.animate(byte);
   }
   /** animation caller when start simulation is pressed */

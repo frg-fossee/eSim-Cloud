@@ -11,9 +11,13 @@
   </div>
   <!--<div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
   </div>-->
-  <div style="display: flex; padding: 10px;" *ngIf="!username">
-    <a mat-stroked-button [routerLink]="['/gallery']" style="margin-right: 10px;">Gallery</a>
-    <a mat-stroked-button (click)="Login()">Login</a>
+  <div style="display: flex; padding: 10px;">
+    <a mat-stroked-button [href]="window.location.protocol + '//' + window.location.hostname"
+      style="margin-right: 10px;">Home</a>
+    <a mat-stroked-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
+    <a mat-stroked-button [routerLink]="['/dashboard/gallery']" style="margin-right: 10px;">Gallery</a>
+    <a mat-stroked-button [routerLink]="['/simulator']" style="margin-right: 10px">Editor</a>
+    <a mat-stroked-button (click)="Login()" *ngIf="!username">Login</a>
   </div>
   <div class="dropdown my-dropdown" *ngIf="username">
     <div class="w3-dropdown-hover float-right" style="padding-bottom:10px;margin-right: 1em;">
@@ -44,18 +48,23 @@
       </div>
     </div>
   </div>-->
-      <div class="dropdown show mr-2" *ngIf="token" style="margin-top: 10px;">
-        <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+      <div class="dropdown show mr-2" *ngIf="token" style="margin-top: 9px;">
+        <!-- <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
-          class="d-inline-block align-center" alt="Login Image">
+          class="d-inline-block align-center" alt="Login Image"> -->
+        <div class="circles" id="dropdownMenuLink" data-toggle="dropdown">
+          {{ username.charAt(0).toUpperCase() }}
+        </div>
         <div class="dropdown-menu dropdown-menu-right" style="background-color: whitesmoke;  color: black !important;"
           aria-labelledby="dropdownMenuLink">
           <a *ngIf="username" class="dropdown-item"><i class="fas fa-user mr-1"></i> {{username}}</a>
+          <a *ngIf="username" class="dropdown-item" (click)="onChangePassword()"><i class="fa fa-unlock-alt mr-1"></i>
+            Change Password</a>
           <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
+          <!-- <a class="dropdown-item" href="../../"><i class="fa fa-home mr-1"></i> Home</a>
           <a class="dropdown-item" [routerLink]="['/simulator']"><i class="fa fa-plus mr-1"></i> New</a>
           <a class="dropdown-item" [routerLink]="['/dashboard']"><i class="fa fa-credit-card mr-1"></i> Dashboard</a>
-          <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i> Gallery</a>
+          <a class="dropdown-item" [routerLink]="['/gallery']"><i class="fa fa-th mr-1"></i> Gallery</a> -->
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" (click)="Logout()"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a>
         </div>

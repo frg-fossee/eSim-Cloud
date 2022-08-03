@@ -1,0 +1,45 @@
+<br>
+<div>
+
+  <div style="display: flex; justify-content: space-between; margin: 0 12px;">
+    <h4 style="text-align:center; text-align:left;">History</h4>
+    <mat-icon style="cursor:pointer;" (click)="createBranch()">create_new_folder</mat-icon>
+  </div>
+
+  <!-- message text to show -->
+  <p id="msg_text" style="display:none;"></p>
+
+  <mat-accordion>
+
+    <mat-expansion-panel *ngFor="let branch of branches;let i = index" hideToggle [expanded]="step === i"
+      (opened)="setStep(i)" class="version-panel-class">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Variation {{branches.length-i}}: {{branch.name}}
+        </mat-panel-title>
+        <!-- delete branch button -->
+        <mat-icon [matMenuTriggerFor]="deleteMenu" #deleteMenuTrigger="matMenuTrigger" (click)="delete('branch',branch)"
+          *ngIf="branchName != branch.name">delete</mat-icon>
+      </mat-expansion-panel-header>
+      <div *ngFor="let version of branch.versions" style="display:flex;" (click)="switchVersion(version,$event)"
+        [ngClass]="{'var-selected':(version.version==versionId && branchName == version.branch)}" class="version-list">
+        <p>{{version.name}} <br> {{version.formated_save_time}}</p>
+        <span style="flex: 1;"></span>
+        <!-- delete variation button -->
+        <mat-icon *ngIf="version.version!=versionId || branchName != version.branch" [matMenuTriggerFor]="deleteMenu"
+          #deleteMenuTrigger="matMenuTrigger" (click)="delete('version',version)" id="{{version.version}}">
+          delete_outline</mat-icon>
+      </div>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+
+</div>
+
+<!-- Delete Confirmation Menu -->
+<mat-menu #deleteMenu="matMenu" xPosition="before" yPosition="below">
+  <div class="menu">
+    <p><b>{{bannerMsg}}</b></p>
+    <button mat-raised-button (click)="confirmDelete()">Confirm</button>
+  </div>
+</mat-menu>

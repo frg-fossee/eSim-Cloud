@@ -18,7 +18,7 @@
 .grid-container {
   position: relative;
   overflow: hidden;
-  margin: 100px;
+  margin: 10px auto 0px auto;
   -webkit-box-shadow: -8px -2px 24px 9px rgba(208, 218, 225, 1);
   -moz-box-shadow: -8px -2px 24px 9px rgba(208, 218, 225, 1);
   box-shadow: -8px -2px 24px 9px rgba(208, 218, 225, 1);
@@ -90,10 +90,14 @@ html {
   overflow-x: hidden;
 }
 ::-webkit-scrollbar {
-  width: 0px;  /* Remove scrollbar space */
-  background: transparent;  /* Optional: just make scrollbar invisible */
+  width: 0px; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
 }
 /* Optional: show position indicator in red */
 ::-webkit-scrollbar-thumb {
   background: grey;
+}
+
+.modal-library-detail *::-webkit-scrollbar {
+  width: auto;
 }

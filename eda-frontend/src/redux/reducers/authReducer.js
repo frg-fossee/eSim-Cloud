@@ -6,8 +6,12 @@ const initialState = {
   isRegistered: null,
   isLoading: false,
   user: null,
+  roles: null,
   errors: '',
-  regErrors: ''
+  regErrors: '',
+  resetPasswordSuccess: false,
+  resetPasswordError: '',
+  resetPasswordConfirmSuccess: false
 }
 
 export default function (state = initialState, action) {
@@ -18,15 +22,13 @@ export default function (state = initialState, action) {
         isLoading: true
       }
     }
-
     case actions.DEFAULT_STORE: {
       return {
-        ...state,
+        ...initialState,
         errors: '',
         regErrors: ''
       }
     }
-
     case actions.SIGNUP_SUCCESSFUL: {
       return {
         ...state,
@@ -53,6 +55,7 @@ export default function (state = initialState, action) {
     }
 
     case actions.LOGIN_SUCCESSFUL: {
+      localStorage.setItem('user_id', action.payload.data.user_id)
       localStorage.setItem('esim_token', action.payload.data.auth_token)
       return {
         ...state,
@@ -85,6 +88,44 @@ export default function (state = initialState, action) {
       }
     }
 
+    case actions.RESET_PASSWORD_SUCCESSFUL: {
+      return {
+        ...state,
+        resetPasswordSuccess: true,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_FAILED: {
+      return {
+        ...state,
+        resetPasswordSuccess: false,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_CONFIRM_SUCCESSFUL: {
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: true,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.RESET_PASSWORD_CONFIRM_FAILED: {
+      return {
+        ...state,
+        resetPasswordConfirmSuccess: false,
+        resetPasswordError: action.payload.data
+      }
+    }
+
+    case actions.ROLE_LOADED: {
+      return {
+        ...state,
+        roles: action.payload.data
+      }
+    }
     default:
       return state
   }

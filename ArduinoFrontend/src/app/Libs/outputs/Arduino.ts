@@ -2,6 +2,8 @@ import { CircuitElement } from '../CircuitElement';
 import { ArduinoRunner } from '../AVR8/Execute';
 import { isUndefined, isNull } from 'util';
 import { Point } from '../Point';
+import { EventEmitter } from '@angular/core';
+import { GraphDataService } from 'src/app/graph-data.service';
 
 /**
  * AVR8 global variable
@@ -48,12 +50,18 @@ export class ArduinoUno extends CircuitElement {
    * Servo attached to an arduino
    */
   private servos: any[] = [];
+  flag = '00';
+  prevPortD = 0;
+  prevPortB = 0;
+  portFlag = '';
+  delayTime = new Date(); // Extra
   /**
    * Constructor for Arduino
    * @param canvas Raphael Paper
    * @param x X position
    * @param y Y Position
    */
+
   constructor(public canvas: any, x: number, y: number) {
     super('ArduinoUno', x, y, 'Arduino.json', canvas);
     // Logic to Create Name of an  arduino
@@ -102,16 +110,19 @@ export class ArduinoUno extends CircuitElement {
     // For Port B D5 - D13 add a input listener
     for (let i = 0; i <= 5; ++i) {
       this.pinNameMap[`D${i + 8}`].addValueListener((v) => {
-        console.log([i, v]);
+        // console.log([i, v]);
         if (isUndefined(this.runner) || isNull(this.runner)) {
           setTimeout(() => {
-            this.pinNameMap[`D${i + 8}`].setValue(v, this.pinNameMap[`D${i + 8}`]);
+            this.pinNameMap[`D${i + 8}`].setValue(1, this.pinNameMap[`D${i + 8}`]);
           }, 300);
           return;
         }
         // Update the value of register only if pin is input
         if (this.runner.portB.pinState(i) === AVR8.PinState.Input) {
           this.runner.portB.setPin(i, v > 0 ? 1 : 0);
+        } else if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
+          // Handle Input PullUp
+          this.runner.portB.setPin(i, v);
         }
       });
     }
@@ -127,6 +138,9 @@ export class ArduinoUno extends CircuitElement {
         // Update the value of register only if pin is input
         if (this.runner.portD.pinState(i) === AVR8.PinState.Input) {
           this.runner.portD.setPin(i, v > 0 ? 1 : 0);
+        } else if (this.runner.portD.pinState(i) === AVR8.PinState.InputPullUp) {
+          // Handle Input PullUp
+          this.runner.portD.setPin(i, v);
         }
       });
     }
@@ -204,6 +218,19 @@ export class ArduinoUno extends CircuitElement {
     this.runner = new ArduinoRunner(this.hex);
 
     this.runner.portB.addListener((value) => {
+      if (this.portFlag !== 'D' &&
+        (this.flag === '21' || this.flag === '41')
+      ) {
+        this.EmitValueChangeEvent(); // Reset flag = "00";
+        this.portFlag = 'B';
+      } else {
+        this.portFlag = '';
+      }
+      // if (this.flag === '00') this.flag = '21';
+      this.flag = '21';
+      this.prevPortB = value;
+      this.delayTime = new Date();
+
       for (let i = 0; i <= 5; ++i) {
         if (
           this.runner.portB.pinState(i) !== AVR8.PinState.Input &&
@@ -223,6 +250,18 @@ export class ArduinoUno extends CircuitElement {
     });
 
     this.runner.portD.addListener((value) => {
+      if (this.portFlag !== 'B' &&
+        (this.flag === '21' || this.flag === '41')
+      ) {
+        this.EmitValueChangeEvent(); // Reset flag = "00";
+        this.portFlag = 'D';
+      } else {
+        this.portFlag = '';
+      }
+      // if (this.flag === '00') this.flag = '41';
+      this.flag = '41';
+      this.prevPortD = value;
+      this.delayTime = new Date();
       if (
         this.runner.portD.pinState(0) !== AVR8.PinState.Input &&
         this.runner.portD.pinState(0) !== AVR8.PinState.InputPullUp
@@ -263,6 +302,28 @@ export class ArduinoUno extends CircuitElement {
       this.servos = [];
     }
     this.runner.execute();
+
+    // Handle Input Pull Up on portB pins
+    for (let i = 0; i <= 5; ++i) {
+      // check if pin state is inputPullUp
+      if (this.runner.portB.pinState(i) === AVR8.PinState.InputPullUp) {
+        // set pullUpEnabled boolean to true
+        this.pinNameMap[`D${i + 8}`].pullUpEnabled = true;
+        // set pin value to 1 by default
+        this.runner.portB.setPin(i, 1);
+      }
+    }
+    // Handle Input Pull Up on portD pins
+    for (let i = 2; i <= 7; ++i) {
+      // check if pin state is inputPullUp
+      if (this.runner.portD.pinState(i) === AVR8.PinState.InputPullUp) {
+        // set pullUpEnabled boolean to true
+        this.pinNameMap[`D${i}`].pullUpEnabled = true;
+        // set pin value to 1 by default
+        this.runner.portD.setPin(i, 1);
+      }
+    }
+
   }
   /**
    * Remove arduino runner on stop simulation.
@@ -330,5 +391,17 @@ export class ArduinoUno extends CircuitElement {
         return { name: 'portB', pin: num - 8 };
       }
     }
+  }
+
+
+  EmitValueChangeEvent() {
+    const value = (this.prevPortB << 8) | (this.prevPortD & 255);
+    GraphDataService.voltageChange.emit({
+      value,
+      time: this.delayTime,
+      arduino: { id: this.id, name: this.name },
+    });
+    this.flag = '00';
+    // this.portFlag = '';
   }
 }

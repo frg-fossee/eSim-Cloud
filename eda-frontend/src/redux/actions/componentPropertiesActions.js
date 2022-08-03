@@ -1,12 +1,14 @@
 import * as actions from './actions'
 
 // Actions for listing stored component properites on double click on component
-export const getCompProperties = (id, compProperties) => (dispatch) => {
+export const getCompProperties = (id, compProperties, x, y) => (dispatch) => {
   dispatch({
     type: actions.GET_COMP_PROPERTIES,
     payload: {
       id: id,
-      compProperties: compProperties
+      compProperties: compProperties,
+      x: x,
+      y: y
     }
   })
 }
@@ -22,7 +24,7 @@ export const setCompProperties = (id, compProperties) => (dispatch) => {
   })
 }
 
-// Handeling hiding of component properties sidebar
+// handleing hiding of component properties sidebar
 export const closeCompProperties = () => (dispatch) => {
   dispatch({
     type: actions.CLOSE_COMP_PROPERTIES

@@ -1,0 +1,38 @@
+<mat-sidenav #sidenav class="example-sidenav" mode="side" opened="true">
+  <mat-nav-list>
+    <mat-list-item *ngIf="username" (click)="showSubmenu = !showSubmenu" class="parent">
+      <!-- <mat-icon mat-list-icon>admin</mat-icon> -->
+      <div>
+        <div class="circles">
+          {{ username.charAt(0).toUpperCase() }}
+        </div>
+      </div>
+      <span class="full-width">{{username}}</span>
+      <mat-icon class="menu-button" [ngClass]="{'rotated' : showSubmenu}" *ngIf="isExpanded || isShowing">
+        expand_more</mat-icon>
+    </mat-list-item>
+    <div class="submenu" [ngClass]="{'expanded' : showSubmenu}" *ngIf="isShowing || isExpanded">
+      <a mat-list-item *ngFor="let role of groupRole">{{role}}</a>
+    </div>
+    <mat-list-item class="parent" [routerLink]="['/dashboard']">
+      <span>On Cloud</span>
+      <mat-icon class="custom-menu" mat-list-icon>cloud</mat-icon>
+    </mat-list-item>
+    <mat-list-item class="parent" [routerLink]="['/dashboard/mainpage','temp']">
+      <span>Temporary Circuits</span>
+      <mat-icon class="custom-menu" mat-list-icon>open_in_browser</mat-icon>
+    </mat-list-item>
+    <mat-list-item class="parent" [routerLink]="['/dashboard/mainpage','ltiapp']">
+      <span>LTI Apps</span>
+      <mat-icon class="custom-menu" mat-list-icon>open_in_browser</mat-icon>
+    </mat-list-item>
+    <mat-list-item class="parent" [routerLink]="['/dashboard/mainpage','ltisub']">
+      <span>LTI Submissions</span>
+      <mat-icon class="custom-menu" mat-list-icon>open_in_browser</mat-icon>
+    </mat-list-item>
+    <!-- <mat-list-item class="parent" [routerLink]="['/dashboard/gallery']" >
+      <span>Gallery</span>
+      <mat-icon class="custom-menu" mat-list-icon>collections</mat-icon>
+    </mat-list-item> -->
+  </mat-nav-list>
+</mat-sidenav>

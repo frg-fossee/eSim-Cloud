@@ -1,0 +1,15 @@
+<h2 mat-dialog-title>Create New Variation</h2>
+<div mat-dialog-content>
+
+  <mat-form-field>
+    <mat-label>Variation Name</mat-label>
+    <input matInput type="text" [formControl]="variationName">
+    <mat-error *ngIf="variationName.errors?.required">This field is mandatory</mat-error>
+    <mat-error *ngIf="variationName.errors?.minlength">String should not be empty</mat-error>
+    <mat-error *ngIf="variationName.errors?.maxlength">String should not exceed 20 characters</mat-error>
+  </mat-form-field>
+
+</div>
+<div>
+  <button mat-raised-button (click)="createVariation()" color="primary" [disabled]="variationName.invalid">CREATE VARIATION</button>
+</div>

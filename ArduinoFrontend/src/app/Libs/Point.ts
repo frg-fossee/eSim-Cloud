@@ -1,6 +1,7 @@
 import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
+import { BoundingBox } from './Geometry';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -11,6 +12,11 @@ declare var window;
  * Class For Circuit Node ie. Point wires can connect with nodes
  */
 export class Point {
+
+  /**
+   * Boolean to either show bubble on hover or not
+   */
+  static showBubbleBool = true;
   /**
    * Hide node on creation
    */
@@ -71,6 +77,11 @@ export class Point {
    */
   id: number;
   /**
+   * Boolean for inputPullUp
+   */
+  pullUpEnabled = false;
+
+  /**
    * Constructor for Circuit Node
    * @param canvas Raphael Canvas / paper
    * @param x x position of node
@@ -105,17 +116,25 @@ export class Point {
 
     // Set Hover callback
     this.body.hover((evt: MouseEvent) => {
-      // Check if callback is present if it is then call it
-      if (this.hoverCallback) {
-        this.hoverCallback(this.x, this.y);
+      // Check if showBubbleBool is enabled
+      if (Point.showBubbleBool) {
+        // Check if callback is present if it is then call it
+        if (this.hoverCallback) {
+          this.hoverCallback(this.x, this.y);
+        }
+        window.showBubble(this.label, evt.clientX, evt.clientY);
+      } else {
+        // TODO: Do not show node highligtht
+        this.remainHidden();
       }
-      window.showBubble(this.label, evt.clientX, evt.clientY);
     }, () => {
       // Check if close callback is present if present call it
       if (this.hoverCloseCallback) {
         this.hoverCloseCallback(this.x, this.y);
       }
       window.hideBubble();
+      // Show node highligtht
+      this.remainShow();
     });
 
     // TODO: Remove The following code After Development
@@ -198,12 +217,12 @@ export class Point {
     this.body.node.setAttribute('class', newClass);
   }
 
-  connectWire(wire) {
+  connectWire(wire, pushToUndo = true) {
     // if selected item is wire then connect the wire with the node
     // console.log([]);
     if (wire.start === this) { return; }
     this.connectedTo = wire;
-    wire.connect(this, true);
+    wire.connect(this, true, false, !pushToUndo, pushToUndo ? 'add' : 'breadDrag');
     wire.deselect();
     if (wire.start && wire.end) {
       window['scope']['wires'].push(wire);
@@ -219,6 +238,13 @@ export class Point {
     const wire = new Wire(this.canvas, this);
     this.connectedTo = wire;
     return wire;
+  }
+
+  /**
+   * Returns the bounding box of the point
+   */
+  getBoundingBox(): BoundingBox {
+    return BoundingBox.loadFromRaphaelBbox(this.body.getBBox());
   }
 
   /**

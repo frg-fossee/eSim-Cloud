@@ -1,0 +1,41 @@
+.graph-container {
+  max-width: fit-content;
+  min-width: 420px;
+  min-height: 180px;
+  padding: 15px;
+  border: 1px solid black;
+}
+/* 
+  left: 50px;
+  display: block;
+  position: fixed;
+  z-index: 700;
+  background: #fff;
+  top: 120px;
+  box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+}
+
+.dragger {
+  cursor: move;
+}
+ */
+.align-right {
+  float: right;
+}
+
+.chartWrapper {
+  position: relative;
+}
+
+.chartWrapper > canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events:none;
+}
+
+.chartAreaWrapper {
+  width: 600px;
+  overflow-x: scroll;
+}

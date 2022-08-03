@@ -1,5 +1,6 @@
 import { Point } from './Point';
 import _ from 'lodash';
+import { UndoUtils } from './UndoUtils';
 
 /**
  * To prevent window from throwing error
@@ -51,13 +52,35 @@ export class Wire {
    * @param canvas Raphael Canvas / paper
    * @param start Start circuit node of wire
    */
-  constructor(public canvas, public start: Point) {
-    this.id = Date.now(); // Generate New id
+  constructor(public canvas, public start: Point, public existingId = null) {
+    if (existingId) {
+      this.id = existingId;
+    } else {
+      this.id = this.getUniqueId(Date.now());
+    }
 
     // insert the position of start node in array
     this.points.push(start.position());
   }
 
+  /**
+   * Recursive function to check if id is already present.
+   * If present then return a new unique id
+   * @param id current id
+   * @returns id number
+   */
+  getUniqueId(id): number {
+    for (const e in window.scope) {
+      if (window.scope.hasOwnProperty(e)) {
+        for (const i in window.scope[e]) {
+          if (window.scope[e][i].id === id) {
+            return this.getUniqueId(Date.now() + Math.floor(Math.random() * 1000000));
+          }
+        }
+      }
+    }
+    return id;
+  }
   /**
    * Creates path element for the wire
    * @param element canvas element
@@ -97,7 +120,7 @@ export class Wire {
    * @param y y-coordinate of cursor
    * @param isPerpendicular is the point to be drawn perpendicular
    */
-  addPoint(x: number, y: number, isPerpendicular = false) {
+  addPoint(x: number, y: number, isPerpendicular = false, index?) {
     let newX = x;
     let newY = y;
 
@@ -107,7 +130,7 @@ export class Wire {
       [newX, newY] = this.getPerpendicularXY(x, y, previousX, previousY);
     }
 
-    this.add(newX, newY);
+    this.add(newX, newY, index);
 
     // draw the line from the previous point to cursor's current position
     if (isPerpendicular) {
@@ -115,6 +138,16 @@ export class Wire {
     } else {
       this.draw(x, y);
     }
+  }
+
+  /**
+   * Removes all the intermediate points from the wire path
+   */
+  removeAllMiddlePoints() {
+    for (let i = this.points.length; i > 0; i--) {
+      this.removeJoint(i);
+    }
+    this.points = [this.points[0], this.points[this.points.length - 1]];
   }
 
   /**
@@ -198,18 +231,18 @@ export class Wire {
    * @param y y position of point to be added
    */
   private drawWire(x?: number, y?: number) {
-      let path = `M${this.points[0][0]},${this.points[0][1]}`;
-      // Draw lines to other points
-      for (let i = 1; i < this.points.length; ++i) {
-        path += `L${this.points[i][0]},${this.points[i][1]}`;
-      }
+    let path = `M${this.points[0][0]},${this.points[0][1]}`;
+    // Draw lines to other points
+    for (let i = 1; i < this.points.length; ++i) {
+      path += `L${this.points[i][0]},${this.points[i][1]}`;
+    }
 
-      if (x && y) {
-        path += `L${x},${y}`;
-      }
+    if (x && y) {
+      path += `L${x},${y}`;
+    }
 
-      // Update path
-      this.updateWirePath(path);
+    // Update path
+    this.updateWirePath(path);
   }
 
   /**
@@ -217,8 +250,15 @@ export class Wire {
    * @param x x position
    * @param y y position
    */
-  private add(x: number, y: number) {
-    this.points.push([x, y]);
+  private add(x: number, y: number, index?) {
+    if (index) {
+      // insert the point [x, y] at the index and create joint
+      this.points.splice(index, 0, [x, y]);
+      this.createJoint(index, true);
+    } else {
+      // else, insert at the end
+      this.points.push([x, y]);
+    }
   }
   /**
    * Handle click on Wire
@@ -265,8 +305,30 @@ export class Wire {
     const body = document.createElement('div');
     body.innerHTML = '<label>Color:</label><br>';
     const select = document.createElement('select');
-    select.innerHTML = `<option>Black</option><option>Red</option><option>Yellow</option><option>Blue</option><option>Green</option>`;
-    const colors = ['#000', '#ff0000', '#e6a800', '#2593fa', '#31c404'];
+    select.innerHTML = `<option style="color:#000;">Black</option>
+                        <option style="color:#ff0000;">Red</option>
+                        <option style="color:#e6a800;">Yellow</option>
+                        <option style="color:#2593fa;">Blue</option>
+                        <option style="color:#31c404;">Green</option>
+                        <option style="color:#FF5733;">Orange</option>
+                        <option style="color:#30D5C8;">Turquoise</option>
+                        <option style="color:#800080;">Purple</option>
+                        <option style="color:#FF00FF;">Pink</option>
+                        <option style="color:#964B00;">Brown</option>
+                        <option style="color:#696969;">Grey</option>
+                        `;
+    const colors = ['#000',
+                    '#ff0000',
+                    '#e6a800',
+                    '#2593fa',
+                    '#31c404',
+                    '#FF5733',
+                    '#30D5C8',
+                    '#800080',
+                    '#FF00FF',
+                    '#964B00',
+                    '#696969'
+                  ];
     // set the current color
     for (let i = 0; i < colors.length; ++i) {
       if (colors[i] === this.color) {
@@ -275,7 +337,8 @@ export class Wire {
     }
     // set on change listener
     select.onchange = () => {
-      // on change update the color
+      // Push dump to Undo stack & Reset
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'wire_color' });
       this.setColor(colors[select.selectedIndex]);
     };
 
@@ -293,7 +356,7 @@ export class Wire {
    * @param t End point / END circuit node
    * @param removeLast remove previously inserted item
    */
-  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false) {
+  connect(t: Point, removeLast: boolean = false, hideJoint: boolean = false, pushUndo = false, undoEvtType = 'add') {
     // if remove last then pop from array
     if (removeLast && this.points.length > 1) {
       this.points.pop();
@@ -307,36 +370,66 @@ export class Wire {
       // For each point in the wire except first and last
       for (let i = 1; i < this.points.length - 1; ++i) {
         // Create a Joint
-        const joint = this.canvas.circle(this.points[i][0], this.points[i][1], 6);
-        joint.attr({ fill: this.color, stroke: this.color });  // Give the joint a Color
-        // Variables used while dragging joints
-        let tmpx;
-        let tmpy;
-        // set drag listener
-        joint.drag((dx, dy) => {
-          // Update joints position
-          joint.attr({ cx: tmpx + dx, cy: tmpy + dy });
-          // Update repective Point
-          this.points[i] = [tmpx + dx, tmpy + dy];
-          // Update the wire
-          this.update();
-        }, () => {
-          // Get the Joints center
-          const xx = joint.attr();
-          tmpx = xx.cx;
-          tmpy = xx.cy;
-        }, () => {
-        });
-        this.joints.push(joint);
-        // Hide joint if required
-        if (hideJoint) {
-          joint.hide();
-        }
+        this.createJoint(i, hideJoint);
       }
     }
     // Update Wire
     this.update();
+    // Push dump to Undo stack, only if pushUndo is false
+    if (!pushUndo) {
+      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: undoEvtType });
+    }
+    if (undoEvtType === 'breadDrag') {
+      UndoUtils.pushChangeToUndo({ keyName: this.keyName, element: this.save(), event: undoEvtType });
+    }
   }
+
+  /**
+   * Removes joint present at the point at index `pointIndex`
+   * @param pointIndex: index of the point whose joint needs to be removed
+   */
+  removeJoint(pointIndex: number) {
+    const jointIndex = pointIndex - 1;
+    const joint = this.joints[jointIndex];
+    if (joint) {
+      joint.remove();
+      this.joints.splice(jointIndex, 1);
+    }
+  }
+
+  /**
+   * Creates joint at the index `pointIndex`
+   * @param pointIndex index of the point
+   * @param hideJoint hide the joint?
+   */
+  createJoint(pointIndex: number, hideJoint: boolean = false) {
+    const joint = this.canvas.circle(this.points[pointIndex][0], this.points[pointIndex][1], 6);
+    joint.attr({ fill: this.color, stroke: this.color });  // Give the joint a Color
+    // Variables used while dragging joints
+    let tmpx;
+    let tmpy;
+    // set drag listener
+    joint.drag((dx, dy) => {
+      // Update joints position
+      joint.attr({ cx: tmpx + dx, cy: tmpy + dy });
+      // Update repective Point
+      this.points[pointIndex] = [tmpx + dx, tmpy + dy];
+      // Update the wire
+      this.update();
+    }, () => {
+      // Get the Joints center
+      const jointAttr = joint.attr();
+      tmpx = jointAttr.cx;
+      tmpy = jointAttr.cy;
+    }, () => {
+    });
+    this.joints.push(joint);
+    // Hide joint if required
+    if (hideJoint) {
+      joint.hide();
+    }
+  }
+
   /**
    * Returns true if both end of wire is connected
    */
@@ -371,6 +464,7 @@ export class Wire {
   save() {
     return {
       // object contains points,color,start point(id,keyname),end point(id,keybame)
+      id: this.id,
       points: this.points,
       color: this.color,
       start: {
@@ -422,10 +516,8 @@ export class Wire {
     // Remove Glow
     this.removeGlows();
     // Clear Joints
-    this.joints = [];
     this.joints = null;
     // Clear Points
-    this.points = [];
     this.points = null;
     // Remove element from dom
     this.element.remove();

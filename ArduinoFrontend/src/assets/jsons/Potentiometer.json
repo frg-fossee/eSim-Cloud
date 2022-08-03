@@ -3,18 +3,18 @@
   "className": "Potentiometer",
   "pins": [
     {
-      "x": 28,
-      "y": 114,
+      "x": 16.5,
+      "y": 75.025,
       "name": "Terminal 1"
     },
     {
-      "x": 51,
-      "y": 114,
+      "x": 31.2,
+      "y": 75.025,
       "name": "WIPER"
     },
     {
-      "x": 74,
-      "y": 114,
+      "x": 45.4,
+      "y": 75.025,
       "name": "Terminal 2"
     }
   ],
@@ -23,18 +23,18 @@
     {
       "type": "image",
       "url": "assets/images/components/Potentiometer.svg",
-      "width": 109.3,
-      "height": 122.975,
+      "width": 71.1,
+      "height": 80,
       "x": 0,
       "y": 0
     },
     {
       "type": "image",
       "url": "assets/images/components/PotentiometerAbove.svg",
-      "width": 82.6,
-      "height": 82.6,
-      "x": 13.3,
-      "y": 12.5
+      "width": 55.6,
+      "height": 55.6,
+      "x": 7.3,
+      "y": 7.5
     }
   ],
   "simulation": {},

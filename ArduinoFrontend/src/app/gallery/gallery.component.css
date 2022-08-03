@@ -20,3 +20,7 @@
 .subbox:hover {
     box-shadow: 2px 2px 9px grey;
 }
+.footer{
+    display: flex;
+    justify-content: space-between;
+}
