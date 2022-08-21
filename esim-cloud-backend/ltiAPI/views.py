@@ -1,3 +1,4 @@
+from email import message
 from sre_constants import SUCCESS
 import traceback
 import datetime
@@ -643,15 +644,20 @@ class ArduinoLTIPostGrade(APIView):
             sim = ArduinoLTISimData.objects.get(
                 id=request.data['student_simulation'])
         except ArduinoLTISimData.DoesNotExist:
-            print("Here")
             sim = None
         schematic = StateSave.objects.get(save_id=request.data["schematic"])
         schematic.shared = True
         schematic.is_submission = True
         schematic.save()
         if(sim):
-            score = arduino_eval(consumer.test_case.result, sim.result,
-                                 consumer.con_weightage, consumer.score)
+            score, evaluated = arduino_eval(consumer.test_case.result,
+                                            sim.result, consumer.con_weightage,
+                                            consumer.score)
+            if evaluated is False:
+                print("Heree")
+                return Response(
+                    data={"error": "Insufficient data points for evaluation"},
+                    status=500)
         else:
             score = 0
         submission_data = {
@@ -680,7 +686,8 @@ class ArduinoLTIPostGrade(APIView):
             else:
                 submission.lms_success = True
                 submission.save()
-                msg = 'Your score was submitted. Great job!'
+                msg = 'Your score : ' + str(score) + ' was submitted. \
+                    Great job!'
                 if consumer.scored:
                     response_data = {
                         "message": msg,

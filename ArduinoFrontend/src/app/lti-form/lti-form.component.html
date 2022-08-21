@@ -108,7 +108,7 @@
         </mat-select>   
       </mat-form-field>
       <mat-form-field>
-        <input type ="number" formControlName="con_weightage" matInput placeholder="Connection Weightage" required (input)="conCodeWeight($event)"/>
+        <input type ="number" formControlName="con_weightage" matInput placeholder="Connection Weightage (0-100%)" required (input)="conCodeWeight($event)"/>
         <mat-error *ngIf="form.controls['con_weightage'].errors?.required">This field is mandatory</mat-error>
         <mat-error *ngIf="form.controls['con_weightage'].errors?.min || form.controls['con_weightage'].errors?.max">
           Value should be between 0 and 100</mat-error>
@@ -116,10 +116,10 @@
     </div>
     <div class="col-md-4">
       <mat-form-field>
-        <input formControlName="score" matInput placeholder="Score" required />
+        <input formControlName="score" matInput placeholder="Score (0-1)" required />
         <mat-error *ngIf="form.controls['score'].errors?.required">This field is mandatory</mat-error>
         <mat-error *ngIf="form.controls['score'].errors?.min || form.controls['score'].errors?.max">
-          Value should be between 0 and 100</mat-error>
+          Value should be between 0 and 1</mat-error>
       </mat-form-field>
       <div class="row">
         <div class="check-box-spacing col-md-4">
@@ -134,7 +134,7 @@
         </div>
       </div>
       <mat-form-field class="code-weight">
-        <input formControlName="code_weightage" matInput placeholder="Code Weightage" readonly/>
+        <input formControlName="code_weightage" matInput placeholder="Code Weightage (0-100%)" readonly/>
       </mat-form-field>
     </div>
   </div>

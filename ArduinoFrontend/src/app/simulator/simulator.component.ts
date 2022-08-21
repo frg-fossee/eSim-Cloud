@@ -1003,7 +1003,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           });
         return;
       }, err => {
-        AlertService.showAlert(err['message']);
+        AlertService.showAlert(err['error']['error']);
         console.log(err);
       });
     });
@@ -1031,21 +1031,15 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Return the list of student simulation records
    */
   getSimRecord() {
-    const token = Login.getToken();
     const temp = [];
-    if (token) {
-      this.api.getLTISimulationData(this.id, this.ltiId, token).subscribe((v) => {
-        for (const val of v) {
-          const data = JSON.parse(val.result.replaceAll('\'', '\"'));
-          const key = (Object.keys(data));
-          temp.push({id: val.id, length: data[key[0]]['length']});
-        }
-        this.simData = temp;
-      });
-    } else {
-      // if no token is present then show this message
-      AlertService.showAlert('Please Login to Continue');
-    }
+    this.api.getLTISimulationData(this.id, this.ltiId).subscribe((v) => {
+      for (const val of v) {
+        const data = JSON.parse(val.result.replaceAll('\'', '\"'));
+        const key = (Object.keys(data));
+        temp.push({id: val.id, length: data[key[0]]['length']});
+      }
+      this.simData = temp;
+    });
   }
 
 }

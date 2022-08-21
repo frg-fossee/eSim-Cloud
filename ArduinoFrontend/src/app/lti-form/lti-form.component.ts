@@ -138,7 +138,7 @@ export class LTIFormComponent implements OnInit {
   form: FormGroup = new FormGroup({
     consumer_key: new FormControl('', [Validators.required, Validators.minLength(2)]),
     secret_key: new FormControl('', [Validators.required, Validators.minLength(2)]),
-    score: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(100)]),
+    score: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(1)]),
     con_weightage: new FormControl(60, [Validators.required, Validators.min(0), Validators.max(100)]),
     code_weightage: new FormControl(40),
     test_case: new FormControl(''),

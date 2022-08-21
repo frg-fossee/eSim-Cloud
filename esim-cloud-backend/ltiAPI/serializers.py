@@ -82,7 +82,6 @@ class consumerResponseSerializer(serializers.Serializer):
     model_schematic = serializers.IntegerField()
     test_case = serializers.IntegerField(required=False, allow_null=True)
     scored = serializers.BooleanField()
-    
 
 
 class ArduinoConsumerResponseSerializer(serializers.Serializer):

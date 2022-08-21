@@ -54,6 +54,7 @@ export class GraphlistComponent implements OnInit {
       this.simulationStatus = res;
       this.dataPoints = 0;
       this.hexData = [];
+      this.hexData.push(0);
     });
     Workspace.simulationStopped.subscribe(res => {
       this.simulationStatus = res;
@@ -93,7 +94,7 @@ export class GraphlistComponent implements OnInit {
       }
     });
     GraphDataService.voltageChange.subscribe(res => {
-      if (this.arduinoList[0]['arduinoId'] === res.arduino.id) {
+      if (this.arduinoList[0]['arduinoId'] === res.arduino.id && this.hexData[this.hexData.length - 1] !== res.value) {
         this.hexData.push(res.value);
         this.dataPoints++;
       }
@@ -127,15 +128,17 @@ export class GraphlistComponent implements OnInit {
       this.api.storeSimulationData(this.id, token, newData).subscribe(res => AlertService.showAlert('Record Saved Successfully')
       , err => AlertService.showAlert(err));
     } else {
+      let ltiID;
       this.aroute.queryParams.subscribe(v => {
-        this.api.storeLTISimulationData(this.id, v.lti_id, token, newData).subscribe(res => {
-          AlertService.showAlert('Record Saved Successfully');
-          this.simDataSave.emit(true);
-        }
-        , err => {
-          AlertService.showAlert(err);
-          this.simDataSave.emit(false);
-        });
+        ltiID = v.lti_id;
+      });
+      this.api.storeLTISimulationData(this.id, ltiID, token, newData).subscribe(res => {
+        AlertService.showAlert('Record Saved Successfully');
+        this.simDataSave.emit(true);
+      }
+      , err => {
+        AlertService.showAlert(err);
+        this.simDataSave.emit(false);
       });
     }
   }
