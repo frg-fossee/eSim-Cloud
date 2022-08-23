@@ -654,7 +654,6 @@ class ArduinoLTIPostGrade(APIView):
                                             sim.result, consumer.con_weightage,
                                             consumer.score)
             if evaluated is False:
-                print("Heree")
                 return Response(
                     data={"error": "Insufficient data points for evaluation"},
                     status=500)

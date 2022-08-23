@@ -92,7 +92,7 @@ def arduino_eval(original_data, student_data, con_weight, max_score):
     org_pins = list(original_data[key]['pinConnected'])
     st_pins = list(student_data[key]['pinConnected'])
     common_pins = list(set(org_pins).intersection(st_pins))
-    if int(len(org_hexvals)) != int(len(st_hexvals)):
+    if int(len(org_hexvals)) > int(len(st_hexvals)):
         evaluated = False
         return 0, evaluated
     con_weightage = (((len(common_pins)/len(org_pins)) * con_weight)/100) \
