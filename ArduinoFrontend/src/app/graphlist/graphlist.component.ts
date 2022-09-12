@@ -26,6 +26,7 @@ export class GraphlistComponent implements OnInit {
   simulationStatus = false;
   dataPoints = 0;
   hexData: number[] = [];
+  initData = false;
 
   constructor(
     private router: Router,
@@ -55,6 +56,7 @@ export class GraphlistComponent implements OnInit {
       this.dataPoints = 0;
       this.hexData = [];
       this.hexData.push(0);
+      this.initData = false;
     });
     Workspace.simulationStopped.subscribe(res => {
       this.simulationStatus = res;
@@ -94,9 +96,14 @@ export class GraphlistComponent implements OnInit {
       }
     });
     GraphDataService.voltageChange.subscribe(res => {
+      if (res.value === 0){
+        this.initData = true;
+      }
       if (this.arduinoList[0]['arduinoId'] === res.arduino.id && this.hexData[this.hexData.length - 1] !== res.value) {
-        this.hexData.push(res.value);
-        this.dataPoints++;
+        if (this.initData === true) {
+          this.hexData.push(res.value);
+          this.dataPoints++;
+        }
       }
     });
   }

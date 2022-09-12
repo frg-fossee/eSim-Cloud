@@ -5,7 +5,7 @@
   <div class="col-md-6">
   <div class="card bg-light mt-2" *ngIf="modelCircuit">
     <div class="card-header">
-      <h4 class="float-left">Mdoel Circuit/Simulation</h4>
+      <h4 class="float-left">Model Circuit/Simulation</h4>
       <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
         <h5><i class="fas fa-info-circle"></i></h5>
       </button>
@@ -122,12 +122,12 @@
           Value should be between 0 and 1</mat-error>
       </mat-form-field>
       <div class="row">
-        <div class="check-box-spacing col-md-4">
+        <div class="check-box-spacing col-sm-7">
           <mat-checkbox formControlName="scored">
             <b>Accept Submissions</b>
           </mat-checkbox>
         </div>
-        <div class="check-box-spacing col-md-4">
+        <div class="check-box-spacing col-md-4 col-sm-9">
           <mat-checkbox formControlName="viewCode">
             <b>Show Code</b>
           </mat-checkbox>
