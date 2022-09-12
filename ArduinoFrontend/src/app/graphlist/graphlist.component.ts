@@ -96,7 +96,7 @@ export class GraphlistComponent implements OnInit {
       }
     });
     GraphDataService.voltageChange.subscribe(res => {
-      if (res.value === 0){
+      if (res.value === 0) {
         this.initData = true;
       }
       if (this.arduinoList[0]['arduinoId'] === res.arduino.id && this.hexData[this.hexData.length - 1] !== res.value) {
