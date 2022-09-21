@@ -1,7 +1,8 @@
-import { Component, Directive, Input, OnInit, AfterViewInit } from '@angular/core';
+import { Component, Directive, Input, OnInit, AfterViewInit, Output } from '@angular/core';
 import { Chart } from 'chart.js';
 import { GraphDataService } from '../graph-data.service';
 import { Workspace } from '../Libs/Workspace';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-graph',
@@ -56,8 +57,8 @@ export class GraphComponent implements OnInit, AfterViewInit {
           this.xlabels.push(new Date(res.time).getTime() - new Date(this.previousTime).getTime());
         }
         this.previousTime = new Date(res.time);
-        console.log(this.pinLabel, this.data);
-        console.log(this.pinLabel, this.xlabels);
+        // console.log(this.pinLabel, this.data);
+        // console.log(this.pinLabel, this.xlabels);
         this.pinGraph.update();
       }
     });
@@ -67,7 +68,6 @@ export class GraphComponent implements OnInit, AfterViewInit {
     this.data.splice(0, this.data.length);
     this.xlabels.splice(0, this.xlabels.length);
     this.pinGraph.update();
-    // console.log(this.nodes);
   }
 
   configChart() {

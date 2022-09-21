@@ -5,7 +5,7 @@
   <div class="col-md-6">
   <div class="card bg-light mt-2" *ngIf="modelCircuit">
     <div class="card-header">
-      <h4 class="float-left">Mdoel Circuit/Simulation</h4>
+      <h4 class="float-left">Model Circuit/Simulation</h4>
       <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
         <h5><i class="fas fa-info-circle"></i></h5>
       </button>
@@ -33,13 +33,13 @@
     <ul class="list-group list-group-flush text-secondary">
       <li class="list-group-item"><b>Branch:</b> {{ studentCircuit.branch }}</li>
       <li class="list-group-item"><b>Version:</b> {{ studentCircuit.version }}</li>
-      <li class="list-group-item">
+      <!-- <li class="list-group-item">
         <mat-checkbox [(ngModel)]="viewCodeCheckBox" (change)="toggleViewCode($event)">
           <b>Show Code</b>
         </mat-checkbox>
-        <!-- <app-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
-          [version]="studentCircuit.version"></app-view-code> -->
-      </li>
+         <app-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
+          [version]="studentCircuit.version"></app-view-code> 
+      </li> -->
     </ul>
     <div class="card-footer">
       <p class="card-text"><small class="text-muted">Last Modified: {{ getFormattedDate(studentCircuit.save_time)
@@ -107,19 +107,35 @@
           </ng-container>
         </mat-select>   
       </mat-form-field>
+      <mat-form-field>
+        <input type ="number" formControlName="con_weightage" matInput placeholder="Connection Weightage (0-100%)" required (input)="conCodeWeight($event)"/>
+        <mat-error *ngIf="form.controls['con_weightage'].errors?.required">This field is mandatory</mat-error>
+        <mat-error *ngIf="form.controls['con_weightage'].errors?.min || form.controls['con_weightage'].errors?.max">
+          Value should be between 0 and 100</mat-error>
+      </mat-form-field>
     </div>
     <div class="col-md-4">
       <mat-form-field>
-        <input formControlName="score" matInput placeholder="Score" required />
+        <input formControlName="score" matInput placeholder="Score (0-1)" required />
         <mat-error *ngIf="form.controls['score'].errors?.required">This field is mandatory</mat-error>
         <mat-error *ngIf="form.controls['score'].errors?.min || form.controls['score'].errors?.max">
-          Value should be 0 or 1</mat-error>
+          Value should be between 0 and 1</mat-error>
       </mat-form-field>
-      <div class="check-box-spacing">
-        <mat-checkbox formControlName="scored">
-          Accept Submissions
-        </mat-checkbox>
+      <div class="row">
+        <div class="check-box-spacing col-sm-7">
+          <mat-checkbox formControlName="scored">
+            <b>Accept Submissions</b>
+          </mat-checkbox>
+        </div>
+        <div class="check-box-spacing col-md-4 col-sm-9">
+          <mat-checkbox formControlName="viewCode">
+            <b>Show Code</b>
+          </mat-checkbox>
+        </div>
       </div>
+      <mat-form-field class="code-weight">
+        <input formControlName="code_weightage" matInput placeholder="Code Weightage (0-100%)" readonly/>
+      </mat-form-field>
     </div>
   </div>
   <div class="form-buttons">

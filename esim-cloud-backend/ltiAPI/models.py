@@ -1,3 +1,4 @@
+from pyexpat import model
 from django.db import models
 from saveAPI.models import ArduinoModelSimulationData, StateSave
 from django.contrib.postgres.fields import ArrayField
@@ -37,6 +38,7 @@ class ArduinLTIConsumer(models.Model):
     model_schematic = models.ForeignKey(to=StateSave, on_delete=models.CASCADE,
                                         related_name="arduino_model_schematic")
     score = models.FloatField(null=True, blank=True)
+    con_weightage = models.FloatField(null=False, default=60)
     initial_schematic = models.ForeignKey(
         to=StateSave,
         on_delete=models.SET_NULL,

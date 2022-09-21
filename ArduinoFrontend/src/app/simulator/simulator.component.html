@@ -229,6 +229,7 @@
       </ng-container>
     </mat-select>
   </mat-form-field>
+  <span class="pipe"></span>
   <button mat-raised-button color="primary" style="margin: 10px 0px;" *ngIf="submitButtonVisibility"
     (click)="SaveLTISubmission()">
     <i style="color: #000;" class="fas fa-paper-plane"></i>
@@ -250,8 +251,7 @@
 
 
 <div class="code-editor" style="z-index: 1000;" #codeDiv>
-  <app-code-editor width="500" height="100" [reinit]="openCodeEditor" 
-    [codeView]="codeVisibility"></app-code-editor>
+  <app-code-editor width="500" height="100" [reinit]="openCodeEditor"></app-code-editor>
 </div>
 
 

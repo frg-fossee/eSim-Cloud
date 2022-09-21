@@ -159,6 +159,7 @@ class SimulationResults(APIView):
         serialized = simulationSerializer(sims, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
 
+
 class SimulationResultsForLTI(APIView):
     permission_classes = (IsAuthenticated, )
 
@@ -173,7 +174,6 @@ class SimulationResultsForLTI(APIView):
             )
         serialized = simulationSerializer(sims, many=True)
         return Response(serialized.data, status=status.HTTP_200_OK)
-
 
 
 class SimulationResultsFromSimulator(APIView):
