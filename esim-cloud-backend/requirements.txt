@@ -36,12 +36,12 @@ MarkupSafe==1.1.1
 mysqlclient==1.4.6
 oauthlib==3.1.0
 packaging==20.3
-Pillow==7.1.2
+Pillow==9.3.0
 psycopg2==2.8.5
 pycparser==2.20
 PyJWT==1.7.1
 numpy==1.18.4
-Pillow==7.1.2
+Pillow==9.3.0
 psycopg2==2.8.5
 pymongo==3.10.1
 pyparsing==2.4.7
