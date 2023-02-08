@@ -121,47 +121,44 @@ export class Point {
       // Check if showBubbleBool is enabled
       if (Point.showBubbleBool) {
         // Check if callback is present if it is then call it
-        
+
         if (this.hoverCallback) {
           this.hoverCallback(this.x, this.y);
         }
         window.showBubble(this.label, evt.clientX, evt.clientY);
-        if(this.parent.keyName == 'BreadBoard'){
-          
-          let ref : any = {};
+        if (this.parent.keyName === 'BreadBoard') {
 
-          for(const obj of window.scope["BreadBoard"]){
-            if(obj.id == this.parent.id){
+          let ref: any = {};
+
+          for (const obj of window.scope["BreadBoard"]) {
+            if (obj.id === this.parent.id) {
               ref = obj;
             }
           }
-          if(this.label == "+" || this.label == "-"){
-            for(const point of ref.sameYNodes[this.y]){
-              if(this.id === point.id){
+          if (this.label === '+' || this.label === '-') {
+            for (const point of ref.sameYNodes[this.y]) {
+              if (this.id === point.id) {
                 this.highlight();
-              }
-              else{
+              } else {
                 point.outline();
               }
             }
-            
-          }
-          else{
-            const groups = ref.getGroupings();
-            const index = groups.findIndex(x => x.includes(this.label.charAt(0)));
 
-            for(const point of ref.sameXNodes[this.x]){
-              if(point.label != "+" && point.label != "-"){ 
-                if(groups[index].includes(point.label.charAt(0))){
-                  if(this.id === point.id){
+          } else {
+            const groups = ref.getGroupings();
+            const index = groups.findIndex(prefix => prefix.includes(this.label.charAt(0)));
+
+            for (const point of ref.sameXNodes[this.x]) {
+              if (point.label !== '+' && point.label !== '-') {
+                if (groups[index].includes(point.label.charAt(0))) {
+                  if (this.id === point.id) {
                     this.highlight();
-                  }
-                  else{
+                  } else {
                     point.outline();
-                  }      
-                }                  
+                  }
+                }
               }
-            } 
+            }
           }
         }
       } else {
@@ -175,34 +172,31 @@ export class Point {
       }
       window.hideBubble();
 
-      if(this.parent.keyName == "BreadBoard"){
-        let ref : any = {};
-        for(const obj of window.scope["BreadBoard"]){
-          if(obj.id == this.parent.id){
+      if (this.parent.keyName == "BreadBoard") {
+        let ref: any = {};
+        for (const obj of window.scope["BreadBoard"]) {
+          if (obj.id == this.parent.id) {
             ref = obj;
           }
         }
-        if(this.label == "+" || this.label == "-"){
-          for(const point of ref.sameYNodes[this.y]){
-            if(this.id === point.id){
-                this.undoHighlight();
-              }
-              else{
-                point.undoOutline();
-              }
+        if (this.label === '+' || this.label === '-') {
+          for (const point of ref.sameYNodes[this.y]) {
+            if (this.id === point.id) {
+              this.undoHighlight();
+            } else {
+              point.undoOutline();
+            }
           }
-        } 
-        else{
-          for(const point of ref.sameXNodes[this.x]){
-            if(point.label != "+" && point.label != "-"){
-              if(this.id === point.id){
+        } else {
+          for (const point of ref.sameXNodes[this.x]) {
+            if (point.label !== '+' && point.label !== '-') {
+              if (this.id === point.id) {
                 this.undoHighlight();
-              }
-              else{
+              } else {
                 point.undoOutline();
               }
             }
-          }  
+          }
         }
       }
       // Show node highligtht
@@ -346,11 +340,11 @@ export class Point {
     this.body.node.setAttribute('class', newClass);
   }
 
-  outline(){
+  outline() {
     const newClass = `${this.body.node.getAttribute('class')} outline`;
     this.body.node.setAttribute('class', newClass);
   }
-  
+
   undoOutline() {
     const newClass = this.body.node.getAttribute('class').replace(' outline', '');
     this.body.node.setAttribute('class', newClass);

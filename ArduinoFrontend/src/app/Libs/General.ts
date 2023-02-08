@@ -289,9 +289,9 @@ export class BreadBoard extends CircuitElement {
   static visitedNodesv2 = new Set();
 
   /**
-    * Stores group of points which are interconnected
-    */
-  static groupings : any = [];
+   * Stores group of points which are interconnected
+   */
+  static groupings: any = [];
 
   /**
    * Nodes that are connected
@@ -316,17 +316,12 @@ export class BreadBoard extends CircuitElement {
   /**
    * Map of x and nodes with x-coordinates as x
    */
-  public sameXNodes: {
-     [key: string]: Point[] 
-    } = {};
+  public sameXNodes: { [key: string]: Point[] } = {};
 
   /**
    * Map of y and nodes with y-coordinates as y
    */
   public sameYNodes: { [key: string]: Point[] } = {};
-  
-  
-
 
   /**
    * Breadboard constructor
@@ -590,10 +585,10 @@ export class BreadBoard extends CircuitElement {
   /** init is called when the component is complety drawn to the canvas */
   init() {
     this.sortedNodes = _.sortBy(this.nodes, ['x', 'y']);
-    if(BreadBoard.groupings.length === 0){
+    if (BreadBoard.groupings.length === 0) {
       BreadBoard.groupings = this.data.groupings;
     }
-    
+
     for (const node of this.nodes) {
       // create the set for x
       this.sameXNodes[node.x] = this.sameXNodes[node.x] || [];
@@ -862,8 +857,8 @@ export class BreadBoard extends CircuitElement {
   /**
    * Returns groupings
    */
-    getGroupings() {
-    let groups = _.cloneDeep(BreadBoard.groupings);
+  getGroupings() {
+    const groups = _.cloneDeep(BreadBoard.groupings);
     return groups;
   }
 
