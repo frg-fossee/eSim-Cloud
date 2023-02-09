@@ -130,7 +130,7 @@ export class Point {
 
           let ref: any = {};
 
-          for (const obj of window.scope["BreadBoard"]) {
+          for (const obj of window.scope['BreadBoard']) {
             if (obj.id === this.parent.id) {
               ref = obj;
             }
@@ -172,10 +172,10 @@ export class Point {
       }
       window.hideBubble();
 
-      if (this.parent.keyName == "BreadBoard") {
+      if (this.parent.keyName === 'BreadBoard') {
         let ref: any = {};
-        for (const obj of window.scope["BreadBoard"]) {
-          if (obj.id == this.parent.id) {
+        for (const obj of window.scope['BreadBoard']) {
+          if (obj.id === this.parent.id) {
             ref = obj;
           }
         }
