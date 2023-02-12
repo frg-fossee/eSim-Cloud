@@ -2,6 +2,8 @@ import { Wire } from './Wire';
 import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
 import { BoundingBox } from './Geometry';
+import _ from 'lodash';
+
 
 /**
  * Declare window so that custom created function don't throw error
@@ -119,10 +121,46 @@ export class Point {
       // Check if showBubbleBool is enabled
       if (Point.showBubbleBool) {
         // Check if callback is present if it is then call it
+
         if (this.hoverCallback) {
           this.hoverCallback(this.x, this.y);
         }
         window.showBubble(this.label, evt.clientX, evt.clientY);
+        if (this.parent.keyName === 'BreadBoard') {
+
+          let ref: any = {};
+
+          for (const obj of window.scope['BreadBoard']) {
+            if (obj.id === this.parent.id) {
+              ref = obj;
+            }
+          }
+          if (this.label === '+' || this.label === '-') {
+            for (const point of ref.sameYNodes[this.y]) {
+              if (this.id === point.id) {
+                this.highlight();
+              } else {
+                point.outline();
+              }
+            }
+
+          } else {
+            const groups = ref.getGroupings();
+            const index = groups.findIndex(prefix => prefix.includes(this.label.charAt(0)));
+
+            for (const point of ref.sameXNodes[this.x]) {
+              if (point.label !== '+' && point.label !== '-') {
+                if (groups[index].includes(point.label.charAt(0))) {
+                  if (this.id === point.id) {
+                    this.highlight();
+                  } else {
+                    point.outline();
+                  }
+                }
+              }
+            }
+          }
+        }
       } else {
         // TODO: Do not show node highligtht
         this.remainHidden();
@@ -133,6 +171,34 @@ export class Point {
         this.hoverCloseCallback(this.x, this.y);
       }
       window.hideBubble();
+
+      if (this.parent.keyName === 'BreadBoard') {
+        let ref: any = {};
+        for (const obj of window.scope['BreadBoard']) {
+          if (obj.id === this.parent.id) {
+            ref = obj;
+          }
+        }
+        if (this.label === '+' || this.label === '-') {
+          for (const point of ref.sameYNodes[this.y]) {
+            if (this.id === point.id) {
+              this.undoHighlight();
+            } else {
+              point.undoOutline();
+            }
+          }
+        } else {
+          for (const point of ref.sameXNodes[this.x]) {
+            if (point.label !== '+' && point.label !== '-') {
+              if (this.id === point.id) {
+                this.undoHighlight();
+              } else {
+                point.undoOutline();
+              }
+            }
+          }
+        }
+      }
       // Show node highligtht
       this.remainShow();
     });
@@ -271,6 +337,16 @@ export class Point {
 
   undoHighlight() {
     const newClass = this.body.node.getAttribute('class').replace(' highlight', '');
+    this.body.node.setAttribute('class', newClass);
+  }
+
+  outline() {
+    const newClass = `${this.body.node.getAttribute('class')} outline`;
+    this.body.node.setAttribute('class', newClass);
+  }
+
+  undoOutline() {
+    const newClass = this.body.node.getAttribute('class').replace(' outline', '');
     this.body.node.setAttribute('class', newClass);
   }
 
