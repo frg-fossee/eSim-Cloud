@@ -168,6 +168,7 @@ export class PushButton extends CircuitElement {
     this.elements.unmouseup();
     this.elements.unmouseout();
     this.setClickListener(null);
+    this.setDragListeners();
   }
 }
 
