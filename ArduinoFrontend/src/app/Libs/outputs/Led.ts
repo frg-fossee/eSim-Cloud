@@ -103,6 +103,19 @@ export class LED extends CircuitElement {
       return;
     }
     this.prev = val;
+
+    if (!this.allNodesConnected) {
+      const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE'], 'POSITIVE');
+      const negativeEnd = this.getRecArduinov2(this.pinNamedMap['NEGATIVE'], 'NEGATIVE');
+      if (negativeEnd) {
+        if (negativeEnd.hasOwnProperty('label')) {
+          if (negativeEnd.label === 'GND' || (negativeEnd.value === 0 && arduinoEnd.value > 0)) {
+            this.allNodesConnected = true;
+          }
+        }
+      }
+    }
+
     // TODO: Run if PWM is not attached
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached && this.allNodesConnected) {
       if (val >= 5) {
