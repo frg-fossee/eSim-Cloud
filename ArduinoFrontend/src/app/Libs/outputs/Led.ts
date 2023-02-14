@@ -50,6 +50,10 @@ export class LED extends CircuitElement {
    * If all nodes of element are connected or not
    */
   allNodesConnected = false;
+  /**
+   * Flag to check if logic function's recursion should be skipped
+   */
+  skipCheck = false;
 
   /**
    * LED constructor
@@ -99,10 +103,10 @@ export class LED extends CircuitElement {
   }
   /** Simulation Logic */
   logic(val: number) {
+
     if (this.prev === val) {
-      return;
+      this.skipCheck = true;
     }
-    this.prev = val;
 
     if (!this.allNodesConnected) {
       const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE'], 'POSITIVE');
@@ -115,12 +119,11 @@ export class LED extends CircuitElement {
         }
       }
     }
-
     // TODO: Run if PWM is not attached
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached && this.allNodesConnected) {
-      if (val >= 5) {
+      if (val >= 5 || this.nodes[0].value === 5) {
         this.anim();
-      } else if (val > 0 && val < 5) {
+      } else if (val > 0 && val < 5 || this.nodes[0].value > 0) {
         if (val < 0.1) {
           this.fillColor('none');
         } else {
@@ -129,8 +132,12 @@ export class LED extends CircuitElement {
       } else {
         this.fillColor('none');
       }
-      if (val >= 0) {
+      if (val >= 0 && !this.skipCheck) {
+        this.prev = val;
         this.nodes[1].setValue(val, null);
+      } else {
+        this.skipCheck = false;
+        return;
       }
     } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached && this.allNodesConnected) {
       // TODO: Run if PWM is attached
