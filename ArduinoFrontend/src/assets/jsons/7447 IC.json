@@ -1,0 +1,114 @@
+{
+    "name": "7447 Decoder IC",
+    "className": "74LS47",
+    "pins": [
+      {
+        "x": 0,
+        "y": -4,
+        "name": "VCC"
+      },
+      {
+        "x": 16,
+        "y": -4,
+        "name": "f"
+      },
+      {
+        "x": 30,
+        "y": -4,
+        "name": "g"
+      },
+      {
+        "x": 44,
+        "y": -4,
+        "name": "a"
+      },
+      {
+        "x": 59,
+        "y": -4,
+        "name": "b"
+      },
+      {
+        "x": 74,
+        "y": -4,
+        "name": "c"
+      },
+      {
+        "x": 91,
+        "y": -4,
+        "name": "d"
+      },
+      {
+        "x": 107,
+        "y": -4,
+        "name": "e"
+      },
+      {
+        "x": 0,
+        "y": 54,
+        "name": "B"
+      },
+      {
+        "x": 16,
+        "y": 54,
+        "name": "C"
+      },
+      {
+        "x": 32,
+        "y": 54,
+        "name": "LT_bar"
+      },
+      {
+        "x": 47,
+        "y": 54,
+        "name": "RBO_bar"
+      },
+      {
+        "x": 62,
+        "y": 54,
+        "name": "RBI_bar"
+      },
+      {
+        "x": 76,
+        "y": 54,
+        "name": "D"
+      },
+      {
+        "x": 91,
+        "y": 54,
+        "name": "A"
+      },
+      {
+        "x": 107,
+        "y": 54,
+        "name": "GND"
+      }
+    ],
+    "pointHalf": 4,
+    "draw": [
+      {
+        "type": "image",
+        "url": "assets/images/components/7447 IC.svg",
+        "width": 115,
+        "height": 55,
+        "x": 0,
+        "y": 0
+      }
+    ],
+    "simulation": {},
+    "info": {
+      "name": "7447 Decoder IC",
+      "image": "https://robodocbd.com/uploads/products/24d93263a694f28e8e6e20d20314e24d.jpg",
+      "Datasheet":"https://albertno-youtube.github.io/datasheets/7447_bcdto7segment.pdf",
+      "Description": "7447 or 74LS47 decodes BCD into 7 Segments, which means it accepts a binary coded decimal or BCD Values as input and decoded into a pattern that drives a 7-segment for displaying digits 0 to 9, so its name is BCD to 7 segment driver or decoder. Its input is 4 lines BCD data and generates complements as output.",
+      "properties": {
+        "Maximum Voltage Supply": "5.25V",
+        "Minimum Voltage Supply": "4.75V",
+        "High Level Input voltage, V1 ": "2V",
+        "High level Output current": "-50 uA ",
+        "Storage Temperature Range": "-65 °C to 150°C",
+        "Operation temp. range": "0-70°C",
+        "Dimensions": "19.8 x 9.14 ",
+        "Weight": "20g"
+      }
+    }
+  }

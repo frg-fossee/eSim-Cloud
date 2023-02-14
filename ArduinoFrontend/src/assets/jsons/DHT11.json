@@ -1,0 +1,56 @@
+{
+  "name": "DHT-11 Sensor",
+  "className": "DHT11",
+  "pins": [
+    {
+      "x": -1,
+      "y": 64,
+      "name": "VDD"
+    },
+    {
+      "x": 10,
+      "y": 64,
+      "name": "DATA"
+    },
+    {
+      "x": 21,
+      "y": 64,
+      "name": "NC"
+    },
+    {
+        "x":32,
+        "y":64,
+        "name":"GND"
+    }
+  ],
+  "pointHalf": 4,
+  "draw": [
+      {
+          "type": "image",
+          "url": "assets/images/components/DHT11.svg",
+          "width": 29,
+          "height": 73,
+          "x": 0,
+          "y": 0
+      }
+  ],
+  "simulation": {},
+  "info": {
+      "name": "Temperature and Humidity Sensor DHT11",
+      "image": "https://components101.com/sites/default/files/components/DHT11-Sensor.jpg",
+      "Datasheet": "https://image.dfrobot.com/image/data/KIT0003/DHT11%20datasheet.pdf",
+      "description": "DHT11 is a digital sensor for sensing temperature and humidity.DHT11 sensor consists of a capacitive humidity sensing element and a thermistor for sensing temperature.",
+      "properties": {
+          "Supply Voltage": "3.5V to 5V",
+          "Maximum Operating Current": "2.5mA",
+          "Humidity Range": "20% to 80%",
+          "Temperature Range": "0°C to 50°C",
+          "Sampling Rate": "1 Hz",
+          "Dimensions": "15.5 X 12",
+          "Humidity Accuracy": "2% to 5%"
+
+      }
+  }
+}
+
+  
