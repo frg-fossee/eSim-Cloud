@@ -75,7 +75,7 @@ export class PushButton extends CircuitElement {
     // Determine Arduino Connected ends for all terminals of push button
     for (const i in this.pinNamedMap) {
       if (this.pinNamedMap[i].connectedTo !== null) {
-        if (this.pinNamedMap[i].connectedTo.start.parent.keyName === 'ArduinoUno' 
+        if (this.pinNamedMap[i].connectedTo.start.parent.keyName === 'ArduinoUno'
         || this.pinNamedMap[i].connectedTo.end.parent.keyName === 'ArduinoUno') {
           this.terminalParent[i] = BreadBoard.getRecArduinov2(this.pinNamedMap[i], i);
         } else {
@@ -83,10 +83,8 @@ export class PushButton extends CircuitElement {
         }
       }
     }
-    
     const Dports = new RegExp('^D([2-9]|[1][0-3])$');
-    const Aports = new RegExp('^A([0-5])$'); 
-    
+    const Aports = new RegExp('^A([0-5])$');
     // console.log(this.pinNamedMap[''])
     this.elements.unmousedown();
     let iniValue = -1;
