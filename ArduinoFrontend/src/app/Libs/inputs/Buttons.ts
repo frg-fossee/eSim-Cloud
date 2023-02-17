@@ -46,10 +46,10 @@ export class PushButton extends CircuitElement {
       }
     });
     this.pinNamedMap['Terminal 2a'].addValueListener((v) => {
-        this.pinNamedMap['Terminal 2b'].setValue(v, null);
+      this.pinNamedMap['Terminal 2b'].setValue(v, null);
     });
     this.pinNamedMap['Terminal 2b'].addValueListener((v) => {
-        this.pinNamedMap['Terminal 2a'].setValue(v, null);
+      this.pinNamedMap['Terminal 2a'].setValue(v, null);
     });
   }
   /**
