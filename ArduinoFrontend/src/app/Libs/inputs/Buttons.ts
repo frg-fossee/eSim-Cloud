@@ -72,13 +72,13 @@ export class PushButton extends CircuitElement {
    * Initialize Variable,callback and animation caller when start simulation is pressed
    */
   initSimulation(): void {
-    //Determine Arduino Connected ends for all terminals of push button
-    for (let i in this.pinNamedMap) {
-      if(this.pinNamedMap[i].connectedTo !== null){
-        if(this.pinNamedMap[i].connectedTo.start.parent.keyName === 'ArduinoUno' || this.pinNamedMap[i].connectedTo.end.parent.keyName === 'ArduinoUno') {
+    // Determine Arduino Connected ends for all terminals of push button
+    for (const i in this.pinNamedMap) {
+      if (this.pinNamedMap[i].connectedTo !== null) {
+        if (this.pinNamedMap[i].connectedTo.start.parent.keyName === 'ArduinoUno' 
+        || this.pinNamedMap[i].connectedTo.end.parent.keyName === 'ArduinoUno') {
           this.terminalParent[i] = BreadBoard.getRecArduinov2(this.pinNamedMap[i], i);
-        }
-        else {
+        } else {
           this.terminalParent[i] = BreadBoard.getRecArduinoBreadv2(this.pinNamedMap[i], i);
         }
       }
@@ -95,17 +95,17 @@ export class PushButton extends CircuitElement {
     this.elements[9].mousedown(() => {
       let val = -1;
       let pullUp = false;
-      for (let i in this.terminalParent) {
+      for (const i in this.terminalParent) {
         // set value only if any pin have inputPullUpEnabled
-        if(this.terminalParent[i] !== undefined){
+        if (this.terminalParent[i] !== undefined) {
           pullUp = pullUp || this.terminalParent[i].pullUpEnabled;
         }
       }
 
-      for (let i in this.terminalParent){
-        if(this.terminalParent[i] !== undefined){
+      for (const i in this.terminalParent) {
+        if (this.terminalParent[i] !== undefined) {
           // set initial value to the pin which connects the digital pin on Arduino
-          if(Dports.test(this.terminalParent[i].label) || Aports.test(this.terminalParent[i].label)){
+          if (Dports.test(this.terminalParent[i].label) || Aports.test(this.terminalParent[i].label)) {
             iniValue = this.pinNamedMap[i].value;
           }
         }
