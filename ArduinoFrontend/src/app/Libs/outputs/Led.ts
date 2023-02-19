@@ -120,30 +120,33 @@ export class LED extends CircuitElement {
       }
     }
     // TODO: Run if PWM is not attached
-    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached && this.allNodesConnected) {
-      if (val >= 5 || this.nodes[0].value === 5) {
-        this.anim();
-      } else if (val > 0 && val < 5 || this.nodes[0].value > 0) {
-        if (val < 0.1) {
-          this.fillColor('none');
+    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
+      if (!this.pwmAttached && this.allNodesConnected) {
+        if (val >= 5 || this.nodes[0].value === 5) {
+          this.anim();
+        } else if (val > 0 && val < 5 || this.nodes[0].value > 0) {
+          if (val < 0.1) {
+            this.fillColor('none');
+          } else {
+            this.glowWithAlpha(val);
+          }
         } else {
-          this.glowWithAlpha(val);
+          this.fillColor('none');
         }
-      } else {
-        this.fillColor('none');
-      }
-      if (val >= 0 && !this.skipCheck) {
-        this.prev = val;
-        this.nodes[1].setValue(val, null);
-      } else {
-        this.skipCheck = false;
-        return;
-      }
-    } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached && this.allNodesConnected) {
-      // TODO: Run if PWM is attached
-      this.glowWithAlpha(this.voltage);
+        if (val >= 0 && !this.skipCheck) {
+          this.prev = val;
+          this.nodes[1].setValue(val, null);
+        } else {
+          this.skipCheck = false;
+          return;
+        }
+      } else if (this.pwmAttached && this.allNodesConnected) {
+        // TODO: Run if PWM is attached
+        this.glowWithAlpha(this.voltage);
 
-    } else {
+      }
+    }
+    else {
       // TODO: Show Toast
       this.handleConnectionError();
       window.showToast('LED is not Connected properly');
