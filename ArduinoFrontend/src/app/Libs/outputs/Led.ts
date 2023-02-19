@@ -239,15 +239,12 @@ export class LED extends CircuitElement {
         }
       }
     }
-    // Code to enable this.allNodeConnected Status of LED to be true when connected to Breadboard
-    // Minor bugs when LED connected to Breadboard when code removed
-    // if (arduinoEnd) {
-    //   if (arduinoEnd.hasOwnProperty('label')) {
-    //     if (arduinoEnd.label === 'GND') {
-    //       this.allNodesConnected = true;
-    //     }
-    //   }
-    // }
+    // Check if nodes of LED are connected
+    if (!negativeEnd || !arduinoEnd) {
+      // TODO: Show Toast
+      this.handleConnectionError();
+      window.showToast('LED is not Connected properly');
+    }
 
     // do not run addPwm if arduino is not connected
     if (!arduinoEnd) {
