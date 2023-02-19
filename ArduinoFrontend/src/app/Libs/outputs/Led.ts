@@ -282,9 +282,11 @@ export class LED extends CircuitElement {
     try {
       if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
         // TODO: Return if arduino is connected to start node
+        this.visitedNodesv2.clear();
         return node.connectedTo.start;
       } else if (node.connectedTo.end.parent.keyName === 'ArduinoUno') {
         // TODO: Return if arduino is connected to end node
+        this.visitedNodesv2.clear();
         return node.connectedTo.end;
       } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
         // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
