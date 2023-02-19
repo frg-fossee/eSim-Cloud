@@ -145,8 +145,7 @@ export class LED extends CircuitElement {
         this.glowWithAlpha(this.voltage);
 
       }
-    }
-    else {
+    } else {
       // TODO: Show Toast
       this.handleConnectionError();
       window.showToast('LED is not Connected properly');
