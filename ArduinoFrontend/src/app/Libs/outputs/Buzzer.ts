@@ -146,7 +146,7 @@ export class Buzzer extends CircuitElement {
     const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE'], 'POSITIVE');
     const negativeEnd = this.getRecArduinov2(this.pinNamedMap['Negative'], 'Negative');
 
-    // make allNodesConnected boolean true if negative is connected to GND  
+    // make allNodesConnected boolean true if negative is connected to GND
     if (negativeEnd) {
       if (negativeEnd.hasOwnProperty('label')) {
         if (negativeEnd.label === 'GND') {
