@@ -189,6 +189,7 @@ export class Buzzer extends CircuitElement {
     }
     this.audioCtx = null;
     this.oscillator = null;
+    this.arduino = null;
     this.prev = -2;
     this.skipCheck = false;
     setTimeout(() => {
