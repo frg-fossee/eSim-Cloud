@@ -763,10 +763,8 @@ export class ServoMotor extends CircuitElement {
       && this.nodes[2].connectedTo.start.parent.keyName === 'ArduinoUno') {
       this.arduino = this.nodes[2].connectedTo.start.parent;
       connectedPin = this.nodes[2].connectedTo.start;
-    }
 
-    if (this.arduino === null &&
-      this.nodes[2].connectedTo.end &&
+    } else if (this.nodes[2].connectedTo.end &&
       this.nodes[2].connectedTo.end.parent.keyName === 'ArduinoUno'
     ) {
       connectedPin = this.nodes[2].connectedTo.end;
