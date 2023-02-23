@@ -770,7 +770,7 @@ export class ServoMotor extends CircuitElement {
     const powerPin = this.getRecArduinov2(this.pinNamedMap['POWER'], 'POWER');
     const signalPin = this.getRecArduinov2(this.pinNamedMap['Signal'], 'Signal');
 
-    // Checks if signal pin is connected to an Arduino 
+    // Checks if signal pin is connected to an Arduino
     if (signalPin) {
       this.arduino = signalPin.parent as ArduinoUno;
     } else {
