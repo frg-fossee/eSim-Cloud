@@ -699,6 +699,10 @@ export class ServoMotor extends CircuitElement {
    * Pin Name mapped to Pins
    */
   pinNamedMap: any = {};
+  /**
+   * Flag to see if Servo is connected properly
+   */
+  connected = true;
 
   /**
    * Servo constructor
@@ -758,16 +762,9 @@ export class ServoMotor extends CircuitElement {
     // Check Connection
     if (!this.areAllNodesConnected()) {
       window['showToast']('Please Connect Servo Properly!');
+      this.connected = false;
       return;
     }
-
-    this.elements.undrag();
-    const ok = this.elements[1].attr();
-    this.elements[1].attr({
-      transform: '',
-      x: ok.x + this.tx,
-      y: ok.y + this.ty
-    });
 
     const gndPin = this.getRecArduinov2(this.pinNamedMap['GND'], 'GND');
     const powerPin = this.getRecArduinov2(this.pinNamedMap['POWER'], 'POWER');
@@ -783,11 +780,21 @@ export class ServoMotor extends CircuitElement {
 
     if (powerPin && gndPin) {
       if (gndPin.label !== 'GND' || powerPin.label !== '5V') {
+        this.connected = false;
         return;
       }
     } else {
+      this.connected = false;
       return;
     }
+
+    this.elements.undrag();
+    const ok = this.elements[1].attr();
+    this.elements[1].attr({
+      transform: '',
+      x: ok.x + this.tx,
+      y: ok.y + this.ty
+    });
 
     // Add a Servo event on arduino
     this.arduino.addServo(signalPin, (angle, prev) => {
@@ -803,6 +810,10 @@ export class ServoMotor extends CircuitElement {
    */
   closeSimulation(): void {
 
+    if (!this.connected) {
+      this.connected = true;
+      return;
+    }
     this.arduino = null;
     this.elements[1].stop();
     const ok = this.elements[1].attr();
