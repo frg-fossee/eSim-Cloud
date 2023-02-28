@@ -403,6 +403,18 @@ export class RGBLED extends CircuitElement {
    */
   glow: any = null;
   /**
+   * Set to keep track of visited nodes
+   */
+  visitedNodesv2 = new Set();
+  /**
+   * Check if RGB LED is properly connected
+   */
+  isProperlyConnected = false;
+  /**
+   * Connected pin of Cathode to Arduino
+  */
+  cathodePin = null;
+  /**
    * RGBLED constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
@@ -415,18 +427,30 @@ export class RGBLED extends CircuitElement {
    * Initialize RGB LED
    */
   init() {
-    this.nodes[0].addValueListener((v) => {
-      this.nodes[1].setValue(v, this.nodes[0]);
+    this.nodes[0].addValueListener((v) => this.logic(v));
+    this.nodes[2].addValueListener((v) => this.logic(v));
+    this.nodes[3].addValueListener((v) => this.logic(v));
+  }
+  /**
+   * Function for logic of value listener
+   */
+  logic(val: number) {
+    let negativeEnd = null;
+    if (!this.cathodePin) {
+      negativeEnd = this.getRecArduinov2(this.nodes[1], "CATHODE");
+      this.cathodePin = negativeEnd;
+    }
+
+    if (this.cathodePin && !this.isProperlyConnected) {
+      if (this.cathodePin.label === "GND" || this.cathodePin.value === 0) {
+        this.isProperlyConnected = true;
+      }
+    }
+
+    if (this.isProperlyConnected) {
+      this.nodes[1].setValue(val, this.nodes[0]);
       this.anim();
-    });
-    this.nodes[2].addValueListener((v) => {
-      this.nodes[1].setValue(v, this.nodes[0]);
-      this.anim();
-    });
-    this.nodes[3].addValueListener((v) => {
-      this.nodes[1].setValue(v, this.nodes[0]);
-      this.anim();
-    });
+    }
   }
   /** animation caller when start simulation is pressed */
   anim() {
@@ -489,6 +513,14 @@ export class RGBLED extends CircuitElement {
    * Called on start simulation
    */
   initSimulation(): void {
+    const negativeEnd = this.getRecArduinov2(this.nodes[1], "CATHODE");
+    if (negativeEnd) {
+      this.cathodePin = negativeEnd;
+      if (negativeEnd.label === "GND") {
+        this.isProperlyConnected = true;
+      }
+    }
+
   }
   /**
    * Remove Glow and clear the filling
@@ -498,5 +530,143 @@ export class RGBLED extends CircuitElement {
     this.elements[1].attr({
       fill: 'none'
     });
+    this.isProperlyConnected = false;
+    this.cathodePin = null;
+  }
+  /**
+ * Return the node which is connected to arduino by recursively finding connected node
+ * @param node The Node which need to be checked
+ */
+  getRecArduinov2(node: Point, startedOn: string) {
+    try {
+      if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
+        // TODO: Return if arduino is connected to start node
+        this.visitedNodesv2.clear();
+        return node.connectedTo.start;
+      } else if (node.connectedTo.end.parent.keyName === 'ArduinoUno') {
+        // TODO: Return if arduino is connected to end node
+        this.visitedNodesv2.clear();
+        return node.connectedTo.end;
+      } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
+        // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
+        return this.getRecArduinoBreadv2(node, startedOn);
+      } else if (node.connectedTo.end.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.end.gid)) {
+        // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
+        return this.getRecArduinoBreadv2(node, startedOn);
+      } else if (node.connectedTo.end.parent.keyName === 'Battery9v' && window.scope.ArduinoUno.length === 0) {
+        // TODO: Return false if node's end is connected to 9V Battery
+        return false;
+      } else if (node.connectedTo.end.parent.keyName === 'CoinCell' && window.scope.ArduinoUno.length === 0) {
+        // TODO: Return false if node's end is connected to Coin Cell
+        return false;
+      } else if (node.connectedTo.end.parent.keyName === 'RelayModule') {
+        // TODO: Handle RelayModule
+        if (startedOn === 'POSITIVE') {
+          // If search was started on Positive node then return connected node of VCC in Relay
+          return this.getRecArduinov2(node.connectedTo.end.parent.nodes[3], startedOn);
+        } else if (startedOn === 'NEGATIVE') {
+          // If search was started on Negative node then return connected node of GND in Relay
+          return this.getRecArduinov2(node.connectedTo.end.parent.nodes[5], startedOn);
+        }
+      } else {
+        // TODO: If nothing matches
+        // IF/ELSE: Determine if start is to be used OR end for further recursion
+        if (node.connectedTo.end.gid !== node.gid) {
+          // Loops through all nodes in parent
+          for (const e in node.connectedTo.end.parent.nodes) {
+            // IF: gid is different && gid not in visited node
+            if (node.connectedTo.end.parent.nodes[e].gid !== node.connectedTo.end.gid
+              && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid) && node.connectedTo.end.parent.nodes[e].isConnected()) {
+              // add gid in visited nodes
+              this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid);
+              // call back Arduino Recursive Fn
+              return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e], startedOn);
+            }
+          }
+        } else if (node.connectedTo.start.gid !== node.gid) {
+          // Loops through all nodes in parent
+          for (const e in node.connectedTo.start.parent.nodes) {
+            // IF: gid is different && gid not in visited node
+            if (node.connectedTo.start.parent.nodes[e].gid !== node.connectedTo.start.gid
+              && !this.visitedNodesv2.has(node.connectedTo.start.parent.nodes[e].gid)
+              && node.connectedTo.start.parent.nodes[e].isConnected()) {
+              // add gid in visited nodes
+              this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid);
+              // call back Arduino Recursive Fn
+              return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e], startedOn);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(e);
+      return false;
+    }
+  }
+  /**
+   * Recursive Function to handle BreadBoard
+   * @param node Node which is to be checked for BreadBoard
+   */
+  private getRecArduinoBreadv2(node: Point, startedOn: string) {
+    // IF/ELSE: Determine if start is to be used OR end for further recursion
+    if (node.connectedTo.end.gid !== node.gid) {
+      const bb = (node.connectedTo.end.parent as BreadBoard);
+      // loop through joined nodes of breadboard
+      for (const e in bb.joined) {
+        if (bb.joined[e].gid !== node.connectedTo.end.gid) {
+          // Run only if substring matches
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length)
+            === node.connectedTo.end.label.substring(1, node.connectedTo.end.label.length)) {
+            const ascii = node.connectedTo.end.label.charCodeAt(0);
+            const currAscii = bb.joined[e].label.charCodeAt(0);
+            // add gid to VisitedNode
+            this.visitedNodesv2.add(bb.joined[e].gid);
+            // IF/ELSE: determine which part of breadboard is connected
+            if (ascii >= 97 && ascii <= 101) {
+              if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else if (ascii >= 102 && ascii <= 106) {
+              if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else {
+              if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            }
+          }
+        }
+      }
+    } else if (node.connectedTo.start.gid !== node.gid) {
+      const bb = (node.connectedTo.start.parent as BreadBoard);
+      // loop through joined nodes of breadboard
+      for (const e in bb.joined) {
+        if (bb.joined[e].gid !== node.connectedTo.start.gid) {
+          // Run only if substring matches
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length)
+            === node.connectedTo.start.label.substring(1, node.connectedTo.start.label.length)) {
+            const ascii = node.connectedTo.start.label.charCodeAt(0);
+            const currAscii = bb.joined[e].label.charCodeAt(0);
+            // add gid to VisitedNode
+            this.visitedNodesv2.add(bb.joined[e].gid);
+            // IF/ELSE: determine which part of breadboard is connected
+            if (ascii >= 97 && ascii <= 101) {
+              if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else if (ascii >= 102 && ascii <= 106) {
+              if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else {
+              if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
