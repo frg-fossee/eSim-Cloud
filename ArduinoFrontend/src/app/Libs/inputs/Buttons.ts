@@ -260,7 +260,7 @@ export class SlideSwitch extends CircuitElement {
     }
     const Dports = new RegExp('^D([2-9]|[1][0-3])$');
     const Aports = new RegExp('^A([0-5])$');
-    let iniPins: string[] = [];
+    const iniPins: string[] = [];
     this.elements.unmousedown();
     this.elements.unclick();
     this.elements.click(() => {
@@ -287,7 +287,9 @@ export class SlideSwitch extends CircuitElement {
         }
         if (this.nodes[2].value < 0) {
           for (const i in iniPins) {
-            this.nodes[iniPins[i]].setValue(-1, null);
+            if (iniPins.hasOwnProperty(i)) {
+              this.nodes[iniPins[i]].setValue(-1, null);
+            }
           }
         }
       } else {
@@ -296,7 +298,9 @@ export class SlideSwitch extends CircuitElement {
         }
         if (this.nodes[0].value < 0) {
           for (const i in iniPins) {
-            this.nodes[iniPins[i]].setValue(-1, null);
+            if (iniPins.hasOwnProperty(i)) {
+              this.nodes[iniPins[i]].setValue(-1, null);
+            }
           }
         }
       }
@@ -335,7 +339,7 @@ export class SlideSwitch extends CircuitElement {
         }
       }
     } else {
-      window.showToast("Slide Switch is not connected properly");
+      window['showToast']('Slide Switch is not connected properly');
     }
   }
   /**
