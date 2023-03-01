@@ -412,7 +412,7 @@ export class RGBLED extends CircuitElement {
   isProperlyConnected = false;
   /**
    * Connected pin of Cathode to Arduino
-  */
+   */
   cathodePin = null;
   /**
    * RGBLED constructor
@@ -437,12 +437,12 @@ export class RGBLED extends CircuitElement {
   logic(val: number) {
     let negativeEnd = null;
     if (!this.cathodePin) {
-      negativeEnd = this.getRecArduinov2(this.nodes[1], "CATHODE");
+      negativeEnd = this.getRecArduinov2(this.nodes[1], 'CATHODE');
       this.cathodePin = negativeEnd;
     }
 
     if (this.cathodePin && !this.isProperlyConnected) {
-      if (this.cathodePin.label === "GND" || this.cathodePin.value === 0) {
+      if (this.cathodePin.label === 'GND' || this.cathodePin.value === 0) {
         this.isProperlyConnected = true;
       }
     }
@@ -513,10 +513,10 @@ export class RGBLED extends CircuitElement {
    * Called on start simulation
    */
   initSimulation(): void {
-    const negativeEnd = this.getRecArduinov2(this.nodes[1], "CATHODE");
+    const negativeEnd = this.getRecArduinov2(this.nodes[1], 'CATHODE');
     if (negativeEnd) {
       this.cathodePin = negativeEnd;
-      if (negativeEnd.label === "GND") {
+      if (negativeEnd.label === 'GND') {
         this.isProperlyConnected = true;
       }
     }
@@ -534,9 +534,9 @@ export class RGBLED extends CircuitElement {
     this.cathodePin = null;
   }
   /**
- * Return the node which is connected to arduino by recursively finding connected node
- * @param node The Node which need to be checked
- */
+   * Return the node which is connected to arduino by recursively finding connected node
+   * @param node The Node which need to be checked
+   */
   getRecArduinov2(node: Point, startedOn: string) {
     try {
       if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
