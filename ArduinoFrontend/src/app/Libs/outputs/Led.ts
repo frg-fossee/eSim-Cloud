@@ -50,6 +50,10 @@ export class LED extends CircuitElement {
    * If all nodes of element are connected or not
    */
   allNodesConnected = false;
+  /**
+   * Flag to check if logic function's recursion should be skipped
+   */
+  skipCheck = false;
 
   /**
    * LED constructor
@@ -99,30 +103,48 @@ export class LED extends CircuitElement {
   }
   /** Simulation Logic */
   logic(val: number) {
-    if (this.prev === val) {
-      return;
-    }
-    this.prev = val;
-    // TODO: Run if PWM is not attached
-    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && !this.pwmAttached && this.allNodesConnected) {
-      if (val >= 5) {
-        this.anim();
-      } else if (val > 0 && val < 5) {
-        if (val < 0.1) {
-          this.fillColor('none');
-        } else {
-          this.glowWithAlpha(val);
-        }
-      } else {
-        this.fillColor('none');
-      }
-      if (val >= 0) {
-        this.nodes[1].setValue(val, null);
-      }
-    } else if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.pwmAttached && this.allNodesConnected) {
-      // TODO: Run if PWM is attached
-      this.glowWithAlpha(this.voltage);
 
+    if (this.prev === val) {
+      this.skipCheck = true;
+    }
+
+    if (!this.allNodesConnected) {
+      const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE'], 'POSITIVE');
+      const negativeEnd = this.getRecArduinov2(this.pinNamedMap['NEGATIVE'], 'NEGATIVE');
+      if (negativeEnd && arduinoEnd) {
+        if (negativeEnd.hasOwnProperty('label')) {
+          if (negativeEnd.label === 'GND' || (negativeEnd.value === 0 && arduinoEnd.value > 0)) {
+            this.allNodesConnected = true;
+          }
+        }
+      }
+    }
+    // TODO: Run if PWM is not attached
+    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
+      if (!this.pwmAttached && this.allNodesConnected) {
+        if (val >= 5 || this.nodes[0].value === 5) {
+          this.anim();
+        } else if (val > 0 && val < 5 || this.nodes[0].value > 0) {
+          if (val < 0.1) {
+            this.fillColor('none');
+          } else {
+            this.glowWithAlpha(val);
+          }
+        } else {
+          this.fillColor('none');
+        }
+        if (val >= 0 && !this.skipCheck) {
+          this.prev = val;
+          this.nodes[1].setValue(val, null);
+        } else {
+          this.skipCheck = false;
+          return;
+        }
+      } else if (this.pwmAttached && this.allNodesConnected) {
+        // TODO: Run if PWM is attached
+        this.glowWithAlpha(this.voltage);
+
+      }
     } else {
       // TODO: Show Toast
       this.handleConnectionError();
@@ -216,12 +238,11 @@ export class LED extends CircuitElement {
         }
       }
     }
-    if (arduinoEnd) {
-      if (arduinoEnd.hasOwnProperty('label')) {
-        if (arduinoEnd.label === 'GND') {
-          this.allNodesConnected = true;
-        }
-      }
+    // Check if nodes of LED are connected
+    if (!negativeEnd || !arduinoEnd) {
+      // TODO: Show Toast
+      this.handleConnectionError();
+      window.showToast('LED is not Connected properly');
     }
 
     // do not run addPwm if arduino is not connected
@@ -261,9 +282,11 @@ export class LED extends CircuitElement {
     try {
       if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
         // TODO: Return if arduino is connected to start node
+        this.visitedNodesv2.clear();
         return node.connectedTo.start;
       } else if (node.connectedTo.end.parent.keyName === 'ArduinoUno') {
         // TODO: Return if arduino is connected to end node
+        this.visitedNodesv2.clear();
         return node.connectedTo.end;
       } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
         // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
