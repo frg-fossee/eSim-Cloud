@@ -111,7 +111,7 @@ export class LED extends CircuitElement {
     if (!this.allNodesConnected) {
       const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE'], 'POSITIVE');
       const negativeEnd = this.getRecArduinov2(this.pinNamedMap['NEGATIVE'], 'NEGATIVE');
-      if (negativeEnd) {
+      if (negativeEnd && arduinoEnd) {
         if (negativeEnd.hasOwnProperty('label')) {
           if (negativeEnd.label === 'GND' || (negativeEnd.value === 0 && arduinoEnd.value > 0)) {
             this.allNodesConnected = true;
