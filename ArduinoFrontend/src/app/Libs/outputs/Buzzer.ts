@@ -154,13 +154,16 @@ export class Buzzer extends CircuitElement {
         }
       }
     }
-    if (arduinoEnd.connectedTo) {
-      this.arduino = arduinoEnd.parent;
-    }
-
     // Show error
     if (!arduinoEnd || !negativeEnd) {
       window.showToast('Buzzer is not Connected properly');
+      return;
+    }
+
+    if (arduinoEnd) {
+      if (arduinoEnd.connectedTo) {
+        this.arduino = arduinoEnd.parent;
+      }
     }
 
     const AudioContext = window.AudioContext || window.webkitAudioContext;
