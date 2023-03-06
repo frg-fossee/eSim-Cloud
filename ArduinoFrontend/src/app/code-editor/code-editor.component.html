@@ -15,8 +15,8 @@
         (click)="openFolder()"><i class="fas fa-box"></i></button>
       <form>
         <div class="form-group mt-2 " style="max-height: 20px; box-shadow: whitesmoke; ">
-          <select id="inputState" class="form-control form-control-sm" (change)="chooseArduino(chooseController)"
-            #chooseController>
+          <select id="inputState" class="form-control form-control-sm" (change)="chooseArduino(chooseArduinoController)"
+            #chooseArduinoController>
             <option *ngFor="let name of names">{{name}}</option>
           </select>
         </div>

@@ -25,6 +25,13 @@
   fill-opacity: 1 !important;
   stroke-opacity: 1 !important;
 }
+.mynode.outline {
+  fill: #90EE90 !important;
+  stroke: black !important;
+  fill-opacity: 0.8  !important;
+  stroke-opacity: 0.5 !important;
+  
+}
 
 .mynode.solder-highlight {
   fill: #111 !important;
