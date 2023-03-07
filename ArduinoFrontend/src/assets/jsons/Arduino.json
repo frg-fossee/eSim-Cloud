@@ -191,7 +191,8 @@
       "SRAM": "2KB(ATmega328)",
       "Clock Speed": "16MHz",
       "EEPROM": "1 KB (ATmega328)",
-      "LED": "Inbuilt"
+      "LED": "Inbuilt",
+      "isBreadBoardPlaceable" : 0
     }
   }
 }
