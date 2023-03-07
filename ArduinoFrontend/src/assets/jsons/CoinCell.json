@@ -32,7 +32,8 @@
         "description": "Coin cell batteries like CR2032 are generally used for small portable electronics devices such as wrist watches, pocket calculators, automobile key less entry transmitter and hearing aids. Typically they are of compact size, 5-25mm in diameter and 1-6mm in height. The name defines the size of the battery like for CR2032, the first two digits stands for diameter and second for height or thickness in tenths of mm.",
         "properties": {
             "Voltage - Rated": "3V",
-            "Capacity": "240mAh @ 190µA"
+            "Capacity": "240mAh @ 190µA",
+            "isBreadBoardPlaceable" : 1 
         }
     }
 }

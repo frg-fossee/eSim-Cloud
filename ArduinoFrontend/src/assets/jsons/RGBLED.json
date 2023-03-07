@@ -49,7 +49,8 @@
       "Size": "5mm LED RGB - Common Cathode",
       "Lens Type": "Diffused",
       "Emitting Color": "Red, Green and Blue",
-      "Voltage Rated": "3V-5V"
+      "Voltage Rated": "3V-5V",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }

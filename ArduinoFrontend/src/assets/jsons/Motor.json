@@ -46,7 +46,8 @@
       "Loaded current": "250mA (approx)",
       "Rated Load": "10g*cm",
       "Motor Size": "27.5mm x 20mm x 15mm",
-      "Weight": "17 grams"
+      "Weight": "17 grams",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }

@@ -80,7 +80,8 @@
       "Peak wavelength": "600nm",
       "Power Rating": "0.3W",
       "Maximum Input Voltage": "200Vdc",
-      "Rotational Life": " 2000K cycles"
+      "Rotational Life": " 2000K cycles",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }

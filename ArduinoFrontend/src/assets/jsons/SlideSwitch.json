@@ -53,7 +53,8 @@
       "Mechanical life": " minimum 5000 operations",
       "Contacts": "phosphor bronze, silver-plated",
       "Terminals": "brass silver-plated",
-      "Contact timing": "non-shorting"
+      "Contact timing": "non-shorting",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }
