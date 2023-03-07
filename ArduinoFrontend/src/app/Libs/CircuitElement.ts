@@ -282,11 +282,13 @@ export abstract class CircuitElement {
    */
   setDragListeners() {
     // let tmpx = 0;
+    console.log("I'm inside drag listener")
     // let tmpy = 0;
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
+
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
       // tmpx = this.tx + dx;
       // tmpy = this.ty + dy;
@@ -450,6 +452,56 @@ export abstract class CircuitElement {
    * Return the Name of the component.Can be inheriter to return custom name.
    */
   getName() { return this.title; }
+  /**
+   * Function to move/transform an element
+   * @param fdx relative x position to move
+   * @param fdy relative y position to move
+   */
+  getNodesCoord() : number[] {
+    let tmpar = [];
+    for(let  i = 0; i < this.nodes.length; i++)
+    {
+      tmpar.push(
+        [this.nodes[i].x, this.nodes[i].y]
+      );
+    }
+    return tmpar;
+  } 
+
+  dragAlong(tmpar: any, fdx: number, fdy: number): any {
+    
+    this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
+
+    for (const node of this.nodes) {
+      tmpar.push(
+        [node.x, node.y]
+      );
+    }
+    for (let i = 0; i < this.nodes.length; ++i) {
+      this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+    }
+     /*
+      this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
+      tmpx2[i] = this.tx + dx;
+      tmpy2[i] = this.ty + dy;
+      //16 nodes per LCD panel
+      for (let j = 16 * i; j < ConnElementsArr[i].nodes.length + (16 * i); ++j) {
+        ConnElementsArr[i].nodes[j].move(NodeList[j][0] + dx, NodeList[j][1] + dy);
+      }
+      console.log("Before Simulating - I")
+      console.log("X : " , ConnElementsArr[i].data.startX , "Y : " ,ConnElementsArr[i].data.startY)
+      //ConnElementsArr[i].data.startX = PanelCoord[0][0] + dx;
+      //ConnElementsArr[i].data.startY = PanelCoord[0][1] + dy;
+      console.log("Before Simulating - II")*/
+
+  }
+  dragAlongStop(x : number,y : number) : void {
+    //UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: (x - this.tx) , dy: (y - this.ty) } });
+    this.tx = x;
+    this.ty = y;
+    
+  }
+
 
   /**
    * Function to move/transform an element
