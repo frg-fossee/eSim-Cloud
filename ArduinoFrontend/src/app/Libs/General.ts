@@ -661,21 +661,24 @@ export class BreadBoard extends CircuitElement {
                 break;
               }
             }
-            if (!ElementFlag && 'isBreadBoardPlaceable' in ConnElement1.info.properties && ConnElement1.info.properties.isBreadBoardPlaceable === 1) {
+            const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement1.info.properties;
+            const isBreadBoardPlaceable = ConnElement1.info.properties.isBreadBoardPlaceable;
+            if ( !ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1 ) {
               ConnEleList.push(ConnElement1);
               tmpx2.push(0);
               tmpy2.push(0);
               NodeList.push(ConnElement1.getNodesCoord());
             }
-          }
-          else {
+          } else {
             for (const ele of ConnEleList) {
               if (ele === ConnElement1) {
                 ElementFlag = true;
                 break;
               }
             }
-            if (!ElementFlag && "isBreadBoardPlaceable" in ConnElement2.info.properties && ConnElement2.info.properties.isBreadBoardPlaceable == 1) {
+            const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement2.info.properties;
+            const isBreadBoardPlaceable = ConnElement2.info.properties.isBreadBoardPlaceable;
+            if (!ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1) {
               ConnEleList.push(ConnElement2);
               tmpx2.push(0);
               tmpy2.push(0);
@@ -740,12 +743,12 @@ export class BreadBoard extends CircuitElement {
         [node.x, node.y]
       );
       node.remainShow();
-      let ConnElement1 = node.connectedTo.start.parent;
-      let ConnElement2 = node.connectedTo.end.parent;
-      console.log(ConnElement1.keyName)
-      console.log(ConnElement2.keyName)
+      const ConnElement1 = node.connectedTo.start.parent;
+      const ConnElement2 = node.connectedTo.end.parent;
+      console.log(ConnElement1.keyName);
+      console.log(ConnElement2.keyName);
       let ElementFlag = false;
-      if (ConnElement1.keyName != "BreadBoard") {
+      if (ConnElement1.keyName !== 'BreadBoard') {
 
         for (const ele of ConnEleList) {
           if (ele === ConnElement1) {
@@ -753,21 +756,20 @@ export class BreadBoard extends CircuitElement {
             break;
           }
         }
-        if (!ElementFlag && ConnElement1.info.properties.isBreadBoardPlaceable == 1) {
+        if (!ElementFlag && ConnElement1.info.properties.isBreadBoardPlaceable === 1) {
           ConnEleList.push(ConnElement1);
           tmpx2.push(0);
           tmpy2.push(0);
           NodeList.push(ConnElement1.getNodesCoord());
         }
-      }
-      else {
+      } else {
         for (const ele of ConnEleList) {
           if (ele === ConnElement1) {
             ElementFlag = true;
             break;
           }
         }
-        if (!ElementFlag && ConnElement2.info.properties.isBreadBoardPlaceable == 1) {
+        if (!ElementFlag && ConnElement2.info.properties.isBreadBoardPlaceable === 1) {
           ConnEleList.push(ConnElement2);
           tmpx2.push(0);
           tmpy2.push(0);
@@ -788,7 +790,7 @@ export class BreadBoard extends CircuitElement {
     }
 
     for (let i = 0; i < ConnEleList.length; ++i) {
-      ConnEleList[i].dragAlong(NodeList[i], fdx, fdy)
+      ConnEleList[i].dragAlong(NodeList[i], fdx, fdy);
       tmpx2[i] = ConnEleList[i].tx + fdx;
       tmpy2[i] = ConnEleList[i].ty + fdy;
     }

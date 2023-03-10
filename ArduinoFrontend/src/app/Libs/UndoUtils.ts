@@ -35,7 +35,6 @@ export abstract class UndoUtils {
      * Call this function to Undo
      */
     static workspaceUndo() {
-        console.log("Workspace undo")
         if (this.undo.length > 0) {
             const cng = this.undo.pop();
             this.loadChange(cng, 'undo');
@@ -128,12 +127,10 @@ export abstract class UndoUtils {
      * @param operation undo/redo
      */
     static async loadChange(ele, operation) {
-        console.log("LoadChange")
         // All elements in window.scope with similar
         const grup = window.scope[ele.keyName];
 
         // Check if dragJson is present, & jump to next operation if both dx & dy are 0
-        //Which case is this??
         if (ele.dragJson) {
             if (ele.dragJson.dx === 0 && ele.dragJson.dy === 0) {
                 if (operation === 'undo') {
@@ -283,19 +280,16 @@ export abstract class UndoUtils {
                         const existing = this.getExistingWindowElement(grup, ele);
                         if (operation === 'undo') {
                             if (ele.keyName === 'BreadBoard') {
-                                console.log("BreadBoard specific drag")
                                 existing.transformBoardPosition(-ele.dragJson.dx, -ele.dragJson.dy);
                             } else {
                                 existing.transformPosition(-ele.dragJson.dx, -ele.dragJson.dy);
                             }
-                        } else {
-                            
+                        } else {                           
                             if (ele.keyName !== 'BreadBoard') {
                                 existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy);
                                 Workspace.onDragEvent(existing);
                                 Workspace.onDragStopEvent(existing);
-                            }
-                            else {
+                            } else {
                                 existing.transformBoardPosition(ele.dragJson.dx, ele.dragJson.dy);
                             }
                         }

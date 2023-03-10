@@ -211,7 +211,6 @@ export class Point {
    * Unsolders wire to the point
    */
   unsolderWire() {
-    console.log("Removing2")
     const wire = this.connectedTo;
     if (wire) {
       this.setValue(-1, this);
@@ -344,7 +343,6 @@ export class Point {
    * Disconnects the point to wire
    */
   disconnect() {
-    console.log("Removing1")
     this.connectedTo = null;
     if (this.isSoldered()) {
       this.unsolderWire();
@@ -355,7 +353,6 @@ export class Point {
    * Remove Node from canvas
    */
   remove() {
-   
     this.body.remove();
     if (this.connectedTo) {
       this.connectedTo.remove();

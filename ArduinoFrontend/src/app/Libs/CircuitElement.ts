@@ -463,9 +463,8 @@ export abstract class CircuitElement {
       );
     }
     return tmpar;
-  } 
-
-  dragAlong(tmpar: any, fdx: number, fdy: number): any {    
+  }
+  dragAlong(tmpar: any, fdx: number, fdy: number): any {
     this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
     for (const node of this.nodes) {
       tmpar.push(
