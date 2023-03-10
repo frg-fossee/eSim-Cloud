@@ -4,7 +4,7 @@ billiard==3.6.3.0
 cairocffi==1.1.0
 CairoSVG==2.4.2
 celery==4.4.2
-certifi==2020.4.5.1
+certifi==2022.12.7
 cffi==1.14.0
 chardet==3.0.4
 configparse==0.1.5
