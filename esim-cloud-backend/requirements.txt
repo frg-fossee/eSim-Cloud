@@ -15,7 +15,7 @@ cryptography==39.0.0
 django==2.2.12
 django-cors-headers==3.2.1
 django-templated-mail==1.1.1
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 djongo==1.2.38
 djoser==2.0.3
 cssselect2==0.3.0
