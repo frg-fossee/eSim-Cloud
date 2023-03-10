@@ -70,7 +70,7 @@ def ExecNetlist(filepath, file_id):
             output = {'fail': foo}
         logger.info('output from ngspice_helper.py')
         logger.info(stderr)
-        logger.info(output)
+        # logger.info(output)
         logger.info(stdout)
         return output
     except SoftTimeLimitExceeded:

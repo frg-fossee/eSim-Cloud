@@ -5,8 +5,9 @@ module.exports = function (config) {
   config.set({
     basePath: '',
     frameworks: ['jasmine', '@angular-devkit/build-angular'],
-    files:[
-      'assets/js/raphael.min.js'
+    files: [
+      'assets/js/raphael.min.js',
+      'assets/js/moment.min.js',
     ],
     plugins: [
       require('karma-jasmine'),

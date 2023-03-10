@@ -1,0 +1,35 @@
+.graph-container {
+  left: calc(100vw - 460px);
+  display: block;
+  position: fixed;
+  max-width: fit-content;
+  min-width: 440px;
+  min-height: 700px;
+  z-index: 700;
+  background: #fff;
+  top: 320px;
+  box-shadow: 2px 2px 9px rgba(0, 0, 0, 0.4);
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.dragger {
+  cursor: move;
+}
+
+.align-right {
+  float: right;
+}
+
+.example-viewport {
+  height: 680px;
+  width: 420px;
+}
+
+.example-item {
+  height: 250px;
+}
+
+.alternate-simulation-text{
+  align-self: center;
+}

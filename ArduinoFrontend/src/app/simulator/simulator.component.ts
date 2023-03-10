@@ -1,4 +1,4 @@
-import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy } from '@angular/core';
+import { Component, OnInit, Injector, ViewEncapsulation, OnDestroy, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Workspace, ConsoleType } from '../Libs/Workspace';
 import { Utils } from '../Libs/Utils';
@@ -19,6 +19,7 @@ import { ExportJSONDialogComponent } from '../export-jsondialog/export-jsondialo
 import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
+import { sample } from 'rxjs/operators';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -93,7 +94,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Username
    */
-  username: string;
+  username = '';
   /**
    * window
    */
@@ -102,6 +103,58 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Is autolayout in progress?
    */
   isAutoLayoutInProgress = false;
+  /**
+   * Circuit's primary key
+   */
+  id: number;
+  /**
+   * Student simulation records
+   */
+  simData: any[] = [];
+  /**
+   * Select the simulation to be submitted
+   */
+  simSelected: any = null;
+  /**
+   * View or not to view graph
+   */
+  graphToggle = false;
+  /**
+   * Hide/Show submit button
+   */
+  submitButtonVisibility = false;
+  /**
+   * Whether the LTI user is allowed to see the code
+   */
+  codeVisibility = true;
+  /**
+   * LTI ID of LTI App (if simulator is opened on LMS)
+   */
+  ltiId = '';
+  /**
+   * LTI Nonce of LTI App (if simulator is opened on LMS)
+   */
+  ltiNonce = '';
+  /**
+   * LTI User ID of LTI App (if simulator is opened on LMS)
+   */
+  ltiUserId = '';
+  /**
+   * Currently loaded circuit's branch
+   */
+  branch: string;
+  /**
+   * Currently loaded circuit's version
+   */
+  version: string;
+  /**
+   * Currently loaded circuit's save time
+   */
+  saveTime: Date;
+  /**
+   * Determines whether staff is
+   */
+  isStaff = false;
   /**
    * Simulator Component constructor
    * @param aroute Activated Route
@@ -147,22 +200,25 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   ngOnInit() {
     // Get User Token
-    this.token = Login.getToken();
-
-    // if token is valid get User name
-    if (this.token) {
-      this.api.userInfo(this.token).subscribe((tmp) => {
-        this.username = tmp.username;
-      }, err => {
-        if (err.status === 401) {
-          // Unauthorized clear token
-          Login.logout();
-        }
-        this.token = null;
-        console.log(err);
-      });
-    }
-
+    this.api.login().then(() => {
+      // if token is valid get User name
+      this.token = Login.getToken();
+      if (this.token) {
+        this.api.getRole(this.token).subscribe((result: any) => {
+          result.is_arduino_staff === true ? this.isStaff = true : this.isStaff = false;
+        });
+        this.api.userInfo(this.token).subscribe((tmp) => {
+          this.username = tmp.username;
+        }, err => {
+          if (err.status === 401) {
+            // Unauthorized clear token
+            Login.logout();
+          }
+          this.token = null;
+          console.log(err);
+        });
+      }
+    });
     this.projectId = null;
 
     // Detect change in url Query parameters
@@ -176,7 +232,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       }
       // if gallery query parameter is present
       if (v.gallery) {
-        this.OpenGallery(v.gallery);
+        this.OpenGallery(v.gallery, v.proId);
         return;
       }
       // if id is present and it is ofline
@@ -188,11 +244,25 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             this.LoadProject(data);
           });
         }
+      } else if (v.id && v.lti_id && v.lti_nonce && v.lti_user_id) {
+        this.projectId = v.id;
+        this.ltiId = v.lti_id;
+        this.ltiNonce = v.lti_nonce;
+        this.ltiUserId = v.lti_user_id;
+        this.branch = v.branch;
+        this.version = v.version;
+        this.submitButtonVisibility = true;
+        this.LoadOnlineProject(v.id, 'false');
+        this.getSimRecord();
+        this.showCode(v.lti_id);
       } else if (v.id) {
         this.projectId = v.id;
-        this.LoadOnlineProject(v.id);
+        this.LoadOnlineProject(v.id, v.offline);
+        this.submitButtonVisibility = false;
       }
+      console.log(this.projectId);
     });
+
 
     // Make a svg g tag
     const gtag = this.makeSVGg();
@@ -241,6 +311,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // Initializing window
     this.window = window;
   }
+  isLoaded() {
+    return Workspace.circuitLoaded || window['scope'].ArduinoUno.length > 0;
+  }
   /**
    * Enable Move on Property Box
    */
@@ -271,6 +344,29 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     }
 
     block.classList.toggle('show-div');
+  }
+
+  getSimRecSelectChange(value) {
+    this.simSelected = value;
+    console.log(this.simSelected);
+  }
+
+  /**
+   * Get the simulation result selected
+   */
+   onSelectionChanges(event) {
+    this.getSimRecSelectChange(event.value);
+  }
+
+  /**
+   * Function to check for viewing code or not in lti
+   */
+  showCode(ltiID) {
+    const token = Login.getToken();
+    this.api.viewArduinoCode(ltiID, token).subscribe((v) => {
+      console.log(v['view']);
+      this.codeVisibility = v['view'];
+    });
   }
 
   /** Function called when Start Simulation button is triggered */
@@ -461,7 +557,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       return;
     }
     // if projet id is uuid (online circuit)
-    if (SaveOnline.isUUID(this.projectId)) {
+    if (SaveOnline.isUUID(this.projectId) && this.ltiId === '') {
       this.aroute.queryParams.subscribe(params => {
         const branch = params.branch;
         const versionId = params.version;
@@ -472,7 +568,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           if (out['duplicate']) {
             // TODO: if duplicate, refresh the route with same versionId and same branch
             this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-              // add new quert parameters
+              // add new query parameters
               this.router.navigate(
                 ['/simulator'],
                 {
@@ -494,7 +590,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           }
           // If project is not duplicate refresh route with newVersion Id and same branch
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            // add new quert parameters
+            // add new query parameters
             this.router.navigate(
               ['/simulator'],
               {
@@ -520,7 +616,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       // Save Project and show alert
       SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
         AlertService.showAlert('Saved');
-        // add new quert parameters
+        // add new query parameters
         this.router.navigate(
           [],
           {
@@ -570,6 +666,16 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  /**
+   * Function save the gallery
+   */
+  addToGallery() {
+    SaveOnline.staffSaveGallery(this.projectTitle, this.description, this.api, (out) => {
+      // this.router.navigate(['/gallery'])
+    });
+
+  }
   /** Function clear variables in the Workspace */
   ClearProject() {
     Workspace.ClearWorkspace();
@@ -578,10 +684,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Fetches project from cloud
    * @param id Project id
+   * @param offline A check whether circuit is offline or shared in absence of token
    */
-  LoadOnlineProject(id) {
+  LoadOnlineProject(id, offline) {
     const token = Login.getToken();
-    if (!token) {
+    if (!token && offline !== 'false') {
       AlertService.showAlert('Please Login');
       return;
     }
@@ -592,8 +699,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       const version = params.version;
       // read project from DB
       this.api.readProject(id, branch, version, token).subscribe((data: any) => {
+        this.id = data.id;
         this.projectTitle = data.name;
         this.description = data.description;
+        this.saveTime = data.save_time;
         this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
         Workspace.Load(JSON.parse(data.data_dump));
       });
@@ -643,7 +752,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Logout and clear token
    */
   Logout() {
-    Login.logout();
+    // Login.logout();
+    this.api.logout(Login.getToken());
   }
   RouteToSimulator() {
     this.window.location = '../#/simulator';
@@ -699,8 +809,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Open Gallery Project
    * @param index Gallery item index
+   * @param id Component Id
    */
-  OpenGallery(index: string) {
+  OpenGallery(index: string, id: any) {
     // Show Loading animation
     window['showLoading']();
     // Get Position
@@ -708,21 +819,21 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // if it is a valid number then proceed
     if (!isNaN(i)) {
       // Fetch all samples
-      this.api.fetchSamples().subscribe(out => {
-        if (out[i]) {
+      this.api.fetchSingleProjectToGallery(id).subscribe((out: any) => {
+        if (out) {
           // set project title
-          this.projectTitle = out[i].name;
+          this.projectTitle = out.name;
           this.title.setTitle(this.projectTitle + ' | Arduino On Cloud');
           // Set project description
-          this.description = out[i].description;
+          this.description = out.description;
           // Load the project
-          Workspace.Load(JSON.parse(out[i].data_dump));
+          Workspace.Load(JSON.parse(out.data_dump));
         } else {
           AlertService.showAlert('No Item Found');
         }
         window['hideLoading']();
       }, err => {
-        console.error(err);
+        console.log(err);
         AlertService.showAlert('Failed to load From gallery!');
         window['hideLoading']();
       });
@@ -811,7 +922,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     SaveOnline.Save(this.projectTitle, this.description, this.api, branch, versionId, (out) => {
       AlertService.showAlert('Created new branch');
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        // add new quert parameters
+        // add new query parameters
         this.router.navigate(
           ['/simulator'],
           {
@@ -845,6 +956,95 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         charactersLength));
     }
     return result;
+  }
+
+  showGraph() {
+    this.graphToggle = !this.graphToggle;
+  }
+
+  /**
+   * Saves the circuit and saves it as a submission for given LTI details
+   */
+  SaveLTISubmission() {
+    const token = Login.getToken();
+    this.branch = this.branch ? this.branch : 'master';
+    this.version = this.getRandomString(20);
+    SaveOnline.Save(this.projectTitle, this.description, this.api, this.branch, this.version, (out) => {
+      this.projectId = out.save_id;
+      const data = {
+        schematic: this.projectId,
+        ltisession: {
+          id: this.ltiId,
+          user_id: this.ltiUserId,
+          oauth_nonce: this.ltiNonce,
+        },
+        student_simulation: this.simSelected,
+      };
+      this.api.arduinoSubmitCircuit(token, data).subscribe(res => {
+        AlertService.showAlert(res['message']);
+        // add new query parameters
+        this.router.navigate(
+          [],
+          {
+            relativeTo: this.aroute,
+            queryParams: {
+              id: out.save_id,
+              lti_id: this.ltiId,
+              lti_user_id: this.ltiUserId,
+              lti_nonce: this.ltiNonce,
+              branch: this.branch,
+              version: this.version,
+              online: true,
+              offline: false,
+              gallery: null
+            },
+            queryParamsHandling: 'merge'
+          });
+        return;
+      }, err => {
+        AlertService.showAlert(err['message']);
+        console.log(err);
+      });
+    });
+  }
+
+  /**
+   * Returns date in human readable format
+   * @param date Date string
+   * @returns string with formatted date
+   */
+  getFormattedDate(date: string) {
+    const dateObj = new Date(date);
+    let str = `${dateObj.getDate()}/${dateObj.getMonth()}/${dateObj.getFullYear()} `;
+    str += `${dateObj.getHours()}:${dateObj.getMinutes()}:${dateObj.getSeconds()}`;
+    return str;
+  }
+
+  callGetSimRecord($event) {
+    if ($event) {
+      this.getSimRecord();
+    }
+  }
+
+  /**
+   * Return the list of student simulation records
+   */
+  getSimRecord() {
+    const token = Login.getToken();
+    const temp = [];
+    if (token) {
+      this.api.getLTISimulationData(this.id, this.ltiId, token).subscribe((v) => {
+        for (const val of v) {
+          const data = JSON.parse(val.result.replaceAll('\'', '\"'));
+          const key = (Object.keys(data));
+          temp.push({id: val.id, length: data[key[0]]['length']});
+        }
+        this.simData = temp;
+      });
+    } else {
+      // if no token is present then show this message
+      AlertService.showAlert('Please Login to Continue');
+    }
   }
 
 }

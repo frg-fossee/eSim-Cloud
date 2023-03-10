@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material';
 
 @Component({
@@ -12,7 +12,7 @@ export class CreateVariationDialogComponent implements OnInit {
   /**
    * FormControl for variation name
    */
-  variationName = new FormControl('');
+  variationName = new FormControl('', [Validators.required, Validators.maxLength(20), Validators.minLength(1)]);
 
   /**
    * CreateVariation Dialog Component Constructor

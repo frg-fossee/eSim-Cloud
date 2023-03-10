@@ -67,7 +67,7 @@ export default function SignIn (props) {
 
   useEffect(() => {
     dispatch(authDefault())
-    document.title = 'Login - eSim '
+    document.title = 'Login'
 
     const user = localStorage.getItem('username')
     if (user && user !== '') {

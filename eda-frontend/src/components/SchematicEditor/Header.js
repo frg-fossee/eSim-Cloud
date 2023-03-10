@@ -32,6 +32,8 @@ import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
 import * as actions from '../../redux/actions/actions'
 import logo from '../../static/logo.png'
 import { setTitle, logout, setSchTitle, setSchShared, loadMinUser, setSchDescription } from '../../redux/actions/index'
+import { HomeDialog } from './ToolbarExtension'
+import queryString from 'query-string'
 
 const useStyles = makeStyles((theme) => ({
   toolbarTitle: {
@@ -101,16 +103,19 @@ SimpleSnackbar.propTypes = {
   message: PropTypes.string
 }
 
-function Header (props) {
+function Header ({ gridRef }) {
   const history = useHistory()
   const classes = useStyles()
   const auth = useSelector(state => state.authReducer)
   const schSave = useSelector(state => state.saveSchematicReducer)
   const [anchorEl, setAnchorEl] = React.useState(null)
-
+  const xyz = gridRef
   const [loginDialog, setLoginDialog] = React.useState(false)
   const [logoutConfirm, setLogoutConfirm] = React.useState(false)
   const [reloginMessage, setReloginMessage] = React.useState('')
+
+  const [ltiId, setLtiId] = React.useState(null)
+  const [ltiNonce, setLtiNonce] = React.useState(null)
 
   const dispatch = useDispatch()
 
@@ -118,7 +123,7 @@ function Header (props) {
     setAnchorEl(event.currentTarget)
   }
 
-  // Checks for localStore changes
+  // Checks for localStore changess
   useEffect(() => {
     function checkUserData () {
       const userToken = localStorage.getItem('esim_token')
@@ -151,6 +156,16 @@ function Header (props) {
       window.removeEventListener('storage', checkUserData)
     }
   })
+
+  useEffect(() => {
+    var url = queryString.parse(window.location.href.split('editor')[1])
+    if (url.lti_id) {
+      setLtiId(url.lti_id)
+    }
+    if (url.lti_nonce) {
+      setLtiNonce(url.lti_nonce)
+    }
+  }, [])
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -185,6 +200,22 @@ function Header (props) {
 
   const handleShareClose = () => {
     setShareOpen(false)
+  }
+
+  // handle home dialog box
+  const [homeopen, setHomeOpen] = React.useState(false)
+  const [routeVal, setRouteVal] = React.useState(undefined)
+
+  const handleHomeOpen = (e) => {
+    e.preventDefault()
+
+    setRouteVal(e.target.attributes.value.value)
+    setHomeOpen(true)
+  }
+
+  const handleHomeClose = () => {
+    console.log(homeopen)
+    setHomeOpen(false)
   }
 
   // change saved schematic share status
@@ -344,7 +375,7 @@ function Header (props) {
         </Hidden>
 
         {/* Display last saved and shared option for saved schematics */}
-        {auth.isAuthenticated === true
+        {(!ltiId || !ltiNonce) && auth.isAuthenticated === true
           ? <>
             {(schSave.isSaved === true && schSave.details.save_time !== undefined)
               ? <Typography
@@ -410,20 +441,130 @@ function Header (props) {
         </Dialog>
 
         {/* Display login option or user menu as per authenticated status */}
-        {
+        {(!ltiId || !ltiNonce) &&
           (!auth.isAuthenticated
-            ? <Button
-              size="small"
-              component={RouterLink}
-              to="/login?close=close"
-              style={{ marginLeft: 'auto' }}
-              color="primary"
-              variant="outlined"
-              target="_blank"
-            >
-              Login
-            </Button>
+            ? <>
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={handleHomeOpen}
+                component={RouterLink}
+                className={classes.link}
+                style={{ marginLeft: '61%', marginRight: '20px' }}
+                value="home"
+              >
+                Home
+              </Link>
+
+              {gridRef && routeVal &&
+                <HomeDialog open={homeopen} gridRef={xyz} routeVal={routeVal} schSave={schSave} onClose={handleHomeClose} />
+              }
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                // to="/gallery"
+                onClick={handleHomeOpen}
+                component={RouterLink}
+                value="gallery"
+                style={{ marginRight: '20px' }}
+
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={handleHomeOpen}
+                component={RouterLink}
+                value="simulator/ngspice"
+                style={{ marginRight: '20px' }}
+
+              >
+                Simulator
+              </Link>
+              <Button
+                size="small"
+                component={RouterLink}
+                to="/login?close=close"
+                style={{ marginLeft: 'auto' }}
+                color="primary"
+                variant="outlined"
+                target="_blank"
+              >
+                Login
+              </Button>
+            </>
             : (<>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={handleHomeOpen}
+                component={RouterLink}
+                className={classes.link}
+                value="home"
+                style={{ marginRight: '20px' }}
+              >
+                Home
+              </Link>
+              { gridRef && routeVal &&
+                <HomeDialog open={homeopen} gridRef={xyz} routeVal={routeVal} schSave={schSave} onClose={handleHomeClose} />
+              }
+              <Link
+                variant="button"
+                color="textPrimary"
+                to="/editor"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Editor
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                // to="/gallery"
+                value= "gallery"
+                onClick={handleHomeOpen}
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+
+              >
+                Gallery
+              </Link>
+
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={handleHomeOpen}
+                component={RouterLink}
+                value="simulator/ngspice"
+                style={{ marginRight: '20px' }}
+
+              >
+                Simulator
+              </Link>
+              <Link
+                variant="button"
+                color="textPrimary"
+                onClick={handleHomeOpen}
+                value="dashboard"
+                component={RouterLink}
+                style={{ marginRight: '20px' }}
+              >
+                Dashboard
+              </Link>
 
               <IconButton
                 edge="start"
@@ -431,6 +572,7 @@ function Header (props) {
                 aria-controls="simple-menu"
                 aria-haspopup="true"
                 onClick={handleClick}
+                style={{ marginRight: '20px' }}
               >
                 <Avatar className={classes.purple}>
                   {auth.user.username.charAt(0).toUpperCase()}
@@ -487,9 +629,22 @@ function Header (props) {
             )
           )
         }
+        {ltiId && ltiNonce && <Typography
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={classes.toolbarTitle}
+          style={{ marginLeft: 'auto', color: 'red' }}
+        >
+          Assignment
+        </Typography>}
       </Toolbar>
     </>
   )
+}
+
+Header.propTypes = {
+  gridRef: PropTypes.object.isRequired
 }
 
 export default Header

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatAccordion, MatDialog, MatMenuTrigger } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../api.service';
@@ -16,6 +16,7 @@ export class DeleteObj {
 })
 export class VersioningPanelComponent implements OnInit {
 
+  @Input() lti: boolean;
   @Output() createNewBranch = new EventEmitter();
   @ViewChild(MatAccordion) accordion: MatAccordion;
   @ViewChild('deleteMenuTrigger') deleteMenuTrigger: MatMenuTrigger;
@@ -71,20 +72,22 @@ export class VersioningPanelComponent implements OnInit {
     this.branches = [];
     // set step to 0
     this.step = 0;
-    this.aroute.queryParams.subscribe(params => {
-      this.id = params.id;
-      if (params.version && params.branch) {
-        // TODO: If version and branch is available in queryParams, fetch respective versions of it
-        msg.style.display = 'none';
-        this.versionId = params.version;
-        this.branchName = params.branch;
-        this.getAllVersions();
-      } else {
-        // TODO: If version and branch is not available in queryParams, show message on frontend
-        msg.innerHTML = 'No variation available';
-        msg.style.display = 'unset';
-      }
-    });
+    if (!this.lti) {
+      this.aroute.queryParams.subscribe(params => {
+        this.id = params.id;
+        if (params.version && params.branch) {
+          // TODO: If version and branch is available in queryParams, fetch respective versions of it
+          msg.style.display = 'none';
+          this.versionId = params.version;
+          this.branchName = params.branch;
+          this.getAllVersions();
+        } else {
+          // TODO: If version and branch is not available in queryParams, show message on frontend
+          msg.innerHTML = 'No variation available';
+          msg.style.display = 'unset';
+        }
+      });
+    }
   }
 
   /**

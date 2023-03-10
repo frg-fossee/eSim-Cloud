@@ -1,0 +1,153 @@
+<app-header title="Create LTI App"></app-header>
+<h3 *ngIf="modelCircuit" class="text-dark"
+  style="text-align:center;">LTI App for {{modelCircuit.name}}</h3>
+<div class="row mx-3">
+  <div class="col-md-6">
+  <div class="card bg-light mt-2" *ngIf="modelCircuit">
+    <div class="card-header">
+      <h4 class="float-left">Mdoel Circuit/Simulation</h4>
+      <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
+        <h5><i class="fas fa-info-circle"></i></h5>
+      </button>
+    </div>
+    <img class="img-fluid" [attr.src]="modelCircuit.base64_image" />
+    <ul class="list-group list-group-flush text-secondary">
+      <li class="list-group-item"><b>Branch:</b> {{ modelCircuit.branch }}</li>
+      <li class="list-group-item"><b>Version:</b> {{ modelCircuit.version }}</li>
+    </ul>
+    <div class="card-footer">
+      <p class="card-text"><small class="text-muted">Last Modified: {{ getFormattedDate(modelCircuit.save_time)
+          }}</small></p>
+    </div>
+  </div>
+  </div>
+  <div class="col-md-6">
+  <div class="card bg-light mt-2" *ngIf="studentCircuit">
+    <div class="card-header">
+      <h4 class="float-left">Student Circuit/Simulation</h4>
+      <button class="float-right" type="button" mat-icon-button matTooltip="{{ modelCircuit.description }}">
+        <h5><i class="fas fa-info-circle"></i></h5>
+      </button>
+    </div>
+    <img class="card-img-top" [attr.src]="studentCircuit.base64_image" />
+    <ul class="list-group list-group-flush text-secondary">
+      <li class="list-group-item"><b>Branch:</b> {{ studentCircuit.branch }}</li>
+      <li class="list-group-item"><b>Version:</b> {{ studentCircuit.version }}</li>
+      <li class="list-group-item">
+        <mat-checkbox [(ngModel)]="viewCodeCheckBox" (change)="toggleViewCode($event)">
+          <b>Show Code</b>
+        </mat-checkbox>
+        <!-- <app-view-code *ngIf="studentCodeView" [id]="studentCircuit.save_id" [branch]="studentCircuit.branch"
+          [version]="studentCircuit.version"></app-view-code> -->
+      </li>
+    </ul>
+    <div class="card-footer">
+      <p class="card-text"><small class="text-muted">Last Modified: {{ getFormattedDate(studentCircuit.save_time)
+          }}</small></p>
+    </div>
+  </div>
+</div>
+</div>
+<form [formGroup]="form">
+  <div class="row">
+    <div class="col-md-4">
+      <mat-form-field>
+        <input formControlName="consumer_key" matInput placeholder="Consumer Key" required />
+        <mat-hint>Should not contain any spaces</mat-hint>
+        <mat-error *ngIf="form.controls['consumer_key'].errors?.required">This field is mandatory</mat-error>
+        <mat-error *ngIf="form.controls['consumer_key'].errors?.minlength">String should be atleast 2
+          characters long</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select formControlName="initial_schematic" matInput required placeholder="Students's Circuit/Simulation"
+          [compareWith]="compareIds" (selectionChange)="onStudentSelectChanges($event)">
+          <mat-option>
+            None
+          </mat-option>
+          <ng-container *ngFor="let circuit of circuits">
+            <mat-option [value]="circuit.id">{{ circuit.name }} of variation {{ circuit.branch }} saved at {{
+              getFormattedDate(circuit.save_time) }}
+            </mat-option>
+          </ng-container>
+        </mat-select>
+        <mat-error>This field is mandatory</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select formControlName="model_schematic" matInput required placeholder="Teacher's Circuit/Simulation"
+          [compareWith]="compareIds" (selectionChange)="onModelCircuitChange($event)">
+          <mat-option>
+            None
+          </mat-option>
+          <ng-container *ngFor="let ckt of circuits">
+            <mat-option [value]="ckt.id">{{ ckt.name }} of variation {{ ckt.branch }} saved at {{
+              getFormattedDate(ckt.save_time) }}
+            </mat-option>
+          </ng-container>
+        </mat-select>
+        <mat-error *ngIf="form.controls['model_schematic'].errors?.required">This field is mandatory</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field>
+        <input autocomplete="false" formControlName="secret_key" matInput placeholder="Secret Key"
+          [type]="hide ? 'password' : 'text'" required>
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+        <mat-error *ngIf="form.controls['secret_key'].errors?.required">This field is mandatory</mat-error>
+        <mat-error *ngIf="form.controls['secret_key'].errors?.minlength">String should be atleast 2 characters
+          long</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-select formControlName="test_case" matInput placeholder="Test Case"
+          [compareWith]="compareIds" (selectionChange)="ontestCaseSelectChanges($event)">
+          <mat-option>
+            None
+          </mat-option>
+          <ng-container *ngFor="let test_case of testCases; let i = index">
+            <mat-option [value]="test_case.id">Test Case {{i+1}} ({{test_case.length}} data points)</mat-option>
+          </ng-container>
+        </mat-select>   
+      </mat-form-field>
+    </div>
+    <div class="col-md-4">
+      <mat-form-field>
+        <input formControlName="score" matInput placeholder="Score" required />
+        <mat-error *ngIf="form.controls['score'].errors?.required">This field is mandatory</mat-error>
+        <mat-error *ngIf="form.controls['score'].errors?.min || form.controls['score'].errors?.max">
+          Value should be 0 or 1</mat-error>
+      </mat-form-field>
+      <div class="check-box-spacing">
+        <mat-checkbox formControlName="scored">
+          Accept Submissions
+        </mat-checkbox>
+      </div>
+    </div>
+  </div>
+  <div class="form-buttons">
+    <button class="ml-5" mat-raised-button color="primary" type="submit" (click)="onSubmit()"
+      *ngIf="!details.configExists" [disabled]="form.invalid">SAVE</button>
+    <button class="ml-5" mat-raised-button color="primary" type="submit" (click)="onUpdate()"
+      *ngIf="details.configExists" [disabled]="form.invalid">UPDATE</button>
+    <button class="ml-5" mat-raised-button color="warn" type="button" *ngIf="details.configExists"
+      (click)="onDelete()">DELETE</button>
+    <button class="ml-5" mat-raised-button color="primary" type="button" [routerLink]="['/submissions']"
+      [queryParams]="{id: modelCircuit.save_id, branch: modelCircuit.branch, version: modelCircuit.version, scored: details.scored, lti: lti}"
+      *ngIf="details.configExists && details.scored">SUBMISSIONS</button>
+    <button class="ml-5" mat-raised-button color="primary" type="button" [routerLink]="['/dashboard']">GO TO
+      DASHBOARD</button>
+  </div>
+</form>
+<div class="url-error-div">
+  <div *ngIf="details.consumerError" class="text-danger">
+    <p>{{ details.consumerError }}</p>
+    <p *ngIf="!details.consumerError"></p>
+  </div>
+  <div *ngIf="details.configExists" class="input-group d-flex justify-content-center">
+    <div class="input-group-prepend">
+      <span class="input-group-text">Config URL</span>
+    </div>
+    <textarea type="text" id="lti-url" rows="1" aria-describedby="copy-button">{{ configUrl }}</textarea>
+    <button type="button" (click)="copyURL()" id="copy-button" [matTooltip]="copyTooltip ? 'Copied' : ''">
+      <i class="fas fa-clipboard input-group-text"></i>
+    </button>
+  </div>
+</div>

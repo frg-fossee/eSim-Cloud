@@ -6,6 +6,7 @@ import { Download } from '../Libs/Download';
  * For Handling Time ie. Prevent moment error
  */
 declare var monaco;
+declare var window;
 
 /**
  * Code Editor Component
@@ -83,6 +84,14 @@ export class CodeEditorComponent {
    */
   names: string[] = [];
   /**
+   * List of Programming languages available
+   */
+  lang: string[] = ['Arduino .ino file', 'C inline assembly'];
+  /**
+   * Selected programming language
+   */
+  langIndex = 0;
+  /**
    * Instance of Arduino uno for updating code
    */
   arduinos: ArduinoUno[] = [];
@@ -98,7 +107,10 @@ export class CodeEditorComponent {
    * Height of the code editor in terms of VH
    */
   @Input() height = 80;
-
+  /**
+   * Code Visibility in LTI mode
+   */
+  @Input() codeView = true;
   /**
    * Reninitialize arduino names
    */
@@ -123,8 +135,11 @@ export class CodeEditorComponent {
         this.selectedIndex = 0;
       }
       // select the code of respective arduino
-      if (this.arduinos.length > 0) {
+      if (this.arduinos.length > 0 && this.codeView) {
         this.code = this.arduinos[this.selectedIndex].code;
+      } else {
+        this.code = '';
+        this.codeChanged();
       }
       // show loading animation if code editor is nor initialized
       if (this.names.length !== 0 && !this.init) {
@@ -1191,12 +1206,19 @@ export class CodeEditorComponent {
     this.arduinos[this.selectedIndex].code = this.code;
   }
   /**
-   * Select the code for respective ardino. Event handler for Choosing arduino
+   * Select the code for respective arduino. Event handler for Choosing arduino
    * @param item HTML Select Element
    */
   chooseArduino(item: HTMLSelectElement) {
     this.selectedIndex = item.selectedIndex;
     this.code = this.arduinos[this.selectedIndex].code;
+  }
+  /**
+   * Event handler for Choosing the programming language.
+   */
+  chooseLanguage(item: HTMLSelectElement) {
+    this.langIndex = item.selectedIndex;
+    window['progLang'] =  this.langIndex;
   }
   /**
    * Toggle Libraries Box

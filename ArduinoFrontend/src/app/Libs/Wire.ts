@@ -305,8 +305,30 @@ export class Wire {
     const body = document.createElement('div');
     body.innerHTML = '<label>Color:</label><br>';
     const select = document.createElement('select');
-    select.innerHTML = `<option>Black</option><option>Red</option><option>Yellow</option><option>Blue</option><option>Green</option>`;
-    const colors = ['#000', '#ff0000', '#e6a800', '#2593fa', '#31c404'];
+    select.innerHTML = `<option style="color:#000;">Black</option>
+                        <option style="color:#ff0000;">Red</option>
+                        <option style="color:#e6a800;">Yellow</option>
+                        <option style="color:#2593fa;">Blue</option>
+                        <option style="color:#31c404;">Green</option>
+                        <option style="color:#FF5733;">Orange</option>
+                        <option style="color:#30D5C8;">Turquoise</option>
+                        <option style="color:#800080;">Purple</option>
+                        <option style="color:#FF00FF;">Pink</option>
+                        <option style="color:#964B00;">Brown</option>
+                        <option style="color:#696969;">Grey</option>
+                        `;
+    const colors = ['#000',
+                    '#ff0000',
+                    '#e6a800',
+                    '#2593fa',
+                    '#31c404',
+                    '#FF5733',
+                    '#30D5C8',
+                    '#800080',
+                    '#FF00FF',
+                    '#964B00',
+                    '#696969'
+                  ];
     // set the current color
     for (let i = 0; i < colors.length; ++i) {
       if (colors[i] === this.color) {

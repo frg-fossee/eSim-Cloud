@@ -61,7 +61,7 @@ export const loadUser = () => (dispatch, getState) => {
       dispatch({
         type: actions.LOGIN_FAILED,
         payload: {
-          data: {}
+          data: []
         }
       })
     })
@@ -154,8 +154,13 @@ export const login = (username, password, toUrl) => {
             window.open('', '_self')
             window.close()
           } else {
-            window.open(toUrl, '_self')
-            localStorage.setItem('ard_redurl', '')
+            if (process.env.NODE_ENV === 'development') {
+              localStorage.setItem('ard_redurl', '')
+              window.location.href = toUrl + '?token=' + localStorage.getItem('esim_token')
+            } else {
+              window.open(toUrl, '_self')
+              localStorage.setItem('ard_redurl', '')
+            }
           }
         } else if (res.status === 400 || res.status === 403 || res.status === 401) {
           dispatch({

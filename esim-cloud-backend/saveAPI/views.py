@@ -1,7 +1,12 @@
 # from django.core.files.base import File
+from glob import escape
+from http.client import responses
+from django.http import JsonResponse
+from numpy import save
 import django_filters
 from django_filters import rest_framework as filters
-from .serializers import StateSaveSerializer, SaveListSerializer, \
+from .serializers import ArduinoModelSimulationDataSerializer,\
+    StateSaveSerializer, SaveListSerializer, \
     GallerySerializer
 from .serializers import Base64ImageField
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -11,7 +16,7 @@ from rest_framework.response import Response
 # from rest_framework.generics import ListAPIView
 from rest_framework import status
 from drf_yasg.utils import swagger_auto_schema
-from .models import StateSave, Gallery
+from .models import ArduinoModelSimulationData, StateSave, Gallery
 from workflowAPI.models import Permission
 from publishAPI.models import Project
 from ltiAPI.models import Submission
@@ -21,6 +26,7 @@ from django.contrib.auth import get_user_model
 import logging
 import traceback
 import json
+import ast
 
 logger = logging.getLogger(__name__)
 
@@ -331,9 +337,10 @@ class UserSavesView(APIView):
         saved_state = StateSave.objects.filter(
             owner=self.request.user, is_arduino=False).order_by(
             "save_id", "-save_time").distinct("save_id")
-        submissions = Submission.objects.filter(student=self.request.user)
-        for submission in submissions:
-            saved_state = saved_state.exclude(save_id=submission.schematic.save_id)  # noqa
+        # Uncomment this if submissions are not required at the dashboard
+        # submissions = Submission.objects.filter(student=self.request.user)
+        # for submission in submissions:
+        #     saved_state = saved_state.exclude(save_id=submission.schematic.save_id)  # noqa
         try:
             serialized = StateSaveSerializer(saved_state, many=True)
             return Response(serialized.data)
@@ -484,8 +491,10 @@ class GalleryView(APIView):
 
     @swagger_auto_schema(responses={200: GallerySerializer})
     def get(self, request):
-
-        galleryset = Gallery.objects.all()
+        if (request.GET.get("is_arduino") == "true"):
+            galleryset = Gallery.objects.filter(is_arduino=True)
+        else:
+            galleryset = Gallery.objects.filter(is_arduino=False)
         try:
             serialized = GallerySerializer(galleryset, many=True)
             return Response(serialized.data)
@@ -599,3 +608,51 @@ class GalleryFetchSaveDeleteView(APIView):
             return Response({'done': True})
         except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ArduinoModelSimulationDataView(APIView):
+    """
+    Simulation Data from Arduino
+    """
+
+    permission_classes = (AllowAny,)
+    methods = ['GET', 'POST']
+
+    @swagger_auto_schema(request_body=ArduinoModelSimulationDataSerializer)
+    def post(self, request, save_id):
+        try:
+            circuit = StateSave.objects.get(id=save_id)
+        except StateSave.DoesNotExist:
+            return Response({"error": "Circuit not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        if(not(len(request.data))):
+            return Response({"error": "Simulation data not passed"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        print(request.data)
+        try:
+            ArduinoModelSimulationData(save_id=circuit,
+                                       result=str(request.data)).save()
+        except Exception as e:
+            return Response(status=500)
+        else:
+            return Response(status=200)
+
+    def get(self, request, save_id, version, branch):
+        try:
+            circuit = StateSave.objects.get(
+                save_id=save_id,
+                version=version,
+                branch=branch
+                )
+        except StateSave.DoesNotExist:
+            return Response({"error": "Circuit not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+        try:
+            queryset = ArduinoModelSimulationData.objects.filter(
+                save_id=circuit.id)
+            serial = ArduinoModelSimulationDataSerializer(queryset, many=True)
+            return Response(serial.data, status=200)
+        except Exception as e:
+            print(e)
+            return Response({"error": "No simulation data found"},
+                            status=status.HTTP_404_NOT_FOUND)

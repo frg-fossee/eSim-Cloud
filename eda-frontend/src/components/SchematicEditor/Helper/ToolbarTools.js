@@ -888,6 +888,7 @@ export function renderXML() {
 }
 // Function to Parse XML and Redraw on Grid
 export function parseXmlToGraph(xmlDoc, graph) {
+  console.log("start loading")
   const cells = xmlDoc.documentElement.children[0].children
   const parent = graph.getDefaultParent()
   var v1
@@ -957,16 +958,30 @@ export function parseXmlToGraph(xmlDoc, graph) {
       const target = Number(cellAttrs.targetVertex.value)
       var plist = cells[i].children[1].children
       try {
-        var e = graph.insertEdge(parent, edgeId, null,
-          graph.getModel().getCell(source),
-          graph.getModel().getCell(target)
-        )
+        if (source && target) {
+          var e = graph.insertEdge(parent, edgeId, null,
+            graph.getModel().getCell(source),
+            graph.getModel().getCell(target)
+          )
+        }
+        else {
+          var edge = graph.createEdge(parent, edgeId, null)
+          if (!source && !target)
+            var e = graph.addEdge(edge, parent)
+          if (!target)
+            var e = graph.addEdge(edge, parent, graph.getModel().getCell(source))
+          if(!source)
+            var e = graph.addEdge(edge, parent, graph.getModel().getCell(target))
+          e.geometry.targetPoint = new mxPoint(Number(cellAttrs.tarx.value), Number(cellAttrs.tary.value))
+        }
+        console.log("VERTEX", e)
+
         e.geometry.points = []
         for (var a in cells[i].children[1].children) {
           try {
             e.geometry.points.push(new mxPoint(Number(plist[a].attributes.x.value), Number(plist[a].attributes.y.value)))
           } catch (e) { }
-          graph.getModel().beginUpdate()
+            graph.getModel().beginUpdate()
           try {
             graph.view.refresh()
           } finally {
@@ -995,6 +1010,7 @@ export function parseXmlToGraph(xmlDoc, graph) {
       }
     }
   }
+  console.log("finish loading")
 }
 
 export function renderGalleryXML(xml) {
@@ -1022,6 +1038,24 @@ function XMLWireConnections() {
               try {
                 if (pin.edges !== null || pin.edges.length !== 0) {
                   for (var wire in pin.edges) {
+                    if (pin.edges[wire].source == null || pin.edges[wire].target == null) {
+                      console.log("Here")
+                      if (pin.edges[wire].geometry.targetPoint) {
+                        pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
+                        pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
+                        pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
+                      }
+                      if (pin.edges[wire].source.edge === true) {
+                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                        // pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                      } else {
+                        pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                        pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
+                        pin.edges[wire].sourceVertex = pin.edges[wire].source.id
+                        // pin.edges[wire].targetVertex = pin.edges[wire].target.id
+                      }
+                    }
+                   
                     if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
                       if (pin.edges[wire].source.edge === true) {
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id

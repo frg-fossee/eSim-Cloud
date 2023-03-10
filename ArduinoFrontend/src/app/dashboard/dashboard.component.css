@@ -1,96 +1,28 @@
-.card:hover {
-  background-color: #ddd;
+
+.example-container {
+  min-height: 876px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-.subbox {
-  box-sizing: border-box;
-  width: 95%;
-  height: auto;
-  background-color: white;
-  border-radius: 0.3125em;
-  margin-bottom: 15px;
-  box-shadow: 1px 1px 3px grey;
-  cursor: pointer;
-  margin-left: 2%;
-  justify-content: space-evenly;
+.no-search {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+.maincontent {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.circuitBtn {
+  width: 296px;
 }
 
-.item-img {
-  min-height: 180px;
-  max-width: 100%;
-  max-height: 180px;
-}
-
-.subbox:hover {
-  box-shadow: 2px 2px 9px grey;
-}
-
-#openproject {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
-  overflow-y: scroll;
-}
-
-#innerdialog {
-  background-color: white;
-  position: relative;
-  color: black;
-  margin: 1em 10% 1em 10%;
-  border-radius: 5px;
-  box-sizing: border-box;
-  min-width: 80%;
-}
-
-button[type="submit"] {
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  float: left;
-  font-weight: bold;
-  border-top: 1px solid #007bff;
-  border-bottom: 1px solid #007bff;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  height: 100%;
-}
-
-#Search {
-  width: 100%;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
-.act-buttons {
-  max-width: 100%;
-}
-
-.act-buttons button {
-  margin-left: 10px;
-  margin-bottom: 10px;
-}
-
-.share-btns {
-  margin-top: 1.5em;
-  margin-bottom: 1em;
-  width: 100%;
-}
-
-.share-btns button {
-  margin-left: 15px;
-}
-
-.act-desc {
-  margin: 15px;
-  font-family: cursive;
-}
-
-@media only screen and (max-width: 480px) {
-  .share-btns button {
-    margin-left: 5px;
-  }
+mat-chip {
+  max-width: 200px;
+  padding: 9px;
+  border-radius: 14px;
+  padding: 11px;
 }

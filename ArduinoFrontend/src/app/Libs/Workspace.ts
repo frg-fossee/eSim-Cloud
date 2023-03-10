@@ -7,6 +7,7 @@ import { isNull, isUndefined } from 'util';
 import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
+import { EventEmitter } from '@angular/core';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -55,7 +56,13 @@ export class Workspace {
    * If simulation is on progress or not
    */
   static simulating = false;
-
+  /**
+   * If circuit is loaded or not
+   */
+  static circuitLoaded = false;
+  static circuitLoadStatus: EventEmitter<boolean> = new EventEmitter<boolean>();
+  static simulationStopped: EventEmitter<boolean> = new EventEmitter<boolean>();
+  static simulationStarted: EventEmitter<boolean> = new EventEmitter<boolean>();
   /** function to zoom in workspace */
   static zoomIn() {
     Workspace.scale = Math.min(10, Workspace.scale + Workspace.zooomIncrement);
@@ -119,6 +126,8 @@ export class Workspace {
         window['scope'][key] = [];
       }
     }
+    // Default programming language is Arduino
+    window['progLang'] = 0;
     // True when simulation takes place
     window['isSimulating'] = false;
     // Stores the reference to the selected circuit component
@@ -771,7 +780,8 @@ export class Workspace {
         // alert('something went wrong');
       }
     }
-
+    Workspace.circuitLoaded = true;
+    Workspace.circuitLoadStatus.emit(true);
   }
 
   /** Function to delete component fro Workspace */
@@ -939,50 +949,89 @@ export class Workspace {
 
     window.printConsole('Compiling Source Code', ConsoleType.INFO);
 
-    api.compileCode(toSend).subscribe(v => {
-      const taskid = v.uuid; // Get Compilation id
-
-      const temp = setInterval(() => {
-        api.getHex(taskid).subscribe(hex => {
-          if (hex.state === 'SUCCESS' && !hex.details.error) {
-            clearInterval(temp);
-            let SUCCESS = true;
-            for (const k in hex.details) {
-              if (hex.details[k]) {
-                const d = hex.details[k];
-                window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
-                if (d.output && d.data) {
-                  window.printConsole(d.output, ConsoleType.OUTPUT);
-                  nameMap[k].hex = d.data;
-                }
-                if (d.error) {
-                  SUCCESS = false;
-                  window.printConsole(d.error, ConsoleType.ERROR);
+    if (window.progLang === 0) {
+      api.compileCodeINO(toSend).subscribe(v => {
+        const taskid = v.uuid; // Get Compilation id
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            if (hex.state === 'SUCCESS' && !hex.details.error) {
+              clearInterval(temp);
+              let SUCCESS = true;
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output && d.data) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
+                  }
+                  if (d.error) {
+                    SUCCESS = false;
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
                 }
               }
+              if (SUCCESS) {
+                Workspace.startArduino();
+              }
+              callback();
+            } else if (hex.state === 'FAILED' || hex.details.error) {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+              callback();
             }
-            if (SUCCESS) {
-              Workspace.startArduino();
+          });
+        }, 2000);
+      }, error => {
+        window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
+        console.log(error);
+        callback();
+      });
+    } else if (window.progLang === 1) {
+      api.compileCodeInlineAssembly(toSend).subscribe(v => {
+        const taskid = v.uuid; // Get Compilation id
+        const temp = setInterval(() => {
+          api.getHex(taskid).subscribe(hex => {
+            if (hex.state === 'SUCCESS' && !hex.details.error) {
+              clearInterval(temp);
+              let SUCCESS = true;
+              for (const k in hex.details) {
+                if (hex.details[k]) {
+                  const d = hex.details[k];
+                  window.printConsole('For Arduino ' + nameMap[k].name, ConsoleType.INFO);
+                  if (d.output && d.data) {
+                    window.printConsole(d.output, ConsoleType.OUTPUT);
+                    nameMap[k].hex = d.data;
+                  }
+                  if (d.error) {
+                    SUCCESS = false;
+                    window.printConsole(d.error, ConsoleType.ERROR);
+                  }
+                }
+              }
+              if (SUCCESS) {
+                Workspace.startArduino();
+              }
+              callback();
+            } else if (hex.state === 'FAILED' || hex.details.error) {
+              clearInterval(temp);
+              window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
+              callback();
             }
-            callback();
-          } else if (hex.state === 'FAILED' || hex.details.error) {
-            clearInterval(temp);
-            window.printConsole('Failed To Compile: Server Error', ConsoleType.ERROR);
-            callback();
-          }
-        });
-      }, 2000);
-    }, error => {
-      window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
-      console.log(error);
-      callback();
-    });
-
+          });
+        }, 2000);
+      }, error => {
+        window.printConsole('Error While Compiling the Source Code.', ConsoleType.ERROR);
+        console.log(error);
+        callback();
+      });
+    }
   }
   /**
    * Start Simulation
    */
   static startArduino() {
+    Workspace.simulationStarted.emit(true);
     // Assign id
     let gid = 0;
     for (const wire of window.scope.wires) {
@@ -1028,6 +1077,7 @@ export class Workspace {
     // }
 
     // Update the simulation status
+    // Workspace.GetNodeValues();
     Workspace.simulating = true;
   }
   /**
@@ -1060,6 +1110,7 @@ export class Workspace {
     }
     // Update state and call callback
     Workspace.simulating = false;
+    Workspace.simulationStopped.emit(true);
     callback();
   }
   /**
@@ -1137,7 +1188,6 @@ export class Workspace {
       // Export JSON File & Download it
       const filename = `${name}.json`;
       const jsonStr = JSON.stringify(saveObj);
-
       const element = document.createElement('a');
       element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(jsonStr));
       element.setAttribute('download', filename);
@@ -1166,4 +1216,34 @@ export class Workspace {
     return true;
   }
 
+  // static GetNodeValues() { //waveForm, time) {
+  //   const pointD13 = window.scope[Utils.componentBox['controllers'][0][0]][0].nodes[2];
+  //   const interval = setInterval(() => {
+  //     console.log(pointD13.value);
+  //     // [5, undefined];
+  //     // if (Workspace.isChartDataFull(waveForm, 20)) {
+  //     //   Workspace.removeLastElementFromChartDataAndLabel(waveForm, time);
+  //     // }
+  //     // waveForm[0].data.push(window.scope[Utils.componentBox['controllers'][0][0]][0].nodes[2].value);
+  //     // time.push(
+  //     //   Workspace.getLabel()
+  //     // );
+  //     if(!Workspace.simulating) {
+  //       clearInterval(interval);
+  //     }
+  //   }, 1);
+  // }
+
+  // static getLabel(){
+  //   return new Date().getSeconds();
+  // }
+
+  // static removeLastElementFromChartDataAndLabel(waveForm: ChartDataSets[], time: Label[]): void {
+  //   waveForm[0].data = waveForm[0].data.slice(1);
+  //   time = time.slice(1);
+  // }
+
+  // static isChartDataFull(chartData: ChartDataSets[], limit: number): boolean {
+  //   return chartData[0].data.length >= limit;
+  // }
 }

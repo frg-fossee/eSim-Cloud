@@ -8,7 +8,9 @@ export const environment = {
   production: false,
   API_URL: 'http://localhost/',
   LOGIN_URL: `${window.location.protocol}\\\\localhost/eda/#/login?url=`,
-  DASHBOARD_URL: `../#/dashboard`
+  DASHBOARD_URL: `../#/dashboard`,
+  CHANGED_PASSWORD_URL: `${window.location.protocol}\\\\localhost/eda/#/account/change_password?url=`,
+  IMG_URL: 'http://localhost'
 };
 
 /*

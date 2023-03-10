@@ -6,7 +6,7 @@ import uuid
 from celery.result import AsyncResult
 
 
-class CompileSketch(APIView):
+class CompileSketchINO(APIView):
     def post(self, request):
         """
         Compile list of Arduino Sketch File
@@ -20,7 +20,8 @@ class CompileSketch(APIView):
         task = compile_sketch_task.apply_async(
             kwargs={
                 'data': request.data,
-                'task_id': task_id
+                'task_id': task_id,
+                'langIndex': 0
             }, task_id=str(task_id))
         # Return Status
         return Response({
@@ -28,6 +29,29 @@ class CompileSketch(APIView):
             'uuid': str(task_id)
         })
 
+
+class CompileSketchInlineAssembly(APIView):
+    def post(self, request):
+        """
+        Compile list of Arduino C Inline assembly File
+
+        body: {<Arduino ID>:<source code>}
+        example: { "1":"#include <avr/io.h>#include <util/delay.h>"}
+        """
+        # Create Task ID (Used for getting Response)
+        task_id = uuid.uuid4()
+        # Queue Task
+        task = compile_sketch_task.apply_async(
+            kwargs={
+                'data': request.data,
+                'task_id': task_id,
+                'langIndex': 1
+            }, task_id=str(task_id))
+        # Return Status
+        return Response({
+            'state': task.state,
+            'uuid': str(task_id)
+        })
 
 class CompilationStatus(APIView):
     """

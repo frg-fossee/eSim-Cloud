@@ -6,27 +6,13 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { SimulatorComponent } from './simulator/simulator.component';
+// import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { CodeEditorComponent } from './code-editor/code-editor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { PathLocationStrategy, LocationStrategy } from '@angular/common';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-
-import {
-  MatDialogModule,
-  MatInputModule,
-  MatButtonModule,
-  MatTableModule,
-  MatRadioModule,
-  MatDividerModule,
-  MatTabsModule,
-  MatSnackBarModule,
-  MatIconModule,
-  MatTooltipModule,
-  MatExpansionModule,
-  MatMenuModule
-} from '@angular/material';
 import { ViewComponentInfoComponent } from './view-component-info/view-component-info.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExportfileComponent } from './exportfile/exportfile.component';
@@ -43,6 +29,18 @@ import { SaveProjectDialogComponent } from './simulator/save-project-dialog/save
 import { OptionModalComponent } from './alert/option-modal/option-modal.component';
 import { VersioningPanelComponent } from './versioning-panel/versioning-panel.component';
 import { CreateVariationDialogComponent } from './versioning-panel/create-variation-dialog/create-variation-dialog.component';
+import { SidePanelComponent } from './side-panel/side-panel.component';
+import { MaterialModule } from './common/material.module';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { SharedModule } from './common/SharedModule.module';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { LTIFormComponent } from './lti-form/lti-form.component';
+import { SubmissionlistComponent } from './submissionlist/submissionlist.component';
+import { ViewCodeComponent } from './lti-form/view-code/view-code.component';
+import { GraphComponent } from './graph/graph.component';
+import { GraphDataService } from './graph-data.service';
+import { GraphlistComponent } from './graphlist/graphlist.component';
 
 /**
  * Monaco OnLoad Function
@@ -63,16 +61,15 @@ const monacoConfig: NgxMonacoEditorConfig = {
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
     SimulatorComponent,
     CodeEditorComponent,
     ViewComponentInfoComponent,
     ExportfileComponent,
     ComponentlistComponent,
     FrontPageComponent,
-    GalleryComponent,
+    // GalleryComponent,
     ViewProjectComponent,
-    HeaderComponent,
+    // HeaderComponent,
     AlertModalComponent,
     ConfirmModalComponent,
     OptionModalComponent,
@@ -81,30 +78,27 @@ const monacoConfig: NgxMonacoEditorConfig = {
     SaveProjectDialogComponent,
     VersioningPanelComponent,
     CreateVariationDialogComponent,
+    LTIFormComponent,
+    SubmissionlistComponent,
+    ViewCodeComponent,
+    GraphComponent,
+    GraphlistComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     MonacoEditorModule.forRoot(monacoConfig),
     BrowserAnimationsModule,
-    MatDialogModule,
-    MatRadioModule,
-    MatDividerModule,
-    MatInputModule,
-    MatButtonModule,
-    MatTableModule,
+    MaterialModule,
     HttpClientModule,
-    MatIconModule,
-    MatTabsModule,
-    MatTooltipModule,
-    MatSnackBarModule,
-    MatExpansionModule,
-    ReactiveFormsModule,
-    MatMenuModule
+    SharedModule,   // shared module for Header component
+    DragDropModule,
+    ScrollingModule,
   ],
   // providers: [{provide: LocationStrategy, useClass: PathLocationStrategy}],
-  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+  providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }, GraphDataService],
   bootstrap: [AppComponent],
   entryComponents: [
     ViewComponentInfoComponent,
@@ -121,6 +115,6 @@ const monacoConfig: NgxMonacoEditorConfig = {
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA
   ],
-  exports: [HeaderComponent]
+  exports: [AppComponent]
 })
 export class AppModule { }

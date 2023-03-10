@@ -3,23 +3,23 @@
   "className": "PushButton",
   "pins": [
     {
-      "x": 10,
-      "y": -24,
+      "x": 9,
+      "y": -19,
       "name": "Terminal 1b"
     },
     {
-      "x": 45,
-      "y": -24,
+      "x": 24,
+      "y": -19,
       "name": "Terminal 2b"
     },
     {
-      "x": 10,
-      "y": 76,
+      "x": 9,
+      "y": 35,
       "name": "Terminal 1a"
     },
     {
-      "x": 45,
-      "y": 76,
+      "x": 24,
+      "y": 35,
       "name": "Terminal 2a"
     }
   ],
@@ -27,91 +27,91 @@
   "draw": [
     {
       "type": "rectangle",
-      "width": 5,
-      "height": 30,
+      "width": 2.5,
+      "height": 13,
       "x": 10,
-      "y": -20,
+      "y": -18,
       "radius": 5,
       "stroke": "#737373",
       "fill": "#737373"
     },
     {
       "type": "rectangle",
-      "width": 5,
-      "height": 30,
-      "x": 45,
-      "y": -20,
+      "width": 2.5,
+      "height": 13,
+      "x": 25,
+      "y": -18,
       "radius": 5,
       "stroke": "#737373",
       "fill": "#737373"
     },
     {
       "type": "rectangle",
-      "width": 5,
-      "height": 30,
+      "width": 2.5,
+      "height": 13,
       "x": 10,
-      "y": 50,
+      "y": 29,
       "radius": 5,
       "stroke": "#737373",
       "fill": "#737373"
     },
     {
       "type": "rectangle",
-      "width": 5,
-      "height": 30,
-      "x": 45,
-      "y": 50,
+      "width": 2.5,
+      "height": 13,
+      "x": 25,
+      "y": 29,
       "radius": 5,
       "stroke": "#737373",
       "fill": "#737373"
     },
     {
       "type": "rectangle",
-      "width": 60,
-      "height": 60,
+      "width": 40,
+      "height": 34,
       "x": 0,
-      "y": 0,
+      "y": -6,
       "radius": 10,
       "stroke": "#969696",
       "fill": "#bfbfbf"
     },
     {
       "type": "circle",
-      "radius": 5,
+      "radius": 3,
       "x": 10,
-      "y": 10,
+      "y": 3,
       "fill": "#383838",
       "stroke": "#383838"
     },
     {
       "type": "circle",
-      "radius": 5,
+      "radius": 3,
       "x": 10,
-      "y": 50,
+      "y": 22,
+      "fill": "#383838",
+      "stroke": "#383838"
+    },
+    {
+      "type": "circle",
+      "radius": 3,
+      "x": 32,
+      "y": 3,
+      "fill": "#383838",
+      "stroke": "#383838"
+    },
+    {
+      "type": "circle",
+      "radius": 3,
+      "x": 32,
+      "y": 22,
       "fill": "#383838",
       "stroke": "#383838"
     },
     {
       "type": "circle",
       "radius": 5,
-      "x": 50,
-      "y": 10,
-      "fill": "#383838",
-      "stroke": "#383838"
-    },
-    {
-      "type": "circle",
-      "radius": 5,
-      "x": 50,
-      "y": 50,
-      "fill": "#383838",
-      "stroke": "#383838"
-    },
-    {
-      "type": "circle",
-      "radius": 12,
-      "x": 30,
-      "y": 30,
+      "x": 20,
+      "y": 13,
       "fill": "#383838",
       "stroke": "#383838"
     }
