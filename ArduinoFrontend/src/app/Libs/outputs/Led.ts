@@ -120,7 +120,9 @@ export class LED extends CircuitElement {
     if (this.prev === val) {
       this.skipCheck = true;
     }
-    const current = val / this.resistance;
+    let current = val / this.resistance;
+    const pin0Current = (this.nodes[0].value / this.resistance);
+
     if (!this.allNodesConnected) {
       const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE'], 'POSITIVE');
       const negativeEnd = this.getRecArduinov2(this.pinNamedMap['NEGATIVE'], 'NEGATIVE');
@@ -135,17 +137,17 @@ export class LED extends CircuitElement {
     // TODO: Run if PWM is not attached
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
       if (!this.pwmAttached && this.allNodesConnected) {
-        if (val >= 5 || this.nodes[0].value === 5) {
+        if (current > 0.03 || pin0Current > 0.03) {
+          window.showToast("LED has burst");
+          this.handleConnectionError();
+        } else if (current >= 0.02 || pin0Current >= 0.02) {
           this.anim();
-        } else if (val > 0 && val < 5 || this.nodes[0].value > 0) {
-          if (val < 0.1) {
-            this.fillColor('none');
-          } else {
-            this.glowWithAlpha(val);
-          }
+        } else if ((current > 0.012 && current < 0.02) || (pin0Current > 0.012)) {
+          this.glowWithAlpha(current);
         } else {
           this.fillColor('none');
         }
+
         if (val >= 0 && !this.skipCheck) {
           this.prev = val;
           this.nodes[1].setValue(val, null);
@@ -155,7 +157,8 @@ export class LED extends CircuitElement {
         }
       } else if (this.pwmAttached && this.allNodesConnected) {
         // TODO: Run if PWM is attached
-        this.glowWithAlpha(this.voltage);
+        current = this.voltage / this.resistance;
+        this.glowWithAlpha(current);
 
       }
     } else {
@@ -167,11 +170,23 @@ export class LED extends CircuitElement {
   /**
    * create color and add alpha to color
    */
-  glowWithAlpha(value: number) {
+  glowWithAlpha(current: number) {
+
+    const minCurrent = 0.012;
+    const maxCurrent = 0.02;
+    const minOpacity = 2;
+    const maxOpacity = 9;
+
+    if (current < minCurrent) {
+      return;
+    }
     const color = `r(0.5, 0.5)${LED.glowColors[this.selectedIndex]}`;
     const split = color.split('-');
     let genColor = 'none';
-    const alpha = (value / 5) * 9;
+
+    // Scalaing current values to range between 2-9
+    const alpha = (((current - minCurrent) / (maxCurrent - minCurrent)) * (maxOpacity - minOpacity)) + minOpacity
+
     genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`;
     this.elements[3].attr({ fill: genColor });
   }
