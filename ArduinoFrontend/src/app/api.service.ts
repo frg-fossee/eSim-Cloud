@@ -154,11 +154,18 @@ export class ApiService {
     });
   }
   /**
-   * Compiles code and returns the status and task id
+   * Compiles INO code and returns the status and task id
    * @param data The Code and id of arduino
    */
-  compileCode(data: any): Observable<any> {
-    return this.http.post(`${this.url}api/arduino/compile`, data);
+  compileCodeINO(data: any): Observable<any> {
+    return this.http.post(`${this.url}api/arduino/compileINO`, data);
+  }
+  /**
+   * Compiles IN code and returns the status and task id
+   * @param data The Code and id of arduino
+   */
+   compileCodeInlineAssembly(data: any): Observable<any> {
+    return this.http.post(`${this.url}api/arduino/compileInlineAssembly`, data);
   }
   /**
    * Returns the hex of the compiled code

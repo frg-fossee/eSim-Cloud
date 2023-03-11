@@ -176,7 +176,7 @@ export default function LTIConfig () {
       })
     })
   }, [])
-
+  // to get test cases for LTI
   useEffect(() => {
     var url = queryString.parse(window.location.href.split('lti?')[1])
     const token = localStorage.getItem('esim_token')
@@ -193,6 +193,8 @@ export default function LTIConfig () {
         ele.simulation_time = new Date(ele.simulation_time)
         return 0
       })
+      console.log(res.data)
+      console.log('yes')
       setHistory(res.data)
     }).catch(err => {
       console.log(err)
@@ -347,7 +349,7 @@ export default function LTIConfig () {
     copyText.setSelectionRange(0, 99999)
     document.execCommand('copy')
   }
-
+  console.log(history)
   return (
     <>
       {ltiDetails && <>
@@ -410,9 +412,10 @@ export default function LTIConfig () {
                 style={{ minWidth: '300px' }}
                 onChange={handleChangeSim}
                 label="Test Case"
-                className={classes.selectEmpty}
+                className={classes.historyselectEmpty}
                 inputProps={{ readOnly: !ltiDetails.scored }}
               >
+
                 <MenuItem value={null}>
                   None
                 </MenuItem>

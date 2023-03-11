@@ -383,52 +383,55 @@ export default function LoadGrid (container, sidebar, outline) {
       edge.targetSegment = null
     }
 
-    if (pt == null) {
-      var s = this.scale
-      var tr = this.translate
-      var orig = edge.origin
-      var geo = this.graph.getCellGeometry(edge.cell)
-      pt = geo.getTerminalPoint(source)
+    try {
+      if (pt == null) {
+        var s = this.scale
+        var tr = this.translate
+        var orig = edge.origin
+        var geo = this.graph.getCellGeometry(edge.cell)
+        pt = geo.getTerminalPoint(source)
 
-      // Computes edge-to-edge connection point
-      if (pt != null) {
-        pt = new mxPoint(s * (tr.x + pt.x + orig.x),
-									 s * (tr.y + pt.y + orig.y))
+        // Computes edge-to-edge connection point
+        if (pt != null) {
+          pt = new mxPoint(s * (tr.x + pt.x + orig.x),
+                    s * (tr.y + pt.y + orig.y))
 
-        // Finds nearest segment on edge and computes intersection
-        if (terminal != null && terminal.absolutePoints != null) {
-          var seg = mxUtils.findNearestSegment(terminal, pt.x, pt.y)
+          // Finds nearest segment on edge and computes intersection
+          if (terminal != null && terminal.absolutePoints != null) {
+            var seg = mxUtils.findNearestSegment(terminal, pt.x, pt.y)
 
-          // Finds orientation of the segment
-          var p0 = terminal.absolutePoints[seg]
-          var pe = terminal.absolutePoints[seg + 1]
-          var horizontal = (p0.x - pe.x === 0)
+            // Finds orientation of the segment
+            var p0 = terminal.absolutePoints[seg]
+            var pe = terminal.absolutePoints[seg + 1]
+            var horizontal = (p0.x - pe.x === 0)
 
-          // Stores the segment in the edge state
-          var key = (source) ? 'sourceConstraint' : 'targetConstraint'
-          var value = (horizontal) ? 'horizontal' : 'vertical'
-          edge.style[key] = value
+            // Stores the segment in the edge state
+            var key = (source) ? 'sourceConstraint' : 'targetConstraint'
+            var value = (horizontal) ? 'horizontal' : 'vertical'
+            edge.style[key] = value
 
-          // Keeps the coordinate within the segment bounds
-          if (horizontal) {
-            pt.x = p0.x
-            pt.y = Math.min(pt.y, Math.max(p0.y, pe.y))
-            pt.y = Math.max(pt.y, Math.min(p0.y, pe.y))
-          } else {
-            pt.y = p0.y
-            pt.x = Math.min(pt.x, Math.max(p0.x, pe.x))
-            pt.x = Math.max(pt.x, Math.min(p0.x, pe.x))
+            // Keeps the coordinate within the segment bounds
+            if (horizontal) {
+              pt.x = p0.x
+              pt.y = Math.min(pt.y, Math.max(p0.y, pe.y))
+              pt.y = Math.max(pt.y, Math.min(p0.y, pe.y))
+            } else {
+              pt.y = p0.y
+              pt.x = Math.min(pt.x, Math.max(p0.x, pe.x))
+              pt.x = Math.max(pt.x, Math.min(p0.x, pe.x))
+            }
           }
         }
+        // Computes constraint connection points on vertices and ports
+        else if (terminal != null && terminal.cell.geometry.relative) {
+          pt = new mxPoint(this.getRoutingCenterX(terminal),
+            this.getRoutingCenterY(terminal))
+        }
       }
-      // Computes constraint connection points on vertices and ports
-      else if (terminal != null && terminal.cell.geometry.relative) {
-        pt = new mxPoint(this.getRoutingCenterX(terminal),
-          this.getRoutingCenterY(terminal))
-      }
-    }
 
-    edge.setAbsoluteTerminalPoint(pt, source)
+      edge.setAbsoluteTerminalPoint(pt, source)
+    }
+    catch (e) { console.log(e) }
   }
   // Sets source terminal point for edge-to-edge connections.
   mxConnectionHandler.prototype.createEdgeState = function (me) {

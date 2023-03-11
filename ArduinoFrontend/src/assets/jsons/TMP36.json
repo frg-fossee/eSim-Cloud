@@ -3,18 +3,18 @@
     "className": "TMP36",
     "pins": [
         {
-            "x": -1,
-            "y": 64,
+            "x": 0,
+            "y": 70,
             "name": "Power"
         },
         {
-            "x": 10,
-            "y": 64,
+            "x": 15,
+            "y": 70,
             "name": "Vout"
         },
         {
-            "x": 22,
-            "y": 64,
+            "x": 30,
+            "y": 70,
             "name": "GND"
         }
     ],
@@ -23,8 +23,8 @@
         {
             "type": "image",
             "url": "assets/images/components/TMP36.svg",
-            "width": 29,
-            "height": 73,
+            "width": 38,
+            "height": 76,
             "x": 0,
             "y": 0
         }

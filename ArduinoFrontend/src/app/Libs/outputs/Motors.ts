@@ -686,17 +686,26 @@ export class L298N extends CircuitElement {
  * Servo Motor class
  */
 export class ServoMotor extends CircuitElement {
-  /**
-   * Variable to state if servo is connected properly or not.
-   */
-  connected = true;
+
   /**
    * The Connected Arduino
    */
-  arduino: CircuitElement = null;
+  arduino: ArduinoUno = null;
+  /**
+   * Set to keep track of visited nodes
+   */
+  visitedNodesv2 = new Set();
+  /**
+   * Pin Name mapped to Pins
+   */
+  pinNamedMap: any = {};
+  /**
+   * Flag to see if Servo is connected properly
+   */
+  connected = true;
 
   /**
-   * MotorDriver L298N constructor
+   * Servo constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
    * @param y  position y
@@ -708,6 +717,11 @@ export class ServoMotor extends CircuitElement {
    * Initializ Servo Motor
    */
   init() {
+    // Initializing pinNamedMap
+    for (const node of this.nodes) {
+      this.pinNamedMap[node.label] = node;
+    }
+
     this.nodes[1].addValueListener((v) => {
       if (v < 4 || v > 6) {
         window['showToast']('Low Voltage Applied');
@@ -746,39 +760,34 @@ export class ServoMotor extends CircuitElement {
    */
   initSimulation(): void {
     // Check Connection
-    if (!(
-      this.nodes[0].connectedTo &&
-      this.nodes[1].connectedTo &&
-      this.nodes[2].connectedTo
-    )
-    ) {
+    if (!this.areAllNodesConnected()) {
       window['showToast']('Please Connect Servo Properly!');
       this.connected = false;
       return;
     }
 
-    // Get the Pin Which is connected to arduino
-    let connectedPin = null;
-    if (this.nodes[2].connectedTo.start
-      && this.nodes[2].connectedTo.start.parent.keyName === 'ArduinoUno') {
-      this.arduino = this.nodes[2].connectedTo.start.parent;
-      connectedPin = this.nodes[2].connectedTo.start;
+    const gndPin = this.getRecArduinov2(this.pinNamedMap['GND'], 'GND');
+    const powerPin = this.getRecArduinov2(this.pinNamedMap['POWER'], 'POWER');
+    const signalPin = this.getRecArduinov2(this.pinNamedMap['Signal'], 'Signal');
+
+    // Checks if signal pin is connected to an Arduino
+    if (signalPin) {
+      this.arduino = signalPin.parent as ArduinoUno;
+    } else {
+      window['showToast']('Arduino not found.');
+      return;
     }
 
-    if (this.arduino === null &&
-      this.nodes[2].connectedTo.end &&
-      this.nodes[2].connectedTo.end.parent.keyName === 'ArduinoUno'
-    ) {
-      connectedPin = this.nodes[2].connectedTo.end;
-      this.arduino = this.nodes[2].connectedTo.end.parent;
+    if (powerPin && gndPin) {
+      if (gndPin.label !== 'GND' || powerPin.label !== '5V') {
+        this.connected = false;
+        return;
+      }
     } else {
-      window['showToast']('Arduino Not Found!');
       this.connected = false;
       return;
     }
 
-
-    this.connected = true;
     this.elements.undrag();
     const ok = this.elements[1].attr();
     this.elements[1].attr({
@@ -788,7 +797,7 @@ export class ServoMotor extends CircuitElement {
     });
 
     // Add a Servo event on arduino
-    (this.arduino as ArduinoUno).addServo(connectedPin, (angle, prev) => {
+    this.arduino.addServo(signalPin, (angle, prev) => {
       if (angle > 182) {
         return;
       }
@@ -800,7 +809,9 @@ export class ServoMotor extends CircuitElement {
    * Called on Stop Simulation
    */
   closeSimulation(): void {
+
     if (!this.connected) {
+      this.connected = true;
       return;
     }
     this.arduino = null;
@@ -813,4 +824,158 @@ export class ServoMotor extends CircuitElement {
     });
     this.setDragListeners();
   }
+  /**
+   * Returns node connected to ArduinoUno
+   * @param node node to start search on
+   * @param startedOn label of node search started on
+   * @returns ArduinoUno connected Node
+   */
+  getRecArduinov2(node: Point, startedOn: string) {
+    try {
+      if (node.connectedTo.start.parent.keyName === 'ArduinoUno') {
+        // TODO: Return if ArduinoUno is connected to start node
+        this.visitedNodesv2.clear();
+        return node.connectedTo.start;
+      } else if (node.connectedTo.end.parent.keyName === 'ArduinoUno') {
+        // TODO: Return if ArduinoUno is connected to end node
+        this.visitedNodesv2.clear();
+        return node.connectedTo.end;
+      } else if (node.connectedTo.start.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.start.gid)) {
+        // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
+        return this.getRecArduinoBreadv2(node, startedOn);
+      } else if (node.connectedTo.end.parent.keyName === 'BreadBoard' && !this.visitedNodesv2.has(node.connectedTo.end.gid)) {
+        // TODO: Call recursive BreadBoard handler function if node is connected to Breadboard && visited nodes doesn't have node's gid
+        return this.getRecArduinoBreadv2(node, startedOn);
+      } else if (node.connectedTo.end.parent.keyName === 'Battery9v' && window.scope.ArduinoUno.length === 0) {
+        // TODO: Return false if node's end is connected to 9V Battery
+        return false;
+      } else if (node.connectedTo.end.parent.keyName === 'CoinCell' && window.scope.ArduinoUno.length === 0) {
+        // TODO: Return false if node's end is connected to Coin Cell
+        return false;
+      } else if (node.connectedTo.end.parent.keyName === 'RelayModule') {
+        // TODO: Handle RelayModule
+        if (startedOn === 'POSITIVE') {
+          // If search was started on Positive node then return connected node of VCC in Relay
+          return this.getRecArduinov2(node.connectedTo.end.parent.nodes[3], startedOn);
+        } else if (startedOn === 'NEGATIVE') {
+          // If search was started on Negative node then return connected node of GND in Relay
+          return this.getRecArduinov2(node.connectedTo.end.parent.nodes[5], startedOn);
+        }
+      } else {
+        // TODO: If nothing matches
+        // IF/ELSE: Determine if start is to be used OR end for further recursion
+        if (node.connectedTo.end.gid !== node.gid) {
+          // Loops through all nodes in parent
+          for (const e in node.connectedTo.end.parent.nodes) {
+            // IF: gid is different && gid not in visited node
+            if (node.connectedTo.end.parent.nodes[e].gid !== node.connectedTo.end.gid
+              && !this.visitedNodesv2.has(node.connectedTo.end.parent.nodes[e].gid) && node.connectedTo.end.parent.nodes[e].isConnected()) {
+              // add gid in visited nodes
+              this.visitedNodesv2.add(node.connectedTo.end.parent.nodes[e].gid);
+              // call back L293D Recursive Fn
+              return this.getRecArduinov2(node.connectedTo.end.parent.nodes[e], startedOn);
+            }
+          }
+        } else if (node.connectedTo.start.gid !== node.gid) {
+          // Loops through all nodes in parent
+          for (const e in node.connectedTo.start.parent.nodes) {
+            // IF: gid is different && gid not in visited node
+            if (node.connectedTo.start.parent.nodes[e].gid !== node.connectedTo.start.gid
+              && !this.visitedNodesv2.has(node.connectedTo.start.parent.nodes[e].gid)
+              && node.connectedTo.start.parent.nodes[e].isConnected()) {
+              // add gid in visited nodes
+              this.visitedNodesv2.add(node.connectedTo.start.parent.nodes[e].gid);
+              // call back L293D Recursive Fn
+              return this.getRecArduinov2(node.connectedTo.start.parent.nodes[e], startedOn);
+            }
+          }
+        }
+
+      }
+    } catch (e) {
+      console.warn(e);
+      return false;
+    }
+
+  }
+
+  /**
+   * Recursive Function to handle BreadBoard
+   * @param node Node which is to be checked for BreadBoard
+   */
+  getRecArduinoBreadv2(node: Point, startedOn: string) {
+    // IF/ELSE: Determine if start is to be used OR end for further recursion
+    if (node.connectedTo.end.gid !== node.gid) {
+      const bb = (node.connectedTo.end.parent as BreadBoard);
+      // loop through joined nodes of breadboard
+      for (const e in bb.joined) {
+        if (bb.joined[e].gid !== node.connectedTo.end.gid) {
+          // Run only if substring matches
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length)
+            === node.connectedTo.end.label.substring(1, node.connectedTo.end.label.length)) {
+            const ascii = node.connectedTo.end.label.charCodeAt(0);
+            const currAscii = bb.joined[e].label.charCodeAt(0);
+            // add gid to VisitedNode
+            this.visitedNodesv2.add(bb.joined[e].gid);
+            // IF/ELSE: determine which part of breadboard is connected
+            if (ascii >= 97 && ascii <= 101) {
+              if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else if (ascii >= 102 && ascii <= 106) {
+              if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else {
+              if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            }
+          }
+        }
+      }
+    } else if (node.connectedTo.start.gid !== node.gid) {
+      const bb = (node.connectedTo.start.parent as BreadBoard);
+      // loop through joined nodes of breadboard
+      for (const e in bb.joined) {
+        if (bb.joined[e].gid !== node.connectedTo.start.gid) {
+          // Run only if substring matches
+          if (bb.joined[e].label.substring(1, bb.joined[e].label.length)
+            === node.connectedTo.start.label.substring(1, node.connectedTo.start.label.length)) {
+            const ascii = node.connectedTo.start.label.charCodeAt(0);
+            const currAscii = bb.joined[e].label.charCodeAt(0);
+            // add gid to VisitedNode
+            this.visitedNodesv2.add(bb.joined[e].gid);
+            // IF/ELSE: determine which part of breadboard is connected
+            if (ascii >= 97 && ascii <= 101) {
+              if (bb.joined[e].isConnected() && (currAscii >= 97 && currAscii <= 101)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else if (ascii >= 102 && ascii <= 106) {
+              if (bb.joined[e].isConnected() && (currAscii >= 102 && currAscii <= 106)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            } else {
+              if (bb.joined[e].isConnected() && (bb.joined[e].label === node.connectedTo.end.label)) {
+                return this.getRecArduinov2(bb.joined[e], startedOn);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Function to check if all nodes of component is connected
+   */
+  areAllNodesConnected(): boolean {
+    for (const node of this.nodes) {
+      if (!node.isConnected()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }
