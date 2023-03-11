@@ -284,7 +284,7 @@ export abstract class UndoUtils {
                             } else {
                                 existing.transformPosition(-ele.dragJson.dx, -ele.dragJson.dy);
                             }
-                        } else {                           
+                        } else {
                             if (ele.keyName !== 'BreadBoard') {
                                 existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy);
                                 Workspace.onDragEvent(existing);

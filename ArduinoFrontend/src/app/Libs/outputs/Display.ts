@@ -611,7 +611,7 @@ export class LCD16X2 extends CircuitElement {
   generateCharacterPanels() {
     this.destroyCharacterPanels();
     const posX = this.data.startX;
-    const posY = this.data.startY;  
+    const posY = this.data.startY;
     // Getting the number of pixel/panel rows, columns from the active data display state
     const gridRows = this.dataDisplayState.getPixelRows();
     const gridColumns = this.dataDisplayState.getPixelColumns();
