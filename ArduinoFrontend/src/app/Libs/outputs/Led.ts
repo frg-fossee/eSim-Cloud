@@ -138,7 +138,7 @@ export class LED extends CircuitElement {
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
       if (!this.pwmAttached && this.allNodesConnected) {
         if (current > 0.03 || pin0Current > 0.03) {
-          window.showToast("LED has burst");
+          window.showToast('LED has burst');
           this.handleConnectionError();
         } else if (current >= 0.02 || pin0Current >= 0.02) {
           this.anim();
@@ -185,7 +185,7 @@ export class LED extends CircuitElement {
     let genColor = 'none';
 
     // Scalaing current values to range between 2-9
-    const alpha = (((current - minCurrent) / (maxCurrent - minCurrent)) * (maxOpacity - minOpacity)) + minOpacity
+    const alpha = (((current - minCurrent) / (maxCurrent - minCurrent)) * (maxOpacity - minOpacity)) + minOpacity;
 
     genColor = `${split[0].substr(0, split[0].length - 2)}${alpha})-${split[1]}`;
     this.elements[3].attr({ fill: genColor });
@@ -454,13 +454,13 @@ export class LED extends CircuitElement {
    */
   getRecResistance(node: Point, startedOn: string) {
     try {
-      if (node.connectedTo.start.parent.keyName === "Resistor") {
+      if (node.connectedTo.start.parent.keyName === 'Resistor') {
         const resistorID = (node.connectedTo.start.parent as Resistor).getID();
         if (!this.visitedResistors.has(resistorID)) {
           this.resistance = this.resistance + (node.connectedTo.start.parent as Resistor).getResistance();
           this.visitedResistors.add(resistorID);
         }
-      } else if (node.connectedTo.end.parent.keyName === "Resistor") {
+      } else if (node.connectedTo.end.parent.keyName === 'Resistor') {
         const resistorID = (node.connectedTo.end.parent as Resistor).getID();
         if (!this.visitedResistors.has(resistorID)) {
           this.resistance = this.resistance + (node.connectedTo.end.parent as Resistor).getResistance();
@@ -535,7 +535,7 @@ export class LED extends CircuitElement {
   /**
    * Recursive Function to handle BreadBoard
    * @param node Node which is to be checked for BreadBoard
-  */
+   */
   private getRecResistanceBread(node: Point, startedOn: string) {
     // IF/ELSE: Determine if start is to be used OR end for further recursion
     if (node.connectedTo.end.gid !== node.gid) {
