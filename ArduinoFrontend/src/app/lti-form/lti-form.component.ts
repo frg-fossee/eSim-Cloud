@@ -36,6 +36,8 @@ export interface LTIDetails {
   id: string;
   sim_params: string[];
   view_code: boolean;
+  con_weightage: number;
+  code_weightage: number;
 }
 
 /**
@@ -125,8 +127,11 @@ export class LTIFormComponent implements OnInit {
     scored: false,
     id: '',
     sim_params: [],
-    view_code: false
+    view_code: false,
+    con_weightage: 60,
+    code_weightage: 40
   };
+
   /**
    * Defines LTI Form Controls and Validators
    */
@@ -134,10 +139,13 @@ export class LTIFormComponent implements OnInit {
     consumer_key: new FormControl('', [Validators.required, Validators.minLength(2)]),
     secret_key: new FormControl('', [Validators.required, Validators.minLength(2)]),
     score: new FormControl(0, [Validators.required, Validators.min(0), Validators.max(1)]),
+    con_weightage: new FormControl(60, [Validators.required, Validators.min(0), Validators.max(100)]),
+    code_weightage: new FormControl(40),
     test_case: new FormControl(''),
     initial_schematic: new FormControl(0, Validators.required),
     model_schematic: new FormControl(0, Validators.required),
     scored: new FormControl(true),
+    viewCode: new FormControl(false)
   });
 
   /**
@@ -208,6 +216,8 @@ export class LTIFormComponent implements OnInit {
         this.details.configExists = false;
         this.getAllVersions();
         this.getTestCases();
+        this.form.get('con_weightage').setValue(this.details.con_weightage);
+        this.form.get('code_weightage').setValue(this.details.code_weightage);
       }
     });
   }
@@ -226,8 +236,10 @@ export class LTIFormComponent implements OnInit {
       model_schematic: parseInt(res['model_schematic'], 10),
       test_case: res['test_case'],
       scored: res['scored'],
+      con_weightage: res['con_weightage'],
+      code_weightage: 100 - res['con_weightage'],
+      viewCode: res['view_code']
     });
-    this.viewCodeCheckBox = res['view_code'];
   }
 
   gettestCaseSelectChange(value) {
@@ -268,16 +280,10 @@ export class LTIFormComponent implements OnInit {
     this.getStudentSimulation(event.value);
   }
 
-  /**
-   *  Called on view code checkbox is checked or unchecked
-   */
 
-  toggleViewCode(event) {
-    if (event.checked) {
-      this.details.view_code = true;
-    } else {
-      this.details.view_code = false;
-    }
+  conCodeWeight(event) {
+    this.details.code_weightage = 100 - this.form.value.con_weightage;
+    this.form.get('code_weightage').setValue(100 - this.form.value.con_weightage);
   }
 
   /**
@@ -292,9 +298,11 @@ export class LTIFormComponent implements OnInit {
         ...this.details,
         ...this.form.value,
         scored: this.form.value.scored ? true : false,
+        view_code: this.form.value.viewCode ? true : false,
         model_schematic: this.modelCircuit.id,
         test_case: this.form.value.test_case ? this.form.value.test_case : null,
         score: this.form.value.score,
+        con_weightage: this.form.value.con_weightage,
         configExists: false,
       };
       const token = Login.getToken();
@@ -356,7 +364,9 @@ export class LTIFormComponent implements OnInit {
           sim_params: [],
           scored: false,
           id: '',
-          view_code: false
+          view_code: false,
+          con_weightage: 60,
+          code_weightage: 40,
         };
         this.studentCircuit = undefined;
         this.circuits = [];
@@ -396,7 +406,8 @@ export class LTIFormComponent implements OnInit {
       test_case: this.details.test_case,
       score: this.form.value.score,
       sim_params: [],
-      view_code: this.details.view_code
+      view_code: this.form.value.viewCode ? true : false,
+      con_weightage: this.details.con_weightage
     };
     if (!this.details.scored) {
       this.details.score = null;

@@ -31,7 +31,7 @@ class ArduinoConsumerSerializer(serializers.ModelSerializer):
         model = ArduinLTIConsumer
         fields = ['consumer_key', 'secret_key', 'model_schematic',
                   'score', 'initial_schematic', 'test_case', 'scored',
-                  'id', 'view_code']
+                  'id', 'view_code', 'con_weightage']
 
     def create(self, validated_data):
         consumer = ArduinLTIConsumer.objects.create(**validated_data)
@@ -58,7 +58,7 @@ class consumerArduinoSubmissionSerializer(serializers.ModelSerializer):
         model = ArduinLTIConsumer
         fields = ['consumer_key', 'secret_key', 'model_schematic',
                   'score', 'initial_schematic', 'test_case', 'scored',
-                  'id', 'view_code']
+                  'id', 'view_code', 'con_weightage']
 
     def create(self, validated_data):
         pass
@@ -94,6 +94,8 @@ class ArduinoConsumerResponseSerializer(serializers.Serializer):
     model_schematic = serializers.IntegerField()
     test_case = serializers.IntegerField(required=False, allow_null=True)
     scored = serializers.BooleanField()
+    con_weightage = serializers.FloatField(required=True, allow_null=False)
+    view_code = serializers.BooleanField(allow_null=False)
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -177,4 +179,3 @@ class GetArduinoSubmissionsSerializer(serializers.ModelSerializer):
         fields = ["schematic", "student", "project",
                   "score", "lms_success", "ltisession",
                   "student_simulation"]
-
