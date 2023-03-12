@@ -98,5 +98,10 @@
       1000000,
       1000000000
     ]
+  },
+  "info" : {
+      "properties" : {
+        "isBreadBoardPlaceable" : 1 
+      }
   }
 }

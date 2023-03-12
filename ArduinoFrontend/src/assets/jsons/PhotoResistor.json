@@ -42,7 +42,8 @@
             "Max. resistance @ 10lux": "4.5kΩ(@ 10lux)",
             "Typ. resistance @ 100lux": "0.7kΩ(@ 100lux)",
             "Dark resistance after 1 sec ": "0.03MΩ",
-            "Dark resistance after 5 sec": "0.25MΩ"
+            "Dark resistance after 5 sec": "0.25MΩ",
+            "isBreadBoardPlaceable" : 1 
         }
     }
 }

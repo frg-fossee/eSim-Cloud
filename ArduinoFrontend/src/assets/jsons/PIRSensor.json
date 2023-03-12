@@ -106,7 +106,8 @@
       "Covers Distance": "120° and 7 meters",
       "Measuring angle covered": "<15°",
       "power consumption ": "65mA",
-      "Operating Temperature": "-20° to +80° Celsius"
+      "Operating Temperature": "-20° to +80° Celsius",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }

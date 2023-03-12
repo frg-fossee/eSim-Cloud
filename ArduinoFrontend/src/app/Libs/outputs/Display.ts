@@ -610,10 +610,8 @@ export class LCD16X2 extends CircuitElement {
    */
   generateCharacterPanels() {
     this.destroyCharacterPanels();
-
     const posX = this.data.startX;
     const posY = this.data.startY;
-
     // Getting the number of pixel/panel rows, columns from the active data display state
     const gridRows = this.dataDisplayState.getPixelRows();
     const gridColumns = this.dataDisplayState.getPixelColumns();
@@ -699,7 +697,6 @@ export class LCD16X2 extends CircuitElement {
       for (const neighbor of breadboard.sameXNodes[connectedPin.x]) {
         const neighborRow = neighbor.label.charCodeAt(0);
         const isSameBlock = neighborRow <= 101 === isConnectedRowInFirstBlock;
-
         if (neighbor.y !== connectedPin.y && isSameBlock) {
           if (neighbor.connectedTo) {
             let arduinoPin = null;

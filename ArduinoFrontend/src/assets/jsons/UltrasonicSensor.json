@@ -47,7 +47,8 @@
             "Accuracy": "3mm",
             "Measuring angle covered": "<15°",
             "Operating Current": "<15mA",
-            "Operating Frequency": "40Hz"
+            "Operating Frequency": "40Hz",
+            "isBreadBoardPlaceable" : 1 
         }
     }
 }

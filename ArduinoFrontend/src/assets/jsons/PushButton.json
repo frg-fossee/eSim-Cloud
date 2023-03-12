@@ -129,7 +129,8 @@
       "Operating Force": "2.55±0.69 N",
       "Contact Resistance": "MAX 100 mOhm",
       "Operating Temperature Range": " -20 to +70 ℃",
-      "Storage Temperature Range": "-20 to +70 ℃"
+      "Storage Temperature Range": "-20 to +70 ℃",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }

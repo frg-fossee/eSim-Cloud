@@ -281,12 +281,12 @@ export abstract class CircuitElement {
    * Add Drag listener to the components
    */
   setDragListeners() {
-    // let tmpx = 0;
-    // let tmpy = 0;
+
     let fdx = 0;
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
+
       this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
       // tmpx = this.tx + dx;
       // tmpy = this.ty + dy;
@@ -450,6 +450,36 @@ export abstract class CircuitElement {
    * Return the Name of the component.Can be inheriter to return custom name.
    */
   getName() { return this.title; }
+  /**
+   * Function to move/transform an element
+   * @param fdx relative x position to move
+   * @param fdy relative y position to move
+   */
+  getNodesCoord(): number[] {
+    const tmpar = [];
+    for (const node of this.nodes) {
+      tmpar.push(
+        [node.x, node.y]
+      );
+    }
+    return tmpar;
+  }
+  dragAlong(tmpar: any, fdx: number, fdy: number): any {
+    this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
+    for (const node of this.nodes) {
+      tmpar.push(
+        [node.x, node.y]
+      );
+    }
+    for (let i = 0; i < this.nodes.length; ++i) {
+      this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+    }
+  }
+  dragAlongStop(x: number, y: number): void {
+    this.tx = x;
+    this.ty = y;
+  }
+
 
   /**
    * Function to move/transform an element

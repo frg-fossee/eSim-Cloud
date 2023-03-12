@@ -57,7 +57,8 @@
       "Minimum Voltage": "4V",
       "Maximum Voltage": "8V",
       "Maximum Current": "0.03A",
-      "Frequency": "2300Hz"
+      "Frequency": "2300Hz",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }

@@ -377,7 +377,8 @@
       "sizes": "9.14mm,14.20mm,20.40mm,38.10mm,57.0mm and 100mm (Commonly used/available size is 14.20mm)",
       "Current consumption": "30mA / segment",
       "Peak current ": "70mA",
-      "Voltage Rated": "3V-5V"
+      "Voltage Rated": "3V-5V",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }
