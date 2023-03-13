@@ -67,7 +67,10 @@ export class LED extends CircuitElement {
    * Stores visited resistors
    */
   visitedResistors = new Set();
-
+  /**
+   * Stores variable resistance from Potentiometer
+   */
+  variableResistance: number = 0;
   /**
    * LED constructor
    * @param canvas Raphael Canvas (Paper)
@@ -120,8 +123,8 @@ export class LED extends CircuitElement {
     if (this.prev === val) {
       this.skipCheck = true;
     }
-    let current = val / this.resistance;
-    const pin0Current = (this.nodes[0].value / this.resistance);
+    let current = val / (this.resistance + this.variableResistance);
+    const pin0Current = (this.nodes[0].value / (this.resistance + this.variableResistance));
 
     if (!this.allNodesConnected) {
       const arduinoEnd: any = this.getRecArduinov2(this.pinNamedMap['POSITIVE'], 'POSITIVE');
@@ -305,7 +308,20 @@ export class LED extends CircuitElement {
     this.pwmAttached = false;
     this.voltage = 0;
     this.resistance = LED.internalResistance;
-    this.visitedResistors.clear();
+    this.visitedResistors.clear(); 
+    this.variableResistance = 0;
+  }
+  /**
+   * Returns ID
+   */
+  getID() {
+    return this.id;
+  }
+  /**
+   * Sets variable resitance
+   */
+  setVariableResistance(resistance: number) {
+    this.variableResistance = resistance;
   }
 
   /**
