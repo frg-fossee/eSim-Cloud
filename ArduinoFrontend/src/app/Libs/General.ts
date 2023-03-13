@@ -272,6 +272,20 @@ export class Resistor extends CircuitElement {
    */
   closeSimulation(): void {
   }
+
+  /**
+   * Get resistance value of resistor
+   */
+  getResistance() {
+    return this.value;
+  }
+  /**
+   * Get ID of the resistor
+   * TODO: Add this function inside CircuitElements.ts instead
+   */
+  getID() {
+    return this.id;
+  }
 }
 
 /**
