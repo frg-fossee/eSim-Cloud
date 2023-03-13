@@ -222,7 +222,7 @@ export class Potentiometer extends CircuitElement {
 
     if (!this.areNodesConnectedProperly()) {
       console.log("Nodes not connected properly");
-      window.toast("Potentiometer not connected properly.");
+      window.showToast("Potentiometer not connected properly.");
       return;
     }
     const attr = this.elements[1].attr();
@@ -320,10 +320,20 @@ export class Potentiometer extends CircuitElement {
    */
   areNodesConnectedProperly() {
     if (this.nodes[0].isConnected() && this.nodes[1].isConnected() && this.nodes[2].isConnected()) {
-      this.isRheostat = false;
-      return true;
+      const leftNode = this.getRecArduinov2(this.nodes[0], 'Terminal 1');
+      const rightNode = this.getRecArduinov2(this.nodes[2], 'Terminal 2');
+      if (leftNode && rightNode) {
+        if (leftNode.label === 'GND' && rightNode.value > 0) {
+          this.isRheostat = false;
+          return true;
+        } else if (rightNode.label === 'GND' && leftNode.value > 0) {
+          this.isRheostat = false;
+          return true;
+        }
+      }
     }
-    else if (this.nodes[0].isConnected() && this.nodes[1].isConnected()) {
+
+    if (this.nodes[0].isConnected() && this.nodes[1].isConnected()) {
       this.isRheostat = true;
       return true;
     }
@@ -338,10 +348,9 @@ export class Potentiometer extends CircuitElement {
    * ToDo: Function is hardcoded
    * ToDo: Make it work for other components
    */
-  sendResistance(resistance : number) {
-    for (const led of this.connectedLEDs) { 
-      console.log(led);
-     led.setVariableResistance(resistance); 
+  sendResistance(resistance: number) {
+    for (const led of this.connectedLEDs) {
+      led.setVariableResistance(resistance);
     }
   }
   /**
