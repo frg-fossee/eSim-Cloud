@@ -820,7 +820,14 @@ export class BreadBoard extends CircuitElement {
           && (labelCalledBy.charCodeAt(0) !== labelParent.charCodeAt(0) || labelCalledBy === labelParent)) {
           return;
         }
-        if (node.label === '+' || node.label === '-') {
+        if (node.label === '-') {
+          for (const neigh of ytemp[node.y]) {
+            if (neigh.x !== node.x && value <= 0) {
+              neigh.setValue(value, neigh);
+            }
+          }
+        }
+        else if (node.label === '+') {
           for (const neigh of ytemp[node.y]) {
             if (neigh.x !== node.x) {
               neigh.setValue(value, neigh);
