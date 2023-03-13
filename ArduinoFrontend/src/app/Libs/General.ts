@@ -826,8 +826,7 @@ export class BreadBoard extends CircuitElement {
               neigh.setValue(value, neigh);
             }
           }
-        }
-        else if (node.label === '+') {
+        } else if (node.label === '+') {
           for (const neigh of ytemp[node.y]) {
             if (neigh.x !== node.x) {
               neigh.setValue(value, neigh);
