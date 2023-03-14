@@ -3,6 +3,7 @@ import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
 import { BoundingBox } from './Geometry';
 import _ from 'lodash';
+import { BreadBoard } from './General';
 
 
 /**
@@ -128,13 +129,8 @@ export class Point {
         window.showBubble(this.label, evt.clientX, evt.clientY);
         if (this.parent.keyName === 'BreadBoard') {
 
-          let ref: any = {};
+          const ref = this.parent as BreadBoard;
 
-          for (const obj of window.scope['BreadBoard']) {
-            if (obj.id === this.parent.id) {
-              ref = obj;
-            }
-          }
           if (this.label === '+' || this.label === '-') {
             for (const point of ref.sameYNodes[this.y]) {
               if (this.id === point.id) {
@@ -173,12 +169,9 @@ export class Point {
       window.hideBubble();
 
       if (this.parent.keyName === 'BreadBoard') {
-        let ref: any = {};
-        for (const obj of window.scope['BreadBoard']) {
-          if (obj.id === this.parent.id) {
-            ref = obj;
-          }
-        }
+
+        const ref = this.parent as BreadBoard;
+
         if (this.label === '+' || this.label === '-') {
           for (const point of ref.sameYNodes[this.y]) {
             if (this.id === point.id) {
