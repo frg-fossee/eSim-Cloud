@@ -46,7 +46,7 @@ export class Potentiometer extends CircuitElement {
    */
   visitedLEDs = new Set();
   /**
-   * Stores connected LEDs 
+   * Stores connected LEDs
    */
   connectedLEDs: LED[] = [];
   /**
@@ -221,8 +221,7 @@ export class Potentiometer extends CircuitElement {
   initSimulation(): void {
 
     if (!this.areNodesConnectedProperly()) {
-      console.log("Nodes not connected properly");
-      window.showToast("Potentiometer not connected properly.");
+      window.showToast('Potentiometer not connected properly.');
       return;
     }
     const attr = this.elements[1].attr();
@@ -336,8 +335,7 @@ export class Potentiometer extends CircuitElement {
     if (this.nodes[0].isConnected() && this.nodes[1].isConnected()) {
       this.isRheostat = true;
       return true;
-    }
-    else if (this.nodes[1].isConnected() && this.nodes[2].isConnected()) {
+    } else if (this.nodes[1].isConnected() && this.nodes[2].isConnected()) {
       this.isRheostat = true;
       return true;
     }
@@ -492,10 +490,11 @@ export class Potentiometer extends CircuitElement {
       }
     }
   }
+
   /**
-  * Return the node which is connected to arduino by recursively finding LEDs inside the circuit
-  * @param node The Node which need to be checked
-  */
+   * Return the node which is connected to arduino by recursively finding LEDs inside the circuit
+   * @param node The Node which need to be checked
+   */
   getRecLED(node: Point, startedOn: string) {
     try {
       if (node.connectedTo.start.parent.keyName === 'LED') {

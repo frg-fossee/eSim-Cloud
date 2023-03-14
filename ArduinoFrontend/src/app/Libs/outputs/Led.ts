@@ -70,7 +70,7 @@ export class LED extends CircuitElement {
   /**
    * Stores variable resistance from Potentiometer
    */
-  variableResistance: number = 0;
+  variableResistance = 0;
   /**
    * LED constructor
    * @param canvas Raphael Canvas (Paper)
@@ -308,7 +308,7 @@ export class LED extends CircuitElement {
     this.pwmAttached = false;
     this.voltage = 0;
     this.resistance = LED.internalResistance;
-    this.visitedResistors.clear(); 
+    this.visitedResistors.clear();
     this.variableResistance = 0;
   }
   /**
