@@ -303,7 +303,7 @@ export class BreadBoard extends CircuitElement {
   static visitedNodesv2 = new Set();
 
   /**
-   * Stores group of points which are interconnected	
+   * Stores group of points which are interconnected
    */
   static groupings: any = [];
 
