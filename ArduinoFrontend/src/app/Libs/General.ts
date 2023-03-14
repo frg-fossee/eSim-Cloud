@@ -677,7 +677,7 @@ export class BreadBoard extends CircuitElement {
             }
             const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement1.info.properties;
             const isBreadBoardPlaceable = ConnElement1.info.properties.isBreadBoardPlaceable;
-            if ( !ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1 ) {
+            if (!ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1) {
               ConnEleList.push(ConnElement1);
               tmpx2.push(0);
               tmpy2.push(0);
@@ -978,6 +978,13 @@ export class BreadBoard extends CircuitElement {
    */
   closeSimulation(): void {
     BreadBoard.visitedNodesv2.clear();
+  }
+  /**
+   * Returns groupings
+   */
+  getGroupings() {
+    const groups = _.cloneDeep(BreadBoard.groupings);
+    return groups;
   }
 
 }

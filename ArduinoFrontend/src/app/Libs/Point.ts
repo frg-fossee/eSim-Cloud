@@ -339,6 +339,15 @@ export class Point {
     const newClass = this.body.node.getAttribute('class').replace(' highlight', '');
     this.body.node.setAttribute('class', newClass);
   }
+  outline() {
+    const newClass = `${this.body.node.getAttribute('class')} outline`;
+    this.body.node.setAttribute('class', newClass);
+  }
+
+  undoOutline() {
+    const newClass = this.body.node.getAttribute('class').replace(' outline', '');
+    this.body.node.setAttribute('class', newClass);
+  }
 
   /**
    * Change the Position of Node with relative to current position
