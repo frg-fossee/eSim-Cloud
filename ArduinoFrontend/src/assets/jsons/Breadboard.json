@@ -2015,6 +2015,9 @@
     }
   ],
   "simulation": {},
+  "data" : {
+   "groupings" : [["a","b","c","d","e"],["f","g","h","i","j"]]
+  },
   "info": {
       "properties" : {
          "isBreadBoardPlaceable" : 0

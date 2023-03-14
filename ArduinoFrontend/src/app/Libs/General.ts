@@ -331,6 +331,10 @@ export class BreadBoard extends CircuitElement {
    * Map of y and nodes with y-coordinates as y
    */
   public sameYNodes: { [key: string]: Point[] } = {};
+  /**	
+   * Stores group of points which are interconnected	
+   */	
+  static groupings: any = [];
 
   /**
    * Breadboard constructor
@@ -594,6 +598,10 @@ export class BreadBoard extends CircuitElement {
   /** init is called when the component is complety drawn to the canvas */
   init() {
     this.sortedNodes = _.sortBy(this.nodes, ['x', 'y']);
+
+    if (BreadBoard.groupings.length === 0) {	
+      BreadBoard.groupings = this.data.groupings;	
+    }
 
     // initialise sameX and sameY node sets
     for (const node of this.nodes) {
