@@ -303,6 +303,11 @@ export class BreadBoard extends CircuitElement {
   static visitedNodesv2 = new Set();
 
   /**
+   * Stores group of points which are interconnected
+   */
+  static groupings: any = [];
+
+  /**
    * Nodes that are connected
    */
   public joined: Point[] = [];
@@ -331,6 +336,7 @@ export class BreadBoard extends CircuitElement {
    * Map of y and nodes with y-coordinates as y
    */
   public sameYNodes: { [key: string]: Point[] } = {};
+
 
   /**
    * Breadboard constructor
@@ -595,6 +601,10 @@ export class BreadBoard extends CircuitElement {
   init() {
     this.sortedNodes = _.sortBy(this.nodes, ['x', 'y']);
 
+    if (BreadBoard.groupings.length === 0) {
+      BreadBoard.groupings = this.data.groupings;
+    }
+
     // initialise sameX and sameY node sets
     for (const node of this.nodes) {
       // create the set for x
@@ -677,7 +687,7 @@ export class BreadBoard extends CircuitElement {
             }
             const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement1.info.properties;
             const isBreadBoardPlaceable = ConnElement1.info.properties.isBreadBoardPlaceable;
-            if ( !ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1 ) {
+            if (!ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1) {
               ConnEleList.push(ConnElement1);
               tmpx2.push(0);
               tmpy2.push(0);
@@ -978,6 +988,13 @@ export class BreadBoard extends CircuitElement {
    */
   closeSimulation(): void {
     BreadBoard.visitedNodesv2.clear();
+  }
+  /**
+   * Returns groupings
+   */
+  getGroupings() {
+    const groups = _.cloneDeep(BreadBoard.groupings);
+    return groups;
   }
 
 }
