@@ -1,3 +1,7 @@
+import json
+from wsgiref.util import request_uri
+
+
 def parseJSON(json):
     list = json['data']
     results = {}
@@ -74,3 +78,29 @@ def process_submission(expected_simulation, given_simulation, sim_params):
             len(comparison_result['missing'])
         score += len(comparison_result['same'])/total
     return score, comparison_result
+
+
+def arduino_eval(original_data, student_data, con_weight, max_score):
+    evaluated = True
+    original_data = original_data.replace("\'", "\"")
+    student_data = student_data.replace("\'", "\"")
+    original_data = json.loads(original_data)
+    student_data = json.loads(student_data)
+    key = list(original_data.keys())[0]
+    org_hexvals = list(original_data[key]['hexVals'])
+    st_hexvals = list(student_data[key]['hexVals'])
+    org_pins = list(original_data[key]['pinConnected'])
+    st_pins = list(student_data[key]['pinConnected'])
+    common_pins = list(set(org_pins).intersection(st_pins))
+    if int(len(org_hexvals)) > int(len(st_hexvals)):
+        evaluated = False
+        return 0, evaluated
+    con_weightage = (((len(common_pins)/len(org_pins)) * con_weight)/100) \
+        * (max_score)
+    count = 0
+    for i in range(int(len(org_hexvals))):
+        if st_hexvals[i] == org_hexvals[i]:
+            count += 1
+    code_weightage = (((count/len(org_hexvals)) * (100-con_weight))/100) \
+        * (max_score)
+    return round(con_weightage+code_weightage, 2), evaluated

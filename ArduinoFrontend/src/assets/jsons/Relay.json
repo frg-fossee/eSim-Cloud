@@ -54,7 +54,8 @@
       "channel": "4",
       "Rated through-current": "10A (NO) 5A (NC)",
       "Control signal": "TTL level",
-      "Max. switching current": "10A"
+      "Max. switching current": "10A",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }

@@ -3,6 +3,7 @@ import { CircuitElement } from './CircuitElement';
 import { isNull } from 'util';
 import { BoundingBox } from './Geometry';
 import _ from 'lodash';
+import { BreadBoard } from './General';
 
 
 /**
@@ -62,6 +63,10 @@ export class Point {
    * Callback called when we connect wire.
    */
   connectCallback: any = null;
+  /*
+  Callback called on disconnecting a wire.
+  */
+  disconnectCallback: any = null;
   /**
    * The Value of the node
    */
@@ -121,20 +126,14 @@ export class Point {
       // Check if showBubbleBool is enabled
       if (Point.showBubbleBool) {
         // Check if callback is present if it is then call it
-
         if (this.hoverCallback) {
           this.hoverCallback(this.x, this.y);
         }
         window.showBubble(this.label, evt.clientX, evt.clientY);
         if (this.parent.keyName === 'BreadBoard') {
 
-          let ref: any = {};
+          const ref = this.parent as BreadBoard;
 
-          for (const obj of window.scope['BreadBoard']) {
-            if (obj.id === this.parent.id) {
-              ref = obj;
-            }
-          }
           if (this.label === '+' || this.label === '-') {
             for (const point of ref.sameYNodes[this.y]) {
               if (this.id === point.id) {
@@ -173,12 +172,9 @@ export class Point {
       window.hideBubble();
 
       if (this.parent.keyName === 'BreadBoard') {
-        let ref: any = {};
-        for (const obj of window.scope['BreadBoard']) {
-          if (obj.id === this.parent.id) {
-            ref = obj;
-          }
-        }
+
+        const ref = this.parent as BreadBoard;
+
         if (this.label === '+' || this.label === '-') {
           for (const point of ref.sameYNodes[this.y]) {
             if (this.id === point.id) {
@@ -281,6 +277,10 @@ export class Point {
     this.soldered = false;
     const newClass = this.body.node.getAttribute('class').replace(' solder-highlight', '');
     this.body.node.setAttribute('class', newClass);
+
+    if (this.disconnectCallback) {
+      this.disconnectCallback(this);
+    }
   }
 
   connectWire(wire, pushToUndo = true) {
@@ -339,7 +339,6 @@ export class Point {
     const newClass = this.body.node.getAttribute('class').replace(' highlight', '');
     this.body.node.setAttribute('class', newClass);
   }
-
   outline() {
     const newClass = `${this.body.node.getAttribute('class')} outline`;
     this.body.node.setAttribute('class', newClass);

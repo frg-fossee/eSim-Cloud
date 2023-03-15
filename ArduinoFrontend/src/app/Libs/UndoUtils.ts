@@ -285,10 +285,12 @@ export abstract class UndoUtils {
                                 existing.transformPosition(-ele.dragJson.dx, -ele.dragJson.dy);
                             }
                         } else {
-                            existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy);
                             if (ele.keyName !== 'BreadBoard') {
+                                existing.transformPosition(ele.dragJson.dx, ele.dragJson.dy);
                                 Workspace.onDragEvent(existing);
                                 Workspace.onDragStopEvent(existing);
+                            } else {
+                                existing.transformBoardPosition(ele.dragJson.dx, ele.dragJson.dy);
                             }
                         }
                         for (const ec in window.scope['wires']) {

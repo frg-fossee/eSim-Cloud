@@ -6,6 +6,10 @@ mat-form-field {
 	width: 100%;
 }
 
+.code-weight {
+	padding-top: 25pt;
+}
+
 .form-buttons {
 	padding: 10px;
 }

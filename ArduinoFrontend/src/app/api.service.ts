@@ -488,9 +488,7 @@ export class ApiService {
     });
   }
 
-  getLTISimulationData(id, ltiId, token: string): Observable<any> {
-    return this.http.get(`${this.url}api/lti/save/arduinodata/${id}/${ltiId}`, {
-      headers: this.httpHeaders(token),
-    });
+  getLTISimulationData(id, ltiId): Observable<any> {
+    return this.http.get(`${this.url}api/lti/save/arduinodata/${id}/${ltiId}`);
   }
 }

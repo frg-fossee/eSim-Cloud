@@ -33,7 +33,8 @@
         "properties": {
             "Minimum Temprature": "0 degree C",
             "Maximum Temprature": "1000 degree C",
-            "Voltage Range": "0V-6V"
+            "Voltage Range": "0V-6V",
+            "isBreadBoardPlaceable" : 1 
         },
         "innerHTMLContent": "<br> <h4>Formula:</h4> <b>Beta:</b> ß = ln(R1/R2)/((1/T1)-(1/T2)) <br> <b>Internal Resistance:</b> Rt = 10000 * e<sup>ß*( (<sup>1</sup>/<sub>T1</sub>)-(<sup>1</sup>/<sub>T2</sub>) )</sup> <br> <b>Voltage Out:</b> V<sub>out</sub> = (Rs / (Rs + Rt)) * V<sub>in</sub> <br> <h4>References</h4> <b>Thermistors - NTC & PTC:</b> <a href='https://www.youtube.com/watch?v=nXmkkyw8v5A' target='_blank' rel='noopener noreferrer'>Video</a> <br> <b>Voltage out formula:</b> <a href='https://www.petervis.com/electronics%20guides/calculators/thermistor/thermistor.html' target='_blank' rel='noopener noreferrer'>Document</a> <br> <h4>Resistance vs Temprature chart</h4> <img src='https://www.arroyoinstruments.com/images/cms/sized/Thermistor%20RT%20Chart.gif' alt='' style='width:100%;'> "
     }

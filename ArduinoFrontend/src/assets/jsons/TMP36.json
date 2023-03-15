@@ -45,7 +45,8 @@
             "Output voltage ": "750mV/25°C",
             "Accuracy": "±2°C ",
             "Supply Current": "less than 50uA",
-            "Shutdown current": "0.5 µA max"
+            "Shutdown current": "0.5 µA max",
+            "isBreadBoardPlaceable" : 1 
         }
     }
 }

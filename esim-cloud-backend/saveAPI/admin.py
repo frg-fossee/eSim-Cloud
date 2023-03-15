@@ -16,6 +16,7 @@ class ArduinoSimulation(admin.ModelAdmin):
     list_display = ('save_id', "result")
     list_filter = ('save_id', "result",)
 
+
 @admin.register(Gallery)
 class GalleryCircuits(admin.ModelAdmin):
     list_display = ('name', 'image_tag', 'description', 'shared', 'is_arduino')

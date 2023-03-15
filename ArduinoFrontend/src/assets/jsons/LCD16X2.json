@@ -117,7 +117,8 @@
             "Operating Voltage": "4.7V to 5.3V",
             "Current consumption": "1mA (without backlight)",
             "Work Mode": " 8-bit and 4-bit mode",
-            "Voltage Rated": "3V-5V"
+            "Voltage Rated": "3V-5V",
+            "isBreadBoardPlaceable" : 1 
         }
     }
 }

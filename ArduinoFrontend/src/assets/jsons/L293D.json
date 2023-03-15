@@ -116,7 +116,8 @@
       "Operation temp. range": "0-70°C",
       "Max Power at t=90°C ": "4W",
       "Dimensions": "19.8 x 9.14 ",
-      "Weight": "20g"
+      "Weight": "20g",
+      "isBreadBoardPlaceable" : 1 
     }
   }
 }
