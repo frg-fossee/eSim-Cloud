@@ -2019,8 +2019,16 @@
    "groupings" : [["a","b","c","d","e"],["f","g","h","i","j"]]
   },
   "info": {
+      "name": "Breadboard (400 tie points)",
+      "image": "./assets/images/components/Breadboard.svg",
+      "description": "BreadBoard is a solderless (plug-in) breadboard with 400 connection tie-points (i.e. 400 wire insertion holes). It has 4 power rails.Breadboard are great for building and testing new circuits hastle free.",
+      "Datasheet": "https://www.mouser.com/datasheet/2/58/BPS-DAT-(BB400)-Datasheet-932623.pdf",
       "properties" : {
-         "isBreadBoardPlaceable" : 0
+         "isBreadBoardPlaceable" : 0,
+         "Number of rails": 4,
+         "Total tie points": 400,
+         "Hole Style": "Square Wire Holes",
+         "Hole Pitch": "0.1\" / 2.54mm"
       }
   }
 }
