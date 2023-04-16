@@ -75,6 +75,8 @@ services:
     links:
         - "redis:redis_cache"
         - "db:postgres"
+        - "redis:redis"
+        - "db:db"
     env_file:
           - .env.prod
     environment:
@@ -87,9 +89,8 @@ services:
     depends_on:
       - redis
       - db
-    links:
-      - "redis:redis"
-      - "db:db"
+   
+     
 
     deploy:
       replicas: 3
