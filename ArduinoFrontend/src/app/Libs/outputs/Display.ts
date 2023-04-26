@@ -365,14 +365,14 @@ export class LCD16X2 extends CircuitElement {
    * Scrolls the display to one step left
    */
   scrollDisplayLeft() {
-    this.shiftDisplay(-1);
+    this.shiftDisplay(1);
   }
 
   /**
    * Scrolls the display to one step right
    */
   scrollDisplayRight() {
-    this.shiftDisplay(1);
+    this.shiftDisplay(-1);
   }
 
   /**
