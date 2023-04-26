@@ -530,6 +530,11 @@ export class Workspace {
       // Call Undo Function
       UndoUtils.workspaceUndo();
     }
+    if (event.ctrlKey && (event.key === 'y' || event.key === 'Y') && UndoUtils.enableButtonsBool) {
+      // CTRL + y
+      // Call Redo Function
+      UndoUtils.workspaceRedo();
+    }
   }
   /**
    * Event Listener for zoom in/zoom out on workspace
