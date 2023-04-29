@@ -348,7 +348,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Get the simulation result selected
    */
-   onSelectionChanges(event) {
+  onSelectionChanges(event) {
     this.getSimRecSelectChange(event.value);
   }
 
@@ -539,22 +539,22 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     viewref.afterClosed();
   }
   /** Hide buttons while Simulation is running */
-  hide_buttons(){
-    
-      const buttonss = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+  hide_buttons() {
 
-      buttonss.forEach((button) => {
-     button.disabled = true;
- });
+    const buttonss = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
+
+    buttonss.forEach((button) => {
+      button.disabled = true;
+    });
   }
   /** make butoons visible */
-  visible_buttons(){
+  visible_buttons() {
     const buttonss = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
-  
-       buttonss.forEach((button) => {
+    
+    buttonss.forEach((button) => {
       button.disabled = false;
-  });
-    }
+    });
+  }
   /** Function deletes the component */
   delete() {
     Workspace.DeleteComponent();
@@ -1056,7 +1056,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       for (const val of v) {
         const data = JSON.parse(val.result.replaceAll('\'', '\"'));
         const key = (Object.keys(data));
-        temp.push({id: val.id, length: data[key[0]]['length']});
+        temp.push({ id: val.id, length: data[key[0]]['length'] });
       }
       this.simData = temp;
     });
