@@ -540,17 +540,14 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
   /** Hide buttons while Simulation is running */
   hide_buttons() {
-
-    const buttonss = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
-
+    const buttonss = document.querySelectorAll('.btn') as NodeListOf<HTMLButtonElement>;
     buttonss.forEach((button) => {
       button.disabled = true;
     });
   }
   /** make butoons visible */
   visible_buttons() {
-    const buttonss = document.querySelectorAll(".btn") as NodeListOf<HTMLButtonElement>;
-    
+    const buttonss = document.querySelectorAll('.btn') as NodeListOf<HTMLButtonElement>;
     buttonss.forEach((button) => {
       button.disabled = false;
     });
