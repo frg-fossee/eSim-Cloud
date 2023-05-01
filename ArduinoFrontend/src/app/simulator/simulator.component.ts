@@ -371,9 +371,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /** Function called when Start Simulation button is triggered */
   StartSimulation() {
     this.disabled = true;
-    if (!this.graphToggle) {
-      this.graphToggle = !this.graphToggle;
-    }
+    // if (!this.graphToggle) {
+    //   this.graphToggle = !this.graphToggle;
+    // }
     // Clears Output in Console
     Workspace.ClearConsole();
     // prints the output in console
