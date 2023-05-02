@@ -348,7 +348,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /**
    * Get the simulation result selected
    */
-   onSelectionChanges(event) {
+  onSelectionChanges(event) {
     this.getSimRecSelectChange(event.value);
   }
 
@@ -375,6 +375,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     //   this.graphToggle = !this.graphToggle;
     // }
     // Clears Output in Console
+    this.hide_buttons();
     Workspace.ClearConsole();
     // prints the output in console
     window['printConsole']('Starting Simulation', ConsoleType.INFO);
@@ -397,6 +398,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       // Hide loading animation
       sim.style.display = 'none';
       Workspace.stopSimulation(() => {
+        this.visible_buttons();
         this.disabled = false;
         document.getElementById('simload').style.display = 'none';
       });
@@ -536,11 +538,26 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     });
     viewref.afterClosed();
   }
+  /** Hide buttons while Simulation is running */
+  hide_buttons() {
+    const buttonss = document.querySelectorAll('.hidebtn') as NodeListOf<HTMLButtonElement>;
+    buttonss.forEach((button) => {
+      button.disabled = true;
+    });
+  }
+  /** make butoons visible */
+  visible_buttons() {
+    const buttonss = document.querySelectorAll('.hidebtn') as NodeListOf<HTMLButtonElement>;
+    buttonss.forEach((button) => {
+      button.disabled = false;
+    });
+  }
   /** Function deletes the component */
   delete() {
     Workspace.DeleteComponent();
     Workspace.hideContextMenu();
   }
+
   /** Function pastes the component */
   paste() {
     Workspace.pasteComponent();
@@ -1036,7 +1053,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       for (const val of v) {
         const data = JSON.parse(val.result.replaceAll('\'', '\"'));
         const key = (Object.keys(data));
-        temp.push({id: val.id, length: data[key[0]]['length']});
+        temp.push({ id: val.id, length: data[key[0]]['length'] });
       }
       this.simData = temp;
     });
