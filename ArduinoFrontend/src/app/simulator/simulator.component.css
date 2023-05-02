@@ -215,6 +215,10 @@
   margin-right: 10px;
 }
 
+.hidebtn:disabled {
+  opacity: .65;
+}
+
 #sidebar-wrapper .sidebar-heading {
   padding: 0.9rem 1.28rem;
   font-size: 1.7rem;

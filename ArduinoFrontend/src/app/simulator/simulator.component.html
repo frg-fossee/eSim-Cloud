@@ -143,56 +143,56 @@
 
   <span class="pipe">|</span>
 
-  <button class="btn" mat-icon-button matTooltip="Undo" (click)="undoChange()" [disabled]="enableButton('undo')">
+  <button class="hidebtn" mat-icon-button matTooltip="Undo" (click)="undoChange()" [disabled]="enableButton('undo')">
     <mat-icon style="font-size: 20px;color: black;">undo</mat-icon>
   </button>
 
-  <button class="btn" mat-icon-button matTooltip="Redo" (click)="redoChange()" [disabled]="enableButton('redo')">
+  <button class="hidebtn" mat-icon-button matTooltip="Redo" (click)="redoChange()" [disabled]="enableButton('redo')">
     <!-- <i style="font-size: 20px;color: black;" class="fa fa-repeat"></i> -->
     <mat-icon style="font-size: 20px;color: black;">redo</mat-icon>
   </button>
 
   <!-- Import export -->
   <span class="pipe">|</span>
-  <button class="btn" mat-icon-button matTooltip="Export JSON file" (click)="exportJson()" id="importBtn">
+  <button  mat-icon-button matTooltip="Export JSON file" (click)="exportJson()" id="importBtn">
     <i style="font-size: 20px;color: black;" class="fa fa-download" id="download_icon"></i>
   </button>
 
-  <button class="btn" mat-icon-button matTooltip="Import JSON file">
+  <button class="hidebtn" mat-icon-button matTooltip="Import JSON file">
     <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
-      <input class="btn" type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+      <input class="hidebtn"  type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
     </label>
   </button>
   <span class="pipe">|</span>
   <!-- Import export -->
 
   <a  href="../arduino/#/simulator"  target="_blank">
-    <button class="btn" mat-icon-button matTooltip="New Project">
+    <button  mat-icon-button matTooltip="New Project">
       <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
     </button>
   </a>
 
 
-  <button class="btn" mat-icon-button matTooltip="Clear Project" (click)="openProject()">
+  <button class="hidebtn" mat-icon-button matTooltip="Clear Project" (click)="openProject()">
     <i style="font-size: 20px;color: black;" class="fa fa-times-circle"></i>
   </button>
   <span class="pipe">|</span>
-  <button class="btn" mat-icon-button matTooltip="Save Project" (click)="SaveProject()">
+  <button  mat-icon-button matTooltip="Save Project" (click)="SaveProject()">
     <i style="font-size: 20px;color: black;" class="fa fa-cloud"></i>
   </button>
-  <button class="btn" mat-icon-button matTooltip="Save Temporary" (click)="SaveProjectOff()">
+  <button  mat-icon-button matTooltip="Save Temporary" (click)="SaveProjectOff()">
     <i style="font-size: 20px;color: black;" class="fa fa-save"></i>
   </button>
   <span class="pipe">|</span>
-  <button class="btn" mat-icon-button matTooltip="Download Image" (click)="openDailog()">
+  <button  mat-icon-button matTooltip="Download Image" (click)="openDailog()">
     <i style="font-size: 20px;color: black;" class="fa fa-file-export"></i>
   </button>
-  <button class="btn" mat-icon-button matTooltip="View Component List" (click)="openview()">
+  <button class="hidebtn" mat-icon-button matTooltip="View Component List" (click)="openview()">
     <i style="font-size: 20px;color: black;" class="fa fa-list-alt"></i>
   </button>
   <span class="pipe">|</span>
 
-  <button class="btn" mat-icon-button matTooltip="Delete" (click)="delete()"><i style="font-size: 20px;color: black;"
+  <button class="hidebtn" mat-icon-button matTooltip="Delete" (click)="delete()"><i style="font-size: 20px;color: black;"
       class="fa fa-trash"></i></button>
 
   <button   mat-icon-button matTooltip="Zoom in" (click)="zoom(0)"><i style="font-size: 20px;color: black;"
@@ -205,7 +205,7 @@
   <button  mat-icon-button matTooltip="See waveform" (click)="showGraph()"><i style="font-size: 20px;color: black;"
       class="fas fa-chart-line"></i></button>
 
-  <button class="btn" mat-icon-button matTooltip="Auto-arrange wires" (click)="autoLayout()">
+  <button class="hidebtn" mat-icon-button matTooltip="Auto-arrange wires" (click)="autoLayout()">
     <i style="font-size: 20px;color: black;"
       [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
@@ -450,9 +450,9 @@
 <!--console ui-->
 <div id="console" style="display: none;">
   <div class="head">
-    <button  style="background-color: white;" (click)="minimizeConsole()"><i
+    <button  class="btn" style="background-color: white;" (click)="minimizeConsole()"><i
         [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
-    <button  style="background:transparent" (click)="expandConsole()"><i
+    <button  class="btn" style="background:transparent" (click)="expandConsole()"><i
         [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
   </div>
   <div class="body">
