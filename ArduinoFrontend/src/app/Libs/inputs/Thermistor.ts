@@ -73,7 +73,7 @@ export class Thermistor extends CircuitElement {
    * @param r Resistance
    */
   getValue(r: number) {
-    return `${Math.round(r)} C`;
+    return `${Math.round(r)}`;
   }
   /**
    * Initialize Variable and callback when start simulation is pressed
