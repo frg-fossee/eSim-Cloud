@@ -46,7 +46,7 @@
   ],
   "simulation": {},
   "data": {
-    "initial": 1000,
+    "initial": 220,
     "initialToleranceIndex": 10,
     "toleranceValues": [
       "1",
