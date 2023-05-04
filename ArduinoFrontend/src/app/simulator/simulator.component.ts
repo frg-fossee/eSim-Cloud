@@ -79,6 +79,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Simulation button toggle for disabling
    */
   disabled = false;
+   /**
+   * Simulation button toggle for disabling adding_new_component option 
+   */
+  isAddComponentEnabled = true;
   /**
    * Stores the toggle status for expanding Virtual console
    */
@@ -376,6 +380,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // }
     // Clears Output in Console
     this.hide_buttons();
+    this.isAddComponentEnabled = false;
+
     Workspace.ClearConsole();
     // prints the output in console
     window['printConsole']('Starting Simulation', ConsoleType.INFO);
@@ -399,6 +405,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       sim.style.display = 'none';
       Workspace.stopSimulation(() => {
         this.visible_buttons();
+        this.isAddComponentEnabled =true;
+      
         this.disabled = false;
         document.getElementById('simload').style.display = 'none';
       });
@@ -489,7 +497,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param key string
    */
   componentdbClick(key: string) {
-    Workspace.addComponent(key, 100, 100, 0, 0);
+    if (this.isAddComponentEnabled){
+      Workspace.addComponent(key, 100, 100, 0, 0);
+    }
   }
   /**
    * Event is fired when the user starts dragging an component or text selection.
@@ -498,8 +508,13 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   dragStart(event: DragEvent, key: string) {
     // Save Dump of current Workspace
+    if (!this.isAddComponentEnabled) {
+      event.preventDefault();
+    }
+    else{
     event.dataTransfer.dropEffect = 'copyMove';
     event.dataTransfer.setData('text', key);
+    }  
   }
   /**
    * Function calls zoomIn/Out() mentioned in Workspace.ts
