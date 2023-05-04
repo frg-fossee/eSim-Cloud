@@ -79,8 +79,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Simulation button toggle for disabling
    */
   disabled = false;
-   /**
-   * Simulation button toggle for disabling adding_new_component option 
+  /**
+   * Simulation button toggle for disabling adding_new_component option
    */
   isAddComponentEnabled = true;
   /**
@@ -405,8 +405,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       sim.style.display = 'none';
       Workspace.stopSimulation(() => {
         this.visible_buttons();
-        this.isAddComponentEnabled =true;
-      
+        this.isAddComponentEnabled = true;
         this.disabled = false;
         document.getElementById('simload').style.display = 'none';
       });
@@ -497,7 +496,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param key string
    */
   componentdbClick(key: string) {
-    if (this.isAddComponentEnabled){
+    if (this.isAddComponentEnabled) {
       Workspace.addComponent(key, 100, 100, 0, 0);
     }
   }
@@ -510,11 +509,10 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // Save Dump of current Workspace
     if (!this.isAddComponentEnabled) {
       event.preventDefault();
+    } else {
+      event.dataTransfer.dropEffect = 'copyMove';
+      event.dataTransfer.setData('text', key);
     }
-    else{
-    event.dataTransfer.dropEffect = 'copyMove';
-    event.dataTransfer.setData('text', key);
-    }  
   }
   /**
    * Function calls zoomIn/Out() mentioned in Workspace.ts
