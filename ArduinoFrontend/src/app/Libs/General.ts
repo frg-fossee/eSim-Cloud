@@ -4,6 +4,7 @@ import { areBoundingBoxesIntersecting } from './RaphaelUtils';
 import _ from 'lodash';
 import { Wire } from './Wire';
 import { UndoUtils } from './UndoUtils';
+import { isDragEnable } from '../simulator/simulator.component';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -643,18 +644,20 @@ export class BreadBoard extends CircuitElement {
     let tmpy2 = [];
     // Create Custom Drag event
     this.elements.drag((dx, dy) => {
-      this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      tmpx = this.tx + dx;
-      tmpy = this.ty + dy;
-      fdx = dx;
-      fdy = dy;
-      for (let i = 0; i < this.joined.length; ++i) {
-        this.joined[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
-      }
-      for (let i = 0; i < ConnEleList.length; ++i) {
-        ConnEleList[i].dragAlong(NodeList[i], dx, dy);
-        tmpx2[i] = ConnEleList[i].tx + dx;
-        tmpy2[i] = ConnEleList[i].ty + dy;
+      if (isDragEnable == true) {
+        this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
+        tmpx = this.tx + dx;
+        tmpy = this.ty + dy;
+        fdx = dx;
+        fdy = dy;
+        for (let i = 0; i < this.joined.length; ++i) {
+          this.joined[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
+        }
+        for (let i = 0; i < ConnEleList.length; ++i) {
+          ConnEleList[i].dragAlong(NodeList[i], dx, dy);
+          tmpx2[i] = ConnEleList[i].tx + dx;
+          tmpy2[i] = ConnEleList[i].ty + dy;
+        }
       }
     }, () => {
       fdx = 0;
