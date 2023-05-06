@@ -287,7 +287,7 @@ export abstract class CircuitElement {
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
-      if (isDragEnable == true) {
+      if (isDragEnable === true) {
         this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
         // tmpx = this.tx + dx;
         // tmpy = this.ty + dy;
