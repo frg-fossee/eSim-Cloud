@@ -458,28 +458,34 @@ export abstract class CircuitElement {
    * @param fdy relative y position to move
    */
   getNodesCoord(): number[] {
-    const tmpar = [];
-    for (const node of this.nodes) {
-      tmpar.push(
-        [node.x, node.y]
-      );
+    if (isDragEnable === true) {
+      const tmpar = [];
+      for (const node of this.nodes) {
+        tmpar.push(
+          [node.x, node.y]
+        );
+      }
+      return tmpar;
     }
-    return tmpar;
   }
   dragAlong(tmpar: any, fdx: number, fdy: number): any {
-    this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
-    for (const node of this.nodes) {
-      tmpar.push(
-        [node.x, node.y]
-      );
-    }
-    for (let i = 0; i < this.nodes.length; ++i) {
-      this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+    if (isDragEnable === true) {
+      this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
+      for (const node of this.nodes) {
+        tmpar.push(
+          [node.x, node.y]
+        );
+      }
+      for (let i = 0; i < this.nodes.length; ++i) {
+        this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+      }
     }
   }
   dragAlongStop(x: number, y: number): void {
-    this.tx = x;
-    this.ty = y;
+    if (isDragEnable === true) {
+      this.tx = x;
+      this.ty = y;
+    }
   }
 
 
@@ -489,19 +495,21 @@ export abstract class CircuitElement {
    * @param fdy relative y position to move
    */
   transformPosition(fdx: number, fdy: number): void {
-    const tmpar = [];
-    this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
+    if (isDragEnable === true) {
+      const tmpar = [];
+      this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
 
-    for (const node of this.nodes) {
-      tmpar.push(
-        [node.x, node.y]
-      );
+      for (const node of this.nodes) {
+        tmpar.push(
+          [node.x, node.y]
+        );
+      }
+      for (let i = 0; i < this.nodes.length; ++i) {
+        this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
+      }
+      this.tx += fdx;
+      this.ty += fdy;
     }
-    for (let i = 0; i < this.nodes.length; ++i) {
-      this.nodes[i].move(tmpar[i][0] + fdx, tmpar[i][1] + fdy);
-    }
-    this.tx += fdx;
-    this.ty += fdy;
   }
 
   /**
