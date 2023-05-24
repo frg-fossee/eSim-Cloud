@@ -4,6 +4,7 @@ import { areBoundingBoxesIntersecting } from './RaphaelUtils';
 import _ from 'lodash';
 import { Wire } from './Wire';
 import { UndoUtils } from './UndoUtils';
+import { isDragEnable } from '../simulator/simulator.component';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -643,70 +644,74 @@ export class BreadBoard extends CircuitElement {
     let tmpy2 = [];
     // Create Custom Drag event
     this.elements.drag((dx, dy) => {
-      this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
-      tmpx = this.tx + dx;
-      tmpy = this.ty + dy;
-      fdx = dx;
-      fdy = dy;
-      for (let i = 0; i < this.joined.length; ++i) {
-        this.joined[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
-      }
-      for (let i = 0; i < ConnEleList.length; ++i) {
-        ConnEleList[i].dragAlong(NodeList[i], dx, dy);
-        tmpx2[i] = ConnEleList[i].tx + dx;
-        tmpy2[i] = ConnEleList[i].ty + dy;
+      if (isDragEnable === true) {
+        this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
+        tmpx = this.tx + dx;
+        tmpy = this.ty + dy;
+        fdx = dx;
+        fdy = dy;
+        for (let i = 0; i < this.joined.length; ++i) {
+          this.joined[i].move(tmpar[i][0] + dx, tmpar[i][1] + dy);
+        }
+        for (let i = 0; i < ConnEleList.length; ++i) {
+          ConnEleList[i].dragAlong(NodeList[i], dx, dy);
+          tmpx2[i] = ConnEleList[i].tx + dx;
+          tmpy2[i] = ConnEleList[i].ty + dy;
+        }
       }
     }, () => {
-      fdx = 0;
-      fdy = 0;
-      tmpar = [];
-      tmpar2 = [];
-      for (const node of this.nodes) {
-        tmpar2.push(
-          [node.x, node.y]
-        );
-        node.remainHidden();
-      }
-      for (const node of this.joined) {
-        let ElementFlag = false;
-        tmpar.push(
-          [node.x, node.y]
-        );
-        node.remainShow();
-        if (node.connectedTo != null) {
-          const ConnElement1 = node.connectedTo.start.parent;
-          const ConnElement2 = node.connectedTo.end.parent;
-          console.log(ConnElement1.keyName);
-          console.log(ConnElement2.keyName);
-          if (ConnElement1.keyName !== 'BreadBoard') {
-            for (const ele of ConnEleList) {
-              if (ele === ConnElement1) {
-                ElementFlag = true;
-                break;
+      if (isDragEnable === true) {
+        fdx = 0;
+        fdy = 0;
+        tmpar = [];
+        tmpar2 = [];
+        for (const node of this.nodes) {
+          tmpar2.push(
+            [node.x, node.y]
+          );
+          node.remainHidden();
+        }
+        for (const node of this.joined) {
+          let ElementFlag = false;
+          tmpar.push(
+            [node.x, node.y]
+          );
+          node.remainShow();
+          if (node.connectedTo != null) {
+            const ConnElement1 = node.connectedTo.start.parent;
+            const ConnElement2 = node.connectedTo.end.parent;
+            console.log(ConnElement1.keyName);
+            console.log(ConnElement2.keyName);
+            if (ConnElement1.keyName !== 'BreadBoard') {
+              for (const ele of ConnEleList) {
+                if (ele === ConnElement1) {
+                  ElementFlag = true;
+                  break;
+                }
               }
-            }
-            const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement1.info.properties;
-            const isBreadBoardPlaceable = ConnElement1.info.properties.isBreadBoardPlaceable;
-            if (!ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1) {
-              ConnEleList.push(ConnElement1);
-              tmpx2.push(0);
-              tmpy2.push(0);
-              NodeList.push(ConnElement1.getNodesCoord());
-            }
-          } else {
-            for (const ele of ConnEleList) {
-              if (ele === ConnElement1) {
-                ElementFlag = true;
-                break;
+              const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement1.info.properties;
+              const isBreadBoardPlaceable = ConnElement1.info.properties.isBreadBoardPlaceable;
+              if (!ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1) {
+                ConnEleList.push(ConnElement1);
+                tmpx2.push(0);
+                tmpy2.push(0);
+                NodeList.push(ConnElement1.getNodesCoord());
               }
-            }
-            const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement2.info.properties;
-            const isBreadBoardPlaceable = ConnElement2.info.properties.isBreadBoardPlaceable;
-            if (!ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1) {
-              ConnEleList.push(ConnElement2);
-              tmpx2.push(0);
-              tmpy2.push(0);
-              NodeList.push(ConnElement2.getNodesCoord());
+            } else {
+              for (const ele of ConnEleList) {
+                if (ele === ConnElement1) {
+                  ElementFlag = true;
+                  break;
+                }
+              }
+              const PlaceableCheck = 'isBreadBoardPlaceable' in ConnElement2.info.properties;
+              const isBreadBoardPlaceable = ConnElement2.info.properties.isBreadBoardPlaceable;
+              if (!ElementFlag && PlaceableCheck && isBreadBoardPlaceable === 1) {
+                ConnEleList.push(ConnElement2);
+                tmpx2.push(0);
+                tmpy2.push(0);
+                NodeList.push(ConnElement2.getNodesCoord());
+              }
             }
           }
         }
@@ -714,25 +719,27 @@ export class BreadBoard extends CircuitElement {
 
     }, () => {
       // Push dump to Undo stack & Reset
-      UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } });
-      for (let i = 0; i < this.nodes.length; ++i) {
-        this.nodes[i].move(tmpar2[i][0] + fdx, tmpar2[i][1] + fdy);
-        this.nodes[i].remainShow();
-      }
-      tmpar2 = [];
+      if (isDragEnable === true) {
+        UndoUtils.pushChangeToUndoAndReset({ keyName: this.keyName, element: this.save(), event: 'drag', dragJson: { dx: fdx, dy: fdy } });
+        for (let i = 0; i < this.nodes.length; ++i) {
+          this.nodes[i].move(tmpar2[i][0] + fdx, tmpar2[i][1] + fdy);
+          this.nodes[i].remainShow();
+        }
+        tmpar2 = [];
 
-      this.tx = tmpx;
-      this.ty = tmpy;
-      // reBuild SameNodeObject after drag stop
-      for (let i = 0; i < ConnEleList.length; i++) {
-        ConnEleList[i].dragAlongStop(tmpx2[i], tmpy2[i]);
+        this.tx = tmpx;
+        this.ty = tmpy;
+        // reBuild SameNodeObject after drag stop
+        for (let i = 0; i < ConnEleList.length; i++) {
+          ConnEleList[i].dragAlongStop(tmpx2[i], tmpy2[i]);
+        }
+        ConnEleList = [];
+        NodeList = [];
+        tmpx2 = [];
+        tmpy2 = [];
+        tmpar = [];
+        this.reBuildSameNodes();
       }
-      ConnEleList = [];
-      NodeList = [];
-      tmpx2 = [];
-      tmpy2 = [];
-      tmpar = [];
-      this.reBuildSameNodes();
     });
   }
 

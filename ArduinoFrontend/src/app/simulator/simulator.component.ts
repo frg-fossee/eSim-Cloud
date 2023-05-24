@@ -24,7 +24,10 @@ import { sample } from 'rxjs/operators';
  * Declare Raphael so that build don't throws error
  */
 declare var Raphael;
-
+/**
+ * Disable drag while Simulation
+ */
+export let isDragEnable = true;
 /**
  * Class For Simulator Page (Component)
  */
@@ -381,6 +384,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // Clears Output in Console
     this.hide_buttons();
     this.isAddComponentEnabled = false;
+    isDragEnable = false;
 
     Workspace.ClearConsole();
     // prints the output in console
@@ -406,6 +410,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       Workspace.stopSimulation(() => {
         this.visible_buttons();
         this.isAddComponentEnabled = true;
+        isDragEnable = true;
         this.disabled = false;
         document.getElementById('simload').style.display = 'none';
       });
