@@ -971,13 +971,13 @@ export class BreadBoard extends CircuitElement {
           }
         } else {
           const op = node.label.charCodeAt(0);
-          if (op >= 102) {
-            for (const neigh of xtemp[node.x]) {
-              if (neigh.y !== node.y && neigh.label.charCodeAt(0) >= 102) {
-                neigh.setValue(value, neigh);
-              }
-            }
-          }
+//           if (op >= 102) {
+//             for (const neigh of xtemp[node.x]) {
+//               if (neigh.y !== node.y && neigh.label.charCodeAt(0) >= 102) {
+//                 neigh.setValue(value, neigh);
+//               }
+//             }
+//           }
           if (op <= 101) {
             for (const neigh of xtemp[node.x]) {
               if (neigh.y !== node.y && neigh.label.charCodeAt(0) <= 101) {
