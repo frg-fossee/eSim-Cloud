@@ -1033,7 +1033,8 @@ function XMLWireConnections() {
   } else {
     var list = graph.getModel().cells
     for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      // if (list[property].Component === true && list[property].symbol !== 'PWR') {
+        if (list[property].Component === true) {
         mxCell.prototype.ConnectedNode = null
         var component = list[property]
 
@@ -1063,11 +1064,11 @@ function XMLWireConnections() {
                     }
                    
                     if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                      if (pin.edges[wire].source.edge === true) {
+                      if (pin.edges[wire].source.edge == true) {
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
                         pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
-                      } else if (pin.edges[wire].target.edge === true) {
+                      } else if (pin.edges[wire].target.edge == true) {
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
                         pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
