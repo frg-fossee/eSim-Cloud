@@ -387,6 +387,7 @@ export function GenerateNetList() {
         // mxCell.prototype.ConnectedNode = null
         var component = list[property]
         if (component.symbol === 'R') {
+
           k = k + component.symbol + r.toString()
           component.value = component.symbol + r.toString()
           component.properties.PREFIX = component.value
@@ -396,6 +397,7 @@ export function GenerateNetList() {
           k = k + component.symbol + v.toString()
           component.value = component.symbol + v.toString()
           component.properties.PREFIX = component.value
+
           ++v
         } else {
           k = k + component.symbol + c.toString()
@@ -403,7 +405,6 @@ export function GenerateNetList() {
           component.properties.PREFIX = component.value
           ++c
         }
-
         if (component.children !== null) {
           for (var child in component.children) {
             var pin = component.children[child]
@@ -418,14 +419,16 @@ export function GenerateNetList() {
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       // Pin to Wire Connection 
                     } else if (pin.edges[wire].target.edge === true) {
+
                     //   pin.edges[wire].node = pin.edges[wire].target.node
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
                       pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
                       pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
                       // Souce or Target is Ground 
-                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR' || pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
+                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR'  ||  pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
                     //   pin.edges[wire].node = 0
+                   
                       pin.edges[wire].value = 0
                       pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                       pin.edges[wire].targetVertex = pin.edges[wire].target.id
@@ -453,9 +456,8 @@ export function GenerateNetList() {
               compDetails.nodelist.add(component.children[child].edges[0].node)
           }
           compDetails.componentlist.push(component.properties.PREFIX)
-          // console.log("compDetails", compDetails)
         }
-        // console.log('component properties', component.properties)
+
         if (component.properties.MODEL && component.properties.MODEL.length > 0) {
           k = k + ' ' + component.properties.MODEL.split(' ')[1]
         }
@@ -604,10 +606,7 @@ class Stack {
    }
    print() {
       var top = this.top - 1; // because top points to index where new    element to be inserted
-      // console.log('printing working')
-      // console.log(this.data)
       while(top >= 0) { // print upto 0th index
-          // console.log(this.data[top]);
            top--;
       }
     }
@@ -618,14 +617,16 @@ class Stack {
        if(index != 0) {
           this._reverse(index-1);
        }
-       console.log(this.data[index]);
     }
 }
 
 function traverseWire(edge, vis) {
+
+
   var ans = []
   vis[edge.id] = 1
   if (edge.target.vertex == true || edge.source.vertex == true) {
+    //check for edges connected to such an edge 
     if (edge.target.vertex == true) { ans.push(edge.target) }
     if (edge.source.vertex == true) { ans.push(edge.source) }
     return ans;
@@ -648,7 +649,6 @@ function traverseWire(edge, vis) {
 }
 
 function annotate(graph) {
-
   var r = 1
   var v = 1
   var c = 1
@@ -665,10 +665,10 @@ function annotate(graph) {
   } else {
     // DFS _________
     var NODE_SETS = []
-    // console.log('dfs init')
     var ptr = 1
     var mp = Array(5000).fill(0)
     NODE_SETS[0] = new Set() // Defining ground
+    
     for(var property in list){
         if(list[property].Component === true && list[property].symbol !== 'PWR'){
             mxCell.prototype.ConnectedNode = null
@@ -689,6 +689,9 @@ function annotate(graph) {
                       var contains_gnd = 0                     
                       
                       stk.push(pin)      
+                      stk.push(pin)      
+                      // console.log('exploring connected nodes of', pin)                    
+                      stk.push(pin)                        
                       // console.log('exploring connected nodes of', pin)                    
                       while(!stk.isEmpty()){
                           cur_node = stk.peek()
@@ -697,12 +700,9 @@ function annotate(graph) {
                           cur_set.push(cur_node)
                           stk.print()
                           for (var wire in cur_node.edges) {
-                            // console.log(cur_node.edges[wire])
                             if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
-                              if (cur_node.edges[wire].target.ParentComponent !== null) {
-                                if(cur_node.edges[wire].target.ParentComponent.symbol === 'PWR'){
+                              if ((cur_node.edges[wire].target.ParentComponent !== null && cur_node.edges[wire].target.ParentComponent.symbol === 'PWR' ) || ( cur_node.edges[wire].source.ParentComponent !== null && cur_node.edges[wire].source.ParentComponent.symbol === 'PWR')) {
                                     contains_gnd = 1
-                                }
                               }
                               if(cur_node.edges[wire].target.vertex == true){
                                 if (!mp[(cur_node.edges[wire].target.id)] && (cur_node.edges[wire].target.id !== cur_node.id)){
@@ -734,29 +734,33 @@ function annotate(graph) {
                                   conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].target, mp))
                                 }
                               }
-                              // console.log("CONN EDGES", conn_vertices)
                               conn_vertices.forEach((elem) => {
                                 stk.push(elem)
                               })
                             }
                           }
+                          // if (cur_set.length > 0) {
+                          //   NODE_SETS[0] = new Set(cur_set);
+                          // }
                         if(contains_gnd === 1){
                             for(var x in cur_set)
                                 NODE_SETS[0].add(cur_set[x])
                         }
-                          // console.log("Set of nodes at same pot:", cur_set)   
                       }
+                      
                     } 
                     if (!contains_gnd){
                         NODE_SETS.push(new Set(cur_set))
                     }
+
+
+
                   }
               }
             }
         }
     }
     // console.log('dfs end')
-    // console.log("Results after considering edges: ", NODE_SETS)
     for (var property in list) {
         if (list[property].Component === true && list[property].symbol !== 'PWR') {
           mxCell.prototype.ConnectedNode = null
@@ -807,7 +811,6 @@ function annotate(graph) {
                         pin.edges[wire].value = pin.edges[wire].node
                       }
                       done = 1
-                      // console.log("VALUE SET TO ", pin.edges[wire].ConnectedNode)
                     }
                   })
                 })
@@ -822,7 +825,10 @@ function annotate(graph) {
   return list
 }
 
-// Returns all the Nodes present in the Schematic, Used for Simulation 
+
+
+
+
 export function GenerateNodeList() {
   var list = annotate(graph)
   // Using a Set to avoid duplicate Nodes 
@@ -1027,7 +1033,8 @@ function XMLWireConnections() {
   } else {
     var list = graph.getModel().cells
     for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      // if (list[property].Component === true && list[property].symbol !== 'PWR') {
+        if (list[property].Component === true) {
         mxCell.prototype.ConnectedNode = null
         var component = list[property]
 
@@ -1057,11 +1064,11 @@ function XMLWireConnections() {
                     }
                    
                     if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                      if (pin.edges[wire].source.edge === true) {
+                      if (pin.edges[wire].source.edge == true) {
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
                         pin.edges[wire].PointsArray = pin.edges[wire].geometry.points
-                      } else if (pin.edges[wire].target.edge === true) {
+                      } else if (pin.edges[wire].target.edge == true) {
                         pin.edges[wire].sourceVertex = pin.edges[wire].source.id
                         pin.edges[wire].targetVertex = pin.edges[wire].target.id
                         pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
