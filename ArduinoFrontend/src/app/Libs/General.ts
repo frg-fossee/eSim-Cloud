@@ -953,7 +953,7 @@ export class BreadBoard extends CircuitElement {
       node.addValueListener((value, calledBy, parent) => {
         const labelCalledBy = calledBy.label;
         const labelParent = parent.label;
-        if (calledBy.y === parent.y
+        if (calledBy.y === parent.y || calledBy.x === parent.x
           && (labelCalledBy.charCodeAt(0) !== labelParent.charCodeAt(0) || labelCalledBy === labelParent)) {
           return;
         }
@@ -971,13 +971,13 @@ export class BreadBoard extends CircuitElement {
           }
         } else {
           const op = node.label.charCodeAt(0);
-//           if (op >= 102) {
-//             for (const neigh of xtemp[node.x]) {
-//               if (neigh.y !== node.y && neigh.label.charCodeAt(0) >= 102) {
-//                 neigh.setValue(value, neigh);
-//               }
-//             }
-//           }
+          if (op >= 102) {
+            for (const neigh of xtemp[node.x]) {
+              if (neigh.y !== node.y && neigh.label.charCodeAt(0) >= 102) {
+                neigh.setValue(value, neigh);
+              }
+            }
+          }
           if (op <= 101) {
             for (const neigh of xtemp[node.x]) {
               if (neigh.y !== node.y && neigh.label.charCodeAt(0) <= 101) {
