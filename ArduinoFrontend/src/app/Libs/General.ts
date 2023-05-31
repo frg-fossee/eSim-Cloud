@@ -953,7 +953,11 @@ export class BreadBoard extends CircuitElement {
       node.addValueListener((value, calledBy, parent) => {
         const labelCalledBy = calledBy.label;
         const labelParent = parent.label;
-        if (calledBy.y === parent.y || calledBy.x === parent.x
+        if (calledBy.y === parent.y
+          && (labelCalledBy.charCodeAt(0) !== labelParent.charCodeAt(0) || labelCalledBy === labelParent)) {
+          return;
+        }
+        if (calledBy.x === parent.x
           && (labelCalledBy.charCodeAt(0) !== labelParent.charCodeAt(0) || labelCalledBy === labelParent)) {
           return;
         }
