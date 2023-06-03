@@ -836,23 +836,23 @@ function annotate(graph) {
               }
             }
             // Additional condition to handle ground connection
-          if (pin.edges !== null && pin.edges.length !== 0) {
-            pin.edges.forEach((edge) => {
-              if (
-                edge.target === null ||
-                edge.target.ParentComponent === null ||
-                (edge.target.ParentComponent.symbol !== 'PWR' && edge.target.ParentComponent.symbol !== 'GND')
-              ) {
-                if (pin.ConnectedNode === 0) {
-                  edge.node = 0;
-                  edge.value = edge.node;
-                } else {
-                  edge.node = pin.ConnectedNode;
-                  edge.value = edge.node;
+            if (pin.edges !== null && pin.edges.length !== 0) {
+              pin.edges.forEach((edge) => {
+                if (
+                  edge.target === null ||
+                  edge.target.ParentComponent === null ||
+                  (edge.target.ParentComponent.symbol !== 'PWR' && edge.target.ParentComponent.symbol !== 'GND')
+                ) {
+                  if (pin.ConnectedNode === 0) {
+                    edge.node = 0;
+                    edge.value = edge.node;
+                  } else {
+                    edge.node = pin.ConnectedNode;
+                    edge.value = edge.node;
+                  }
                 }
-              }
-            });
-          }
+              });
+            }
 
           }
         }
