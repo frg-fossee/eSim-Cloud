@@ -842,6 +842,8 @@ export class Workspace {
             }
           }
         }
+        const selectedBreadboard = window['Selected'];
+        selectedBreadboard.maybeUnsolderElement(selectedBreadboard);
       }
 
       // get the component keyname
