@@ -3,7 +3,7 @@ import Draggable from 'react-draggable'
 import {ResizableBox} from "react-resizable"
 import PropTypes from 'prop-types'
 import {
-  Slide,
+  //Slide,
   Button,
   Dialog,
   AppBar,
@@ -35,9 +35,9 @@ import Graph from './Graph'
 
 const FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
+//const Transition = React.forwardRef(function Transition (props, ref) {
+//  return <Slide direction="up" ref={ref} {...props} />
+//})
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 
 }))
 function PaperComponent(props){
-  const classes = useStyles()
+ 
   return(
     
     <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
@@ -94,7 +94,7 @@ function PaperComponent(props){
 export default function SimulationScreen ({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
-  const stitle = useSelector((state) => state.saveSchematicReducer.title)
+  //const stitle = useSelector((state) => state.saveSchematicReducer.title)
   const netlist = useSelector((state) => state.netlistReducer.netlist)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
