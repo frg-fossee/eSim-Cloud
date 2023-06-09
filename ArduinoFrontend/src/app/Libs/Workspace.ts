@@ -8,6 +8,7 @@ import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
 import { EventEmitter } from '@angular/core';
+import { stopdrag } from './General';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -488,7 +489,7 @@ export class Workspace {
       return;
     }
     if ((event.key === 'Delete' || event.key === 'Backspace')
-      && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) {
+      && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) { 
       // Backspace or Delete
       Workspace.DeleteComponent();
     }
@@ -528,12 +529,16 @@ export class Workspace {
     if (event.ctrlKey && (event.key === 'z' || event.key === 'Z') && UndoUtils.enableButtonsBool) {
       // CTRL + z
       // Call Undo Function
+      stopdrag.value = true;
       UndoUtils.workspaceUndo();
+      stopdrag.value = false;
     }
     if (event.ctrlKey && (event.key === 'y' || event.key === 'Y') && UndoUtils.enableButtonsBool) {
       // CTRL + y
       // Call Redo Function
+      stopdrag.value =true;
       UndoUtils.workspaceRedo();
+      stopdrag.value =false;
     }
   }
   /**
@@ -792,7 +797,7 @@ export class Workspace {
   /** Function to delete component fro Workspace */
   static DeleteComponent(undoReset = true) {
     // Save Dump of current Workspace
-    // Check if component is selected
+    // Check if component is selected   
     if (window['Selected']) {
       // is selected component is an arduini uno then show confirm message
       if (window['Selected'] instanceof ArduinoUno) {
@@ -843,8 +848,8 @@ export class Workspace {
           }
         }
         const selectedBreadboard = window['Selected'];
-        selectedBreadboard.maybeUnsolderElement(selectedBreadboard);
-      }
+       selectedBreadboard.maybeUnsolderElement(selectedBreadboard);
+}      
 
       // get the component keyname
       const items = window.scope[key];
