@@ -489,7 +489,7 @@ export class Workspace {
       return;
     }
     if ((event.key === 'Delete' || event.key === 'Backspace')
-      && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) { 
+      && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) {
       // Backspace or Delete
       Workspace.DeleteComponent();
     }
@@ -536,9 +536,9 @@ export class Workspace {
     if (event.ctrlKey && (event.key === 'y' || event.key === 'Y') && UndoUtils.enableButtonsBool) {
       // CTRL + y
       // Call Redo Function
-      stopdrag.value =true;
+      stopdrag.value = true;
       UndoUtils.workspaceRedo();
-      stopdrag.value =false;
+      stopdrag.value = false;
     }
   }
   /**
@@ -848,8 +848,8 @@ export class Workspace {
           }
         }
         const selectedBreadboard = window['Selected'];
-       selectedBreadboard.maybeUnsolderElement(selectedBreadboard);
-}      
+        selectedBreadboard.maybeUnsolderElement(selectedBreadboard);
+      }
 
       // get the component keyname
       const items = window.scope[key];

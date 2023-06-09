@@ -12,8 +12,8 @@ import { isDragEnable } from '../simulator/simulator.component';
 declare var window;
 
 /** 
-* Stoping Unnecessary drag ;
-*/
+ * Stoping Unnecessary drag ;
+ */
 export let stopdrag = { value: false };
 
 /**
@@ -971,13 +971,12 @@ export class BreadBoard extends CircuitElement {
         }
         if (!isDragEnable.value) {
           if (node.label === '-') {
-            console.log(ytemp[node.y], "from --");
             for (const neigh of ytemp[node.y]) {
               if (neigh.x !== node.x && value <= 0) {
                 neigh.setValue(value, neigh);
               }
             }
-          } else if (node.label === '+') {           
+          } else if (node.label === '+') {
             for (const neigh of ytemp[node.y]) {
               if (neigh.x !== node.x) {
                 neigh.setValue(value, neigh);
@@ -985,7 +984,7 @@ export class BreadBoard extends CircuitElement {
             }
           } else {
             const op = node.label.charCodeAt(0);
-            if (op >= 102) {          
+            if (op >= 102) {
               for (const neigh of xtemp[node.x]) {
                 if (neigh.y !== node.y && neigh.label.charCodeAt(0) >= 102) {
                   neigh.setValue(value, neigh);
