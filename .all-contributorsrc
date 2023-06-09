@@ -80,6 +80,72 @@
         "code",
         "design"
       ]
+    },
+    {
+      "login": "ikartikgautam",
+      "name": "Kartik Gautam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/39825660?v=4",
+      "profile": "http://ikartikgautam.web.app/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "kumanik5661",
+      "name": "Nikhil Kumar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/42597251?v=4",
+      "profile": "https://github.com/kumanik5661",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "Kaustuv942",
+      "name": "Kaustuv K Chattopadhyay",
+      "avatar_url": "https://avatars.githubusercontent.com/u/56028031?v=4",
+      "profile": "https://github.com/Kaustuv942",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "akshat2602",
+      "name": "Akshat Sharma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/35724794?v=4",
+      "profile": "https://akshat-sharma.me",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "Rugz007",
+      "name": "Rugved Somwanshi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/16833604?v=4",
+      "profile": "http://rugvedsomwanshi.me",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
+    },
+    {
+      "login": "rajatmaheshwari2512",
+      "name": "Rajat Maheshwari",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54249328?v=4",
+      "profile": "https://rajatmaheshwari.me/",
+      "contributions": [
+        "code",
+        "doc",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
