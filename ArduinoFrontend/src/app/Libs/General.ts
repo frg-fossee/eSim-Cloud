@@ -11,7 +11,7 @@ import { isDragEnable } from '../simulator/simulator.component';
  */
 declare var window;
 
-/** 
+/**
  * Stoping Unnecessary drag ;
  */
 export let stopdrag = { value: false };

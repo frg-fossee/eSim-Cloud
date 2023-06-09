@@ -797,7 +797,7 @@ export class Workspace {
   /** Function to delete component fro Workspace */
   static DeleteComponent(undoReset = true) {
     // Save Dump of current Workspace
-    // Check if component is selected   
+    // Check if component is selected
     if (window['Selected']) {
       // is selected component is an arduini uno then show confirm message
       if (window['Selected'] instanceof ArduinoUno) {

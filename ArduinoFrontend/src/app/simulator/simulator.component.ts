@@ -84,7 +84,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   disabled = false;
   /**
-  * Simulation button toggle for disabling adding_new_component option
+   * Simulation button toggle for disabling adding_new_component option
    */
   isAddComponentEnabled = true;
   /**
