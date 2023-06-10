@@ -20,6 +20,7 @@ import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
 import { sample } from 'rxjs/operators';
+import { stopdrag } from '../Libs/General';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -27,7 +28,7 @@ declare var Raphael;
 /**
  * Disable drag while Simulation
  */
-export let isDragEnable = true;
+export let isDragEnable = { value: true };
 /**
  * Class For Simulator Page (Component)
  */
@@ -384,7 +385,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // Clears Output in Console
     this.hide_buttons();
     this.isAddComponentEnabled = false;
-    isDragEnable = false;
+    isDragEnable.value = false;
 
     Workspace.ClearConsole();
     // prints the output in console
@@ -410,7 +411,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       Workspace.stopSimulation(() => {
         this.visible_buttons();
         this.isAddComponentEnabled = true;
-        isDragEnable = true;
+        isDragEnable.value = true;
         this.disabled = false;
         document.getElementById('simload').style.display = 'none';
       });
@@ -939,13 +940,17 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Undo Operation
    */
   undoChange() {
+    stopdrag.value = true;
     UndoUtils.workspaceUndo();
+    stopdrag.value = false;
   }
   /**
    * Redo Operation
    */
   redoChange() {
+    stopdrag.value = true;
     UndoUtils.workspaceRedo();
+    stopdrag.value = false;
   }
   /**
    * Create a new branch for project
