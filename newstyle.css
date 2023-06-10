@@ -1,0 +1,150 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+  margin: 0;
+  background-image: url("bg (1).png");
+}
+
+/* Style the header */
+.header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px #0000003f;
+}
+
+/* Style the topnav links */
+.topnav a {
+    font-size: 12px;
+    font-weight: 500;
+  float: right;
+  display: block;
+  color: #757575;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+  color: black;
+}
+
+#login{
+    margin-right:40px;
+}
+
+
+#name{
+    float:left;
+    color: black;
+    font-size: 16px;
+}
+#grad-name{
+    font-weight: bolder;
+    background: -webkit-linear-gradient(left, #00C8A4, #007777, #0068C8);
+    background-clip: border-box;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#catch-phrase{
+    text-align: center;
+}
+
+#catch-phrase > h4 {
+    margin-top: 40px;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+#catch-phrase > h1 {
+    font-size: 60px;
+    font-weight: 400;
+    margin-bottom: 25px;
+    margin-top: 0px;
+}
+
+.working-gif{
+    width:700px;
+}
+#counter{
+    height: 380px;
+    margin-left: 109px;
+    margin-right: 100px;
+    float:left;
+}
+
+#inner-options > h1{
+    font-size: 19px;
+    font-weight:500;
+    padding-top: 60px;
+    margin-bottom: 25px;
+}
+
+.inner-options-text-lower{
+    font-size: 19px;
+    font-weight:500;
+    margin-top: 40px;
+    margin-bottom: 25px;
+}
+
+#launch-editor{
+    font-size:12px;
+    font-family: "Inter";
+    color:#ffffff;
+    background-color: #000000;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px 15px 10px 18px;
+}
+
+#explore-examples{
+    font-size:12px;
+    font-family: "Inter";
+    font-weight: 600;
+    color:#000000;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    padding: 10px 15px 10px 15px;
+
+}
+#gif-caption{
+    font-size:  19px;
+    font-weight: 300;
+    text-align: center;
+    color: #969696;
+}
+
+a#launch-editor{
+    text-decoration: none;
+    transition: font-size 0.3s;
+}
+
+a#launch-editor:hover{
+    font-size: 13px;
+    text-decoration: underline;
+}
+
+a#explore-examples{
+    text-decoration: none;
+    transition: font-size 0.3s;
+}
+a#explore-examples:hover{
+    font-size: 13px;
+    text-decoration: underline;
+}
+
