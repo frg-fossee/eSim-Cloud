@@ -20,7 +20,6 @@ import { UndoUtils } from '../Libs/UndoUtils';
 import { ExitConfirmDialogComponent } from '../exit-confirm-dialog/exit-confirm-dialog.component';
 import { SaveProjectDialogComponent } from './save-project-dialog/save-project-dialog.component';
 import { sample } from 'rxjs/operators';
-import { stopdrag } from '../Libs/General';
 /**
  * Declare Raphael so that build don't throws error
  */
@@ -29,6 +28,10 @@ declare var Raphael;
  * Disable drag while Simulation
  */
 export let isDragEnable = { value: true };
+/**
+ * Stoping Unnecessary drag ;
+ */
+export let stopdrag = { value: false };
 /**
  * Class For Simulator Page (Component)
  */

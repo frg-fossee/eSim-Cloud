@@ -5,17 +5,11 @@ import _ from 'lodash';
 import { Wire } from './Wire';
 import { UndoUtils } from './UndoUtils';
 import { isDragEnable } from '../simulator/simulator.component';
-
+import { stopdrag } from '../simulator/simulator.component';
 /**
  * Declare window so that custom created function don't throw error
  */
 declare var window;
-
-/**
- * Stoping Unnecessary drag ;
- */
-export let stopdrag = { value: false };
-
 /**
  * Node tuple class to store breadboard node and element node which are in proximity
  */

@@ -8,7 +8,7 @@ import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
 import { EventEmitter } from '@angular/core';
-import { stopdrag } from './General';
+import { stopdrag } from '../simulator/simulator.component';
 
 /**
  * Declare window so that custom created function don't throw error
