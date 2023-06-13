@@ -302,10 +302,10 @@ export class Point {
    * Creates and originates new wire at the point
    */
   startNewWire() {
-    if (isDragEnable === true) {
-      const wire = new Wire(this.canvas, this);
-      this.connectedTo = wire;
-      return wire;
+    if (isDragEnable.value === true) {
+    const wire = new Wire(this.canvas, this);
+    this.connectedTo = wire;
+    return wire;
     }
   }
 

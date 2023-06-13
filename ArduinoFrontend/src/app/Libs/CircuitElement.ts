@@ -287,7 +287,7 @@ export abstract class CircuitElement {
     let fdy = 0;
     let tmpar = [];
     this.elements.drag((dx, dy) => {
-      if (isDragEnable === true) {
+      if (isDragEnable.value === true) {
         this.elements.transform(`t${this.tx + dx},${this.ty + dy}`);
         // tmpx = this.tx + dx;
         // tmpy = this.ty + dy;
@@ -458,7 +458,7 @@ export abstract class CircuitElement {
    * @param fdy relative y position to move
    */
   getNodesCoord(): number[] {
-    if (isDragEnable === true) {
+    if (isDragEnable.value === true) {
       const tmpar = [];
       for (const node of this.nodes) {
         tmpar.push(
@@ -469,7 +469,7 @@ export abstract class CircuitElement {
     }
   }
   dragAlong(tmpar: any, fdx: number, fdy: number): any {
-    if (isDragEnable === true) {
+    if (isDragEnable.value === true) {
       this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
       for (const node of this.nodes) {
         tmpar.push(
@@ -482,7 +482,7 @@ export abstract class CircuitElement {
     }
   }
   dragAlongStop(x: number, y: number): void {
-    if (isDragEnable === true) {
+    if (isDragEnable.value === true ) {
       this.tx = x;
       this.ty = y;
     }
@@ -495,7 +495,7 @@ export abstract class CircuitElement {
    * @param fdy relative y position to move
    */
   transformPosition(fdx: number, fdy: number): void {
-    if (isDragEnable === true) {
+    if (isDragEnable.value === true) {
       const tmpar = [];
       this.elements.transform(`t${this.tx + fdx},${this.ty + fdy}`);
 

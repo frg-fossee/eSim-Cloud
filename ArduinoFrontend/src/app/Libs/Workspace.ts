@@ -8,6 +8,7 @@ import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
 import { EventEmitter } from '@angular/core';
+import { stopdrag } from '../simulator/simulator.component';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -528,12 +529,16 @@ export class Workspace {
     if (event.ctrlKey && (event.key === 'z' || event.key === 'Z') && UndoUtils.enableButtonsBool) {
       // CTRL + z
       // Call Undo Function
+      stopdrag.value = true;
       UndoUtils.workspaceUndo();
+      stopdrag.value = false;
     }
     if (event.ctrlKey && (event.key === 'y' || event.key === 'Y') && UndoUtils.enableButtonsBool) {
       // CTRL + y
       // Call Redo Function
+      stopdrag.value = true;
       UndoUtils.workspaceRedo();
+      stopdrag.value = false;
     }
   }
   /**
@@ -842,6 +847,8 @@ export class Workspace {
             }
           }
         }
+        const selectedBreadboard = window['Selected'];
+        selectedBreadboard.maybeUnsolderElement(selectedBreadboard);
       }
 
       // get the component keyname
