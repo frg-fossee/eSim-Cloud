@@ -42,6 +42,7 @@ import queryString from 'query-string'
 import { RotateLeft } from '@material-ui/icons'
 import AddPhotoAlternateIcon from '@material-ui/icons/AddPhotoAlternate'
 import { fetchRole } from '../../redux/actions/authActions'
+import { setFileOpenedStatus } from './Helper/ToolbarTools';
 
 import {
   NetlistModal,
@@ -630,6 +631,7 @@ export default function SchematicToolbar ({
         setMessage('Unsupported file error !')
         handleSnacClick()
       } else {
+        setFileOpenedStatus(true); // Set flag to indicate successful file opening
         dispatch(openLocalSch(obj))
       }
     }
