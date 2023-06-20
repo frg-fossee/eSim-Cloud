@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Draggable from 'react-draggable'
-import {ResizableBox} from "react-resizable"
+
 import PropTypes from 'prop-types'
+import {  Fullscreen, FullscreenExit, } from '@mui/icons-material';
 import {
   //Slide,
   Button,
@@ -59,22 +60,21 @@ const useStyles = makeStyles((theme) => ({
   },
   dialog:{
     position: 'absolute',
-    right:0
+    right:0,
+    //overflow: 'auto'
   },
   resizable: {
     position: 'relative',
     '& .react-resizable-handle': {
         position: 'absolute',    
-        width: 100,  
-        height: 100,   
+        width: 40,  
+        height: 40,   
         bottom: 0,
         right: 0,
         background:"url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2IDYiIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmYwMCIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iNnB4Ij48ZyBvcGFjaXR5PSIwLjMwMiI+PHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9IiMwMDAwMDAiLz48L2c+PC9zdmc+')",
         'background-position': 'bottom right',
-        padding: '0 3px 3px 0',
-        'background-repeat': 'no-repeat',
-        'background-origin': 'content-box',
-        'box-sizing': 'border-box',
+        padding: '0 0 0 0',
+   
         cursor: 'se-resize'
     },
 },
@@ -511,21 +511,52 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     FileSaver.saveAs(blob, 'graph_points_eSim_on_cloud.csv')
   }
   
+  const [fullScreen, setFullScreen] = useState(false);
+  const [minimized, setMinimized] = useState(false);
+  const [maximized, setMaximized] = useState(false);
+  const [resizable, setResizable] = useState(true);
+  
 
+  const handleMaximize = () => {
+    setMaximized(!maximized);
+    setFullScreen(!fullScreen);
+    setMinimized(false);
+    setResizable(!resizable)
+  };
+  
   return (
     <div>
-      <Dialog maxWidth="md" open={open} onClose={close} classes={{paper: classes.dialog}} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title" PaperProps = {{
+      <Dialog maxWidth={1000} fullScreen={fullScreen} maxHeight={700} open={open} onClose={close} classes={{paper: classes.dialog}} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title" PaperProps = {{
         style:{
           backgroundColor : '#4d4d4d',
-          boxShadow:'none'
-        }
-      }}>
-        <ResizableBox height={600} width={600} className={classes.resizable}>
+          boxShadow:'none',
+            resize: resizable ? 'both' : 'none',
+            overflow: resizable ? 'auto' : 'hidden',
+            height: maximized ? '100%' : 'auto',
+            width: maximized ? '100%' : 'auto',
+            position: 'absolute',
+          },
+        sx: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: maximized ? '100%' : 600,
+          height: maximized ? '100%' : minimized ? 'auto' : 300,
+          maxHeight: '100%',
+          maxWidth: '100%',
+          transform: maximized ? 'none' : `translate(50%, 50%)`,
+          transition: 'all 0.3s ease',
+          overflow: 'hidden',
+        },
+      }} disableBackdropClick >
+        
         <AppBar position="static" elevation={0} className={classes.appBar}>
           <Toolbar variant="dense" style={{ backgroundColor: '#404040' }} >
-            <IconButton edge="start" color="inherit" onClick={close} aria-label="close">
-              <CloseIcon />
-            </IconButton>
+             
+            <IconButton edge="start" color="inherit" onClick={close} aria-label="close"><CloseIcon /></IconButton>
+            <IconButton onClick={handleMaximize}>
+            {maximized ? <FullscreenExit /> : <Fullscreen />}
+          </IconButton>  
             <Typography variant="h6" className={classes.title} id="draggable-dialog-title" style={{ cursor: 'move'}}>
               Simulation Result
             </Typography>
@@ -954,7 +985,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             }
           </Grid>
         </Container>
-        </ResizableBox>
+        
       </Dialog>
     </div>
   )
