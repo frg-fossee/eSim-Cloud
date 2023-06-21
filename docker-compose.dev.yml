@@ -21,7 +21,11 @@ services:
     image: "docker.pkg.github.com/frg-fossee/esim-cloud/eda-frontend:dev"
     build: ./eda-frontend/
     command: >
-      sh -c "npm install &&
+      sh -c "npm install && 
+             npm install react-resizable &&
+             npm install @mui/icons-material &&
+             npm install @mui/icons-material@latest &&
+             npm install @mui/material @emotion/react @emotion/styled &&
              npm start"
     ports:
       - "3000:3000"
