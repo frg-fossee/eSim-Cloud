@@ -350,6 +350,7 @@ body {
   display: flex;
   color: #fff;
   flex-direction: column;
+  max-height: 200px;
 }
 
 #msg label {
