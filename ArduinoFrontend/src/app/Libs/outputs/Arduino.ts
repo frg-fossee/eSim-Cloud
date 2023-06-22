@@ -290,7 +290,7 @@ export class ArduinoUno extends CircuitElement {
     let shouldScrollToBottom = true;
     const msg = document.getElementById('msg');
 
-    //scroll Listener in console
+     //scroll Listener in console
     msg.addEventListener('scroll', () => {
       const isScrolledToBottom = msg.scrollHeight - msg.clientHeight <= msg.scrollTop + 1;
       shouldScrollToBottom = isScrolledToBottom;
@@ -306,12 +306,11 @@ export class ArduinoUno extends CircuitElement {
           // Scroll to bottom if both conditions are met
           msg.scrollTop = msg.scrollHeight;
         }
-      };
+      }
     };
-    //appending output to console 
+     //appending output to console
     msg.appendChild(myOutput);
     msg.scrollTop = msg.scrollHeight;
-    
     this.pinNameMap['5V'].setValue(5, null);
     this.pinNameMap['3.3V'].setValue(3.3, null);
 
