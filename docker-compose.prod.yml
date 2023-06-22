@@ -24,10 +24,6 @@ services:
     build: ./eda-frontend/
     command: >
       sh -c "npm install &&
-            npm install react-resizable &&
-            npm install @mui/icons-material &&
-            npm install @mui/icons-material@latest &&
-            npm install @mui/material @emotion/react @emotion/styled &&
            npm run build"
     environment:
       - "PUBLIC_URL=${EDA_PUBLIC_URL}"
