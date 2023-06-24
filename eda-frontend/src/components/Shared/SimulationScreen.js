@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Draggable from 'react-draggable'
 
 import PropTypes from 'prop-types'
-import {  Fullscreen, FullscreenExit, } from '@mui/icons-material';
+import {  Fullscreen, FullscreenExit} from '@mui/icons-material';
 import {
   //Slide,
   Button,
@@ -515,18 +515,19 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   const [minimized, setMinimized] = useState(false);
   const [maximized, setMaximized] = useState(false);
   const [resizable, setResizable] = useState(true);
-  
+  //const [dialogPosition, setDialogPosition] = useState({right: 0})
 
   const handleMaximize = () => {
+    //setDialogPosition({right:0})
     setMaximized(!maximized);
     setFullScreen(!fullScreen);
-    setMinimized(false);
-    setResizable(!resizable)
+    setMinimized(false)
+    setResizable(true)
   };
-  
+
   return (
     <div>
-      <Dialog maxWidth={1000} fullScreen={fullScreen} maxHeight={700} open={open} onClose={close} classes={{paper: classes.dialog}} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title" PaperProps = {{
+      <Dialog maxWidth={100} fullScreen={fullScreen} maxHeight={70} open={open} onClose={close} classes={{paper: classes.dialog}} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title" PaperProps = {{
         style:{
           backgroundColor : '#4d4d4d',
           boxShadow:'none',
@@ -535,6 +536,11 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             height: maximized ? '100%' : 'auto',
             width: maximized ? '100%' : 'auto',
             position: 'absolute',
+            //right: dialogPosition.right,
+            minWidth : 400,
+            maxWidth: maximized? '100vw' :1500,
+            minHeight:400,
+            maxHeight: maximized? '100vh' : 1000,
           },
         sx: {
           position: 'absolute',
