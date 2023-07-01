@@ -78,11 +78,8 @@ export class Resistor extends CircuitElement {
       Resistor.unitValues = this.data.unitValues;
     }
     if (this.loadresistor === true) {
-      this.value;
-      this.toleranceIndex;
       this.loadresistor = false;
-    }
-    else {
+    } else {
       this.value = this.data.initial;
       this.toleranceIndex = this.data.initialToleranceIndex;
     }
@@ -116,7 +113,6 @@ export class Resistor extends CircuitElement {
     this.value = data.data.value;
     this.toleranceIndex = data.data.tolerance;
     this.loadresistor = true;
-    this.init; // Call init function to update values.
   }
   /**
    * Updates Resistor Properties
