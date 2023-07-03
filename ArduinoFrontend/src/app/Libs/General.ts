@@ -56,6 +56,10 @@ export class Resistor extends CircuitElement {
    */
   toleranceIndex: number;
   /**
+   * flag for resistor :- if its value is default or imported from json .
+   */
+  loadresistor: boolean;
+  /**
    * Resistor constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
@@ -73,8 +77,12 @@ export class Resistor extends CircuitElement {
       Resistor.unitLabels = this.data.unitLabels;
       Resistor.unitValues = this.data.unitValues;
     }
-    this.value = this.data.initial;
-    this.toleranceIndex = this.data.initialToleranceIndex;
+    if (this.loadresistor === true) {
+      this.loadresistor = false;
+    } else {
+      this.value = this.data.initial;
+      this.toleranceIndex = this.data.initialToleranceIndex;
+    }
     this.updateColors();
     delete this.data;
     this.data = null;
@@ -101,9 +109,10 @@ export class Resistor extends CircuitElement {
    * function loads the SaveData()
    * @param data save object
    */
-  LoadData(data: any) {
+  LoadData = (data: any) => {
     this.value = data.data.value;
     this.toleranceIndex = data.data.tolerance;
+    this.loadresistor = true;
   }
   /**
    * Updates Resistor Properties
