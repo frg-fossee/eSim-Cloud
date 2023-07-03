@@ -514,7 +514,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
   const [fullScreen, setFullScreen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [maximized, setMaximized] = useState(false);
-  const [resizable, setResizable] = useState(true);
+  //const [resizable, setResizable] = useState(true);
   //const [dialogPosition, setDialogPosition] = useState({right: 0})
 
   const handleMaximize = () => {
@@ -522,12 +522,12 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     setMaximized(!maximized);
     setFullScreen(!fullScreen);
     setMinimized(false)
-    setResizable(true)
+    //setResizable(true)
   };
 
   return (
     <div>
-      <Dialog maxWidth={100} fullScreen={fullScreen} maxHeight={70} open={open} onClose={close} classes={{paper: classes.dialog}} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title" PaperProps = {{
+      {/* <Dialog maxWidth={100} fullScreen={fullScreen} maxHeight={70} open={open} onClose={close} classes={{paper: classes.dialog}} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title" PaperProps = {{
         style:{
           backgroundColor : '#4d4d4d',
           boxShadow:'none',
@@ -536,25 +536,68 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             height: maximized ? '100%' : 'auto',
             width: maximized ? '100%' : 'auto',
             position: 'absolute',
+            //bottom:0,
+            //right:0,
             //right: dialogPosition.right,
             minWidth : 400,
-            maxWidth: maximized? '100vw' :1500,
+            maxWidth: maximized? '100vw' :'100vw',
             minHeight:400,
-            maxHeight: maximized? '100vh' : 1000,
+            maxHeight: maximized? '100vh' : '100vh',
+            resize: 'both',
+            resize: 'horizontal'
           },
         sx: {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: maximized ? '100%' : 600,
-          height: maximized ? '100%' : minimized ? 'auto' : 300,
+          width: maximized ? '100%' : 600 ,
+          height: maximized ? '100%' : minimized ? 'auto' : 300 ,
           maxHeight: '100%',
           maxWidth: '100%',
           transform: maximized ? 'none' : `translate(50%, 50%)`,
           transition: 'all 0.3s ease',
           overflow: 'hidden',
         },
-      }} disableBackdropClick >
+      }} disableBackdropClick >  */}
+      <Dialog
+  maxWidth={100}
+  fullScreen={fullScreen}
+  maxHeight={70}
+  open={open}
+  onClose={close}
+  classes={{ paper: classes.dialog }}
+  PaperComponent={PaperComponent}
+  aria-labelledby="draggable-dialog-title"
+  PaperProps={{
+    style: {
+      backgroundColor: '#4d4d4d',
+      boxShadow: 'none',
+      resize: 'both',
+      overflow: 'auto',
+      height: maximized ? '100%' : 300,
+      width: maximized ? '100%' : 600,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      minWidth: 400,
+      maxWidth: '100vw',
+      minHeight: 400,
+      maxHeight: '100vh',
+         },
+    sx: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      width: maximized ? '100%' : 600,
+      height: maximized ? '100%' : minimized ? 'auto' : 300,
+      maxHeight: '100%',
+      maxWidth: '100%',
+      resize: 'both',
+      overflow: 'hidden',
+    },
+  }}
+  disableBackdropClick
+>
         
         <AppBar position="static" elevation={0} className={classes.appBar}>
           <Toolbar variant="dense" style={{ backgroundColor: '#404040' }} >
