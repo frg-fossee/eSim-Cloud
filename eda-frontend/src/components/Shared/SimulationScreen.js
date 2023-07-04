@@ -562,7 +562,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
       <Dialog
   maxWidth={100}
   fullScreen={fullScreen}
-  maxHeight={70}
+  //maxHeight={70}
   open={open}
   onClose={close}
   classes={{ paper: classes.dialog }}
