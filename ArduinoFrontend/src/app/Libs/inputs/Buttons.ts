@@ -9,6 +9,10 @@ declare var Raphael;
 
 declare var window;
 /**
+ * Declare window so that custom created function don't throw error
+ */
+declare var window;
+/**
  * Pushbutton Class
  */
 export class PushButton extends CircuitElement {
@@ -216,6 +220,10 @@ export class SlideSwitch extends CircuitElement {
    */
   private flag = true;
   /**
+   * Object of terminals and their respective arduino pin
+   */
+  terminalParent = {};
+  /**
    * Slideswitch constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
@@ -231,11 +239,15 @@ export class SlideSwitch extends CircuitElement {
     this.nodes[1].addValueListener((v) => {
       console.log(v);
       if (this.flag) {
-        this.nodes[0].setValue(v, null);
-        this.nodes[2].setValue(-1, null);
+        if (this.nodes[0].connectedTo) {
+          this.nodes[0].setValue(v, null);
+          this.nodes[2].setValue(-1, null);
+        }
       } else {
-        this.nodes[0].setValue(-1, null);
-        this.nodes[2].setValue(v, null);
+        if (this.nodes[2].connectedTo) {
+          this.nodes[0].setValue(-1, null);
+          this.nodes[2].setValue(v, null);
+        }
       }
     });
   }
@@ -249,7 +261,7 @@ export class SlideSwitch extends CircuitElement {
     }
     this.elements[1].animate(anim);
     this.flag = !this.flag;
-    this.nodes[1].setValue(this.nodes[1].value, this.nodes[1]);
+    // this.nodes[1].setValue(this.nodes[1].value, this.nodes[1]);
   }
   /**
    * Function provides component details
@@ -271,12 +283,99 @@ export class SlideSwitch extends CircuitElement {
    * Called on Start Simulation.
    */
   initSimulation(): void {
+    for (const i in this.nodes) {
+      if (this.nodes[i].connectedTo !== null) {
+        if (this.nodes[i].connectedTo.start.parent.keyName === 'ArduinoUno'
+          || this.nodes[i].connectedTo.end.parent.keyName === 'ArduinoUno') {
+          this.terminalParent[i] = BreadBoard.getRecArduinov2(this.nodes[i], this.nodes[i].label);
+        } else {
+          this.terminalParent[i] = BreadBoard.getRecArduinoBreadv2(this.nodes[i], this.nodes[i].label);
+        }
+      }
+    }
+    const Dports = new RegExp('^D([2-9]|[1][0-3])$');
+    const Aports = new RegExp('^A([0-5])$');
+    const iniPins: string[] = [];
     this.elements.unmousedown();
     this.elements.unclick();
     this.elements.click(() => {
+      if (this.nodes[0].value > 0 && !this.flag && iniPins.includes('1')) {
+        this.nodes[1].setValue(this.nodes[0].value, null);
+      }
+      if (this.nodes[2].value > 0 && this.flag && iniPins.includes('1')) {
+        this.nodes[1].setValue(this.nodes[2].value, null);
+      }
+      if (this.nodes[1].value > 0) {
+        if (!iniPins.includes('1')) {
+          if (!this.flag && iniPins.includes('0')) {
+            this.nodes[0].setValue(this.nodes[1].value, null);
+          }
+          if (this.flag && iniPins.includes('2')) {
+            this.nodes[2].setValue(this.nodes[1].value, null);
+          }
+        }
+      }
       this.anim();
+      if (!this.flag) {
+        if (iniPins.includes('0')) {
+          this.nodes[0].setValue(-1, null);
+        }
+        if (this.nodes[2].value < 0) {
+          for (const i in iniPins) {
+            if (iniPins.hasOwnProperty(i)) {
+              this.nodes[iniPins[i]].setValue(-1, null);
+            }
+          }
+        }
+      } else {
+        if (iniPins.includes('2')) {
+          this.nodes[2].setValue(-1, null);
+        }
+        if (this.nodes[0].value < 0) {
+          for (const i in iniPins) {
+            if (iniPins.hasOwnProperty(i)) {
+              this.nodes[iniPins[i]].setValue(-1, null);
+            }
+          }
+        }
+      }
     });
-    this.nodes[1].setValue(5, null);
+
+    for (const i in this.terminalParent) {
+      if (this.terminalParent[i] !== undefined) {
+        // set initial value to the pin which connects the digital pin on Arduino
+        if (Dports.test(this.terminalParent[i].label) || Aports.test(this.terminalParent[i].label)) {
+          iniPins.push(i);
+        }
+      }
+    }
+    if (this.nodes[1].connectedTo && (this.nodes[0].connectedTo || this.nodes[2].connectedTo)) {
+      if (this.nodes[0].value > 0 && this.flag && iniPins.includes('1')) {
+        this.nodes[1].setValue(this.nodes[0].value, null);
+      }
+      if (this.nodes[2].value > 0 && !this.flag && iniPins.includes('1')) {
+        this.nodes[1].setValue(this.nodes[2].value, null);
+      }
+
+      if (this.nodes[1].value > 0) {
+        if (this.flag) {
+          if (iniPins.includes('0')) {
+            this.nodes[0].setValue(this.nodes[1].value, null);
+          } else {
+            if (this.terminalParent[0] !== undefined &&
+              !(this.terminalParent[0].label === '5V' || this.terminalParent[0].label === '3.3V')) {
+              this.nodes[0].setValue(-1, null);
+            }
+          }
+        } else {
+          if (iniPins.includes('2')) {
+            this.nodes[2].setValue(this.nodes[1].value, null);
+          }
+        }
+      }
+    } else {
+      window['showToast']('Slide Switch is not connected properly');
+    }
   }
   /**
    * Called on stop simulation.
@@ -285,7 +384,7 @@ export class SlideSwitch extends CircuitElement {
     this.elements.unclick();
     this.setDragListeners();
     this.setClickListener(null);
-    const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
-    this.elements[1].animate(anim);
+    // const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
+    // this.elements[1].animate(anim);
   }
 }
