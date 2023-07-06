@@ -4,6 +4,7 @@ import { isNull } from 'util';
 import { BoundingBox } from './Geometry';
 import _ from 'lodash';
 import { BreadBoard } from './General';
+import { isDragEnable } from '../simulator/simulator.component';
 
 
 /**
@@ -301,9 +302,11 @@ export class Point {
    * Creates and originates new wire at the point
    */
   startNewWire() {
+    if (isDragEnable.value === true) {
     const wire = new Wire(this.canvas, this);
     this.connectedTo = wire;
     return wire;
+    }
   }
 
   /**

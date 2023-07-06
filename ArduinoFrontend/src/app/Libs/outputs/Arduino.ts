@@ -286,12 +286,31 @@ export class ArduinoUno extends CircuitElement {
       }
     });
 
-    this.runner.usart.onByteTransmit = (value) => {
-      /// TODO: Show On Console
-      myOutput.textContent += String.fromCharCode(value);
-    };
+    // Flag to control automatic scrolling
+    let shouldScrollToBottom = true;
+    const msg = document.getElementById('msg');
 
-    document.getElementById('msg').append(myOutput);
+     // Scroll Listener in console
+    msg.addEventListener('scroll', () => {
+      const isScrolledToBottom = msg.scrollHeight - msg.clientHeight <= msg.scrollTop + 1;
+      shouldScrollToBottom = isScrolledToBottom;
+    });
+
+    this.runner.usart.onByteTransmit = (value) => {
+      {
+        // TODO: Show On Console
+        const isScrolledToBottom = msg.scrollHeight - msg.clientHeight <= msg.scrollTop + 1;
+        myOutput.textContent += String.fromCharCode(value);
+
+        if (shouldScrollToBottom && isScrolledToBottom) {
+          // Scroll to bottom if both conditions are met
+          msg.scrollTop = msg.scrollHeight;
+        }
+      }
+    };
+     // Appending output to console
+    msg.appendChild(myOutput);
+    msg.scrollTop = msg.scrollHeight;
     this.pinNameMap['5V'].setValue(5, null);
     this.pinNameMap['3.3V'].setValue(3.3, null);
 
