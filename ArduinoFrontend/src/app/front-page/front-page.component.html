@@ -1,12 +1,22 @@
 <app-header title="Arduino on Cloud" color="cornflowerblue" front="true"></app-header> 
 
-  <div class="row">
-    <div class="col-md-12">
-      <h1 style="margin-top: 5%; text-align: center;">Design Your circuits with Arduino On Cloud!</h1>
-    </div>
-  </div>   
+<div id="catch-phrase">
+  <h4>Design your own circuits and deploy them using</h4>
+  <h1><span id="grad-name">ARDUINO</span><span style="font-weight: 300">onCloud</span></h1>
+</div>  
 
-  <div class="row">
+<div id="working-gif">
+  <img id="counter" src="./assets/images/components/front-image-arduino.gif">
+  <div id="inner-options">
+      <h1>Got something on your mind?<br>
+          Create a project from scratch.</h1>
+      <a id="launch-editor" [routerLink]="['/simulator']">LAUNCH EDITOR
+          <i class="fa-solid fa-chevron-right" style="text-align: right;"></i></a>
+      <h1 style="margin-top: 40px; padding-top: 0px">Want to learn from previous works?<br>Go ahead and check them out.</h1>
+      <a id="explore-examples" href="https://sites.google.com/view/arduino-on-cloud/home">EXPLORE EXAMPLES <i class="fa-solid fa-chevron-right"></i></a>
+  </div>
+</div>
+<!--  <div class="row">
     <div class="col-md-6">
       <div style="margin-left: 25%; margin-top: 3%;">
         <iframe width="90%" height="300px;" src="https://www.youtube.com/embed/bTIE9GTc1eM?list=PLBfIgVyhwjwGOjb7LVAcPN6CFd97wqwFp" title="Overview of Arduino - English" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -23,4 +33,5 @@
         </button>
       </div>
     </div>
-  </div>
+  </div>-->
+

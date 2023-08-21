@@ -28,6 +28,7 @@ import google from '../static/google.png'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
+    fontFamily:'Inter',
     marginTop: theme.spacing(24),
     display: 'flex',
     flexDirection: 'column',
@@ -129,7 +130,7 @@ export default function SignIn (props) {
         </Avatar>
 
         <Typography component="h1" variant="h5">
-          Login | Sign In
+          Login
         </Typography>
 
         {/* Display's error messages while logging in */}
@@ -213,7 +214,7 @@ export default function SignIn (props) {
             </Grid>
           </Grid>
         </form>
-        <Typography variant="body1" color="secondary" align="center" >Or</Typography>
+        <Typography variant="body1" color="secondary" align="center" >OR</Typography>
 
         {/* Google oAuth Sign In option */}
         <Button

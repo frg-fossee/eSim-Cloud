@@ -86,6 +86,19 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Simulation button toggle for disabling adding_new_component option
    */
   isAddComponentEnabled = true;
+
+  /**
+   * Trying toggle for side-menu
+   */
+  accordian_toggle={
+    'generalDiv':true,
+    'controllerDiv':true,
+    'outputDiv':true,
+    'inputDiv':true,
+    'sourceDiv':true,
+    'driverDiv':true,
+    'miscDiv':true,
+  }
   /**
    * Stores the toggle status for expanding Virtual console
    */
@@ -337,15 +350,34 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param block Clicked Element
    */
   Collapse(block: HTMLElement) {
-    const collapsedDivs = Array.from(document.getElementsByClassName('show-div'));
+    /*const collapsedDivs = Array.from(document.getElementsByClassName('show-div'));
 
     for (const item of collapsedDivs) {
       if (block !== item) {
         item.classList.remove('show-div');
       }
-    }
-
+    }*/
+    
     block.classList.toggle('show-div');
+    var panel=block.previousElementSibling as HTMLElement;
+    if (this.accordian_toggle[`${block.id}`]) {
+      panel.style.backgroundColor='black';
+      panel.style.color='white';
+      /*panel.style.transition='background-color, color 0.2s'; */ 
+      /*panel.setAttribute("style","background-color:black; color:white; transition: 0.2s");*/
+    } else {
+      /*panel.setAttribute("style","background-color:white; color:black; transition: 0.2s");*/
+      panel.style.backgroundColor='white';
+      panel.style.color='black';
+      /*panel.style.transition='background-color, color 0.2s'; */
+    }
+    panel.classList.add('card-accordian:hover');
+    if (block.style.maxHeight) {
+      block.style.maxHeight = null;
+    } else {
+      block.style.maxHeight = block.scrollHeight + "px";
+    } 
+    this.accordian_toggle[`${block.id}`]=!this.accordian_toggle[`${block.id}`];
   }
 
   getSimRecSelectChange(value) {
@@ -590,7 +622,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProject() {
     // if Not logged in show message
     if (!(Login.getToken())) {
-      AlertService.showAlert('Please login! Before Login Save the Project Temporary.');
+      AlertService.showAlert("Please log in to save your circuit. WARNING: Save your circuit temporarily before logging in");
       return;
     }
     // if projet id is uuid (online circuit)
@@ -813,7 +845,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    */
   HandleRouter(callback) {
     AlertService.showOptions(
-      'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
+      'All unsaved progress will be lost. Do you want to save changes to the untitled circuit?',
       () => {
         AlertService.showCustom(
           SaveProjectDialogComponent,

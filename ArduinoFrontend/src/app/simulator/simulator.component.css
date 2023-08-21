@@ -1,3 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+body {
+    font-family: "Inter", sans-serif;
+  margin: 0;
+}
+
 .pipe {
   color: #999;
   margin: 0px 12px;
@@ -47,7 +54,7 @@
 }
 
 .component-card {
-  max-width: 32%;
+  width: 32%;
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -61,6 +68,8 @@
 
 .component-card img {
   object-fit: contain;
+  /* width:100%;
+  height: 50px; */
   max-width: 100%;
   max-height: 50px;
   width: auto;
@@ -74,7 +83,7 @@
 
 .component-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
   margin-bottom: 10px;
 }
@@ -122,25 +131,70 @@
   user-select: none;
 }
 
+#propertybox input{
+  width: 100%;
+}
+.project-name{
+  display: inline;
+}
+
+.project-name input{
+  margin-top: 2px;
+  padding: 0 0 1.5px 3px;
+  border: none;
+  border-bottom: 1px solid rgb(175, 175, 175);
+  color:#979797;
+}
+
+.project-name input:focus{
+  border: none;
+  border-bottom: 1.6px solid rgb(0, 0, 0);
+  color:#000;
+  transition: border-bottom 0.5s;
+}
+.component-header{
+  color:black;
+  background-color: white;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 21px;
+  font-weight: 500;
+}
+
 .collapse-card {
   background-color: transparent;
 }
 
-.card-header:hover {
-  background-color: #fff;
+.card-accordian{
+  width:100%;
+  text-align: left;
+  padding: 5% 8%;
+  border-style: solid;
+  background-color: white;
+  border:none;
+  border-bottom: 1px solid rgb(143, 143, 143);
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.card-accordian:hover{
+  background-color: #000000 !important;
+  color:white !important;
 }
 
 .collapse-div {
   display: block;
   max-height: 0px;
   overflow: hidden;
-  transition: max-height 0.5s ease-in-out;
+  transition: max-height 0.2s ease-out;
 }
 
 .show-div {
-  max-height: 1000vh;
-  transition: max-height 0.5s ease-in-out;
+  background-color: #ffffff;
+  /* max-height: 1000vh;
+  background-color: #fcfcfc;
+  transition: max-height 0.5s ease-in-out;*/
 }
+
 
 #holder {
   cursor: pointer;
@@ -178,8 +232,8 @@
   background-color: lightskyblue;
 }
 
-.lightgreen {
-  background-color: lightgreen;
+.green {
+  background-color: rgb(0, 167, 0);
 }
 
 #project-title {
@@ -194,22 +248,28 @@
 
 #secondary-header {
   display: flex;
-  background-color: whitesmoke;
+  background-color: black;
   justify-content: space-between;
+  align-items: center;
   height: auto;
-  padding-top: 10px;
+  /*padding-top: 10px;*/
+  padding: 0px 22%;
   flex-wrap: wrap;
 }
 
 #secondary-header > button {
   font-size: smaller;
   /* margin-left: 10px; */
-  margin: 1px 0px 0px 5px;
-  background-color: #fff;
+  margin: 0px 0px 0px 5px;
+  background-color:black;
   align-items: center;
-  background: transparent;
+  /* background: transparent; */
 }
 
+.new-button{
+  border-style: none;
+  padding: 14px 10px;
+}
 .btn-fst i {
   font-size: 25px;
   margin-right: 10px;
@@ -261,6 +321,7 @@ body {
 .context-menu {
   width: 160px;
   height: 140px;
+  border: 0.25px solid black;
   box-shadow: 0 0 5px 0 #ccc;
   position: absolute;
   display: none;
@@ -270,11 +331,12 @@ body {
 .context-menu ul {
   list-style: none;
   /*show no bullets*/
-  padding: 5px 0px 5px 0px;
+  padding: 0px 0px 5px 0px;
 }
 
 .context-menu ul li {
-  padding: 10px 5px 10px 5px;
+  margin:auto;
+  padding: 10px 5px 10px 8px;
   border-left: 4px solid transparent;
   cursor: pointer;
   z-index: 5000 !important;
@@ -282,8 +344,8 @@ body {
 }
 
 .context-menu ul li:hover {
-  background-color: rgb(245, 207, 161);
-  border-left: 4px solid #666;
+  background-color: rgb(219, 219, 219);
+  /*border-left: 4px solid #666;*/
 }
 
 #ToastMessage {
@@ -310,6 +372,7 @@ body {
 }
 
 #console {
+  font-family:'Courier New', Courier, monospace;
   position: fixed;
   width: calc(100% - 500px);
   height: 30%;
@@ -396,7 +459,156 @@ body {
   min-height: 150%;
   background-color: rgba(0, 0, 0, 0.4);
 }
+
+#send-to-console{
+  background-color: white;
+  padding: 5px;
+  cursor: pointer;
+}
 .navBarItem{
   margin-right: 10px !important;
   margin-top: 4px !important;
+}
+
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #ffffff;
+  /* box-shadow: 0 1px 3px #0000003f; */
+  margin-bottom: 1px;
+}
+
+/* Style the topnav links */
+.topnav a {
+    font-size: 12px;
+    font-weight: 500;
+  float: right;
+  display: block;
+  color: #757575;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+  color: black;
+}
+
+#login{
+  font-size: 12px;
+  font-weight: 500;
+float: right;
+display: block;
+color: #757575;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
+    margin-right:40px;
+}
+
+
+#login:hover{
+  cursor:pointer;
+color: black;
+}
+#name{
+    cursor: pointer;
+    float:left;
+    color: black;
+    font-size: 16px;
+    margin-right: 20px;
+}
+
+#grad-name{
+    font-weight: bolder;
+    background: -webkit-linear-gradient(left, #00C8A4, #007777, #0068C8);
+    background-clip: border-box;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tools {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tools .tooltiptext {
+  visibility: hidden;
+  background-color: rgb(109, 109, 109);
+  height: 40px;
+  color: #fff;
+  text-align: center;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 2px;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: 125%;
+  left: -50%;
+  opacity: 0%;
+  /*margin-left: -60px;*/
+  transition: opacity 0.2s ease-in;
+}
+
+.tools .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 6px;
+  border-style: solid;
+  border-color:  transparent transparent rgb(109, 109, 109) transparent;
+}
+
+.tools:hover .tooltiptext {
+  visibility: visible;
+  opacity: 100%;
+  
+}
+/*.tools {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tools .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tools .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color:  transparent transparent black transparent;
+}
+
+.tools:hover .tooltiptext {
+  visibility: visible;
+}*/
+
+.console-cli{
+  caret-shape: block;
+  color: white;
+  background-color: black;
 }

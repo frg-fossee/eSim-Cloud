@@ -1,0 +1,228 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    background-image: url("bg (1).png");
+}
+
+.login-snip {
+    margin: auto;
+    margin-top: 110px;
+    width: 435px;
+    height: 540px;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+#inner-rectangle {
+    margin: auto;
+    padding-top: 30px;
+    width: 340px;
+}
+
+#main-page {
+    text-decoration: none;
+}
+
+#grad-name {
+    font-weight: bolder;
+    background: -webkit-linear-gradient(left, #00C8A4, #007777, #0068C8);
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+#main-title {
+    font-weight: 600;
+    font-size: 28px;
+    color: #000000;
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+input{
+    font-family: "Inter", sans-serif;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    background-color: #ececec;
+}
+
+input[type=text]:focus {
+    outline: none;
+}
+
+input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: none;
+    background-color: #ececec;
+}
+
+input[type=password]:focus {
+    outline: none;
+}
+
+
+/*input[type=checkbox] {
+    float: left;
+    margin-top: 11px;
+}*/
+
+/* The container */
+.container {
+    display: block;
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 11px;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input~.checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked~.checkmark {
+    background-color: #000000;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+    left: 5px;
+    top: 2px;
+    width: 3px;
+    height: 6px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+a {
+    text-decoration: none;
+    color: #000000;
+}
+
+#help {
+    font-size: 14px;
+    float: right;
+    margin-top: 10px;
+}
+
+#help:hover {
+    text-decoration: underline;
+}
+
+#submit-login{
+    font-family: "Inter", sans-serif;
+    width:100%;
+    background-color: #000000;
+    color: #FFFFFF;
+    padding: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+#submit-login:hover{
+    background-color: #222222;
+}
+
+.part > span{
+    position: relative;
+    display:inline-block;
+    width: 100%; /*or whatever width you want the effect of <hr>*/
+    border-top: 1px solid #ccc;
+ }
+
+ .part > h4{
+    position: relative;
+    top:-10px;
+    left: 150px;
+    font-weight: 400;
+    color: #a9a9a9;
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    width:40px;
+ }
+
+ #login-google{
+    font-family: "Inter", sans-serif;
+    width:100%;
+    border-style: solid;
+    border-color: #c0c0c0;
+    border-width: 0.5px;
+    background-color: #ffffff;
+    padding: 10px;
+    margin-top: 2px;
+    margin-bottom: 17px;
+    cursor: pointer;
+    background-image: url('google\ logo.png');
+    background-size: 25px;
+  background-position: 85px 5px;
+  background-repeat: no-repeat;
+  padding-left: 40px;
+
+}
+
+#login-google:hover{
+    border-color: #a2a2a2;
+}
+
+#signup{
+    font-size: 14px;
+}
