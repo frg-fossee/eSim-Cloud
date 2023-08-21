@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>CSS Website Layout</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="login-style.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/b9399db165.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="login-snip">
+        <div id="inner-rectangle">
+            <a id="main-page" href="home.html"><span id="grad-name">ARDUINO</span>onCloud</a>
+            <h1 id="main-title">Log in</h1>
+            <h4>Sign in to see your previous designs,<br>
+                and save your progress with the new ones</h4>
+            <form class="credentials">
+                <input type="text" id="username" name="username" placeholder="Username" required><br>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <label class="container" style="float:left; padding-top: 10px;"><input type="checkbox"
+                        checked="checked">Remember Me
+                    <span class="checkmark"></span>
+                </label>
+                <a id="help" href="#">Need help?</a>
+                <button id="submit-login">LOGIN</button>
+                <div class="part" style="display:block">
+                    <span style="float:left;margin-top: 9px;"></span>
+                    <h4>OR</h4>
+                    <!--<span style="float: right"></span>-->
+                </div>
+                <button id="login-google">Sign in using Google</button>
+                <a id="signup" href="#">New Here?&nbsp;&nbsp;&nbsp;<span id="grad-name">SIGN UP</span></a>
+                
+            </form>
+        </div>
+    </div>
+
+</body>
+
+</html>
