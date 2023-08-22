@@ -18,7 +18,7 @@ export class ExitConfirmDialogComponent implements OnInit {
     this.dialogRef.close(true);
   }
 
-  noClick(){
+  noClick() {
     this.dialogRef.close(false);
   }
 
