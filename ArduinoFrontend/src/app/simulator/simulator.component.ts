@@ -359,7 +359,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     } */
 
     block.classList.toggle('show-div');
-    let panel = block.previousElementSibling as HTMLElement;
+    const panel = block.previousElementSibling as HTMLElement;
     if (this.accordianToggle[`${block.id}`]) {
       panel.style.backgroundColor = 'black';
       panel.style.color = 'white';
@@ -375,7 +375,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (block.style.maxHeight) {
       block.style.maxHeight = null;
     } else {
-      block.style.maxHeight = block.scrollHeight + "px";
+      block.style.maxHeight = block.scrollHeight + 'px';
     }
     this.accordianToggle[`${block.id}`] = !this.accordianToggle[`${block.id}`];
   }
@@ -622,7 +622,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   SaveProject() {
     // if Not logged in show message
     if (!(Login.getToken())) {
-      AlertService.showAlert("Please log in to save your circuit. WARNING: Save your circuit temporarily before logging in");
+      AlertService.showAlert('Please log in to save your circuit. WARNING: Save your circuit temporarily before logging in');
       return;
     }
     // if projet id is uuid (online circuit)
