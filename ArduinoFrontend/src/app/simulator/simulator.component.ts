@@ -569,19 +569,19 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // this.isAutoLayoutInProgress = false;
   }
 
-  /** Functions opens Info Dailog Box on selecting the component */
+  /** Functions opens Info Dialog Box on selecting the component */
   openInfo() {
     const dialogRef = this.dialog.open(ViewComponentInfoComponent, {
       width: '500px'
     });
     dialogRef.afterClosed();
   }
-  /** Function opens Dailog Box on selecting Export option */
-  openDailog() {
+  /** Function opens Dialog Box on selecting Export option */
+  openDialog() {
     const exportref = this.dialog.open(ExportfileComponent);
     exportref.afterClosed();
   }
-  /** Function opens Component List Dailog box on selecting view option */
+  /** Function opens Component List Dialog box on selecting view option */
   openview() {
     const viewref = this.dialog.open(ComponentlistComponent, {
       width: '600px'
