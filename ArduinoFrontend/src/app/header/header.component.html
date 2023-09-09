@@ -1,6 +1,6 @@
 <!-- As a heading -->
-<div style="background:whitesmoke;display: flex; height: 60px">
-  <div class="head-title" style="display: flex;">
+<!--<div style="background:whitesmoke;display: flex; height: 60px">-->
+  <!--<div class="head-title" style="display: flex;">
     <a [routerLink]="['/']">
       <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;"
         class="d-md-block" alt="AOC">
@@ -8,17 +8,23 @@
     <span [style.color]="color" style="text-decoration: none;">
       {{title}}
     </span>
-  </div>
+  </div>-->
   <!--<div style="flex-basis: 200px; line-height: 60px; text-align: right; padding-right: 10px;font-size: 18px;">Gallery
   </div>-->
-  <div style="display: flex; padding: 10px;">
+  <div class="topnav">
+    <a id="name" [routerLink]="['/']"><span id="grad-name">ARDUINO</span><span style="font-weight: 400">onCloud</span></a>
+    <a id="login" (click)="Login()" *ngIf="!username">LOGIN</a>
+    <a href="#">HELP</a>
+    <a [routerLink]="['/dashboard/gallery']">GALLERY</a>
+    <a [routerLink]="['/dashboard']">DASHBOARD</a>
+    <a [href]="window.location.protocol + '//' + window.location.hostname">HOME</a><!--
     <a mat-stroked-button [href]="window.location.protocol + '//' + window.location.hostname"
       style="margin-right: 10px;">Home</a>
     <a mat-stroked-button [routerLink]="['/dashboard']" style="margin-right: 10px;">Dashboard</a>
     <a mat-stroked-button [routerLink]="['/dashboard/gallery']" style="margin-right: 10px;">Gallery</a>
     <a mat-stroked-button [routerLink]="['/simulator']" style="margin-right: 10px">Editor</a>
-    <a mat-stroked-button (click)="Login()" *ngIf="!username">Login</a>
-  </div>
+    <a mat-stroked-button (click)="Login()" *ngIf="!username">Login</a>-->
+ 
   <div class="dropdown my-dropdown" *ngIf="username">
     <div class="w3-dropdown-hover float-right" style="padding-bottom:10px;margin-right: 1em;">
       <!--<div class="dropdown my-dropdown" *ngIf="token">
@@ -70,3 +76,4 @@
         </div>
       </div>
     </div>
+  </div>

@@ -1,42 +1,121 @@
-#titlepage {
-    background-color: white;
-    position: relative;
-    color: black;
-    top: 80px;
-    width: 80%;
-    min-height: 58vh;
-    margin-left: 10%;
-    border-radius: 5px;
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+* {
     box-sizing: border-box;
-    justify-content: space-around;
 }
 
-.button {
-    --border-size: 2px;
-    margin-left: 5px;
-    padding: 1.5em 3em;
-    appearance: none;
-    border: 0;
-    background: transparent;
-    color: blue;
-    text-transform: uppercase;
-    letter-spacing: .25em;
-    outline: none;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 0;
-    box-shadow: inset 0 0 0 var(--border-size) currentcolor;
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
 }
 
-.button:hover{
-  color: white;
-  background: blue;
+#grad-name {
+    font-weight: bolder;
+    background: -webkit-linear-gradient(left, #00C8A4, #007777, #0068C8);
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
+
+#catch-phrase {
+    text-align: center;
+}
+
+#catch-phrase>h4 {
+    margin-top: 50.0px;
+    font-size: 20.0px;
+    font-weight: 500;
+    margin-bottom: 12.5px;
+}
+
+#catch-phrase>h1 {
+    font-size: 75.0px;
+    font-weight: 400;
+    margin-bottom: 31.25px;
+    margin-top: 0.0px;
+}
+
+.working-gif {
+    width: 875.0px;
+}
+
+#counter {
+    height: 475.0px;
+    margin-left: 136.25px;
+    margin-right: 125.0px;
+    float: left;
+}
+
+#inner-options>h1 {
+    font-size: 23.75px;
+    font-weight: 500;
+    padding-top: 75.0px;
+    margin-bottom: 31.25px;
+}
+
+.inner-options-text-lower {
+    font-size: 23.75px;
+    font-weight: 500;
+    margin-top: 50.0px;
+    margin-bottom: 31.25px;
+}
+
+#launch-editor {
+    font-size: 15.0px;
+    font-family: "Inter";
+    color: #ffffff;
+    background-color: #000000;
+    margin-top: 12.5px;
+    margin-bottom: 25.0px;
+    padding: 12.5px 18.75px 12.5px 22.5px;
+}
+
+#explore-examples {
+    font-size: 15.0px;
+    font-family: "Inter";
+    font-weight: 600;
+    color: #000000;
+    background-color: #ffffff;
+    border: 1.25px solid #000000;
+    margin-top: 12.5px;
+    margin-bottom: 25.0px;
+    padding: 12.5px 18.75px 12.5px 18.75px;
+
+}
+
+#gif-caption {
+    font-size: 23.75px;
+    font-weight: 300;
+    text-align: center;
+    color: #969696;
+}
+
+a#launch-editor {
+    text-decoration: none;
+    transition: font-size 0.3s;
+}
+
+a#launch-editor:hover {
+    font-size: 16.25px;
+    text-decoration: underline;
+}
+
+a#explore-examples {
+    text-decoration: none;
+    transition: font-size 0.3s;
+}
+
+a#explore-examples:hover {
+    font-size: 16.25px;
+    text-decoration: underline;
+}
+
 
 @media screen and (max-width: 846px) {
     #titlepage {
         width: 100%;
     }
+
     #demo {
         top: 10px;
     }

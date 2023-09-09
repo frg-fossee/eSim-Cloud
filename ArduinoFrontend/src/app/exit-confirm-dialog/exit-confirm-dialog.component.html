@@ -1,5 +1,8 @@
-<h2 mat-dialog-title>Do you want to exit?</h2>
-<div mat-dialog-actions class="action-div">
-  <button mat-raised-button color="warn" (click)="yesClick()">Yes</button>
-  <button mat-raised-button color="primary" mat-dialog-close>No</button>
+<div class="exit-dialog">
+  <h5>Do you want to exit?</h5>
+  <div class="action-div">
+    <a class="yes" (click)="yesClick()">
+      <span style="color: white">YES</span></a>
+    <a class="no" (click)="noClick()">NO</a>
+  </div>
 </div>

@@ -1,0 +1,66 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+}
+
+/* Style the top navigation bar */
+.topnav {
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px #0000003f;
+  padding-top: 1px;
+}
+
+/* Style the topnav links */
+.topnav a {
+  font-size: 12px;
+  font-weight: 500;
+  float: right;
+  display: block;
+  color: #757575;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+/* Change color on hover */
+.topnav a:hover {
+  color: black;
+}
+
+#login {
+  font-size: 12px;
+  font-weight: 500;
+  float: right;
+  display: block;
+  color: #757575;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  margin-right: 56px;
+}
+
+
+#login:hover {
+  cursor: pointer;
+  color: black;
+}
+
+#name {
+  cursor: pointer;
+  float: left;
+  color: black;
+  font-size: 16px;
+  margin-right: 20px;
+  margin-top: -2px;
+}
+
+#grad-name {
+  font-weight: bolder;
+  background: -webkit-linear-gradient(left, #00C8A4, #007777, #0068C8);
+  background-clip: border-box;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

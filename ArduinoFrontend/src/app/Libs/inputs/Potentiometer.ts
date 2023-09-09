@@ -299,11 +299,11 @@ export class Potentiometer extends CircuitElement {
    */
   closeSimulation(): void {
     const attr = this.elements[1].attr();
-    this.elements[1].attr({
+    /* this.elements[1].attr({
       x: attr.x - this.tx,
       y: attr.y - this.ty
     });
-    this.elements[1].transform(`t${this.tx},${this.ty}`);
+    this.elements[1].transform(`t${this.tx},${this.ty}`); */
     this.elements.undrag();
     this.elements.unmousedown();
     this.setClickListener(null);

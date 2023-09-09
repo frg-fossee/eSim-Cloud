@@ -285,7 +285,7 @@ export class SlideSwitch extends CircuitElement {
     this.elements.unclick();
     this.setDragListeners();
     this.setClickListener(null);
-    const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
-    this.elements[1].animate(anim);
+    // const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
+    // this.elements[1].animate(anim);
   }
 }

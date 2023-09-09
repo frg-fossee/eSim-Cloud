@@ -1,14 +1,15 @@
 <!-- As a heading -->
-<nav class="navbar navbar-expand-lg navbar-light text-white" style="background-color: whitesmoke;height: 50px;">
-  <a class="navbar-brand" (click)="exitProject()">
+<nav class="navbar navbar-expand-lg navbar-light text-white"
+  style="background-color: white;height: 50px; box-shadow: 0 1px 3px #0000003f;">
+  <a id="name" style="float:left; color: black;font-size: 16px;" (click)="exitProject()"><span
+      id="grad-name">ARDUINO</span>onCloud</a>
+  <!-- <a class="navbar-brand" (click)="exitProject()">
     <img src="./assets/icon.png" style="height: 40px;display: none;margin-top:10px;margin-right: 1em;" class="d-block"
       alt="AOC">
-  </a>
+  </a> -->
   <!-- <span class="navbar-brand mb-0 font-weight-bold text-dark h1" routerLink="/">Simulator</span> -->
-  <form class="form-inline" style="min-width: 300px;">
-    <mat-form-field style="width: 100%;">
-      <input matInput [value]="projectTitle" (focusout)="onFocusOut($event)" class="text-dark">
-    </mat-form-field>
+  <form class="project-name" style="min-width: 300px;">
+      <input [value]="projectTitle" (focusout)="onFocusOut($event)" class="text-dark">
     <!-- <input class="form-control mr-sm-2 text-dark" type="text" value={{projectTitle}} aria-label="text"
       id="project-title" > -->
   </form>
@@ -27,7 +28,7 @@
       <!-- </div> -->
       <!-- </li> -->
       <!-- <li class="nav-item"> -->
-      <!-- <a class="nav-link text-dark" id="navbarDropdown" role="button" (click)="openDailog()"> -->
+      <!-- <a class="nav-link text-dark" id="navbarDropdown" role="button" (click)="openDialog()"> -->
       <!-- Export -->
       <!-- </a> -->
       <!-- <button mat-button class="text-dark m-auto" >
@@ -45,18 +46,25 @@
       </li> -->
     </ul>
 
-    <div class="navbar-nav ml-auto" *ngIf="ltiId || ltiNonce || ltiUserId">
+    <div class="topnav" *ngIf="ltiId || ltiNonce || ltiUserId">
       <span style="color: #808080; margin-right: 10px;">Last saved: {{ getFormattedDate(saveTime) }}</span>
       <b style="color: #ff0000;">ASSIGNMENT</b>
     </div>
-    <div class="navbar-nav ml-auto" *ngIf="!ltiId && !ltiNonce && !ltiUserId">
-      <a mat-raised-button
+
+    <div class="topnav" *ngIf="!ltiId && !ltiNonce && !ltiUserId">
+      <!--Add EDITOR button when not on Simulator Page-->
+      <a id="login" *ngIf="!token" (click)="HandleRouter(Login())">LOGIN</a>
+      <a href="#">HELP</a>
+      <a [routerLink]="" (click)="HandleRouter(RouteToFunction('/dashboard/gallery'))">GALLERY</a>
+      <a [routerLink]="" (click)="HandleRouter(RouteToFunction('/dashboard'))">DASHBOARD</a>
+      <a [routerLink]="" (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))">HOME</a>
+      <!--<a mat-raised-button
         (click)="HandleRouter(RouteToFunction(window.location.protocol + '//' + window.location.hostname, true))"
         class="navBarItem">Home</a>
       <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard'))" class="navBarItem">Dashboard</a>
       <a mat-raised-button (click)="HandleRouter(RouteToFunction('/dashboard/gallery'))" class="navBarItem">Gallery</a>
       <a mat-raised-button (click)="HandleRouter(RouteToSimulator.bind(this))" class="navBarItem">Editor</a>
-      <a mat-raised-button *ngIf="!token" (click)="HandleRouter(Login)">Login</a>
+      <a mat-raised-button *ngIf="!token" (click)="HandleRouter(Login)">Login</a>-->
       <div class="dropdown show" style="margin-left: 10px;margin-top:4px;" *ngIf="token">
         <!-- <img class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false" src="./assets/images/login.svg" width="30" height="30"
@@ -122,96 +130,97 @@
     {{ stoggle ? 'Start Simulation' : 'Stop Simulation' }}
   </button> -->
 
+  <a href="../arduino/#/simulator" target="_blank">
+    <button mat-icon-button matTooltip="New Project">
+      <i style="font-size: 20px;color: white;" class='fas fa-folder-open'></i>
+    </button>
+  </a>
 
 
-  <button mat-icon-button matTooltip="Code" (click)="toggleCodeEditor(codeDiv)"
-    [style.background-color]="toggle ? 'transparent' : 'lightblue'">
-    <i style="font-size: 20px;color: black;" class="far fa-file-code"></i>
+  <button class="hidebtn" mat-icon-button matTooltip="Clear Project" (click)="openProject()">
+    <i style="font-size: 20px;color: white;" class="fa fa-times-circle"></i>
+  </button>
+  <button mat-icon-button matTooltip="Save Project" (click)="SaveProject()">
+    <i style="font-size: 20px;color: white;" class="fa fa-cloud"></i>
+  </button>
+  <button mat-icon-button matTooltip="Save Temporary" (click)="SaveProjectOff()">
+    <i style="font-size: 20px;color: white;" class="fa fa-save"></i>
   </button>
 
+  <span class="pipe">|</span>
+
+  <button class="hidebtn" mat-icon-button matTooltip="Undo" (click)="undoChange()" [disabled]="enableButton('undo')">
+    <mat-icon style="font-size: 20px;color: white;">undo</mat-icon>
+  </button>
+
+  <button class="hidebtn" mat-icon-button matTooltip="Redo" (click)="redoChange()" [disabled]="enableButton('redo')">
+    <!-- <i style="font-size: 20px;color: white;" class="fa fa-repeat"></i> -->
+    <mat-icon style="font-size: 20px;color: white;">redo</mat-icon>
+  </button>
+
+  <button mat-icon-button matTooltip="Zoom in" (click)="zoom(0)"><i style="font-size: 20px;color: white;"
+      class="fa fa-search-plus"></i></button>
+
+  <button mat-icon-button matTooltip="Zoom out" (click)="zoom(1)"><i style="font-size: 20px;color: white;"
+      class="fa fa-search-minus"></i></button>
+
+  <button class="hidebtn" mat-icon-button matTooltip="Delete" (click)="delete()"><i
+      style="font-size: 20px;color: white;" class="fa fa-trash"></i></button>
+
+  <button class="hidebtn" mat-icon-button matTooltip="Auto-arrange wires" (click)="autoLayout()">
+    <i style="font-size: 20px;color: white;"
+      [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
+
+  <span class="pipe">|</span>
 
   <button mat-icon-button [matTooltip]="stoggle ? 'Start Simulation' : 'Stop Simulation'" [disabled]="disabled"
-    (click)="StartSimulation()" [style.background-color]="stoggle ? 'transparent' : 'lightgreen'">
-    <i style="font-size: 20px;color: black;" [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
+    (click)="StartSimulation()" [style.background-color]="stoggle ? 'transparent' : 'green'">
+    <i style="font-size: 20px;color: white;" [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
   </button>
-
+  <!--<button class="new-button" [matTooltip]="stoggle ? 'Start Simulation' : 'Stop Simulation'" [disabled]="disabled"
+    (click)="StartSimulation()" [style.background-color]="stoggle ? 'transparent' : 'green'">
+    <i style="font-size: 20px;color: white;" [ngClass]="stoggle ? 'fas fa-play-circle' : 'fas fa-pause-circle'"></i>
+  </button>-->
   <!--simulation loading svg-->
   <div id="simload" style="display:none;height:20%;padding: 10px;">
     <img src="./assets/images/Spin.svg" width="30" height="30">
   </div>
   <!--/simulation loading svg-->
 
-  <span class="pipe">|</span>
-
-  <button class="hidebtn" mat-icon-button matTooltip="Undo" (click)="undoChange()" [disabled]="enableButton('undo')">
-    <mat-icon style="font-size: 20px;color: black;">undo</mat-icon>
+  <button mat-icon-button matTooltip="Code" (click)="toggleCodeEditor(codeDiv)"
+    [style.background-color]="toggle ? 'transparent' : 'lightblue'">
+    <i style="font-size: 20px;color: white;" class="far fa-file-code"></i>
   </button>
 
-  <button class="hidebtn" mat-icon-button matTooltip="Redo" (click)="redoChange()" [disabled]="enableButton('redo')">
-    <!-- <i style="font-size: 20px;color: black;" class="fa fa-repeat"></i> -->
-    <mat-icon style="font-size: 20px;color: black;">redo</mat-icon>
+  <button class="hidebtn" mat-icon-button matTooltip="View Component List" (click)="openview()">
+    <i style="font-size: 20px;color: white;" class="fa fa-list-alt"></i>
   </button>
+
+  <button mat-icon-button matTooltip="See waveform" (click)="showGraph()"><i style="font-size: 20px;color: white;"
+      class="fas fa-chart-line"></i></button>
+
 
   <!-- Import export -->
   <span class="pipe">|</span>
-  <button  mat-icon-button matTooltip="Export JSON file" (click)="exportJson()" id="importBtn">
-    <i style="font-size: 20px;color: black;" class="fa fa-download" id="download_icon"></i>
+  <button mat-icon-button matTooltip="Export JSON file" (click)="exportJson()" id="importBtn">
+    <i style="font-size: 20px;color: white;" class="fa fa-upload" id="download_icon"></i>
   </button>
 
   <button class="hidebtn" mat-icon-button matTooltip="Import JSON file">
-    <label style="font-size: 20px;color: black; cursor: pointer; width: 100%;" class="fa fa-upload">
-      <input class="hidebtn"  type="file" style="display: none;" #jsonFile id="jsonFile" (change)="importJson(jsonFile.files[0])">
+    <label style="font-size: 20px;color: white; cursor: pointer; width: 100%;" class="fa fa-download">
+      <input class="hidebtn" type="file" style="display: none;" #jsonFile id="jsonFile"
+        (change)="importJson(jsonFile.files[0])">
     </label>
   </button>
-  <span class="pipe">|</span>
   <!-- Import export -->
 
-  <a  href="../arduino/#/simulator"  target="_blank">
-    <button  mat-icon-button matTooltip="New Project">
-      <i style="font-size: 20px;color: black;" class='fas fa-folder-open'></i>
-    </button>
-  </a>
-
-
-  <button class="hidebtn" mat-icon-button matTooltip="Clear Project" (click)="openProject()">
-    <i style="font-size: 20px;color: black;" class="fa fa-times-circle"></i>
+  <button mat-icon-button matTooltip="Download Image" (click)="openDialog()">
+    <i style="font-size: 20px;color: white;" class="fa fa-file-export"></i>
   </button>
-  <span class="pipe">|</span>
-  <button  mat-icon-button matTooltip="Save Project" (click)="SaveProject()">
-    <i style="font-size: 20px;color: black;" class="fa fa-cloud"></i>
-  </button>
-  <button  mat-icon-button matTooltip="Save Temporary" (click)="SaveProjectOff()">
-    <i style="font-size: 20px;color: black;" class="fa fa-save"></i>
-  </button>
-  <span class="pipe">|</span>
-  <button  mat-icon-button matTooltip="Download Image" (click)="openDailog()">
-    <i style="font-size: 20px;color: black;" class="fa fa-file-export"></i>
-  </button>
-  <button class="hidebtn" mat-icon-button matTooltip="View Component List" (click)="openview()">
-    <i style="font-size: 20px;color: black;" class="fa fa-list-alt"></i>
-  </button>
-  <span class="pipe">|</span>
-
-  <button class="hidebtn" mat-icon-button matTooltip="Delete" (click)="delete()"><i style="font-size: 20px;color: black;"
-      class="fa fa-trash"></i></button>
-
-  <button   mat-icon-button matTooltip="Zoom in" (click)="zoom(0)"><i style="font-size: 20px;color: black;"
-      class="fa fa-search-plus"></i></button>
-
-  <button  mat-icon-button matTooltip="Zoom out" (click)="zoom(1)"><i style="font-size: 20px;color: black;"
-      class="fa fa-search-minus"></i></button>
-
-  <span class="pipe">|</span>
-  <button  mat-icon-button matTooltip="See waveform" (click)="showGraph()"><i style="font-size: 20px;color: black;"
-      class="fas fa-chart-line"></i></button>
-
-  <button class="hidebtn" mat-icon-button matTooltip="Auto-arrange wires" (click)="autoLayout()">
-    <i style="font-size: 20px;color: black;"
-      [ngClass]="{'fa fa-magic': !isAutoLayoutInProgress, 'fas fa-spinner fa-spin': isAutoLayoutInProgress}"></i></button>
 
   <button *ngIf="isStaff" mat-icon-button matTooltip="Add to Gallery"
     style="margin-right: 30px;align-items: center;background: transparent;" (click)="addToGallery()">
-    <mat-icon aria-hidden="false" style="font-size: 28px;color: black;" aria-label="Example Add to gallery icon">
+    <mat-icon aria-hidden="false" style="font-size: 28px;color: white;" aria-label="Example Add to gallery icon">
       add_photo_alternate</mat-icon>
   </button>
 
@@ -259,14 +268,15 @@
 <div class="d-flex" id="wrapper">
   <!-- Sidebar -->
   <div class="border-right" id="sidebar-wrapper" style="background-color:white;">
-    <h4 class="text-center text-primary mt-2">Circuit Components</h4>
+    <h4 class="component-header">CIRCUIT COMPONENTS</h4>
 
     <div>
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(generalItems)">
-        General
-      </div>
+      <button class="card-accordian" (click)="Collapse(generalDiv)">
+        General<i style="float: right; padding: 2px 0 0 0; font-size: large;"
+        [ngClass]="accordianToggle['generalDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+      </button>
 
-      <div class="collapse-div" #generalItems>
+      <div class="collapse-div" #generalDiv id="generalDiv">
         <div class="component-row" *ngFor="let row of componentsBox.general">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
@@ -280,11 +290,12 @@
 
     <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(itemsController)">
-        Controllers
+      <div class="card-accordian" (click)="Collapse(controllerDiv)">
+        Controllers<i style="float: right; padding: 2px 0 0 0; font-size: large;"
+        [ngClass]="accordianToggle['controllerDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
-      <div class="collapse-div" #itemsController>
+      <div class="collapse-div" #controllerDiv id="controllerDiv">
         <div class="component-row" *ngFor="let row of componentsBox.controllers">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
@@ -298,11 +309,12 @@
 
     <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(outputDiv)">
-        Output
+      <div class="card-accordian" (click)="Collapse(outputDiv)">
+        Output<i style="float: right; padding: 2px 0 0 0; font-size: large;"
+        [ngClass]="accordianToggle['outputDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
-      <div class="collapse-div" #outputDiv>
+      <div class="collapse-div" #outputDiv id="outputDiv">
         <div class="component-row" *ngFor="let row of componentsBox.output">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
@@ -324,11 +336,12 @@
 
     <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(inputDiv)">
-        Input
+      <div class="card-accordian" (click)="Collapse(inputDiv)">
+        Input<i style="float: right; padding: 2px 0 0 0; font-size: large;"
+        [ngClass]="accordianToggle['inputDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
-      <div class="collapse-div" #inputDiv>
+      <div class="collapse-div" #inputDiv id="inputDiv">
         <div class="component-row" *ngFor="let row of componentsBox.input">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
@@ -341,26 +354,28 @@
 
     <div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(sourceDiv)">
-        Sources
+      <div class="card-accordian" (click)="Collapse(sourceDiv)">
+        Sources<i style="float: right; padding: 2px 0 0 0; font-size: large;"
+        [ngClass]="accordianToggle['sourceDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
-      <div class="collapse-div" #sourceDiv>
+      <div class="collapse-div" #sourceDiv id="sourceDiv">
         <div class="component-row" *ngFor="let row of componentsBox.power">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
             <img src={{components[item].image}} alt="{{components[item].name}}">
-            <label>{{components[item].name}}</label>
+            <label style="font-size: smaller;">{{components[item].name}}</label>
           </div>
         </div>
 
       </div>
 
 
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(driverDiv)">
-        Drivers
+      <div class="card-accordian" (click)="Collapse(driverDiv)">
+        Drivers<i style="float: right; padding: 2px 0 0 0; font-size: large;"
+        [ngClass]="accordianToggle['driverDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
-      <div class="collapse-div" #driverDiv>
+      <div class="collapse-div" #driverDiv id="driverDiv">
         <div class="component-row" *ngFor="let row of componentsBox.drivers">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
@@ -371,11 +386,12 @@
 
       </div>
 
-      <div class="card-header border border-dark font-weight-bold text-dark" (click)="Collapse(miscDiv)">
-        Miscellaneous
+      <div class="card-accordian" (click)="Collapse(miscDiv)">
+        Miscellaneous<i style="float: right; padding: 2px 0 0 0; font-size: large;"
+        [ngClass]="accordianToggle['miscDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
-      <div class="collapse-div" #miscDiv>
+      <div class="collapse-div" #miscDiv id="miscDiv">
         <div class="component-row" *ngFor="let row of componentsBox.misc">
           <div class="component-card" (dblclick)="componentdbClick(item)" *ngFor="let item of row" draggable="true"
             (dragstart)="dragStart($event,item)">
@@ -388,7 +404,7 @@
     </div>
 
     <app-versioning-panel *ngIf="!submitButtonVisibility" [lti]="submitButtonVisibility"
-    (createNewBranch)="createNewBranch($event)"></app-versioning-panel>
+      (createNewBranch)="createNewBranch($event)"></app-versioning-panel>
 
   </div>
 
@@ -404,14 +420,14 @@
 
 <div id="propertybox" (mousedown)="propertyMouseDown($event)">
   <div style="display: flex;justify-content: space-between;">
-    <h6 class="title">Project Info</h6>
+    <h6 class="title">Circuit Info</h6>
     <span style="flex:1 1 auto;"></span>
     <i class='fas fa-arrows-alt' (mousedown)="startPropertyDrag()" style="cursor: move;"></i>
   </div>
   <div class="body" style="display: flex;flex-direction: column;"></div>
   <div *ngIf="showProperty">
     <mat-form-field>
-      <mat-label>Project Title</mat-label>
+      <mat-label>Name</mat-label>
       <input matInput [(ngModel)]="projectTitle">
     </mat-form-field>
     <mat-form-field class="example-full-width">
@@ -431,13 +447,13 @@
 <div id="contextMenu" class="context-menu">
   <ul>
     <li (click)="copy()">
-      <h6><i class="fas fa-copy mr-2"></i> Copy</h6>
+      <h6><i class="fas fa-copy mr-2"></i>Copy</h6>
     </li>
     <li (click)="paste()">
-      <h6><i class="fas fa-paste mr-2"></i> Paste</h6>
+      <h6><i class="fas fa-paste mr-2"></i>Paste</h6>
     </li>
     <li (click)="delete()">
-      <h6><i class="fas fa-trash-alt mr-2"></i> Delete</h6>
+      <h6><i class="fas fa-trash-alt mr-2"></i>Delete</h6>
     </li>
   </ul>
 </div>
@@ -450,9 +466,9 @@
 <!--console ui-->
 <div id="console" style="display: none;">
   <div class="head">
-    <button  class="btn" style="background-color: white;" (click)="minimizeConsole()"><i
+    <button class="btn" style="background-color: white;" (click)="minimizeConsole()"><i
         [ngClass]="atoggle ?'fas fa-angle-up' : 'fas fa-angle-down'"></i></button>
-    <button  class="btn" style="background:transparent" (click)="expandConsole()"><i
+    <button class="btn" style="background:transparent" (click)="expandConsole()"><i
         [ngClass]="toggle1 ? 'fas fa-compress-alt' : 'fas fa-expand-alt'"></i></button>
   </div>
   <div class="body">
@@ -475,8 +491,11 @@
           <option>115200</option>
         </select>
         <input type="text" style="flex:1;" #sin>
-        <button mat-raised-button style="margin-right: 1px;margin-left: 1px;"
+        <!--<input class="console-cli" type="text" style="flex:1;" #sin>-->
+        <button mat-raised-button style="margin-right: 1px; margin-left: 1px;"
           (click)="PrintToConsole(sin)">Send</button>
+        <!--<a id="send-to-console"
+          (click)="PrintToConsole(sin)">Send</a>-->
         <button mat-raised-button style="margin-right: 1px;" (click)="clearConsole()">Clear</button>
       </form>
     </div>
@@ -489,10 +508,11 @@
       <p style="text-align: center;padding-top: 35px;">Are you sure you want to clear the project?</p>
     </div>
     <div class="modal-footer" style="background-color: transparent;">
-      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeProject()">NO</button>
       <button type="button" class="btn btn-primary" (click)="ClearProject()">YES</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeProject()">NO</button>
+
     </div>
   </div>
 </div>
-<app-graphlist #graph (simDataSave)="callGetSimRecord($event)" (updateSimulationDataList)="getSimulations()" 
-  [id]="id" [lti]="submitButtonVisibility" [saveId]="projectId"  *ngIf="graphToggle && isLoaded()"></app-graphlist>
+<app-graphlist #graph (simDataSave)="callGetSimRecord($event)" (updateSimulationDataList)="getSimulations()" [id]="id"
+  [lti]="submitButtonVisibility" [saveId]="projectId" *ngIf="graphToggle && isLoaded()"></app-graphlist>

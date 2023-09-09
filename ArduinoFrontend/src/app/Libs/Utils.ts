@@ -161,7 +161,7 @@ export class Utils {
       className: PushButton
     },
     Battery9v: {
-      name: '9v Battery',
+      name: '9V Battery',
       image: './assets/images/components/Battery9v.png',
       className: Battery9v
     },
