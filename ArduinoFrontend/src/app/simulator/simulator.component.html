@@ -273,7 +273,7 @@
     <div>
       <button class="card-accordian" (click)="Collapse(generalDiv)">
         General<i style="float: right; padding: 2px 0 0 0; font-size: large;"
-        [ngClass]="accordian_toggle['generalDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+        [ngClass]="accordianToggle['generalDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </button>
 
       <div class="collapse-div" #generalDiv id="generalDiv">
@@ -292,7 +292,7 @@
 
       <div class="card-accordian" (click)="Collapse(controllerDiv)">
         Controllers<i style="float: right; padding: 2px 0 0 0; font-size: large;"
-        [ngClass]="accordian_toggle['controllerDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+        [ngClass]="accordianToggle['controllerDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
       <div class="collapse-div" #controllerDiv id="controllerDiv">
@@ -311,7 +311,7 @@
 
       <div class="card-accordian" (click)="Collapse(outputDiv)">
         Output<i style="float: right; padding: 2px 0 0 0; font-size: large;"
-        [ngClass]="accordian_toggle['outputDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+        [ngClass]="accordianToggle['outputDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
       <div class="collapse-div" #outputDiv id="outputDiv">
@@ -338,7 +338,7 @@
 
       <div class="card-accordian" (click)="Collapse(inputDiv)">
         Input<i style="float: right; padding: 2px 0 0 0; font-size: large;"
-        [ngClass]="accordian_toggle['inputDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+        [ngClass]="accordianToggle['inputDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
       <div class="collapse-div" #inputDiv id="inputDiv">
@@ -356,7 +356,7 @@
 
       <div class="card-accordian" (click)="Collapse(sourceDiv)">
         Sources<i style="float: right; padding: 2px 0 0 0; font-size: large;"
-        [ngClass]="accordian_toggle['sourceDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+        [ngClass]="accordianToggle['sourceDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
       <div class="collapse-div" #sourceDiv id="sourceDiv">
         <div class="component-row" *ngFor="let row of componentsBox.power">
@@ -372,7 +372,7 @@
 
       <div class="card-accordian" (click)="Collapse(driverDiv)">
         Drivers<i style="float: right; padding: 2px 0 0 0; font-size: large;"
-        [ngClass]="accordian_toggle['driverDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+        [ngClass]="accordianToggle['driverDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
       <div class="collapse-div" #driverDiv id="driverDiv">
@@ -388,7 +388,7 @@
 
       <div class="card-accordian" (click)="Collapse(miscDiv)">
         Miscellaneous<i style="float: right; padding: 2px 0 0 0; font-size: large;"
-        [ngClass]="accordian_toggle['miscDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
+        [ngClass]="accordianToggle['miscDiv'] ?'fas fa-angle-right' : 'fas fa-angle-down'"></i>
       </div>
 
       <div class="collapse-div" #miscDiv id="miscDiv">
