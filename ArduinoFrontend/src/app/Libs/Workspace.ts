@@ -8,7 +8,7 @@ import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
 import { EventEmitter } from '@angular/core';
-import { stopdrag } from '../simulator/simulator.component';
+import { isDragEnable, stopdrag } from '../simulator/simulator.component';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -488,7 +488,7 @@ export class Workspace {
     if (window.isCodeEditorOpened) {
       return;
     }
-    if ((event.key === 'Delete' || event.key === 'Backspace')
+    if ((event.key === 'Delete' || event.key === 'Backspace') && isDragEnable.value
       && !(event['target']['localName'] === 'input' || event['target']['localName'] === 'textarea')) {
       // Backspace or Delete
       Workspace.DeleteComponent();
