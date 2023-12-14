@@ -40,7 +40,7 @@ Pillow==7.1.2
 psycopg2==2.8.5
 pycparser==2.20
 PyJWT==1.7.1
-numpy==1.18.4
+numpy==1.21.6
 Pillow==7.1.2
 psycopg2==2.8.5
 pymongo==3.10.1
