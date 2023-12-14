@@ -957,7 +957,7 @@ export class Workspace {
     for (const arduino of window.scope.ArduinoUno) {
       toSend[arduino.id] = arduino.code;
       nameMap[arduino.id] = arduino;
-      if (arduino.code == "") {
+      if (arduino.code === '') {
         window.printConsole('Error: No Source Code to Compile', ConsoleType.ERROR);
         callback();
       }
