@@ -960,8 +960,7 @@ export class Workspace {
       if (arduino.code === '') {
         window.printConsole('Error: No Source Code to Compile', ConsoleType.ERROR);
         callback();
-      }
-      else {
+      } else {
         window.printConsole('Compiling Source Code', ConsoleType.INFO);
         if (window.progLang === 0) {
           api.compileCodeINO(toSend).subscribe(v => {
