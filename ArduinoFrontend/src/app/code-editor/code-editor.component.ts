@@ -26,9 +26,11 @@ export class CodeEditorComponent {
   /**
    * Monaco code editor options
    */
+   size = 15;
   editorOptions = {
     theme: 'vs',
-    language: 'c'
+    language: 'c',
+    fontSize: 15
   };
   /**
    * Instance of Monaco editor
@@ -143,6 +145,20 @@ export class CodeEditorComponent {
         window['showLoading']();
       }
     }
+  }
+  /**
+   * Increase the size of the font in the editor
+   */
+  IncreaseFont(fontSize: number) {
+    this.size = this.size + 1;
+    this.editorOptions = {...this.editorOptions, fontSize: this.size};
+  }
+  /**
+   * Decrease the size of the font in the editor
+   */
+  DecreaseFont(fontSize: number) {
+    this.size = this.size - 1;
+    this.editorOptions = {...this.editorOptions, fontSize: this.size};
   }
   /**
    * Download the code from code editor
