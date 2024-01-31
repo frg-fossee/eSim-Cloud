@@ -8,6 +8,17 @@ import * as actions from '../../../redux/actions/actions'
 import ComponentParameters from './ComponentParametersData'
 var graph
 var undoManager
+export { undoManager };
+
+let fileOpenedSuccessfully = false;
+
+export function setFileOpenedStatus(status) {
+  fileOpenedSuccessfully = status;
+}
+
+export function getFileOpenedStatus() {
+  return fileOpenedSuccessfully;
+}
 
 const {
   mxPrintPreview,
@@ -65,6 +76,11 @@ const checkWireChange = (changes) => {
 
 // UNDO
 export function Undo() {
+  if (fileOpenedSuccessfully) {
+    undoManager.clear(); // Clear the undoManager
+    fileOpenedSuccessfully = false;
+  }
+  // undoManager.clear()
   if (undoManager.indexOfNextAdd === 0) {
     // Nothing to undo
     return
@@ -1061,6 +1077,7 @@ export function renderGalleryXML(xml) {
   graph.removeCells(graph.getChildVertices(graph.getDefaultParent()))
   graph.view.refresh()
   var xmlDoc = mxUtils.parseXml(xml)
+  setFileOpenedStatus(true);
   parseXmlToGraph(xmlDoc, graph)
 }
 // Certain Variables need to be Defined before Saving the Circuit, XML Wire Connections does that 
