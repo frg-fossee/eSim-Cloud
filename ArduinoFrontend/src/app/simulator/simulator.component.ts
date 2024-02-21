@@ -42,6 +42,10 @@ export let stopdrag = { value: false };
   encapsulation: ViewEncapsulation.None
 })
 export class SimulatorComponent implements OnInit, OnDestroy {
+   /**
+   * Currently loaded circuits temp version
+   */
+   static tempversion: string;
   /**
    * Raphael Paper
    */
@@ -154,10 +158,6 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Currently loaded circuit's version
    */
   version: string;
-  /**
-   * Currently loaded circuits temp version
-   */
-  static tempversion: string;
   /**
    * Currently loaded circuit's save time
    */
@@ -829,9 +829,9 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Handles routeLinks
    */
   HandleRouter(callback) {
-    if (SimulatorComponent.tempversion.length == 20){
+    if (SimulatorComponent.tempversion.length === 20) {
       callback();
-    }else if(Login.getToken()){
+    } else if(Login.getToken()) {
       AlertService.showOptions(
         'Save changes to the untitled circuit on cloud? Your changes will be lost if you do not save it.',
         () => {
@@ -846,7 +846,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
             },
             (value) => {
               if (value) {
-                this.SaveProject()
+                this.SaveProject();
                 callback();
               }
             }
@@ -860,7 +860,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         'Don\'t save',
         'Cancel'
       );
-    }else{
+    } else {
     AlertService.showOptions(
       'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
       () => {
