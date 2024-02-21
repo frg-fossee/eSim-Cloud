@@ -42,7 +42,7 @@ export let stopdrag = { value: false };
   encapsulation: ViewEncapsulation.None
 })
 export class SimulatorComponent implements OnInit, OnDestroy {
-   /**
+  /**
    * Currently loaded circuits temp version
    */
    static tempversion: string;
@@ -831,7 +831,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   HandleRouter(callback) {
     if (SimulatorComponent.tempversion.length === 20) {
       callback();
-    } else if(Login.getToken()) {
+    } else if (Login.getToken()) {
       AlertService.showOptions(
         'Save changes to the untitled circuit on cloud? Your changes will be lost if you do not save it.',
         () => {
