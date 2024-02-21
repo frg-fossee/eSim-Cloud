@@ -8,7 +8,7 @@ import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
 import { EventEmitter } from '@angular/core';
-import { SimulatorComponent, stopdrag } from '../simulator/simulator.component';;
+import { SimulatorComponent, stopdrag } from '../simulator/simulator.component';
 
 /**
  * Declare window so that custom created function don't throw error
@@ -795,7 +795,7 @@ export class Workspace {
     Workspace.circuitLoadStatus.emit(true);
   }
 
-  /** Function to delete component fro Workspace */
+  /** Function to delete component from Workspace */
   static DeleteComponent(undoReset = true) {
     // Save Dump of current Workspace
     // Check if component is selected
