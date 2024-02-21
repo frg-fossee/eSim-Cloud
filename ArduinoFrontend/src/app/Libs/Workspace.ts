@@ -8,7 +8,7 @@ import { SaveOffline } from './SaveOffiline';
 import { Point } from './Point';
 import { UndoUtils } from './UndoUtils';
 import { EventEmitter } from '@angular/core';
-import { stopdrag } from '../simulator/simulator.component';
+import { SimulatorComponent, stopdrag } from '../simulator/simulator.component';;
 
 /**
  * Declare window so that custom created function don't throw error
@@ -577,6 +577,7 @@ export class Workspace {
     window['scope'][classString].push(obj);
     // Push dump to Undo stack & Reset
     UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
+    SimulatorComponent.tempversion = 'NEWADD';
   }
   /** Function updates the position of wires */
   static updateWires() {
@@ -807,6 +808,7 @@ export class Workspace {
         }
       }
 
+      SimulatorComponent.tempversion = 'NEWDEL';
       // get the component id
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
@@ -921,6 +923,7 @@ export class Workspace {
       window['scope'][key].push(obj);
       // obj.copy(Workspace.copiedItem)
     }
+    SimulatorComponent.tempversion = 'NEWPASTE';
   }
 
   /** Function called to clear output in console */
