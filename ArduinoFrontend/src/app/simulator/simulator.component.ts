@@ -43,6 +43,10 @@ export let stopdrag = { value: false };
 })
 export class SimulatorComponent implements OnInit, OnDestroy {
   /**
+   * Currently loaded circuits temp version
+   */
+   static tempversion: string;
+  /**
    * Raphael Paper
    */
   canvas: any;
@@ -237,6 +241,8 @@ export class SimulatorComponent implements OnInit, OnDestroy {
           , 100);
         return;
       }
+      this.version = this.getRandomString(20);
+      SimulatorComponent.tempversion = this.version;
       // if gallery query parameter is present
       if (v.gallery) {
         this.OpenGallery(v.gallery, v.proId);
@@ -430,6 +436,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * @param elem Code Editor Parent Div
    */
   toggleCodeEditor(elem: HTMLElement) {
+    SimulatorComponent.tempversion = 'NEWCODE';
     elem.classList.toggle('show-code-editor');
     this.toggle = !this.toggle;
     this.openCodeEditor = !this.openCodeEditor;
@@ -495,6 +502,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     // check if textbox is empty if it is change title back to Untitled
     const el = evt.target;
     if (el.value === '') {
+      SimulatorComponent.tempversion = 'NEWTITLE';
       el.value = 'Untitled';
     }
     this.projectTitle = el.value;
@@ -519,6 +527,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
     if (!this.isAddComponentEnabled) {
       event.preventDefault();
     } else {
+      SimulatorComponent.tempversion = 'NEWDRAG';
       event.dataTransfer.dropEffect = 'copyMove';
       event.dataTransfer.setData('text', key);
     }
@@ -537,6 +546,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
 
   autoLayout() {
     // this.isAutoLayoutInProgress = true;
+    SimulatorComponent.tempversion = 'NEWAUTO';
     LayoutUtils.solveAutoLayout();
     // this.isAutoLayoutInProgress = false;
   }
@@ -603,6 +613,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
         const branch = params.branch;
         const versionId = params.version;
         const newVersionId = this.getRandomString(20);
+        SimulatorComponent.tempversion = newVersionId;
         // Update Project to DB
         SaveOnline.Save(this.projectTitle, this.description, this.api, branch, newVersionId, (out) => {
           AlertService.showAlert('Updated');
@@ -678,6 +689,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   }
   /** Function saves or updates the project offline */
   SaveProjectOff(callback = null) {
+    SimulatorComponent.tempversion = this.version;
     // if Project is UUID
     if (SaveOnline.isUUID(this.projectId)) {
       AlertService.showAlert('Project is already Online!');
@@ -720,6 +732,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /** Function clear variables in the Workspace */
   ClearProject() {
     Workspace.ClearWorkspace();
+    SimulatorComponent.tempversion = 'NEWCLEAR';
     this.closeProject();
   }
   /**
@@ -816,6 +829,38 @@ export class SimulatorComponent implements OnInit, OnDestroy {
    * Handles routeLinks
    */
   HandleRouter(callback) {
+    if (SimulatorComponent.tempversion.length === 20) {
+      callback();
+    } else if (Login.getToken()) {
+      AlertService.showOptions(
+        'Save changes to the untitled circuit on cloud? Your changes will be lost if you do not save it.',
+        () => {
+          AlertService.showCustom(
+            SaveProjectDialogComponent,
+            {
+              onChangeProjectTitle: (e) => {
+                this.projectTitle = e.target.value || '';
+                return this.projectTitle;
+              },
+              projectTitle: this.projectTitle,
+            },
+            (value) => {
+              if (value) {
+                this.SaveProject();
+                callback();
+              }
+            }
+          );
+        },
+        () => {
+          callback();
+        },
+        () => { },
+        'Save',
+        'Don\'t save',
+        'Cancel'
+      );
+    } else {
     AlertService.showOptions(
       'Save changes to the untitled circuit? Your changes will be lost if you do not save it.',
       () => {
@@ -846,6 +891,7 @@ export class SimulatorComponent implements OnInit, OnDestroy {
       'Cancel'
     );
   }
+}
   /**
    * Open Gallery Project
    * @param index Gallery item index
