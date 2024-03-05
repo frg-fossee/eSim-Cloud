@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Draggable from 'react-draggable'
-
 import PropTypes from 'prop-types'
 import {  Fullscreen, FullscreenExit} from '@mui/icons-material';
 import {
   //Slide,
   Button,
-  Dialog,
   AppBar,
   Toolbar,
   IconButton,
@@ -33,6 +31,8 @@ import api from '../../utils/Api'
 import queryString from 'query-string'
 
 import Graph from './Graph'
+import Dialog from '@mui/material/Dialog';
+import { styled } from '@mui/material/styles';
 
 const FileSaver = require('file-saver')
 
@@ -50,46 +50,41 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     padding: theme.spacing(5, 0, 6),
-    color: '#fff'
+    minWidth: 400,
+    minHeight: 400,
+    color: '#fff',
+    position:'relative'
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
     backgroundColor: '#404040',
+    textAlign: 'center',
     color: '#fff'
   },
   dialog:{
     position: 'absolute',
     right:0,
-    //overflow: 'auto'
   },
   resizable: {
     position: 'relative',
+    
     '& .react-resizable-handle': {
-        position: 'absolute',    
-        width: 40,  
-        height: 40,   
+        position: 'relative',    
+        
+        width: 60,  
+        height: 60,   
         bottom: 0,
         right: 0,
         background:"url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2IDYiIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmYwMCIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iNnB4Ij48ZyBvcGFjaXR5PSIwLjMwMiI+PHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9IiMwMDAwMDAiLz48L2c+PC9zdmc+')",
-        'background-position': 'bottom right',
         padding: '0 0 0 0',
-   
-        cursor: 'se-resize'
+        
+        cursor: 'se-resize',
+        zIndex: 5,
     },
 },
 
 }))
-function PaperComponent(props){
- 
-  return(
-    
-    <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
-      <Paper {...props}  />
-    </Draggable>
-    
-  )
-}
+
 // {details:{},title:''} simResults
 export default function SimulationScreen ({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
@@ -510,95 +505,66 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     const blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, 'graph_points_eSim_on_cloud.csv')
   }
-  
-  const [fullScreen, setFullScreen] = useState(false);
-  const [minimized, setMinimized] = useState(false);
-  const [maximized, setMaximized] = useState(false);
-  //const [resizable, setResizable] = useState(true);
-  //const [dialogPosition, setDialogPosition] = useState({right: 0})
-
+  function PaperComponent(props){
+ 
+    return(
+      
+      <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+        <Paper {...props}  />
+      </Draggable>
+      
+    )
+  }
+ 
+const ResizableDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    backgroundColor: '#4d4d4d',
+    boxShadow: 'none',
+    resize: 'both',
+    overflow: 'hidden',
+    minWidth: 600,
+    minHeight: 600,
+    position: 'relative',
+    maxWidth: '80%',
+    maxHeight: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}));
+const [fullScreen, setFullScreen] = useState(false);
+const [maximized, setMaximized] = useState(false);
+ 
   const handleMaximize = () => {
-    //setDialogPosition({right:0})
+    
     setMaximized(!maximized);
     setFullScreen(!fullScreen);
-    setMinimized(false)
-    //setResizable(true)
+    
   };
+  
 
   return (
     <div>
-      {/* <Dialog maxWidth={100} fullScreen={fullScreen} maxHeight={70} open={open} onClose={close} classes={{paper: classes.dialog}} PaperComponent={PaperComponent} aria-labelledby="draggable-dialog-title" PaperProps = {{
-        style:{
-          backgroundColor : '#4d4d4d',
-          boxShadow:'none',
-            resize: resizable ? 'both' : 'none',
-            overflow: resizable ? 'auto' : 'hidden',
-            height: maximized ? '100%' : 'auto',
-            width: maximized ? '100%' : 'auto',
-            position: 'absolute',
-            //bottom:0,
-            //right:0,
-            //right: dialogPosition.right,
-            minWidth : 400,
-            maxWidth: maximized? '100vw' :'100vw',
-            minHeight:400,
-            maxHeight: maximized? '100vh' : '100vh',
-            resize: 'both',
-            resize: 'horizontal'
-          },
-        sx: {
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: maximized ? '100%' : 600 ,
-          height: maximized ? '100%' : minimized ? 'auto' : 300 ,
-          maxHeight: '100%',
-          maxWidth: '100%',
-          transform: maximized ? 'none' : `translate(50%, 50%)`,
-          transition: 'all 0.3s ease',
-          overflow: 'hidden',
-        },
-      }} disableBackdropClick >  */}
-      <Dialog
-  maxWidth={100}
-  fullScreen={fullScreen}
-  //maxHeight={70}
+<ResizableDialog
   open={open}
-  onClose={close}
-  classes={{ paper: classes.dialog }}
+  fullScreen={fullScreen}
+  maxWidth={false}
   PaperComponent={PaperComponent}
   aria-labelledby="draggable-dialog-title"
   PaperProps={{
     style: {
       backgroundColor: '#4d4d4d',
       boxShadow: 'none',
-      resize: 'both',
-      overflow: 'auto',
-      height: maximized ? '100%' : 300,
-      width: maximized ? '100%' : 600,
+      overflow: 'hidden',
       position: 'absolute',
       top: 0,
       left: 0,
-      minWidth: 400,
-      maxWidth: '100vw',
-      minHeight: 400,
-      maxHeight: '100vh',
-         },
-    sx: {
-      position: 'absolute',
-      bottom: 0,
-      right: 0,
-      width: maximized ? '100%' : 600,
-      height: maximized ? '100%' : minimized ? 'auto' : 300,
-      maxHeight: '100%',
-      maxWidth: '100%',
-      resize: 'both',
-      overflow: 'hidden',
+      minWidth: 600,
+      maxWidth: '100vw', 
+      minHeight: 600,
+      maxHeight: '100vh', 
     },
   }}
-  disableBackdropClick
 >
-        
         <AppBar position="static" elevation={0} className={classes.appBar}>
           <Toolbar variant="dense" style={{ backgroundColor: '#404040' }} >
              
@@ -612,7 +578,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             
           </Toolbar>
         </AppBar>
-        <Container maxWidth="lg" className={classes.header}>
+        <Container className={classes.header}>
           <Grid
             container
             spacing={3}
@@ -638,7 +604,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                 {
 
                   (result.graph !== {} && result.isGraph === 'true')
-                    ? <Grid item xs={12} sm={12}>
+                    ? <Grid item xs={10} sm={10} >
                       <Paper className={classes.paper}>
                         <Typography variant="h5" align="center" gutterBottom id="draggable-dialog-title" style={{ cursor: 'move'}}>
                           GRAPH OUTPUT
@@ -1034,8 +1000,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             }
           </Grid>
         </Container>
-        
-      </Dialog>
+        </ResizableDialog>
     </div>
   )
 }
