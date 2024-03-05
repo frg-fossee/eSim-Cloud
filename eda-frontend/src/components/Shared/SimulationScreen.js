@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import Draggable from 'react-draggable'
 import PropTypes from 'prop-types'
+import {  Fullscreen, FullscreenExit} from '@mui/icons-material';
 import {
-  Slide,
+  //Slide,
   Button,
-  Dialog,
   AppBar,
   Toolbar,
   IconButton,
@@ -30,12 +31,14 @@ import api from '../../utils/Api'
 import queryString from 'query-string'
 
 import Graph from './Graph'
+import Dialog from '@mui/material/Dialog';
+import { styled } from '@mui/material/styles';
 
 const FileSaver = require('file-saver')
 
-const Transition = React.forwardRef(function Transition (props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />
-})
+//const Transition = React.forwardRef(function Transition (props, ref) {
+//  return <Slide direction="up" ref={ref} {...props} />
+//})
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -47,20 +50,46 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     padding: theme.spacing(5, 0, 6),
-    color: '#fff'
+    minWidth: 400,
+    minHeight: 400,
+    color: '#fff',
+    position:'relative'
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
     backgroundColor: '#404040',
+    textAlign: 'center',
     color: '#fff'
-  }
+  },
+  dialog:{
+    position: 'absolute',
+    right:0,
+  },
+  resizable: {
+    position: 'relative',
+    
+    '& .react-resizable-handle': {
+        position: 'relative',    
+        
+        width: 60,  
+        height: 60,   
+        bottom: 0,
+        right: 0,
+        background:"url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2IDYiIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmYwMCIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iNnB4Ij48ZyBvcGFjaXR5PSIwLjMwMiI+PHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9IiMwMDAwMDAiLz48L2c+PC9zdmc+')",
+        padding: '0 0 0 0',
+        
+        cursor: 'se-resize',
+        zIndex: 5,
+    },
+},
+
 }))
+
 // {details:{},title:''} simResults
 export default function SimulationScreen ({ open, close, isResult, taskId, simType = 'NgSpiceSimulator' }) {
   const classes = useStyles()
   const result = useSelector((state) => state.simulationReducer)
-  const stitle = useSelector((state) => state.saveSchematicReducer.title)
+  //const stitle = useSelector((state) => state.saveSchematicReducer.title)
   const netlist = useSelector((state) => state.netlistReducer.netlist)
   const [xscale, setXScale] = React.useState('si')
   const [yscale, setYScale] = React.useState('si')
@@ -476,29 +505,80 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
     const blob = new Blob([downloadString], { type: 'text/plain;charset=utf-8' })
     FileSaver.saveAs(blob, 'graph_points_eSim_on_cloud.csv')
   }
+  function PaperComponent(props){
+ 
+    return(
+      
+      <Draggable handle="#draggable-dialog-title" cancel={'[class*="MuiDialogContent-root"]'}>
+        <Paper {...props}  />
+      </Draggable>
+      
+    )
+  }
+ 
+const ResizableDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    backgroundColor: '#4d4d4d',
+    boxShadow: 'none',
+    resize: 'both',
+    overflow: 'hidden',
+    minWidth: 600,
+    minHeight: 600,
+    position: 'relative',
+    maxWidth: '80%',
+    maxHeight: '80%',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+}));
+const [fullScreen, setFullScreen] = useState(false);
+const [maximized, setMaximized] = useState(false);
+ 
+  const handleMaximize = () => {
+    
+    setMaximized(!maximized);
+    setFullScreen(!fullScreen);
+    
+  };
+  
 
   return (
     <div>
-      <Dialog fullScreen open={open} onClose={close} TransitionComponent={Transition} PaperProps={{
-        style: {
-          backgroundColor: '#4d4d4d',
-          boxShadow: 'none'
-        }
-      }}>
+<ResizableDialog
+  open={open}
+  fullScreen={fullScreen}
+  maxWidth={false}
+  PaperComponent={PaperComponent}
+  aria-labelledby="draggable-dialog-title"
+  PaperProps={{
+    style: {
+      backgroundColor: '#4d4d4d',
+      boxShadow: 'none',
+      overflow: 'hidden',
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      minWidth: 600,
+      maxWidth: '100vw', 
+      minHeight: 600,
+      maxHeight: '100vh', 
+    },
+  }}
+>
         <AppBar position="static" elevation={0} className={classes.appBar}>
           <Toolbar variant="dense" style={{ backgroundColor: '#404040' }} >
-            <IconButton edge="start" color="inherit" onClick={close} aria-label="close">
-              <CloseIcon />
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
+             
+            <IconButton edge="start" color="inherit" onClick={close} aria-label="close"><CloseIcon /></IconButton>
+            <IconButton onClick={handleMaximize}>
+            {maximized ? <FullscreenExit /> : <Fullscreen />}
+          </IconButton>  
+            <Typography variant="h6" className={classes.title} id="draggable-dialog-title" style={{ cursor: 'move'}}>
               Simulation Result
             </Typography>
-            <Button autoFocus color="inherit" onClick={close}>
-              close
-            </Button>
+            
           </Toolbar>
         </AppBar>
-        <Container maxWidth="lg" className={classes.header}>
+        <Container className={classes.header}>
           <Grid
             container
             spacing={3}
@@ -507,16 +587,16 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             alignItems="center"
           >
             {/* Card to display simualtion result screen header */}
-            <Grid item xs={12} sm={12}>
+           {/* <Grid item xs={12} sm={12} id="draggable-dialog-title" style={{ cursor: 'move'}}>
               <Paper className={classes.paper}>
-                <Typography variant="h2" align="center" gutterBottom>
+                <Typography variant="h4" align="center" gutterBottom>
                   {result.title}
                 </Typography>
                 <Typography variant="h5" align="center" component="p" gutterBottom>
                   Simulation Result for {stitle}
                 </Typography>
               </Paper>
-            </Grid>
+    </Grid>*/}
 
             {/* Display graph result */}
             {isResult === true
@@ -524,14 +604,14 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                 {
 
                   (result.graph !== {} && result.isGraph === 'true')
-                    ? <Grid item xs={12} sm={12}>
+                    ? <Grid item xs={10} sm={10} >
                       <Paper className={classes.paper}>
-                        <Typography variant="h4" align="center" gutterBottom>
+                        <Typography variant="h5" align="center" gutterBottom id="draggable-dialog-title" style={{ cursor: 'move'}}>
                           GRAPH OUTPUT
                         </Typography>
-                        <div style={{ padding: '15px 10px 10px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
+                        <div style={{ padding: '15px 5px 5px 10px', margin: '20px 0px', backgroundColor: 'white', borderRadius: '5px' }}>
                           <TextField
-                            style={{ width: '20%' }}
+                            style={{ width: '25%' }}
                             id="xscale"
                             size='small'
                             variant="outlined"
@@ -571,7 +651,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
 
                           </TextField>
                           <TextField
-                            style={{ width: '20%', marginLeft: '10px' }}
+                            style={{ width: '25%', marginLeft: '10px' }}
                             id="yscale"
                             size='small'
                             variant="outlined"
@@ -612,7 +692,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                           </TextField>
 
                           <TextField
-                            style={{ width: '20%', marginLeft: '10px' }}
+                            style={{ width: '25%', marginLeft: '10px' }}
                             id="precision"
                             size='small'
                             variant="outlined"
@@ -654,7 +734,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                               })}
                             </Select>
                           </FormControl>}
-                          {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginLeft: '1%' }} color="primary" size="medium" onClick={handleCsvDownload}>
+                          {result.isGraph === 'true' && !compare && <Button variant="contained" style={{ marginLeft: '1%' , marginTop:'1%'}} color="primary" size="medium" onClick={handleCsvDownload}>
                             Download Graph Output
                           </Button>}
                         </div>
@@ -757,12 +837,12 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                   (result.isGraph === 'false')
                     ? <Grid item xs={12} sm={12}>
                       <Paper className={classes.paper}>
-                        <Typography variant="h4" align="center" gutterBottom>
+                        <Typography variant="h5" align="center" gutterBottom id="draggable-dialog-title" style={{ cursor: 'move'}}>
                           OUTPUT
                         </Typography>
                         <div style={{ padding: '15px 10px 10px 10px', backgroundColor: 'white', margin: '20px 0px', borderRadius: '5px' }}>
                           <TextField
-                            style={{ width: '20%' }}
+                            style={{ width: '40%' }}
                             id="notation"
                             size='small'
                             variant="outlined"
@@ -783,7 +863,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
                           </TextField>
 
                           <TextField
-                            style={{ width: '20%', marginLeft: '10px' }}
+                            style={{ width: '40%', marginLeft: '10px' }}
                             id="precision"
                             size='small'
                             variant="outlined"
@@ -920,7 +1000,7 @@ export default function SimulationScreen ({ open, close, isResult, taskId, simTy
             }
           </Grid>
         </Container>
-      </Dialog>
+        </ResizableDialog>
     </div>
   )
 }
@@ -931,5 +1011,5 @@ SimulationScreen.propTypes = {
   isResult: PropTypes.bool,
   simType: PropTypes.string,
   taskId: PropTypes.string
-  // simResults: PropTypes.object
+  // simResults : PropTypes.object
 }

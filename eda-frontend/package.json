@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@material-ui/core": "^4.11.4",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.58",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.13.5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -28,13 +32,14 @@
     "react-draggable": "^4.4.3",
     "react-loader-spinner": "^3.1.14",
     "react-redux": "^7.2.4",
+    "react-resizable": "^3.0.5",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "redux": "^4.1.0",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "typescript": "^3.9.10",
-    "spinners-react": "^1.0.4"
+    "spinners-react": "^1.0.4",
+    "typescript": "^3.9.10"
   },
   "scripts": {
     "start": "react-scripts start",
