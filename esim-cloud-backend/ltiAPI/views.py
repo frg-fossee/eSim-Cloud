@@ -640,6 +640,7 @@ class ArduinoLTIPostGrade(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         consumer = ArduinLTIConsumer.objects.get(
             id=lti_session.lti_consumer.id)
+        init_sch_serialized = StateSaveSerializer(instance=consumer.initial_schematic)    
         try:
             sim = ArduinoLTISimData.objects.get(
                 id=request.data['student_simulation'])
@@ -650,7 +651,7 @@ class ArduinoLTIPostGrade(APIView):
         schematic.is_submission = True
         schematic.save()
         if(sim):
-            score, evaluated = arduino_eval(consumer.test_case.result,
+            score, evaluated = arduino_eval(consumer.test_case.result,init_sch_serialized.data,
                                             sim.result, consumer.con_weightage,
                                             consumer.score)
             if evaluated is False:

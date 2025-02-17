@@ -18,15 +18,15 @@ jobs:
     - name: Build the docker-compose stack
       run: |
         cp .env .env.prod
-        docker-compose -f docker-compose.prod.yml --env-file .env.prod pull --ignore-pull-failures
-        docker-compose -f docker-compose.prod.yml --env-file .env.prod build
+        docker compose -f docker-compose.prod.yml --env-file .env.prod pull --ignore-pull-failures
+        docker compose -f docker-compose.prod.yml --env-file .env.prod build
 
     - name: Run the docker-compose step
-      run: docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d
+      run: docker compose -f docker-compose.prod.yml --env-file .env.prod up -d
 
     - name: Check running containers
       run: docker ps -a
 
     - name: Publish images
       if: github.ref == 'refs/heads/master'
-      run: docker-compose -f docker-compose.prod.yml --env-file .env.prod push
+      run: docker compose -f docker-compose.prod.yml --env-file .env.prod push
