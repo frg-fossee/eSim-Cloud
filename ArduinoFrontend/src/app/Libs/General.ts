@@ -358,6 +358,134 @@ export class BreadBoard extends CircuitElement {
     this.subsribeToDrag({ id: this.id, fn: this.onOtherComponentDrag.bind(this) });
     this.subscribeToDragStop({ id: this.id, fn: this.onOtherComponentDragStop.bind(this) });
   }
+  /**
+   * Check if the breadboard is connected to any power components
+   * @returns powerrails which are powered
+   */
+  static checkBreadboardPowerConnections() {
+    // console.log('Checking breadboard power rail connections...');
+    const poweredRails = new Set();
+    const pidGroups = {
+      plus1: new Set(Array.from({ length: 25 }, (index, n) => 1 + 4 * n)),
+      plus2: new Set(Array.from({ length: 25 }, (index, n) => 2 + 4 * n)),
+      minus1: new Set(Array.from({ length: 25 }, (index, n) => 4 * n)),
+      minus2: new Set(Array.from({ length: 25 }, (index, n) => 3 + 4 * n))
+    };
+    const checkConnections = (components = []) => {
+      for (const item of components) {
+          for (const { connectedTo } of item.nodes || []) {
+              if (!connectedTo) {
+                continue;
+              }
+              const { start, end } = connectedTo;
+              const startPid = start.id;
+              const endPid = end.id;
+              if (startPid != null || endPid != null) {
+                  for (const [rail, pids] of Object.entries(pidGroups)) {
+                      if (pids.has(startPid) && (start.label === '+' || start.label === '-')) {
+                          poweredRails.add(rail);
+                          // console.log(`Component ${item.keyName} connected to ${rail}`);
+                      }
+                      if (pids.has(endPid) && (end.label === '+' || end.label === '-')) {
+                          poweredRails.add(rail);
+                          // console.log(`Component ${item.keyName} connected to ${rail}`);
+                      }
+                  }
+              }
+              if (poweredRails.size === 4) {
+                return;
+              }
+          }
+      }
+    };
+    checkConnections([...window['scope'].ArduinoUno, ...window['scope'].Battery9v, ...window['scope'].CoinCell]);
+    // console.log('Checking breadboard reail to rail connections...');
+    for (const item of window['scope'].BreadBoard) {
+      for (const { connectedTo } of item.nodes || []) {
+          if (!connectedTo) {
+            continue;
+          }
+          const { start, end } = connectedTo;
+          if (!start || !end) {
+            continue;
+          }
+          const checkConnection = (pos, neg) => {
+              if (start.label === end.label &&
+                  ((pidGroups[pos].has(start.id) && pidGroups[neg].has(end.id)) ||
+                  (pidGroups[neg].has(start.id) && pidGroups[pos].has(end.id)))) {
+                  // console.log(`Wire connects ${pos} and ${neg}`);
+                  if (poweredRails.has(pos)) {
+                    poweredRails.add(neg);
+                  }
+                  if (poweredRails.has(neg)) {
+                    poweredRails.add(pos);
+                  }
+              }
+          };
+          for (const [pos, neg] of [['plus1', 'plus2'], ['minus1', 'minus2']]) {
+              checkConnection(pos, neg);
+          }
+      }
+    }
+    return { poweredRail: poweredRails.size ? Array.from(poweredRails) : null };
+  }
+  /**
+   * Check if all component pins are connected to the same powered rail (+ or -)
+   * @param poweredRail - List of powered rails
+   * @returns true if a short circuit is detected
+   */
+  static checkAllPinsConnectedToOneRail(poweredRail) {
+    if (!poweredRail.length) {
+        // console.log('No powered rails detected.');
+        return false;
+    }
+    // console.log(`Powered rails detected: ${poweredRail.join(', ')}`);
+    const components = [
+      'Buzzer', 'LED', 'RGBLED', 'ServoMotor', 'Motor', 'PushButton',
+      'SlideSwitch', 'MQ2', 'PhotoResistor', 'PIRSensor', 'Potentiometer',
+      'TMP36', 'Thermistor', 'UltrasonicSensor', 'LCD16X2', 'Resistor'
+    ]
+    .map(type => window['scope'][type])
+    .reduce((acc, val) => acc.concat(val), [])
+    .filter(Boolean);
+    if (!components.length) {
+        // console.log('No components found to check!');
+        return false;
+    }
+    for (const item of components) {
+        let allConnected = true;
+        for (const { connectedTo } of item.nodes || []) {
+            if (!connectedTo) {
+                allConnected = false;
+                break;
+            }
+            const { start, end } = connectedTo;
+            let rail = null;
+            if (start.label === '+') {
+              rail = start.id % 4 === 1 ? 'plus1' : 'plus2';
+            }
+            if (start.label === '-') {
+              rail = start.id % 4 === 0 ? 'minus1' : 'minus2';
+            }
+            if (end.label === '+') {
+              rail = end.id % 4 === 1 ? 'plus1' : 'plus2';
+            }
+            if (end.label === '-') {
+              rail = end.id % 4 === 0 ? 'minus1' : 'minus2';
+            }
+            // console.log(`Pin connected to: ${rail}`);
+            if (!rail || !poweredRail.includes(rail)) {
+                allConnected = false;
+                break;
+            }
+        }
+        if (allConnected) {
+            // console.log(`Component ${item.keyName} has all pins connected to a powered rail! Short circuit detected!`);
+            return true;
+        }
+    }
+    return false;
+  }
 
   /**
    * Returns node connected to arduino

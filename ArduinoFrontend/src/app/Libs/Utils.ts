@@ -181,4 +181,13 @@ export class Utils {
       className: Thermistor
     }
   };
+  static checkShortCircuit() {
+    const powerConnections = BreadBoard.checkBreadboardPowerConnections();
+    if (powerConnections.poweredRail != null) {
+      const isAllPinsConnected = BreadBoard.checkAllPinsConnectedToOneRail(powerConnections.poweredRail);
+      if (isAllPinsConnected) {
+        return true;  // Short circuit detected
+      }
+    }
+  }
 }

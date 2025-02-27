@@ -382,6 +382,11 @@ export class SimulatorComponent implements OnInit, OnDestroy {
   /** Function called when Start Simulation button is triggered */
   StartSimulation() {
     this.disabled = true;
+    if (Utils.checkShortCircuit()) {
+      AlertService.showAlert('Short circuit detected! Please check your connections.');
+      this.disabled = false;
+      return;
+    }
     // if (!this.graphToggle) {
     //   this.graphToggle = !this.graphToggle;
     // }
