@@ -91,7 +91,7 @@ export class PhotoResistor extends CircuitElement {
     // Draw Moon on slider
     this.moon = this.canvas.path(this.moonPath);
     this.moon.attr({ fill: '#000', stroke: 'none' });
-    this.moon.transform(`s0.06 t${7.5 * (this.x + this.tx - 120)} ${1 * (this.y + this.ty - 860)}`);
+    this.moon.translate(this.x + this.tx - 105, this.y + this.ty - 55);
     // Slider ranging from minValue to maxValue
     this.slide = new Slider(this.canvas, this.x + this.tx, this.y + this.ty - 10);
     this.slide.setGradient('#69644b', '#ffd500');
