@@ -15,6 +15,11 @@
         (click)="DecreaseFont()"><i>A-</i></button>
       <button class="btn btn-light btn-sm  mb-1 mt-2 mr-1 " matTooltip="Download ino file" style="font-size: 16px; max-height:30px;background: transparent;"
         (click)="DownloadCode()"><i class="fa fa-download"></i></button>
+      <button class="btn btn-light btn-sm  mb-1 mt-2 mr-1 " matTooltip="Upload ino file" style="font-size: 16px; max-height:30px;background: transparent;"
+      (click)="uploadInput.click()"><i class="fa fa-upload"></i></button>
+      <input id = "UploadCodeBTN" type="file" accept=".ino" #uploadInput style="display: none;" (change)="UploadCode($event)">
+     
+
       <button class="btn btn-light btn-sm mb-1 mt-2 mr-1 " matTooltip="Include Library" style="font-size:16px; max-height:30px;background: transparent;"
         (click)="openFolder()"><i class="fas fa-box"></i></button>
       <form>
