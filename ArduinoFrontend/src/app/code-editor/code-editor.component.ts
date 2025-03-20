@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, DoCheck } from '@angular/core';
 import { ArduinoUno } from '../Libs/outputs/Arduino';
 import { Download } from '../Libs/Download';
 
@@ -16,7 +16,7 @@ declare var window;
   templateUrl: './code-editor.component.html',
   styleUrls: ['./code-editor.component.css']
 })
-export class CodeEditorComponent {
+export class CodeEditorComponent implements DoCheck {
   // TODO: Fetch records and Suggestion from api
 
   /**
@@ -122,6 +122,8 @@ export class CodeEditorComponent {
     window['isCodeEditorOpened'] = value;
 
     if (value) {
+      const DEFAULT_CODE = 'void setup(){\n\t\n}\n\nvoid loop(){\n\t\n}';
+      const previousCode = this.code || '';
       // Clear names and instances
       this.names = [];
       this.arduinos = [];
@@ -132,31 +134,41 @@ export class CodeEditorComponent {
           this.arduinos.push(window['ArduinoUno_name'][key]);
         }
       }
-      // reset selected  index
-      if (this.selectedIndex >= this.arduinos.length) {
-        this.selectedIndex = 0;
-      }
-      // select the code of respective arduino
+       // If an Uno is present, ensure it gets the existing code
       if (this.arduinos.length > 0) {
-        this.code = this.arduinos[this.selectedIndex].code;
+        // Assign the code to all newly added Uno boards
+        this.arduinos.forEach((arduino, index) => {
+          if (arduino.code === DEFAULT_CODE && previousCode !== '') {
+            arduino.code = previousCode;
+          }
+        });
+        this.code = this.arduinos[this.selectedIndex].code || '';
       }
-      // show loading animation if code editor is nor initialized
+
+      // Show loading animation if the code editor is not initialized
       if (this.names.length !== 0 && !this.init) {
         window['showLoading']();
       }
     }
   }
+  ngDoCheck() {
+    if (window['reinitCodeEditor']) {
+      // console.log('Reinitializing the code editor');
+      window['reinitCodeEditor'] = false; // Reset flag
+      this.reinit = true;
+    }
+  }
   /**
    * Increase the size of the font in the editor
    */
-  IncreaseFont(fontSize: number) {
+  IncreaseFont(): void {
     this.size = this.size + 1;
     this.editorOptions = {...this.editorOptions, fontSize: this.size};
   }
   /**
    * Decrease the size of the font in the editor
    */
-  DecreaseFont(fontSize: number) {
+  DecreaseFont(): void {
     this.size = this.size - 1;
     this.editorOptions = {...this.editorOptions, fontSize: this.size};
   }
@@ -1216,7 +1228,11 @@ export class CodeEditorComponent {
    * On code Change update the code in arduino
    */
   codeChanged() {
-    this.arduinos[this.selectedIndex].code = this.code;
+    if (this.arduinos && this.selectedIndex >= 0 && this.selectedIndex < this.arduinos.length) {
+      this.arduinos[this.selectedIndex].code = this.code;
+    } else {
+      window['savedCode'] = this.code;
+    }
   }
   /**
    * Select the code for respective arduino. Event handler for Choosing arduino

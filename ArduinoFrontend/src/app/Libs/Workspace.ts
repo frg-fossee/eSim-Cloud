@@ -577,6 +577,12 @@ export class Workspace {
     window['scope'][classString].push(obj);
     // Push dump to Undo stack & Reset
     UndoUtils.pushChangeToUndoAndReset({ keyName: obj.keyName, event: 'add', element: obj.save() });
+    // **Trigger Reinit Only for Arduino Uno**
+    if (classString === 'ArduinoUno') {
+      setTimeout(() => {
+        window['reinitCodeEditor'] = true; // Set global reinit flag
+      }, 0);
+    }
   }
   /** Function updates the position of wires */
   static updateWires() {
@@ -798,14 +804,6 @@ export class Workspace {
     // Save Dump of current Workspace
     // Check if component is selected
     if (window['Selected']) {
-      // is selected component is an arduini uno then show confirm message
-      if (window['Selected'] instanceof ArduinoUno) {
-        const ans = confirm('The Respective code will also be lost!');
-        if (!ans) {
-          return;
-        }
-      }
-
       // get the component id
       const uid = window.Selected.id;
       const key = window.Selected.keyName;
