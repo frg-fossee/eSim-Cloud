@@ -50,6 +50,10 @@ export class Potentiometer extends CircuitElement {
    */
   connectedLEDs: LED[] = [];
   /**
+   * Stores the anle
+   */
+  private savedAngle = 0;
+  /**
    * Potentiometer constructor
    * @param canvas Raphael Canvas (Paper)
    * @param x  position x
@@ -229,7 +233,15 @@ export class Potentiometer extends CircuitElement {
       x: attr.x + attr.width / 2 + this.tx,
       y: attr.y + attr.height / 2 + this.ty
     };
-    this.elements[1].transform(`t0,0`);
+  // Get the saved angle from localStorage
+    if (this.savedAngle !== null) {
+      // Apply the saved rotation angle to the dial, ensuring it's centered
+      this.elements[1].transform(`t${this.tx},${this.ty} r${this.savedAngle} t${-this.tx},${-this.ty}`);
+      console.log('Restoring saved angle:', this.savedAngle);
+    } else {
+      // Default behavior if no angle is saved (first time or reset)
+      this.elements[1].transform(`t${this.tx},${this.ty} t${-this.tx},${-this.ty}`);
+    }
     this.elements[1].attr({
       x: attr.x + this.tx,
       y: attr.y + this.ty
@@ -298,12 +310,26 @@ export class Potentiometer extends CircuitElement {
    * Reset transformation add add event listeners.
    */
   closeSimulation(): void {
+    let rotationAngle;
+    rotationAngle = this.savedAngle;
+    console.log('Current Rotation Angle:', rotationAngle);
+    // Get the current transform value of the potentiometer
+    const transform = this.elements[1].transform();
+    // If the transform includes rotation (it may be in a string or matrix form)
+    if (Array.isArray(transform) && transform[0][0] === 'r') {
+      rotationAngle = transform[0][1]; // Extract the rotation angle from the array
+    }
+    if (this.savedAngle !== rotationAngle) {
+      this.savedAngle = rotationAngle;  // Only save the new angle if it has changed
+      console.log('Rotation Angle to Save:', this.savedAngle);
+    }
     const attr = this.elements[1].attr();
     this.elements[1].attr({
       x: attr.x - this.tx,
       y: attr.y - this.ty
     });
-    this.elements[1].transform(`t${this.tx},${this.ty}`);
+    // Set the transform origin to center and apply rotation relative to center
+    this.elements[1].transform(`t${this.tx},${this.ty} r${rotationAngle}`);
     this.elements.undrag();
     this.elements.unmousedown();
     this.setClickListener(null);
