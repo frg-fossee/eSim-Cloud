@@ -223,6 +223,7 @@ export class SlideSwitch extends CircuitElement {
    */
   constructor(public canvas: any, x: number, y: number) {
     super('SlideSwitch', x, y, 'SlideSwitch.json', canvas);
+    this.setDragListeners();
   }
   /**
    * Initialize Slide Switch
@@ -283,6 +284,7 @@ export class SlideSwitch extends CircuitElement {
    */
   closeSimulation(): void {
     this.elements.unclick();
+    this.elements.undrag();
     this.setDragListeners();
     this.setClickListener(null);
     const anim = Raphael.animation({ transform: `t${this.tx},${this.ty}` }, 500);
