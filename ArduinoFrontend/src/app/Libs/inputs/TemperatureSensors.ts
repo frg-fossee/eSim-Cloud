@@ -42,7 +42,7 @@ export class TMP36 extends CircuitElement {
   setValue(val: number) {
     if (
       this.nodes[0].connectedTo && this.nodes[0].value >= 4.9 &&
-      this.nodes[2].connectedTo
+      this.nodes[2].connectedTo && this.nodes[1].connectedTo
     ) {
       this.nodes[1].setValue(val, null);
     } else {

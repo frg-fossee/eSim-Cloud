@@ -230,17 +230,30 @@ export class Workspace {
       const ele = document.getElementById('bubblebox');
       ele.style.display = 'none';
     };
+    // Global flag to track whether the toast is currently visible
+    window['toastVisible'] = false;
     // Global Function to show Toast Message
-    window['showToast'] = (message: string) => {
+    window['showToast'] = (message: string, autoHide = false) => {
       const ele = document.getElementById('ToastMessage');
 
       ele.style.display = 'block';
       ele.innerText = message;
       ele.style.padding = '15px 25px 15px 25px';
-      setTimeout(() => {
-        ele.style.display = 'none';
-      }, 10000);
-
+      window['toastVisible'] = true;
+      // Auto-hide the toast after 5 seconds if autoHide is true
+      if (autoHide) {
+        setTimeout(() => {
+          if (window['toastVisible']) {
+            window['hideToast']();
+          }
+        }, 5000);
+      }
+  };
+    // Global Function to hide Toast Message
+    window['hideToast'] = (message: string) => {
+      const ele = document.getElementById('ToastMessage');
+      ele.style.display = 'none';
+      window['toastVisible'] = false; // Mark the toast as hidden
     };
     // Global Function to print output in Console
     window['printConsole'] = (textmsg: string, type: ConsoleType) => {
@@ -882,7 +895,7 @@ export class Workspace {
       // Hide Property box
       window.hideProperties();
     } else {
-      window['showToast']('No Element Selected');
+      window['showToast']('No Element Selected', true);
     }
   }
 
@@ -890,7 +903,7 @@ export class Workspace {
   static copyComponent() {
     if (window['Selected']) {
       if (window['Selected'] instanceof Wire) {
-        window['showToast']('You Can\'t Copy Wire');
+        window['showToast']('You Can\'t Copy Wire', true);
         return;
       }
       Workspace.copiedItem = window.Selected;
@@ -1126,6 +1139,7 @@ export class Workspace {
     Workspace.simulating = false;
     Workspace.simulationStopped.emit(true);
     callback();
+    window['hideToast']();
   }
   /**
    * Function to clear the workspace

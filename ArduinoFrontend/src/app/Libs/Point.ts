@@ -294,7 +294,7 @@ export class Point {
     if (wire.start && wire.end) {
       window['scope']['wires'].push(wire);
     } else {
-      window['showToast']('Wire was not connected properly !');
+      window['showToast']('Wire was not connected properly !', true);
     }
   }
 

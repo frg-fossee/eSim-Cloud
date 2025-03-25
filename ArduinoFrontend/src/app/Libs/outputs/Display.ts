@@ -717,6 +717,11 @@ export class LCD16X2 extends CircuitElement {
         }
       }
     }
+    // If no Arduino is found, show an error and stop
+    if (!this.arduino) {
+      window['showToast']('V0 pin is not properly connected to the Arduino.');
+      return;
+    }
 
     // Add PWM event on arduino
     (this.arduino as ArduinoUno).addPWM(connectedPin, this.v0Listener.bind(this));

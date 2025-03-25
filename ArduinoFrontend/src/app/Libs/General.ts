@@ -183,6 +183,7 @@ export class Resistor extends CircuitElement {
     } else {
       this.value = tmp;
       this.updateColors();
+      window['hideToast']();
     }
   }
   /** Function returns resistence values 10K ohm => 10 */

@@ -84,7 +84,7 @@ export class Label extends CircuitElement {
     // if text field is empty
     if (value === '') {
       // TODO: Show Toast
-      window['showToast']('Label cannot be empty');
+      window['showToast']('Label cannot be empty', true);
       return;
     }
     this.text = value;

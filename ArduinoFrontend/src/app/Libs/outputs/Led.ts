@@ -140,14 +140,18 @@ export class LED extends CircuitElement {
     // TODO: Run if PWM is not attached
     if (this.nodes[0].connectedTo && this.nodes[1].connectedTo) {
       if (!this.pwmAttached && this.allNodesConnected) {
+        console.log('current', current);
         if (current > 0.03 || pin0Current > 0.03) {
           window.showToast('LED has burst');
           this.handleConnectionError();
         } else if (current >= 0.02 || pin0Current >= 0.02) {
           this.anim();
+          window.hideToast();
         } else if ((current > 0.012 && current < 0.02) || (pin0Current > 0.012)) {
           this.glowWithAlpha(current);
+          window.hideToast();
         } else {
+          window.showToast('LED has burst');
           this.fillColor('none');
         }
 

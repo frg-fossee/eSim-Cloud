@@ -57,7 +57,8 @@ export class MQ2 extends CircuitElement {
     } else {
       v = 0;
     }
-    if (this.nodes[0].connectedTo && this.nodes[0].value >= 4.9) {
+    if (this.nodes[0].connectedTo && this.nodes[0].value >= 4.9 &&
+      this.nodes[3].connectedTo && this.nodes[1].connectedTo) {
       this.nodes[3].setValue(Math.round(v), null);
     } else {
       window['showToast']('Please Connect Wires Properly');
@@ -67,6 +68,14 @@ export class MQ2 extends CircuitElement {
    * Initialize animation for the  gas sensor
    */
   initSimulation(): void {
+    // Check Connection
+    if (
+      !(this.nodes[0].connectedTo &&
+        this.nodes[1].connectedTo &&
+        this.nodes[3].connectedTo)
+    ) {
+      window['showToast']('Please Connect Sensor Properly');
+    } else {
     this.elements[1].show();
     this.elements.undrag();
     let tmp = this.elements[1].attr();
@@ -117,16 +126,19 @@ export class MQ2 extends CircuitElement {
       x: tmp.x + 164,
       y: tmp.y + 145
     }, Center);
+  }
 
   }
   /**
    * Remove line and smoke
    */
   closeSimulation(): void {
-    this.elements[1].hide();
-    this.line.remove();
-    this.line = null;
-    this.elements[1].undrag();
-    this.setDragListeners();
-  }
+    if (this.nodes[0].connectedTo && this.nodes[1].connectedTo && this.nodes[3].connectedTo) {
+      this.elements[1].hide();
+      this.line.remove();
+      this.line = null;
+      this.elements[1].undrag();
+      this.setDragListeners();
+    }
+}
 }

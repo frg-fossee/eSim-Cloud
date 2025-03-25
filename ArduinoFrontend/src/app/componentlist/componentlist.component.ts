@@ -95,7 +95,7 @@ export class ComponentlistComponent implements OnInit {
   DownloadCSV() {
     // if no components are present show a toast message
     if (this.noComponets) {
-      window.showToast('No Components On Workspace');
+      window.showToast('No Components On Workspace', true);
       return;
     }
     // CSV heading
