@@ -38,7 +38,7 @@ This system allows the users to drag and drop Arduino components from the left p
 * This is only a one time process
 * Ubuntu (Requirements)
    * Install [Docker](https://docs.docker.com/desktop/install/ubuntu/)
-   * Install docker compose: ```sudo apt get install docker-compose``` 
+   * Install docker compose: ```sudo apt-get install docker-compose``` 
 * Windows (Requirements)
    * Install WSL (Windows Subsystem for Linux)
      * Open PowerShell or Windows Command Prompt in administrator mode by right-clicking and selecting "Run as administrator"
