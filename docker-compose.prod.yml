@@ -1,4 +1,4 @@
-version: '3'
+
 services:
 
   nginx:
@@ -112,7 +112,7 @@ services:
   #     - ./mysql_data:/var/lib/mysql
 
   db:
-    image: postgres
+    image: postgres:13
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
     env_file:

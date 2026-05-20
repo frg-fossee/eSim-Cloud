@@ -61,7 +61,20 @@ RUN arduino-cli core update-index \
     && find . -name ctags -exec ln -nsf /usr/bin/ctags {} \;
 
 
-RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev postgresql-dev
+RUN apk add --no-cache \
+    libxt \
+    jpeg-dev \
+    zlib-dev \
+    libxaw-dev \
+    libx11-dev \
+    libtool \
+    mariadb-connector-c-dev \
+    libffi-dev \
+    postgresql-dev \
+    cairo \
+    cairo-dev \
+    pango \
+    gdk-pixbuf
 
 COPY requirements.txt /code/
 RUN apk add --no-cache mariadb-connector-c-dev ;\
