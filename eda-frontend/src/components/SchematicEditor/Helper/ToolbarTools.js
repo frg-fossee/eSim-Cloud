@@ -6,6 +6,7 @@ import mxGraphFactory from 'mxgraph'
 import store from '../../../redux/store'
 import * as actions from '../../../redux/actions/actions'
 import ComponentParameters from './ComponentParametersData'
+import { checkNetlistErc, buildNetlistFromGraph, annotate } from './NetlistExporter'
 var graph
 var undoManager
 
@@ -318,43 +319,18 @@ export function ErcCheck() {
 }
 // ERC Check for Netlist, It also returns a boolean value which is called in the Netlist Generator 
 export function ErcCheckNets() {
-  var list = graph.getModel().cells // mapping the grid
-  var vertexCount = 0
-  var errorCount = 0
-  var PinNC = 0
-  var stypes = 0
-  var ground = 0
-  for (var property in list) {
-    var cell = list[property]
-    if (cell.Component === true) {
-      for (var child in cell.children) {
-        if (child.connectable) {
-          var childVertex = cell.children[child]
-          if (childVertex.Pin === true && childVertex.edges === null) {
-            graph.getSelectionCell(childVertex)
-            ++PinNC
-            ++errorCount
-          }
-        }
-      }
-      ++vertexCount
-    }
-    if (cell.symbol === 'PWR') {
-      ++ground
-    }
-  }
-  if (vertexCount === 0) {
+  const result = checkNetlistErc(graph)
+  if (result.vertexCount === 0) {
     alert('No Component added')
-    ++errorCount
     return false
-  } else if (PinNC !== 0) {
+  } else if (result.pinNC !== 0) {
     alert('Pins not connected')
     return false
-  } else if (ground === 0) {
+  } else if (result.ground === 0) {
     alert('Ground not connected')
     return false
   } else {
-    if (errorCount === 0) {
+    if (result.errorCount === 0) {
       return true
     }
   }
@@ -362,508 +338,41 @@ export function ErcCheckNets() {
 
 // Function to generate Netlist
 export function GenerateNetList() {
-
-  var r = 1
-  var v = 1
-  var c = 1
-  var n = 1
-  var spiceModels = ''
-  var compDetails = {
-    componentlist: [],
-    nodelist: new Set()
-  }
   var erc = ErcCheckNets() // Checking for ERC Failures
-  var k = ''
   if (erc === false) {
     alert('ERC check failed')
   } else {
-    var list = annotate(graph) // Fetching all the Cells on the GRID
-    for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
-        var compobj = {
-          name: '',
-          magnitude: ''
-        }
-        // mxCell.prototype.ConnectedNode = null
-        var component = list[property]
-        if (component.symbol === 'R') {
-
-          k = k + component.symbol + r.toString()
-          component.value = component.symbol + r.toString()
-          component.properties.PREFIX = component.value
-
-          ++r
-        } else if (component.symbol === 'V') {
-          k = k + component.symbol + v.toString()
-          component.value = component.symbol + v.toString()
-          component.properties.PREFIX = component.value
-
-          ++v
-        } else {
-          k = k + component.symbol + c.toString()
-          component.value = component.symbol + c.toString()
-          component.properties.PREFIX = component.value
-          ++c
-        }
-        if (component.children !== null) {
-          for (var child in component.children) {
-            var pin = component.children[child]
-            if (pin.vertex === true && pin.connectable) {
-              if (pin.edges !== null || pin.edges.length !== 0) {
-                for (var wire in pin.edges) {
-                  if (pin.edges[wire].source !== null && pin.edges[wire].target !== null) {
-                    // Wire to Pin Connection 
-                    if (pin.edges[wire].source.edge === true) {
-                    //   pin.edges[wire].node = pin.edges[wire].source.node
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      // Pin to Wire Connection 
-                    } else if (pin.edges[wire].target.edge === true) {
-
-                    //   pin.edges[wire].node = pin.edges[wire].target.node
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      pin.edges[wire].tarx = pin.edges[wire].geometry.targetPoint.x
-                      pin.edges[wire].tary = pin.edges[wire].geometry.targetPoint.y
-                      // Souce or Target is Ground 
-                    } else if (pin.edges[wire].source.ParentComponent.symbol === 'PWR'  ||  pin.edges[wire].target.ParentComponent.symbol === 'PWR') {
-                    //   pin.edges[wire].node = 0
-                   
-                      pin.edges[wire].value = 0
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      // Pin to Pin Connection, Setting the Source to be the Node Value 
-                    } else {
-                    //   pin.edges[wire].node = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      // pin.ConnectedNode = pin.edges[wire].source.ParentComponent.properties.PREFIX + '.' + pin.edges[wire].source.value
-                      pin.edges[wire].sourceVertex = pin.edges[wire].source.id
-                      pin.edges[wire].targetVertex = pin.edges[wire].target.id
-                      pin.edges[wire].value = pin.edges[wire].node
-                    }
-                    pin.edges[wire].value = pin.edges[wire].node
-                  }
-                }
-                k = k + ' ' + pin.edges[0].node
-              }
-            }
-          }
-          compobj.name = component.symbol
-          compobj.magnitude = 10
-          var nodeNumber = 0
-          for(var child in component.children){
-              nodeNumber++
-              compobj['node' + nodeNumber.toString()] = component.children[child].edges[0].node
-              compDetails.nodelist.add(component.children[child].edges[0].node)
-          }
-          compDetails.componentlist.push(component.properties.PREFIX)
-        }
-
-        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
-          k = k + ' ' + component.properties.MODEL.split(' ')[1]
-        }
-
-        if (component.properties.PREFIX.charAt(0) === 'V' || component.properties.PREFIX.charAt(0) === 'v' || component.properties.PREFIX.charAt(0) === 'I' || component.properties.PREFIX.charAt(0) === 'i') {
-          const comp = component.properties
-          if (comp.NAME === 'SINE') {
-            k = k + ` SIN(${comp.OFFSET} ${comp.AMPLITUDE} ${comp.FREQUENCY} ${comp.DELAY} ${comp.DAMPING_FACTOR} ${comp.PHASE} )`
-          } else if (comp.NAME === 'EXP') {
-            k = k + ` EXP(${comp.INITIAL_VALUE} ${comp.PULSED_VALUE} ${comp.FREQUENCY} ${comp.RISE_DELAY_TIME} ${comp.RISE_TIME_CONSTANT} ${comp.FALL_DELAY_TIME} ${comp.FALL_TIME_CONSTANT} )`
-          } else if (comp.NAME === 'DC') {
-            if (component.properties.VALUE !== undefined) {
-              k = k + ' DC ' + component.properties.VALUE
-              component.value = component.value + '\n' + component.properties.VALUE
-            }
-          } else if (comp.NAME === 'PULSE') {
-            k = k + ` PULSE(${comp.INITIAL_VALUE} ${comp.PULSED_VALUE} ${comp.DELAY_TIME} ${comp.RISE_TIME} ${comp.FALL_TIME} ${comp.PULSE_WIDTH} ${comp.PERIOD} ${comp.PHASE} )`
-          } else {
-            if (component.properties.VALUE !== undefined) {
-              k = k + ' ' + component.properties.VALUE
-              component.value = component.value + '\n' + component.properties.VALUE
-            }
-          }
-        } else if (component.properties.PREFIX.charAt(0) === 'C' || component.properties.PREFIX.charAt(0) === 'c') {
-          k = k + ' ' + component.properties.VALUE
-          if (component.properties.IC != 0) {
-            k = k + ' IC=' + component.properties.IC
-          }
-          component.value = component.value + '\n' + component.properties.VALUE
-        } else if (component.properties.PREFIX.charAt(0) === 'L' || component.properties.PREFIX.charAt(0) === 'l') {
-          k = k + ' ' + component.properties.VALUE
-          if (component.properties.IC != 0) {
-            k = k + ' IC=' + component.properties.IC
-          }
-          if (component.properties.DTEMP != 27) {
-            k = k + ' dtemp=' + component.properties.DTEMP
-          }
-          component.value = component.value + '\n' + component.properties.VALUE
-        } else if (component.properties.PREFIX.charAt(0) === 'M' || component.properties.PREFIX.charAt(0) === 'm') {
-          // k = k + ' ' + component.properties.VALUE   
-          if (component.properties.MULTIPLICITY_PARAMETER != 1) {
-            k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
-          }
-          if (component.properties.DTEMP != 27) {
-            k = k + ' dtemp=' + component.properties.DTEMP
-          }
-          // component.value = component.value + '\n' + component.properties.VALUE
-        } else if (component.properties.PREFIX.charAt(0) === 'Q' || component.properties.PREFIX.charAt(0) === 'q') {
-          // k = k + ' ' + component.properties.VALUE
-          if (component.properties.MULTIPLICITY_PARAMETER != 1) {
-            k = k + ' m=' + component.properties.MULTIPLICITY_PARAMETER
-          }
-          if (component.properties.DTEMP != 27) {
-            k = k + ' dtemp=' + component.properties.DTEMP
-          }
-          // component.value = component.value + '\n' + component.properties.VALUE
-        } else if (component.properties.PREFIX.charAt(0) === 'R' || component.properties.PREFIX.charAt(0) === 'r') {
-          k = k + ' ' + component.properties.VALUE
-          if (component.properties.SHEET_RESISTANCE != 0) {
-            k = k + ' RSH=' + component.properties.SHEET_RESISTANCE
-          }
-          if (component.properties.FIRST_ORDER_TEMPERATURE_COEFF != 0) {
-            k = k + ' tc1=' + component.properties.FIRST_ORDER_TEMPERATURE_COEFF
-          }
-          if (component.properties.SECOND_ORDER_TEMPERATURE_COEFF != 0) {
-            k = k + ' tc2=' + component.properties.SECOND_ORDER_TEMPERATURE_COEFF
-          }
-          if (component.properties.PARAMETER_MEASUREMENT_TEMPERATURE != 27) {
-            k = k + ' TNOM=' + component.properties.PARAMETER_MEASUREMENT_TEMPERATURE
-          }
-          component.value = component.value + '\n' + component.properties.VALUE
-        } else {
-          if (component.properties.VALUE !== undefined) {
-            k = k + ' ' + component.properties.VALUE
-            component.value = component.value + '\n' + component.properties.VALUE
-          }
-        }
-
-        if (component.properties.EXTRA_EXPRESSION && component.properties.EXTRA_EXPRESSION.length > 0) {
-          k = k + ' ' + component.properties.EXTRA_EXPRESSION
-          component.value = component.value + ' ' + component.properties.EXTRA_EXPRESSION
-        }
-
-        if (component.properties.MODEL && component.properties.MODEL.length > 0) {
-          spiceModels += component.properties.MODEL + '\n'
-        }
-
-        k = k + ' \n'
+    const netobj = buildNetlistFromGraph(graph)
+    store.dispatch({
+      type: actions.SET_MODEL,
+      payload: {
+        model: netobj.models
       }
-    }
-  }
-  store.dispatch({
-    type: actions.SET_MODEL,
-    payload: {
-      model: spiceModels
-    }
-  })
-  store.dispatch({
-    type: actions.SET_NETLIST,
-    payload: {
-      netlist: k
-    }
-  })
-  // Refresh the GRID to view the Node Values 
-  graph.getModel().beginUpdate()
-  try {
-    graph.view.refresh()
-  } finally {
-    // Arguments are number of steps, ease and delay
-    var morph = new mxMorphing(graph, 20, 1.2, 20)
-    morph.addListener(mxEvent.DONE, function () {
-      graph.getModel().endUpdate()
     })
-    morph.startAnimation()
-  }
-  var netobj = {
-    models: spiceModels,
-    main: k
-  }
-  return netobj
-}
-// Function to Annotate, TODO! It needs some polishing 
-class Stack {
-    constructor(){
-        this.data = [];
-        this.top = 0;
-    }
-    push(element) {
-      this.data[this.top] = element;
-      this.top = this.top + 1;
-    }
-   length() {
-      return this.top;
-   }
-   peek() {
-      return this.data[this.top-1];
-   }
-   isEmpty() {
-     return this.top === 0;
-   }
-   pop() {
-    if( this.isEmpty() === false ) {
-       this.top = this.top -1;
-       return this.data.pop(); // removes the last element
-     }
-   }
-   print() {
-      var top = this.top - 1; // because top points to index where new    element to be inserted
-      while(top >= 0) { // print upto 0th index
-           top--;
+    store.dispatch({
+      type: actions.SET_NETLIST,
+      payload: {
+        netlist: netobj.main
       }
-    }
-    reverse() {
-       this._reverse(this.top - 1 );
-    }
-    _reverse(index) {
-       if(index != 0) {
-          this._reverse(index-1);
-       }
-    }
-}
-
-function traverseWire(edge, vis) {
-
-
-  var ans = []
-  vis[edge.id] = 1
-  if (edge.target.vertex == true || edge.source.vertex == true) {
-    //check for edges connected to such an edge 
-    if (edge.target.vertex == true) { ans.push(edge.target) }
-    if (edge.source.vertex == true) { ans.push(edge.source) }
-    return ans;
-  } else {
-    vis[parseInt(edge.id)] = true
-    if (edge.edges && edge.edges.length > 0) {
-      edge.edges.forEach((elem) => {
-        ans = ans.concat(traverseWire(elem, vis))
+    })
+    // Refresh the GRID to view the Node Values 
+    graph.getModel().beginUpdate()
+    try {
+      graph.view.refresh()
+    } finally {
+      // Arguments are number of steps, ease and delay
+      var morph = new mxMorphing(graph, 20, 1.2, 20)
+      morph.addListener(mxEvent.DONE, function () {
+        graph.getModel().endUpdate()
       })
-    } else {
-      if (edge.source.edge == true && !vis[edge.source.id]) {
-        ans = ans.concat(traverseWire(edge.source, vis))
-      }
-      if (edge.target.edge == true && !vis[edge.target.id]) {
-        ans = ans.concat(traverseWire(edge.target, vis))
-      }
+      morph.startAnimation()
     }
-    return ans
-  }
-}
-
-function annotate(graph) {
-  var r = 1;
-  var v = 1;
-  var c = 1;
-  var l = 1;
-  var d = 1;
-  var q = 1;
-  var w = 1;
-  var list = graph.getModel().cells;
-  var erc = true;
-  var k = '';
-
-  if (erc === false) {
-    alert('ERC check failed');
-  } else {
-    // DFS _________
-    var NODE_SETS = [];
-    var ptr = 1;
-    var mp = Array(5000).fill(0);
-    NODE_SETS[0] = new Set(); // Defining ground
-
-    for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
-        mxCell.prototype.ConnectedNode = null;
-        var component = list[property];
-
-        if (component.children !== null) {
-          // pins
-          for (var child in component.children) {
-            var pin = component.children[child];
-
-            if (pin != null && pin.vertex === true && pin.connectable) {
-              if (pin.edges !== null && pin.edges.length !== 0) {
-                if (mp[pin.id] === 1) {
-                  continue;
-                }
-                var stk = new Stack();
-                var cur_node;
-                var cur_set = [];
-                var contains_gnd = 0;
-
-                stk.push(pin);
-                stk.push(pin);
-                stk.push(pin);
-
-                while (!stk.isEmpty()) {
-                  cur_node = stk.peek();
-                  stk.pop();
-                  mp[cur_node.id] = 1;
-                  cur_set.push(cur_node);
-
-                  for (var wire in cur_node.edges) {
-                    if (cur_node.edges[wire].source !== null && cur_node.edges[wire].target !== null) {
-                      if (
-                        (cur_node.edges[wire].target.ParentComponent !== null &&
-                          cur_node.edges[wire].target.ParentComponent.symbol === 'PWR') ||
-                        (cur_node.edges[wire].source.ParentComponent !== null &&
-                          cur_node.edges[wire].source.ParentComponent.symbol === 'PWR')
-                      ) {
-                        contains_gnd = 1;
-                      }
-
-                      if (cur_node.edges[wire].target.vertex === true) {
-                        if (
-                          cur_node.edges[wire].target.id !== cur_node.id &&
-                          !mp[cur_node.edges[wire].target.id]
-                        ) {
-                          stk.push(cur_node.edges[wire].target);
-                        }
-                      }
-
-                      if (cur_node.edges[wire].source.vertex === true) {
-                        if (
-                          cur_node.edges[wire].source.id !== cur_node.id &&
-                          !mp[cur_node.edges[wire].source.id]
-                        ) {
-                          stk.push(cur_node.edges[wire].source);
-                        }
-                      }
-
-                      // Checking for wires which are connected to another wire(s), Comment out
-                      // the if conditions below if edge connections malfunction
-                      var conn_vertices = [];
-                      if (cur_node.edges[wire].edges && cur_node.edges[wire].edges.length > 0) {
-                        for (const ed in cur_node.edges[wire].edges) {
-                          if (!mp[cur_node.edges[wire].edges[ed].id]) {
-                            conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].edges[ed], mp));
-                          }
-                        }
-                      }
-
-                      if (cur_node.edges[wire].source.edge === true) {
-                        if (
-                          cur_node.edges[wire].source.id !== cur_node.id &&
-                          !mp[cur_node.edges[wire].source.id]
-                        ) {
-                          conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].source, mp));
-                        }
-                      }
-
-                      if (cur_node.edges[wire].target.edge === true) {
-                        if (
-                          cur_node.edges[wire].target.id !== cur_node.id &&
-                          !mp[cur_node.edges[wire].target.id]
-                        ) {
-                          conn_vertices = conn_vertices.concat(...traverseWire(cur_node.edges[wire].target, mp));
-                        }
-                      }
-
-                      conn_vertices.forEach((elem) => {
-                        stk.push(elem);
-                      });
-                    }
-                  }
-                }
-
-                if (contains_gnd === 1) {
-                  for (var x in cur_set) {
-                    NODE_SETS[0].add(cur_set[x]);
-                  }
-                } else {
-                  NODE_SETS.push(new Set(cur_set));
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    for (var property in list) {
-      if (list[property].Component === true && list[property].symbol !== 'PWR') {
-        mxCell.prototype.ConnectedNode = null;
-        var component = list[property];
-
-        if (component.symbol === 'R') {
-          component.value = component.symbol + r.toString();
-          component.properties.PREFIX = component.value;
-          ++r;
-        } else if (component.symbol === 'V') {
-          component.value = component.symbol + v.toString();
-          component.properties.PREFIX = component.value;
-          ++v;
-        } else if (component.symbol === 'C') {
-          component.value = component.symbol + c.toString();
-          component.properties.PREFIX = component.value;
-          ++c;
-        } else if (component.symbol === 'D') {
-          component.value = component.symbol + d.toString();
-          component.properties.PREFIX = component.value;
-          ++d;
-        } else if (component.symbol === 'Q') {
-          component.value = component.symbol + q.toString();
-          component.properties.PREFIX = component.value;
-          ++q;
-        } else {
-          component.value = component.symbol + w.toString();
-          component.properties.PREFIX = component.value;
-          ++w;
-        }
-
-        if (component.children !== null) {
-          for (var child in component.children) {
-            var pin = component.children[child];
-
-            if (pin.vertex === true && pin.connectable) {
-              if (pin.edges !== null && pin.edges.length !== 0) {
-                NODE_SETS.forEach((e, i) => {
-                  var done = 0;
-                  e.forEach((vertex) => {
-                    if (vertex.id == pin.id && done === 0) {
-                      if (i === 0) {
-                        pin.edges[0].node = 0;
-                        pin.ConnectedNode = 0;
-                        pin.edges[0].value = pin.edges[0].node;
-                      } else {
-                        pin.edges[0].node = 'COM.' + i.toString();
-                        pin.ConnectedNode = 'COM.' + i.toString();
-                        pin.edges[0].value = pin.edges[0].node;
-                      }
-                      done = 1;
-                    }
-                  });
-                });
-                k = k + ' ' + pin.edges[0].node;
-              }
-            }
-            // Additional condition to handle ground connection
-            if (pin.edges !== null && pin.edges.length !== 0) {
-              pin.edges.forEach((edge) => {
-                if (
-                  edge.target === null ||
-                  edge.target.ParentComponent === null ||
-                  (edge.target.ParentComponent.symbol !== 'PWR' && edge.target.ParentComponent.symbol !== 'GND')
-                ) {
-                  if (pin.ConnectedNode === 0) {
-                    edge.node = 0;
-                    edge.value = edge.node;
-                  } else {
-                    edge.node = pin.ConnectedNode;
-                    edge.value = edge.node;
-                  }
-                }
-              });
-            }
-
-          }
-        }
-      }
+    return {
+      models: netobj.models,
+      main: netobj.main
     }
   }
-
-  return list;
 }
-
-
 
 
 

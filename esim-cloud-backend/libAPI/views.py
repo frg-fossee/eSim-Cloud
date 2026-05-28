@@ -17,6 +17,7 @@ from rest_framework.permissions import BasePermission,\
     IsAuthenticated,\
     SAFE_METHODS
 from rest_framework.parsers import MultiPartParser
+from rest_framework.filters import SearchFilter
 import logging
 from django_filters import rest_framework as filters
 from drf_yasg.utils import swagger_auto_schema
@@ -126,8 +127,9 @@ class LibraryComponentViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = (IsComponentOwner,)
     queryset = LibraryComponent.objects.all()
     serializer_class = LibraryComponentSerializer
-    filter_backends = (filters.DjangoFilterBackend,)
+    filter_backends = (filters.DjangoFilterBackend, SearchFilter)
     filterset_class = LibraryComponentFilterSet
+    search_fields = ['name', 'keyword', 'full_name']
 
     def get_queryset(self):
         User = get_user_model()

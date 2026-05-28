@@ -4,7 +4,10 @@ const InitialState = {
   isSimulate: false,
   libraries: [],
   collapse: {},
-  components: {}
+  components: {},
+  searchResults: [],
+  searchLoading: false,
+  searchError: null
 }
 
 export default function (state = InitialState, action) {
@@ -100,6 +103,18 @@ export default function (state = InitialState, action) {
 
     case actions.RESET_UPLOAD_SUCCESS: {
       return { ...state, uploadSuccess: null }
+    }
+
+    case actions.SEARCH_COMPONENTS_LOADING: {
+      return { ...state, searchLoading: true, searchError: null }
+    }
+
+    case actions.SEARCH_COMPONENTS_SUCCESS: {
+      return { ...state, searchLoading: false, searchResults: action.payload, searchError: null }
+    }
+
+    case actions.SEARCH_COMPONENTS_ERROR: {
+      return { ...state, searchLoading: false, searchError: action.payload }
     }
 
     default:

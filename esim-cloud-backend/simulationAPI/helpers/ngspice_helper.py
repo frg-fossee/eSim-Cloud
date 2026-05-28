@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 from django.conf import settings
 from .parse import extract_data_from_ngspice_output
+from simulationAPI.helpers.error_parser import parse_ngspice_error
 logger = logging.getLogger(__name__)
 
 
@@ -62,12 +63,30 @@ def ExecNetlist(filepath, file_id):
                 """
                 tmp = stderr.decode("utf-8")
                 foo = '{}'.format(tmp)
-                output = {'fail': foo}
+                # JSON shape of the full failure response:
+                # {
+                #     'fail': '<original_stderr_text>',
+                #     'error_help': {
+                #         'summary': '<A short sentence describing what went wrong>',
+                #         'hints': ['<A list of actionable steps to fix the problem>'],
+                #         'codes': ['<A list of specific error codes or keywords>']
+                #     }
+                # }
+                output = {'fail': foo, 'error_help': parse_ngspice_error(tmp)}
         else:
             out = stdout.decode("utf-8")
             err = stderr.decode("utf-8")
             foo = '{}'.format(out+err)
-            output = {'fail': foo}
+            # JSON shape of the full failure response:
+            # {
+            #     'fail': '<original_stderr_text>',
+            #     'error_help': {
+            #         'summary': '<A short sentence describing what went wrong>',
+            #         'hints': ['<A list of actionable steps to fix the problem>'],
+            #         'codes': ['<A list of specific error codes or keywords>']
+            #     }
+            # }
+            output = {'fail': foo, 'error_help': parse_ngspice_error(err)}
         logger.info('output from ngspice_helper.py')
         logger.info(stderr)
         # logger.info(output)

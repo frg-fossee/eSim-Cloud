@@ -4,9 +4,10 @@ import { makeStyles } from '@material-ui/core/styles'
 import Editor from '../components/Simulator/Editor'
 import textToFile from '../components/Simulator/textToFile'
 import SimulationScreen from '../components/Shared/SimulationScreen'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setResultGraph, setResultText, setNetlist } from '../redux/actions/index'
 import Notice from '../components/Shared/Notice'
+import { sanitizeNetlistForExport } from '../components/SchematicEditor/Helper/NetlistExporter'
 
 import api from '../utils/Api'
 
@@ -38,9 +39,17 @@ export default function Simulator () {
   })
   const [taskId, setTaskId] = useState(null)
 
+  const reduxNetlist = useSelector(state => state.netlistReducer.netlist)
+
   useEffect(() => {
     document.title = 'Simulator - eSim '
   })
+
+  useEffect(() => {
+    if (reduxNetlist) {
+      setNetlistCode(reduxNetlist)
+    }
+  }, [reduxNetlist])
 
   const handleChange = (event) => {
     setState({ ...state, [event.target.name]: event.target.checked })
@@ -75,32 +84,8 @@ export default function Simulator () {
     setSimulateOpen(false)
   }
 
-  const netlistCodeSanitization = (code) => {
-    const codeArray = code.split('\n')
-    let cleanCode = ''
-    let frontPlot = ''
-    for (let line = 0; line < codeArray.length; line++) {
-      if (codeArray[line].includes('plot') && !codeArray[line].includes('setplot')) {
-        frontPlot += codeArray[line].split('plot ')[1] + ' '
-      }
-    }
-    frontPlot = `print ${frontPlot} > data.txt \n`
-    let flag = 0
-    for (let i = 0; i < codeArray.length; i++) {
-      if (codeArray[i].includes('plot') && !codeArray[i].includes('setplot')) {
-        if (!flag) {
-          cleanCode += frontPlot
-          flag = 1
-        }
-      } else {
-        cleanCode += codeArray[i] + '\n'
-      }
-    }
-    return cleanCode
-  }
-
   function prepareNetlist () {
-    const sanatizedText = netlistCodeSanitization(netlistCode)
+    const sanatizedText = sanitizeNetlistForExport(netlistCode)
     dispatch(setNetlist(sanatizedText))
     const file = textToFile(sanatizedText)
     sendNetlist(file)
