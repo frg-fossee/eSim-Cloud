@@ -1,3 +1,6 @@
+"""
+Tasks cleanup after 3 secs and the process is stopped after 5 seconds.
+"""
 from celery import shared_task, current_task
 from celery import states
 from simulationAPI.helpers import ngspice_helper
@@ -7,9 +10,6 @@ from simulationAPI.models import spiceFile
 from celery.exceptions import SoftTimeLimitExceeded
 from typing import Any, Dict, List, Union
 
-"""
-Tasks cleanup after 3 secs and the process is stopped after 5 seconds.
-"""
 
 
 # @shared_task(soft_time_limit=3, time_limit=5)
@@ -99,5 +99,3 @@ def process_autotune_task(
             'exc_type': type(e).__name__,
             'exc_message': traceback.format_exc().split('\n')})
         raise Ignore()
-
-
