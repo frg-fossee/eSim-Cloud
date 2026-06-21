@@ -21,5 +21,7 @@ All notable changes to the `eSim-Cloud` project will be documented in this file.
 - **Compose Standards Modernization:** Removed deprecated `version` attributes from `docker-compose.dev.yml` and `docker-compose.prod.yml` to prevent Compose execution warnings.
 - **Python Requirements Cleanup:** Removed duplicate entries (`psycopg2`, `Pillow`) in `requirements.txt`.
 - **Code Documentation & Standards:** Standardized imports, formatted the codebase, and added 100% strict PEP-484 type annotations and PEP-257 docstrings to `autotune_helper.py`, `verify_autotune.py`, `parse.py`, and `tasks.py` (fully compatible with Python 3.7).
+- **Codebase Standards Enforcement:** Ported Neural-LAM repository quality standards to `eSim-Cloud`. Created `AGENTS.md` to define AI assistant protocols. Integrated `.pre-commit-config.yaml` and `pyproject.toml` in the root to configure `black`, `isort`, `flake8`, `mypy`, and `interrogate` for automated quality checks.
 - **Housekeeping:** Deleted temporary test circuit files (`test_cir.cir`, `test_cir2.cir`) from the backend root directory.
+
 

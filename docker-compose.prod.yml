@@ -86,9 +86,6 @@ services:
     depends_on:
       - redis
       - db
-    links:
-      - "redis:redis"
-      - "db:db"
 
     deploy:
       replicas: 3

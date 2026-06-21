@@ -1,0 +1,34 @@
+[tool.black]
+line-length = 80
+
+[tool.isort]
+default_section = "THIRDPARTY"
+profile = "black"
+import_heading_stdlib = "Standard library"
+import_heading_thirdparty = "Third-party"
+import_heading_firstparty = "First-party"
+import_heading_localfolder = "Local"
+line_length = 80
+
+[tool.flake8]
+max-line-length = 80
+ignore = [
+    "E203", # Allow whitespace before ':'
+    "I002", # Don't check for isort configuration
+    "W503", # Allow line break before binary operator
+]
+per-file-ignores = [
+    "__init__.py: F401", # Allow unused imports
+]
+
+[tool.interrogate]
+fail-under = 100
+verbose = 1
+quiet = false
+ignore-init-method = false
+ignore-init-module = false
+ignore-magic = false
+ignore-private = false
+ignore-nested-functions = false
+ignore-property-decorators = false
+exclude = ["tests", "docs", "build", "migrations", "postgres_data", "redis_data"]
