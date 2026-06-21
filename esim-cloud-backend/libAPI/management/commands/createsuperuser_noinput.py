@@ -29,8 +29,8 @@ class Command(BaseCommand):
                 email='', password=options['password']
             )
             logger.info(
-                f"Creating user {options['user']}"
-                " with password {options['password']}")
+                f"Creating user {options['username']}"
+                f" with password {options['password']}")
             user.save()
         else:
             raise Exception("Username or Password not present")

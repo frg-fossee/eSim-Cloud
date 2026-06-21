@@ -211,3 +211,65 @@ def statsd_task_postrun(task_id, **kwargs):
     statObj, created = runtimeStat.objects.get_or_create(exec_time=runtime)
     statObj.qty += 1
     statObj.save()
+
+from simulationAPI.tasks import process_autotune_task
+import json
+
+class AutotuneUploader(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        logger.info('Got POST for autotune run')
+        
+        # Extract inputs from request data
+        netlist_template = request.data.get('netlist_template', '')
+        
+        # If parameters and targets are passed as JSON strings, parse them
+        params_config = request.data.get('params_config', [])
+        if isinstance(params_config, str):
+            params_config = json.loads(params_config)
+            
+        targets_config = request.data.get('targets_config', {})
+        if isinstance(targets_config, str):
+            targets_config = json.loads(targets_config)
+            
+        max_trials = int(request.data.get('max_trials', 30))
+        analysis_type = request.data.get('analysis_type', 'ac')
+
+        task_id = uuid.uuid4()
+        
+        celery_task = process_autotune_task.apply_async(
+            kwargs={
+                'task_id': str(task_id),
+                'netlist_template': netlist_template,
+                'params_config': params_config,
+                'targets_config': targets_config,
+                'max_trials': max_trials,
+                'analysis_type': analysis_type
+            },
+            task_id=str(task_id)
+        )
+
+        response_data = {
+            'state': celery_task.state,
+            'task_id': str(task_id),
+        }
+        return Response(response_data)
+
+
+class AutotuneResultView(APIView):
+    permission_classes = (AllowAny,)
+
+    def get(self, request, task_id):
+        if isinstance(task_id, uuid.UUID):
+            celery_result = AsyncResult(str(task_id))
+            details = celery_result.info
+            if isinstance(details, Exception):
+                details = str(details)
+            response_data = {
+                'state': celery_result.state,
+                'details': details
+            }
+            return Response(response_data)
+        else:
+            raise ValidationError('Invalid uuid format')

@@ -4,6 +4,12 @@ import os
 import glob
 
 
+def clean_path(path):
+    if path.startswith("/tmp/"):
+        return path[len("/tmp/"):]
+    return path
+
+
 def save_uploaded_files(files, path):
     for f in files:
         filepath = os.path.join(path, f._name)
@@ -67,11 +73,12 @@ def save_libs(files, path, out_path, library_set):
                 svg_desc = component_details[component_svg[:-4]]
 
                 # Seed DB
+                db_svg_path = clean_path(os.path.join(library_svg_folder, component_svg))
+                db_thumbnail_path = clean_path(thumbnail_path)
                 component = LibraryComponent.objects.filter(
                     name=svg_desc['name'],
-                    svg_path=os.path.join(
-                        library_svg_folder, component_svg),
-                    thumbnail_path=thumbnail_path,
+                    svg_path=db_svg_path,
+                    thumbnail_path=db_thumbnail_path,
                     symbol_prefix=svg_desc['symbol_prefix'],
                     full_name=svg_desc['full_name'],
                     keyword=svg_desc['keyword'],
@@ -82,9 +89,8 @@ def save_libs(files, path, out_path, library_set):
                 if not component:
                     component = LibraryComponent(
                         name=svg_desc['name'],
-                        svg_path=os.path.join(
-                            library_svg_folder, component_svg),
-                        thumbnail_path=thumbnail_path,
+                        svg_path=db_svg_path,
+                        thumbnail_path=db_thumbnail_path,
                         symbol_prefix=svg_desc['symbol_prefix'],
                         full_name=svg_desc['full_name'],
                         keyword=svg_desc['keyword'],
@@ -98,19 +104,18 @@ def save_libs(files, path, out_path, library_set):
             for component_svg in glob.glob(library_svg_folder + '/*[B-Z].svg'):
                 component_svg = os.path.split(component_svg)[-1]
                 svg_desc = component_details[component_svg[:-4]]
+                db_alt_svg_path = clean_path(os.path.join(library_svg_folder, component_svg))
                 alternate_component = ComponentAlternate.objects.filter(
                     part=svg_desc['part'], dmg=svg_desc['dmg'],
                     full_name=svg_desc['full_name'],
-                    svg_path=os.path.join(
-                        library_svg_folder, component_svg),
+                    svg_path=db_alt_svg_path,
                     parent_component=component
                 ).first()
                 if not alternate_component:
                     alternate_component = ComponentAlternate(
                         part=svg_desc['part'], dmg=svg_desc['dmg'],
                         full_name=svg_desc['full_name'],
-                        svg_path=os.path.join(
-                            library_svg_folder, component_svg),
+                        svg_path=db_alt_svg_path,
                         parent_component=component
                     )
                 alternate_component.save()

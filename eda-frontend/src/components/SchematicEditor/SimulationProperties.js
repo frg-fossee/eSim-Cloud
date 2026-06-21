@@ -15,7 +15,8 @@ import {
   Popover,
   Tooltip,
   Snackbar,
-  IconButton
+  IconButton,
+  CircularProgress
 } from '@material-ui/core'
 import queryString from 'query-string'
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined'
@@ -23,8 +24,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MuiAlert from '@material-ui/lab/Alert'
 import { makeStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText, setNetlist } from '../../redux/actions/index'
-import { GenerateNetList, GenerateNodeList, GenerateCompList, ErcCheckNets } from './Helper/ToolbarTools'
+import { setControlLine, setControlBlock, setResultTitle, setResultGraph, setResultText, setNetlist, setCompProperties } from '../../redux/actions/index'
+import { GenerateNetList, GenerateNodeList, GenerateCompList, ErcCheckNets, getComponentCellIdMap } from './Helper/ToolbarTools'
 import SimulationScreen from '../Shared/SimulationScreen'
 import { Multiselect } from 'multiselect-react-dropdown'
 import Notice from '../Shared/Notice'
@@ -112,6 +113,280 @@ export default function SimulationProperties (props) {
   const [controlBlockParam, setControlBlockParam] = useState('')
   const [simType, setSimType] = React.useState('')
   let typeSimulation = ''
+
+  // eSim AutoTune State
+  const [outputNode, setOutputNode] = useState('')
+  const [autotuneParams, setAutotuneParams] = useState([
+    { name: '', min: '', max: '', type: 'Float' }
+  ])
+  const [autotuneAnalysisType, setAutotuneAnalysisType] = useState('ac')
+  const [autotuneMaxTrials, setAutotuneMaxTrials] = useState(30)
+  const [acTargets, setAcTargets] = useState({
+    dc_gain: { enabled: false, target: '', weight: '1.0' },
+    cutoff_freq: { enabled: false, target: '', weight: '1.0' },
+    phase_margin_min: { enabled: false, target: '' }
+  })
+  const [transientTargets, setTransientTargets] = useState({
+    slew_rate: { enabled: false, target: '', weight: '1.0' }
+  })
+  const [autotuneStatus, setAutotuneStatus] = useState('')
+  const [autotuneTaskId, setAutotuneTaskId] = useState(null)
+  const [autotuneProgressInfo, setAutotuneProgressInfo] = useState(null)
+  const [autotuneResultData, setAutotuneResultData] = useState(null)
+  const [autotuneErrOpen, setAutotuneErrOpen] = useState(false)
+  const [autotuneErrMsg, setAutotuneErrMsg] = useState('')
+  const [autotuneSuccessOpen, setAutotuneSuccessOpen] = useState(false)
+  const [autotuneSuccessMsg, setAutotuneSuccessMsg] = useState('')
+
+  const handleAddParamRow = () => {
+    setAutotuneParams([...autotuneParams, { name: '', min: '', max: '', type: 'Float' }])
+  }
+
+  const handleRemoveParamRow = (index) => {
+    const temp = [...autotuneParams]
+    temp.splice(index, 1)
+    setAutotuneParams(temp)
+  }
+
+  const handleParamChange = (index, field, value) => {
+    const temp = [...autotuneParams]
+    temp[index][field] = value
+    setAutotuneParams(temp)
+  }
+
+  const handleAcTargetChange = (metric, field, value) => {
+    setAcTargets({
+      ...acTargets,
+      [metric]: {
+        ...acTargets[metric],
+        [field]: value
+      }
+    })
+  }
+
+  const handleTransientTargetChange = (metric, field, value) => {
+    setTransientTargets({
+      ...transientTargets,
+      [metric]: {
+        ...transientTargets[metric],
+        [field]: value
+      }
+    })
+  }
+
+  const pollAutotuneStatus = (taskId) => {
+    api.get(`simulation/autotune/status/${taskId}`)
+      .then(res => {
+        const data = res.data
+        if (data.state === 'PROGRESS') {
+          setAutotuneProgressInfo(data.details || {})
+          setTimeout(() => pollAutotuneStatus(taskId), 1000)
+        } else if (data.state === 'SUCCESS') {
+          setAutotuneStatus('success')
+          setAutotuneResultData(data.details || {})
+        } else if (data.state === 'FAILURE' || data.state === 'REVOKED') {
+          setAutotuneStatus('error')
+          setAutotuneErrMsg('Autotune optimization task failed.')
+          setAutotuneErrOpen(true)
+        } else {
+          setTimeout(() => pollAutotuneStatus(taskId), 1000)
+        }
+      })
+      .catch(err => {
+        console.error(err)
+        setTimeout(() => pollAutotuneStatus(taskId), 2000)
+      })
+  }
+
+  const runAutotune = () => {
+    const validParams = autotuneParams.filter(p => p.name && p.min && p.max)
+    if (validParams.length === 0) {
+      setAutotuneErrMsg('Please specify at least one tuning parameter with min and max bounds.')
+      setAutotuneErrOpen(true)
+      return
+    }
+
+    let targets = {}
+    if (autotuneAnalysisType === 'ac') {
+      if (acTargets.dc_gain.enabled) {
+        if (!acTargets.dc_gain.target) {
+          setAutotuneErrMsg('Please specify DC Gain target value.')
+          setAutotuneErrOpen(true)
+          return
+        }
+        targets['dc_gain'] = {
+          target: parseFloat(acTargets.dc_gain.target),
+          weight: parseFloat(acTargets.dc_gain.weight || 1.0)
+        }
+      }
+      if (acTargets.cutoff_freq.enabled) {
+        if (!acTargets.cutoff_freq.target) {
+          setAutotuneErrMsg('Please specify -3dB Cutoff Frequency target value.')
+          setAutotuneErrOpen(true)
+          return
+        }
+        targets['cutoff_freq'] = {
+          target: parseFloat(acTargets.cutoff_freq.target),
+          weight: parseFloat(acTargets.cutoff_freq.weight || 1.0)
+        }
+      }
+      if (acTargets.phase_margin_min.enabled) {
+        if (!acTargets.phase_margin_min.target) {
+          setAutotuneErrMsg('Please specify minimum Phase Margin constraint value.')
+          setAutotuneErrOpen(true)
+          return
+        }
+        targets['phase_margin_min'] = parseFloat(acTargets.phase_margin_min.target)
+      }
+    } else {
+      if (transientTargets.slew_rate.enabled) {
+        if (!transientTargets.slew_rate.target) {
+          setAutotuneErrMsg('Please specify Slew Rate target value.')
+          setAutotuneErrOpen(true)
+          return
+        }
+        targets['slew_rate'] = {
+          target: parseFloat(transientTargets.slew_rate.target),
+          weight: parseFloat(transientTargets.slew_rate.weight || 1.0)
+        }
+      }
+    }
+
+    if (Object.keys(targets).length === 0) {
+      setAutotuneErrMsg('Please enable and specify at least one performance target.')
+      setAutotuneErrOpen(true)
+      return
+    }
+
+    if (!outputNode) {
+      setAutotuneErrMsg('Please select the output node to measure.')
+      setAutotuneErrOpen(true)
+      return
+    }
+
+    const cellIdMap = getComponentCellIdMap()
+    const originalValues = {}
+    
+    validParams.forEach(p => {
+      if (cellIdMap[p.name]) {
+        const cell = cellIdMap[p.name]
+        originalValues[p.name] = cell.properties.VALUE
+        cell.properties.VALUE = `{${p.name}}`
+      }
+    })
+    
+    let compNetlist
+    try {
+      compNetlist = GenerateNetList()
+    } catch (e) {
+      validParams.forEach(p => {
+        if (cellIdMap[p.name] && originalValues[p.name] !== undefined) {
+          cellIdMap[p.name].properties.VALUE = originalValues[p.name]
+        }
+      })
+      setAutotuneErrMsg('Failed to generate circuit netlist template. Make sure schematic is valid.')
+      setAutotuneErrOpen(true)
+      return
+    }
+    
+    validParams.forEach(p => {
+      if (cellIdMap[p.name] && originalValues[p.name] !== undefined) {
+        cellIdMap[p.name].properties.VALUE = originalValues[p.name]
+      }
+    })
+
+    let controlLine = ''
+    if (autotuneAnalysisType === 'ac') {
+      if (!acAnalysisControlLine.pointsBydecade || !acAnalysisControlLine.start || !acAnalysisControlLine.stop) {
+        setAutotuneErrMsg('Please fill out all AC Analysis settings (Points, Start, Stop) in the AC Analysis section first.')
+        setAutotuneErrOpen(true)
+        return
+      }
+      controlLine = `.ac ${acAnalysisControlLine.input} ${acAnalysisControlLine.pointsBydecade} ${acAnalysisControlLine.start} ${acAnalysisControlLine.stop}`
+    } else {
+      if (!transientAnalysisControlLine.step || !transientAnalysisControlLine.stop) {
+        setAutotuneErrMsg('Please fill out Transient Analysis settings (Step, Stop) in the Transient Analysis section first.')
+        setAutotuneErrOpen(true)
+        return
+      }
+      controlLine = `.tran ${transientAnalysisControlLine.step} ${transientAnalysisControlLine.stop} ${transientAnalysisControlLine.start || '0'}`
+    }
+
+    const controlBlock = `\n.control \nrun \nprint v(${outputNode}) > data.txt \n.endc \n.end`
+
+    const netlistTemplate = netfile.title + '\n\n' +
+      compNetlist.models + '\n' +
+      compNetlist.main + '\n' +
+      controlLine + '\n' +
+      controlBlock + '\n'
+
+    setAutotuneStatus('running')
+    setAutotuneProgressInfo(null)
+    setAutotuneResultData(null)
+
+    const formData = new FormData()
+    formData.append('netlist_template', netlistTemplate)
+    formData.append('params_config', JSON.stringify(validParams.map(p => ({
+      name: p.name,
+      min: parseFloat(p.min),
+      max: parseFloat(p.max),
+      type: p.type
+    }))))
+    formData.append('targets_config', JSON.stringify(targets))
+    formData.append('max_trials', autotuneMaxTrials)
+    formData.append('analysis_type', autotuneAnalysisType)
+
+    const token = localStorage.getItem('esim_token')
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data'
+      }
+    }
+    if (token) {
+      config.headers.Authorization = `Token ${token}`
+    }
+
+    api.post('simulation/autotune/run', formData, config)
+      .then(response => {
+        const res = response.data
+        setAutotuneTaskId(res.task_id)
+        pollAutotuneStatus(res.task_id)
+      })
+      .catch(err => {
+        console.error(err)
+        setAutotuneStatus('error')
+        setAutotuneErrMsg('Failed to submit autotune run request.')
+        setAutotuneErrOpen(true)
+      })
+  }
+
+  const applyTunedValues = () => {
+    if (!autotuneResultData || !autotuneResultData.best_params) return
+    const bestParams = autotuneResultData.best_params
+    const cellIdMap = getComponentCellIdMap()
+    
+    let appliedCount = 0
+    Object.keys(bestParams).forEach(name => {
+      if (cellIdMap[name]) {
+        const cell = cellIdMap[name]
+        const val = bestParams[name]
+        const formattedVal = val >= 1e6 ? `${(val/1e6).toFixed(3)}M` :
+                             val >= 1e3 ? `${(val/1e3).toFixed(3)}k` :
+                             val <= 1e-9 ? `${(val*1e9).toFixed(3)}n` :
+                             val <= 1e-6 ? `${(val*1e6).toFixed(3)}u` :
+                             val.toFixed(3)
+                             
+        dispatch(setCompProperties(cell.id, {
+          ...cell.properties,
+          VALUE: formattedVal
+        }))
+        appliedCount++
+      }
+    })
+    
+    setAutotuneSuccessMsg(`Successfully applied ${appliedCount} tuned component values to the schematic!`)
+    setAutotuneSuccessOpen(true)
+  }
 
   const handleControlBlockParam = (evt) => {
     setControlBlockParam(evt.target.value)
@@ -728,6 +1003,24 @@ export default function SimulationProperties (props) {
         >
           <Alert onClose={() => setError(false)} severity="error">
             Cannot simulate an incomplete circuit!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={autotuneErrOpen}
+          autoHideDuration={6000}
+          onClose={() => setAutotuneErrOpen(false)}
+        >
+          <Alert onClose={() => setAutotuneErrOpen(false)} severity="error">
+            {autotuneErrMsg}
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={autotuneSuccessOpen}
+          autoHideDuration={6000}
+          onClose={() => setAutotuneSuccessOpen(false)}
+        >
+          <Alert onClose={() => setAutotuneSuccessOpen(false)} severity="success">
+            {autotuneSuccessMsg}
           </Alert>
         </Snackbar>
         <SimulationScreen open={simulateOpen} isResult={isResult} close={handleSimulateClose} taskId={taskId} simType={simType} />
@@ -1551,6 +1844,353 @@ export default function SimulationProperties (props) {
                     <ListItem>
                       <Button id="noiseAnalysisSimulate" size='small' variant="contained" color="primary" onClick={(e) => { startSimulate('noiseAnalysis') }}>
                         Simulate
+                      </Button>
+                    </ListItem>
+                  </List>
+                </form>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </ListItem>
+
+          {/* eSim AutoTune */}
+          <ListItem className={classes.simulationOptions} divider>
+            <ExpansionPanel onClick={onTabExpand}>
+              <ExpansionPanelSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel-autotune-content"
+                id="panel-autotune-header"
+                style={{ width: '97%' }}
+              >
+                <Typography className={classes.heading} style={{ fontWeight: 'bold', color: '#3f51b5' }}>eSim AutoTune</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails style={{ padding: '8px 16px 16px' }}>
+                <form className={classes.propertiesBox} noValidate autoComplete="off">
+                  <List style={{ width: '100%' }}>
+                    {/* Analysis Type Selector */}
+                    <ListItem style={{ paddingLeft: 0, paddingRight: 0 }}>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="autotuneAnalysisType"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Analysis Type"
+                        value={autotuneAnalysisType}
+                        onChange={(e) => setAutotuneAnalysisType(e.target.value)}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+                        <option value="ac">AC Analysis</option>
+                        <option value="transient">Transient Analysis</option>
+                      </TextField>
+                    </ListItem>
+
+                    {/* Output Node Selector */}
+                    <ListItem style={{ paddingLeft: 0, paddingRight: 0 }}>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="autotuneOutputNode"
+                        size='small'
+                        variant="outlined"
+                        select
+                        label="Output Node"
+                        value={outputNode}
+                        onChange={(e) => setOutputNode(e.target.value)}
+                        SelectProps={{
+                          native: true
+                        }}
+                      >
+                        <option value="">-- Select Output Node --</option>
+                        {nodeList.map((node, i) => (
+                          node ? <option key={i} value={node}>{node}</option> : null
+                        ))}
+                      </TextField>
+                    </ListItem>
+
+                    {/* Max Trials */}
+                    <ListItem style={{ paddingLeft: 0, paddingRight: 0 }}>
+                      <TextField
+                        style={{ width: '100%' }}
+                        id="autotuneMaxTrials"
+                        label="Max Optimization Trials"
+                        size='small'
+                        variant="outlined"
+                        type="number"
+                        value={autotuneMaxTrials}
+                        onChange={(e) => setAutotuneMaxTrials(parseInt(e.target.value) || 30)}
+                      />
+                    </ListItem>
+
+                    <Divider style={{ margin: '15px 0' }} />
+
+                    {/* Parameters Tuning Boundaries */}
+                    <ListItem style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingLeft: 0, paddingRight: 0 }}>
+                      <Typography style={{ fontWeight: 'bold' }}>Tuning Parameters</Typography>
+                      <Button size="small" color="primary" variant="outlined" onClick={handleAddParamRow}>
+                        + Add Param
+                      </Button>
+                    </ListItem>
+
+                    {autotuneParams.map((param, index) => (
+                      <ListItem key={index} style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '10px 0', borderBottom: '1px dashed #ccc', paddingLeft: 0, paddingRight: 0 }}>
+                        <div style={{ display: 'flex', width: '100%', gap: '10px', alignItems: 'center' }}>
+                          <TextField
+                            style={{ flex: 1 }}
+                            size='small'
+                            variant="outlined"
+                            select
+                            label="Component"
+                            value={param.name}
+                            onChange={(e) => handleParamChange(index, 'name', e.target.value)}
+                            SelectProps={{
+                              native: true
+                            }}
+                          >
+                            <option value="">-- Select --</option>
+                            {componentsList.map((comp, i) => (
+                              comp ? <option key={i} value={comp}>{comp}</option> : null
+                            ))}
+                          </TextField>
+                          <TextField
+                            style={{ flex: 1 }}
+                            size='small'
+                            variant="outlined"
+                            select
+                            label="Type"
+                            value={param.type}
+                            onChange={(e) => handleParamChange(index, 'type', e.target.value)}
+                            SelectProps={{
+                              native: true
+                            }}
+                          >
+                            <option value="Float">Float</option>
+                            <option value="Int">Int</option>
+                          </TextField>
+                          {autotuneParams.length > 1 && (
+                            <Button size="small" style={{ color: 'red' }} onClick={() => handleRemoveParamRow(index)}>
+                              Remove
+                            </Button>
+                          )}
+                        </div>
+                        <div style={{ display: 'flex', width: '100%', gap: '10px' }}>
+                          <TextField
+                            style={{ flex: 1 }}
+                            size='small'
+                            label="Min"
+                            variant="outlined"
+                            value={param.min}
+                            onChange={(e) => handleParamChange(index, 'min', e.target.value)}
+                          />
+                          <TextField
+                            style={{ flex: 1 }}
+                            size='small'
+                            label="Max"
+                            variant="outlined"
+                            value={param.max}
+                            onChange={(e) => handleParamChange(index, 'max', e.target.value)}
+                          />
+                        </div>
+                      </ListItem>
+                    ))}
+
+                    <Divider style={{ margin: '15px 0' }} />
+
+                    {/* Targets Config */}
+                    <ListItem style={{ paddingLeft: 0, paddingRight: 0 }}>
+                      <Typography style={{ fontWeight: 'bold' }}>Performance Targets</Typography>
+                    </ListItem>
+
+                    {autotuneAnalysisType === 'ac' ? (
+                      <>
+                        {/* DC Gain target */}
+                        <ListItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingLeft: 0, paddingRight: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Checkbox
+                              checked={acTargets.dc_gain.enabled}
+                              onChange={(e) => handleAcTargetChange('dc_gain', 'enabled', e.target.checked)}
+                              color="primary"
+                            />
+                            <Typography>Optimize DC Gain</Typography>
+                          </div>
+                          {acTargets.dc_gain.enabled && (
+                            <div style={{ display: 'flex', gap: '10px', width: '100%', paddingLeft: '35px' }}>
+                              <TextField
+                                size="small"
+                                label="Target (dB)"
+                                variant="outlined"
+                                value={acTargets.dc_gain.target}
+                                onChange={(e) => handleAcTargetChange('dc_gain', 'target', e.target.value)}
+                              />
+                              <TextField
+                                size="small"
+                                label="Weight"
+                                variant="outlined"
+                                value={acTargets.dc_gain.weight}
+                                onChange={(e) => handleAcTargetChange('dc_gain', 'weight', e.target.value)}
+                              />
+                            </div>
+                          )}
+                        </ListItem>
+
+                        {/* Cutoff frequency target */}
+                        <ListItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingLeft: 0, paddingRight: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Checkbox
+                              checked={acTargets.cutoff_freq.enabled}
+                              onChange={(e) => handleAcTargetChange('cutoff_freq', 'enabled', e.target.checked)}
+                              color="primary"
+                            />
+                            <Typography>Optimize Cutoff Freq</Typography>
+                          </div>
+                          {acTargets.cutoff_freq.enabled && (
+                            <div style={{ display: 'flex', gap: '10px', width: '100%', paddingLeft: '35px' }}>
+                              <TextField
+                                size="small"
+                                label="Target (Hz)"
+                                variant="outlined"
+                                value={acTargets.cutoff_freq.target}
+                                onChange={(e) => handleAcTargetChange('cutoff_freq', 'target', e.target.value)}
+                              />
+                              <TextField
+                                size="small"
+                                label="Weight"
+                                variant="outlined"
+                                value={acTargets.cutoff_freq.weight}
+                                onChange={(e) => handleAcTargetChange('cutoff_freq', 'weight', e.target.value)}
+                              />
+                            </div>
+                          )}
+                        </ListItem>
+
+                        {/* Phase margin constraint */}
+                        <ListItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingLeft: 0, paddingRight: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Checkbox
+                              checked={acTargets.phase_margin_min.enabled}
+                              onChange={(e) => handleAcTargetChange('phase_margin_min', 'enabled', e.target.checked)}
+                              color="primary"
+                            />
+                            <Typography>Min Phase Margin (Constraint)</Typography>
+                          </div>
+                          {acTargets.phase_margin_min.enabled && (
+                            <div style={{ display: 'flex', gap: '10px', width: '100%', paddingLeft: '35px' }}>
+                              <TextField
+                                size="small"
+                                label="Min Margin (deg)"
+                                variant="outlined"
+                                value={acTargets.phase_margin_min.target}
+                                onChange={(e) => handleAcTargetChange('phase_margin_min', 'target', e.target.value)}
+                              />
+                            </div>
+                          )}
+                        </ListItem>
+                      </>
+                    ) : (
+                      <>
+                        {/* Slew Rate target */}
+                        <ListItem style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', paddingLeft: 0, paddingRight: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                            <Checkbox
+                              checked={transientTargets.slew_rate.enabled}
+                              onChange={(e) => handleTransientTargetChange('slew_rate', 'enabled', e.target.checked)}
+                              color="primary"
+                            />
+                            <Typography>Optimize Slew Rate</Typography>
+                          </div>
+                          {transientTargets.slew_rate.enabled && (
+                            <div style={{ display: 'flex', gap: '10px', width: '100%', paddingLeft: '35px' }}>
+                              <TextField
+                                size="small"
+                                label="Target (V/s)"
+                                variant="outlined"
+                                value={transientTargets.slew_rate.target}
+                                onChange={(e) => handleTransientTargetChange('slew_rate', 'target', e.target.value)}
+                              />
+                              <TextField
+                                size="small"
+                                label="Weight"
+                                variant="outlined"
+                                value={transientTargets.slew_rate.weight}
+                                onChange={(e) => handleTransientTargetChange('slew_rate', 'weight', e.target.value)}
+                              />
+                            </div>
+                          )}
+                        </ListItem>
+                      </>
+                    )}
+
+                    <Divider style={{ margin: '15px 0' }} />
+
+                    {/* Run / Status / Results Area */}
+                    <ListItem style={{ display: 'flex', flexDirection: 'column', gap: '15px', paddingLeft: 0, paddingRight: 0 }}>
+                      {autotuneStatus === 'running' && (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', gap: '10px', background: '#f5f5f5', padding: '15px', borderRadius: '5px', boxSizing: 'border-box' }}>
+                          <CircularProgress size={30} />
+                          <Typography variant="body2" style={{ fontWeight: 'bold', textAlign: 'center' }}>
+                            {autotuneProgressInfo?.current_process || 'Starting Optimization...'}
+                          </Typography>
+                          {autotuneProgressInfo?.trial_number && (
+                            <Typography variant="caption" color="textSecondary">
+                              Progress: Trial {autotuneProgressInfo.trial_number} of {autotuneProgressInfo.max_trials}
+                            </Typography>
+                          )}
+                          {autotuneProgressInfo?.best_value !== undefined && (
+                            <Typography variant="caption" color="textSecondary">
+                              Best Loss: {autotuneProgressInfo.best_value.toFixed(5)}
+                            </Typography>
+                          )}
+                        </div>
+                      )}
+
+                      {autotuneStatus === 'success' && autotuneResultData && (
+                        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', background: '#e8f5e9', padding: '15px', borderRadius: '5px', border: '1px solid #c8e6c9', boxSizing: 'border-box' }}>
+                          <Typography variant="body2" style={{ fontWeight: 'bold', color: '#2e7d32' }}>
+                            Optimization Completed!
+                          </Typography>
+                          <Typography variant="caption">
+                            Best Loss: {autotuneResultData.best_value?.toFixed(5)}
+                          </Typography>
+                          <Typography variant="subtitle2" style={{ marginTop: '5px', fontWeight: 'bold' }}>Tuned Parameters:</Typography>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {Object.entries(autotuneResultData.best_params || {}).map(([name, val]) => (
+                              <div key={name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                <span>{name}:</span>
+                                <span style={{ fontWeight: 'bold' }}>
+                                  {val >= 1e6 ? `${(val/1e6).toFixed(3)}M` :
+                                   val >= 1e3 ? `${(val/1e3).toFixed(3)}k` :
+                                   val <= 1e-9 ? `${(val*1e9).toFixed(3)}n` :
+                                   val <= 1e-6 ? `${(val*1e6).toFixed(3)}u` :
+                                   val.toFixed(3)}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                          <Button variant="contained" color="secondary" size="small" style={{ marginTop: '10px' }} onClick={applyTunedValues}>
+                            Apply to Schematic
+                          </Button>
+                        </div>
+                      )}
+
+                      {autotuneStatus === 'error' && (
+                        <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '5px', background: '#ffebee', padding: '15px', borderRadius: '5px', border: '1px solid #ffcdd2', boxSizing: 'border-box' }}>
+                          <Typography variant="body2" style={{ fontWeight: 'bold', color: '#c62828' }}>
+                            Optimization Failed
+                          </Typography>
+                          <Typography variant="caption" color="textSecondary">
+                            Please check targets, bounds, and simulation parameters.
+                          </Typography>
+                        </div>
+                      )}
+
+                      <Button
+                        disabled={autotuneStatus === 'running'}
+                        variant="contained"
+                        color="primary"
+                        style={{ width: '100%' }}
+                        onClick={runAutotune}
+                      >
+                        {autotuneStatus === 'running' ? 'Optimizing...' : 'Run AutoTune'}
                       </Button>
                     </ListItem>
                   </List>

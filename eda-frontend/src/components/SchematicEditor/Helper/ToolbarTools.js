@@ -878,6 +878,23 @@ export function GenerateDetailedCompList() {
   return netlist
 }
 
+// Maps component prefixes to their mxGraph cell IDs and full properties object
+export function getComponentCellIdMap() {
+  var list = annotate(graph)
+  var map = {}
+  for (var property in list) {
+    if (list[property].Component === true && list[property].symbol !== 'PWR') {
+      var component = list[property]
+      map[component.properties.PREFIX] = {
+        id: component.id,
+        properties: component.properties
+      }
+    }
+  }
+  return map
+}
+
+
 
 // Function to Render Circuit XML
 export function renderXML() {

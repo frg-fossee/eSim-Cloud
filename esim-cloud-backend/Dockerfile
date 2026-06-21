@@ -61,14 +61,16 @@ RUN arduino-cli core update-index \
     && find . -name ctags -exec ln -nsf /usr/bin/ctags {} \;
 
 
-RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev postgresql-dev
+RUN apk add --no-cache libxt jpeg-dev zlib-dev libxaw-dev libx11-dev libtool mariadb-connector-c-dev libffi-dev postgresql-dev openblas
 
 COPY requirements.txt /code/
 RUN apk add --no-cache mariadb-connector-c-dev ;\
     apk add --update alpine-sdk && \
     apk add libffi-dev openssl-dev && \
     apk --no-cache --update add build-base ;\
-    apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev\
+    apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev mariadb-dev gfortran openblas-dev\
     && pip install --upgrade pip\
-    && pip install --trusted-host pypi.python.org -r requirements.txt \
+    && pip install "cython<3.0.0" wheel "setuptools<60.0.0"\
+    && pip install "numpy==1.18.4" pybind11 --no-build-isolation\
+    && pip install --no-build-isolation --trusted-host pypi.python.org -r requirements.txt \
     && apk del .build-deps

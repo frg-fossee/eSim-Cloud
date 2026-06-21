@@ -54,7 +54,7 @@ class SvgGenerator:
             return
         else:
             path_to_svg = f"{save_path}/{name_of_symbol}.svg"
-            d.saveSvg(path_to_svg)
+
             # after saving svg open it again and embedd metadata.
             # print(pin_number_positions)
             elem = ""
@@ -73,22 +73,38 @@ class SvgGenerator:
                         <length>{pinLength}</length><pinShape>{pinShape}</pinShape>
                         </p-{pin_number}>"""
 
-            # save the above elem in the same svg file.
-            fd = open(path_to_svg, 'r')
-            s = fd.readlines()
-            if(s[-1].strip('\n') != '</svg>'):
-                while s[-1].strip("\n") != '</svg>':
-                    s.pop(-1)
-            s.pop(-1)
+            # Get SVG as string in memory and split into lines
+            svg_str = d.asSvg()
+            s = svg_str.splitlines(keepends=True)
 
-            fd = open(path_to_svg, 'w')
-            for i in range(len(s)):
-                fd.write(s[i])
-            fd.write(
-                f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">')  # noqa
-            fd.write(elem)
-            fd.write("</metadata></svg>")
-            fd.close()
+            if s:
+                if s[-1].strip('\n') != '</svg>':
+                    while s and s[-1].strip('\n') != '</svg>':
+                        s.pop(-1)
+                if s:
+                    s.pop(-1)
+
+            # Write the completed SVG file once, with retries on OSError 35
+            import errno
+            import time
+
+            for attempt in range(15):
+                try:
+                    with open(path_to_svg, 'w') as fd:
+                        for line in s:
+                            fd.write(line)
+                        fd.write(
+                            f'<metadata width="{dimension[0]}" height="{dimension[1]}" symbolPrefix="{symbol_prefix}" cmpPartDmgLabel="{dmg}:{part}" nameOfSymbol="{name_of_symbol}">')  # noqa
+                        fd.write(elem)
+                        fd.write("</metadata></svg>")
+                    break
+                except OSError as e:
+                    if e.errno == getattr(errno, 'EDEADLK', 35) or e.errno == getattr(errno, 'EAGAIN', 11):
+                        if attempt == 14:
+                            raise
+                        time.sleep(0.05 * (attempt + 1))
+                        continue
+                    raise
 
     def generate_svg_from_lib(self, file_path, output_path):
         """ Takes .lib file as input and generates

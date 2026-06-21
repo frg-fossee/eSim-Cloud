@@ -14,6 +14,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+const getQueryParam = (paramName) => {
+  try {
+    const hash = window.location.hash || ''
+    const search = hash.split('?')[1] || ''
+    const params = new URLSearchParams(search)
+    return params.get(paramName) || ''
+  } catch (e) {
+    return ''
+  }
+}
+
 export default function VersionComponent ({
   name,
   date,
@@ -54,7 +65,7 @@ export default function VersionComponent ({
   }
 
   const checkActiveVersionOrProject = (version, branch) => {
-    if (version === window.location.href.split('version=')[1].substr(0, 20) && branch === decodeURI(window.location.href.split('branch=')[1])) return false
+    if (version === getQueryParam('version') && branch === getQueryParam('branch')) return false
     if (version === projectVersion && branch === projectBranch) return false
     return true
   }
@@ -72,8 +83,7 @@ export default function VersionComponent ({
     api.delete(`/save/${save_id}/${version}/${branch}`, config).then(resp => {
       api
         .get(
-          'save/versions/' +
-          window.location.href.split('?id=')[1].substring(0, 36),
+          'save/versions/' + getQueryParam('id'),
           config
         )
         .then((resp) => {
@@ -93,7 +103,7 @@ export default function VersionComponent ({
           const temp = []
           for (let i = 0; i < Object.entries(versionsAccordingFreq).length; i++) {
             console.log(Object.entries(versionsAccordingFreq)[0])
-            if (decodeURI(window.location.href.split('branch=')[1]) === Object.entries(versionsAccordingFreq)[i][0]) { temp.push(true) } else { temp.push(false) }
+            if (getQueryParam('branch') === Object.entries(versionsAccordingFreq)[i][0]) { temp.push(true) } else { temp.push(false) }
           }
           setBranchOpen(temp.reverse())
         })
@@ -111,7 +121,7 @@ export default function VersionComponent ({
         style={{ overflowX: 'hidden', width: '77%' }}
         size="small"
         color="primary"
-        disabled={((version === window.location.href.split('version=')[1].substr(0, 20)) && (branch === decodeURI(window.location.href.split('branch=')[1])))}
+        disabled={version === getQueryParam('version') && branch === getQueryParam('branch')}
         onClick={handleClick}
       >
         <p>

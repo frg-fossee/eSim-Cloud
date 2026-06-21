@@ -101,4 +101,3 @@ RC Circuit Parallel
 * Simulation
 
     .. image:: images/RC_Circuit_Parallel_Simulation.png
-

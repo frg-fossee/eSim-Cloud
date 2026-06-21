@@ -52,8 +52,11 @@ class Command(BaseCommand):
             )
             library_set.save()
 
+        use_temp_dir = settings.DEBUG
+        base_dir = "/tmp/kicad-symbols/" if use_temp_dir else "kicad-symbols/"
+
         out_location = os.path.join(
-            "kicad-symbols/",
+            base_dir,
             library_set.user.username + "-" + name
         )
 
@@ -61,8 +64,7 @@ class Command(BaseCommand):
         logger.info(f"Saving as " + name[5:])
         logger.info(f"Saving Libraries to {out_location}")
 
-        if not os.path.isdir(out_location):
-            os.mkdir(out_location)
+        os.makedirs(out_location, exist_ok=True)
         try:
             save_libs(
                 os.listdir(options['location']),
@@ -70,6 +72,12 @@ class Command(BaseCommand):
                 out_location,
                 library_set
             )
+            if use_temp_dir:
+                import shutil
+                dst_location = out_location.replace("/tmp/", "")
+                if os.path.exists(dst_location):
+                    shutil.rmtree(dst_location)
+                shutil.copytree(out_location, dst_location)
             logger.info("Finished without errors")
-        except Exception:
-            logger.error("Couldn't save all the libs")
+        except Exception as e:
+            logger.exception("Couldn't save all the libs")

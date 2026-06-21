@@ -25,5 +25,3 @@ Simulation
 * At first, a basic check is done whether the required components are connected or not.
 * The code written is then compiled by ``Arduino CLI`` which generates a ``hex code``. 
 * This hex code is then passed to ``AVR8js`` which simulates the components in the browser. 
-
-

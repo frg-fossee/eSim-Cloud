@@ -677,4 +677,3 @@ class AutotuneStudyCoordinator:
                 )
 
         return self.local_best_params, self.local_best_loss
-

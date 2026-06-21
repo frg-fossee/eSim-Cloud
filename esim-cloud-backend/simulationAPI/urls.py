@@ -33,4 +33,10 @@ urlpatterns = [
     path('history/lti/<int:lti_id>',
          simulationAPI_views.GetLTISimResults.as_view(),
          name='lti sim history'),
+
+    path('autotune/run',
+         simulationAPI_views.AutotuneUploader.as_view(), name='autotune_run'),
+
+    path('autotune/status/<uuid:task_id>',
+         simulationAPI_views.AutotuneResultView.as_view(), name='autotune_status'),
 ]

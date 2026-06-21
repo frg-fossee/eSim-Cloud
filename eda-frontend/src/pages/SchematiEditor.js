@@ -35,6 +35,8 @@ export default function SchematiEditor (props) {
   const dispatch = useDispatch()
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [ltiSimResult, setLtiSimResult] = React.useState(false)
+  const [leftWidth, setLeftWidth] = React.useState(250)
+  const [rightWidth, setRightWidth] = React.useState(250)
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen)
@@ -71,6 +73,8 @@ export default function SchematiEditor (props) {
 
       {/* Schematic editor header, toolbar and left side pane */}
       <Layout
+        sidebarWidth={leftWidth}
+        onSidebarResize={setLeftWidth}
         header={gridRef && <Header gridRef={gridRef}/> }
         resToolbar={
           <SchematicToolbar
@@ -93,7 +97,7 @@ export default function SchematiEditor (props) {
       </LayoutMain>
 
       {/* Schematic editor Right side pane */}
-      <RightSidebar mobileOpen={mobileOpen} mobileClose={handleDrawerToggle}>
+      <RightSidebar width={rightWidth} onResize={setRightWidth} mobileOpen={mobileOpen} mobileClose={handleDrawerToggle}>
         <PropertiesSidebar gridRef={gridRef} outlineRef={outlineRef} />
       </RightSidebar>
       <ComponentProperties/>

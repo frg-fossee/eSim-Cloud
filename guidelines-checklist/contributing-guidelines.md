@@ -7,4 +7,3 @@
 * Break your code/logic into different functions and add comments for better understanding.
 * If your contributions have some dependencies or they modify existing structure, then update the README.md file accordingly. Also feel free to add more documentation files.
 * Commit your code on a regular basis with meaningful commit messages.
-

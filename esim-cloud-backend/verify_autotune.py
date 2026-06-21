@@ -168,5 +168,3 @@ if __name__ == "__main__":
         print("Please specify analysis type to test:")
         print("  python3 verify_autotune.py ac")
         print("  python3 verify_autotune.py trans")
-
-
