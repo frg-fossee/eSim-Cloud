@@ -41,8 +41,6 @@ psycopg2==2.8.5
 pycparser==2.20
 PyJWT==1.7.1
 numpy==1.18.4
-Pillow==7.1.2
-psycopg2==2.8.5
 pymongo==3.10.1
 pyparsing==2.4.7
 python-dateutil==2.8.1
@@ -67,3 +65,6 @@ zipp==3.1.0
 pylti==0.7.0
 sphinxcontrib-openapi
 m2r2
+optuna==3.3.0
+scipy==1.5.4
+

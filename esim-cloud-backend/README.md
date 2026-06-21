@@ -15,3 +15,15 @@ Environment variables can be found in the .env file, detailed description for ea
 * If manually running the django backend, please ensure to apply migrations to specific databases
 * ```python manage.py migrate libAPI --database="mongodb"```
 * ```python manage.py migrate simulationAPI --database="mongodb"```
+
+### Autotuning Verification:
+* The autotuning module can be tested and verified locally from the Django container using the CLI script `verify_autotune.py`.
+* To run AC analysis autotuning verification:
+  ```bash
+  docker exec esim-cloud-django-1 python3 verify_autotune.py ac
+  ```
+* To run Transient analysis autotuning verification:
+  ```bash
+  docker exec esim-cloud-django-1 python3 verify_autotune.py trans
+  ```
+
